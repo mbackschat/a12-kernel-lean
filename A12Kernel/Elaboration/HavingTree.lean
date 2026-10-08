@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.HavingNumericAtom
 import A12Kernel.Elaboration.CorrelationSurface
 import A12Kernel.Elaboration.CorrelationWellFormed
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
@@ -14,24 +15,12 @@ private def SurfaceComparisonOp.toCorrelation : SurfaceComparisonOp → Correlat
   | .greater => .greaterThan
   | .greaterEqual => .greaterEqual
 
-structure ResolvedHavingNumberRef where
-  declaration : FlatFieldDecl
-  core : HavingNumberRef
-
 /-- The per-leaf reference resolvers one filter route supplies. They travel as a bundle because
     each route chooses all of them together, and a route that admits no String or presence leaf
     supplies a refusing resolver rather than a different combinator. -/
-structure HavingLeafResolvers where
+structure HavingLeafResolvers extends HavingNumericResolvers where
   selectedComparison : EqualityOp → SurfaceHavingSelectedOperand → SurfaceHavingSelectedOperand →
     Except CorrelationElabError HavingSelectedComparison
-  firstFilled : SurfaceHavingEntitySource → Except CorrelationElabError (List (HavingFieldListSlot HavingNumberRef))
-  groupCount : SurfaceHavingEntitySource → Except CorrelationElabError (List HavingGroupCountOperand)
-  product : SurfaceHavingEntitySource → Except CorrelationElabError HavingNumericProduct
-  collectionCount : SurfaceHavingCollectionCount → Except CorrelationElabError HavingCollectionCount
-  aggregate : NumericAggregateOp → SurfaceHavingEntitySource → Except CorrelationElabError HavingNumericAtom
-  baseYear : Except CorrelationElabError Int
-  clockPart : HavingClockSource → TemporalNumericPart → Except CorrelationElabError HavingNumericAtom
-  fieldValueAsNumber : SurfaceHavingStringRef → Except CorrelationElabError ResolvedFieldValueAsNumberSource
   boolean : EqualityOp → SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatComparison
   fields : SurfaceComparisonOp → SurfaceHavingStringRef → SurfaceHavingStringRef →
     Except CorrelationElabError (Option FlatComparison)
@@ -42,16 +31,6 @@ structure HavingLeafResolvers where
   temporalExpressionPart : TemporalNumericPart → SurfaceHavingTemporalExpression → Except CorrelationElabError HavingNumericAtom
   temporal : SurfaceComparisonOp → SurfaceHavingTemporalOperand → SurfaceHavingTemporalOperand →
     Except CorrelationElabError (Option (HavingOrigin × HavingOrigin × FlatComparison))
-  stringValue : HavingOrigin → SurfaceFieldPath → Except CorrelationElabError FlatStringField
-  dateDifference : DateDifferenceUnit → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
-  dayDifference : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
-  dateTimeDifference : DateTimeSubdayUnit → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
-  dateRangeBoundPart : HavingOrigin → SurfaceFieldPath → DateNumericPart → Except CorrelationElabError FlatDateRangeField
-  temporalPart : HavingOrigin → SurfaceFieldPath → TemporalNumericPart → Except CorrelationElabError FlatTemporalField
-  number : HavingOrigin → SurfaceFieldPath →
-    Except CorrelationElabError ResolvedHavingNumberRef
-  repetition : HavingOrigin → SurfaceGroupReference →
-    Except CorrelationElabError HavingRepetitionRef
   string : EqualityOp → SurfaceHavingStringRef → String →
     Except CorrelationElabError HavingStringRef
   literalMembership : SurfaceHavingStringRef → Sum (List Int) (List String) →
@@ -91,39 +70,9 @@ private def orderingSides (left right : Except CorrelationElabError ResolvedHavi
 private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
     (op : NumericValidationOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
     Except CorrelationElabError CorrelatedHaving := do
-  let resolve : SurfaceHavingNumericAtom → Except CorrelationElabError HavingNumericAtom
-    | .firstFilled source => HavingNumericAtom.firstFilled <$> resolvers.firstFilled source
-    | .groupCount source => HavingNumericAtom.groupCount <$> resolvers.groupCount source
-    | .product source => HavingNumericAtom.product <$> resolvers.product source
-    | .collectionCount source => HavingNumericAtom.collectionCount <$> resolvers.collectionCount source
-    | .aggregate op source => resolvers.aggregate op source
-    | .dateDifference unit left right => resolvers.dateDifference unit left right
-    | .dayDifference left right => resolvers.dayDifference left right
-    | .dateTimeDifference unit left right => resolvers.dateTimeDifference unit left right
-    | .baseYear => HavingNumericAtom.baseYear <$> resolvers.baseYear
-    | .baseYearDatePart source part => (fun year => .baseYearDatePart year source part) <$> resolvers.baseYear
-    | .clockPart source part => resolvers.clockPart source part
-    | .fieldValueAsNumber reference => (.fieldValueAsNumber reference.origin ·) <$> resolvers.fieldValueAsNumber reference
-    | .stringLength origin reference => (.stringLength origin ·) <$> resolvers.stringValue origin reference
-    | .stringRange origin reference start finish => do
-        let source ← (resolvers.stringValue origin reference).mapError fun
-          | .text (.lengthOperandKindMismatch _ _) => .numericExpressionUnsupported
-          | error => error
-        if !validStringRange start finish then throw .numericExpressionUnsupported
-        pure (.stringRange origin source start finish)
-    | .dateRangeBoundPart origin reference bound part =>
-        (fun source => .dateRangeBoundPart origin source bound part) <$> resolvers.dateRangeBoundPart origin reference part
-    | .temporalDifference unit left right => resolvers.temporalDifference unit left right
-    | .temporalExpressionPart part source => resolvers.temporalExpressionPart part source
-    | .temporalPart origin reference part =>
-        (fun source => .temporalPart origin source part) <$> resolvers.temporalPart origin reference part
-    | .field reference => do
-        let resolved ← (resolvers.number reference.origin reference.field).mapError fun
-          | .fieldNotNumber path actual => .numericOperandFieldNotNumber path actual
-          | error => error
-        pure (.field resolved.core)
-    | .repetition reference =>
-        (.repetition ·) <$> resolvers.repetition reference.origin reference.group
+  let resolve := fun atom => resolvers.toHavingNumericResolvers.resolveWith atom
+    (fun unit left right _ _ => resolvers.temporalDifference unit left right)
+    (fun part source _ => resolvers.temporalExpressionPart part source)
   let leftCore ← left.mapM resolve
   let rightCore ← right.mapM resolve
   if leftCore.isImmediateLiteral && rightCore.isImmediateLiteral then

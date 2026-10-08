@@ -151,6 +151,8 @@ private def positiveConditions : List String := [
   "HoursFromTime(Rows/T For Key) == 3", "MinutesFromTime(Rows/T For Key) == 4", "SecondsFromTime(Rows/T For Key) == 5",
   "DayFromDate(Rows/D For Key) == 1", "AddDays(Rows/D For Key,[Amount]) == \"02.02.2024\"",
   "AddDays(Rows/D For Key,HoursFromTime(Rows/T For Key)) == \"04.02.2024\"",
+  "AddDays(Rows/D For Key,MinutesFromTime(Rows/T For Key)) == \"05.02.2024\"",
+  "AddDays(Rows/D For Key,DayFromDate(Rows/D For Key)) == \"02.02.2024\"",
   "Time(Rows/N For Key,\"4\",\"5\") == \"03:04:05\"",
   "Date(DayFromDate(Rows/D For Key),\"2\",\"2024\") == \"01.02.2024\"",
   "Valid(Date(Rows/S For Key,\"2\",\"2024\"))",

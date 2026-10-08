@@ -1,0 +1,1081 @@
+{
+  "header" : {
+    "id" : "BaseYear_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "BaseYear_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false,
+      "baseYear" : "2024"
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/ProbeWeight",
+                "name" : "ProbeWeight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Weight",
+                "name" : "Weight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Stamp",
+                "name" : "Stamp",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Weight",
+            "name" : "Weight",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Stamp",
+            "name" : "Stamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/dayDirect",
+            "name" : "dayDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/dayDirectComp",
+            "name" : "dayDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../dayDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInDays(BaseYear,AddDays(/Form/Stamp,1))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_dayDirect",
+            "name" : "R_dayDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_dayDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInDays(BaseYear,AddDays(/Form/Stamp,1)) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/dayHaving",
+            "name" : "dayHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/dayHavingComp",
+            "name" : "dayHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../dayHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DifferenceInDays(BaseYear,AddDays(Rows/Stamp,1)) == 1))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_dayHaving",
+            "name" : "R_dayHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_dayHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInDays(BaseYear,AddDays(Rows/Stamp,1)) == 1)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/dayReverseDirect",
+            "name" : "dayReverseDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/dayReverseDirectComp",
+            "name" : "dayReverseDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../dayReverseDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInDays(AddDays(/Form/Stamp,1),BaseYear)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_dayReverseDirect",
+            "name" : "R_dayReverseDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_dayReverseDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInDays(AddDays(/Form/Stamp,1),BaseYear) == -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/dayReverseHaving",
+            "name" : "dayReverseHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/dayReverseHavingComp",
+            "name" : "dayReverseHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../dayReverseHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DifferenceInDays(AddDays(Rows/Stamp,1),BaseYear) == -1))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_dayReverseHaving",
+            "name" : "R_dayReverseHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_dayReverseHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInDays(AddDays(Rows/Stamp,1),BaseYear) == -1)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/monthDirect",
+            "name" : "monthDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/monthDirectComp",
+            "name" : "monthDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../monthDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInMonths(BaseYear,AddMonths(/Form/Stamp,1))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_monthDirect",
+            "name" : "R_monthDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_monthDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInMonths(BaseYear,AddMonths(/Form/Stamp,1)) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/monthHaving",
+            "name" : "monthHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/monthHavingComp",
+            "name" : "monthHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../monthHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DifferenceInMonths(BaseYear,AddMonths(Rows/Stamp,1)) == 1))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_monthHaving",
+            "name" : "R_monthHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_monthHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInMonths(BaseYear,AddMonths(Rows/Stamp,1)) == 1)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/yearReverseDirect",
+            "name" : "yearReverseDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/yearReverseDirectComp",
+            "name" : "yearReverseDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../yearReverseDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInYears(AddYears(/Form/Stamp,1),BaseYear)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_yearReverseDirect",
+            "name" : "R_yearReverseDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_yearReverseDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInYears(AddYears(/Form/Stamp,1),BaseYear) == -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/yearReverseHaving",
+            "name" : "yearReverseHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/yearReverseHavingComp",
+            "name" : "yearReverseHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../yearReverseHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DifferenceInYears(AddYears(Rows/Stamp,1),BaseYear) == -1))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_yearReverseHaving",
+            "name" : "R_yearReverseHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_yearReverseHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInYears(AddYears(Rows/Stamp,1),BaseYear) == -1)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftDayDirect",
+            "name" : "shiftDayDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftDayDirectComp",
+            "name" : "shiftDayDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftDayDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DayFromDate(AddDays(BaseYear,[/Form/Weight]))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftDayDirect",
+            "name" : "R_shiftDayDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftDayDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(BaseYear,[/Form/Weight])) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftDayHaving",
+            "name" : "shiftDayHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftDayHavingComp",
+            "name" : "shiftDayHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftDayHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(BaseYear,[Rows/Weight])) == 2))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftDayHaving",
+            "name" : "R_shiftDayHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftDayHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(BaseYear,[Rows/Weight])) == 2)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftMonthDirect",
+            "name" : "shiftMonthDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftMonthDirectComp",
+            "name" : "shiftMonthDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftMonthDirect",
+              "computationAlternatives" : [ {
+                "operation" : "MonthFromDate(AddMonths(BaseYear,[/Form/Weight]))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftMonthDirect",
+            "name" : "R_shiftMonthDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftMonthDirect",
+              "errorCondition" : "FieldFilled(Anchor) And MonthFromDate(AddMonths(BaseYear,[/Form/Weight])) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftMonthHaving",
+            "name" : "shiftMonthHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftMonthHavingComp",
+            "name" : "shiftMonthHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftMonthHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (MonthFromDate(AddMonths(BaseYear,[Rows/Weight])) == 2))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftMonthHaving",
+            "name" : "R_shiftMonthHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftMonthHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (MonthFromDate(AddMonths(BaseYear,[Rows/Weight])) == 2)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftYearDirect",
+            "name" : "shiftYearDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftYearDirectComp",
+            "name" : "shiftYearDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftYearDirect",
+              "computationAlternatives" : [ {
+                "operation" : "YearFromDate(AddYears(BaseYear,[/Form/Weight]))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftYearDirect",
+            "name" : "R_shiftYearDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftYearDirect",
+              "errorCondition" : "FieldFilled(Anchor) And YearFromDate(AddYears(BaseYear,[/Form/Weight])) == 2025",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftYearHaving",
+            "name" : "shiftYearHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftYearHavingComp",
+            "name" : "shiftYearHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftYearHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (YearFromDate(AddYears(BaseYear,[Rows/Weight])) == 2025))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftYearHaving",
+            "name" : "R_shiftYearHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftYearHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (YearFromDate(AddYears(BaseYear,[Rows/Weight])) == 2025)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftHourDirect",
+            "name" : "shiftHourDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftHourDirectComp",
+            "name" : "shiftHourDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftHourDirect",
+              "computationAlternatives" : [ {
+                "operation" : "HoursFromTime(AddHours(DateTime(BaseYear,Time(\"08\")),[/Form/Weight]))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftHourDirect",
+            "name" : "R_shiftHourDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftHourDirect",
+              "errorCondition" : "FieldFilled(Anchor) And HoursFromTime(AddHours(DateTime(BaseYear,Time(\"08\")),[/Form/Weight])) == 9",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftHourHaving",
+            "name" : "shiftHourHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftHourHavingComp",
+            "name" : "shiftHourHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftHourHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (HoursFromTime(AddHours(DateTime(BaseYear,Time(\"08\")),[Rows/Weight])) == 9))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftHourHaving",
+            "name" : "R_shiftHourHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftHourHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (HoursFromTime(AddHours(DateTime(BaseYear,Time(\"08\")),[Rows/Weight])) == 9)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftMinuteDirect",
+            "name" : "shiftMinuteDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftMinuteDirectComp",
+            "name" : "shiftMinuteDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftMinuteDirect",
+              "computationAlternatives" : [ {
+                "operation" : "MinutesFromTime(AddMinutes(DateTime(BaseYear,Time(\"08\",\"10\")),[/Form/Weight]))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftMinuteDirect",
+            "name" : "R_shiftMinuteDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftMinuteDirect",
+              "errorCondition" : "FieldFilled(Anchor) And MinutesFromTime(AddMinutes(DateTime(BaseYear,Time(\"08\",\"10\")),[/Form/Weight])) == 11",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftMinuteHaving",
+            "name" : "shiftMinuteHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftMinuteHavingComp",
+            "name" : "shiftMinuteHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftMinuteHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (MinutesFromTime(AddMinutes(DateTime(BaseYear,Time(\"08\",\"10\")),[Rows/Weight])) == 11))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftMinuteHaving",
+            "name" : "R_shiftMinuteHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftMinuteHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (MinutesFromTime(AddMinutes(DateTime(BaseYear,Time(\"08\",\"10\")),[Rows/Weight])) == 11)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftSecondDirect",
+            "name" : "shiftSecondDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftSecondDirectComp",
+            "name" : "shiftSecondDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftSecondDirect",
+              "computationAlternatives" : [ {
+                "operation" : "SecondsFromTime(AddSeconds(DateTime(BaseYear,Time(\"08\",\"10\",\"20\")),[/Form/Weight]))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftSecondDirect",
+            "name" : "R_shiftSecondDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftSecondDirect",
+              "errorCondition" : "FieldFilled(Anchor) And SecondsFromTime(AddSeconds(DateTime(BaseYear,Time(\"08\",\"10\",\"20\")),[/Form/Weight])) == 21",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftSecondHaving",
+            "name" : "shiftSecondHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftSecondHavingComp",
+            "name" : "shiftSecondHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftSecondHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (SecondsFromTime(AddSeconds(DateTime(BaseYear,Time(\"08\",\"10\",\"20\")),[Rows/Weight])) == 21))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftSecondHaving",
+            "name" : "R_shiftSecondHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftSecondHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (SecondsFromTime(AddSeconds(DateTime(BaseYear,Time(\"08\",\"10\",\"20\")),[Rows/Weight])) == 21)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/mixedHourDirect",
+            "name" : "mixedHourDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/mixedHourDirectComp",
+            "name" : "mixedHourDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../mixedHourDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInHours(DateTime(BaseYear,Time(\"08\")),AddHours(DateTime(/Form/Stamp,Time(\"08\")),1))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_mixedHourDirect",
+            "name" : "R_mixedHourDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_mixedHourDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInHours(DateTime(BaseYear,Time(\"08\")),AddHours(DateTime(/Form/Stamp,Time(\"08\")),1)) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/mixedHourHaving",
+            "name" : "mixedHourHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/mixedHourHavingComp",
+            "name" : "mixedHourHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../mixedHourHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DifferenceInHours(DateTime(BaseYear,Time(\"08\")),AddHours(DateTime(Rows/Stamp,Time(\"08\")),1)) == 1))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_mixedHourHaving",
+            "name" : "R_mixedHourHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_mixedHourHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInHours(DateTime(BaseYear,Time(\"08\")),AddHours(DateTime(Rows/Stamp,Time(\"08\")),1)) == 1)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/mixedSecondReverseDirect",
+            "name" : "mixedSecondReverseDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/mixedSecondReverseDirectComp",
+            "name" : "mixedSecondReverseDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../mixedSecondReverseDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInSeconds(AddSeconds(DateTime(/Form/Stamp,Time(\"08\")),1),DateTime(BaseYear,Time(\"08\")))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_mixedSecondReverseDirect",
+            "name" : "R_mixedSecondReverseDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_mixedSecondReverseDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInSeconds(AddSeconds(DateTime(/Form/Stamp,Time(\"08\")),1),DateTime(BaseYear,Time(\"08\"))) == -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/mixedSecondReverseHaving",
+            "name" : "mixedSecondReverseHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/mixedSecondReverseHavingComp",
+            "name" : "mixedSecondReverseHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../mixedSecondReverseHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DifferenceInSeconds(AddSeconds(DateTime(Rows/Stamp,Time(\"08\")),1),DateTime(BaseYear,Time(\"08\"))) == -1))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_mixedSecondReverseHaving",
+            "name" : "R_mixedSecondReverseHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_mixedSecondReverseHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInSeconds(AddSeconds(DateTime(Rows/Stamp,Time(\"08\")),1),DateTime(BaseYear,Time(\"08\"))) == -1)) == 7",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal reference composition."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

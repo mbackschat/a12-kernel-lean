@@ -4,6 +4,7 @@ import A12Kernel.Semantics.ScalarTemporalDifference
 namespace A12Kernel
 
 inductive HavingTemporalReadSource where
+  | presence (field : FieldId)
   | temporal (field : FlatTemporalField)
   | range (field : FlatDateRangeField) (components : TemporalComponents)
   | number (field : FlatNumberField)
@@ -18,6 +19,7 @@ structure HavingTemporalExpressionRef where
 
 def HavingTemporalExpressionRef.fieldId (reference : HavingTemporalExpressionRef) : FieldId :=
   match reference.source with
+  | .presence field => field
   | .temporal field => field.id
   | .range field _ => field.id
   | .number field => field.id
@@ -62,10 +64,12 @@ private def atomReferenceSlots : HavingTemporalAtom → List (HavingFieldListSlo
   | .timeConstruction components => timeReferenceSlots components
   | _ => []
 private def amountReferenceSlots (amount : HavingTemporalAmount) : List (HavingFieldListSlot HavingTemporalExpressionRef) :=
-  amount.flatMapAtomsSubterm fun source _ => match source with
-    | .inl reference => [.direct { origin := reference.origin, source := .number reference.field }]
-    | .inr (_, source) => coreReferenceSlots source
-decreasing_by all_goals simp_all +arith <;> omega
+  amount.flatMapAtomsSubterm fun atom _ => match atom with
+    | .temporalExpressionPart _ source => coreReferenceSlots source
+    | .temporalDifference _ left right => coreReferenceSlots left ++ coreReferenceSlots right
+    | atom => (atom.presenceSlotsWith (fun _ _ => [])).map
+        (·.map fun reference => { origin := reference.origin, source := .presence reference.field })
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
 private def dateComponentReferenceSlots : HavingDateComponent → List (HavingFieldListSlot HavingTemporalExpressionRef)
   | .expression _ source => coreReferenceSlots source
   | .direct origin component => (show Option HavingTemporalExpressionRef from match component with
@@ -100,6 +104,25 @@ def references (source : HavingTemporalExpression) : List HavingTemporalExpressi
 
 def presenceSlots (source : HavingTemporalExpression) : List (HavingFieldListSlot HavingPresenceRef) :=
   source.referenceSlots.map (·.map fun reference => { origin := reference.origin, field := reference.fieldId })
+
+/-- Group reads retain an origin even when their declared field expansion is empty (spec/07 §5). -/
+def groupCountOperands (source : HavingTemporalExpression) : List HavingGroupCountOperand :=
+  (HavingTemporalCore.allAtoms source.core).flatMap fun
+    | .shift _ _ amount => amount.atoms.flatMap fun
+        | .groupCount operands => operands
+        | _ => []
+    | _ => []
+
+def repetitionReferences (source : HavingTemporalExpression) : List HavingRepetitionRef :=
+  (HavingTemporalCore.allAtoms source.core).flatMap fun
+    | .shift _ _ amount => amount.atoms.flatMap fun
+        | .repetition reference => [reference]
+        | _ => []
+    | _ => []
+
+def origins (source : HavingTemporalExpression) : List HavingOrigin :=
+  source.references.map (·.origin) ++ source.groupCountOperands.map (·.origin) ++
+    source.repetitionReferences.map (·.origin)
 
 /-- Checked core constructors retain the same source-slot boundary as authored elaboration
 (spec/05 §§3,6); a hand-built tree cannot carry a value-expression selector here. -/
@@ -262,13 +285,19 @@ private def readAmount (profile : ModelZone.ConcreteProfile) (baseYear : Option 
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) (amount : HavingTemporalAmount) :
     Except Error (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   let resolved : Except (Sum FormalCause Error) _ := amount.mapMSubterm fun source _hNumericSource => do
-    let value ← (match _hSource : source with
-      | .inl reference => do
-          let cell ← context.read (frame.envAt reference.origin) reference.field.id
-          pure ((observeCell phase cell).asDirectNumericComparisonOperand reference.field.info).toValidationArithmetic
-      | .inr (part, source) => do
-          let source ← evaluateCore profile baseYear phase context frame source
-          (part.observeScalarCore profile source NumericValidationUnavailable.formal .nonRelevant).mapError fun _ => context.unsupportedDateCalendar).mapError Sum.inr
+    let value ← (source.readArithmetic phase context frame
+      (fun part source _ => do
+        let source ← evaluateCore profile baseYear phase context frame source
+        (part.observeScalarCore profile source NumericValidationUnavailable.formal .nonRelevant).mapError fun _ => context.unsupportedDateCalendar)
+      (fun unit left right _ _ => do
+        let pair ← readTemporalPair phase (fun first : Bool =>
+          if first then evaluateCore profile baseYear phase context frame left
+          else evaluateCore profile baseYear phase context frame right)
+          scalarTemporalFormalCause? true false
+        match pair with
+        | .error cause => pure (.error (.formal cause))
+        | .ok (first, second) =>
+            (observeScalarTemporalDifference profile unit first second NumericValidationUnavailable.formal .nonRelevant).mapError fun _ => context.unsupportedDateCalendar)).mapError Sum.inr
     match phase, value with
     | .computation, .error (.formal cause) => throw (.inl cause)
     | _, value => pure value
@@ -277,7 +306,7 @@ private def readAmount (profile : ModelZone.ConcreteProfile) (baseYear : Option 
   | .error (.inr fault) => throw fault
   | .ok expression => pure (expression.lowerForEvaluation.evalNumericOperationTree id)
 termination_by sizeOf amount
-decreasing_by all_goals simp_all +arith <;> omega
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
 
 private def readDateOperand (profile : ModelZone.ConcreteProfile) (baseYear : Option Int) (phase : Phase)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) (component : HavingDateComponent) :
@@ -310,7 +339,7 @@ private def readTimeComponents (profile : ModelZone.ConcreteProfile) (baseYear :
           fun _ => context.unsupportedDateCalendar
         pure (constructorComponentOfNumeric numeric)) phase
 termination_by sizeOf components
-decreasing_by all_goals simp_all +arith <;> omega
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
 end
 
 def evaluate (source : HavingTemporalExpression) (phase : Phase)

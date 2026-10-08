@@ -1,41 +1,8 @@
+import A12Kernel.Reference.Dm.LowerHavingNumeric
 import A12Kernel.Reference.Dm.LowerCore
 import A12Kernel.Elaboration.CorrelationSurface
 
 namespace A12Kernel.Dm
-
-/-- A filter operand's path without its `$`, and the origin the `$` selects. -/
-def Path.havingField? (path : Path) : Option (HavingOrigin × SurfaceFieldPath) := do
-  let field ← { path with correlated := false }.toFieldPath?
-  pure (if path.correlated then .outer else .inner, field)
-
-
-def lowerHavingEntitySource (arguments : List Argument) : Lowering SurfaceHavingEntitySource := do
-  let operands ← arguments.mapM fun
-    | .mk (.constant "RuleGroup") none none => pure (.group .inner (.ruleGroup false))
-    | .mk (.entity { path, index := none, category }) none none => do
-        if path.segments.any (·.star) then
-          pure (.star (if path.correlated then .outer else .inner)
-            { base := path.base, groups := path.starGroups }
-            (category.map FieldEntityReadForm.projected |>.getD .stored))
-        else
-          let some (origin, field) := path.havingField? |
-            refuse "Having" "field-list entity"
-          pure (.entity { origin, field, form := category.map FieldEntityReadForm.projected |>.getD .stored })
-    | _ => refuse "Having" "field-list operand"
-  let first :: rest := operands | refuse "Having" "empty field list"
-  pure { first, rest }
-
-
-/-- Constructors and model-classified temporal selectors use the recursive Having route.
-Established direct comparisons retain their admission and diagnostics (spec/04 and spec/05). -/
-def Expr.havingTemporalConstructor (isTemporalSelection : List Argument → Bool := fun _ => false) : Expr → Bool
-  | .braces source => source.havingTemporalConstructor isTemporalSelection
-  | .call "StartOfDateRange" [.mk (.constant "BaseYear") none none] none none
-  | .call "EndOfDateRange" [.mk (.constant "BaseYear") none none] none none => false
-  | .call name arguments none none =>
-      (["FirstFilledValue", "MinValue", "MaxValue", "Min", "Max"].contains name && isTemporalSelection arguments) ||
-        ["AddDays", "AddMonths", "AddYears", "AddHours", "AddMinutes", "AddSeconds", "ValueAsDate", "Time", "Date", "DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
-  | _ => false
 
 mutual
 private partial def lowerHavingDateComponent : Expr → Lowering (SurfaceHavingDateComponent SurfaceHavingTemporalExpression)
@@ -153,6 +120,9 @@ partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowerin
       .timeFromDateTime <$> lowerHavingTemporalExpression true source
   | .constant "Now" => pure .now
   | .constant "Today" => pure .today
+  | .constant "BaseYear" => do
+      if !sourceSlot then refuse "Having" "polymorphic BaseYear value"
+      pure (.baseYearBound .start)
   | .call "StartOfDateRange" [.mk (.constant "BaseYear") none none] none none => pure (.baseYearBound .start)
   | .call "EndOfDateRange" [.mk (.constant "BaseYear") none none] none none => pure (.baseYearBound .finish)
   | .call name [.mk (.entity { path, index := none, category := none }) none none] none none => do
@@ -171,16 +141,9 @@ partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowerin
   | other => refuse "Having" other.construct
 
 private partial def lowerHavingTemporalAmount (expression : Expr) : Lowering SurfaceHavingTemporalAmount :=
-  let atom : Expr → Lowering (Sum SurfaceHavingNumberRef (TemporalNumericPart × SurfaceHavingTemporalExpression))
-    | .value { path, index := none, category := none } => do
-        let some (origin, field) := path.havingField? | refuse "Having" "shift amount path"
-        pure (.inl { origin, field })
-    | .call name [.mk source none none] none none => do
-        let some part := (datePart? name).map TemporalNumericPart.date |>.orElse (fun _ => (timePart? name).map TemporalNumericPart.time)
-          | refuse "Having" "shift amount extractor"
-        pure (.inr (part, ← lowerHavingTemporalExpression true source))
-    | _ => refuse "Having" "shift amount"
-  lowerNumericExpr atom (fun expression => do atom (.value (← numericFieldFormReference expression))) expression
+  let atom := lowerHavingNumericAtomWith (lowerHavingTemporalExpression true)
+  lowerNumericExpr atom (fun source => do atom (.value (← numericFieldFormReference source))) expression
+
 end
 
 end A12Kernel.Dm

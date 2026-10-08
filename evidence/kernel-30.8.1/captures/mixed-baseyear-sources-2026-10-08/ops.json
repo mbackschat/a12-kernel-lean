@@ -1,0 +1,933 @@
+[
+  {
+    "target": "config",
+    "op": "modify",
+    "time-zone": "Europe/Berlin",
+    "base-year": 2024
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Rows",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "ProbeWeight",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Weight",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Stamp",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM-dd"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Weight",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Stamp",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM-dd"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "dayDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/dayDirect",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(BaseYear,AddDays(/Form/Stamp,1))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_dayDirect",
+    "condition": "FieldFilled(Anchor) And DifferenceInDays(BaseYear,AddDays(/Form/Stamp,1)) == 1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "dayHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/dayHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DifferenceInDays(BaseYear,AddDays(Rows/Stamp,1)) == 1))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_dayHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInDays(BaseYear,AddDays(Rows/Stamp,1)) == 1)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "dayReverseDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/dayReverseDirect",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(AddDays(/Form/Stamp,1),BaseYear)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_dayReverseDirect",
+    "condition": "FieldFilled(Anchor) And DifferenceInDays(AddDays(/Form/Stamp,1),BaseYear) == -1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "dayReverseHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/dayReverseHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DifferenceInDays(AddDays(Rows/Stamp,1),BaseYear) == -1))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_dayReverseHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInDays(AddDays(Rows/Stamp,1),BaseYear) == -1)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "monthDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/monthDirect",
+    "alternatives": [
+      {
+        "operation": "DifferenceInMonths(BaseYear,AddMonths(/Form/Stamp,1))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_monthDirect",
+    "condition": "FieldFilled(Anchor) And DifferenceInMonths(BaseYear,AddMonths(/Form/Stamp,1)) == 1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "monthHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/monthHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DifferenceInMonths(BaseYear,AddMonths(Rows/Stamp,1)) == 1))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_monthHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInMonths(BaseYear,AddMonths(Rows/Stamp,1)) == 1)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "yearReverseDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/yearReverseDirect",
+    "alternatives": [
+      {
+        "operation": "DifferenceInYears(AddYears(/Form/Stamp,1),BaseYear)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_yearReverseDirect",
+    "condition": "FieldFilled(Anchor) And DifferenceInYears(AddYears(/Form/Stamp,1),BaseYear) == -1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "yearReverseHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/yearReverseHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DifferenceInYears(AddYears(Rows/Stamp,1),BaseYear) == -1))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_yearReverseHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInYears(AddYears(Rows/Stamp,1),BaseYear) == -1)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftDayDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftDayDirect",
+    "alternatives": [
+      {
+        "operation": "DayFromDate(AddDays(BaseYear,[/Form/Weight]))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftDayDirect",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(BaseYear,[/Form/Weight])) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftDayHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftDayHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(BaseYear,[Rows/Weight])) == 2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftDayHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(BaseYear,[Rows/Weight])) == 2)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftMonthDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftMonthDirect",
+    "alternatives": [
+      {
+        "operation": "MonthFromDate(AddMonths(BaseYear,[/Form/Weight]))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftMonthDirect",
+    "condition": "FieldFilled(Anchor) And MonthFromDate(AddMonths(BaseYear,[/Form/Weight])) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftMonthHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftMonthHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (MonthFromDate(AddMonths(BaseYear,[Rows/Weight])) == 2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftMonthHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (MonthFromDate(AddMonths(BaseYear,[Rows/Weight])) == 2)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftYearDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftYearDirect",
+    "alternatives": [
+      {
+        "operation": "YearFromDate(AddYears(BaseYear,[/Form/Weight]))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftYearDirect",
+    "condition": "FieldFilled(Anchor) And YearFromDate(AddYears(BaseYear,[/Form/Weight])) == 2025",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftYearHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftYearHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (YearFromDate(AddYears(BaseYear,[Rows/Weight])) == 2025))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftYearHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (YearFromDate(AddYears(BaseYear,[Rows/Weight])) == 2025)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftHourDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftHourDirect",
+    "alternatives": [
+      {
+        "operation": "HoursFromTime(AddHours(DateTime(BaseYear,Time(\"08\")),[/Form/Weight]))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftHourDirect",
+    "condition": "FieldFilled(Anchor) And HoursFromTime(AddHours(DateTime(BaseYear,Time(\"08\")),[/Form/Weight])) == 9",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftHourHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftHourHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (HoursFromTime(AddHours(DateTime(BaseYear,Time(\"08\")),[Rows/Weight])) == 9))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftHourHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (HoursFromTime(AddHours(DateTime(BaseYear,Time(\"08\")),[Rows/Weight])) == 9)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftMinuteDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftMinuteDirect",
+    "alternatives": [
+      {
+        "operation": "MinutesFromTime(AddMinutes(DateTime(BaseYear,Time(\"08\",\"10\")),[/Form/Weight]))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftMinuteDirect",
+    "condition": "FieldFilled(Anchor) And MinutesFromTime(AddMinutes(DateTime(BaseYear,Time(\"08\",\"10\")),[/Form/Weight])) == 11",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftMinuteHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftMinuteHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (MinutesFromTime(AddMinutes(DateTime(BaseYear,Time(\"08\",\"10\")),[Rows/Weight])) == 11))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftMinuteHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (MinutesFromTime(AddMinutes(DateTime(BaseYear,Time(\"08\",\"10\")),[Rows/Weight])) == 11)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftSecondDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftSecondDirect",
+    "alternatives": [
+      {
+        "operation": "SecondsFromTime(AddSeconds(DateTime(BaseYear,Time(\"08\",\"10\",\"20\")),[/Form/Weight]))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftSecondDirect",
+    "condition": "FieldFilled(Anchor) And SecondsFromTime(AddSeconds(DateTime(BaseYear,Time(\"08\",\"10\",\"20\")),[/Form/Weight])) == 21",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftSecondHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftSecondHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (SecondsFromTime(AddSeconds(DateTime(BaseYear,Time(\"08\",\"10\",\"20\")),[Rows/Weight])) == 21))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftSecondHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (SecondsFromTime(AddSeconds(DateTime(BaseYear,Time(\"08\",\"10\",\"20\")),[Rows/Weight])) == 21)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "mixedHourDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/mixedHourDirect",
+    "alternatives": [
+      {
+        "operation": "DifferenceInHours(DateTime(BaseYear,Time(\"08\")),AddHours(DateTime(/Form/Stamp,Time(\"08\")),1))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_mixedHourDirect",
+    "condition": "FieldFilled(Anchor) And DifferenceInHours(DateTime(BaseYear,Time(\"08\")),AddHours(DateTime(/Form/Stamp,Time(\"08\")),1)) == 1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "mixedHourHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/mixedHourHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DifferenceInHours(DateTime(BaseYear,Time(\"08\")),AddHours(DateTime(Rows/Stamp,Time(\"08\")),1)) == 1))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_mixedHourHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInHours(DateTime(BaseYear,Time(\"08\")),AddHours(DateTime(Rows/Stamp,Time(\"08\")),1)) == 1)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "mixedSecondReverseDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/mixedSecondReverseDirect",
+    "alternatives": [
+      {
+        "operation": "DifferenceInSeconds(AddSeconds(DateTime(/Form/Stamp,Time(\"08\")),1),DateTime(BaseYear,Time(\"08\")))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_mixedSecondReverseDirect",
+    "condition": "FieldFilled(Anchor) And DifferenceInSeconds(AddSeconds(DateTime(/Form/Stamp,Time(\"08\")),1),DateTime(BaseYear,Time(\"08\"))) == -1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "mixedSecondReverseHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/mixedSecondReverseHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DifferenceInSeconds(AddSeconds(DateTime(Rows/Stamp,Time(\"08\")),1),DateTime(BaseYear,Time(\"08\"))) == -1))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_mixedSecondReverseHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DifferenceInSeconds(AddSeconds(DateTime(Rows/Stamp,Time(\"08\")),1),DateTime(BaseYear,Time(\"08\"))) == -1)) == 7",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal reference composition."
+      }
+    ]
+  }
+]

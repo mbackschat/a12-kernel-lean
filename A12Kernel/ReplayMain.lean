@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.HavingTemporalAmountLocks
 import A12Kernel.Reference.Dm.HavingTemporalOperationsLocks
 import A12Kernel.Reference.Dm.HavingRecursiveTemporalLocks
 import A12Kernel.Reference.Dm.HavingSelectionGroupLocks

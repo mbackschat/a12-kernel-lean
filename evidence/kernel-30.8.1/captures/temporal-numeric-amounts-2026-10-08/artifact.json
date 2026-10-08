@@ -1,0 +1,6164 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Amounts_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "R_baseYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_countDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_differenceDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_firstDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_lengthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_numberDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_rangeDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_sumDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearDirectComp",
+              "field": "Form/baseYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/baseYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countDirectComp",
+              "field": "Form/countDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/countDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "differenceDirectComp",
+              "field": "Form/differenceDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/differenceDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstDirectComp",
+              "field": "Form/firstDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/firstDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthDirectComp",
+              "field": "Form/lengthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/lengthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberDirectComp",
+              "field": "Form/numberDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/numberDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeDirectComp",
+              "field": "Form/rangeDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/rangeDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "sumDirectComp",
+              "field": "Form/sumDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/sumDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/baseYearDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "2024-01-01T00:00:00",
+                "Text": "1",
+                "Weight": 1,
+                "baseYearDirect": 2,
+                "baseYearHaving": 7,
+                "countDirect": 3,
+                "countHaving": 7,
+                "differenceDirect": 2,
+                "differenceHaving": 7,
+                "firstDirect": 2,
+                "firstHaving": 7,
+                "lengthDirect": 2,
+                "lengthHaving": 7,
+                "numberDirect": 2,
+                "numberHaving": 7,
+                "rangeDirect": 2,
+                "rangeHaving": 7,
+                "sumDirect": 3,
+                "sumHaving": 7,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01T00:00:00",
+                    "Text": "1",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "R_baseYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_countDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_differenceDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_firstDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_lengthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_numberDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_rangeDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_sumDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearDirectComp",
+              "field": "Form/baseYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/baseYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countDirectComp",
+              "field": "Form/countDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/countDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "differenceDirectComp",
+              "field": "Form/differenceDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/differenceDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstDirectComp",
+              "field": "Form/firstDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/firstDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthDirectComp",
+              "field": "Form/lengthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/lengthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberDirectComp",
+              "field": "Form/numberDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/numberDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeDirectComp",
+              "field": "Form/rangeDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/rangeDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "sumDirectComp",
+              "field": "Form/sumDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/sumDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/baseYearDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "2024-01-01T00:00:00",
+                "Text": "1",
+                "Weight": 1,
+                "baseYearDirect": 2,
+                "baseYearHaving": 7,
+                "countDirect": 3,
+                "countHaving": 7,
+                "differenceDirect": 2,
+                "differenceHaving": 7,
+                "firstDirect": 2,
+                "firstHaving": 7,
+                "lengthDirect": 2,
+                "lengthHaving": 7,
+                "numberDirect": 2,
+                "numberHaving": 7,
+                "rangeDirect": 2,
+                "rangeHaving": 7,
+                "sumDirect": 3,
+                "sumHaving": 7,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01T00:00:00",
+                    "Text": "1",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "emptyNumber",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "R_baseYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_countDirectMissing",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ]
+            },
+            {
+              "code": "R_differenceDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_firstDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ]
+            },
+            {
+              "code": "R_lengthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_numberDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_rangeDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_sumDirectMissing",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ]
+            },
+            {
+              "code": "baseYearDirectComp",
+              "field": "Form/baseYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/baseYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countDirectComp",
+              "field": "Form/countDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/countDirect"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/countDirect"
+              ]
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "differenceDirectComp",
+              "field": "Form/differenceDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/differenceDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstDirectComp",
+              "field": "Form/firstDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/firstDirect"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/firstDirect"
+              ]
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthDirectComp",
+              "field": "Form/lengthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/lengthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberDirectComp",
+              "field": "Form/numberDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/numberDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeDirectComp",
+              "field": "Form/rangeDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/rangeDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "sumDirectComp",
+              "field": "Form/sumDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/sumDirect"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/sumDirect"
+              ]
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/baseYearDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/countHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/sumHaving",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "2024-01-01T00:00:00",
+                "Text": "1",
+                "Weight": null,
+                "baseYearDirect": 2,
+                "baseYearHaving": 7,
+                "countDirect": 2,
+                "countHaving": 0,
+                "differenceDirect": 2,
+                "differenceHaving": 7,
+                "firstDirect": 2,
+                "firstHaving": 0,
+                "lengthDirect": 2,
+                "lengthHaving": 7,
+                "numberDirect": 2,
+                "numberHaving": 7,
+                "rangeDirect": 2,
+                "rangeHaving": 7,
+                "sumDirect": 2,
+                "sumHaving": 0,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01T00:00:00",
+                    "Text": "1",
+                    "Weight": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "R_baseYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_countDirectMissing",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ]
+            },
+            {
+              "code": "R_differenceDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_firstDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ]
+            },
+            {
+              "code": "R_lengthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_numberDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_rangeDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_sumDirectMissing",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ]
+            },
+            {
+              "code": "baseYearDirectComp",
+              "field": "Form/baseYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/baseYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countDirectComp",
+              "field": "Form/countDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/countDirect"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/countDirect"
+              ]
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "differenceDirectComp",
+              "field": "Form/differenceDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/differenceDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstDirectComp",
+              "field": "Form/firstDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/firstDirect"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/firstDirect"
+              ]
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthDirectComp",
+              "field": "Form/lengthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/lengthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberDirectComp",
+              "field": "Form/numberDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/numberDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeDirectComp",
+              "field": "Form/rangeDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/rangeDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "sumDirectComp",
+              "field": "Form/sumDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/sumDirect"
+              ],
+              "fillToFix": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/sumDirect"
+              ]
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/baseYearDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/countHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/sumHaving",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "2024-01-01T00:00:00",
+                "Text": "1",
+                "Weight": null,
+                "baseYearDirect": 2,
+                "baseYearHaving": 7,
+                "countDirect": 2,
+                "countHaving": 0,
+                "differenceDirect": 2,
+                "differenceHaving": 7,
+                "firstDirect": 2,
+                "firstHaving": 0,
+                "lengthDirect": 2,
+                "lengthHaving": 7,
+                "numberDirect": 2,
+                "numberHaving": 7,
+                "rangeDirect": 2,
+                "rangeHaving": 7,
+                "sumDirect": 2,
+                "sumHaving": 0,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01T00:00:00",
+                    "Text": "1",
+                    "Weight": null
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "emptyText",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "R_baseYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_countDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_differenceDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_firstDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_sumDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearDirectComp",
+              "field": "Form/baseYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/baseYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countDirectComp",
+              "field": "Form/countDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/countDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "differenceDirectComp",
+              "field": "Form/differenceDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/differenceDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstDirectComp",
+              "field": "Form/firstDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/firstDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthDirectComp",
+              "field": "Form/lengthDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/lengthDirect"
+              ],
+              "fillToFix": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/lengthDirect"
+              ]
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberDirectComp",
+              "field": "Form/numberDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/numberDirect"
+              ],
+              "fillToFix": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/numberDirect"
+              ]
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeDirectComp",
+              "field": "Form/rangeDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/rangeDirect"
+              ],
+              "fillToFix": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/rangeDirect"
+              ]
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "sumDirectComp",
+              "field": "Form/sumDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/sumDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/baseYearDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/numberDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/numberHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/sumDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "2024-01-01T00:00:00",
+                "Text": "",
+                "Weight": 1,
+                "baseYearDirect": 2,
+                "baseYearHaving": 7,
+                "countDirect": 3,
+                "countHaving": 7,
+                "differenceDirect": 2,
+                "differenceHaving": 7,
+                "firstDirect": 2,
+                "firstHaving": 7,
+                "lengthDirect": 1,
+                "lengthHaving": 0,
+                "numberDirect": 1,
+                "numberHaving": 0,
+                "rangeDirect": 1,
+                "rangeHaving": 0,
+                "sumDirect": 3,
+                "sumHaving": 7,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01T00:00:00",
+                    "Text": "",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "R_baseYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_countDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_differenceDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_firstDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_sumDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearDirectComp",
+              "field": "Form/baseYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/baseYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countDirectComp",
+              "field": "Form/countDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/countDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "differenceDirectComp",
+              "field": "Form/differenceDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/differenceDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstDirectComp",
+              "field": "Form/firstDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/firstDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthDirectComp",
+              "field": "Form/lengthDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/lengthDirect"
+              ],
+              "fillToFix": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/lengthDirect"
+              ]
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberDirectComp",
+              "field": "Form/numberDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/numberDirect"
+              ],
+              "fillToFix": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/numberDirect"
+              ]
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeDirectComp",
+              "field": "Form/rangeDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/rangeDirect"
+              ],
+              "fillToFix": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/rangeDirect"
+              ]
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "sumDirectComp",
+              "field": "Form/sumDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/sumDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/baseYearDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/numberDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/numberHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/sumDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "2024-01-01T00:00:00",
+                "Text": "",
+                "Weight": 1,
+                "baseYearDirect": 2,
+                "baseYearHaving": 7,
+                "countDirect": 3,
+                "countHaving": 7,
+                "differenceDirect": 2,
+                "differenceHaving": 7,
+                "firstDirect": 2,
+                "firstHaving": 7,
+                "lengthDirect": 1,
+                "lengthHaving": 0,
+                "numberDirect": 1,
+                "numberHaving": 0,
+                "rangeDirect": 1,
+                "rangeHaving": 0,
+                "sumDirect": 3,
+                "sumHaving": 7,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01T00:00:00",
+                    "Text": "",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "badNumber",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "R_baseYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_differenceDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_lengthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_numberDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_rangeDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearDirectComp",
+              "field": "Form/baseYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/baseYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "differenceDirectComp",
+              "field": "Form/differenceDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/differenceDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthDirectComp",
+              "field": "Form/lengthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/lengthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberDirectComp",
+              "field": "Form/numberDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/numberDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeDirectComp",
+              "field": "Form/rangeDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/rangeDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Rows/Weight",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Weight",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Rows/Weight",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Weight"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Weight",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Weight"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/baseYearDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "2024-01-01T00:00:00",
+                "Text": "1",
+                "Weight": "bad",
+                "baseYearDirect": 2,
+                "baseYearHaving": 7,
+                "countDirect": null,
+                "countHaving": null,
+                "differenceDirect": 2,
+                "differenceHaving": 7,
+                "firstDirect": null,
+                "firstHaving": null,
+                "lengthDirect": 2,
+                "lengthHaving": 7,
+                "numberDirect": 2,
+                "numberHaving": 7,
+                "rangeDirect": 2,
+                "rangeHaving": 7,
+                "sumDirect": null,
+                "sumHaving": null,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01T00:00:00",
+                    "Text": "1",
+                    "Weight": "bad"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "R_baseYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_differenceDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_lengthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_numberDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_rangeDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearDirectComp",
+              "field": "Form/baseYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/baseYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "differenceDirectComp",
+              "field": "Form/differenceDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/differenceDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthDirectComp",
+              "field": "Form/lengthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/lengthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberDirectComp",
+              "field": "Form/numberDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/numberDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeDirectComp",
+              "field": "Form/rangeDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/Text",
+                "Form/rangeDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Rows/Weight",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Weight",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Rows/Weight",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Weight"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Weight",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Weight"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/baseYearDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/lengthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/numberDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/numberHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/rangeDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/rangeHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "2024-01-01T00:00:00",
+                "Text": "1",
+                "Weight": "bad",
+                "baseYearDirect": 2,
+                "baseYearHaving": 7,
+                "countDirect": null,
+                "countHaving": null,
+                "differenceDirect": 2,
+                "differenceHaving": 7,
+                "firstDirect": null,
+                "firstHaving": null,
+                "lengthDirect": 2,
+                "lengthHaving": 7,
+                "numberDirect": 2,
+                "numberHaving": 7,
+                "rangeDirect": 2,
+                "rangeHaving": 7,
+                "sumDirect": null,
+                "sumHaving": null,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01T00:00:00",
+                    "Text": "1",
+                    "Weight": "bad"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "badText",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "R_baseYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_countDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_differenceDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_firstDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_sumDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearDirectComp",
+              "field": "Form/baseYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/baseYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countDirectComp",
+              "field": "Form/countDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/countDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "differenceDirectComp",
+              "field": "Form/differenceDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/differenceDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstDirectComp",
+              "field": "Form/firstDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/firstDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "sumDirectComp",
+              "field": "Form/sumDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/sumDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Rows/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Text"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Text"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/baseYearDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "2024-01-01T00:00:00",
+                "Text": "bad",
+                "Weight": 1,
+                "baseYearDirect": 2,
+                "baseYearHaving": 7,
+                "countDirect": 3,
+                "countHaving": 7,
+                "differenceDirect": 2,
+                "differenceHaving": 7,
+                "firstDirect": 2,
+                "firstHaving": 7,
+                "lengthDirect": null,
+                "lengthHaving": null,
+                "numberDirect": null,
+                "numberHaving": null,
+                "rangeDirect": null,
+                "rangeHaving": null,
+                "sumDirect": 3,
+                "sumHaving": 7,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01T00:00:00",
+                    "Text": "bad",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "R_baseYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_countDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_differenceDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_firstDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_sumDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearDirectComp",
+              "field": "Form/baseYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/baseYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countDirectComp",
+              "field": "Form/countDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/countDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "differenceDirectComp",
+              "field": "Form/differenceDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/differenceDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstDirectComp",
+              "field": "Form/firstDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/firstDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "sumDirectComp",
+              "field": "Form/sumDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/OtherWeight",
+                "Form/Stamp",
+                "Form/Weight",
+                "Form/sumDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Rows/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Text"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Text"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/baseYearDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/countDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/countHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/differenceDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/differenceHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/firstDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/firstHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/sumDirect",
+                "value": "3"
+              },
+              {
+                "field": "Form/sumHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "2024-01-01T00:00:00",
+                "Text": "bad",
+                "Weight": 1,
+                "baseYearDirect": 2,
+                "baseYearHaving": 7,
+                "countDirect": 3,
+                "countHaving": 7,
+                "differenceDirect": 2,
+                "differenceHaving": 7,
+                "firstDirect": 2,
+                "firstHaving": 7,
+                "lengthDirect": null,
+                "lengthHaving": null,
+                "numberDirect": null,
+                "numberHaving": null,
+                "rangeDirect": null,
+                "rangeHaving": null,
+                "sumDirect": 3,
+                "sumHaving": 7,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01T00:00:00",
+                    "Text": "bad",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "badSource",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Stamp"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Stamp"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "bad",
+                "Text": "1",
+                "Weight": 1,
+                "baseYearDirect": null,
+                "baseYearHaving": null,
+                "countDirect": null,
+                "countHaving": null,
+                "differenceDirect": null,
+                "differenceHaving": null,
+                "firstDirect": null,
+                "firstHaving": null,
+                "lengthDirect": null,
+                "lengthHaving": null,
+                "numberDirect": null,
+                "numberHaving": null,
+                "rangeDirect": null,
+                "rangeHaving": null,
+                "sumDirect": null,
+                "sumHaving": null,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "bad",
+                    "Text": "1",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "baseYearHavingComp",
+              "field": "Form/baseYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/baseYearHaving"
+              ]
+            },
+            {
+              "code": "countHavingComp",
+              "field": "Form/countHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/countHaving"
+              ]
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "differenceHavingComp",
+              "field": "Form/differenceHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/differenceHaving"
+              ]
+            },
+            {
+              "code": "firstHavingComp",
+              "field": "Form/firstHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/firstHaving"
+              ]
+            },
+            {
+              "code": "lengthHavingComp",
+              "field": "Form/lengthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/lengthHaving"
+              ]
+            },
+            {
+              "code": "numberHavingComp",
+              "field": "Form/numberHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/numberHaving"
+              ]
+            },
+            {
+              "code": "rangeHavingComp",
+              "field": "Form/rangeHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Text",
+                "Form/rangeHaving"
+              ]
+            },
+            {
+              "code": "sumHavingComp",
+              "field": "Form/sumHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Weight",
+                "Form/sumHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/baseYearDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/baseYearHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/countDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/countHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/differenceDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/differenceHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/firstDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/firstHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/lengthDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/lengthHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/numberDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/numberHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/rangeDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/rangeHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/sumDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/sumHaving",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Stamp"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Stamp"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "OtherWeight": 1,
+                "Stamp": "bad",
+                "Text": "1",
+                "Weight": 1,
+                "baseYearDirect": null,
+                "baseYearHaving": null,
+                "countDirect": null,
+                "countHaving": null,
+                "differenceDirect": null,
+                "differenceHaving": null,
+                "firstDirect": null,
+                "firstHaving": null,
+                "lengthDirect": null,
+                "lengthHaving": null,
+                "numberDirect": null,
+                "numberHaving": null,
+                "rangeDirect": null,
+                "rangeHaving": null,
+                "sumDirect": null,
+                "sumHaving": null,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "bad",
+                    "Text": "1",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.HavingNumericAtom
 import A12Kernel.Elaboration.HavingSelectedComparison
 import A12Kernel.Elaboration.HavingGroupCount
 import A12Kernel.Elaboration.HavingNumericProduct
@@ -34,27 +35,6 @@ def CorrelationComparisonOp.acceptsLiteralScale (op : CorrelationComparisonOp)
     (field : FlatNumberField) (literal : DecodedNumericLiteral) : Bool :=
   op.toNumeric.acceptsScales (.field field.info.scale) (.constant literal.authoredScale)
 
-
-def repeatableScopeAvailable (required available : List RepeatableLevel) : Bool :=
-  required.isPrefixOf available
-
-/-- Resolve the complete binding scope from the model, including fixed-group ancestry.
-    A forged fixed reference to a repeatable group cannot certify a constant index. -/
-def HavingRepetitionRef.scope? (reference : HavingRepetitionRef) (model : FlatModel) :
-    Option (List RepeatableLevel) :=
-  match reference.source with
-  | .repeatable level =>
-      (model.repeatableGroupAtLevel? level).map fun group =>
-        model.repeatableScopeForGroupPath group.path
-  | .fixed path =>
-      if model.hasGroupPath path && !model.repeatableGroups.any (fun group => group.path == path)
-      then some (model.repeatableScopeForGroupPath path)
-      else none
-
-def HavingRepetitionRef.availableIn (reference : HavingRepetitionRef) (model : FlatModel)
-    (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
-  (reference.scope? model).any fun scope =>
-    repeatableScopeAvailable scope (reference.origin.availableLevels candidateLevels outerLevels)
 
 /-- Filter comparisons share numeric admission while retaining the unsuppressed surface boundary. -/
 def NumericComparisonOf.havingAdmitted (comparison : NumericComparisonOf HavingNumericAtom)
@@ -93,16 +73,6 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
 def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
     (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
   condition.allLeaves fun leaf => leaf.wellFormedForSingleGroup model group
-
-private def FlatModel.admitsHavingNumberInEnvironment (model : FlatModel)
-    (candidateLevels outerLevels : List RepeatableLevel)
-    (reference : HavingNumberRef) : Bool :=
-  match model.lookupUniqueId reference.field.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.toNumberField? == some reference.field &&
-        repeatableScopeAvailable declaration.repeatableScope
-          (reference.origin.availableLevels candidateLevels outerLevels)
 
 /-- Recheck the model-owned text projection and literal domain so a forged filter cannot bypass
     the same admission used by ordinary comparisons. -/
@@ -184,16 +154,6 @@ def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
         model.admitsComparisonInputsIn comparison leftScope rightScope
   | _ => false
 
-private def calendarSourceAdmitted (model : FlatModel)
-    (candidateLevels outerLevels : List RepeatableLevel) :
-    ResolvedDateDifferenceOperand HavingTemporalRef → Bool
-  | .literal source anchorYear => source.admittedIn model anchorYear
-  | .baseYear year _ => model.baseYear == some year
-  | .today profile => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
-  | .field reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
-      declaration.toTemporalField? == some reference.field &&
-        repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)
-
 /-- Authored group lists and reconstructed certificates reject the same strict ancestor overlap regardless of capture; identical paths remain origin-sensitive (kernel CheckEntityListenUtils / EntityRef, spec/07 §3). -/
 def firstOverlappingHavingPaths? : List (HavingOrigin × GroupPath) → Option (GroupPath × GroupPath)
   | [] => none
@@ -220,54 +180,12 @@ private def HavingGroupOperand.admitted (operand : HavingGroupOperand) (model : 
 def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
     CorrelatedHavingLeaf → Bool
-  | .numeric comparison => comparison.havingAdmitted fun
-      | .groupCount operands => HavingGroupCount.wellFormed operands model candidateLevels outerLevels
-      | .product source => source.wellFormed model candidateLevels outerLevels
-      | .collectionCount source => source.wellFormed model candidateLevels outerLevels
-      | .firstFilled slots | .aggregate _ slots => HavingNumberAggregate.wellFormed model candidateLevels outerLevels slots
-      | .dateDifference unit left right => unit.compatible model.hasBaseYear
-          (left.componentsWith (·.field.components)) (right.componentsWith (·.field.components)) &&
-          [left, right].all (calendarSourceAdmitted model candidateLevels outerLevels)
-      | .dayDifference profile left right => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
-          CalendarDayDifference.admittedBy (left.componentsWith (·.field.components)) &&
-          CalendarDayDifference.admittedBy (right.componentsWith (·.field.components)) &&
-          CalendarDayDifference.yearCompatible model.hasBaseYear
-            (left.componentsWith (·.field.components)) (right.componentsWith (·.field.components)) &&
-          [left, right].all (calendarSourceAdmitted model candidateLevels outerLevels)
-      | .dateTimeDifference unit left right =>
-          (left.dateTimeDifferenceComponentsWith? (·.field.components)).any fun first =>
-            (right.dateTimeDifferenceComponentsWith? (·.field.components)).any fun second =>
-              unit.compatible first second &&
-                (left.fieldValues ++ right.fieldValues).all fun reference =>
-                  (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
-                    declaration.toTemporalField? == some reference.field &&
-                      repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)
-      | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
-      | .clockPart source profile part => source.admits part &&
-          ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
-      | .fieldValueAsNumber origin source => (model.certifiedFieldValueAsNumberDeclaration? source).any fun declaration =>
-          repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
-      | .field reference => model.admitsHavingNumberInEnvironment candidateLevels outerLevels reference
-      | .stringLength origin field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
-          declaration.toStringValueField? == some field && declaration.fieldValueReadRefusal?.isNone &&
-            repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
-      | .stringRange origin field start finish => validStringRange start finish &&
-          (model.lookupUniqueId field.id).toOption.any fun declaration =>
-            declaration.toStringValueField? == some field && declaration.fieldValueReadRefusal?.isNone &&
-              repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
-      | .dateRangeBoundPart origin field _ part => model.exposesDateRangeBoundPart field part &&
-          (model.lookupUniqueId field.id).toOption.any fun declaration =>
-            repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
-      | .temporalDifference unit left right => left.wellFormed model candidateLevels outerLevels &&
-          right.wellFormed model candidateLevels outerLevels && left.admittedSourceSlot true && right.admittedSourceSlot true &&
-          (left.components?).any (fun first => (right.components?).any (unit.admitsScalarDifference model.hasBaseYear first))
-      | .temporalExpressionPart part source => source.wellFormed model candidateLevels outerLevels &&
-          source.admittedSourceSlot && source.components?.any (fun components => part.admitsComponents components model.hasBaseYear)
-      | .temporalPart origin field part => part.admittedBy field model.hasBaseYear &&
-          (model.lookupUniqueId field.id).toOption.any fun declaration =>
-            declaration.toTemporalField? == some field &&
-              repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
-      | .repetition reference => reference.availableIn model candidateLevels outerLevels
+  | .numeric comparison => comparison.havingAdmitted (HavingNumericAtomOf.wellFormedWith model candidateLevels outerLevels
+      (fun unit left right => left.wellFormed model candidateLevels outerLevels &&
+        right.wellFormed model candidateLevels outerLevels && left.admittedSourceSlot true && right.admittedSourceSlot true &&
+        (left.components?).any (fun first => (right.components?).any (unit.admitsScalarDifference model.hasBaseYear first)))
+      (fun part source => source.wellFormed model candidateLevels outerLevels &&
+        source.admittedSourceSlot && source.components?.any (fun components => part.admitsComponents components model.hasBaseYear)))
   | .selectedComparison comparison => comparison.wellFormed model candidateLevels outerLevels
   | .temporalExpression comparison =>
       comparison.left.wellFormed model candidateLevels outerLevels &&
@@ -385,12 +303,9 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
         | .dateRangeBoundPart origin field _ _ => origin == .inner &&
             (model.lookupUniqueId field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
-        | .temporalDifference _ left right => (left.presenceSlots ++ right.presenceSlots).any fun slot =>
-            slot.references.any (·.origin == .inner) &&
-              (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
-        | .temporalExpressionPart _ source => source.presenceSlots.any fun slot =>
-            slot.references.any (·.origin == .inner) &&
-              (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
+        | .temporalDifference _ left right =>
+            left.reachesReopenedLevel model reopenedLevels || right.reachesReopenedLevel model reopenedLevels
+        | .temporalExpressionPart _ source => source.reachesReopenedLevel model reopenedLevels
         | .temporalPart origin field _ => origin == .inner &&
             (model.lookupUniqueId field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
@@ -399,9 +314,8 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
   | .selectedComparison comparison => comparison.presenceSlots.any fun slot =>
       slot.references.any (·.origin == .inner) &&
         (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
-  | .temporalExpression comparison => comparison.presenceSlots.any fun slot =>
-      slot.references.any (·.origin == .inner) &&
-        (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
+  | .temporalExpression comparison => comparison.left.reachesReopenedLevel model reopenedLevels ||
+      comparison.right.reachesReopenedLevel model reopenedLevels
   | .simpleComparison left right comparison =>
       ([(left, comparison.inputFields.1), (right, comparison.inputFields.2)]).any fun (origin, fields) =>
         origin == .inner && fields.any fun field =>
@@ -412,9 +326,7 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
   | .literalMembership origin _ source =>
       origin == .inner && (model.lookupUniqueId source.field.id).toOption.any fun declaration =>
         declaration.repeatableScope.any reopenedLevels.contains
-  | .dateValidity _ source => source.references.any fun ref =>
-      ref.origin == .inner && (model.lookupUniqueId ref.field).toOption.any fun declaration =>
-        declaration.repeatableScope.any reopenedLevels.contains
+  | .dateValidity _ source => source.asTemporal.reachesReopenedLevel model reopenedLevels
   | .uniqueness source => source.presenceSlots.any fun slot =>
       slot.references.any (fun ref => ref.origin == .inner) &&
         (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)

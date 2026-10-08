@@ -167,21 +167,37 @@ termination_by (sizeOf surface, 1)
 
 private def resolveScalarTemporalAmount (model : FlatModel) (rowGroup : GroupPath)
     (targetGroup? : Option GroupPath)
-    (surface : AuthoredNumericExpr (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression))) :
+    (surface : AuthoredNumericExpr (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression)) :
     Except ScalarTemporalExpressionError (AuthoredNumericExpr (ScalarTemporalNumericAtom model)) := do
+  let scope := model.repeatableScopeForGroupPath (targetGroup?.getD rowGroup)
+  let resolvers := model.havingNumericResolvers rowGroup scope scope
   let core ← surface.mapMSubterm fun atom _ => do
-    match _hAtom : atom with
-    | .inl source =>
-        let checked ← (match targetGroup? with
-          | none => elaborateTemporalExpressionShiftAmount model rowGroup (.atom source)
-          | some binding => elaborateRepeatableTemporalExpressionShiftAmount model binding (.atom source) rowGroup).mapError .amount
-        pure (.ordinary checked)
-    | .inr (part, source) => resolveScalarTemporalProjection model rowGroup targetGroup? source part
+    let resolved ← (resolvers.resolveWith atom
+      (fun unit left right _ _ => do
+        if !left.admittedSourceSlot .withPartialDate || !right.admittedSourceSlot .withPartialDate then throw .numericExpressionUnsupported
+        let (left, first) ← (resolveScalarTemporalExpression model rowGroup targetGroup? left).mapError (fun _ => .numericExpressionUnsupported)
+        let (right, second) ← (resolveScalarTemporalExpression model rowGroup targetGroup? right).mapError (fun _ => .numericExpressionUnsupported)
+        if !unit.admitsScalarDifference model.hasBaseYear first second then throw .numericExpressionUnsupported
+        pure (.temporalDifference unit left right))
+      (fun part source _ => do
+        let projected ← (resolveScalarTemporalProjection model rowGroup targetGroup? source part).mapError (fun _ => .numericExpressionUnsupported)
+        match projected with
+        | .projection _ _ core => pure (.temporalExpressionPart part core)
+        | _ => throw .numericExpressionUnsupported)).mapError .numeric
+    if !(resolved.originsWith (fun _ => [])).all (· == .inner) then throw .unsupportedSource
+    if !resolved.admitsTemporalAmountSources model then throw .unsupportedSource
+    if !resolved.wellFormedWith model scope scope (fun _ _ _ => true) (fun _ _ => true) then throw .unsupportedSource
+    -- Expanded amounts require their own partial group walk; direct slots use the rich field reader.
+    if !(resolved.presenceSlotsWith (fun _ _ => [])).all (·.isDirect) then throw .unsupportedSource
+    match resolved with
+    | .groupCount _ => throw .unsupportedSource
+    | _ => pure (.numeric resolved)
   if !core.isAdmittedResolvedNumericOperation then throw (.amount (.expression .unsupportedExpression))
   match core.numericOperationAuthoringCheck with
   | .accepted => pure ()
   | result => throw (.amount (.expression (.authoring result)))
   let summary : ScalarTemporalNumericAtom model → NumericScaleSummary
+    | .numeric source => source.summary
     | .projection _ _ _ => .field 0
     | .ordinary (.literal _) => .field 0
     | .ordinary (.field source _) => .field source.info.scale
@@ -427,6 +443,27 @@ private def readRecursiveScalarAtom (phase : Phase) (context : ScalarComputation
     (atom : ScalarTemporalNumericAtom model) : Except ScalarTemporalEvaluationFault
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
+  | .numeric atom =>
+      let some profile := ModelZone.ConcreteProfile.ofId? model.timeZoneId | throw .calendarUnavailable
+      let result := atom.readArithmetic phase (scalarAmountReadContext context partialRead?)
+        { innerEnv := context.row, outerEnv := context.row }
+        (fun part source _ => do
+          let result ← (evalScalarTemporalCore phase context partialRead? source).mapError some
+          (part.observeScalar profile result).mapError some)
+        (fun unit left right _ _ => do
+          let pair ← (readTemporalPair phase (fun first : Bool =>
+            if first then evalScalarTemporalCore phase context partialRead? left
+            else evalScalarTemporalCore phase context partialRead? right)
+            scalarTemporalFormalCause? true false).mapError some
+          match pair with
+          | .error cause => pure (.error (.formal cause))
+          | .ok (first, second) =>
+              (observeScalarTemporalDifference profile unit first second NumericValidationUnavailable.formal .nonRelevant)
+                |>.mapError (some ∘ ScalarTemporalPrimitiveFault.toEvaluation))
+      match result with
+      | .error none => pure (.error .nonRelevant)
+      | .error (some fault) => throw fault
+      | .ok value => pure value
   | .ordinary amount => match partialRead? with
       | some partialRead => readPartialScalarTemporalAmount partialRead context.row amount
       | none => pure (readScalarTemporalAmount { read := context.read, storedText := context.storedText, world := context.world } phase amount)

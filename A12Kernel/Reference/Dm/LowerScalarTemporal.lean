@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.LowerNumeric
+import A12Kernel.Reference.Dm.LowerHavingNumeric
 import A12Kernel.Elaboration.TemporalNumericExpression
 
 /-! # Scalar temporal source and numeric projection lowering -/
@@ -74,13 +75,7 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
     (position : TemporalExpressionPosition) (expression : Expr) : Lowering SurfaceScalarTemporalExpression := do
   let lowerSourceSlot (source : Expr) : Lowering SurfaceScalarTemporalExpression :=
     lowerScalarTemporalExpressionAt model rowGroup .source source
-  let lowerNumericAtom (expression : Expr) : Lowering (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression)) := do
-    match expression with
-    | .call name [.mk source none none] none none =>
-        match temporalNumericPart? name with
-        | some part => pure (.inr (part, ← lowerSourceSlot source))
-        | none => .inl <$> lowerValidationNumericAtom expression
-    | _ => .inl <$> lowerValidationNumericAtom expression
+  let lowerNumericAtom := lowerHavingNumericAtomWith lowerSourceSlot
   let lowerTimeComponent : Argument → Lowering (SurfaceScalarTimeComponent)
     | .mk (.string text) none none => pure (.inl (.inl (.constant text)))
     | .mk (.call name [.mk source none none] none none) none none => do
@@ -158,6 +153,10 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
       (.timeConstruction ·) <$> lowerTimeComponents arguments
   | .constant "Now" => pure .now
   | .constant "Today" => pure .today
+  | .constant "BaseYear" =>
+      match position with
+      | .source => pure (.baseYearBound .start)
+      | .value => refuse "TemporalExpression" "polymorphic BaseYear value"
   | .call "StartOfDateRange" [.mk source none none] none none => lowerRangeSlot .start source
   | .call "EndOfDateRange" [.mk source none none] none none => lowerRangeSlot .finish source
   | .call "DateFromDateTime" [.mk source none none] none none =>

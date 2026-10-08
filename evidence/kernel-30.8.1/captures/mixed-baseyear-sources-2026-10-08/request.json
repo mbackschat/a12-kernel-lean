@@ -1,0 +1,134 @@
+{
+  "model": "BaseYear_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "filled",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Stamp": "2024-01-01",
+          "Weight": "1",
+          "Rows": [
+            {
+              "ProbeWeight": "7",
+              "Stamp": "2024-01-01",
+              "Weight": "1"
+            }
+          ],
+          "dayDirect": "99",
+          "dayHaving": "99",
+          "dayReverseDirect": "99",
+          "dayReverseHaving": "99",
+          "monthDirect": "99",
+          "monthHaving": "99",
+          "yearReverseDirect": "99",
+          "yearReverseHaving": "99",
+          "shiftDayDirect": "99",
+          "shiftDayHaving": "99",
+          "shiftMonthDirect": "99",
+          "shiftMonthHaving": "99",
+          "shiftYearDirect": "99",
+          "shiftYearHaving": "99",
+          "shiftHourDirect": "99",
+          "shiftHourHaving": "99",
+          "shiftMinuteDirect": "99",
+          "shiftMinuteHaving": "99",
+          "shiftSecondDirect": "99",
+          "shiftSecondHaving": "99",
+          "mixedHourDirect": "99",
+          "mixedHourHaving": "99",
+          "mixedSecondReverseDirect": "99",
+          "mixedSecondReverseHaving": "99"
+        }
+      }
+    },
+    {
+      "name": "emptyNumber",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Stamp": "2024-01-01",
+          "Weight": "",
+          "Rows": [
+            {
+              "ProbeWeight": "7",
+              "Stamp": "2024-01-01",
+              "Weight": ""
+            }
+          ],
+          "dayDirect": "99",
+          "dayHaving": "99",
+          "dayReverseDirect": "99",
+          "dayReverseHaving": "99",
+          "monthDirect": "99",
+          "monthHaving": "99",
+          "yearReverseDirect": "99",
+          "yearReverseHaving": "99",
+          "shiftDayDirect": "99",
+          "shiftDayHaving": "99",
+          "shiftMonthDirect": "99",
+          "shiftMonthHaving": "99",
+          "shiftYearDirect": "99",
+          "shiftYearHaving": "99",
+          "shiftHourDirect": "99",
+          "shiftHourHaving": "99",
+          "shiftMinuteDirect": "99",
+          "shiftMinuteHaving": "99",
+          "shiftSecondDirect": "99",
+          "shiftSecondHaving": "99",
+          "mixedHourDirect": "99",
+          "mixedHourHaving": "99",
+          "mixedSecondReverseDirect": "99",
+          "mixedSecondReverseHaving": "99"
+        }
+      }
+    },
+    {
+      "name": "badSource",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Stamp": "bad",
+          "Weight": "1",
+          "Rows": [
+            {
+              "ProbeWeight": "7",
+              "Stamp": "bad",
+              "Weight": "1"
+            }
+          ],
+          "dayDirect": "99",
+          "dayHaving": "99",
+          "dayReverseDirect": "99",
+          "dayReverseHaving": "99",
+          "monthDirect": "99",
+          "monthHaving": "99",
+          "yearReverseDirect": "99",
+          "yearReverseHaving": "99",
+          "shiftDayDirect": "99",
+          "shiftDayHaving": "99",
+          "shiftMonthDirect": "99",
+          "shiftMonthHaving": "99",
+          "shiftYearDirect": "99",
+          "shiftYearHaving": "99",
+          "shiftHourDirect": "99",
+          "shiftHourHaving": "99",
+          "shiftMinuteDirect": "99",
+          "shiftMinuteHaving": "99",
+          "shiftSecondDirect": "99",
+          "shiftSecondHaving": "99",
+          "mixedHourDirect": "99",
+          "mixedHourHaving": "99",
+          "mixedSecondReverseDirect": "99",
+          "mixedSecondReverseHaving": "99"
+        }
+      }
+    }
+  ]
+}

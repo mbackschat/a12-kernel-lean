@@ -1,0 +1,5090 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "BaseYear_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "R_dayDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_dayHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_dayReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_dayReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_mixedHourDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_mixedHourHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_mixedSecondReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_mixedSecondReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_monthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_monthHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_shiftDayDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftDayHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftHourDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftHourHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftMinuteDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftMinuteHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftMonthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftMonthHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftSecondDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftSecondHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftYearHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_yearReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_yearReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "dayDirectComp",
+              "field": "Form/dayDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/dayDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "dayHavingComp",
+              "field": "Form/dayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ]
+            },
+            {
+              "code": "dayReverseDirectComp",
+              "field": "Form/dayReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/dayReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "dayReverseHavingComp",
+              "field": "Form/dayReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ]
+            },
+            {
+              "code": "mixedHourDirectComp",
+              "field": "Form/mixedHourDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/mixedHourDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixedHourHavingComp",
+              "field": "Form/mixedHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ]
+            },
+            {
+              "code": "mixedSecondReverseDirectComp",
+              "field": "Form/mixedSecondReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/mixedSecondReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixedSecondReverseHavingComp",
+              "field": "Form/mixedSecondReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ]
+            },
+            {
+              "code": "monthDirectComp",
+              "field": "Form/monthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/monthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "monthHavingComp",
+              "field": "Form/monthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ]
+            },
+            {
+              "code": "shiftDayDirectComp",
+              "field": "Form/shiftDayDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftDayDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftDayHavingComp",
+              "field": "Form/shiftDayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ]
+            },
+            {
+              "code": "shiftHourDirectComp",
+              "field": "Form/shiftHourDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftHourDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftHourHavingComp",
+              "field": "Form/shiftHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ]
+            },
+            {
+              "code": "shiftMinuteDirectComp",
+              "field": "Form/shiftMinuteDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMinuteDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftMinuteHavingComp",
+              "field": "Form/shiftMinuteHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ]
+            },
+            {
+              "code": "shiftMonthDirectComp",
+              "field": "Form/shiftMonthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMonthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftMonthHavingComp",
+              "field": "Form/shiftMonthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ]
+            },
+            {
+              "code": "shiftSecondDirectComp",
+              "field": "Form/shiftSecondDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftSecondDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftSecondHavingComp",
+              "field": "Form/shiftSecondHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ]
+            },
+            {
+              "code": "shiftYearDirectComp",
+              "field": "Form/shiftYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftYearHavingComp",
+              "field": "Form/shiftYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ]
+            },
+            {
+              "code": "yearReverseDirectComp",
+              "field": "Form/yearReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/yearReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "yearReverseHavingComp",
+              "field": "Form/yearReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/dayDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/dayHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/dayReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/dayReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedHourDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/mixedHourHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedSecondReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/mixedSecondReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/monthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/monthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftDayDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "11"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "21"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2025"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/yearReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/yearReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/dayDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/dayHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/dayReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/dayReverseHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedHourDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/mixedHourHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedSecondReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/mixedSecondReverseHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/monthDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/monthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftDayDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "value": "9"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "value": "11"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "value": "21"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "value": "2025"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/yearReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/yearReverseHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "Stamp": "2024-01-01",
+                "Weight": 1,
+                "dayDirect": 1,
+                "dayHaving": 7,
+                "dayReverseDirect": -1,
+                "dayReverseHaving": 7,
+                "mixedHourDirect": 1,
+                "mixedHourHaving": 7,
+                "mixedSecondReverseDirect": -1,
+                "mixedSecondReverseHaving": 7,
+                "monthDirect": 1,
+                "monthHaving": 7,
+                "shiftDayDirect": 2,
+                "shiftDayHaving": 7,
+                "shiftHourDirect": 9,
+                "shiftHourHaving": 7,
+                "shiftMinuteDirect": 11,
+                "shiftMinuteHaving": 7,
+                "shiftMonthDirect": 2,
+                "shiftMonthHaving": 7,
+                "shiftSecondDirect": 21,
+                "shiftSecondHaving": 7,
+                "shiftYearDirect": 2025,
+                "shiftYearHaving": 7,
+                "yearReverseDirect": -1,
+                "yearReverseHaving": 7,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "R_dayDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_dayHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_dayReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_dayReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_mixedHourDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_mixedHourHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_mixedSecondReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_mixedSecondReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_monthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_monthHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_shiftDayDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftDayHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftHourDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftHourHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftMinuteDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftMinuteHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftMonthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftMonthHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftSecondDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftSecondHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftYearHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_yearReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_yearReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "dayDirectComp",
+              "field": "Form/dayDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/dayDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "dayHavingComp",
+              "field": "Form/dayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ]
+            },
+            {
+              "code": "dayReverseDirectComp",
+              "field": "Form/dayReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/dayReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "dayReverseHavingComp",
+              "field": "Form/dayReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ]
+            },
+            {
+              "code": "mixedHourDirectComp",
+              "field": "Form/mixedHourDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/mixedHourDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixedHourHavingComp",
+              "field": "Form/mixedHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ]
+            },
+            {
+              "code": "mixedSecondReverseDirectComp",
+              "field": "Form/mixedSecondReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/mixedSecondReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixedSecondReverseHavingComp",
+              "field": "Form/mixedSecondReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ]
+            },
+            {
+              "code": "monthDirectComp",
+              "field": "Form/monthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/monthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "monthHavingComp",
+              "field": "Form/monthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ]
+            },
+            {
+              "code": "shiftDayDirectComp",
+              "field": "Form/shiftDayDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftDayDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftDayHavingComp",
+              "field": "Form/shiftDayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ]
+            },
+            {
+              "code": "shiftHourDirectComp",
+              "field": "Form/shiftHourDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftHourDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftHourHavingComp",
+              "field": "Form/shiftHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ]
+            },
+            {
+              "code": "shiftMinuteDirectComp",
+              "field": "Form/shiftMinuteDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMinuteDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftMinuteHavingComp",
+              "field": "Form/shiftMinuteHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ]
+            },
+            {
+              "code": "shiftMonthDirectComp",
+              "field": "Form/shiftMonthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMonthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftMonthHavingComp",
+              "field": "Form/shiftMonthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ]
+            },
+            {
+              "code": "shiftSecondDirectComp",
+              "field": "Form/shiftSecondDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftSecondDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftSecondHavingComp",
+              "field": "Form/shiftSecondHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ]
+            },
+            {
+              "code": "shiftYearDirectComp",
+              "field": "Form/shiftYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftYearHavingComp",
+              "field": "Form/shiftYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ]
+            },
+            {
+              "code": "yearReverseDirectComp",
+              "field": "Form/yearReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/yearReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "yearReverseHavingComp",
+              "field": "Form/yearReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/dayDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/dayHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/dayReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/dayReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedHourDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/mixedHourHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedSecondReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/mixedSecondReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/monthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/monthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftDayDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "11"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "21"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2025"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/yearReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/yearReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/dayDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/dayHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/dayReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/dayReverseHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedHourDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/mixedHourHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedSecondReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/mixedSecondReverseHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/monthDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/monthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftDayDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "value": "9"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "value": "11"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "value": "21"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "value": "2025"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/yearReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/yearReverseHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "Stamp": "2024-01-01",
+                "Weight": 1,
+                "dayDirect": 1,
+                "dayHaving": 7,
+                "dayReverseDirect": -1,
+                "dayReverseHaving": 7,
+                "mixedHourDirect": 1,
+                "mixedHourHaving": 7,
+                "mixedSecondReverseDirect": -1,
+                "mixedSecondReverseHaving": 7,
+                "monthDirect": 1,
+                "monthHaving": 7,
+                "shiftDayDirect": 2,
+                "shiftDayHaving": 7,
+                "shiftHourDirect": 9,
+                "shiftHourHaving": 7,
+                "shiftMinuteDirect": 11,
+                "shiftMinuteHaving": 7,
+                "shiftMonthDirect": 2,
+                "shiftMonthHaving": 7,
+                "shiftSecondDirect": 21,
+                "shiftSecondHaving": 7,
+                "shiftYearDirect": 2025,
+                "shiftYearHaving": 7,
+                "yearReverseDirect": -1,
+                "yearReverseHaving": 7,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "emptyNumber",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "R_dayDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_dayHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_dayReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_dayReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_mixedHourDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_mixedHourHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_mixedSecondReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_mixedSecondReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_monthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_monthHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_yearReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_yearReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "dayDirectComp",
+              "field": "Form/dayDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/dayDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "dayHavingComp",
+              "field": "Form/dayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ]
+            },
+            {
+              "code": "dayReverseDirectComp",
+              "field": "Form/dayReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/dayReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "dayReverseHavingComp",
+              "field": "Form/dayReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ]
+            },
+            {
+              "code": "mixedHourDirectComp",
+              "field": "Form/mixedHourDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/mixedHourDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixedHourHavingComp",
+              "field": "Form/mixedHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ]
+            },
+            {
+              "code": "mixedSecondReverseDirectComp",
+              "field": "Form/mixedSecondReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/mixedSecondReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixedSecondReverseHavingComp",
+              "field": "Form/mixedSecondReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ]
+            },
+            {
+              "code": "monthDirectComp",
+              "field": "Form/monthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/monthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "monthHavingComp",
+              "field": "Form/monthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ]
+            },
+            {
+              "code": "shiftDayDirectComp",
+              "field": "Form/shiftDayDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftDayDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftDayDirect"
+              ]
+            },
+            {
+              "code": "shiftDayHavingComp",
+              "field": "Form/shiftDayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ]
+            },
+            {
+              "code": "shiftHourDirectComp",
+              "field": "Form/shiftHourDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftHourDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftHourDirect"
+              ]
+            },
+            {
+              "code": "shiftHourHavingComp",
+              "field": "Form/shiftHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ]
+            },
+            {
+              "code": "shiftMinuteDirectComp",
+              "field": "Form/shiftMinuteDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMinuteDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftMinuteDirect"
+              ]
+            },
+            {
+              "code": "shiftMinuteHavingComp",
+              "field": "Form/shiftMinuteHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ]
+            },
+            {
+              "code": "shiftMonthDirectComp",
+              "field": "Form/shiftMonthDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMonthDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftMonthDirect"
+              ]
+            },
+            {
+              "code": "shiftMonthHavingComp",
+              "field": "Form/shiftMonthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ]
+            },
+            {
+              "code": "shiftSecondDirectComp",
+              "field": "Form/shiftSecondDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftSecondDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftSecondDirect"
+              ]
+            },
+            {
+              "code": "shiftSecondHavingComp",
+              "field": "Form/shiftSecondHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ]
+            },
+            {
+              "code": "shiftYearDirectComp",
+              "field": "Form/shiftYearDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftYearDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftYearDirect"
+              ]
+            },
+            {
+              "code": "shiftYearHavingComp",
+              "field": "Form/shiftYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ]
+            },
+            {
+              "code": "yearReverseDirectComp",
+              "field": "Form/yearReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/yearReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "yearReverseHavingComp",
+              "field": "Form/yearReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/dayDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/dayHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/dayReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/dayReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedHourDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/mixedHourHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedSecondReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/mixedSecondReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/monthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/monthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftDayDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "8"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "20"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/yearReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/yearReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/dayDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/dayHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/dayReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/dayReverseHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedHourDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/mixedHourHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedSecondReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/mixedSecondReverseHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/monthDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/monthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftDayDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "value": "8"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "value": "10"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "value": "20"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "value": "2024"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/yearReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/yearReverseHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "Stamp": "2024-01-01",
+                "Weight": null,
+                "dayDirect": 1,
+                "dayHaving": 7,
+                "dayReverseDirect": -1,
+                "dayReverseHaving": 7,
+                "mixedHourDirect": 1,
+                "mixedHourHaving": 7,
+                "mixedSecondReverseDirect": -1,
+                "mixedSecondReverseHaving": 7,
+                "monthDirect": 1,
+                "monthHaving": 7,
+                "shiftDayDirect": 1,
+                "shiftDayHaving": 0,
+                "shiftHourDirect": 8,
+                "shiftHourHaving": 0,
+                "shiftMinuteDirect": 10,
+                "shiftMinuteHaving": 0,
+                "shiftMonthDirect": 1,
+                "shiftMonthHaving": 0,
+                "shiftSecondDirect": 20,
+                "shiftSecondHaving": 0,
+                "shiftYearDirect": 2024,
+                "shiftYearHaving": 0,
+                "yearReverseDirect": -1,
+                "yearReverseHaving": 7,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01",
+                    "Weight": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "R_dayDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_dayHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_dayReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_dayReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_mixedHourDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_mixedHourHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_mixedSecondReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_mixedSecondReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_monthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_monthHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "R_yearReverseDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_yearReverseHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp"
+              ]
+            },
+            {
+              "code": "dayDirectComp",
+              "field": "Form/dayDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/dayDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "dayHavingComp",
+              "field": "Form/dayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ]
+            },
+            {
+              "code": "dayReverseDirectComp",
+              "field": "Form/dayReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/dayReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "dayReverseHavingComp",
+              "field": "Form/dayReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ]
+            },
+            {
+              "code": "mixedHourDirectComp",
+              "field": "Form/mixedHourDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/mixedHourDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixedHourHavingComp",
+              "field": "Form/mixedHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ]
+            },
+            {
+              "code": "mixedSecondReverseDirectComp",
+              "field": "Form/mixedSecondReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/mixedSecondReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixedSecondReverseHavingComp",
+              "field": "Form/mixedSecondReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ]
+            },
+            {
+              "code": "monthDirectComp",
+              "field": "Form/monthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/monthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "monthHavingComp",
+              "field": "Form/monthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ]
+            },
+            {
+              "code": "shiftDayDirectComp",
+              "field": "Form/shiftDayDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftDayDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftDayDirect"
+              ]
+            },
+            {
+              "code": "shiftDayHavingComp",
+              "field": "Form/shiftDayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ]
+            },
+            {
+              "code": "shiftHourDirectComp",
+              "field": "Form/shiftHourDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftHourDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftHourDirect"
+              ]
+            },
+            {
+              "code": "shiftHourHavingComp",
+              "field": "Form/shiftHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ]
+            },
+            {
+              "code": "shiftMinuteDirectComp",
+              "field": "Form/shiftMinuteDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMinuteDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftMinuteDirect"
+              ]
+            },
+            {
+              "code": "shiftMinuteHavingComp",
+              "field": "Form/shiftMinuteHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ]
+            },
+            {
+              "code": "shiftMonthDirectComp",
+              "field": "Form/shiftMonthDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMonthDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftMonthDirect"
+              ]
+            },
+            {
+              "code": "shiftMonthHavingComp",
+              "field": "Form/shiftMonthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ]
+            },
+            {
+              "code": "shiftSecondDirectComp",
+              "field": "Form/shiftSecondDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftSecondDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftSecondDirect"
+              ]
+            },
+            {
+              "code": "shiftSecondHavingComp",
+              "field": "Form/shiftSecondHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ]
+            },
+            {
+              "code": "shiftYearDirectComp",
+              "field": "Form/shiftYearDirect",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftYearDirect"
+              ],
+              "fillToFix": [
+                "Form/Weight",
+                "Form/shiftYearDirect"
+              ]
+            },
+            {
+              "code": "shiftYearHavingComp",
+              "field": "Form/shiftYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ]
+            },
+            {
+              "code": "yearReverseDirectComp",
+              "field": "Form/yearReverseDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp",
+                "Form/yearReverseDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "yearReverseHavingComp",
+              "field": "Form/yearReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/dayDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/dayHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/dayReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/dayReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedHourDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/mixedHourHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedSecondReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/mixedSecondReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/monthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/monthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftDayDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "8"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "20"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/yearReverseDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/yearReverseHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/dayDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/dayHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/dayReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/dayReverseHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedHourDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/mixedHourHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/mixedSecondReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/mixedSecondReverseHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/monthDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/monthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftDayDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "value": "8"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "value": "10"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "value": "1"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "value": "20"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "value": "2024"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "value": "0"
+              },
+              {
+                "field": "Form/yearReverseDirect",
+                "value": "-1"
+              },
+              {
+                "field": "Form/yearReverseHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "Stamp": "2024-01-01",
+                "Weight": null,
+                "dayDirect": 1,
+                "dayHaving": 7,
+                "dayReverseDirect": -1,
+                "dayReverseHaving": 7,
+                "mixedHourDirect": 1,
+                "mixedHourHaving": 7,
+                "mixedSecondReverseDirect": -1,
+                "mixedSecondReverseHaving": 7,
+                "monthDirect": 1,
+                "monthHaving": 7,
+                "shiftDayDirect": 1,
+                "shiftDayHaving": 0,
+                "shiftHourDirect": 8,
+                "shiftHourHaving": 0,
+                "shiftMinuteDirect": 10,
+                "shiftMinuteHaving": 0,
+                "shiftMonthDirect": 1,
+                "shiftMonthHaving": 0,
+                "shiftSecondDirect": 20,
+                "shiftSecondHaving": 0,
+                "shiftYearDirect": 2024,
+                "shiftYearHaving": 0,
+                "yearReverseDirect": -1,
+                "yearReverseHaving": 7,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "2024-01-01",
+                    "Weight": null
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "badSource",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "R_shiftDayDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftDayHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftHourDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftHourHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftMinuteDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftMinuteHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftMonthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftMonthHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftSecondDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftSecondHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftYearHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "dayHavingComp",
+              "field": "Form/dayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ]
+            },
+            {
+              "code": "dayReverseHavingComp",
+              "field": "Form/dayReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ]
+            },
+            {
+              "code": "mixedHourHavingComp",
+              "field": "Form/mixedHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ]
+            },
+            {
+              "code": "mixedSecondReverseHavingComp",
+              "field": "Form/mixedSecondReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ]
+            },
+            {
+              "code": "monthHavingComp",
+              "field": "Form/monthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ]
+            },
+            {
+              "code": "shiftDayDirectComp",
+              "field": "Form/shiftDayDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftDayDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftDayHavingComp",
+              "field": "Form/shiftDayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ]
+            },
+            {
+              "code": "shiftHourDirectComp",
+              "field": "Form/shiftHourDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftHourDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftHourHavingComp",
+              "field": "Form/shiftHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ]
+            },
+            {
+              "code": "shiftMinuteDirectComp",
+              "field": "Form/shiftMinuteDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMinuteDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftMinuteHavingComp",
+              "field": "Form/shiftMinuteHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ]
+            },
+            {
+              "code": "shiftMonthDirectComp",
+              "field": "Form/shiftMonthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMonthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftMonthHavingComp",
+              "field": "Form/shiftMonthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ]
+            },
+            {
+              "code": "shiftSecondDirectComp",
+              "field": "Form/shiftSecondDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftSecondDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftSecondHavingComp",
+              "field": "Form/shiftSecondHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ]
+            },
+            {
+              "code": "shiftYearDirectComp",
+              "field": "Form/shiftYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftYearHavingComp",
+              "field": "Form/shiftYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ]
+            },
+            {
+              "code": "yearReverseHavingComp",
+              "field": "Form/yearReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/dayDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/dayHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/dayReverseDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/dayReverseHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/mixedHourDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/mixedHourHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/mixedSecondReverseDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/mixedSecondReverseHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/monthDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/monthHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/shiftDayDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "11"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "21"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2025"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/yearReverseDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/yearReverseHaving",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Stamp"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Stamp"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/shiftDayDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "value": "9"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "value": "11"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "value": "21"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "value": "2025"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "Stamp": "bad",
+                "Weight": 1,
+                "dayDirect": null,
+                "dayHaving": null,
+                "dayReverseDirect": null,
+                "dayReverseHaving": null,
+                "mixedHourDirect": null,
+                "mixedHourHaving": null,
+                "mixedSecondReverseDirect": null,
+                "mixedSecondReverseHaving": null,
+                "monthDirect": null,
+                "monthHaving": null,
+                "shiftDayDirect": 2,
+                "shiftDayHaving": 7,
+                "shiftHourDirect": 9,
+                "shiftHourHaving": 7,
+                "shiftMinuteDirect": 11,
+                "shiftMinuteHaving": 7,
+                "shiftMonthDirect": 2,
+                "shiftMonthHaving": 7,
+                "shiftSecondDirect": 21,
+                "shiftSecondHaving": 7,
+                "shiftYearDirect": 2025,
+                "shiftYearHaving": 7,
+                "yearReverseDirect": null,
+                "yearReverseHaving": null,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "bad",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "R_shiftDayDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftDayHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftHourDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftHourHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftMinuteDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftMinuteHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftMonthDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftMonthHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftSecondDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftSecondHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "R_shiftYearDirect",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Weight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "R_shiftYearHaving",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "dayHavingComp",
+              "field": "Form/dayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayHaving"
+              ]
+            },
+            {
+              "code": "dayReverseHavingComp",
+              "field": "Form/dayReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/dayReverseHaving"
+              ]
+            },
+            {
+              "code": "mixedHourHavingComp",
+              "field": "Form/mixedHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedHourHaving"
+              ]
+            },
+            {
+              "code": "mixedSecondReverseHavingComp",
+              "field": "Form/mixedSecondReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/mixedSecondReverseHaving"
+              ]
+            },
+            {
+              "code": "monthHavingComp",
+              "field": "Form/monthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/monthHaving"
+              ]
+            },
+            {
+              "code": "shiftDayDirectComp",
+              "field": "Form/shiftDayDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftDayDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftDayHavingComp",
+              "field": "Form/shiftDayHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftDayHaving"
+              ]
+            },
+            {
+              "code": "shiftHourDirectComp",
+              "field": "Form/shiftHourDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftHourDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftHourHavingComp",
+              "field": "Form/shiftHourHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftHourHaving"
+              ]
+            },
+            {
+              "code": "shiftMinuteDirectComp",
+              "field": "Form/shiftMinuteDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMinuteDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftMinuteHavingComp",
+              "field": "Form/shiftMinuteHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMinuteHaving"
+              ]
+            },
+            {
+              "code": "shiftMonthDirectComp",
+              "field": "Form/shiftMonthDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftMonthDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftMonthHavingComp",
+              "field": "Form/shiftMonthHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftMonthHaving"
+              ]
+            },
+            {
+              "code": "shiftSecondDirectComp",
+              "field": "Form/shiftSecondDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftSecondDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftSecondHavingComp",
+              "field": "Form/shiftSecondHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftSecondHaving"
+              ]
+            },
+            {
+              "code": "shiftYearDirectComp",
+              "field": "Form/shiftYearDirect",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Weight",
+                "Form/shiftYearDirect"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "shiftYearHavingComp",
+              "field": "Form/shiftYearHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/shiftYearHaving"
+              ]
+            },
+            {
+              "code": "yearReverseHavingComp",
+              "field": "Form/yearReverseHaving",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/ProbeWeight",
+                "/Form[1]/Rows[0]/Stamp",
+                "Form/yearReverseHaving"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/dayDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/dayHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/dayReverseDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/dayReverseHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/mixedHourDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/mixedHourHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/mixedSecondReverseDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/mixedSecondReverseHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/monthDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/monthHaving",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/shiftDayDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "11"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "21"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "cleared": false,
+                "errored": false,
+                "value": "2025"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/yearReverseDirect",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/yearReverseHaving",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Stamp"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Stamp"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/shiftDayDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftDayHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftHourDirect",
+                "value": "9"
+              },
+              {
+                "field": "Form/shiftHourHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMinuteDirect",
+                "value": "11"
+              },
+              {
+                "field": "Form/shiftMinuteHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftMonthDirect",
+                "value": "2"
+              },
+              {
+                "field": "Form/shiftMonthHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftSecondDirect",
+                "value": "21"
+              },
+              {
+                "field": "Form/shiftSecondHaving",
+                "value": "7"
+              },
+              {
+                "field": "Form/shiftYearDirect",
+                "value": "2025"
+              },
+              {
+                "field": "Form/shiftYearHaving",
+                "value": "7"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Anchor": 1,
+                "Stamp": "bad",
+                "Weight": 1,
+                "dayDirect": null,
+                "dayHaving": null,
+                "dayReverseDirect": null,
+                "dayReverseHaving": null,
+                "mixedHourDirect": null,
+                "mixedHourHaving": null,
+                "mixedSecondReverseDirect": null,
+                "mixedSecondReverseHaving": null,
+                "monthDirect": null,
+                "monthHaving": null,
+                "shiftDayDirect": 2,
+                "shiftDayHaving": 7,
+                "shiftHourDirect": 9,
+                "shiftHourHaving": 7,
+                "shiftMinuteDirect": 11,
+                "shiftMinuteHaving": 7,
+                "shiftMonthDirect": 2,
+                "shiftMonthHaving": 7,
+                "shiftSecondDirect": 21,
+                "shiftSecondHaving": 7,
+                "shiftYearDirect": 2025,
+                "shiftYearHaving": 7,
+                "yearReverseDirect": null,
+                "yearReverseHaving": null,
+                "Rows": [
+                  {
+                    "ProbeWeight": 7,
+                    "Stamp": "bad",
+                    "Weight": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

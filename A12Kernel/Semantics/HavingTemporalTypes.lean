@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.HavingNumericAtom
 import A12Kernel.Semantics.TimeConstructionInputs
 import A12Kernel.Semantics.HavingDateValidity
 import A12Kernel.Semantics.ScalarTemporalValue
@@ -31,7 +32,7 @@ structure HavingPartialDateSource where
 
 inductive HavingTemporalAtom where
   | shift (unit : TemporalOperationUnit) (source : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation)
-      (amount : AuthoredNumericExpr (Sum HavingNumberRef (TemporalNumericPart × TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation)))
+      (amount : AuthoredNumericExpr (HavingNumericAtomOf (TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation)))
   | partialDate (source : HavingPartialDateSource)
   | selection (kind : HavingTemporalSelection) (slots : List (HavingFieldListSlot HavingTemporalSelectionRef))
   | field (reference : HavingTemporalRef)
@@ -46,7 +47,7 @@ inductive HavingTemporalAtom where
   | baseYearBound (bound : BaseYearRangeEndpoint)
 
 abbrev HavingTemporalCore := TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation
-abbrev HavingTemporalAmount := AuthoredNumericExpr (Sum HavingNumberRef (TemporalNumericPart × HavingTemporalCore))
+abbrev HavingTemporalAmount := AuthoredNumericExpr (HavingNumericAtomOf HavingTemporalCore)
 
 abbrev HavingDateComponent := HavingTemporalComponent ResolvedConstructedDateSource DateNumericPart HavingTemporalCore
 abbrev HavingTimeComponent := HavingTemporalComponent ResolvedTimeConstructionSource TimeNumericPart HavingTemporalCore
@@ -69,32 +70,46 @@ private def format : HavingTemporalAtom → Std.Format
   | .today => "today"
   | .now => "now"
   | .baseYearBound bound => "baseYearBound " ++ repr bound
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def formatCore : HavingTemporalCore → Std.Format
   | .atom atom => format atom
   | .apply op first rest => "apply " ++ repr op ++ " (" ++ formatCore first ++ ") [" ++
       Std.Format.joinSep (rest.map formatCore) ", " ++ "]"
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def formatAmount (amount : HavingTemporalAmount) : Std.Format :=
-  amount.formatWithSubterm fun source _ => match source with
-    | .inl reference => repr reference
-    | .inr (part, source) => repr part ++ " (" ++ formatCore source ++ ")"
-decreasing_by all_goals simp_all +arith; omega
+  amount.formatWithSubterm fun atom hAtom => atom.formatWithSubterm fun source hSource =>
+    have _ : sizeOf source < sizeOf amount := Nat.lt_trans hSource hAtom
+    formatCore source
+termination_by sizeOf amount
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def formatDateComponent : HavingDateComponent → Std.Format
   | .direct origin source => "direct " ++ repr (origin, source)
   | .expression part source => "expression " ++ repr part ++ " (" ++ formatCore source ++ ")"
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def formatTimeComponent : HavingTimeComponent → Std.Format
   | .direct origin source => "direct " ++ repr (origin, source)
   | .expression part source => "expression " ++ repr part ++ " (" ++ formatCore source ++ ")"
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def formatDate : HavingDateComponents → Std.Format
   | ⟨day, month, year, profile⟩ => "Date " ++ repr profile ++ " (" ++ formatDateComponent day ++ ") (" ++ formatDateComponent month ++ ") (" ++
       (match year with
       | .complete year => formatDateComponent year
       | .baseYear year => "baseYear " ++ repr year
       | .centuryAndShortYear century shortYear => formatDateComponent century ++ ", " ++ formatDateComponent shortYear) ++ ")"
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def formatTime : HavingTimeComponents → Std.Format
   | .empty => "Time"
   | .hour hour => "Time " ++ formatTimeComponent hour
   | .minute hour minute => "Time " ++ formatTimeComponent hour ++ ", " ++ formatTimeComponent minute
   | .second hour minute second => "Time " ++ formatTimeComponent hour ++ ", " ++ formatTimeComponent minute ++ ", " ++ formatTimeComponent second
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
+
 end
 instance : Repr HavingTemporalAtom where
   reprPrec source _ := format source
@@ -161,13 +176,9 @@ private def decideTimeComponentEqual (left right : HavingTimeComponent) : Decida
       letI := decideCoreEqual source nextSource
       decidable_of_iff (part = nextPart ∧ source = nextSource) (by simp)
 private def decideAmountEqual (left right : HavingTemporalAmount) : Decidable (left = right) :=
-  left.decideEqWithSubterm right fun a b _ _ => match a, b with
-    | .inl source, .inl next => decidable_of_iff (source = next) (by simp)
-    | .inr (part, source), .inr (nextPart, nextSource) =>
-        letI := decideCoreEqual source nextSource
-        decidable_of_iff (part = nextPart ∧ source = nextSource) (by simp)
-    | .inl _, .inr _ | .inr _, .inl _ => isFalse (by intro h; cases h)
-decreasing_by all_goals simp_all +arith; omega
+  left.decideEqWithSubterm right fun a b _ _ =>
+    a.decideEqWithSubterm b fun left right _ _ => decideCoreEqual left right
+
 private def decideDateYearEqual (left right : ResolvedConstructedDateYear HavingDateComponent) : Decidable (left = right) := by
   cases left <;> cases right
   all_goals first | (apply isFalse; intro h; cases h; done) | skip
@@ -210,32 +221,46 @@ mutual
 def HavingTemporalCore.allAtoms : HavingTemporalCore → List HavingTemporalAtom
   | .atom source => source :: constructorAtoms source
   | .apply _ first rest => HavingTemporalCore.allAtoms first ++ rest.flatMap HavingTemporalCore.allAtoms
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def constructorAtoms : HavingTemporalAtom → List HavingTemporalAtom
   | .shift _ source amount => HavingTemporalCore.allAtoms source ++ amountAtoms amount
   | .dateConstruction source => dateAtoms source
   | .timeConstruction source => timeAtoms source
   | _ => []
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def amountAtoms (amount : HavingTemporalAmount) : List HavingTemporalAtom :=
-  amount.flatMapAtomsSubterm fun source _ => match source with
-    | .inl _ => []
-    | .inr (_, source) => HavingTemporalCore.allAtoms source
-decreasing_by all_goals simp_all +arith; omega
+  amount.flatMapAtomsSubterm fun atom hAtom => atom.flatMapTemporalSubterm fun source hSource =>
+    have _ : sizeOf source < sizeOf amount := Nat.lt_trans hSource hAtom
+    HavingTemporalCore.allAtoms source
+termination_by sizeOf amount
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def dateOperandAtoms : HavingDateComponent → List HavingTemporalAtom
   | .expression _ source => HavingTemporalCore.allAtoms source
   | .direct _ _ => []
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def timeOperandAtoms : HavingTimeComponent → List HavingTemporalAtom
   | .expression _ source => HavingTemporalCore.allAtoms source
   | .direct _ _ => []
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def dateAtoms : HavingDateComponents → List HavingTemporalAtom
   | ⟨day, month, year, _⟩ => dateOperandAtoms day ++ dateOperandAtoms month ++ match year with
       | .complete year => dateOperandAtoms year
       | .baseYear _ => []
       | .centuryAndShortYear century shortYear => dateOperandAtoms century ++ dateOperandAtoms shortYear
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
 private def timeAtoms : HavingTimeComponents → List HavingTemporalAtom
   | .empty => []
   | .hour hour => timeOperandAtoms hour
   | .minute hour minute => timeOperandAtoms hour ++ timeOperandAtoms minute
   | .second hour minute second => timeOperandAtoms hour ++ timeOperandAtoms minute ++ timeOperandAtoms second
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | (simp_all +arith; omega)
+
 end
 
 structure HavingConstructedDate where

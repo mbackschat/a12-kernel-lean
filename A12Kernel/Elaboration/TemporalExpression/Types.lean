@@ -36,12 +36,12 @@ inductive SurfaceScalarTemporalExpression where
   | dateConstruction (components : SurfaceConstructedDateComponents
       (Sum (Sum SurfaceConstructedDateSource SurfaceSemanticIndex) (DateNumericPart × SurfaceScalarTemporalExpression)))
   | calendarShift (unit : DateShiftUnit) (source : SurfaceScalarTemporalExpression)
-      (amount : AuthoredNumericExpr (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression)))
+      (amount : AuthoredNumericExpr (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression))
   | timeConstruction (components : TimeComponentPrefix (Sum (Sum SurfaceTimeComponent SurfaceSemanticIndex) (TimeNumericPart × SurfaceScalarTemporalExpression)))
   | dateFromDateTime (source : SurfaceScalarTemporalExpression)
   | timeFromDateTime (source : SurfaceScalarTemporalExpression)
   | subdayShift (unit : DateTimeSubdayUnit) (source : SurfaceScalarTemporalExpression)
-      (amount : AuthoredNumericExpr (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression)))
+      (amount : AuthoredNumericExpr (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression))
 
 abbrev SurfaceScalarDateComponent :=
   Sum (Sum SurfaceConstructedDateSource SurfaceSemanticIndex) (DateNumericPart × SurfaceScalarTemporalExpression)
@@ -76,6 +76,7 @@ inductive ScalarTemporalExpressionError where
   | indexed (error : SemanticIndexElabError)
   | extremum (error : TemporalExtremumOperandElabError)
   | amount (error : TemporalShiftAmountElabError)
+  | numeric (error : CorrelationElabError)
   | dateComponents (error : ConstructedDateComponentsElabError)
   | timeComponents (error : TimeComponentsElabError)
   | rangeBound (error : YearlessDateRangeBoundElabError)
@@ -157,6 +158,7 @@ inductive ScalarTemporalTransform (model : FlatModel) where
       (unit : DateTimeSubdayUnit) (amount : AuthoredNumericExpr (ScalarTemporalNumericAtom model))
 
 inductive ScalarTemporalNumericAtom (model : FlatModel) where
+  | numeric (source : HavingNumericAtomOf (TemporalExpressionOf (ScalarTemporalAtom model) (ScalarTemporalTransform model)))
   | ordinary (source : CheckedTemporalShiftAmount model)
   | projection (part : TemporalNumericPart) (profile : ModelZone.ConcreteProfile)
       (source : TemporalExpressionOf (ScalarTemporalAtom model) (ScalarTemporalTransform model))

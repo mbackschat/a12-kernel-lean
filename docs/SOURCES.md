@@ -700,22 +700,27 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-pr2-date-extraction-diagnostics"></a>
 - [Date-extraction diagnostics](sources/temporal-and-message-probes.md#src-pr2-date-extraction-diagnostics)
 <a id="src-message-address-dialects"></a>
-- [A message address is written in one of two dialects, and which one depends on the operand](sources/message-and-pointer-probes.md#src-message-address-dialects)
+- [Operand-dependent message-address dialects](sources/message-and-pointer-probes.md#src-message-address-dialects)
 
 <a id="src-omitting-date-formats"></a>
 - [Component-omitting DATE storage](sources/temporal-and-message-probes.md#src-omitting-date-formats)
 <a id="src-filled-field-count"></a>
 - [`NumberOfFilledFields` formal invalidity](sources/temporal-and-message-probes.md#src-filled-field-count)
 <a id="src-date-from-datetime"></a>
-- [`DateFromDateTime` reads and component gates](sources/temporal-and-message-probes.md#src-date-from-datetime)
+- [`DateFromDateTime` component gates](sources/temporal-and-message-probes.md#src-date-from-datetime)
 <a id="src-date-from-datetime-computation"></a>
-- [`DateFromDateTime` scalar full-Date target channels](sources/temporal-and-message-probes.md#src-date-from-datetime-computation)
+- [`DateFromDateTime` scalar targets](sources/temporal-and-message-probes.md#src-date-from-datetime-computation)
 <a id="src-date-from-datetime-repeatable-computation"></a>
-- [`DateFromDateTime` exact repeatable computation](sources/temporal-and-message-probes.md#src-date-from-datetime-repeatable-computation)
+- [`DateFromDateTime` repeatable targets](sources/temporal-and-message-probes.md#src-date-from-datetime-repeatable-computation)
 <a id="src-recursive-date-components"></a>
 - [Date components](sources/temporal-runtime-fold-probes.md#src-recursive-date-components)
+<a id="src-temporal-numeric-amounts"></a>
+- [Wider numeric shift amounts](sources/temporal-runtime-fold-probes.md#src-temporal-numeric-amounts)
+
+<a id="src-mixed-baseyear-sources"></a>
+- [Mixed BaseYear sources](sources/temporal-runtime-fold-probes.md#src-mixed-baseyear-sources)
 <a id="src-recursive-difference-effects"></a>
-- [Direct, shifted and constructed day-difference operand order in both phases, measured 2026-10-08](sources/temporal-runtime-fold-probes.md#src-recursive-difference-effects)
+- [Recursive difference effects](sources/temporal-runtime-fold-probes.md#src-recursive-difference-effects)
 <a id="src-indexed-partial-date-endpoints"></a>
 - [Indexed partial-Date endpoints and clearing](sources/temporal-and-message-probes.md#src-indexed-partial-date-endpoints)
 <a id="src-value-as-date-locus"></a>
@@ -723,7 +728,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-rule-message-semantic-index"></a>
 - [Semantic-index suffixes in rule-message parameters](sources/message-and-pointer-probes.md#src-rule-message-semantic-index)
 <a id="src-date-range-endpoint-shapes"></a>
-- [Which operand shapes a DateRange endpoint admits, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-endpoint-shapes)
+- [Admitted DateRange endpoint shapes](sources/temporal-and-message-probes.md#src-date-range-endpoint-shapes)
 <a id="src-nested-rule-locus"></a>
 - [A rule locus that iterates two repeatable levels, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-nested-rule-locus)
 <a id="src-computation-operand-scope"></a>
@@ -1035,7 +1040,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-temporal-value-family-is-the-formats-not-the-kinds"></a>
 - [A temporal field's value family is its declared format's, not its declared kind's](sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds)
 <a id="src-cross-kind-temporal-reads"></a>
-- [A cross-kind temporal field compares and extracts by its format's family, measured locally 2026-10-02](sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads)
+- [Cross-kind temporal comparison and extraction follow the format](sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads)
 <a id="src-cross-kind-computation-reads"></a>
 - [A computation reads a cross-kind temporal field by its format's family too, extracting, constructing a Date and selecting an indexed DateRange endpoint, measured locally 2026-10-02](sources/temporal-runtime-fold-probes.md#src-cross-kind-computation-reads)
 <a id="src-temporal-operand-family-is-the-formats-not-the-kinds"></a>

@@ -1,0 +1,835 @@
+{
+  "header" : {
+    "id" : "Amounts_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Amounts_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false,
+      "baseYear" : "2024"
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/OtherWeight",
+            "name" : "OtherWeight",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/ProbeWeight",
+                "name" : "ProbeWeight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Stamp",
+                "name" : "Stamp",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Weight",
+                "name" : "Weight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Text",
+                "name" : "Text",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Numeric text required."
+                      } ],
+                      "maxLength" : 15,
+                      "pattern" : "[0-9]+"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Stamp",
+            "name" : "Stamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Weight",
+            "name" : "Weight",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Text",
+            "name" : "Text",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Numeric text required."
+                  } ],
+                  "maxLength" : 15,
+                  "pattern" : "[0-9]+"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/baseYearDirect",
+            "name" : "baseYearDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/baseYearDirectComp",
+            "name" : "baseYearDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../baseYearDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DayFromDate(AddDays(/Form/Stamp,BaseYear-2023))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_baseYearDirect",
+            "name" : "R_baseYearDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_baseYearDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,BaseYear-2023)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/baseYearHaving",
+            "name" : "baseYearHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/baseYearHavingComp",
+            "name" : "baseYearHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../baseYearHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,BaseYear-2023)) == 2))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_baseYearHaving",
+            "name" : "R_baseYearHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_baseYearHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,BaseYear-2023)) == 2)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/lengthDirect",
+            "name" : "lengthDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/lengthDirectComp",
+            "name" : "lengthDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../lengthDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DayFromDate(AddDays(/Form/Stamp,Length(/Form/Text)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_lengthDirect",
+            "name" : "R_lengthDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_lengthDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,Length(/Form/Text))) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/lengthHaving",
+            "name" : "lengthHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/lengthHavingComp",
+            "name" : "lengthHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../lengthHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,Length(Rows/Text))) == 2))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_lengthHaving",
+            "name" : "R_lengthHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_lengthHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,Length(Rows/Text))) == 2)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/numberDirect",
+            "name" : "numberDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/numberDirectComp",
+            "name" : "numberDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../numberDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DayFromDate(AddDays(/Form/Stamp,FieldValueAsNumber(/Form/Text)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_numberDirect",
+            "name" : "R_numberDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_numberDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,FieldValueAsNumber(/Form/Text))) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/numberHaving",
+            "name" : "numberHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/numberHavingComp",
+            "name" : "numberHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../numberHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,FieldValueAsNumber(Rows/Text))) == 2))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_numberHaving",
+            "name" : "R_numberHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_numberHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,FieldValueAsNumber(Rows/Text))) == 2)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/rangeDirect",
+            "name" : "rangeDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/rangeDirectComp",
+            "name" : "rangeDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../rangeDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DayFromDate(AddDays(/Form/Stamp,RangeAsNumber(/Form/Text,1,1)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_rangeDirect",
+            "name" : "R_rangeDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_rangeDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,RangeAsNumber(/Form/Text,1,1))) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/rangeHaving",
+            "name" : "rangeHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/rangeHavingComp",
+            "name" : "rangeHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../rangeHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,RangeAsNumber(Rows/Text,1,1))) == 2))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_rangeHaving",
+            "name" : "R_rangeHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_rangeHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,RangeAsNumber(Rows/Text,1,1))) == 2)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/sumDirect",
+            "name" : "sumDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/sumDirectComp",
+            "name" : "sumDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../sumDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DayFromDate(AddDays(/Form/Stamp,Sum(/Form/Weight,/Form/OtherWeight)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_sumDirect",
+            "name" : "R_sumDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_sumDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,Sum(/Form/Weight,/Form/OtherWeight))) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/sumHaving",
+            "name" : "sumHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/sumHavingComp",
+            "name" : "sumHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../sumHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,Sum(Rows/Weight,/Form/Weight))) == 3))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_sumHaving",
+            "name" : "R_sumHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_sumHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,Sum(Rows/Weight,/Form/Weight))) == 3)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/firstDirect",
+            "name" : "firstDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/firstDirectComp",
+            "name" : "firstDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../firstDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DayFromDate(AddDays(/Form/Stamp,FirstFilledValue(/Form/Weight,/Form/OtherWeight)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_firstDirect",
+            "name" : "R_firstDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_firstDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,FirstFilledValue(/Form/Weight,/Form/OtherWeight))) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/firstHaving",
+            "name" : "firstHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/firstHavingComp",
+            "name" : "firstHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../firstHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,FirstFilledValue(Rows/Weight,/Form/Weight))) == 2))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_firstHaving",
+            "name" : "R_firstHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_firstHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,FirstFilledValue(Rows/Weight,/Form/Weight))) == 2)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/countDirect",
+            "name" : "countDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/countDirectComp",
+            "name" : "countDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../countDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DayFromDate(AddDays(/Form/Stamp,NumberOfFilledFields(/Form/Weight,/Form/OtherWeight)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_countDirect",
+            "name" : "R_countDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_countDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,NumberOfFilledFields(/Form/Weight,/Form/OtherWeight))) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/countHaving",
+            "name" : "countHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/countHavingComp",
+            "name" : "countHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../countHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,NumberOfFilledFields(Rows/Weight,/Form/Weight))) == 3))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_countHaving",
+            "name" : "R_countHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_countHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,NumberOfFilledFields(Rows/Weight,/Form/Weight))) == 3)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/differenceDirect",
+            "name" : "differenceDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/differenceDirectComp",
+            "name" : "differenceDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../differenceDirect",
+              "computationAlternatives" : [ {
+                "operation" : "DayFromDate(AddDays(/Form/Stamp,DifferenceInDays(\"01.01.2024\",AddDays(/Form/Stamp,1))))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_differenceDirect",
+            "name" : "R_differenceDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_differenceDirect",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,DifferenceInDays(\"01.01.2024\",AddDays(/Form/Stamp,1)))) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/differenceHaving",
+            "name" : "differenceHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/differenceHavingComp",
+            "name" : "differenceHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../differenceHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,DifferenceInDays(\"01.01.2024\",AddDays(Rows/Stamp,1)))) == 2))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_differenceHaving",
+            "name" : "R_differenceHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_differenceHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,DifferenceInDays(\"01.01.2024\",AddDays(Rows/Stamp,1)))) == 2)) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_sumDirectMissing",
+            "name" : "R_sumDirectMissing",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_sumDirectMissing",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,Sum(/Form/Weight,/Form/OtherWeight))) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_countDirectMissing",
+            "name" : "R_countDirectMissing",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_countDirectMissing",
+              "errorCondition" : "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,NumberOfFilledFields(/Form/Weight,/Form/OtherWeight))) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal numeric composition."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -37,6 +37,15 @@ private def dates : List String := [
   "DifferenceInMonths(Date(\"28\",\"02\",\"2024\"),AddMonths(Rows/Tag,1)) == 1",
   "DifferenceInYears(Date(\"28\",\"02\",\"2024\"),AddYears(Rows/Tag,1)) == 1"]
 
+private def widerAmounts : List String := [
+  "AddDays(Rows/Tag,BaseYear-2023) == \"29.02.2024\"",
+  "AddDays(Rows/Tag,DifferenceInDays(\"01.01.2024\",Date(\"02\",\"01\",\"2024\"))) == \"29.02.2024\""]
+
+example : widerAmounts.all (fun predicate =>
+    run (model) predicate "2024-02-28" "2024-02-27" == some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : widerAmounts.all (fun predicate => ordinary (model) predicate == (true, true)) = true := by native_decide
+
 private def stamps : List String := [
   "AddHours(Rows/Tag,1) == \"28.02.2024T09:00:00\"",
   "AddMinutes(Rows/Tag,1) == \"28.02.2024T08:01:00\"",

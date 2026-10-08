@@ -1,0 +1,227 @@
+{
+  "model": "Amounts_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "filled",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Weight": "1",
+          "OtherWeight": "1",
+          "Text": "1",
+          "Stamp": "2024-01-01T00:00:00",
+          "Rows": [
+            {
+              "Weight": "1",
+              "Text": "1",
+              "Stamp": "2024-01-01T00:00:00",
+              "ProbeWeight": "7"
+            }
+          ],
+          "baseYearDirect": "99",
+          "baseYearHaving": "99",
+          "lengthDirect": "99",
+          "lengthHaving": "99",
+          "numberDirect": "99",
+          "numberHaving": "99",
+          "rangeDirect": "99",
+          "rangeHaving": "99",
+          "sumDirect": "99",
+          "sumHaving": "99",
+          "firstDirect": "99",
+          "firstHaving": "99",
+          "countDirect": "99",
+          "countHaving": "99",
+          "differenceDirect": "99",
+          "differenceHaving": "99"
+        }
+      }
+    },
+    {
+      "name": "emptyNumber",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Weight": "",
+          "OtherWeight": "1",
+          "Text": "1",
+          "Stamp": "2024-01-01T00:00:00",
+          "Rows": [
+            {
+              "Weight": "",
+              "Text": "1",
+              "Stamp": "2024-01-01T00:00:00",
+              "ProbeWeight": "7"
+            }
+          ],
+          "baseYearDirect": "99",
+          "baseYearHaving": "99",
+          "lengthDirect": "99",
+          "lengthHaving": "99",
+          "numberDirect": "99",
+          "numberHaving": "99",
+          "rangeDirect": "99",
+          "rangeHaving": "99",
+          "sumDirect": "99",
+          "sumHaving": "99",
+          "firstDirect": "99",
+          "firstHaving": "99",
+          "countDirect": "99",
+          "countHaving": "99",
+          "differenceDirect": "99",
+          "differenceHaving": "99"
+        }
+      }
+    },
+    {
+      "name": "emptyText",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Weight": "1",
+          "OtherWeight": "1",
+          "Text": "",
+          "Stamp": "2024-01-01T00:00:00",
+          "Rows": [
+            {
+              "Weight": "1",
+              "Text": "",
+              "Stamp": "2024-01-01T00:00:00",
+              "ProbeWeight": "7"
+            }
+          ],
+          "baseYearDirect": "99",
+          "baseYearHaving": "99",
+          "lengthDirect": "99",
+          "lengthHaving": "99",
+          "numberDirect": "99",
+          "numberHaving": "99",
+          "rangeDirect": "99",
+          "rangeHaving": "99",
+          "sumDirect": "99",
+          "sumHaving": "99",
+          "firstDirect": "99",
+          "firstHaving": "99",
+          "countDirect": "99",
+          "countHaving": "99",
+          "differenceDirect": "99",
+          "differenceHaving": "99"
+        }
+      }
+    },
+    {
+      "name": "badNumber",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Weight": "bad",
+          "OtherWeight": "1",
+          "Text": "1",
+          "Stamp": "2024-01-01T00:00:00",
+          "Rows": [
+            {
+              "Weight": "bad",
+              "Text": "1",
+              "Stamp": "2024-01-01T00:00:00",
+              "ProbeWeight": "7"
+            }
+          ],
+          "baseYearDirect": "99",
+          "baseYearHaving": "99",
+          "lengthDirect": "99",
+          "lengthHaving": "99",
+          "numberDirect": "99",
+          "numberHaving": "99",
+          "rangeDirect": "99",
+          "rangeHaving": "99",
+          "sumDirect": "99",
+          "sumHaving": "99",
+          "firstDirect": "99",
+          "firstHaving": "99",
+          "countDirect": "99",
+          "countHaving": "99",
+          "differenceDirect": "99",
+          "differenceHaving": "99"
+        }
+      }
+    },
+    {
+      "name": "badText",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Weight": "1",
+          "OtherWeight": "1",
+          "Text": "bad",
+          "Stamp": "2024-01-01T00:00:00",
+          "Rows": [
+            {
+              "Weight": "1",
+              "Text": "bad",
+              "Stamp": "2024-01-01T00:00:00",
+              "ProbeWeight": "7"
+            }
+          ],
+          "baseYearDirect": "99",
+          "baseYearHaving": "99",
+          "lengthDirect": "99",
+          "lengthHaving": "99",
+          "numberDirect": "99",
+          "numberHaving": "99",
+          "rangeDirect": "99",
+          "rangeHaving": "99",
+          "sumDirect": "99",
+          "sumHaving": "99",
+          "firstDirect": "99",
+          "firstHaving": "99",
+          "countDirect": "99",
+          "countHaving": "99",
+          "differenceDirect": "99",
+          "differenceHaving": "99"
+        }
+      }
+    },
+    {
+      "name": "badSource",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Weight": "1",
+          "OtherWeight": "1",
+          "Text": "1",
+          "Stamp": "bad",
+          "Rows": [
+            {
+              "Weight": "1",
+              "Text": "1",
+              "Stamp": "bad",
+              "ProbeWeight": "7"
+            }
+          ],
+          "baseYearDirect": "99",
+          "baseYearHaving": "99",
+          "lengthDirect": "99",
+          "lengthHaving": "99",
+          "numberDirect": "99",
+          "numberHaving": "99",
+          "rangeDirect": "99",
+          "rangeHaving": "99",
+          "sumDirect": "99",
+          "sumHaving": "99",
+          "firstDirect": "99",
+          "firstHaving": "99",
+          "countDirect": "99",
+          "countHaving": "99",
+          "differenceDirect": "99",
+          "differenceHaving": "99"
+        }
+      }
+    }
+  ]
+}

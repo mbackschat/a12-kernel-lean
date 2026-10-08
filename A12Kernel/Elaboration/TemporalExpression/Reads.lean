@@ -18,6 +18,27 @@ def readScalarTemporalAmount (context : FlatContext) (phase : Phase) :
       | .field source => (context.resolveNumberComparisonOperandAt phase source).toValidationArithmetic
       | _ => .error .groupState
 
+/-- Direct amount reads keep partial unavailability outside the cell's formal findings;
+`FirstFilledValue` can therefore hide an unread suffix (spec/05 selection and spec/10 relevance). -/
+def scalarAmountReadContext (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model)) :
+    ResolvingCorrelationContext (Option ScalarTemporalEvaluationFault) := {
+  read := fun _ field => match partialRead? with
+    | none => pure (context.read field)
+    | some partialRead => do
+        match ← (partialRead.readCell context.row field).mapError some with
+        | some cell => pure cell
+        | none => throw none
+  storedText := fun _ => context.storedText
+  world := context.world
+  bindingError := fun error => some (.addressing (.environment error))
+  unsupportedDateCalendar := some .calendarUnavailable
+  temporalValueFailure := some .dateTimeLabelUnresolved
+  worldUnavailable := some (.addressing .worldUnavailable)
+  typeValidityValueFailure := some (.addressing .typeValidityValueFailure)
+  groupUnavailable := fun path => some (.addressing (.checkedDocumentRequired path))
+  storedTextUnavailable := fun field => some (.addressing (.addressing (.storedTextUnavailable field))) }
+
 def resolvedScalarDate (profile : ModelZone.ConcreteProfile) (date : FullDate) :
     Option DateValue := do
   let instant ← profile.resolveLocal? {

@@ -1,0 +1,708 @@
+[
+  {
+    "target": "config",
+    "op": "modify",
+    "time-zone": "Europe/Berlin",
+    "base-year": 2024
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OtherWeight",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Rows",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "ProbeWeight",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Stamp",
+    "kind": "DATETIME",
+    "dateTime": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Weight",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Stamp",
+    "kind": "DATETIME",
+    "dateTime": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Weight",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Text",
+    "kind": "STRING",
+    "string": {
+      "maxLength": 15,
+      "pattern": "[0-9]+",
+      "patternMessage": "Numeric text required."
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Text",
+    "kind": "STRING",
+    "string": {
+      "maxLength": 15,
+      "pattern": "[0-9]+",
+      "patternMessage": "Numeric text required."
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "baseYearDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/baseYearDirect",
+    "alternatives": [
+      {
+        "operation": "DayFromDate(AddDays(/Form/Stamp,BaseYear-2023))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_baseYearDirect",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,BaseYear-2023)) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "baseYearHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/baseYearHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,BaseYear-2023)) == 2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_baseYearHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,BaseYear-2023)) == 2)) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "lengthDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/lengthDirect",
+    "alternatives": [
+      {
+        "operation": "DayFromDate(AddDays(/Form/Stamp,Length(/Form/Text)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_lengthDirect",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,Length(/Form/Text))) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "lengthHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/lengthHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,Length(Rows/Text))) == 2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_lengthHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,Length(Rows/Text))) == 2)) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "numberDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/numberDirect",
+    "alternatives": [
+      {
+        "operation": "DayFromDate(AddDays(/Form/Stamp,FieldValueAsNumber(/Form/Text)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_numberDirect",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,FieldValueAsNumber(/Form/Text))) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "numberHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/numberHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,FieldValueAsNumber(Rows/Text))) == 2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_numberHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,FieldValueAsNumber(Rows/Text))) == 2)) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "rangeDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/rangeDirect",
+    "alternatives": [
+      {
+        "operation": "DayFromDate(AddDays(/Form/Stamp,RangeAsNumber(/Form/Text,1,1)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_rangeDirect",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,RangeAsNumber(/Form/Text,1,1))) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "rangeHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/rangeHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,RangeAsNumber(Rows/Text,1,1))) == 2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_rangeHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,RangeAsNumber(Rows/Text,1,1))) == 2)) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "sumDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/sumDirect",
+    "alternatives": [
+      {
+        "operation": "DayFromDate(AddDays(/Form/Stamp,Sum(/Form/Weight,/Form/OtherWeight)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_sumDirect",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,Sum(/Form/Weight,/Form/OtherWeight))) == 3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "sumHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/sumHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,Sum(Rows/Weight,/Form/Weight))) == 3))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_sumHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,Sum(Rows/Weight,/Form/Weight))) == 3)) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "firstDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/firstDirect",
+    "alternatives": [
+      {
+        "operation": "DayFromDate(AddDays(/Form/Stamp,FirstFilledValue(/Form/Weight,/Form/OtherWeight)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_firstDirect",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,FirstFilledValue(/Form/Weight,/Form/OtherWeight))) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "firstHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/firstHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,FirstFilledValue(Rows/Weight,/Form/Weight))) == 2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_firstHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,FirstFilledValue(Rows/Weight,/Form/Weight))) == 2)) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "countDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/countDirect",
+    "alternatives": [
+      {
+        "operation": "DayFromDate(AddDays(/Form/Stamp,NumberOfFilledFields(/Form/Weight,/Form/OtherWeight)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_countDirect",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,NumberOfFilledFields(/Form/Weight,/Form/OtherWeight))) == 3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "countHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/countHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,NumberOfFilledFields(Rows/Weight,/Form/Weight))) == 3))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_countHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,NumberOfFilledFields(Rows/Weight,/Form/Weight))) == 3)) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "differenceDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/differenceDirect",
+    "alternatives": [
+      {
+        "operation": "DayFromDate(AddDays(/Form/Stamp,DifferenceInDays(\"01.01.2024\",AddDays(/Form/Stamp,1))))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_differenceDirect",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,DifferenceInDays(\"01.01.2024\",AddDays(/Form/Stamp,1)))) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "differenceHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/differenceHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,DifferenceInDays(\"01.01.2024\",AddDays(Rows/Stamp,1)))) == 2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_differenceHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/ProbeWeight Having (DayFromDate(AddDays(Rows/Stamp,DifferenceInDays(\"01.01.2024\",AddDays(Rows/Stamp,1)))) == 2)) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_sumDirectMissing",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,Sum(/Form/Weight,/Form/OtherWeight))) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_countDirectMissing",
+    "condition": "FieldFilled(Anchor) And DayFromDate(AddDays(/Form/Stamp,NumberOfFilledFields(/Form/Weight,/Form/OtherWeight))) == 2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal numeric composition."
+      }
+    ]
+  }
+]

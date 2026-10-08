@@ -501,12 +501,12 @@ def CorrelatedHaving.outerIterationScopes
         | .field reference => [outerHavingNumberIterationScope model reference]
         | .stringLength origin field | .stringRange origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
         | .dateRangeBoundPart origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
-        | .temporalDifference _ left right => (left.presenceSlots ++ right.presenceSlots).map (·.outerIterationScope? model)
-        | .temporalExpressionPart _ source => source.presenceSlots.map (·.outerIterationScope? model)
+        | .temporalDifference _ left right => left.outerIterationScopes model ++ right.outerIterationScopes model
+        | .temporalExpressionPart _ source => source.outerIterationScopes model
         | .temporalPart origin field _ => [outerHavingFieldIterationScope model origin field.id]
         | .repetition reference => [outerHavingRepetitionIterationScope model reference]
   | .leaf (.selectedComparison comparison) => comparison.presenceSlots.map (·.outerIterationScope? model)
-  | .leaf (.temporalExpression comparison) => comparison.presenceSlots.map (·.outerIterationScope? model)
+  | .leaf (.temporalExpression comparison) => comparison.left.outerIterationScopes model ++ comparison.right.outerIterationScopes model
   | .leaf (.simpleComparison left right comparison) =>
       comparison.inputFields.1.map (fun field => outerHavingFieldIterationScope model left field.id) ++
         comparison.inputFields.2.map (fun field => outerHavingFieldIterationScope model right field.id)
@@ -514,8 +514,7 @@ def CorrelatedHaving.outerIterationScopes
       [outerHavingFieldIterationScope model reference.origin reference.field.id]
   | .leaf (.literalMembership origin _ source) =>
       [outerHavingFieldIterationScope model origin source.field.id]
-  | .leaf (.dateValidity _ source) =>
-      source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
+  | .leaf (.dateValidity _ source) => source.asTemporal.outerIterationScopes model
   | .leaf (.uniqueness source) =>
       source.presenceSlots.map (·.outerIterationScope? model)
   | .leaf (.fieldMembership _ source) =>
@@ -616,23 +615,16 @@ where
       !candidateLevels.contains level
     pure (.repetitionOutsideEnvironment .inner resolved.path candidateLevels missing)
 
-/-- Lower the supported filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
-def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
-    (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
-    (bindingGroup : GroupPath := declaringGroup)
-    (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
-    Except CorrelationElabError (CheckedStarHaving model source bindingGroup) := do
-  let candidateLevels := source.path.axes.map (·.level)
-  let reopenedLevels := candidateLevels.drop source.path.firstStar
-  let outerLevels := model.repeatableScopeForGroupPath bindingGroup
+/-- Resolve the shared numeric leaves at explicit candidate and captured scopes. Ordinary
+consumers use one scope and reject capture origins before accepting the resulting atom. -/
+def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : GroupPath)
+    (candidateLevels outerLevels : List RepeatableLevel) : HavingNumericResolvers :=
   let resolveTemporal (admitted : TemporalComponents → Bool)
       (reference : SurfaceHavingTemporalRef) : Except CorrelationElabError HavingTemporalRef := do
     let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels { origin := reference.origin, field := reference.field }
     let some source := declaration.toTemporalField? | throw .numericExpressionUnsupported
     if !admitted source.components then throw .numericExpressionUnsupported
     pure { origin := reference.origin, field := source }
-  let resolveTemporalEntity (reference : SurfaceHavingPresenceRef) :=
-    model.resolveHavingEntityRead declaringGroup outerLevels { origin := reference.origin, field := reference.field }
   let resolveCalendar (admitted : TemporalComponents → Bool) :
       SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError (ResolvedDateDifferenceOperand HavingTemporalRef)
     | .literal source => if source.valid then pure (.literal source model.baseYearOrDefault) else throw .numericExpressionUnsupported
@@ -644,14 +636,14 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
         | some profile => pure (.today profile)
         | none => throw .numericExpressionUnsupported
     | .now => throw .numericExpressionUnsupported
-  let condition ← elaborateHavingCoreWith {
+  {
     firstFilled := HavingNumberAggregate.elaborate model declaringGroup candidateLevels outerLevels
     groupCount := elaborateHavingGroupCount model declaringGroup candidateLevels outerLevels
     product := elaborateHavingNumericProduct model declaringGroup candidateLevels outerLevels
     collectionCount := elaborateHavingCollectionCount model declaringGroup candidateLevels outerLevels
     aggregate := fun op source =>
       if op == .distinctCount then elaborateHavingDistinctCount model declaringGroup candidateLevels outerLevels source
-      else HavingNumericAtom.aggregate op <$> HavingNumberAggregate.elaborate model declaringGroup candidateLevels outerLevels source
+      else HavingNumericAtomOf.aggregate op <$> HavingNumberAggregate.elaborate model declaringGroup candidateLevels outerLevels source
     baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
     clockPart := fun source part => do
       if !source.admits part then throw .numericExpressionUnsupported
@@ -660,7 +652,6 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     fieldValueAsNumber := fun reference => do
       let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels reference
       (declaration.resolveFieldValueAsNumberSource reference.projectionRef).mapError (fun _ => .numericExpressionUnsupported)
-    boolean := model.resolveHavingBooleanInEnvironment declaringGroup outerLevels
     stringValue := fun origin reference => do
       let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels origin reference .stored
       match declaration.toStringValueField? with
@@ -703,19 +694,37 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       let some source := declaration.toTemporalField? | throw .numericExpressionUnsupported
       if !part.admittedBy source model.hasBaseYear then throw .numericExpressionUnsupported
       pure source
+    number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
+    repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels }
+
+/-- Lower the supported filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
+def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
+    (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
+    (bindingGroup : GroupPath := declaringGroup)
+    (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
+    Except CorrelationElabError (CheckedStarHaving model source bindingGroup) := do
+  let candidateLevels := source.path.axes.map (·.level)
+  let reopenedLevels := candidateLevels.drop source.path.firstStar
+  let outerLevels := model.repeatableScopeForGroupPath bindingGroup
+  let resolveTemporalEntity (reference : SurfaceHavingPresenceRef) :=
+    model.resolveHavingEntityRead declaringGroup outerLevels { origin := reference.origin, field := reference.field }
+  let numeric := model.havingNumericResolvers declaringGroup candidateLevels outerLevels
+  let condition ← elaborateHavingCoreWith {
+    toHavingNumericResolvers := numeric
+    boolean := model.resolveHavingBooleanInEnvironment declaringGroup outerLevels
     temporalDifference := fun unit left right => do
       if !left.admittedSourceSlot true || !right.admittedSourceSlot true then throw .numericExpressionUnsupported
       let left ← HavingTemporalExpression.elaborate model resolveTemporalEntity left
-        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)
+        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels) (some numeric)
       let right ← HavingTemporalExpression.elaborate model resolveTemporalEntity right
-        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)
+        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels) (some numeric)
       let some first := left.components? | throw .numericExpressionUnsupported
       let some second := right.components? | throw .numericExpressionUnsupported
       if !unit.admitsScalarDifference model.hasBaseYear first second then throw .numericExpressionUnsupported
       pure (.temporalDifference unit left right)
     temporalExpressionPart := fun part source => do
       let source ← HavingTemporalExpression.elaborate model resolveTemporalEntity source
-        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)
+        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels) (some numeric)
       if !source.admittedSourceSlot then throw .numericExpressionUnsupported
       let some components := source.components? | throw .numericExpressionUnsupported
       if !part.admitsComponents components model.hasBaseYear then throw .numericExpressionUnsupported
@@ -724,20 +733,18 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       (fun reference => model.resolveHavingEntityRead declaringGroup outerLevels reference)
     temporalExpression := fun operator left right => do
       let left ← HavingTemporalExpression.elaborate model resolveTemporalEntity left
-        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)
+        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels) (some numeric)
       let right ← HavingTemporalExpression.elaborate model resolveTemporalEntity right
-        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)
+        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels) (some numeric)
       if !HavingTemporalExpression.comparisonAdmitted operator.toTemporal left right then throw .numericExpressionUnsupported
       pure { operator := operator.toTemporal, left, right }
     temporal := model.resolveHavingTemporalConstant declaringGroup outerLevels
     fields := model.resolveHavingFieldsInEnvironment declaringGroup outerLevels
-    number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
-    repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels
     string := model.resolveHavingStringInEnvironment declaringGroup outerLevels
     literalMembership := model.resolveHavingLiteralMembership declaringGroup outerLevels
     literalList := elaborateHavingTokenLiteralList model declaringGroup candidateLevels outerLevels
-    dateValidity := elaborateHavingDateComponents model (fun ref =>
-      model.resolveHavingEntityRead declaringGroup outerLevels { origin := ref.origin, field := ref.field })
+    dateValidity := fun source => elaborateHavingDateComponents model (fun ref =>
+      model.resolveHavingEntityRead declaringGroup outerLevels { origin := ref.origin, field := ref.field }) source true (some numeric)
     uniqueness := elaborateHavingUniqueness model declaringGroup candidateLevels outerLevels
     fieldMembership := fun operator subjects members =>
       let read (valueRead : Bool) (ref : SurfaceHavingDirectFieldOperand) :=

@@ -87,7 +87,7 @@ def elaborateHavingCollectionCount (model : FlatModel) (declaringGroup : GroupPa
 
 def elaborateHavingDistinctCount (model : FlatModel) (declaringGroup : GroupPath)
     (candidateLevels outerLevels : List RepeatableLevel) (source : SurfaceHavingEntitySource) :
-    Except CorrelationElabError HavingNumericAtom := do
+    Except CorrelationElabError (HavingNumericAtomOf Empty) := do
   let checked ← elaborateHavingEntityList model declaringGroup candidateLevels outerLevels source
   let some first := (checked.flatMap (·.references)).head? | throw .numericExpressionUnsupported
   match first.declaration.policy.kind with

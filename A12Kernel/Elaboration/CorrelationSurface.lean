@@ -59,10 +59,128 @@ inductive SurfaceHavingTimeComponent (Temporal : Type := Empty) where
   | expression (part : TimeNumericPart) (source : Temporal)
   deriving Repr, DecidableEq
 
+inductive SurfaceHavingCollectionCount where
+  | filledFields (source : SurfaceHavingEntitySource)
+  | numberValue (expected : Rat) (source : SurfaceHavingEntitySource)
+  | tokenValue (expected : String) (source : SurfaceHavingEntitySource)
+  | booleanValue (expected : Bool) (source : SurfaceHavingEntitySource)
+  deriving Repr, DecidableEq
+
+def SurfaceHavingCollectionCount.source : SurfaceHavingCollectionCount → SurfaceHavingEntitySource
+  | .filledFields source | .numberValue _ source | .tokenValue _ source | .booleanValue _ source => source
+
+inductive SurfaceHavingNumericAtomOf (Temporal : Type) where
+  | temporalDifference (unit : TemporalOperationUnit) (left right : Temporal)
+  | firstFilled (source : SurfaceHavingEntitySource)
+  | groupCount (source : SurfaceHavingEntitySource)
+  | product (source : SurfaceHavingEntitySource)
+  | collectionCount (source : SurfaceHavingCollectionCount)
+  | aggregate (op : NumericAggregateOp) (source : SurfaceHavingEntitySource)
+  | dateDifference (unit : DateDifferenceUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
+  | dayDifference (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
+  | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
+  | baseYear
+  | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
+  | clockPart (source : HavingClockSource) (part : TemporalNumericPart)
+  | fieldValueAsNumber (reference : SurfaceHavingStringRef)
+  | field (reference : SurfaceHavingNumberRef)
+  | stringLength (origin : HavingOrigin) (field : SurfaceFieldPath)
+  | stringRange (origin : HavingOrigin) (field : SurfaceFieldPath) (start finish : Nat)
+  | dateRangeBoundPart (origin : HavingOrigin) (field : SurfaceFieldPath) (bound : DateRangeBound) (part : DateNumericPart)
+  | temporalExpressionPart (part : TemporalNumericPart) (source : Temporal)
+  | temporalPart (origin : HavingOrigin) (field : SurfaceFieldPath) (part : TemporalNumericPart)
+  | repetition (reference : SurfaceHavingRepetitionRef)
+  deriving Repr, DecidableEq
+
+
+namespace SurfaceHavingNumericAtomOf
+
+def formatWithSubterm [SizeOf Temporal] (atom : SurfaceHavingNumericAtomOf Temporal)
+    (format : (source : Temporal) → sizeOf source < sizeOf atom → Std.Format) : Std.Format :=
+  match atom with
+  | .temporalDifference a0 a1 a2 => "temporalDifference" ++ " " ++ (repr a0) ++ " " ++ (format a1 (by simp_all; omega)) ++ " " ++ (format a2 (by simp_all; omega))
+  | .firstFilled a0 => "firstFilled" ++ " " ++ (repr a0)
+  | .groupCount a0 => "groupCount" ++ " " ++ (repr a0)
+  | .product a0 => "product" ++ " " ++ (repr a0)
+  | .collectionCount a0 => "collectionCount" ++ " " ++ (repr a0)
+  | .aggregate a0 a1 => "aggregate" ++ " " ++ (repr a0) ++ " " ++ (repr a1)
+  | .dateDifference a0 a1 a2 => "dateDifference" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2)
+  | .dayDifference a0 a1 => "dayDifference" ++ " " ++ (repr a0) ++ " " ++ (repr a1)
+  | .dateTimeDifference a0 a1 a2 => "dateTimeDifference" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2)
+  | .baseYear  => "baseYear"
+  | .baseYearDatePart a0 a1 => "baseYearDatePart" ++ " " ++ (repr a0) ++ " " ++ (repr a1)
+  | .clockPart a0 a1 => "clockPart" ++ " " ++ (repr a0) ++ " " ++ (repr a1)
+  | .fieldValueAsNumber a0 => "fieldValueAsNumber" ++ " " ++ (repr a0)
+  | .field a0 => "field" ++ " " ++ (repr a0)
+  | .stringLength a0 a1 => "stringLength" ++ " " ++ (repr a0) ++ " " ++ (repr a1)
+  | .stringRange a0 a1 a2 a3 => "stringRange" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2) ++ " " ++ (repr a3)
+  | .dateRangeBoundPart a0 a1 a2 a3 => "dateRangeBoundPart" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2) ++ " " ++ (repr a3)
+  | .temporalExpressionPart a0 a1 => "temporalExpressionPart" ++ " " ++ (repr a0) ++ " " ++ (format a1 (by simp_all; omega))
+  | .temporalPart a0 a1 a2 => "temporalPart" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2)
+  | .repetition a0 => "repetition" ++ " " ++ (repr a0)
+
+def decideEqWithSubterm [SizeOf Temporal] (left right : SurfaceHavingNumericAtomOf Temporal)
+    (equal : (a b : Temporal) → sizeOf a < sizeOf left → sizeOf b < sizeOf right → Decidable (a = b)) :
+    Decidable (left = right) := by
+  cases left <;> cases right
+  all_goals first | (apply isFalse; intro h; cases h; done) | skip
+  case temporalDifference.temporalDifference a0 a1 a2 b0 b1 b2 =>
+    letI := equal a1 b1 (by simp; omega) (by simp; omega)
+    letI := equal a2 b2 (by simp; omega) (by simp; omega)
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2) (by simp)
+  case firstFilled.firstFilled a0 b0 =>
+    exact decidable_of_iff (a0 = b0) (by simp)
+  case groupCount.groupCount a0 b0 =>
+    exact decidable_of_iff (a0 = b0) (by simp)
+  case product.product a0 b0 =>
+    exact decidable_of_iff (a0 = b0) (by simp)
+  case collectionCount.collectionCount a0 b0 =>
+    exact decidable_of_iff (a0 = b0) (by simp)
+  case aggregate.aggregate a0 a1 b0 b1 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1) (by simp)
+  case dateDifference.dateDifference a0 a1 a2 b0 b1 b2 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2) (by simp)
+  case dayDifference.dayDifference a0 a1 b0 b1 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1) (by simp)
+  case dateTimeDifference.dateTimeDifference a0 a1 a2 b0 b1 b2 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2) (by simp)
+  case baseYear.baseYear  =>
+    exact isTrue rfl
+  case baseYearDatePart.baseYearDatePart a0 a1 b0 b1 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1) (by simp)
+  case clockPart.clockPart a0 a1 b0 b1 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1) (by simp)
+  case fieldValueAsNumber.fieldValueAsNumber a0 b0 =>
+    exact decidable_of_iff (a0 = b0) (by simp)
+  case field.field a0 b0 =>
+    exact decidable_of_iff (a0 = b0) (by simp)
+  case stringLength.stringLength a0 a1 b0 b1 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1) (by simp)
+  case stringRange.stringRange a0 a1 a2 a3 b0 b1 b2 b3 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2 ∧ a3 = b3) (by simp)
+  case dateRangeBoundPart.dateRangeBoundPart a0 a1 a2 a3 b0 b1 b2 b3 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2 ∧ a3 = b3) (by simp)
+  case temporalExpressionPart.temporalExpressionPart a0 a1 b0 b1 =>
+    letI := equal a1 b1 (by simp; omega) (by simp; omega)
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1) (by simp)
+  case temporalPart.temporalPart a0 a1 a2 b0 b1 b2 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2) (by simp)
+  case repetition.repetition a0 b0 =>
+    exact decidable_of_iff (a0 = b0) (by simp)
+
+def flatMapTemporalSubterm [SizeOf Temporal] (atom : SurfaceHavingNumericAtomOf Temporal)
+    (visit : (source : Temporal) → sizeOf source < sizeOf atom → List Result) : List Result :=
+  match atom with
+  | .temporalDifference _ left right => visit left (by simp; omega) ++ visit right (by simp; omega)
+  | .temporalExpressionPart _ source => visit source (by simp; omega)
+  | _ => []
+
+end SurfaceHavingNumericAtomOf
+
 /-- Constructor operands retain an origin at every field, including mixed captured/candidate reads. -/
 inductive SurfaceHavingTemporalExpression where
   | shift (unit : TemporalOperationUnit) (source : SurfaceHavingTemporalExpression)
-      (amount : AuthoredNumericExpr (Sum SurfaceHavingNumberRef (TemporalNumericPart × SurfaceHavingTemporalExpression)))
+      (amount : AuthoredNumericExpr (SurfaceHavingNumericAtomOf SurfaceHavingTemporalExpression))
   | partialDate (reference : SurfaceHavingTemporalRef) (endpoint : ValueAsDateEndpoint)
   | selection (kind : HavingTemporalSelection) (source : SurfaceHavingEntitySource)
   | combine (operator : TemporalExtremumOp) (first : SurfaceHavingTemporalExpression) (rest : List SurfaceHavingTemporalExpression)
@@ -81,7 +199,7 @@ inductive SurfaceHavingTemporalExpression where
   | dateFromDateTime (source : SurfaceHavingTemporalExpression)
   | timeFromDateTime (source : SurfaceHavingTemporalExpression)
 
-abbrev SurfaceHavingTemporalAmount := AuthoredNumericExpr (Sum SurfaceHavingNumberRef (TemporalNumericPart × SurfaceHavingTemporalExpression))
+abbrev SurfaceHavingTemporalAmount := AuthoredNumericExpr (SurfaceHavingNumericAtomOf SurfaceHavingTemporalExpression)
 
 abbrev SurfaceHavingDateComponents := SurfaceConstructedDateComponents (SurfaceHavingDateComponent SurfaceHavingTemporalExpression)
 abbrev SurfaceHavingTimeComponents := TimeComponentPrefix (SurfaceHavingTimeComponent SurfaceHavingTemporalExpression)
@@ -114,12 +232,14 @@ private def format : SurfaceHavingTemporalExpression → Std.Format
   | .dateTime date time => formatNode "dateTime" [format date, format time]
   | .dateFromDateTime source => formatNode "dateFromDateTime" [format source]
   | .timeFromDateTime source => formatNode "timeFromDateTime" [format source]
-
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
 private def formatAmount (amount : SurfaceHavingTemporalAmount) : Std.Format :=
-  amount.formatWithSubterm fun source _ => match source with
-    | .inl reference => repr reference
-    | .inr (part, source) => repr part ++ " (" ++ format source ++ ")"
-decreasing_by all_goals simp_all +arith <;> omega
+  amount.formatWithSubterm fun atom hAtom => atom.formatWithSubterm fun source hSource =>
+    have _ : sizeOf source < sizeOf amount := Nat.lt_trans hSource hAtom
+    format source
+termination_by sizeOf amount
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
 private def formatDateComponent : SurfaceHavingDateComponent SurfaceHavingTemporalExpression → Std.Format
   | .field ref => formatNode "field" [repr ref]
   | .constant value => formatNode "constant" [repr value]
@@ -127,23 +247,32 @@ private def formatDateComponent : SurfaceHavingDateComponent SurfaceHavingTempor
   | .baseYearExtractor source part => formatNode "baseYearExtractor" [repr source, repr part]
   | .clockExtractor source part => formatNode "clockExtractor" [repr source, repr part]
   | .expression part source => formatNode "expression" [repr part, format source]
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
 private def formatDate : SurfaceHavingDateComponents → Std.Format
   | ⟨day, month, year⟩ => formatNode "Date" [formatDateComponent day, formatDateComponent month,
     match year with
     | .complete year => formatDateComponent year
     | .baseYear => "baseYear"
     | .centuryAndShortYear century shortYear => formatNode "splitYear" [formatDateComponent century, formatDateComponent shortYear]]
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
 private def formatTimeComponent : SurfaceHavingTimeComponent SurfaceHavingTemporalExpression → Std.Format
   | .field ref => formatNode "field" [repr ref]
   | .constant value => formatNode "constant" [repr value]
   | .extractor part ref => formatNode "extractor" [repr part, repr ref]
   | .nowExtractor part => formatNode "nowExtractor" [repr part]
   | .expression part source => formatNode "expression" [repr part, format source]
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
 private def formatTime : SurfaceHavingTimeComponents → Std.Format
   | .empty => "Time"
   | .hour hour => formatNode "Time" [formatTimeComponent hour]
   | .minute hour minute => formatNode "Time" [formatTimeComponent hour, formatTimeComponent minute]
   | .second hour minute second => formatNode "Time" [formatTimeComponent hour, formatTimeComponent minute, formatTimeComponent second]
+termination_by value => sizeOf value
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
+
 end
 
 instance : Repr SurfaceHavingTemporalExpression where
@@ -239,13 +368,9 @@ private def decideTimeComponentEqual (left right : SurfaceHavingTimeComponent Su
   case nowExtractor.nowExtractor source next => exact decidable_of_iff (source = next) (by simp)
 
 private def decideAmountEqual (left right : SurfaceHavingTemporalAmount) : Decidable (left = right) :=
-  left.decideEqWithSubterm right fun a b _ _ => match a, b with
-    | .inl source, .inl next => decidable_of_iff (source = next) (by simp)
-    | .inr (part, source), .inr (nextPart, nextSource) =>
-        letI := decideEqual source nextSource
-        decidable_of_iff (part = nextPart ∧ source = nextSource) (by simp)
-    | .inl _, .inr _ | .inr _, .inl _ => isFalse (by intro h; cases h)
-decreasing_by all_goals simp_all +arith <;> omega
+  left.decideEqWithSubterm right fun a b _ _ =>
+    a.decideEqWithSubterm b fun left right _ _ => decideEqual left right
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
 private def decideDateYearEqual (left right : SurfaceConstructedDateYear (SurfaceHavingDateComponent SurfaceHavingTemporalExpression)) : Decidable (left = right) := by
   cases left <;> cases right
   all_goals first | (apply isFalse; intro h; cases h; done) | skip
@@ -298,10 +423,16 @@ def SurfaceHavingTemporalExpression.fields : SurfaceHavingTemporalExpression →
   | .combine _ first rest => first.fields ++ rest.flatMap (·.fields)
   | _ => []
 private def amountFields (amount : SurfaceHavingTemporalAmount) : List SurfaceHavingTemporalRef :=
-  amount.flatMapAtomsSubterm fun source _ => match source with
-    | .inl reference => [{ origin := reference.origin, field := reference.field }]
-    | .inr (_, source) => source.fields
-decreasing_by all_goals simp_all +arith <;> omega
+  amount.flatMapAtomsSubterm fun atom _ => match atom with
+    | .temporalExpressionPart _ source => source.fields
+    | .temporalDifference _ left right => left.fields ++ right.fields
+    | .field ref => [{ origin := ref.origin, field := ref.field }]
+    | .fieldValueAsNumber ref => [{ origin := ref.origin, field := ref.field }]
+    | .dateRangeBoundPart origin field _ _ | .temporalPart origin field _
+    | .stringLength origin field | .stringRange origin field _ _ => [{ origin, field }]
+    | .dateDifference _ left right | .dayDifference left right | .dateTimeDifference _ left right => left.fields ++ right.fields
+    | _ => []
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
 private def dateComponentFields : SurfaceHavingDateComponent SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
   | .field ref | .extractor _ ref => [{ origin := ref.origin, field := ref.field }]
   | .expression _ source => source.fields
@@ -331,45 +462,48 @@ def SurfaceHavingDateComponents.sources (source : SurfaceHavingDateComponents) :
 def SurfaceHavingDateComponents.references (source : SurfaceHavingDateComponents) : List SurfaceHavingPresenceRef :=
   dateFields source |>.map fun ref => { origin := ref.origin, field := ref.field }
 
+mutual
 def SurfaceHavingTemporalExpression.entitySources : SurfaceHavingTemporalExpression → List SurfaceHavingEntitySource
   | .selection _ source => [source]
+  | .shift _ source amount => source.entitySources ++ amountEntitySources amount
   | .grouped source | .dateFromDateTime source | .timeFromDateTime source => source.entitySources
   | .dateTime date time => date.entitySources ++ time.entitySources
   | .combine _ first rest => first.entitySources ++ rest.flatMap (·.entitySources)
+  | .dateConstruction ⟨day, month, year⟩ =>
+      dateComponentEntitySources day ++ dateComponentEntitySources month ++ match year with
+      | .complete year => dateComponentEntitySources year
+      | .baseYear => []
+      | .centuryAndShortYear century shortYear => dateComponentEntitySources century ++ dateComponentEntitySources shortYear
+  | .timeConstruction components => timeEntitySources components
   | _ => []
+private def amountEntitySources (amount : SurfaceHavingTemporalAmount) : List SurfaceHavingEntitySource :=
+  amount.flatMapAtomsSubterm fun atom _ => match atom with
+    | .temporalExpressionPart _ source => source.entitySources
+    | .temporalDifference _ left right => left.entitySources ++ right.entitySources
+    | .collectionCount source => [source.source]
+    | .aggregate _ source | .firstFilled source | .groupCount source | .product source => [source]
+    | .repetition reference => [{ first := .group reference.origin reference.group, rest := [] }]
+    | _ => []
+decreasing_by all_goals first | decreasing_tactic | omega | (simp_all +arith; omega)
+private def dateComponentEntitySources : SurfaceHavingDateComponent SurfaceHavingTemporalExpression → List SurfaceHavingEntitySource
+  | .expression _ source => source.entitySources
+  | _ => []
+private def timeComponentEntitySources : SurfaceHavingTimeComponent SurfaceHavingTemporalExpression → List SurfaceHavingEntitySource
+  | .expression _ source => source.entitySources
+  | _ => []
+private def timeEntitySources : SurfaceHavingTimeComponents → List SurfaceHavingEntitySource
+  | .empty => []
+  | .hour hour => timeComponentEntitySources hour
+  | .minute hour minute => timeComponentEntitySources hour ++ timeComponentEntitySources minute
+  | .second hour minute second => timeComponentEntitySources hour ++ timeComponentEntitySources minute ++ timeComponentEntitySources second
 
-inductive SurfaceHavingCollectionCount where
-  | filledFields (source : SurfaceHavingEntitySource)
-  | numberValue (expected : Rat) (source : SurfaceHavingEntitySource)
-  | tokenValue (expected : String) (source : SurfaceHavingEntitySource)
-  | booleanValue (expected : Bool) (source : SurfaceHavingEntitySource)
-  deriving Repr, DecidableEq
+end
 
-def SurfaceHavingCollectionCount.source : SurfaceHavingCollectionCount → SurfaceHavingEntitySource
-  | .filledFields source | .numberValue _ source | .tokenValue _ source | .booleanValue _ source => source
+abbrev SurfaceHavingNumericAtom := SurfaceHavingNumericAtomOf SurfaceHavingTemporalExpression
 
-inductive SurfaceHavingNumericAtom where
-  | temporalDifference (unit : TemporalOperationUnit) (left right : SurfaceHavingTemporalExpression)
-  | firstFilled (source : SurfaceHavingEntitySource)
-  | groupCount (source : SurfaceHavingEntitySource)
-  | product (source : SurfaceHavingEntitySource)
-  | collectionCount (source : SurfaceHavingCollectionCount)
-  | aggregate (op : NumericAggregateOp) (source : SurfaceHavingEntitySource)
-  | dateDifference (unit : DateDifferenceUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
-  | dayDifference (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
-  | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
-  | baseYear
-  | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
-  | clockPart (source : HavingClockSource) (part : TemporalNumericPart)
-  | fieldValueAsNumber (reference : SurfaceHavingStringRef)
-  | field (reference : SurfaceHavingNumberRef)
-  | stringLength (origin : HavingOrigin) (field : SurfaceFieldPath)
-  | stringRange (origin : HavingOrigin) (field : SurfaceFieldPath) (start finish : Nat)
-  | dateRangeBoundPart (origin : HavingOrigin) (field : SurfaceFieldPath) (bound : DateRangeBound) (part : DateNumericPart)
-  | temporalExpressionPart (part : TemporalNumericPart) (source : SurfaceHavingTemporalExpression)
-  | temporalPart (origin : HavingOrigin) (field : SurfaceFieldPath) (part : TemporalNumericPart)
-  | repetition (reference : SurfaceHavingRepetitionRef)
-  deriving Repr, DecidableEq
+namespace SurfaceHavingNumericAtom
+export SurfaceHavingNumericAtomOf (temporalDifference firstFilled groupCount product collectionCount aggregate dateDifference dayDifference dateTimeDifference baseYear baseYearDatePart clockPart fieldValueAsNumber field stringLength stringRange dateRangeBoundPart temporalExpressionPart temporalPart repetition)
+end SurfaceHavingNumericAtom
 
 /-- Temporal operands preserve grouping for the ordinary constant-pair gate (spec/04). -/
 inductive SurfaceHavingTemporalOperand where
@@ -634,7 +768,9 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
-        | .temporalDifference _ left right => (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
+        | .temporalDifference _ left right =>
+            (((left.entitySources ++ right.entitySources).flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
+              (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .temporalExpressionPart _ source =>
             ((source.entitySources.flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
               source.fields.findSome? fun reference => field reference.origin reference.field

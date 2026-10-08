@@ -151,7 +151,7 @@ example : (rangeSource).evaluate .validation { base with read := fun _ _ => pure
 
 private def shiftNumber (origin : HavingOrigin := .outer) : HavingNumberRef :=
   { origin, field := { id := 2, info := { scale := 0, signed := true } } }
-private def shifted (amount : HavingTemporalAmount := .atom (.inl shiftNumber)) :=
+private def shifted (amount : HavingTemporalAmount := .atom (.field shiftNumber)) :=
   source (.atom (.shift .seconds fieldSource.core amount))
 private def shiftContext (amount : CheckedCell := empty) : ResolvingCorrelationContext CorrelationRuntimeFault :=
   { base with read := fun _ id => pure (if id == 1 then stamp 3600000 else amount) }
@@ -172,7 +172,7 @@ example : shifted.evaluate .validation shiftFault frame = .error (.storedTextUna
       .error (.storedTextUnavailable 2) := by native_decide
 
 private def nestedShift := shifted (.binary .add
-  (.atom (.inr (.time .hour, time.core))) (.atom (.inl shiftNumber)))
+  (.atom (.temporalExpressionPart (.time .hour) time.core)) (.atom (.field shiftNumber)))
 example : nestedShift.references.map (fun reference => (reference.origin, reference.fieldId)) =
       [(.inner, 1), (.inner, 1), (.outer, 2)] ∧
     nestedShift.evaluate .computation shiftContext frame =
@@ -188,7 +188,7 @@ private def shiftModel : FlatModel := { model with fields := model.fields ++ [{
 example : shifted.wellFormed shiftModel [10] [10] = true ∧
     shifted.wellFormed shiftModel [10] [] = false ∧
     ({ shifted with core := .atom (.shift .years fieldSource.core (.literal { value := 1, authoredScale := 0 })) }).wellFormed shiftModel [10] [10] = false ∧
-    (shifted (.atom (.inr (.time .hour, (.atom (.timeLiteral { hour := 8, minute := 0, second := 0, valid := by decide })))))).wellFormed shiftModel [10] [10] = false := by native_decide
+    (shifted (.atom (.temporalExpressionPart (.time .hour) (.atom (.timeLiteral { hour := 8, minute := 0, second := 0, valid := by decide }))))).wellFormed shiftModel [10] [10] = false := by native_decide
 
 private def outerSource := source (.atom (.field (ref 1 .outer)))
 example : fieldSource.readDifference outerSource .seconds .computation laterFault frame (fun _ => ()) () =
@@ -225,5 +225,30 @@ example : (partialSource .firstDay).wellFormed partialModel [10] [] = true ∧
     ({ partialSource .firstDay with core := .atom (.partialDate {
       reference := partialRef, format := .dayMonthYearDots, mode := .yearOptional,
       youngerThan1900Check := false, endpoint := .firstDay }) }).wellFormed partialModel [10] [] = false := by native_decide
+
+private def richAmount := shifted (.binary .add
+  (.atom (.stringLength .inner { id := 2 }))
+  (.atom (.field { origin := .outer, field := { id := 3, info := { scale := 0, signed := true } } })))
+private def amountFault (cell : CheckedCell) : ResolvingCorrelationContext CorrelationRuntimeFault := { base with
+  read := fun _ id => if id == 1 then pure (stamp 0) else if id == 2 then pure cell
+    else .error (.storedTextUnavailable id) }
+
+example : richAmount.evaluate .validation (amountFault invalid) frame = .error (.storedTextUnavailable 3) ∧
+    richAmount.evaluate .computation (amountFault invalid) frame = .ok (.unknown .malformed) ∧
+    richAmount.evaluate .computation (amountFault required) frame = .error (.storedTextUnavailable 3) ∧
+    richAmount.evaluate .computation (amountFault empty) frame = .error (.storedTextUnavailable 3) := by native_decide
+
+private def repetitionAmount := shifted (.atom (.repetition { origin := .outer, source := .repeatable 10 }))
+example : repetitionAmount.origins = [.inner, .outer] ∧
+    repetitionAmount.scopeReferences shiftModel = [(.inner, [10]), (.outer, [10])] ∧
+    repetitionAmount.outerIterationScopes shiftModel = [none, some [10]] ∧
+    repetitionAmount.wellFormed shiftModel [10] [10] = true ∧
+    repetitionAmount.wellFormed shiftModel [10] [] = false ∧
+    (HavingNumericAtom.temporalExpressionPart (.time .second) repetitionAmount).origins = [.inner, .outer] := by native_decide
+
+private def unsupportedCalendarAmount := shifted (.atom (.dayDifference .utc
+  (.field ref) (.field ref)))
+example : unsupportedCalendarAmount.evaluate .validation base frame = .error .calendarUnavailable ∧
+    unsupportedCalendarAmount.evaluate .computation base frame = .error .calendarUnavailable := by native_decide
 
 end A12Kernel.Conformance.HavingTemporalExpression

@@ -206,13 +206,13 @@ private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
       comparison.left.anyAtom (·.origins.any HavingOrigin.isInner) || comparison.right.anyAtom (·.origins.any HavingOrigin.isInner)
   | .selectedComparison comparison => comparison.references.any (·.origin.isInner)
-  | .temporalExpression comparison => comparison.references.any (·.origin.isInner)
+  | .temporalExpression comparison => (comparison.left.origins ++ comparison.right.origins).any HavingOrigin.isInner
   | .simpleComparison left right comparison =>
       (left.isInner && !comparison.inputFields.1.isEmpty) ||
         (right.isInner && !comparison.inputFields.2.isEmpty)
   | .compareStringLiteral _ reference _ => reference.origin.isInner
   | .literalMembership origin _ _ => origin.isInner
-  | .dateValidity _ source => source.references.any (·.origin.isInner)
+  | .dateValidity _ source => source.asTemporal.origins.any HavingOrigin.isInner
   | .uniqueness source => source.references.any (·.origin.isInner)
   | .fieldMembership _ source => source.references.any (·.origin.isInner)
   | .fieldFill _ references => (references.flatMap (·.references)).any (·.origin.isInner)
@@ -224,13 +224,13 @@ private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
       comparison.left.anyAtom (·.origins.any HavingOrigin.isOuter) || comparison.right.anyAtom (·.origins.any HavingOrigin.isOuter)
   | .selectedComparison comparison => comparison.references.any (·.origin.isOuter)
-  | .temporalExpression comparison => comparison.references.any (·.origin.isOuter)
+  | .temporalExpression comparison => (comparison.left.origins ++ comparison.right.origins).any HavingOrigin.isOuter
   | .simpleComparison left right comparison =>
       (left.isOuter && !comparison.inputFields.1.isEmpty) ||
         (right.isOuter && !comparison.inputFields.2.isEmpty)
   | .compareStringLiteral _ reference _ => reference.origin.isOuter
   | .literalMembership origin _ _ => origin.isOuter
-  | .dateValidity _ source => source.references.any (·.origin.isOuter)
+  | .dateValidity _ source => source.asTemporal.origins.any HavingOrigin.isOuter
   | .uniqueness source => source.references.any (·.origin.isOuter)
   | .fieldMembership _ source => source.references.any (·.origin.isOuter)
   | .fieldFill _ references => (references.flatMap (·.references)).any (·.origin.isOuter)
