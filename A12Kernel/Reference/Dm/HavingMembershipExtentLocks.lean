@@ -214,4 +214,28 @@ private def fresh : Option (Verdict × List String) := do
 
 example : fresh = some (.fired .omission, ["value 5", "value 5"]) := by native_decide
 
+example : [model, tokenModel false, tokenModel true].all (fun fixture =>
+    matrix fixture "Rows/Pair/A, Choices*" "Rows/Members/M" ["9", "5", "14"] &&
+    matrix fixture "Rows/Pair" "Allowed/Value, Choices*/V" ["14", "0", "14"]) = true := by native_decide
+
+private def hollowModel : FlatModel := { model with repeatableGroups := model.repeatableGroups ++ [
+  { level := 40, path := ["Form", "Hollow"], repeatability := some 2 },
+  { level := 50, path := ["EmptyRoot"], repeatability := some 2 }] }
+
+private def admission (filter : String) : Option (Bool × Option KernelStaticDiagnostic) := do
+  let parsed ← (parseText .english (filter ++ " And FieldFilled(Rows/N)")).toOption
+  let authored ← (lowerHaving parsed.body).toOption
+  let source ← (elaborateStarFieldPath hollowModel ["Form"] {
+    base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "N" }).toOption
+  pure (match elaborateStarHavingCore hollowModel ["Form"] source authored with
+    | .ok _ => (true, none)
+    | .error error => (false, error.diagnostic?))
+
+example : operators.all (fun operator =>
+    ["Hollow* In Allowed", "Rows/Pair In Hollow*"].all (fun operands =>
+      admission (operator ++ "(" ++ operands ++ ")") == some (false, some .groupIsEmpty))) = true ∧
+    admission "AtLeastOneFieldValueIncludedInValueList(/EmptyRoot* In Allowed)" =
+      some (false, some .rootGroupIsEmpty) ∧
+    admission "AtLeastOneFieldValueIncludedInValueList(Choices* In Allowed)" = some (true, none) := by native_decide
+
 end A12Kernel.Dm.HavingMembershipExtentLocks
