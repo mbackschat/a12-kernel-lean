@@ -202,12 +202,12 @@ def executeStep (plan : CheckedMixedComputationPlan model compilePattern) (world
       -- with the original target (calendar review-control grid, 2026-10-04).
       let current := plan.documentFor state input
       if table.readingScope.isEmpty then
-        let outcome ← (CheckedRepeatableNumberPlan.executeFixed table world current current.read).mapError .number
+        let outcome ← (CheckedRepeatableNumberPlan.executeFixed table world current current.read current.computationFillContext.numberText).mapError .number
         let outcome := { outcome with source := input.numericTargetPlacementStateAt outcome.targetField }
         pure { state with fixed := state.fixed ++ [numberCompletion outcome]
                           outcomes := state.outcomes ++ [.number outcome] }
       else
-        let outcomes ← (CheckedRepeatableNumberPlan.executeRows table world current current.read).mapError .number
+        let outcomes ← (CheckedRepeatableNumberPlan.executeRows table world current current.read current.computationFillContext.numberText).mapError .number
         let outcomes := outcomes.map fun outcome =>
           { outcome with source := input.numericTargetPlacementStateAt outcome.targetField }
         pure { state with rows := state.rows ++ outcomes.map numberPlacement

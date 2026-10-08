@@ -229,6 +229,7 @@ private def failureComparison : CorrelatedHaving :=
 private def resolvingContext (left : RawCell) : ResolvingCorrelationContext String where
   read _ id := if id == 0 then .ok (checkedNumber left) else .error "right read"
   bindingError _ := "binding"
+  stringExpressionUnavailable := "String expression unavailable"
   unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"

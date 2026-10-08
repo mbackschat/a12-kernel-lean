@@ -23,6 +23,7 @@ private inductive ResolvingProbeError where
   | worldUnavailable
   | typeValidityValueFailure
   | groupUnavailable (path : GroupPath)
+  | stringExpressionUnavailable
   | storedTextUnavailable (field : FieldId)
   | read (field : FieldId)
   | binding (cause : EnvBindingError)
@@ -35,6 +36,7 @@ private def resolvingContext :
     ResolvingCorrelationContext ResolvingProbeError where
   read _ field :=
     if field == marker.id then .error (.read field) else .ok resolvingCell
+  stringExpressionUnavailable := .stringExpressionUnavailable
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
@@ -84,6 +86,7 @@ private def orderedResolvingContext :
       .error (.read field)
     else
       .ok resolvingCell
+  stringExpressionUnavailable := .stringExpressionUnavailable
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
@@ -188,6 +191,7 @@ private def absentAtSecondContext :
       .ok emptyResolvingCell
     else
       .ok resolvingCell
+  stringExpressionUnavailable := .stringExpressionUnavailable
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
@@ -220,6 +224,7 @@ example :
 private def allPresentContext :
     ResolvingCorrelationContext ResolvingProbeError where
   read _ _ := .ok resolvingCell
+  stringExpressionUnavailable := .stringExpressionUnavailable
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
@@ -252,6 +257,7 @@ private def markerPoisonedContext :
     ResolvingCorrelationContext ResolvingProbeError where
   read _ field :=
     if field == marker.id then .ok poisonedResolvingCell else .ok resolvingCell
+  stringExpressionUnavailable := .stringExpressionUnavailable
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
@@ -306,6 +312,7 @@ private def poisonedAndEmptyContext :
     if field == marker.id then .ok poisonedResolvingCell
     else if field == payload.id then .ok emptyResolvingCell
     else .ok resolvingCell
+  stringExpressionUnavailable := .stringExpressionUnavailable
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
@@ -363,6 +370,7 @@ private def outerOnlyContext :
       .ok (if environment == resolvingCandidate 9 then resolvingCell else emptyResolvingCell)
     else
       .ok resolvingCell
+  stringExpressionUnavailable := .stringExpressionUnavailable
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
@@ -403,6 +411,7 @@ private def textOnOuterContext :
       .ok { rawPresent := true, parsed := some (.str "X"), findings := [] }
     else
       .ok resolvingCell
+  stringExpressionUnavailable := .stringExpressionUnavailable
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
@@ -440,6 +449,7 @@ private def textCell (value : String) : CheckedCell :=
 private def stringContext (cell : CheckedCell) :
     ResolvingCorrelationContext ResolvingProbeError where
   read _ field := if field == marker.id then .ok cell else .ok resolvingCell
+  stringExpressionUnavailable := .stringExpressionUnavailable
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable

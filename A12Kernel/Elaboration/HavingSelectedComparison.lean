@@ -32,7 +32,7 @@ private def HavingSelectedOperand.profile? (operand : HavingSelectedOperand) (mo
       let profile ← first.profile? model
       if rest.all (fun reference => reference.profile? model == some profile) then some profile else none
 
-private def HavingSelectedOperand.wellFormed (operand : HavingSelectedOperand) (model : FlatModel)
+def HavingSelectedOperand.wellFormed (operand : HavingSelectedOperand) (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
   (operand.profile? model).isSome &&
     operand.presenceSlots.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
@@ -57,7 +57,7 @@ def HavingSelectedComparison.wellFormed (source : HavingSelectedComparison) (mod
     | some (.dateRange left), some (.dateRange right) => left.components == right.components
     | _, _ => false
 
-private def resolveSelectedReference (reference : ResolvedHavingDirectFieldOperand model) :
+def resolveHavingSelectedReference (reference : ResolvedHavingDirectFieldOperand model) :
     Except CorrelationElabError HavingSelectedRef := do
   if reference.form == .stored then
     match reference.declaration.policy.kind with
@@ -80,12 +80,12 @@ def elaborateHavingSelectedComparison (model : FlatModel) (declaringGroup : Grou
     | .boolean value => pure (.boolean value)
     | .field reference => do
         let declaration ← resolve reference
-        .field <$> resolveSelectedReference (model := model) {
+        .field <$> resolveHavingSelectedReference (model := model) {
           origin := reference.origin, declaration
           form := match reference.projectionRef with | .stored => .stored | .category name => .projected name }
     | .firstFilled source => do
         let slots ← resolveHavingProjectedEntityList model declaringGroup candidateLevels outerLevels source
-        .firstFilled <$> slots.mapM (·.mapM resolveSelectedReference)
+        .firstFilled <$> slots.mapM (·.mapM resolveHavingSelectedReference)
   let result : HavingSelectedComparison := { operator, left := ← operand left, right := ← operand right }
   if !result.wellFormed model candidateLevels outerLevels then throw .numericExpressionUnsupported
   pure result

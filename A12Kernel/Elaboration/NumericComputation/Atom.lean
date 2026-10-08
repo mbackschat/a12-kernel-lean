@@ -102,6 +102,7 @@ structure NumericComputationEvaluationContext where
   outer : Env
   filterRead : Env → FieldId → CheckedCell
   filterStoredText : Env → FieldId → Option String := fun _ _ => none
+  filterNumberText : Env → FieldId → Option String := fun _ _ => none
   starRead : Env → FieldId → CheckedCell
   starStoredText : Env → FieldId → Option String := fun _ _ => none
   indexColumn? : Option SemanticIndexColumnReader := none

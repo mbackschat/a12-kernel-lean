@@ -100,6 +100,7 @@ example : leaves.all (fun leaf =>
 private def failing : ResolvingCorrelationContext String := {
   read := fun _ id => if id == 1 then .ok value else .error "field unavailable"
   bindingError := fun _ => "binding unavailable"
+  stringExpressionUnavailable := "String expression unavailable"
   unsupportedDateCalendar := "calendar unavailable"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"

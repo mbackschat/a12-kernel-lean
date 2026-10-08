@@ -82,7 +82,9 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
   let correlation : ResolvingCorrelationContext ScalarTemporalEvaluationFault := {
     read := fun row field => pure (contextRead.read row field)
     storedText := contextRead.storedText
+    numberText := contextRead.numberText
     world := context.world
+    stringExpressionUnavailable := .addressing (.addressing .stringExpressionUnavailable)
     unsupportedDateCalendar := .calendarUnavailable
     temporalValueFailure := .dateTimeLabelUnresolved
     worldUnavailable := .addressing .worldUnavailable

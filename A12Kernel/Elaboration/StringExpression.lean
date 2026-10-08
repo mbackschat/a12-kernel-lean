@@ -5,14 +5,6 @@ import A12Kernel.Elaboration.CheckedStarDocument
 
 namespace A12Kernel
 
-namespace StringExpr
-
-def fields : StringExpr Atom Category → List Atom
-  | .field fieldId | .category fieldId _ | .fieldValueAsString fieldId | .range fieldId _ _ => [fieldId]
-  | .literal _ => []
-  | .concat left right => left.fields ++ right.fields
-
-end StringExpr
 
 abbrev SurfaceSelectedStringExpression := StringExpr (Sum SurfaceFieldPath SurfaceSemanticIndex) String
 abbrev ResolvedStringSource (model : FlatModel) := Sum FieldId (CheckedSemanticIndexSource model)

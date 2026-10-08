@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.LowerStringCore
 import A12Kernel.Elaboration.FirstFilledFieldSource
 import A12Kernel.Reference.Dm.LowerFlat
 import A12Kernel.Reference.Dm.LowerCore
@@ -98,6 +99,11 @@ private partial def havingOperandClass? (typing : Option (FlatModel × GroupPath
       | none => do
           let path ← model.groupNamedBy? group field
           havingDeclarationClass <$> (model.groupSubtreeFields path).head?
+  | .arith .add left right =>
+      match havingOperandClass? typing left, havingOperandClass? typing right with
+      | some .text, _ | _, some .text => some .text
+      | some .number, some .number => some .number
+      | _, _ => none
   | .braces source => havingOperandClass? typing source
   | .number _ => some .number
   | .string value => some (if isTemporalConstant value then .temporal else .text)
@@ -106,6 +112,7 @@ private partial def havingOperandClass? (typing : Option (FlatModel × GroupPath
   | expression@(.call name arguments none none) =>
       if ["FirstFilledValue", "MinValue", "MaxValue", "Min", "Max"].contains name then
         arguments.findSome? fun | .mk source none none => havingOperandClass? typing source | _ => none
+      else if ["FieldValueAsString", "RangeAsString"].contains name then some .text
       else if ["StartOfDateRange", "EndOfDateRange"].contains name || expression.havingTemporalConstructor then
         some .temporal else none
   | _ => none
@@ -129,6 +136,12 @@ private def lowerHavingSelectedOperand : Expr → Lowering SurfaceHavingSelected
       let some (origin, field) := path.havingField? | refuse "Having" "selected comparison field"
       pure (.field { origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored })
   | _ => refuse "Having" "selected comparison operand"
+
+private def lowerHavingStringExpression : Expr → Lowering (StringExpr SurfaceHavingSelectedOperand String) :=
+  lowerStringExprWith (fun reference => do
+    if reference.index.isSome then refuse "Having" "indexed String source"
+    let some (origin, field) := reference.path.havingField? | refuse "Having" "String source path"
+    pure (.field { origin, field })) lowerHavingSelectedOperand
 
 private def lowerHavingRangeReference : Expr → Lowering SurfaceHavingPresenceRef
   | .entity { path, index := none, category := none } =>
@@ -240,6 +253,14 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
           right.havingTemporalConstructor (temporalHavingSelection typing) then
         return .compareTemporalExpression surfaceOp
           (← lowerHavingTemporalExpression false left) (← lowerHavingTemporalExpression false right)
+      let stringComparison := havingOperandClass? typing left == some .text ||
+        havingOperandClass? typing right == some .text
+      match lowerHavingStringExpression left, lowerHavingStringExpression right with
+      | .ok left, .ok right =>
+          if stringComparison && (isCompoundStringExpression left || isCompoundStringExpression right) then
+            let some equality := surfaceOp.toEquality? | refuse "Having" "String expression equality operator"
+            return .compareStringExpression equality left right
+      | _, _ => pure ()
       if selectedNonNumeric typing left || selectedNonNumeric typing right then
         let some equality := surfaceOp.toEquality? | refuse "Having" "selected comparison operator"
         return .compareSelected equality (← lowerHavingSelectedOperand left) (← lowerHavingSelectedOperand right)

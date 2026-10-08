@@ -30,8 +30,10 @@ def scalarAmountReadContext (context : ScalarComputationContext)
         | some cell => pure cell
         | none => throw none
   storedText := fun _ => context.storedText
+  numberText := fun _ => context.numberText
   world := context.world
   bindingError := fun error => some (.addressing (.environment error))
+  stringExpressionUnavailable := some (.addressing (.addressing .stringExpressionUnavailable))
   unsupportedDateCalendar := some .calendarUnavailable
   temporalValueFailure := some .dateTimeLabelUnresolved
   worldUnavailable := some (.addressing .worldUnavailable)

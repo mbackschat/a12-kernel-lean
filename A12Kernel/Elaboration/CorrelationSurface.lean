@@ -555,6 +555,7 @@ def SurfaceHavingDateRangePredicate.entities : SurfaceHavingDateRangePredicate â
 
 inductive SurfaceCorrelatedHaving where
   | dateRange (source : SurfaceHavingDateRangePredicate)
+  | compareStringExpression (op : EqualityOp) (left right : StringExpr SurfaceHavingSelectedOperand String)
   | compareSelected (op : EqualityOp) (left right : SurfaceHavingSelectedOperand)
   | compareBoolean (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef)
@@ -806,6 +807,8 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
   | .dateRange source => source.entities.findSome? entity
+  | .compareStringExpression _ left right =>
+      ((left.fields ++ right.fields).flatMap SurfaceHavingSelectedOperand.entities).findSome? entity
   | .compareSelected _ left right => (left.entities ++ right.entities).findSome? entity
   | .compareTemporalExpression _ left right =>
       (((left.entitySources ++ right.entitySources).flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>

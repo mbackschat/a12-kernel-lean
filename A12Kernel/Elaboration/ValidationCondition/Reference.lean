@@ -280,6 +280,8 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
             pure [← havingFieldPointerFor source environment declaration origin]
         | .repetition _ => pure []
       pure pointers.flatten
+  | .leaf (.stringExpression comparison) =>
+      havingEntityListReferencePointers source environment comparison.presenceSlots
   | .leaf (.selectedComparison comparison) =>
       havingEntityListReferencePointers source environment comparison.presenceSlots
   | .leaf (.temporalExpression comparison) => do

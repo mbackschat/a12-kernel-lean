@@ -27,6 +27,7 @@ private def resolving (context : CorrelationContext) : ResolvingCorrelationConte
   world := context.world
   storedText := context.storedText
   read := fun env id => .ok (context.read env id)
+  stringExpressionUnavailable := "String expression unavailable"
   bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"
   storedTextUnavailable := fun _ => "stored text unavailable"
@@ -42,6 +43,7 @@ example : atoms.all (fun atom =>
 
 example : atoms.all (fun atom => atom.readComputationResolving {
     read := fun _ id => if id == 1 then .ok invalid else .error "captured read"
+    stringExpressionUnavailable := "String expression unavailable"
     bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure"
     worldUnavailable := "world unavailable"
     storedTextUnavailable := fun _ => "stored text unavailable"
@@ -85,6 +87,7 @@ example : staticAtoms.all (fun atom => atom.origins == [.outer] &&
     CorrelatedHaving.markedFieldIds (condition atom) == [2] &&
     atom.readComputationResolving {
       read := fun env id => if env == frame.outerEnv && id == 2 then .ok (dateCell .storedGregorian) else .error "unexpected read"
+      stringExpressionUnavailable := "String expression unavailable"
       bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure"
       worldUnavailable := "world unavailable"
       storedTextUnavailable := fun _ => "stored text unavailable"
@@ -96,6 +99,7 @@ example : staticAtoms.all (fun atom => atom.origins == [.outer] &&
 example : (HavingNumericAtom.dayDifference .utc (.baseYear 2024 .direct)
     (.literal { year := none, month := 3, day := 1 } 2024)).readComputationResolving {
       read := fun _ _ => .error "unexpected read", bindingError := fun _ => "binding"
+      stringExpressionUnavailable := "String expression unavailable"
       unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure"
       worldUnavailable := "world unavailable"
       storedTextUnavailable := fun _ => "stored text unavailable"
@@ -168,6 +172,7 @@ example : [DateTimeSubdayUnit.hours, .minutes, .seconds].all (fun unit =>
       atom.readComputationResolving {
         world := some { now := { epochMillis := 1000 } },
         read := fun env id => if env == frame.outerEnv && id == 1 then .ok instantCell else .error "wrong origin"
+        stringExpressionUnavailable := "String expression unavailable"
         bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure"
         worldUnavailable := "world unavailable"
         storedTextUnavailable := fun _ => "stored text unavailable"
@@ -175,6 +180,7 @@ example : [DateTimeSubdayUnit.hours, .minutes, .seconds].all (fun unit =>
 
 example :
     let noClock : ResolvingCorrelationContext String := {
+      stringExpressionUnavailable := "String expression unavailable"
       read := fun _ _ => .error "field", bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure"
       worldUnavailable := "world unavailable"
       storedTextUnavailable := fun _ => "stored text unavailable"

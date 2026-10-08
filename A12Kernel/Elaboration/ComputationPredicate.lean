@@ -187,7 +187,7 @@ private def scanCells (consume : State → ValueListCell kind → State ⊕ Resu
 
 private def scanNumber (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
-    (filterStoredText : Env → FieldId → Option String)
+    (filterStoredText filterNumberText : Env → FieldId → Option String)
     (consume : State → ValueListCell .number → State ⊕ Result)
     (source : CheckedNumberEntityOperand model) (state : State) :
     Except ComputationPredicateError (ComputationHavingScanResult State Result) := do
@@ -211,7 +211,7 @@ private def scanNumber (context : ScalarComputationContext)
   | .starHaving source =>
       let addressed ← addressed context
       let resolved ← (source.source.source.path.resolveInCapacity addressed.document context.row).mapError .addressing
-      (source.having.scanComputation (({ read := filterRead, storedText := filterStoredText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
+      (source.having.scanComputation (({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
         (fun state environment => consume state
           (source.source.checkedValueListCellAt .computation addressed.read environment))
         resolved.environments state).mapError (fun
@@ -219,12 +219,13 @@ private def scanNumber (context : ScalarComputationContext)
           | .valueFailure => .valueFailure
           | .worldUnavailable => .contextRequired
           | .typeValidityValueFailure => .valueFailure
+          | .stringExpressionUnavailable => .addressing (.stringExpressionUnavailable)
           | .storedTextUnavailable fieldId => .addressing (.storedTextUnavailable fieldId)
           | .groupUnavailable path => .addressing (.unsupportedGroupOperand path))
 
 private def scanToken (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
-    (filterStoredText : Env → FieldId → Option String)
+    (filterStoredText filterNumberText : Env → FieldId → Option String)
     (consume : State → ValueListCell .token → State ⊕ Result)
     (source : CheckedTokenEntityOperand model) (state : State) :
     Except ComputationPredicateError (ComputationHavingScanResult State Result) := do
@@ -243,13 +244,14 @@ private def scanToken (context : ScalarComputationContext)
       match source.filter with
       | none => pure (scanCells consume
           (resolved.toResolvedSide (source.valueListCellAt .computation addressed.read)).cells state)
-      | some having => (having.condition.scanComputation (({ read := filterRead, storedText := filterStoredText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
+      | some having => (having.condition.scanComputation (({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
           (fun state environment => consume state
             (source.valueListCellAt .computation addressed.read environment)) resolved.environments state).mapError (fun
               | .calendarUnavailable => .temporalUnavailable
               | .valueFailure => .valueFailure
               | .worldUnavailable => .contextRequired
               | .typeValidityValueFailure => .valueFailure
+              | .stringExpressionUnavailable => .addressing (.stringExpressionUnavailable)
               | .storedTextUnavailable fieldId => .addressing (.storedTextUnavailable fieldId)
               | .groupUnavailable path => .addressing (.unsupportedGroupOperand path))
 
@@ -284,7 +286,7 @@ private def scanTemporalSlots
 
 private def scanTemporal (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
-    (filterStoredText : Env → FieldId → Option String)
+    (filterStoredText filterNumberText : Env → FieldId → Option String)
     (source : CheckedTemporalUniquenessOperand model) (seen : List String) :
     Except ComputationPredicateError
       (ComputationHavingScanResult (List String) (Except FormalCause Unit)) := do
@@ -314,7 +316,9 @@ private def scanTemporal (context : ScalarComputationContext)
             (({
               read := fun row field => pure (filterRead row field)
               storedText := filterStoredText
+              numberText := filterNumberText
               world := context.world
+              stringExpressionUnavailable := .addressing .stringExpressionUnavailable
               unsupportedDateCalendar := .temporalUnavailable
               temporalValueFailure := .valueFailure
               worldUnavailable := .contextRequired
@@ -343,18 +347,18 @@ private def uniquenessResult : ComputationHavingScanResult State (Except FormalC
 
 private def evalUniqueness (source : CheckedValuesNotUniqueCondition model)
     (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell)
-    (filterStoredText : Env → FieldId → Option String) :
+    (filterStoredText filterNumberText : Env → FieldId → Option String) :
     Except ComputationPredicateError ComputationConditionResult := do
   match source with
   | .number source =>
       uniquenessResult <$> scanOperands
-        (scanNumber context filterRead filterStoredText ValueListCell.duplicateComputationStep) source.operands []
+        (scanNumber context filterRead filterStoredText filterNumberText ValueListCell.duplicateComputationStep) source.operands []
   | .token source =>
       uniquenessResult <$> scanOperands
-        (scanToken context filterRead filterStoredText ValueListCell.duplicateComputationStep) source.source.operands []
+        (scanToken context filterRead filterStoredText filterNumberText ValueListCell.duplicateComputationStep) source.source.operands []
   | .temporal source =>
       uniquenessResult <$> scanOperands
-        (scanTemporal context filterRead filterStoredText) source.operands []
+        (scanTemporal context filterRead filterStoredText filterNumberText) source.operands []
 
 private def collectStep (values : List (ValueListAtom kind)) :
     ValueListCell kind → List (ValueListAtom kind) ⊕ FormalCause
@@ -381,18 +385,18 @@ private def anyResult : ComputationHavingScanResult Unit (Except FormalCause Boo
 private def evalValueList (operator : ComputationValueListOperator)
     (source : CheckedValueListCondition model) (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
-    (filterStoredText : Env → FieldId → Option String) :
+    (filterStoredText filterNumberText : Env → FieldId → Option String) :
     Except ComputationPredicateError ComputationConditionResult :=
   match source with
   | .number source => operator.evalUsing
-      (fun _ => collectResult <$> scanOperands (scanNumber context filterRead filterStoredText collectStep) source.values.operands [])
-      (fun test => anyResult <$> scanOperands (scanNumber context filterRead filterStoredText (anyStep test)) source.fields.operands ())
+      (fun _ => collectResult <$> scanOperands (scanNumber context filterRead filterStoredText filterNumberText collectStep) source.values.operands [])
+      (fun test => anyResult <$> scanOperands (scanNumber context filterRead filterStoredText filterNumberText (anyStep test)) source.fields.operands ())
   | .token source => operator.evalUsing
-      (fun _ => collectResult <$> scanOperands (scanToken context filterRead filterStoredText collectStep) source.values.operands [])
-      (fun test => anyResult <$> scanOperands (scanToken context filterRead filterStoredText (anyStep test)) source.fields.operands ())
+      (fun _ => collectResult <$> scanOperands (scanToken context filterRead filterStoredText filterNumberText collectStep) source.values.operands [])
+      (fun test => anyResult <$> scanOperands (scanToken context filterRead filterStoredText filterNumberText (anyStep test)) source.fields.operands ())
   | .literals source => operator.evalUsing (kind := .token)
       (fun _ => pure (.ok (source.firstValue :: source.restValues)))
-      (fun test => anyResult <$> scanOperands (scanToken context filterRead filterStoredText (anyStep test)) source.fields.operands ())
+      (fun test => anyResult <$> scanOperands (scanToken context filterRead filterStoredText filterNumberText (anyStep test)) source.fields.operands ())
 
 private def evalTypeValidity (operation : CustomFieldValidityOp) (name : String)
     (observation : CellObservation) (world : Option World) :
@@ -416,7 +420,8 @@ def evalChecked (predicate : CheckedComputationPredicate model)
     (context : ScalarComputationContext)
     (filterRead? : Option (Env → FieldId → CheckedCell) := none)
     (indexColumn? : Option SemanticIndexColumnReader := none)
-    (filterStoredText? : Option (Env → FieldId → Option String) := none) :
+    (filterStoredText? : Option (Env → FieldId → Option String) := none)
+    (filterNumberText? : Option (Env → FieldId → Option String) := none) :
     Except ComputationPredicateError ComputationConditionResult :=
   let context := (indexColumn?.map (context.withIndexColumnReader model)).getD context
   let filterRead := filterRead?.getD (fun row field =>
@@ -424,6 +429,9 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   let filterStoredText := filterStoredText?.getD (if filterRead?.isSome then
     fun _ _ => none
     else fun row field => context.addressed.bind fun addressed => addressed.storedText row field)
+  let filterNumberText := filterNumberText?.getD (if filterRead?.isSome then
+    fun _ _ => none
+    else fun row field => context.addressed.bind fun addressed => addressed.numberText row field)
   match predicate with
   | .keyedGroupPresence operator source _ => do
       let some column := indexColumn? | throw .contextRequired
@@ -488,14 +496,14 @@ def evalChecked (predicate : CheckedComputationPredicate model)
         (fun keyed => do
           let some readColumn := indexColumn? | throw .contextRequired
           keyed.computationSlotsIn context readColumn |>.mapError .indexSelection)
-        (filterStoredText := filterStoredText)
-  | .overlap source => (source.evalChecked context filterRead (filterStoredText := filterStoredText)).mapError fun
+        (filterStoredText := filterStoredText) (filterNumberText := filterNumberText)
+  | .overlap source => (source.evalChecked context filterRead (filterStoredText := filterStoredText) (filterNumberText := filterNumberText)).mapError fun
       | .contextRequired => .contextRequired
       | .addressing error => .addressing error
       | .fieldKindMismatch field => .fieldKindMismatch field
-  | .uniqueness source => evalUniqueness source context filterRead filterStoredText
-  | .valueList source => evalValueList (.quantified source.quantifier) source context filterRead filterStoredText
-  | .scalarValueList operator source => evalValueList (.scalar operator) source context filterRead filterStoredText
+  | .uniqueness source => evalUniqueness source context filterRead filterStoredText filterNumberText
+  | .valueList source => evalValueList (.quantified source.quantifier) source context filterRead filterStoredText filterNumberText
+  | .scalarValueList operator source => evalValueList (.scalar operator) source context filterRead filterStoredText filterNumberText
   | .scalarNumberLiterals operator source values =>
       (ComputationValueListOperator.scalar operator).evalUsing (kind := .number)
         (fun _ => pure (.ok (values.map Rat.ofInt)))

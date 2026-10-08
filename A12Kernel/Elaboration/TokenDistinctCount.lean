@@ -152,11 +152,12 @@ def evaluateDistinctComputation (checked : CheckedTokenEntitySource model)
     (world : Option World := none)
     (selectedRead : CheckedSelectedTokenEntity model → Except StarAddressingError (ResolvedValueListSide .token) :=
       fun source => .error (.unsupportedGroupOperand source.path))
-    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError NumericOperand := do
   match ← scanResolvedValueListOperands
       (state := ResolvedValueListSide .token) (terminal := NumericOperand)
-      (fun operand => operand.resolvedComputationSide (world := world) document outer directRead filterRead starRead (selectedRead := selectedRead) (filterStoredText := filterStoredText))
+      (fun operand => operand.resolvedComputationSide (world := world) document outer directRead filterRead starRead (selectedRead := selectedRead) (filterStoredText := filterStoredText) (filterNumberText := filterNumberText))
       (fun cause => .unknown cause) (fun accumulated _ side => accumulated.append side)
       checked.operands ResolvedValueListSide.empty with
   | .inl side => pure (evalDistinctCountAggregate side)

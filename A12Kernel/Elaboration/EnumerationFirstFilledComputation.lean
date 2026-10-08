@@ -463,6 +463,7 @@ private def scanEnumerationFirstFilledOperand
               | .valueFailure => .temporalValueFailure
               | .worldUnavailable => .worldUnavailable
               | .typeValidityValueFailure => .typeValidityValueFailure
+              | .stringExpressionUnavailable => .stringExpressionUnavailable
               | .storedTextUnavailable fieldId => .storedTextUnavailable fieldId
               | .groupUnavailable path => .unsupportedGroupOperand path)
 

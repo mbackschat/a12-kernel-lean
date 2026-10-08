@@ -12,6 +12,7 @@ private def context (cells : List (FieldId × CheckedCell)) : ResolvingCorrelati
     | some cell => .ok cell
     | none => .error "unread field reached"
   bindingError := fun _ => "binding"
+  stringExpressionUnavailable := "String expression unavailable"
   unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value"
   worldUnavailable := "world"

@@ -83,6 +83,12 @@ def StringTerm.ofOperand : SimpleComparisonOperand String → StringTerm
 
 namespace StringExpr
 
+def fields : StringExpr Atom Category → List Atom
+  | .field fieldId | .category fieldId _ | .fieldValueAsString fieldId | .range fieldId _ _ => [fieldId]
+  | .literal _ => []
+  | .concat left right => left.fields ++ right.fields
+
+
 /-- A String read keeps omission provenance independently of its text. Validation and computation
 share the operand domain; computation alone stops at a reached formal cause (String grid, 2026-10-04). -/
 def readObservedOperand (fieldId : FieldId) (observation : CellObservation) :

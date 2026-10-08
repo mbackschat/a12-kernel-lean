@@ -249,6 +249,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [String aggregates/value lists](implementation/strings-and-enumerations.md#cap-string-aggregates-value-lists)
 <a id="cap-temporal-distinct-count"></a>
 - [Temporal `NumberOfDifferentValues` static admission](implementation/strings-and-enumerations.md#cap-temporal-distinct-count)
+<a id="cap-having-string-expressions"></a>
+- [Having String expressions](implementation/strings-and-enumerations.md#cap-having-string-expressions)
 <a id="cap-string-computation-execution"></a>
 - [String computation execution](implementation/strings-and-enumerations.md#cap-string-computation-execution)
 <a id="resolved-firstfilledvalue"></a>

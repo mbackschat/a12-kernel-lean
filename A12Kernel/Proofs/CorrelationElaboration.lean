@@ -118,7 +118,7 @@ theorem correlatedHaving_wellFormed_equalityScalesAgree
             NumericComparisonOf.havingAdmitted, NumericComparisonOf.admittedWith,
             Bool.and_eq_true] at wellFormed
           exact wellFormed.2.2
-      | selectedComparison | temporalExpression | simpleComparison | compareStringLiteral | literalMembership | fieldMembership | dateRange | uniqueness | fieldFill | presence
+      | stringExpression | selectedComparison | temporalExpression | simpleComparison | compareStringLiteral | literalMembership | fieldMembership | dateRange | uniqueness | fieldFill | presence
           | groupPresence | groupFill | typeValidity | dateValidity | stringPattern =>
           -- Vacuous: the legacy one-group predicate refuses these leaves outright, so each
           -- branch's hypothesis is `false = true`. The scale law itself admits them.

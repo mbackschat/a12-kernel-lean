@@ -193,7 +193,8 @@ private def CheckedNumberEntityOperand.computationSelection
     (document : Document) (outer : Env) (direct : FlatContext)
     (filterRead starRead : Env → FieldId → CheckedCell)
     (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number))
-    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     CheckedFirstFilledNumberOperand model →
       Except StarAddressingError (FirstFilledComputationSelection .number)
   | .selected source => (.side ·) <$> selectedRead source
@@ -204,7 +205,7 @@ private def CheckedNumberEntityOperand.computationSelection
         (source.checkedValueListCellAt .computation starRead))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      pure (.filtered source.having (({ read := filterRead, storedText := filterStoredText, world := direct.world } : CorrelationContext).withModelComputationGroups model document) resolved.environments
+      pure (.filtered source.having (({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world := direct.world } : CorrelationContext).withModelComputationGroups model document) resolved.environments
         resolved.domain.hasOpenTail (source.source.checkedValueListCellAt .computation starRead))
   -- The group's cells in the shared walk's declaration-major index order: every row of one
   -- declaration before the next, measured over a repeatable descendant
@@ -221,7 +222,8 @@ def evaluateComputationFirstFilled
     (filterRead starRead : Env → FieldId → CheckedCell)
     (world : Option World := none)
     (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath))
-    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError FirstFilledNumberResult := do
   match ← scanComputationFirstFilledSelections outer
     (fun
@@ -229,9 +231,10 @@ def evaluateComputationFirstFilled
       | .valueFailure => .temporalValueFailure
       | .worldUnavailable => .worldUnavailable
       | .typeValidityValueFailure => .typeValidityValueFailure
+      | .stringExpressionUnavailable => .stringExpressionUnavailable
       | .storedTextUnavailable fieldId => .storedTextUnavailable fieldId
       | .groupUnavailable path => .unsupportedGroupOperand path)
-      (·.computationSelection document outer { read := directRead, world } filterRead starRead selectedRead filterStoredText)
+      (·.computationSelection document outer { read := directRead, world } filterRead starRead selectedRead filterStoredText filterNumberText)
       checked.operands {} with
   | .inl state => pure state.finish
   | .inr result => pure result.asNumber

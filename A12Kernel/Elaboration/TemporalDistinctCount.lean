@@ -622,7 +622,8 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
     (world : Option World := none)
     (selectedRead : CheckedSelectedTemporalEntity model → Except StarAddressingError (ResolvedValueListSide operation.arm.kind) :=
       fun source => .error (.unsupportedGroupOperand source.path))
-    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError (Sum (ResolvedValueListSide operation.arm.kind) NumericOperand) := do
   let project := temporalDistinctCountCell .computation operand.components model.baseYear operation.arm
   let groupSide := fun (boundCount : Nat) (declarations : List FlatFieldDecl) => do
@@ -647,11 +648,12 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
           let consume := fun cells environment => match read environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
-          match ← (having.scanComputation (({ read := filterRead, storedText := filterStoredText, world } : CorrelationContext).withModelComputationGroups model document) outer consume resolved.environments []).mapError (fun
+          match ← (having.scanComputation (({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world } : CorrelationContext).withModelComputationGroups model document) outer consume resolved.environments []).mapError (fun
             | .calendarUnavailable => .unsupportedDateCalendar
             | .valueFailure => .temporalValueFailure
             | .worldUnavailable => .worldUnavailable
             | .typeValidityValueFailure => .typeValidityValueFailure
+            | .stringExpressionUnavailable => .stringExpressionUnavailable
             | .storedTextUnavailable fieldId => .storedTextUnavailable fieldId
             | .groupUnavailable path => .unsupportedGroupOperand path) with
           | .exhausted reversed => pure (.inl {
@@ -678,10 +680,11 @@ def evaluateComputation (operation : CheckedTemporalDistinctCountRun model)
     (world : Option World := none)
     (selectedRead : CheckedSelectedTemporalEntity model → Except StarAddressingError (ResolvedValueListSide operation.arm.kind) :=
       fun source => .error (.unsupportedGroupOperand source.path))
-    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) : Except StarAddressingError NumericOperand := do
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) : Except StarAddressingError NumericOperand := do
   match ← scanResolvedValueListOperands
       (state := ResolvedValueListSide operation.arm.kind) (terminal := NumericOperand)
-      (operation.computationSide (world := world) document outer directRead filterRead starRead (selectedRead := selectedRead) (filterStoredText := filterStoredText))
+      (operation.computationSide (world := world) document outer directRead filterRead starRead (selectedRead := selectedRead) (filterStoredText := filterStoredText) (filterNumberText := filterNumberText))
       (fun cause => .unknown cause)
       (fun accumulated _ side => accumulated.append side)
       operation.source.operands ResolvedValueListSide.empty with

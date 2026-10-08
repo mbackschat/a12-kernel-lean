@@ -19,6 +19,8 @@ private def SurfaceComparisonOp.toCorrelation : SurfaceComparisonOp → Correlat
     each route chooses all of them together, and a route that admits no String or presence leaf
     supplies a refusing resolver rather than a different combinator. -/
 structure HavingLeafResolvers extends HavingNumericResolvers where
+  stringExpression : EqualityOp → StringExpr SurfaceHavingSelectedOperand String → StringExpr SurfaceHavingSelectedOperand String →
+    Except CorrelationElabError HavingStringComparison
   selectedComparison : EqualityOp → SurfaceHavingSelectedOperand → SurfaceHavingSelectedOperand →
     Except CorrelationElabError HavingSelectedComparison
   boolean : EqualityOp → SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatComparison
@@ -131,6 +133,8 @@ private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
 
 def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving → Except CorrelationElabError CorrelatedHaving
+  | .compareStringExpression op left right =>
+      (fun comparison => .leaf (.stringExpression comparison)) <$> resolvers.stringExpression op left right
   | .compareSelected op left right =>
       (fun comparison => .leaf (.selectedComparison comparison)) <$> resolvers.selectedComparison op left right
   | .compareBoolean op reference expected => do

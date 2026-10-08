@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.HavingStringExpressionLocks
 import A12Kernel.Reference.Dm.HavingRangeLocks
 import A12Kernel.Reference.Dm.HavingTemporalAmountLocks
 import A12Kernel.Reference.Dm.HavingTemporalOperationsLocks

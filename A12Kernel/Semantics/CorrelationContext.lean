@@ -193,6 +193,7 @@ inductive CorrelationRuntimeFault where
   | worldUnavailable
   | typeValidityValueFailure
   | groupUnavailable (path : GroupPath)
+  | stringExpressionUnavailable
   | storedTextUnavailable (field : FieldId)
   deriving Repr, DecidableEq
 
@@ -210,6 +211,7 @@ structure CorrelationGroupReads (Error : Type) where
 structure CorrelationContext where
   read : Env → FieldId → CheckedCell
   storedText : Env → FieldId → Option String := fun _ _ => none
+  numberText : Env → FieldId → Option String := fun _ _ => none
   world : Option World := none
   groups : Option (CorrelationGroupReads CorrelationRuntimeFault) := none
 
@@ -217,7 +219,9 @@ structure CorrelationContext where
 structure ResolvingCorrelationContext (Error : Type) where
   read : Env → FieldId → Except Error CheckedCell
   storedText : Env → FieldId → Option String := fun _ _ => none
+  numberText : Env → FieldId → Option String := fun _ _ => none
   bindingError : EnvBindingError → Error
+  stringExpressionUnavailable : Error
   unsupportedDateCalendar : Error
   temporalValueFailure : Error
   worldUnavailable : Error
@@ -231,8 +235,10 @@ def CorrelationContext.asResolving (context : CorrelationContext) :
     ResolvingCorrelationContext CorrelationRuntimeFault := {
   read := fun env field => .ok (context.read env field)
   storedText := context.storedText
+  numberText := context.numberText
   world := context.world
   bindingError := fun _ => .calendarUnavailable
+  stringExpressionUnavailable := .stringExpressionUnavailable
   unsupportedDateCalendar := .calendarUnavailable
   temporalValueFailure := .valueFailure
   worldUnavailable := .worldUnavailable

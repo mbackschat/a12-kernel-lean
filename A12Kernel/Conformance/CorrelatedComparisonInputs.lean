@@ -123,6 +123,7 @@ example : (fill .allFieldsFilled).evalTruthIn fillContext frame = .unknown ∧
     CorrelatedHaving.markedFieldIds (.leaf (fill .allFieldsFilled)) = [1] := by native_decide
 
 private def failingFillContext : ResolvingCorrelationContext String := {
+  stringExpressionUnavailable := "String expression unavailable"
   unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"
@@ -275,6 +276,7 @@ example : [NumericToleranceRange.range1, .range2, .range5, .range10].all (fun ra
 
 private def toleranceRead : ResolvingCorrelationContext String := {
   read := fun env _ => if env == frame.innerEnv then .ok invalid else .error "captured read"
+  stringExpressionUnavailable := "String expression unavailable"
   unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"
@@ -462,6 +464,7 @@ example : (aggregateAtom .sum).readValidation aggregateRead frame = .ok (.value 
     (aggregateAtom .distinctCount).readValidation aggregateRead frame = .ok (.value 1 .growOnly) := by native_decide
 
 private def aggregateStructuralRead : ResolvingCorrelationContext String := {
+  stringExpressionUnavailable := "String expression unavailable"
   unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"

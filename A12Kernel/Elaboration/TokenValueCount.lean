@@ -328,12 +328,13 @@ def evaluateComputation (checked : CheckedTokenValueCountSource model)
     (world : Option World := none)
     (selectedRead : CheckedSelectedTokenEntity model → Except StarAddressingError (ResolvedValueListSide .token) :=
       fun source => .error (.unsupportedGroupOperand source.path))
-    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     checked.expected checked.source.operands fun operand =>
       operand.resolvedComputationSide (world := world) document outer directRead
-        filterRead starRead (selectedRead := selectedRead) (filterStoredText := filterStoredText)
+        filterRead starRead (selectedRead := selectedRead) (filterStoredText := filterStoredText) (filterNumberText := filterNumberText)
 
 /-- Partial validation skips any filtered rule before topology or reads; otherwise it uses the local existential value-list account matching the measured numeric outcome pattern and reuses the same count fold. -/
 def evaluatePartialValidation

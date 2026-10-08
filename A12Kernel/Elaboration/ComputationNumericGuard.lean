@@ -90,7 +90,7 @@ def evalCheckedIn (condition : CheckedComputationCondition model)
   let scalar := context.scalarContext model
   ComputationConditionOf.evalCheckedWith condition scalar CheckedComputationConditionError.primitive
     (fun atom => (context.readCheckedNumericComputationAtom atom).mapError .numeric)
-    (fun source => (source.evalChecked scalar (some context.filterRead) context.indexColumn? (some context.filterStoredText)).mapError .predicate)
+    (fun source => (source.evalChecked scalar (some context.filterRead) context.indexColumn? (some context.filterStoredText) (some context.filterNumberText)).mapError .predicate)
 
 /-- The addressed overlay carries completed producers into aggregate and filtered reads too.
 The numeric operation reader owns empty substitution, reached poison and every atom's fold. -/
@@ -100,7 +100,7 @@ def evalChecked (condition : CheckedComputationCondition model)
   match context.addressed with
   | some addressed => condition.evalCheckedIn {
       scalar := context, document := addressed.document, outer := context.row
-      filterRead := addressed.read, filterStoredText := addressed.storedText,
+      filterRead := addressed.read, filterStoredText := addressed.storedText, filterNumberText := addressed.numberText,
       starRead := addressed.read, starStoredText := addressed.storedText, indexColumn? }
   | none =>
       ComputationConditionOf.evalCheckedWith condition context CheckedComputationConditionError.primitive

@@ -113,7 +113,8 @@ def supportedOutcome (table : CheckedNumericComputationTable model) :
 
 def executeFixed (table : CheckedNumericComputationTable model) (world : World)
     (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (numberText : Env → FieldId → Option String := fun _ _ => none) :
     Except RepeatableNumberPlanFault (SourcedNumericTargetOutcome CellAddr) := do
   let outcome ← supportedOutcome table <| table.evaluateIn {
       scalar := { input.computationContextAt [] with
@@ -122,6 +123,7 @@ def executeFixed (table : CheckedNumericComputationTable model) (world : World)
       outer := []
       filterRead := cellAt input read
       filterStoredText := input.storedTextWithRead read
+      filterNumberText := numberText
       starRead := cellAt input read
       starStoredText := input.storedTextWithRead read
       indexColumn? := some (input.resolveSemanticIndexColumnWith read)
@@ -135,7 +137,8 @@ cell and a field above it the enclosing one, and with the row as the outer envir
 An over-limit row clears without reading a guard. -/
 def executeRows (table : CheckedNumericComputationTable model) (world : World)
     (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (numberText : Env → FieldId → Option String := fun _ _ => none) :
     Except RepeatableNumberPlanFault (List (SourcedNumericTargetOutcome CellAddr)) :=
   let scope := table.readingScope
   let addressAt (environment : Env) : Except RepeatableNumberPlanFault CellAddr := do
@@ -155,6 +158,7 @@ def executeRows (table : CheckedNumericComputationTable model) (world : World)
           outer := environment
           filterRead := cellAt input read
           filterStoredText := input.storedTextWithRead read
+          filterNumberText := numberText
           starRead := cellAt input read
           starStoredText := input.storedTextWithRead read
           indexColumn? := some (input.resolveSemanticIndexColumnWith read)
@@ -169,10 +173,19 @@ def executeSteps (plan : CheckedRepeatableNumberPlan model) (world : World)
   | [], completed => pure completed
   | table :: remaining, completed => do
       let read := plan.read input completed
+      let numberText : Env → FieldId → Option String := fun environment field => do
+        let address ← (input.cellAddress environment field).toOption
+        match completed.find? (·.targetField == address) with
+        | some completion => match completion.outcome with
+            | .accepted stored => some stored.render
+            | _ => none
+        | none =>
+            if plan.targetFields.contains field then none
+            else input.computationFillContext.numberText environment field
       let outcomes ←
         if table.readingScope.isEmpty then
-          (fun outcome => [outcome]) <$> executeFixed table world input read
-        else executeRows table world input read
+          (fun outcome => [outcome]) <$> executeFixed table world input read numberText
+        else executeRows table world input read numberText
       plan.executeSteps world input remaining (completed ++ outcomes)
 
 /-- Run the certified order and return every outcome, grouped by step in that order and by row

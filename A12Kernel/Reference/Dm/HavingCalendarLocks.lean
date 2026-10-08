@@ -482,6 +482,7 @@ private def clockContext (clock : Option Instant) : CorrelationContext := {
   world := clock.map fun now => { now } }
 private def clockResolving (clock : Option Instant) : ResolvingCorrelationContext String := {
   read := fun _ _ => .error "field read"
+  stringExpressionUnavailable := "String expression unavailable"
   bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"

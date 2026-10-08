@@ -156,7 +156,8 @@ def resolvedComputationAggregateSide
     (document : Document) (outer : Env) (direct : FlatContext)
     (filterRead starRead : Env → FieldId → CheckedCell)
     (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath))
-    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   match checked with
@@ -169,7 +170,7 @@ def resolvedComputationAggregateSide
         (source.checkedValueListCellAt .computation starRead)))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      let filterContext := ({ read := filterRead, storedText := filterStoredText, world := direct.world } : CorrelationContext).withModelComputationGroups model document
+      let filterContext := ({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world := direct.world } : CorrelationContext).withModelComputationGroups model document
       let consume := fun cells environment =>
         match source.source.checkedValueListCellAt .computation
             starRead environment with
@@ -181,6 +182,7 @@ def resolvedComputationAggregateSide
             | .valueFailure => .temporalValueFailure
             | .worldUnavailable => .worldUnavailable
             | .typeValidityValueFailure => .typeValidityValueFailure
+            | .stringExpressionUnavailable => .stringExpressionUnavailable
             | .storedTextUnavailable fieldId => .storedTextUnavailable fieldId
             | .groupUnavailable path => .unsupportedGroupOperand path) with
       | .exhausted reversed =>
@@ -511,12 +513,13 @@ def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
     (filterRead starRead : Env → FieldId → CheckedCell)
     (world : Option World := none)
     (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath))
-    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError NumericOperand :=
   let direct : FlatContext := { read := directRead, world }
   checked.evaluateAggregateWith op fun operand =>
     operand.resolvedComputationAggregateSide document outer direct
-      filterRead starRead selectedRead filterStoredText
+      filterRead starRead selectedRead filterStoredText filterNumberText
 
 /-- Evaluate validation-phase aggregate accumulation from one immutable model-certified checked document. Every operator resolves through the one capacity-aware side, so `Sum` cannot drift away from the extrema and the distinct count on the extent they share. -/
 def evaluateCheckedDocumentValidationAggregate
@@ -636,12 +639,13 @@ def evaluateValueCountComputation (checked : CheckedNumberEntitySource model)
     (filterRead starRead : Env → FieldId → CheckedCell)
     (world : Option World := none)
     (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath))
-    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError NumericOperand :=
   let direct : FlatContext := { read := directRead, world }
   checked.evaluateValueCountWith expected fun operand =>
     operand.resolvedComputationAggregateSide document outer direct
-      filterRead starRead selectedRead filterStoredText
+      filterRead starRead selectedRead filterStoredText filterNumberText
 
 /-- Evaluate validation-phase numeric value count through the checked-document aggregate resolver, retaining per-selected-cell filter provenance. -/
 def evaluateCheckedDocumentValueCountValidation

@@ -83,7 +83,7 @@ private def addressed (context : ScalarComputationContext) :
 
 private def scanStar (project : Value → Option α) (overlaps : α → α → Bool)
     (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell)
-    (filterStoredText : Env → FieldId → Option String)
+    (filterStoredText filterNumberText : Env → FieldId → Option String)
     (path : CheckedStarFieldPath model) (filter : Option CorrelatedHaving)
     (state : ComputationOverlapSearch α) : Except ComputationOverlapError
       (ComputationHavingScanResult (ComputationOverlapSearch α) ComputationConditionResult) := do
@@ -98,7 +98,9 @@ private def scanStar (project : Value → Option α) (overlaps : α → α → B
         (({
           read := fun row id => pure (filterRead row id)
           storedText := filterStoredText
+          numberText := filterNumberText
           world := context.world
+          stringExpressionUnavailable := .addressing .stringExpressionUnavailable
           unsupportedDateCalendar := .addressing .unsupportedDateCalendar
           temporalValueFailure := .addressing .temporalValueFailure
           worldUnavailable := .addressing .worldUnavailable
@@ -125,49 +127,50 @@ private def scanGroup (project : Value → Option α) (overlaps : α → α → 
     declarations state
 
 private def scanExact (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell)
-    (filterStoredText : Env → FieldId → Option String)
+    (filterStoredText filterNumberText : Env → FieldId → Option String)
     (source : CheckedSingularDateRangesOverlapOperand model) (state : ComputationOverlapSearch ResolvedDateRange) :=
   match source with
-  | .canonical (.star path _ filter) => scanStar exactRange ResolvedDateRange.overlaps context filterRead filterStoredText path filter state
+  | .canonical (.star path _ filter) => scanStar exactRange ResolvedDateRange.overlaps context filterRead filterStoredText filterNumberText path filter state
   | source => scanSlots exactRange ResolvedDateRange.overlaps source.declaration.id
       context.read [source.declaration.id] state
 
 private def scanExactList (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell)
-    (filterStoredText : Env → FieldId → Option String)
+    (filterStoredText filterNumberText : Env → FieldId → Option String)
     (source : CheckedAtLeastOneDateRangeOverlapsListOperand model) (state : ComputationOverlapSearch ResolvedDateRange) :=
   match source with
-  | .field source => scanExact context filterRead filterStoredText source state
+  | .field source => scanExact context filterRead filterStoredText filterNumberText source state
   | .group source =>
       scanGroup exactRange ResolvedDateRange.overlaps context source.source
         ((source.first :: source.rest).map (fun (field : CheckedCanonicalDateRangeField) => field.declaration)) state
 
 private def scanYearless (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell)
-    (filterStoredText : Env → FieldId → Option String)
+    (filterStoredText filterNumberText : Env → FieldId → Option String)
     (source : CheckedYearlessDateRangeOverlapOperand model) (state : ComputationOverlapSearch YearlessInterval) :=
   match source with
   | .direct source => scanSlots yearlessRange YearlessInterval.overlaps source.declaration.id
       context.read [source.declaration.id] state
-  | .star path _ filter => scanStar yearlessRange YearlessInterval.overlaps context filterRead filterStoredText path filter state
+  | .star path _ filter => scanStar yearlessRange YearlessInterval.overlaps context filterRead filterStoredText filterNumberText path filter state
   | .group source =>
       scanGroup yearlessRange YearlessInterval.overlaps context source.source
         ((source.first :: source.rest).map (fun (field : CheckedYearlessDateRangeOverlapField model) => field.declaration)) state
 
 def evalChecked (source : CheckedComputationOverlap model) (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
-    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) : Except ComputationOverlapError ComputationConditionResult :=
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) : Except ComputationOverlapError ComputationConditionResult :=
   match source with
   | .anyPair source => ComputationOverlapSearch.result <$>
-      scanOperands (scanExact context filterRead filterStoredText) source.operands (.anyPair [])
+      scanOperands (scanExact context filterRead filterStoredText filterNumberText) source.operands (.anyPair [])
   | .yearlessAnyPair source => ComputationOverlapSearch.result <$>
-      scanOperands (scanYearless context filterRead filterStoredText) source.operands (.anyPair [])
+      scanOperands (scanYearless context filterRead filterStoredText filterNumberText) source.operands (.anyPair [])
   | .scalar source => do
       let scalar ← observation exactRange source.scalar.declaration.id (context.read source.scalar.declaration.id)
       ComputationOverlapSearch.scalarUsing scalar fun state => ComputationOverlapSearch.result <$>
-        scanOperands (scanExactList context filterRead filterStoredText) source.operands state
+        scanOperands (scanExactList context filterRead filterStoredText filterNumberText) source.operands state
   | .yearlessScalar source => do
       let scalar ← observation yearlessRange source.scalar.declaration.id (context.read source.scalar.declaration.id)
       ComputationOverlapSearch.scalarUsing scalar fun state => ComputationOverlapSearch.result <$>
-        scanOperands (scanYearless context filterRead filterStoredText) source.operands state
+        scanOperands (scanYearless context filterRead filterStoredText filterNumberText) source.operands state
 
 end CheckedComputationOverlap
 end A12Kernel
