@@ -231,4 +231,27 @@ example : ["keep", "2024-03-01", "32.01.2024", "29.02.2023", "29.02."].all
       (expected := value) (first := value) (second := "drop") ==
         some (.fired .omission, ["value 9"])) = true := by native_decide
 
+example : ["01.03.2024", "08:30:00", "01.03.", "01.03.2024T08:30:00"].all
+    (fun value => HavingFixture.runModel HavingFixture.model "" false value value "drop"
+      (operationOverride := some ("NumberOfValueInFields(\"" ++ value ++ "\" In Expected,Rows*/Tag)"))
+      (ruleExpected := "3") == none) = true := by native_decide
+
+example : ["keep", "2024-03-01", "32.01.2024", "29.02.2023", "29.02."].all
+    (fun value => HavingFixture.runModel HavingFixture.model "" false value value "drop"
+      (operationOverride := some ("NumberOfValueInFields(\"" ++ value ++ "\" In Expected,Rows*/Tag)"))
+      (ruleExpected := "3") == some (.fired .value, ["value 3"])) = true := by native_decide
+
+private def ordinaryTokenAdmission (value : String) : Bool × Bool :=
+  let operation := "NumberOfValueInFields(\"" ++ value ++ "\" In Expected,Rows*/Tag)"
+  let validation := ((parseText .english (operation ++ " == 3")).toOption.bind fun parsed =>
+    (lowerCondition HavingFixture.model ["Form"] false parsed.body).toOption).isSome
+  let computation := (lowerComputation HavingFixture.model .english {
+    group := ["Form"], name := "Count", targetRelPath := "../Out", commonPrecondition := none
+    alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).isOk
+  (validation, computation)
+example : ["01.03.2024", "08:30:00", "01.03.", "01.03.2024T08:30:00"].all
+    (fun value => ordinaryTokenAdmission value == (false, false)) = true ∧
+    ["keep", "2024-03-01", "32.01.2024", "29.02.2023", "29.02."].all
+    (fun value => ordinaryTokenAdmission value == (true, true)) = true := by native_decide
+
 end A12Kernel.Dm.HavingCollectionCountLocks

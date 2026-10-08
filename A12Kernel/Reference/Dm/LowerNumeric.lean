@@ -119,7 +119,9 @@ def lowerComputationNumericAtom (model : FlatModel) (group : GroupPath) :
           | none => refuse "NumberOfValueInFields" "expected value"
       | .constant "True" => (.booleanValueCount true ·) <$> lowerEntitySource model group listed
       | .constant "False" => (.booleanValueCount false ·) <$> lowerEntitySource model group listed
-      | .string text => (.tokenEntityValueCount text ·) <$> lowerEntitySource model group listed
+      | .string text =>
+          if isTemporalConstant text then refuse "NumberOfValueInFields" "temporal constant"
+          else (.tokenEntityValueCount text ·) <$> lowerEntitySource model group listed
       | _ => refuse "NumberOfValueInFields" "expected value"
   | other => (.numeric ·) <$> lowerNumericAtomWith
       (fun _ arguments => lowerEntitySource model group arguments)
