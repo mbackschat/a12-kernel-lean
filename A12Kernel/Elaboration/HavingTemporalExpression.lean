@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.TimeComponentAdmission
 import A12Kernel.Elaboration.HavingDateValidity
 import A12Kernel.Elaboration.DateRangeBound
 
@@ -14,6 +15,46 @@ def HavingTemporalExpressionRef.matchesModel (reference : HavingTemporalExpressi
   | .range field components => (model.dateRangeSourceProfile field).any fun (_, _, format) =>
       format.components == components
 
+private def elaborateHavingTimeComponents (model : FlatModel)
+    (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl)
+    (source : SurfaceHavingTimeComponents) : Except CorrelationElabError HavingTimeComponents :=
+  source.mapM fun position component => do
+    match component with
+    | .nowExtractor part =>
+        if position.extractor != part then throw .numericExpressionUnsupported
+        pure (.inner, .nowExtractor part)
+    | .constant text =>
+        let some value := position.decodeConstant? text | throw .numericExpressionUnsupported
+        pure (.inner, .constant value)
+    | .field reference =>
+        let declaration ← resolve reference
+        match declaration.policy.kind.surfaceKind with
+        | .number =>
+            let some field := declaration.toNumberField? | throw .numericExpressionUnsupported
+            if !model.admitsTimeNumberField position field declaration.repeatableScope then throw .numericExpressionUnsupported
+            pure (reference.origin, .number field)
+        | .string =>
+            let some field := declaration.toStringValueField? | throw .numericExpressionUnsupported
+            if !model.admitsTimeStringField field declaration.repeatableScope then throw .numericExpressionUnsupported
+            pure (reference.origin, .string field)
+        | _ => throw .numericExpressionUnsupported
+    | .extractor part reference =>
+        let declaration ← resolve reference
+        let some field := declaration.toTemporalField? | throw .numericExpressionUnsupported
+        if !model.admitsTimeExtractorField position part field declaration.repeatableScope then throw .numericExpressionUnsupported
+        pure (reference.origin, .extractor field part)
+
+private def HavingTimeComponents.wellFormed (source : HavingTimeComponents) (model : FlatModel)
+    (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
+  source.allWithPosition fun position (origin, component) =>
+    let scope := origin.availableLevels candidateLevels outerLevels
+    match component with
+    | .number field => model.admitsTimeNumberField position field scope
+    | .string field => model.admitsTimeStringField field scope
+    | .extractor field part => model.admitsTimeExtractorField position part field scope
+    | .constant value => position.decodeConstant? (toString value) == some value
+    | .nowExtractor part => position.extractor == part
+
 namespace HavingTemporalExpression
 
 def wellFormed (source : HavingTemporalExpression) (model : FlatModel)
@@ -25,6 +66,7 @@ def wellFormed (source : HavingTemporalExpression) (model : FlatModel)
     source.core.atoms.all fun
       | .field reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
           declaration.fieldValueReadRefusal?.isNone && !(declaration.toTemporalTargetPolicy?.any (·.partialMode != .full))
+      | .timeConstruction components => components.wellFormed model candidateLevels outerLevels
       | .dateConstruction components => components.wellFormedForEnvironments model candidateLevels outerLevels false
       | .dateLiteral value false =>
           let authored : AuthoredDateLiteral := { year := none, month := value.civil.parts.month, day := value.civil.parts.day }
@@ -45,6 +87,8 @@ private def resolveCore (model : FlatModel)
       let field : FlatDateRangeField := { id := declaration.id }
       let some (_, _, format) := model.dateRangeSourceProfile field | throw .numericExpressionUnsupported
       pure (.atom (.rangeBound reference.origin field format.components bound))
+  | .timeConstruction components => do
+      pure (.atom (.timeConstruction (← elaborateHavingTimeComponents model resolve components)))
   | .dateConstruction components => do
       pure (.atom (.dateConstruction (← elaborateHavingDateComponents model resolve components false)))
   | .dateLiteral authored => do

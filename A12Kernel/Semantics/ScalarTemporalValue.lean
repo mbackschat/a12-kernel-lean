@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.TimeConstruction
 import A12Kernel.Semantics.ConstructedDateInputs
 import A12Kernel.Semantics.DateAggregate
 import A12Kernel.Semantics.DateTimeAggregate
@@ -45,6 +46,13 @@ def holds (operator : TemporalComparisonOp) : ScalarTemporalValue → ScalarTemp
   | _, _ => false
 
 end ScalarTemporalValue
+
+def TimeConstructionResult.asScalarTemporalOperand : TimeConstructionResult → SimpleComparisonOperand ScalarTemporalValue
+  | .value time => .value (.time time) true
+  | .unavailable cause => .unknown cause
+  | .incomplete => .value .noValue false
+  | .unreal => .value .noValue true
+  | .nonRelevant => .value .nonRelevant true
 
 inductive ScalarTemporalPrimitiveFault where
   | calendarUnavailable

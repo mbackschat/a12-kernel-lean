@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.TimeComponentAdmission
 import A12Kernel.Elaboration.CheckedDocument
 import A12Kernel.Elaboration.ValueAsDateTimeExtraction
 
@@ -16,64 +17,6 @@ extensible String capability. Wider recursive temporal-expression sources remain
 
 namespace A12Kernel
 
-/-- The declaration gate selected by a field's authored `Time(...)` position. -/
-inductive TimeComponentPosition where
-  | hour
-  | minute
-  | second
-  deriving Repr, DecidableEq
-
-namespace TimeComponentPosition
-
-/-- Inclusive natural-number bound for a quoted constant at this position. -/
-def maximumNat : TimeComponentPosition → Nat
-  | .hour => 23
-  | .minute | .second => 59
-
-/-- Inclusive maximum accepted as the position-specific alternative to stored length 2. -/
-def maximum : TimeComponentPosition → Rat
-  | position => position.maximumNat
-
-/-- Decode one already-unescaped quoted constant under the pinned Java 21 decimal-digit profile and position bound. -/
-def decodeConstant? (position : TimeComponentPosition)
-    (source : String) : Option Int := do
-  let value ← parseJava21BmpNatural? source
-  if value ≤ position.maximumNat then
-    some value
-  else
-    none
-
-/-- The only extractor token admitted at this constructor position. -/
-def extractor : TimeComponentPosition → TimeNumericPart
-  | .hour => .hour
-  | .minute => .minute
-  | .second => .second
-
-end TimeComponentPosition
-
-/-- Exact Number declaration gate shared by scalar and addressed `Time(...)` component positions. Placement is certified separately, so this predicate owns only kind and numeric policy. The two-character alternative is the declaration's complete stored-length bound, not its integer-digit cap. -/
-def FlatModel.admitsTimeNumberComponentField (model : FlatModel)
-    (position : TimeComponentPosition) (source : FlatNumberField) : Bool :=
-  match model.lookupUniqueId source.id with
-  | .error _ => false
-  | .ok declaration =>
-      let constraints := declaration.numericTargetConstraints
-      declaration.toNumberField? == some source &&
-        source.info.scale == 0 &&
-        constraints.minFractionalDigits == 0 &&
-        (constraints.maxStoredLength == some 2 ||
-          constraints.maximum == some position.maximum) &&
-        declaration.numberDomainNonnegative source
-
-/-- Scope-bound specialization of the shared Number-component policy gate. -/
-def FlatModel.admitsTimeNumberField (model : FlatModel)
-    (position : TimeComponentPosition) (source : FlatNumberField) (scope : List RepeatableLevel := []) : Bool :=
-  match model.lookupUniqueId source.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.repetitionBoundBy scope &&
-        model.admitsTimeNumberComponentField position source
-
 /-- One ordinary Number field whose declaration carries the exact component certificate. -/
 structure CheckedTimeNumberField (model : FlatModel) where
   scope : List RepeatableLevel := []
@@ -81,59 +24,12 @@ structure CheckedTimeNumberField (model : FlatModel) where
   source : FlatNumberField
   admitted : model.admitsTimeNumberField position source scope = true
 
-/-- Whether the exact declared source is one of the six digit patterns the construction
-    checker recognizes without interpreting general regular-expression equivalence. -/
-def isTimeComponentDigitPattern (source : String) : Bool :=
-  isTemporalComponentDigitPattern 2 source
-
-/-- Placement-neutral pattern-backed String declaration gate shared by scalar and addressed `Time(...)` components. The client-SPI extensible-String alternative bypasses only the pattern gate. -/
-def FlatModel.admitsTimeStringComponentField (model : FlatModel)
-    (source : FlatStringField) : Bool :=
-  match model.lookupUniqueId source.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.toStringValueField? == some source &&
-        declaration.customType.isNone &&
-        declaration.enumeration.isNone &&
-        declaration.stringPolicy.maxLength == some 2 &&
-        (declaration.stringExtensibleEnum || declaration.stringPatternSource.any isTimeComponentDigitPattern)
-
-/-- Scope-bound specialization of the shared String-component policy gate. -/
-def FlatModel.admitsTimeStringField (model : FlatModel)
-    (source : FlatStringField) (scope : List RepeatableLevel := []) : Bool :=
-  match model.lookupUniqueId source.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.repetitionBoundBy scope &&
-        model.admitsTimeStringComponentField source
-
 /-- One ordinary checked String field under the recognized digit-pattern subset. -/
 structure CheckedTimeStringField (model : FlatModel) where
   scope : List RepeatableLevel := []
   position : TimeComponentPosition
   source : FlatStringField
   admitted : model.admitsTimeStringField source scope = true
-
-/-- Placement-neutral field-backed extractor admission. The selected temporal half and constructor position are static obligations; placement is certified separately. -/
-def FlatModel.admitsTimeExtractorComponentField (model : FlatModel)
-    (position : TimeComponentPosition) (part : TimeNumericPart)
-    (source : FlatTemporalField) : Bool :=
-  match model.lookupUniqueId source.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.toTemporalField? == some source &&
-        part.admittedBy source.components &&
-        position.extractor == part
-
-/-- Scope-bound specialization of the shared extractor-component policy gate. -/
-def FlatModel.admitsTimeExtractorField (model : FlatModel)
-    (position : TimeComponentPosition) (part : TimeNumericPart)
-    (source : FlatTemporalField) (scope : List RepeatableLevel := []) : Bool :=
-  match model.lookupUniqueId source.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.repetitionBoundBy scope &&
-        model.admitsTimeExtractorComponentField position part source
 
 /-- One scope-bound temporal field whose declared **format** exposes the extracted part, under its
     matching extraction token. Any of the three temporal kinds qualifies: the declared kind is not
@@ -169,14 +65,6 @@ inductive CheckedTimeComponent (model : FlatModel) where
   | constant (value : Int)
   | extractor (checked : CheckedTimeExtractorField model)
   | shiftedExtractor (checked : CheckedShiftedTimeExtractor model)
-
-/-- The zero-to-three-component prefix shared by surface and checked carriers. Omitted trailing components are fixed zeroes and cannot be read. -/
-inductive TimeComponentPrefix (Component : Type) where
-  | empty
-  | hour (hour : Component)
-  | minute (hour minute : Component)
-  | second (hour minute second : Component)
-  deriving Repr, DecidableEq
 
 /-- The grammar-valid component prefix before model-relative checking. -/
 abbrev SurfaceTimeComponents :=
@@ -323,21 +211,17 @@ inductive TimeComponentsFault where
   | shifted (error : ValueAsDateTimeExtractionFault)
   deriving Repr, DecidableEq
 
+def TimeConstructionInputFault.toCheckedFault : TimeConstructionInputFault → TimeComponentsFault
+  | .payloadKind field => .payloadKind field
+  | .stringNotConvertible field value => .stringNotConvertible field value
+  | .nonIntegralPayload field value => .nonIntegralPayload field value
+
 namespace CheckedTimeNumberField
 
-/-- Project one checked Number cell to the constructor component domain without applying arithmetic truncation or accepting a mismatched runtime payload. The classifier is placement-neutral; scalar and addressed readers supply the exact field identity. -/
 def classifyTimeNumberComponent (field : FieldId)
     (observation : CellObservation Value) :
     Except TimeComponentsFault TimeConstructionComponent :=
-  match observation with
-  | .empty => pure .empty
-  | .unknown cause | .poison cause => pure (.unavailable cause)
-  | .value (.num value) =>
-      if value.den = 1 then
-        pure (.value value.num)
-      else
-        throw (.nonIntegralPayload field value)
-  | .value _ => throw (.payloadKind field)
+  (A12Kernel.classifyTimeNumberComponent field observation).mapError TimeConstructionInputFault.toCheckedFault
 
 /-- Scope-bound specialization of the shared Number-component classifier. -/
 def classify (checked : CheckedTimeNumberField model)
@@ -359,18 +243,10 @@ end CheckedTimeNumberField
 
 namespace CheckedTimeStringField
 
-/-- Convert one already checked digit String through the bounded host-decimal conversion. Pattern and maximum-length checking happened when the document was constructed. The classifier is placement-neutral; scalar and addressed readers supply the exact field identity. -/
 def classifyTimeStringComponent (field : FieldId)
     (observation : CellObservation Value) :
     Except TimeComponentsFault TimeConstructionComponent :=
-  match observation with
-  | .empty => pure .empty
-  | .unknown cause | .poison cause => pure (.unavailable cause)
-  | .value (.str value) =>
-      match parseTemporalComponentInt32? value with
-      | some amount => pure (.value amount)
-      | none => throw (.stringNotConvertible field value)
-  | .value _ => throw (.payloadKind field)
+  (A12Kernel.classifyTimeStringComponent field observation).mapError TimeConstructionInputFault.toCheckedFault
 
 /-- Scope-bound specialization of the shared String-component classifier. -/
 def classify (checked : CheckedTimeStringField model)
@@ -392,45 +268,11 @@ end CheckedTimeStringField
 
 namespace CheckedTimeExtractorField
 
-/-- Project a clock from whichever temporal payload carries one.
-
-    **The declared kind is deliberately not consulted.** A cell's value family is its declared
-    format's, so a DATE-declared field formatted `HH:mm:ss` holds a clock and the Kernel reads it:
-    `Time(HoursFromTime(…), …)` over such a field is admitted and computes `08:30:45` from a stored
-    `08:30:45`, on both codegen strategies
-    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
-    Earlier guards here required the kind to match the payload, which turned that admitted source
-    into a `payloadKind` fault. `.value _` still fails, so a payload carrying no clock at all
-    remains a real refusal. -/
-private def clockObservation? :
-    CellObservation Value → Option (CellObservation TimeOfDay)
-  | .empty => some .empty
-  | .unknown cause => some (.unknown cause)
-  | .poison cause => some (.poison cause)
-  | .value (.temporal (.time _ clock)) => some (.value clock)
-  | .value (.temporal (.dateTime _ _ clock _)) => some (.value clock)
-  | .value _ => none
-
-private def componentOfNumericOperand (field : FieldId) :
-    NumericOperand → Except TimeComponentsFault TimeConstructionComponent
-  | .value amount fillability =>
-      if fillability.canGrow || fillability.canShrink then
-        pure .empty
-      else if amount.den = 1 then
-          pure (.value amount.num)
-        else
-          throw (.nonIntegralPayload field amount)
-  | .unknown cause => pure (.unavailable cause)
-
-/-- Project a selected clock component without imposing placement. Empty temporal input follows the extractor's symmetric numeric-zero rule; formal unavailability retains its exact cause. -/
 def classifyTimeExtractorComponent (field : FieldId)
     (part : TimeNumericPart)
     (observation : CellObservation Value) :
     Except TimeComponentsFault TimeConstructionComponent :=
-  match clockObservation? observation with
-  | some projected =>
-      componentOfNumericOperand field (part.fromTimeObservation projected)
-  | none => throw (.payloadKind field)
+  (A12Kernel.classifyTimeExtractorComponent field part observation).mapError TimeConstructionInputFault.toCheckedFault
 
 /-- Scope-bound specialization of the shared temporal-extractor classifier. -/
 def classify (checked : CheckedTimeExtractorField model)
@@ -512,73 +354,7 @@ def read (checked : CheckedTimeComponent model)
 
 end CheckedTimeComponent
 
-namespace TimeComponentPrefix
 
-/-- Whether any supplied component satisfies its carrier-specific field-reference predicate; omitted suffixes contribute no reference. -/
-def referencesFieldWith (checked : TimeComponentPrefix Component)
-    (referencesField : Component → FieldId → Bool)
-    (field : FieldId) : Bool :=
-  match checked with
-  | .empty => false
-  | .hour hourComponent => referencesField hourComponent field
-  | .minute hourComponent minuteComponent =>
-      referencesField hourComponent field ||
-        referencesField minuteComponent field
-  | .second hourComponent minuteComponent secondComponent =>
-      referencesField hourComponent field ||
-        referencesField minuteComponent field ||
-        referencesField secondComponent field
-
-/-- Evaluate one supplied prefix through its carrier-specific reader. Computation stops on formal poison; validation still evaluates later arguments
-    before projecting formal state (spec/05 §3). Omitted trailing slots remain fixed zeroes. -/
-@[simp]
-def evaluateWithSubterm [SizeOf Component] (checked : TimeComponentPrefix Component)
-    (read : (component : Component) → sizeOf component < sizeOf checked → Except Error TimeConstructionComponent)
-    (phase : Phase := .computation) :
-    Except Error TimeConstructionResult :=
-  match checked with
-  | .empty =>
-      pure (TimeConstructionArity.zero.evaluate .empty .empty .empty)
-  | .hour hourField => do
-      let hourValue ← read hourField (by simp +arith)
-      pure (TimeConstructionArity.hour.evaluate hourValue .empty .empty)
-  | .minute hourField minuteField => do
-      let hourValue ← read hourField (by simp +arith)
-      match hourValue with
-      | .unavailable cause =>
-          if phase == .validation then (read minuteField (by simp +arith)).map (fun _ => .unavailable cause)
-          else pure (.unavailable cause)
-      | hourValue =>
-          let minuteValue ← read minuteField (by simp +arith)
-          pure (TimeConstructionArity.minute.evaluate hourValue minuteValue .empty)
-  | .second hourField minuteField secondField => do
-      let hourValue ← read hourField (by simp +arith)
-      match hourValue with
-      | .unavailable cause =>
-          if phase == .validation then do
-            let _ ← read minuteField (by simp +arith)
-            let _ ← read secondField (by simp +arith)
-            pure (.unavailable cause)
-          else pure (.unavailable cause)
-      | hourValue =>
-          let minuteValue ← read minuteField (by simp +arith)
-          match minuteValue with
-          | .unavailable cause =>
-              if phase == .validation then (read secondField (by simp +arith)).map (fun _ => .unavailable cause)
-              else pure (.unavailable cause)
-          | minuteValue =>
-              let secondValue ← read secondField (by simp +arith)
-              pure (TimeConstructionArity.second.evaluate
-                hourValue minuteValue secondValue)
-
-/-- The ordinary reader specializes the same ordered prefix evaluation. -/
-def evaluateWith (checked : TimeComponentPrefix Component)
-    (read : Component → Except Error TimeConstructionComponent)
-    (phase : Phase := .computation) :
-    Except Error TimeConstructionResult :=
-  checked.evaluateWithSubterm (fun component _ => read component) phase
-
-end TimeComponentPrefix
 
 namespace CheckedTimeComponents
 

@@ -63,10 +63,20 @@ def SurfaceHavingDateComponents.references (source : SurfaceHavingDateComponents
     | .field reference | .extractor _ reference => some reference
     | _ => none
 
+inductive SurfaceHavingTimeComponent where
+  | field (reference : SurfaceHavingPresenceRef)
+  | constant (value : String)
+  | extractor (part : TimeNumericPart) (reference : SurfaceHavingPresenceRef)
+  | nowExtractor (part : TimeNumericPart)
+  deriving Repr, DecidableEq
+
+abbrev SurfaceHavingTimeComponents := TimeComponentPrefix SurfaceHavingTimeComponent
+
 /-- Constructor operands retain an origin at every field, including mixed captured/candidate reads. -/
 inductive SurfaceHavingTemporalExpression where
   | field (reference : SurfaceHavingTemporalRef)
   | rangeBound (reference : SurfaceHavingTemporalRef) (bound : DateRangeBound)
+  | timeConstruction (components : SurfaceHavingTimeComponents)
   | dateConstruction (components : SurfaceHavingDateComponents)
   | dateLiteral (source : AuthoredDateLiteral)
   | timeLiteral (value : TimeOfDay)
@@ -82,6 +92,9 @@ inductive SurfaceHavingTemporalExpression where
 
 def SurfaceHavingTemporalExpression.fields : SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
   | .field reference | .rangeBound reference _ => [reference]
+  | .timeConstruction components => components.sources.filterMap fun
+      | .field ref | .extractor _ ref => some { origin := ref.origin, field := ref.field }
+      | _ => none
   | .dateConstruction components => components.references.map fun ref => { origin := ref.origin, field := ref.field }
   | .grouped source | .dateFromDateTime source | .timeFromDateTime source => source.fields
   | .dateTime date time => date.fields ++ time.fields

@@ -1,3 +1,4 @@
+import A12Kernel.Conformance.HavingTimeConstruction
 import A12Kernel.Conformance.HavingDateValidity
 import A12Kernel.Conformance.HavingUniqueness
 import A12Kernel.Conformance.HavingStringPattern

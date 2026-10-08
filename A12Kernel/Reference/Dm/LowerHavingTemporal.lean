@@ -15,7 +15,7 @@ def Expr.havingTemporalConstructor : Expr → Bool
   | .braces source => source.havingTemporalConstructor
   | .call "StartOfDateRange" [.mk (.constant "BaseYear") none none] none none
   | .call "EndOfDateRange" [.mk (.constant "BaseYear") none none] none none => false
-  | .call name _ _ _ => ["Date", "DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
+  | .call name _ _ _ => ["Time", "Date", "DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
   | _ => false
 
 private def lowerHavingDateComponent : Expr → Lowering SurfaceHavingDateComponent
@@ -50,6 +50,32 @@ def lowerHavingDateComponents (arguments : List Argument) : Lowering SurfaceHavi
   | [day, month, century, shortYear] => pure { day, month, year := .centuryAndShortYear century shortYear }
   | _ => refuse "Date" "component arity"
 
+private def lowerHavingTimeComponent : Expr → Lowering SurfaceHavingTimeComponent
+  | .string text => pure (.constant text)
+  | .entity { path, index := none, category := none } => do
+      let some (origin, field) := path.havingField? | refuse "Time" "component path"
+      pure (.field { origin, field })
+  | .call name [.mk operand none none] none none => do
+      let some part := timePart? name | refuse "Time" "component extractor"
+      match operand with
+      | .constant "Now" => pure (.nowExtractor part)
+      | .entity { path, index := none, category := none } => do
+          let some (origin, field) := path.havingField? | refuse "Time" "extractor path"
+          pure (.extractor part { origin, field })
+      | _ => refuse "Time" "direct extractor operand"
+  | _ => refuse "Time" "direct component"
+
+private def lowerHavingTimeComponents (arguments : List Argument) : Lowering SurfaceHavingTimeComponents := do
+  let components ← arguments.mapM fun
+    | .mk expression none none => lowerHavingTimeComponent expression
+    | _ => refuse "Time" "component modifier"
+  match components with
+  | [] => pure .empty
+  | [hour] => pure (.hour hour)
+  | [hour, minute] => pure (.minute hour minute)
+  | [hour, minute, second] => pure (.second hour minute second)
+  | _ => refuse "Time" "component arity"
+
 /-- Source slots use unbracketed entities and reject grouping, like ordinary temporal lowering
 (spec/12 §3). Every field keeps its own captured/candidate origin. -/
 def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowering SurfaceHavingTemporalExpression
@@ -64,6 +90,7 @@ def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowering Surfac
   | .braces source => do
       if sourceSlot then refuse "Having" "grouped temporal source"
       .grouped <$> lowerHavingTemporalExpression false source
+  | .call "Time" arguments none none => .timeConstruction <$> lowerHavingTimeComponents arguments
   | .call "Date" arguments none none => .dateConstruction <$> lowerHavingDateComponents arguments
   | .call "DateTime" [.mk date none none, .mk time none none] none none => do
       pure (.dateTime (← lowerHavingTemporalExpression true date) (← lowerHavingTemporalExpression true time))

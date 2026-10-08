@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.TimeConstructionInputs
 import A12Kernel.Semantics.HavingDateValidity
 import A12Kernel.Semantics.ScalarTemporalValue
 import A12Kernel.Semantics.TemporalExpression
@@ -24,9 +25,34 @@ def HavingTemporalExpressionRef.fieldId (reference : HavingTemporalExpressionRef
   | .number field => field.id
   | .string field => field.id
 
+abbrev HavingTimeComponents := TimeComponentPrefix (HavingOrigin × ResolvedTimeConstructionSource)
+
+private def HavingTimeComponents.read (components : HavingTimeComponents) (profile : ModelZone.ConcreteProfile)
+    (phase : Phase) (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
+    Except Error TimeConstructionResult :=
+  components.evaluateWith (fun (origin, source) => do
+    let classify (value : Except TimeConstructionInputFault TimeConstructionComponent) :=
+      match value with
+      | .ok component => pure component
+      | .error (.stringNotConvertible _ _) => throw context.temporalValueFailure
+      | .error _ => pure (.unavailable .malformed)
+    match source with
+    | .constant value => pure (.value value)
+    | .number field => classify (classifyTimeNumberComponent field.id
+        (observeCell phase (← context.read (frame.envAt origin) field.id)))
+    | .string field => classify (classifyTimeStringComponent field.id
+        (observeCell phase (← context.read (frame.envAt origin) field.id)))
+    | .extractor field part => classify (classifyTimeExtractorComponent field.id part
+        (observeCell phase (← context.read (frame.envAt origin) field.id)))
+    | .nowExtractor part =>
+        let some world := context.world | throw context.worldUnavailable
+        let some label := profile.localDateTime? world.now | throw context.unsupportedDateCalendar
+        pure (.value (part.extract label.time).num)) phase
+
 inductive HavingTemporalAtom where
   | field (reference : HavingTemporalRef)
   | rangeBound (origin : HavingOrigin) (source : FlatDateRangeField) (components : TemporalComponents) (bound : DateRangeBound)
+  | timeConstruction (components : HavingTimeComponents)
   | dateConstruction (components : HavingDateComponents)
   | dateLiteral (value : FullDate) (yearPresent : Bool)
   | timeLiteral (value : TimeOfDay)
@@ -49,6 +75,12 @@ def references (source : HavingTemporalExpression) : List HavingTemporalExpressi
   source.core.atoms.flatMap fun
     | .field reference => [{ origin := reference.origin, source := .temporal reference.field }]
     | .rangeBound origin field components _ => [{ origin, source := .range field components }]
+    | .timeConstruction components => components.sources.filterMap fun (origin, component) =>
+        match component with
+        | .number field => some { origin, source := .number field }
+        | .string field => some { origin, source := .string field }
+        | .extractor field _ => some { origin, source := .temporal field }
+        | _ => none
     | .dateConstruction components => components.sources.filterMap fun (origin, component) =>
         match component with
         | .numberField field => some { origin, source := .number field }
@@ -64,7 +96,7 @@ def componentsWith (baseYear : Option Int) :
           reference.field.components.withBaseYear baseYear.isSome else reference.field.components)
       | .rangeBound _ _ components _ => some (components.withBaseYear baseYear.isSome)
       | .dateLiteral _ yearPresent => some ({ TemporalComponents.fullDate with year := yearPresent }.withBaseYear baseYear.isSome)
-      | .timeLiteral _ => some TemporalComponents.time
+      | .timeLiteral _ | .timeConstruction _ => some TemporalComponents.time
       | .dateTimeLiteral _ | .now => some TemporalComponents.now
       | .today | .baseYearBound _ | .dateConstruction _ => some TemporalComponents.fullDate
   | .apply .dateTime date [time] => do
@@ -94,6 +126,8 @@ private def readAtom (source : HavingTemporalExpression) (phase : Phase)
       let cell ← context.read (frame.envAt origin) field.id
       (projectScalarRangeBoundObservation source.profile (!components.year && source.baseYear.isNone)
         bound (observeCell phase cell)).mapError fun _ => context.unsupportedDateCalendar
+  | .timeConstruction components => do
+      pure (← components.read source.profile phase context frame).asScalarTemporalOperand
   | .dateConstruction components => do
       pure (components.finishValue (← components.observe phase context frame)).asScalarTemporalOperand
   | .timeLiteral value => pure (.value (.time value) true)

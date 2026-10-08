@@ -393,12 +393,7 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
             (addressed.storedText row source.selection.targetDeclaration.id)
   | .dateConstruction components => readRecursiveDateComponents phase context partialRead? components
   | .timeConstruction components => do
-      pure (match ← readRecursiveTimeComponents phase context partialRead? components with
-      | .value time => .value (.time time) true
-      | .unavailable cause => .unknown cause
-      | .incomplete => .value .noValue false
-      | .unreal => .value .noValue true
-      | .nonRelevant => .value .nonRelevant true)
+      pure (← readRecursiveTimeComponents phase context partialRead? components).asScalarTemporalOperand
   | .field field => pure (readScalarTemporalField model phase field (context.read field.id))
   | .entityExtremum operator source => source.evalScalar operator phase context partialRead?
 

@@ -6,7 +6,7 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-08; HEAD was `8154854d`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-08; HEAD was `bd773d1b`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
@@ -139,9 +139,9 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 242 | 100% |
-| Citing a Kernel checkpoint or calibration | 136 | 56% |
-| Carrying an explicit evidence-pending note | 92 | 38% |
+| Capability records in [`implementation/`](implementation/) | 243 | 100% |
+| Citing a Kernel checkpoint or calibration | 137 | 56% |
+| Carrying an explicit evidence-pending note | 93 | 38% |
 
 ## Axis 3 — open obligation load
 
@@ -161,8 +161,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 253571 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 28914 | 11% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 253793 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 29078 | 11% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.
@@ -273,4 +273,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-10-07T11:59:09+02:00 | `94cce6b1` | 489 | 473 | 6 | 134 | 24 |
 | 2026-10-07T17:47:56+02:00 | `5f00012b` | 489 | 473 | 6 | 135 | 24 |
 | 2026-10-07T20:22:32+02:00 | `7710eb33` | 489 | 473 | 6 | 136 | 24 |
+| 2026-10-08T01:46:57+02:00 | `bd773d1b` | 489 | 473 | 6 | 137 | 24 |
 <!-- velocity-history:end -->

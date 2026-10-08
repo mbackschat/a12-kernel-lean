@@ -17,7 +17,7 @@ namespace A12Kernel
     (parsed : parseTemporalComponentInt32? text = some amount) :
     checked.classify (.value (.str text)) = .ok (.value amount) := by
   simp [CheckedTimeStringField.classify,
-    CheckedTimeStringField.classifyTimeStringComponent, parsed]
+    CheckedTimeStringField.classifyTimeStringComponent, classifyTimeStringComponent, parsed]
   rfl
 
 /-- A checked extractor cannot retain a token from another constructor position. -/
