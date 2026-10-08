@@ -354,7 +354,7 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
               CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn, result,
               verdictTruth_eq_tru_iff_fired]
-      | uniqueness source =>
+      | dateRange source | uniqueness source =>
           cases result : source.evalValidationRead context.asResolving frame <;>
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
               CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn, result,

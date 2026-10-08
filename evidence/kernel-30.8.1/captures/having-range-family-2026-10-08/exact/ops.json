@@ -1,0 +1,1192 @@
+[
+  {
+    "target": "config",
+    "op": "modify",
+    "time-zone": "UTC",
+    "base-year": 2024
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Rows",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "N",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Start",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM-dd"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Finish",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM-dd"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Range",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Other",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Far",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Ranges"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Ranges",
+    "name": "A",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Ranges",
+    "name": "B",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Start",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM-dd"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Finish",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM-dd"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Range",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Other",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Far",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Rows",
+    "name": "Ranges"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Ranges",
+    "name": "A",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Ranges",
+    "name": "B",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "constructStoredDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/constructStoredDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "DateRange(Start,Finish) == [Range]"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_constructStoredDirect",
+    "condition": "FieldFilled(Anchor) And (DateRange(Start,Finish) == [Range])",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "constructStoredHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/constructStoredHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) == [Rows/Range]))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_constructStoredHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) == [Rows/Range])) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "storedConstructDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/storedConstructDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "[Range] == DateRange(Start,Finish)"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_storedConstructDirect",
+    "condition": "FieldFilled(Anchor) And ([Range] == DateRange(Start,Finish))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "storedConstructHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/storedConstructHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having ([Rows/Range] == DateRange(Rows/Start,Rows/Finish)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_storedConstructHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having ([Rows/Range] == DateRange(Rows/Start,Rows/Finish))) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "constructNotEqualDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/constructNotEqualDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "DateRange(Start,Finish) != [Range]"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_constructNotEqualDirect",
+    "condition": "FieldFilled(Anchor) And (DateRange(Start,Finish) != [Range])",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "constructNotEqualHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/constructNotEqualHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) != [Rows/Range]))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_constructNotEqualHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) != [Rows/Range])) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "constructPairDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/constructPairDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "DateRange(Start,Finish) == DateRange(Start,Finish)"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_constructPairDirect",
+    "condition": "FieldFilled(Anchor) And (DateRange(Start,Finish) == DateRange(Start,Finish))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "constructPairHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/constructPairHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) == DateRange($Start,$Finish)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_constructPairHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) == DateRange($Start,$Finish))) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "mixedEndpointsDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/mixedEndpointsDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "DateRange(Start,Finish) == [Range]"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_mixedEndpointsDirect",
+    "condition": "FieldFilled(Anchor) And (DateRange(Start,Finish) == [Range])",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "mixedEndpointsHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/mixedEndpointsHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (DateRange(Rows/Start,$Finish) == [Rows/Range]))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_mixedEndpointsHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRange(Rows/Start,$Finish) == [Rows/Range])) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "storedControlDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/storedControlDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "[Range] == [Range]"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_storedControlDirect",
+    "condition": "FieldFilled(Anchor) And ([Range] == [Range])",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "storedControlHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/storedControlHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having ([Rows/Range] == [$Range]))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_storedControlHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having ([Rows/Range] == [$Range])) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "anyDirectDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/anyDirectDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "DateRangesOverlap(Range,Other)"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_anyDirectDirect",
+    "condition": "FieldFilled(Anchor) And (DateRangesOverlap(Range,Other))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "anyDirectHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/anyDirectHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (DateRangesOverlap(Rows/Range,Rows/Other)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_anyDirectHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRangesOverlap(Rows/Range,Rows/Other))) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "scalarDirectDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/scalarDirectDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "AtLeastOneDateRangeOverlaps(Range In Other)"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_scalarDirectDirect",
+    "condition": "FieldFilled(Anchor) And (AtLeastOneDateRangeOverlaps(Range In Other))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "scalarDirectHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/scalarDirectHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps(Rows/Range In Rows/Other)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_scalarDirectHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps(Rows/Range In Rows/Other))) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "anyCaptureLastDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/anyCaptureLastDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "DateRangesOverlap(Range,Other,Far)"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_anyCaptureLastDirect",
+    "condition": "FieldFilled(Anchor) And (DateRangesOverlap(Range,Other,Far))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "anyCaptureLastHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/anyCaptureLastHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (DateRangesOverlap(Rows/Range,Rows/Other,$Far)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_anyCaptureLastHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRangesOverlap(Rows/Range,Rows/Other,$Far))) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "anyCaptureFirstDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/anyCaptureFirstDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "DateRangesOverlap(Far,Range,Other)"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_anyCaptureFirstDirect",
+    "condition": "FieldFilled(Anchor) And (DateRangesOverlap(Far,Range,Other))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "anyCaptureFirstHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/anyCaptureFirstHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (DateRangesOverlap($Far,Rows/Range,Rows/Other)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_anyCaptureFirstHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRangesOverlap($Far,Rows/Range,Rows/Other))) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "scalarCaptureDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/scalarCaptureDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "AtLeastOneDateRangeOverlaps(Far In Range,Other)"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_scalarCaptureDirect",
+    "condition": "FieldFilled(Anchor) And (AtLeastOneDateRangeOverlaps(Far In Range,Other))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "scalarCaptureHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/scalarCaptureHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps($Far In Rows/Range,Rows/Other)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_scalarCaptureHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps($Far In Rows/Range,Rows/Other))) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "scalarGroupDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/scalarGroupDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "AtLeastOneDateRangeOverlaps(Range In Ranges)"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_scalarGroupDirect",
+    "condition": "FieldFilled(Anchor) And (AtLeastOneDateRangeOverlaps(Range In Ranges))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "scalarGroupHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/scalarGroupHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps(Rows/Range In Rows/Ranges)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_scalarGroupHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps(Rows/Range In Rows/Ranges))) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "anyStarDirect",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/anyStarDirect",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "FieldFilled(Anchor) And DateRangesOverlap(Rows*/Range)"
+      },
+      {
+        "operation": "0",
+        "precondition": "FieldFilled(Anchor)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_anyStarDirect",
+    "condition": "FieldFilled(Anchor) And (FieldFilled(Anchor) And DateRangesOverlap(Rows*/Range))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "anyStarHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/anyStarHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having (FieldFilled(Rows/N) And DateRangesOverlap(Rows*/Range)))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_anyStarHaving",
+    "condition": "FieldFilled(Anchor) And (Sum(Rows*/N Having (FieldFilled(Rows/N) And DateRangesOverlap(Rows*/Range))) > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Range family control."
+      }
+    ]
+  }
+]

@@ -341,7 +341,7 @@ private def correlationElaborationResult : CorrelationElabError →
   -- field/group presence leaf, named-type or Date-validity predicate, group list, DateRange pair, or a disjunction, and none of these arms is reachable on this route. Reaching one means the checked
   -- core and the wire vocabulary disagree, which is what `incoherentCore` reports; the public
   -- diagnostic vocabulary is deliberately left unchanged rather than widened for unreachable arms.
-  | .dateComponents _ | .uniquenessKind _ | .uniquenessFormat _ | .membershipKind _ | .membershipBaseType _ | .membershipStringLiteralKind _ | .fieldFill _ | .groupFill _ | .groupPresence _ | .stringPattern _ | .typeValidityOperand _ | .typeValidityName _ | .text _ | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
+  | .dateRange _ | .dateComponents _ | .uniquenessKind _ | .uniquenessFormat _ | .membershipKind _ | .membershipBaseType _ | .membershipStringLiteralKind _ | .fieldFill _ | .groupFill _ | .groupPresence _ | .stringPattern _ | .typeValidityOperand _ | .typeValidityName _ | .text _ | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute | .literalScaleMismatch _ _ _
   | .constantNumericComparison | .numericExpressionUnsupported
   | .numericOperandFieldNotNumber _ _ | .dateRangeComponentsMismatch _ _ => throw .incoherentCore

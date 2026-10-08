@@ -37,6 +37,7 @@ structure HavingLeafResolvers extends HavingNumericResolvers where
     Except CorrelationElabError FlatLiteralMembership
   literalList : SurfaceHavingEntitySource → List String → Except CorrelationElabError HavingFieldValueList
   dateValidity : SurfaceHavingDateComponents → Except CorrelationElabError HavingConstructedDate
+  dateRange : SurfaceHavingDateRangePredicate → Except CorrelationElabError HavingDateRangePredicate := fun _ => throw .stringLeafOutsideStarRoute
   uniqueness : SurfaceHavingEntitySource → Except CorrelationElabError HavingUniqueness
   fieldMembership : ComputationValueListOperator → SurfaceHavingEntitySource → SurfaceHavingEntitySource →
     Except CorrelationElabError HavingFieldValueList
@@ -166,6 +167,7 @@ def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
   | .literalList quantifier subjects values => do
       pure (.leaf (.fieldMembership (.quantified quantifier) (← resolvers.literalList subjects values)))
   | .dateValidity operation source => (.leaf ∘ CorrelatedHavingLeaf.dateValidity operation) <$> resolvers.dateValidity source
+  | .dateRange source => (.leaf ∘ CorrelatedHavingLeaf.dateRange) <$> resolvers.dateRange source
   | .uniqueness source => (.leaf ∘ CorrelatedHavingLeaf.uniqueness) <$> resolvers.uniqueness source
   | .fieldMembership operator subjects members => do
       pure (.leaf (.fieldMembership operator (← resolvers.fieldMembership operator subjects members)))

@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-08; HEAD was `a91fe8d6`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-08; HEAD was `13e39307`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 1771 retained Kernel observation rows through Lean, 29569 of the 29569 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 213 broadly (98%), 4 partially and 0 not at all, as classified on 2026-10-06 at `19e166c5+working-tree` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 473 of 495 diagnostic identifiers occur in Lean source (95%); 22 do not.
+**Replaying 1793 retained Kernel observation rows through Lean, 30317 of the 30317 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 213 broadly (98%), 4 partially and 0 not at all, as classified on 2026-10-06 at `19e166c5+working-tree` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 473 of 495 diagnostic identifiers occur in Lean source (95%); 22 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -65,7 +65,7 @@ Remaining effort per construct, estimated at classification: 12 L, 56 M, 42 S (S
 
 ## Axis R — population replay
 
-The [replay executable](../A12Kernel/ReplayMain.lean) reads each of the 377 retained `kernelProbe` requests with document rows, its DM-JSON model and its documents. It parses every rule condition and computation operation and lowers each onto the checked carriers the theory already has. Each rule and computation is then run and compared with the Kernel's retained artifact.
+The [replay executable](../A12Kernel/ReplayMain.lean) reads each of the 379 retained `kernelProbe` requests with document rows, its DM-JSON model and its documents. It parses every rule condition and computation operation and lowers each onto the checked carriers the theory already has. Each rule and computation is then run and compared with the Kernel's retained artifact.
 
 A rule is compared by the messages it fires: code, pointer and message type. A computation is compared by the Kernel's change projection for its target.
 
@@ -80,13 +80,13 @@ Each instance, one rule or computation on one document row, lands in one tier:
 
 | | rules | computations |
 |---|---|---|
-| match | 14814 | 14755 |
+| match | 15100 | 15217 |
 | tier 1 | 0 | 0 |
-| tier 2 | 161 | 0 |
+| tier 2 | 447 | 110 |
 | unattributed | 0 | 0 |
 | fault | 0 | 0 |
 
-Of the 1771 rows, 206 have no matching row in a retained artifact, and 9 could not be read or prepared as a whole. Matching instances are calibration over this population only; they make no claim about a model the population does not contain.
+Of the 1793 rows, 206 have no matching row in a retained artifact, and 9 could not be read or prepared as a whole. Matching instances are calibration over this population only; they make no claim about a model the population does not contain.
 
 ### Tier-2 clusters
 
@@ -94,11 +94,15 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 
 | instances | members | arm | construct |
 |---|---|---|---|
+| 110 | 10 | validation | `Comparison/DateRange` |
+| 110 | 10 | computation | `DateRange` |
+| 88 | 8 | validation | `DateRangesOverlap` |
+| 66 | 6 | validation | `AtLeastOneDateRangeOverlaps` |
 | 57 | 8 | validation | `RuleAssembly` |
 | 32 | 3 | validation | `RepetitionNotUnique` |
+| 31 | 4 | validation | `Comparison` |
 | 30 | 3 | validation | `PatternMatched` |
 | 30 | 3 | validation | `PatternViolated` |
-| 9 | 2 | validation | `Comparison` |
 | 5 | 4 | row | `Document` |
 | 4 | 4 | row | `Prepare` |
 | 3 | 1 | validation | `FieldsNotCollectivelyFilled` |
@@ -139,16 +143,16 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 247 | 100% |
-| Citing a Kernel checkpoint or calibration | 138 | 55% |
-| Carrying an explicit evidence-pending note | 97 | 39% |
+| Capability records in [`implementation/`](implementation/) | 248 | 100% |
+| Citing a Kernel checkpoint or calibration | 139 | 56% |
+| Carrying an explicit evidence-pending note | 98 | 39% |
 
 ## Axis 3 — open obligation load
 
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 24 |
-| `remaining` rows across those gaps | 323 |
+| `remaining` rows across those gaps | 325 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 13 |
 | Ledger entries `handed-off` | 0 |
@@ -161,8 +165,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 256870 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 30225 | 11% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 257252 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 30462 | 11% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.
@@ -171,7 +175,7 @@ Tracked Lean files in neither estate: 0. A nonzero value means the ratio above m
 
 | | count |
 |---|---|
-| Retained capture directories under `../evidence/` | 328 |
+| Retained capture directories under `../evidence/` | 329 |
 | `inputHash` markers in `*-obs.json` and `semantic-observations.json` | 767 |
 
 The marker count excludes other observation formats, including runtime `artifact.json` files with `rows` arrays. It is neither a total observation count nor a count of independent behavioural discriminators.
@@ -275,4 +279,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-10-07T20:22:32+02:00 | `7710eb33` | 489 | 473 | 6 | 136 | 24 |
 | 2026-10-08T01:46:57+02:00 | `bd773d1b` | 489 | 473 | 6 | 137 | 24 |
 | 2026-10-08T05:05:41+02:00 | `86f814b7` | 489 | 473 | 6 | 138 | 24 |
+| 2026-10-08T09:18:24+02:00 | `13e39307` | 489 | 473 | 6 | 139 | 24 |
 <!-- velocity-history:end -->

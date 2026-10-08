@@ -102,7 +102,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareSelected _ _ _ | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .compareTemporalExpression _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .dateValidity _ _ | .uniqueness _ | .literalList _ _ _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
+  | .compareSelected _ _ _ | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .compareTemporalExpression _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .dateValidity _ _ | .dateRange _ | .uniqueness _ | .literalList _ _ _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -515,6 +515,8 @@ def CorrelatedHaving.outerIterationScopes
   | .leaf (.literalMembership origin _ source) =>
       [outerHavingFieldIterationScope model origin source.field.id]
   | .leaf (.dateValidity _ source) => source.asTemporal.outerIterationScopes model
+  | .leaf (.dateRange source) =>
+      source.presenceSlots.map (·.outerIterationScope? model)
   | .leaf (.uniqueness source) =>
       source.presenceSlots.map (·.outerIterationScope? model)
   | .leaf (.fieldMembership _ source) =>
@@ -577,6 +579,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .dateRange source => source.entities.findSome? entity
   | .compareSelected _ left right => (left.entities ++ right.entities).findSome? entity
   | .compareTemporalExpression _ left right =>
       (((left.entitySources ++ right.entitySources).flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
@@ -745,6 +748,8 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     literalList := elaborateHavingTokenLiteralList model declaringGroup candidateLevels outerLevels
     dateValidity := fun source => elaborateHavingDateComponents model (fun ref =>
       model.resolveHavingEntityRead declaringGroup outerLevels { origin := ref.origin, field := ref.field }) source true (some numeric)
+    dateRange := elaborateHavingDateRange model declaringGroup candidateLevels outerLevels (fun ref =>
+      model.resolveHavingEntityRead declaringGroup outerLevels { origin := ref.origin, field := ref.field })
     uniqueness := elaborateHavingUniqueness model declaringGroup candidateLevels outerLevels
     fieldMembership := fun operator subjects members =>
       let read (valueRead : Bool) (ref : SurfaceHavingDirectFieldOperand) :=

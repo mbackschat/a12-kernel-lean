@@ -340,6 +340,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-subday-differences"></a>
 - [Direct sub-day differences inside Having](implementation/repetition-and-paths.md#cap-having-subday-differences)
 
+<a id="cap-having-date-ranges"></a>
+- [DateRange constructions and overlap in Having](implementation/date-range.md#cap-having-date-ranges)
+
 <a id="cap-having-date-range-components"></a>
 - [DateRange endpoint components inside Having](implementation/repetition-and-paths.md#cap-having-date-range-components)
 

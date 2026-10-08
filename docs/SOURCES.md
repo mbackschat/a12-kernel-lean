@@ -1295,7 +1295,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-distinct-count-temporal-identity-both-strategies"></a>
 - [Distinct temporal identity, both strategies](sources/temporal-runtime-fold-probes.md#src-distinct-count-temporal-identity-both-strategies)
 <a id="src-having-numeric-expression-runtime"></a>
-- [Numeric filter expressions and captured repetition ordering](sources/having-filter-probes.md#src-having-numeric-expression-runtime)
+- [Numeric filters and captured repetition](sources/having-filter-probes.md#src-having-numeric-expression-runtime)
 
 <a id="src-having-number-leaf-grid"></a>
 - [Number/literal filters: all operators and operand orders, scale gates only on equality](sources/having-filter-probes.md#src-having-number-leaf-grid)
@@ -1745,7 +1745,7 @@ Edit the source shard when its provenance or drill route changes; change this hu
 - [Six transferred peer computation models replay on 30 runtime documents](sources/evaluation-and-application-routes.md#src-peer-ba-computations-replay)
 
 <a id="src-text-computation-guards"></a>
-- [String and Enumeration computation guards suppress empty operands and poison on reached invalid reads](sources/computation-scheduling-probes.md#src-text-computation-guards)
+- [String and Enumeration computation guards](sources/computation-scheduling-probes.md#src-text-computation-guards)
 
 <a id="src-peer-computation-shapes-replay"></a>
 - [Invoice replay](sources/evaluation-and-application-routes.md#src-peer-computation-shapes-replay)
@@ -1780,7 +1780,7 @@ Edit the source shard when its provenance or drill route changes; change this hu
 - [Rule iteration](sources/evaluation-and-application-routes.md#src-validation-iteration-domain)
 
 <a id="src-recursive-temporal-numeric-expression"></a>
-- [Recursive temporal numeric expressions and phase-specific shift effects](sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression)
+- [Recursive temporal numeric expressions](sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression)
 
 <a id="src-uniqueness-computation-guards"></a>
 - [Uniqueness guards](sources/computation-scheduling-probes.md#src-uniqueness-computation-guards)
@@ -1807,4 +1807,7 @@ Edit the source shard when its provenance or drill route changes; change this hu
 - [Partial temporal reads](sources/temporal-runtime-fold-probes.md#src-partial-temporal-reads)
 
 <a id="src-having-temporal-constant-effects"></a>
-- [Temporal filter constants: admission and reached literal failures](sources/having-filter-probes.md#src-having-temporal-constant-effects)
+- [Temporal filter constants](sources/having-filter-probes.md#src-having-temporal-constant-effects)
+
+<a id="src-having-range-family"></a>
+- [Having ranges](sources/having-filter-probes.md#src-having-range-family)

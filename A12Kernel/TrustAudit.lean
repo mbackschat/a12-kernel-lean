@@ -3030,3 +3030,6 @@ run_cmd do
 #print axioms A12Kernel.HavingUniqueness.havingUniquenessScan_deciding_prefix
 #print axioms A12Kernel.HavingUniqueness.havingUniquenessScan_validation_skip_invalid
 #print axioms A12Kernel.HavingUniqueness.havingUniquenessScan_computation_poison
+
+#print axioms A12Kernel.HavingDateRangePredicate.evalOverlap_empty_scalar
+#print axioms A12Kernel.HavingDateRangePredicate.evalOverlap_poison_scalar

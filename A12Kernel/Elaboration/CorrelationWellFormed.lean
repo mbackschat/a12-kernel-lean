@@ -6,6 +6,7 @@ import A12Kernel.Elaboration.HavingCollectionCount
 import A12Kernel.Elaboration.HavingNumberAggregate
 import A12Kernel.Elaboration.HavingTemporalExpression
 import A12Kernel.Elaboration.HavingDateValidity
+import A12Kernel.Elaboration.HavingDateRange
 import A12Kernel.Elaboration.HavingUniqueness
 import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.Flat.FieldValueRead
@@ -51,7 +52,7 @@ def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
       | _, _ => false
   -- Text, Boolean/Confirm and presence carry no declared scale; their kind gates belong to
   -- wellFormedForEnvironments.
-  | .selectedComparison _ | .temporalExpression _ | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => true
+  | .selectedComparison _ | .temporalExpression _ | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .dateRange _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => true
 
 /-- Every leaf under the shared connective tree satisfies the static scale law. -/
 def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :=
@@ -68,7 +69,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
   -- The legacy one-group adapter admits only the leaves it was built for. The other
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
   -- extending an adapter no current consumer needs them on.
-  | .selectedComparison _ | .temporalExpression _ | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
+  | .selectedComparison _ | .temporalExpression _ | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .dateRange _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
 
 def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
     (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
@@ -209,6 +210,7 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
           | .enumeration operand => (model.checkedEnumerationOperandIn? scope operand).any fun checked =>
               values.all (checked.declaration.literalAllowed checked.projection)
   | .dateValidity _ source => source.wellFormedForEnvironments model candidateLevels outerLevels
+  | .dateRange source => source.wellFormedForEnvironments model candidateLevels outerLevels
   | .uniqueness source => source.wellFormedForEnvironments model candidateLevels outerLevels
   | .fieldMembership operator source =>
       source.wellFormedForEnvironments operator model candidateLevels outerLevels
@@ -327,6 +329,9 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
       origin == .inner && (model.lookupUniqueId source.field.id).toOption.any fun declaration =>
         declaration.repeatableScope.any reopenedLevels.contains
   | .dateValidity _ source => source.asTemporal.reachesReopenedLevel model reopenedLevels
+  | .dateRange source => source.presenceSlots.any fun slot =>
+      slot.references.any (fun ref => ref.origin == .inner) &&
+        (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
   | .uniqueness source => source.presenceSlots.any fun slot =>
       slot.references.any (fun ref => ref.origin == .inner) &&
         (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)

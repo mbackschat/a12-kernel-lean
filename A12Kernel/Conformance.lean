@@ -1,3 +1,4 @@
+import A12Kernel.Conformance.HavingDateRange
 import A12Kernel.Conformance.HavingSelectedComparison
 import A12Kernel.Conformance.HavingFirstFilled
 import A12Kernel.Conformance.HavingTemporalSelection

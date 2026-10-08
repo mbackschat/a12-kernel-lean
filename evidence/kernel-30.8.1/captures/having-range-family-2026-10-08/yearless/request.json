@@ -1,0 +1,745 @@
+{
+  "model": "HavingYearlessRanges_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "filled",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "01-01",
+          "Finish": "01-03",
+          "Range": "01-01/01-03",
+          "Other": "01-03/01-05",
+          "Far": "02-01/02-02",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [
+            {
+              "Start": "01-01",
+              "Finish": "01-03",
+              "Range": "01-01/01-03",
+              "Other": "01-03/01-05",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 7
+            },
+            {
+              "Start": "02-01",
+              "Finish": "02-02",
+              "Range": "02-01/02-02",
+              "Other": "02-01/02-02",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 11
+            }
+          ],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    },
+    {
+      "name": "emptyStart",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "",
+          "Finish": "01-03",
+          "Range": "01-01/01-03",
+          "Other": "01-03/01-05",
+          "Far": "02-01/02-02",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [
+            {
+              "Start": "",
+              "Finish": "01-03",
+              "Range": "01-01/01-03",
+              "Other": "01-03/01-05",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 7
+            },
+            {
+              "Start": "",
+              "Finish": "02-02",
+              "Range": "02-01/02-02",
+              "Other": "02-01/02-02",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 11
+            }
+          ],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    },
+    {
+      "name": "badStart",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "bad",
+          "Finish": "01-03",
+          "Range": "01-01/01-03",
+          "Other": "01-03/01-05",
+          "Far": "02-01/02-02",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [
+            {
+              "Start": "bad",
+              "Finish": "01-03",
+              "Range": "01-01/01-03",
+              "Other": "01-03/01-05",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 7
+            },
+            {
+              "Start": "bad",
+              "Finish": "02-02",
+              "Range": "02-01/02-02",
+              "Other": "02-01/02-02",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 11
+            }
+          ],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    },
+    {
+      "name": "emptyRange",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "01-01",
+          "Finish": "01-03",
+          "Range": "",
+          "Other": "01-03/01-05",
+          "Far": "02-01/02-02",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [
+            {
+              "Start": "01-01",
+              "Finish": "01-03",
+              "Range": "",
+              "Other": "01-03/01-05",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 7
+            },
+            {
+              "Start": "02-01",
+              "Finish": "02-02",
+              "Range": "",
+              "Other": "02-01/02-02",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 11
+            }
+          ],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    },
+    {
+      "name": "badRange",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "01-01",
+          "Finish": "01-03",
+          "Range": "bad",
+          "Other": "01-03/01-05",
+          "Far": "02-01/02-02",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [
+            {
+              "Start": "01-01",
+              "Finish": "01-03",
+              "Range": "bad",
+              "Other": "01-03/01-05",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 7
+            },
+            {
+              "Start": "02-01",
+              "Finish": "02-02",
+              "Range": "bad",
+              "Other": "02-01/02-02",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 11
+            }
+          ],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    },
+    {
+      "name": "badOther",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "01-01",
+          "Finish": "01-03",
+          "Range": "01-01/01-03",
+          "Other": "bad",
+          "Far": "02-01/02-02",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [
+            {
+              "Start": "01-01",
+              "Finish": "01-03",
+              "Range": "01-01/01-03",
+              "Other": "bad",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 7
+            },
+            {
+              "Start": "02-01",
+              "Finish": "02-02",
+              "Range": "02-01/02-02",
+              "Other": "bad",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 11
+            }
+          ],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    },
+    {
+      "name": "emptyStartBadFinish",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "",
+          "Finish": "bad",
+          "Range": "01-01/01-03",
+          "Other": "01-03/01-05",
+          "Far": "02-01/02-02",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [
+            {
+              "Start": "",
+              "Finish": "bad",
+              "Range": "01-01/01-03",
+              "Other": "01-03/01-05",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 7
+            },
+            {
+              "Start": "",
+              "Finish": "bad",
+              "Range": "02-01/02-02",
+              "Other": "02-01/02-02",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 11
+            }
+          ],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    },
+    {
+      "name": "badCapturedSuffix",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "01-01",
+          "Finish": "01-03",
+          "Range": "01-01/01-03",
+          "Other": "01-03/01-05",
+          "Far": "bad",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [
+            {
+              "Start": "01-01",
+              "Finish": "01-03",
+              "Range": "01-01/01-03",
+              "Other": "01-03/01-05",
+              "Far": "bad",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 7
+            },
+            {
+              "Start": "02-01",
+              "Finish": "02-02",
+              "Range": "02-01/02-02",
+              "Other": "02-01/02-02",
+              "Far": "bad",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 11
+            }
+          ],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    },
+    {
+      "name": "noRows",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "01-01",
+          "Finish": "01-03",
+          "Range": "01-01/01-03",
+          "Other": "01-03/01-05",
+          "Far": "02-01/02-02",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    },
+    {
+      "name": "starPair",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "01-01",
+          "Finish": "01-03",
+          "Range": "01-01/01-03",
+          "Other": "01-03/01-05",
+          "Far": "02-01/02-02",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [
+            {
+              "Start": "01-01",
+              "Finish": "01-03",
+              "Range": "01-01/01-03",
+              "Other": "01-03/01-05",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 7
+            },
+            {
+              "Start": "02-01",
+              "Finish": "02-02",
+              "Range": "01-01/01-03",
+              "Other": "02-01/02-02",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 11
+            }
+          ],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    },
+    {
+      "name": "emptyScalarBadList",
+      "documentInline": {
+        "Form": {
+          "Anchor": 1,
+          "Start": "01-01",
+          "Finish": "01-03",
+          "Range": "",
+          "Other": "bad",
+          "Far": "02-01/02-02",
+          "Ranges": {
+            "A": "01-01/01-03",
+            "B": "01-03/01-05"
+          },
+          "Rows": [
+            {
+              "Start": "01-01",
+              "Finish": "01-03",
+              "Range": "",
+              "Other": "bad",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 7
+            },
+            {
+              "Start": "02-01",
+              "Finish": "02-02",
+              "Range": "",
+              "Other": "bad",
+              "Far": "02-01/02-02",
+              "Ranges": {
+                "A": "01-01/01-03",
+                "B": "01-03/01-05"
+              },
+              "N": 11
+            }
+          ],
+          "constructStoredHaving": 99,
+          "constructStoredDirect": 99,
+          "storedConstructHaving": 99,
+          "storedConstructDirect": 99,
+          "constructNotEqualHaving": 99,
+          "constructNotEqualDirect": 99,
+          "constructPairHaving": 99,
+          "constructPairDirect": 99,
+          "mixedEndpointsHaving": 99,
+          "mixedEndpointsDirect": 99,
+          "storedControlHaving": 99,
+          "storedControlDirect": 99,
+          "anyDirectHaving": 99,
+          "anyDirectDirect": 99,
+          "scalarDirectHaving": 99,
+          "scalarDirectDirect": 99,
+          "anyCaptureLastHaving": 99,
+          "anyCaptureLastDirect": 99,
+          "anyCaptureFirstHaving": 99,
+          "anyCaptureFirstDirect": 99,
+          "scalarCaptureHaving": 99,
+          "scalarCaptureDirect": 99,
+          "scalarGroupHaving": 99,
+          "scalarGroupDirect": 99,
+          "anyStarHaving": 99,
+          "anyStarDirect": 99
+        }
+      }
+    }
+  ]
+}

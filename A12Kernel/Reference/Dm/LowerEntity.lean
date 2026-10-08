@@ -130,6 +130,26 @@ private def lowerHavingSelectedOperand : Expr → Lowering SurfaceHavingSelected
       pure (.field { origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored })
   | _ => refuse "Having" "selected comparison operand"
 
+private def lowerHavingRangeReference : Expr → Lowering SurfaceHavingPresenceRef
+  | .entity { path, index := none, category := none } =>
+      match path.havingField? with
+      | some (origin, field) => pure { origin, field }
+      | none => refuse "Having" "DateRange field path"
+  | _ => refuse "Having" "direct DateRange entity"
+
+private def lowerHavingRangeOperand : Expr → Lowering SurfaceHavingDateRangeOperand
+  | .call "DateRange" [.mk start none none, .mk finish none none] none none =>
+      return .constructed (← lowerHavingRangeReference start) (← lowerHavingRangeReference finish)
+  | .value { path, index := none, category := none } =>
+      match path.havingField? with
+      | some (origin, field) => pure (.stored { origin, field })
+      | none => refuse "Having" "DateRange value path"
+  | _ => refuse "Having" "DateRange comparison operand"
+
+private def isRangeConstruction : Expr → Bool
+  | .call "DateRange" _ _ _ => true
+  | _ => false
+
 /-- A filter comparison uses the shared numeric expression reader over correlated field and
 repetition atoms. Typed field pairs, Boolean/text literals and presence retain their operand domains. -/
 partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × GroupPath) := none) :
@@ -141,6 +161,9 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
       for part in rest do result := join result (← lowerHaving part typing)
       pure result
   | .call id arguments (some members) none => do
+      if id == "AtLeastOneDateRangeOverlaps" then
+        let [.mk scalar none none] := arguments | refuse "Having" "DateRange scalar"
+        return .dateRange (.overlap (some (← lowerHavingRangeReference scalar)) (← lowerHavingEntitySource members))
       let some operator := valueListQuantifier? id | refuse "Having" id
       let plain (arguments : List Argument) := arguments.mapM fun
         | .mk expression none none => pure expression
@@ -151,6 +174,8 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
         return .literalList operator subjects literals
       pure (.fieldMembership (.quantified operator) subjects (← lowerHavingEntitySource members))
   | .call id arguments none none => do
+      if id == "DateRangesOverlap" then
+        return .dateRange (.overlap none (← lowerHavingEntitySource arguments))
       if id == "FieldValuesNotUnique" then
         return .uniqueness (← lowerHavingEntitySource arguments)
       if id == "FieldValueIncludedInValueList" || id == "FieldValueNotIncludedInValueList" then
@@ -208,6 +233,9 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
         let some source := right.patternConstant? | refuse "Having" "pattern constant"
         return .stringPattern (if op == .patternMatched then .matched else .violated) { origin, field } source
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
+      if isRangeConstruction left || isRangeConstruction right then
+        let some equality := surfaceOp.toEquality? | refuse "Having" "DateRange equality operator"
+        return .dateRange (.compare equality (← lowerHavingRangeOperand left) (← lowerHavingRangeOperand right))
       if left.havingTemporalConstructor (temporalHavingSelection typing) ||
           right.havingTemporalConstructor (temporalHavingSelection typing) then
         return .compareTemporalExpression surfaceOp

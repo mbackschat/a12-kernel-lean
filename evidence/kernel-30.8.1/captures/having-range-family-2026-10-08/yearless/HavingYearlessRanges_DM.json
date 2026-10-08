@@ -1,0 +1,1358 @@
+{
+  "header" : {
+    "id" : "HavingYearlessRanges_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "HavingYearlessRanges_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "UTC",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Start",
+                "name" : "Start",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Finish",
+                "name" : "Finish",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Range",
+                "name" : "Range",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Other",
+                "name" : "Other",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Far",
+                "name" : "Far",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/Ranges",
+                "name" : "Ranges",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Ranges/A",
+                    "name" : "A",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateRangeType",
+                        "DateRangeType" : {
+                          "format" : "MM-dd",
+                          "rangeSeparator" : "/"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Ranges/B",
+                    "name" : "B",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateRangeType",
+                        "DateRangeType" : {
+                          "format" : "MM-dd",
+                          "rangeSeparator" : "/"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Start",
+            "name" : "Start",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Finish",
+            "name" : "Finish",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Range",
+            "name" : "Range",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Other",
+            "name" : "Other",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Far",
+            "name" : "Far",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Ranges",
+            "name" : "Ranges",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Ranges/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Ranges/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/constructStoredDirect",
+            "name" : "constructStoredDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/constructStoredDirectComp",
+            "name" : "constructStoredDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../constructStoredDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "DateRange(Start,Finish) == [Range]"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_constructStoredDirect",
+            "name" : "R_constructStoredDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_constructStoredDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (DateRange(Start,Finish) == [Range])",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/constructStoredHaving",
+            "name" : "constructStoredHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/constructStoredHavingComp",
+            "name" : "constructStoredHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../constructStoredHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) == [Rows/Range]))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_constructStoredHaving",
+            "name" : "R_constructStoredHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_constructStoredHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) == [Rows/Range])) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/storedConstructDirect",
+            "name" : "storedConstructDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/storedConstructDirectComp",
+            "name" : "storedConstructDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../storedConstructDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "[Range] == DateRange(Start,Finish)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_storedConstructDirect",
+            "name" : "R_storedConstructDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_storedConstructDirect",
+              "errorCondition" : "FieldFilled(Anchor) And ([Range] == DateRange(Start,Finish))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/storedConstructHaving",
+            "name" : "storedConstructHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/storedConstructHavingComp",
+            "name" : "storedConstructHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../storedConstructHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having ([Rows/Range] == DateRange(Rows/Start,Rows/Finish)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_storedConstructHaving",
+            "name" : "R_storedConstructHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_storedConstructHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having ([Rows/Range] == DateRange(Rows/Start,Rows/Finish))) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/constructNotEqualDirect",
+            "name" : "constructNotEqualDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/constructNotEqualDirectComp",
+            "name" : "constructNotEqualDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../constructNotEqualDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "DateRange(Start,Finish) != [Range]"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_constructNotEqualDirect",
+            "name" : "R_constructNotEqualDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_constructNotEqualDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (DateRange(Start,Finish) != [Range])",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/constructNotEqualHaving",
+            "name" : "constructNotEqualHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/constructNotEqualHavingComp",
+            "name" : "constructNotEqualHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../constructNotEqualHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) != [Rows/Range]))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_constructNotEqualHaving",
+            "name" : "R_constructNotEqualHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_constructNotEqualHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) != [Rows/Range])) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/constructPairDirect",
+            "name" : "constructPairDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/constructPairDirectComp",
+            "name" : "constructPairDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../constructPairDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "DateRange(Start,Finish) == DateRange(Start,Finish)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_constructPairDirect",
+            "name" : "R_constructPairDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_constructPairDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (DateRange(Start,Finish) == DateRange(Start,Finish))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/constructPairHaving",
+            "name" : "constructPairHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/constructPairHavingComp",
+            "name" : "constructPairHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../constructPairHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) == DateRange($Start,$Finish)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_constructPairHaving",
+            "name" : "R_constructPairHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_constructPairHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRange(Rows/Start,Rows/Finish) == DateRange($Start,$Finish))) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/mixedEndpointsDirect",
+            "name" : "mixedEndpointsDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/mixedEndpointsDirectComp",
+            "name" : "mixedEndpointsDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../mixedEndpointsDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "DateRange(Start,Finish) == [Range]"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_mixedEndpointsDirect",
+            "name" : "R_mixedEndpointsDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_mixedEndpointsDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (DateRange(Start,Finish) == [Range])",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/mixedEndpointsHaving",
+            "name" : "mixedEndpointsHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/mixedEndpointsHavingComp",
+            "name" : "mixedEndpointsHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../mixedEndpointsHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (DateRange(Rows/Start,$Finish) == [Rows/Range]))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_mixedEndpointsHaving",
+            "name" : "R_mixedEndpointsHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_mixedEndpointsHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRange(Rows/Start,$Finish) == [Rows/Range])) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/storedControlDirect",
+            "name" : "storedControlDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/storedControlDirectComp",
+            "name" : "storedControlDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../storedControlDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "[Range] == [Range]"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_storedControlDirect",
+            "name" : "R_storedControlDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_storedControlDirect",
+              "errorCondition" : "FieldFilled(Anchor) And ([Range] == [Range])",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/storedControlHaving",
+            "name" : "storedControlHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/storedControlHavingComp",
+            "name" : "storedControlHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../storedControlHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having ([Rows/Range] == [$Range]))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_storedControlHaving",
+            "name" : "R_storedControlHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_storedControlHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having ([Rows/Range] == [$Range])) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/anyDirectDirect",
+            "name" : "anyDirectDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/anyDirectDirectComp",
+            "name" : "anyDirectDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../anyDirectDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "DateRangesOverlap(Range,Other)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_anyDirectDirect",
+            "name" : "R_anyDirectDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_anyDirectDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (DateRangesOverlap(Range,Other))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/anyDirectHaving",
+            "name" : "anyDirectHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/anyDirectHavingComp",
+            "name" : "anyDirectHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../anyDirectHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (DateRangesOverlap(Rows/Range,Rows/Other)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_anyDirectHaving",
+            "name" : "R_anyDirectHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_anyDirectHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRangesOverlap(Rows/Range,Rows/Other))) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/scalarDirectDirect",
+            "name" : "scalarDirectDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/scalarDirectDirectComp",
+            "name" : "scalarDirectDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../scalarDirectDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "AtLeastOneDateRangeOverlaps(Range In Other)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_scalarDirectDirect",
+            "name" : "R_scalarDirectDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_scalarDirectDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (AtLeastOneDateRangeOverlaps(Range In Other))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/scalarDirectHaving",
+            "name" : "scalarDirectHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/scalarDirectHavingComp",
+            "name" : "scalarDirectHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../scalarDirectHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps(Rows/Range In Rows/Other)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_scalarDirectHaving",
+            "name" : "R_scalarDirectHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_scalarDirectHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps(Rows/Range In Rows/Other))) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/anyCaptureLastDirect",
+            "name" : "anyCaptureLastDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/anyCaptureLastDirectComp",
+            "name" : "anyCaptureLastDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../anyCaptureLastDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "DateRangesOverlap(Range,Other,Far)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_anyCaptureLastDirect",
+            "name" : "R_anyCaptureLastDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_anyCaptureLastDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (DateRangesOverlap(Range,Other,Far))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/anyCaptureLastHaving",
+            "name" : "anyCaptureLastHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/anyCaptureLastHavingComp",
+            "name" : "anyCaptureLastHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../anyCaptureLastHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (DateRangesOverlap(Rows/Range,Rows/Other,$Far)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_anyCaptureLastHaving",
+            "name" : "R_anyCaptureLastHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_anyCaptureLastHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRangesOverlap(Rows/Range,Rows/Other,$Far))) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/anyCaptureFirstDirect",
+            "name" : "anyCaptureFirstDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/anyCaptureFirstDirectComp",
+            "name" : "anyCaptureFirstDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../anyCaptureFirstDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "DateRangesOverlap(Far,Range,Other)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_anyCaptureFirstDirect",
+            "name" : "R_anyCaptureFirstDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_anyCaptureFirstDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (DateRangesOverlap(Far,Range,Other))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/anyCaptureFirstHaving",
+            "name" : "anyCaptureFirstHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/anyCaptureFirstHavingComp",
+            "name" : "anyCaptureFirstHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../anyCaptureFirstHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (DateRangesOverlap($Far,Rows/Range,Rows/Other)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_anyCaptureFirstHaving",
+            "name" : "R_anyCaptureFirstHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_anyCaptureFirstHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (DateRangesOverlap($Far,Rows/Range,Rows/Other))) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/scalarCaptureDirect",
+            "name" : "scalarCaptureDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/scalarCaptureDirectComp",
+            "name" : "scalarCaptureDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../scalarCaptureDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "AtLeastOneDateRangeOverlaps(Far In Range,Other)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_scalarCaptureDirect",
+            "name" : "R_scalarCaptureDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_scalarCaptureDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (AtLeastOneDateRangeOverlaps(Far In Range,Other))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/scalarCaptureHaving",
+            "name" : "scalarCaptureHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/scalarCaptureHavingComp",
+            "name" : "scalarCaptureHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../scalarCaptureHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps($Far In Rows/Range,Rows/Other)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_scalarCaptureHaving",
+            "name" : "R_scalarCaptureHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_scalarCaptureHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps($Far In Rows/Range,Rows/Other))) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/scalarGroupDirect",
+            "name" : "scalarGroupDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/scalarGroupDirectComp",
+            "name" : "scalarGroupDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../scalarGroupDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "AtLeastOneDateRangeOverlaps(Range In Ranges)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_scalarGroupDirect",
+            "name" : "R_scalarGroupDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_scalarGroupDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (AtLeastOneDateRangeOverlaps(Range In Ranges))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/scalarGroupHaving",
+            "name" : "scalarGroupHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/scalarGroupHavingComp",
+            "name" : "scalarGroupHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../scalarGroupHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps(Rows/Range In Rows/Ranges)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_scalarGroupHaving",
+            "name" : "R_scalarGroupHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_scalarGroupHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (AtLeastOneDateRangeOverlaps(Rows/Range In Rows/Ranges))) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/anyStarDirect",
+            "name" : "anyStarDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/anyStarDirectComp",
+            "name" : "anyStarDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../anyStarDirect",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "FieldFilled(Anchor) And DateRangesOverlap(Rows*/Range)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Anchor)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_anyStarDirect",
+            "name" : "R_anyStarDirect",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_anyStarDirect",
+              "errorCondition" : "FieldFilled(Anchor) And (FieldFilled(Anchor) And DateRangesOverlap(Rows*/Range))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/anyStarHaving",
+            "name" : "anyStarHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/anyStarHavingComp",
+            "name" : "anyStarHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../anyStarHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having (FieldFilled(Rows/N) And DateRangesOverlap(Rows*/Range)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_anyStarHaving",
+            "name" : "R_anyStarHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_anyStarHaving",
+              "errorCondition" : "FieldFilled(Anchor) And (Sum(Rows*/N Having (FieldFilled(Rows/N) And DateRangesOverlap(Rows*/Range))) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Range family control."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

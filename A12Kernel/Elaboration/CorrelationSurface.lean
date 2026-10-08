@@ -533,7 +533,28 @@ def SurfaceHavingSelectedOperand.entities : SurfaceHavingSelectedOperand → Lis
   | .firstFilled source => source.first :: source.rest
   | .text _ | .boolean _ => []
 
+inductive SurfaceHavingDateRangeOperand where
+  | stored (reference : SurfaceHavingPresenceRef)
+  | constructed (start finish : SurfaceHavingPresenceRef)
+  deriving Repr, DecidableEq
+
+def SurfaceHavingDateRangeOperand.references : SurfaceHavingDateRangeOperand → List SurfaceHavingPresenceRef
+  | .stored reference => [reference]
+  | .constructed start finish => [start, finish]
+
+inductive SurfaceHavingDateRangePredicate where
+  | compare (operator : EqualityOp) (left right : SurfaceHavingDateRangeOperand)
+  | overlap (scalar : Option SurfaceHavingPresenceRef) (source : SurfaceHavingEntitySource)
+  deriving Repr, DecidableEq
+
+def SurfaceHavingDateRangePredicate.entities : SurfaceHavingDateRangePredicate → List SurfaceHavingEntityOperand
+  | .compare _ left right => (left.references ++ right.references).map fun ref =>
+      .entity { origin := ref.origin, field := ref.field }
+  | .overlap scalar source => (scalar.toList.map fun ref => .entity { origin := ref.origin, field := ref.field }) ++
+      source.first :: source.rest
+
 inductive SurfaceCorrelatedHaving where
+  | dateRange (source : SurfaceHavingDateRangePredicate)
   | compareSelected (op : EqualityOp) (left right : SurfaceHavingSelectedOperand)
   | compareBoolean (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef)
@@ -596,6 +617,7 @@ structure SurfaceSingleCorrelatedRule where
   deriving Repr, DecidableEq
 
 inductive CorrelationElabError where
+  | dateRange (diagnostic : KernelStaticDiagnostic)
   | dateComponents (error : ConstructedDateComponentsElabError)
   | uniquenessKind (path : List String)
   | uniquenessFormat (path : List String)
@@ -704,6 +726,7 @@ and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-
 The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
+  | .dateRange diagnostic => some diagnostic
   | .dateComponents (.extractorPartialPrecision _ _ _) => some .invalidDateType
   | .dateComponents .onlyConstantsUsed => some .onlyConstantsUsed
   | .dateComponents _ => none
@@ -782,6 +805,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .dateRange source => source.entities.findSome? entity
   | .compareSelected _ left right => (left.entities ++ right.entities).findSome? entity
   | .compareTemporalExpression _ left right =>
       (((left.entitySources ++ right.entitySources).flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>

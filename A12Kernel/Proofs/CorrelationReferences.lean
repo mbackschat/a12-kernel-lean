@@ -30,7 +30,7 @@ theorem correlatedHaving_referencesMarkedField_referencesField
         List.mem_eraseDups, List.mem_map, List.mem_filter] at marked ⊢
       obtain ⟨ref, ⟨member, _⟩, projected⟩ := marked
       exact ⟨ref, member, projected⟩
-    | uniqueness source =>
+    | dateRange source | uniqueness source =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds,
         List.mem_eraseDups, List.mem_map, List.mem_filter] at marked ⊢
       obtain ⟨ref, ⟨member, _⟩, projected⟩ := marked
