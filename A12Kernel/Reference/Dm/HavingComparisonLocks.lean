@@ -540,8 +540,7 @@ example : run "RangeAsNumber(Rows/Tag, 2, 3) == 12" false .string "x12" "a12z" "
       some (.fired .omission, ["value 9"]) := by native_decide
 
 example : temporalRun "DayFromDate(Rows/Tag) == 12" .date .date
-      "yyyy-MM-dd" "yyyy-MM-dd" "2024-04-12" "2024-04-12" "2023-01-01" .dayOptional =
-      some (.fired .omission, ["value 9"]) ∧
+      "yyyy-MM-dd" "yyyy-MM-dd" "2024-04-12" "2024-04-12" "2023-01-01" .dayOptional = none ∧
     temporalRun "HoursFromTime(Rows/Tag) == 12" .date .date
       "HH:mm:ss" "HH:mm:ss" "12:34:56" "12:34:56" "01:02:03" =
       some (.fired .omission, ["value 9"]) ∧

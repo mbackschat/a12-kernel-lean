@@ -701,6 +701,8 @@ def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : Group
     temporalPart := fun origin reference part => do
       let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels { origin, field := reference }
       let some source := declaration.toTemporalField? | throw .numericExpressionUnsupported
+      if !declaration.admitsHavingTemporalPartPrecision part then
+        throw (.temporalPartPrecision declaration.id part)
       if !part.admittedBy source model.hasBaseYear then throw .numericExpressionUnsupported
       pure source
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels

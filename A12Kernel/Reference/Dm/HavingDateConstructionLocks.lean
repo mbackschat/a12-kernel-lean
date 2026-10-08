@@ -155,4 +155,71 @@ example : run "Date(Rows/Day,MonthFromDate(Rows/Stamp),Rows/YearNumber) == \"29.
     accepted "Date(Rows/Day,MonthFromDate(Rows/Stamp),Rows/YearNumber) == \"29.02.2024\""
       (partialModel .monthOptional) = false := by native_decide
 
+
+private def precisionCases : List (TemporalPartialMode × List Bool) :=
+  [(.full, [true, true, true, true]), (.dayOptional, [false, true, true, true]),
+   (.monthOptional, [false, false, false, true]), (.yearOptional, [false, false, false, false])]
+
+private def extractors : List (String × DateNumericPart × String) :=
+  [("DayFromDate", .day, "29"), ("MonthFromDate", .month, "2"),
+   ("QuarterFromDate", .quarter, "1"), ("YearFromDate", .year, "2024")]
+
+private def precisionAdmission (fixture : FlatModel) (filter : String) :
+    Option (Except (Option KernelStaticDiagnostic) Unit) := do
+  let parsed ← (parseText .english filter).toOption
+  let authored ← (lowerHaving parsed.body).toOption
+  let source ← (elaborateStarFieldPath fixture ["Form"] {
+    base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "N" }).toOption
+  pure ((elaborateStarHavingCore fixture ["Form"] source authored).map (fun _ => ())
+    |>.mapError (·.diagnostic?))
+
+example : precisionCases.all (fun (mode, expected) =>
+    (extractors.zip expected).all fun ((operator, _, amount), admitted) =>
+      let fixture := partialModel mode
+      let filter := operator ++ "(Rows/Stamp) == " ++ amount
+      (match precisionAdmission fixture filter with
+        | some (.ok ()) => admitted
+        | some (.error diagnostic) => !admitted && diagnostic == some .invalidDateType
+        | none => false) &&
+      accepted filter fixture == admitted &&
+      (lowerComputation fixture .english {
+        group := ["Form"], name := "Total", targetRelPath := "../Out", commonPrecondition := none,
+        alternatives := [{ precondition := none, operation := "Sum(Rows*/N Having " ++ filter ++ ")" }],
+        errorCodesToSuppress := [] }).isOk == admitted) = true := by native_decide
+
+example : precisionCases.all (fun (mode, expected) =>
+    (extractors.zip expected).all fun ((_, part, _), admitted) =>
+      let fixture := partialModel mode
+      ((fixture.lookupUniqueId 14).toOption.bind (·.toTemporalField?)).any (fun source =>
+        let atom : HavingNumericAtomOf Empty := .temporalPart .inner source (.date part)
+        atom.wellFormedWith fixture [10] [] (fun _ _ _ => false) (fun _ _ => false) == admitted)) = true := by native_decide
+
+example : precisionCases.all (fun (mode, expected) =>
+    (extractors.zip expected).all fun ((operator, _, amount), admitted) =>
+      !admitted || run (operator ++ "(Rows/Stamp) == " ++ amount) "14" (partialModel mode) ==
+        some (.fired .omission, ["value 14"])) = true := by native_decide
+
+
+private def precisionRejected (fixture : FlatModel) (filter : String) : Bool :=
+  match precisionAdmission fixture filter with
+  | some (.error (some .invalidDateType)) => true
+  | _ => false
+
+example : [none, some 2024].all (fun year => extractors.all fun (operator, _, _) =>
+    precisionRejected { (partialModel .yearOptional) with baseYear := year }
+      (operator ++ "(Rows/Stamp) == 1")) = true ∧
+    ["HoursFromTime", "MinutesFromTime", "SecondsFromTime"].all (fun operator =>
+      [.dayOptional, .monthOptional, .yearOptional].all fun mode =>
+        precisionRejected (partialModel mode) (operator ++ "(Rows/Stamp) == 1")) = true := by native_decide
+
+private def capturedPrecisionModel (mode : TemporalPartialMode) : FlatModel :=
+  let fixture := partialModel mode
+  { fixture with fields := fixture.fields ++ fixture.fields.filterMap fun field =>
+      if field.id == 14 then some { field with id := 15, name := "OuterStamp", groupPath := ["Form"], repeatableScope := [] } else none }
+
+example : precisionCases.all (fun (mode, expected) =>
+    (extractors.zip expected).all fun ((operator, _, amount), admitted) =>
+      accepted (operator ++ "($OuterStamp) == " ++ amount ++ " And FieldFilled(Rows/N)")
+        (capturedPrecisionModel mode) == admitted) = true := by native_decide
+
 end A12Kernel.Dm.HavingDateConstructionLocks

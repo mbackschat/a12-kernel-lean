@@ -7,6 +7,14 @@ import A12Kernel.Elaboration.NumericSource
 
 namespace A12Kernel
 
+/-- The direct extractor precision gate precedes format/Base Year admission (spec/05 §3;
+`CheckDatumExtractOpImpl.checkAndAddNumberOpType`). Time components require a complete Date. -/
+def FlatFieldDecl.admitsHavingTemporalPartPrecision (declaration : FlatFieldDecl)
+    (part : TemporalNumericPart) : Bool :=
+  !(declaration.toTemporalTargetPolicy?.any fun policy => !(match part with
+    | .date part => part.admittedPartialMode policy.partialMode
+    | .time _ => policy.partialMode == .full))
+
 /-- Primitive numeric atoms must preserve the complete-field source boundary of
 `HavingTemporalExpression.wellFormed` and `resolveScalarTemporalExpression`. -/
 def HavingNumericAtomOf.admitsTemporalAmountSources (model : FlatModel)
@@ -167,7 +175,7 @@ def HavingNumericAtomOf.wellFormedWith (model : FlatModel) (candidateLevels oute
   | .temporalExpressionPart part source => projection part source
   | .temporalPart origin fld part => part.admittedBy fld model.hasBaseYear &&
       (model.lookupUniqueId fld.id).toOption.any fun declaration =>
-        declaration.toTemporalField? == some fld &&
+        declaration.toTemporalField? == some fld && declaration.admitsHavingTemporalPartPrecision part &&
           repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
   | .repetition reference => reference.availableIn model candidateLevels outerLevels
 

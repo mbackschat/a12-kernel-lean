@@ -685,6 +685,7 @@ inductive CorrelationElabError where
   | literalScaleMismatch (path : List String) (fieldScale : Nat) (literalScale : Int)
   | constantNumericComparison
   | numericExpressionUnsupported
+  | temporalPartPrecision (field : FieldId) (part : TemporalNumericPart)
   | numericOperandFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
   | missingInner
   | missingOuter
@@ -728,6 +729,7 @@ and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-
 The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
+  | .temporalPartPrecision _ _ => some .invalidDateType
   | .dateRange diagnostic => some diagnostic
   | .dateComponents (.extractorPartialPrecision _ _ _) => some .invalidDateType
   | .dateComponents .onlyConstantsUsed => some .onlyConstantsUsed
