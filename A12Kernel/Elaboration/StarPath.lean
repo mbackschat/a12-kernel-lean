@@ -739,7 +739,9 @@ private def starredMissError (model : FlatModel) (declaringGroup : GroupPath)
       | some { starred := true, .. }, some declaration => .wildcardOnNonrepeatable declaration.path
       | _, _ => .resolve (.invalidEntity reference)
 
-private def resolveStarFieldDeclaration (model : FlatModel) (declaringGroup : GroupPath)
+/-- Resolve starred spelling without imposing the complete star plan; filter-local reads defer
+iteration checks until the enclosing body walk (spec/07 §3). -/
+def resolveStarFieldDeclaration (model : FlatModel) (declaringGroup : GroupPath)
     (source : SurfaceStarFieldPath) : Except StarPathElabError FlatFieldDecl :=
   match model.resolveFieldDeclarationUnchecked declaringGroup source.toFieldPath with
   | .ok declaration => .ok declaration

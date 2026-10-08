@@ -342,4 +342,59 @@ example : ["[Missing]", "Length(Missing)"].all (fun earlier =>
     bothReaders ("Sum(Rows*/N Having FieldFilled(Rows/N For Expected)) + " ++ earlier)
       KernelStaticDiagnostic.semanticIndexNotAllowed.kernelCode) = true := by native_decide
 
+private def keyShapeCases : List (String × KernelStaticDiagnostic) := [
+  ("Rows", .semanticIndexKeyNotField), ("Rows*", .semanticIndexKeyNotField),
+  ("Rows/Lines", .semanticIndexKeyNotField), ("Rows*/Tag", .semanticIndexKeyStarred),
+  ("Rows*/Lines/Qty", .semanticIndexKeyStarred),
+  ("Parties*/Tag", .semanticIndexKeyStarred),
+  ("Rows/Tag*", .invalidWildcard), ("Expected*/Missing", .invalidWildcard),
+  ("Rows*/Missing", .invalidEntity), ("Missing*/Tag", .invalidEntity),
+  ("Rows->Label", .noGroupsAllowed), ("Rows*/Tag->Label", .noEnumeration),
+  ("Rows For \"keep\"", .semanticIndexOnSemanticIndex),
+  ("Rows*/Tag For Expected", .semanticIndexOnSemanticIndex),
+  ("Rows/Tag For Rows", .semanticIndexKeyNotField),
+  ("Rows/Tag For Rows*/Tag", .semanticIndexKeyStarred)]
+
+example : ["FieldFilled", "FieldNotFilled"].all (fun operator => keyShapeCases.all fun (key, diagnostic) =>
+    bothReaders ("Sum(Rows*/N Having " ++ operator ++ "(Rows/N For " ++ key ++ "))")
+      diagnostic.kernelCode) = true := by native_decide
+
+example : ["And", "Or"].all (fun connective => keyShapeCases.all fun (key, diagnostic) =>
+    let keyed := "FieldFilled(Rows/N For " ++ key ++ ")"
+    let comparison := "[Rows/Tag] > \"keep\""
+    admission (keyed ++ " " ++ connective ++ " " ++ comparison) == some diagnostic.kernelCode &&
+    admission (comparison ++ " " ++ connective ++ " " ++ keyed) ==
+      some KernelStaticDiagnostic.invalidTypeForComparison.kernelCode) = true := by native_decide
+
+private def emptyKeyModel : FlatModel := { model with repeatableGroups := model.repeatableGroups ++ [
+  { level := 40, path := ["Form", "Empty"], repeatability := some 2 }] }
+
+example : emptyKeyModel.validate.isOk = true ∧
+    ["Empty", "Empty*", "Empty->Label"].all (fun key =>
+      admission ("FieldFilled(Rows/N For " ++ key ++ ")") emptyKeyModel ==
+        some KernelStaticDiagnostic.groupIsEmpty.kernelCode) = true := by native_decide
+
+private def markedKeyCases : List (String × KernelStaticDiagnostic) := [
+  ("$Expected", .semanticIndexNotAllowed), ("$Out", .indexTypeInconsistent),
+  ("$Rows/Tag", .semanticIndexKeyInvalidIteration), ("$Rows", .semanticIndexKeyInvalidIteration),
+  ("$Rows*/Tag", .semanticIndexKeyStarred), ("$Rows*", .semanticIndexKeyNotField),
+  ("$Rows*/Lines/Qty", .semanticIndexKeyInvalidIteration),
+  ("$Rows/Tag->Missing", .semanticIndexKeyInvalidIteration),
+  ("$Rows/Tag For Expected", .semanticIndexOnSemanticIndex),
+  ("$Expected->Label", .noEnumeration)]
+
+example : ["FieldFilled", "FieldNotFilled"].all (fun operator => markedKeyCases.all fun (key, diagnostic) =>
+    bothReaders ("Sum(Rows*/N Having " ++ operator ++ "(Rows/N For " ++ key ++ "))")
+      diagnostic.kernelCode) = true := by native_decide
+
+example : ["FieldFilled", "FieldNotFilled"].all (fun operator =>
+    let expression key := "Sum(Rows*/N Having " ++ operator ++ "(Rows/N For " ++ key ++ "))"
+    readerResults (expression "$Expected") rowBoundModel true == (KernelStaticDiagnostic.semanticIndexNotAllowed.kernelCode, KernelStaticDiagnostic.semanticIndexNotAllowed.kernelCode) &&
+    readerResults (expression "$Rows/Tag") rowBoundModel true ==
+      (KernelStaticDiagnostic.semanticIndexContainedInIndex.kernelCode,
+       KernelStaticDiagnostic.semanticIndexContainedInIndex.kernelCode) &&
+    readerResults (expression "$Rows") rowBoundModel true ==
+      (KernelStaticDiagnostic.semanticIndexKeyNotField.kernelCode,
+       KernelStaticDiagnostic.semanticIndexKeyNotField.kernelCode)) = true := by native_decide
+
 end A12Kernel.Dm.FilterReferenceInventoryLocks

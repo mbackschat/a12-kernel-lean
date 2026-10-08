@@ -32,24 +32,42 @@ private def checkedHaving (result : Except CorrelationElabError α) : Lowering �
       | some diagnostic => diagnostic.kernelCode
       | none => oneLine ((repr error).pretty 100000) }
 
-/-- A field key finishes its own read before its parent's semantic-index gates.
+/-- An entity key finishes its own read before its parent's semantic-index gates.
 Inside an unmarked filter read, index and scope restrictions belong to the later body walk;
 key applicability still precedes that walk. A reference's category follows its own index
 cascade, so a nested index can refuse before that category (spec/07 §3, spec/08 §4). -/
-private partial def admitFieldRead (model : FlatModel) (group : GroupPath)
+private partial def admitEntityRead (model : FlatModel) (group bindingGroup : GroupPath)
     (reference : Reference) (insideSemanticIndexKey : Bool)
-    (compilePattern : StringPatternCompiler) : Lowering FlatFieldDecl := do
+    (compilePattern : StringPatternCompiler) : Lowering (Sum FlatFieldDecl GroupPath) := do
   if reference.filter.isSome then refuse "Having" "unsupported index key filter"
-  let some field := reference.path.toFieldPath? | refuse "Having" "unsupported indexed field path"
-  if (model.groupNamedBy? group field).isSome then refuse "Having" "indexed group presence"
-  let declaration ← checkedHaving ((model.resolveFieldDeclarationUnchecked group field).mapError .resolve)
+  let plain : Path := { reference.path with
+    correlated := false
+    segments := reference.path.segments.map fun segment => { segment with star := false } }
+  let some field := plain.toFieldPath? | refuse "Having" "unsupported indexed entity path"
+  let entity ← match model.groupNamedBy? group field with
+    | some path => pure (.inr path)
+    | none => do
+        let source : SurfaceStarFieldPath := {
+          base := reference.path.base, turningPoint := reference.path.turningPoint
+          groups := reference.path.starGroups.dropLast, field := field.field }
+        let declaration ← checkedHaving ((resolveStarFieldDeclaration model group source).mapError
+          (CorrelationElabError.fieldFill ∘ FieldEntityShapeElabError.starPath))
+        pure (.inl declaration)
+  let targetPath := match entity with | .inl declaration => declaration.path | .inr path => path
+  let basePath := targetPath.take (targetPath.length - reference.path.segments.length)
+  if (firstStarOnNamedNonrepeatable? model basePath reference.path.starGroups).isSome then
+    refuse "Having" KernelStaticDiagnostic.invalidWildcard.kernelCode
+  let containingGroup := match entity with | .inl declaration => declaration.groupPath | .inr path => path
   if let some key := reference.index then
-    let checkedKey : Sum String (FlatFieldDecl × SemanticIndexAdmissionKeyRef) ← match key with
+    let checkedKey : Sum String ((Sum FlatFieldDecl GroupPath) × SemanticIndexAdmissionKeyRef) ← match key with
       | .literal spelling => pure (.inl spelling)
       | .reference keyReference => do
-          let keyDeclaration ← admitFieldRead model group keyReference true compilePattern
-          pure (.inr (keyDeclaration, {
-            expandsToNoValueValidation := keyDeclaration.isRawString
+          let keyEntity ← admitEntityRead model group bindingGroup keyReference true compilePattern
+          pure (.inr (keyEntity, {
+            resolvesToField := keyEntity.isLeft
+            starred := keyReference.path.segments.any (·.star)
+            expandsToNoValueValidation := match keyEntity with
+              | .inl declaration => declaration.isRawString | .inr _ => false
             carriesCategory := keyReference.category.isSome }))
     let shapeKey : SemanticIndexAdmissionKey := match checkedKey with
       | .inl spelling => .constant spelling true
@@ -60,7 +78,7 @@ private partial def admitFieldRead (model : FlatModel) (group : GroupPath)
       if let some diagnostic := semanticIndexAdmissionRefusal
           { valueSpecIsSemanticIndex := true } shapeKey then
         refuse "Having" diagnostic.kernelCode
-    let groups := ((model.repeatableScopeForGroupPath declaration.groupPath).filterMap
+    let groups := ((model.repeatableScopeForGroupPath containingGroup).filterMap
       model.repeatableGroupAtLevel?).reverse
     let indexPath := groups.map fun candidate => ({
       declaredNames := if candidate.indexField.isSome then 1 else 0
@@ -83,15 +101,49 @@ private partial def admitFieldRead (model : FlatModel) (group : GroupPath)
           let spelling := normalizeLinebreaks authored
           let some applicable := index.indexKeyFits? matcher spelling | refuse "Having" "unsupported index kind"
           pure (SemanticIndexAdmissionKey.constant spelling applicable)
-      | .inr (keyDeclaration, shape) => pure (.reference { shape with
+      | .inr (.inl keyDeclaration, shape) => pure (.reference { shape with
           baseTypeMatchesIndexField :=
             keyDeclaration.policy.kind.surfaceKind.sharesValueListBaseType index.policy.kind.surfaceKind
           containedInIndexGroup := selected.path.isPrefixOf keyDeclaration.groupPath })
-    if let some diagnostic := semanticIndexAdmissionRefusal { indexPath } admissionKey then
+      | .inr (.inr _, shape) => pure (.reference shape)
+    let offset := targetPath.length - reference.path.segments.length
+    let indexPosition := selected.path.length - 1
+    let starredAtIndexLevel := indexPosition >= offset &&
+      (reference.path.segments[indexPosition - offset]?).any (·.star)
+    if let some diagnostic := semanticIndexAdmissionRefusal { indexPath, starredAtIndexLevel } admissionKey then
       refuse "Having" diagnostic.kernelCode
-  discard <| checkedHaving ((declaration.checkEntityCategoryRead (match reference.category with
-    | none => .stored | some category => .projected category)).mapError .fieldFill)
-  pure declaration
+  if reference.path.correlated then
+    -- Marked key reads use the captured binding even while unmarked reads defer their iteration
+    -- checks to the filter walk (spec/07 §3; CheckEntitySpecImpl.checkCommon).
+    let mut outerWildcard := false
+    let offset := targetPath.length - reference.path.segments.length
+    for level in model.repeatableScopeForGroupPath containingGroup do
+      let some repeated := model.repeatableGroupAtLevel? level | refuse "Having" "unresolved captured repetition"
+      let position := repeated.path.length - 1
+      let starred := position >= offset && (reference.path.segments[position - offset]?).any (·.star)
+      if starred then
+        outerWildcard := true
+      else
+        if !group.isPrefixOf bindingGroup then
+          refuse "Having" KernelStaticDiagnostic.fieldNotInRuleGroup.kernelCode
+        if let some refusal := levelIterationRefusal { marker := .iteration }
+            outerWildcard insideSemanticIndexKey then
+          refuse "Having" refusal.catalogKey
+        let unbound := model.unboundOperandLevel group bindingGroup level
+        if let some diagnostic := unbound.diagnostic? then
+          refuse "Having" (if diagnostic == .noWildcard && insideSemanticIndexKey then
+            KernelStaticDiagnostic.semanticIndexKeyInvalidIteration else diagnostic).kernelCode
+        if unbound.parallelGate == .unmeasured then refuse "Having" "unsupported captured parallel key"
+  match entity with
+  | .inl declaration =>
+      discard <| checkedHaving ((declaration.checkEntityCategoryRead (match reference.category with
+        | none => .stored | some category => .projected category)).mapError .fieldFill)
+  | .inr path =>
+      if !model.groupContributesField path then
+        refuse "Having" (if path.length == 1 then KernelStaticDiagnostic.rootGroupIsEmpty
+          else .groupIsEmpty).kernelCode
+      if reference.category.isSome then refuse "Having" KernelStaticDiagnostic.noGroupsAllowed.kernelCode
+  pure entity
 
 /-- Lower and check each leaf in parse order before walking the complete body (spec/07 §3).
 In particular, a later unsupported reader form cannot hide an earlier checked comparison error. -/
@@ -117,7 +169,8 @@ private partial def admitBody (model : FlatModel) (group bindingGroup : GroupPat
       if (operator == "FieldFilled" || operator == "FieldNotFilled") && reference.path.isPlain &&
           reference.category.isNone && reference.filter.isNone then
         if reference.index.isSome then
-          let _ ← admitFieldRead model group reference false compilePattern
+          let entity ← admitEntityRead model group bindingGroup reference false compilePattern
+          if entity.isRight then refuse "Having" "indexed group presence"
           -- An unmarked index must fail the enclosing walk, so it has no executable filter leaf
           -- (spec/07 §3); retain the successful own checks without inventing a runtime body.
           return none
@@ -130,8 +183,8 @@ private partial def admitBody (model : FlatModel) (group bindingGroup : GroupPat
       pure (some (authored, checked))
 
 /-- Admit a parsed body at an already checked filtered field. This entry preserves the raw
-reference walk after ordered own-leaf checks, then certifies the executable body. Marked or
-starred keys, group keys and the parser's nested-filter state transitions remain unsupported
+reference walk after ordered own-leaf checks, then certifies the executable body. Key filters
+and the parser's nested-filter state transitions remain unsupported
 (spec/07 §3). -/
 private def admitRawStarHaving (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (expression : Expr)

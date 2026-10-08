@@ -62,7 +62,9 @@ private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language :
   if let some other := text.suppressed.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
     refuse "SuppressWarning" other
   let suppress := text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
-  let bindingGroup ← if useErrorBinding then do
+  -- A filter captures the error field's iteration, including for refusals; a failed retry cannot
+  -- justify reporting a diagnostic from the declaring group's different scope (spec/07 §3).
+  let bindingGroup ← if useErrorBinding || text.body.hasHaving then do
       let errorField ← errorFieldOf language model.flat rule
       let declaration ← elaborated "ErrorEntity" (model.flat.lookupUniqueId errorField)
       pure declaration.groupPath
@@ -74,8 +76,8 @@ private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language :
     (assembleResolvedValidationRule model.flat condition errorField rule.errorCode severity
       { parts := [] })
 
-/-- Preserve existing successful rules and refusals while admitting a complete rule whose error
-field supplies the binding scope. Lexical paths still resolve at the original declaring group. -/
+/-- Filters use the error field's captured scope from the first attempt, including refused reads.
+Other rules retain the compatibility fallback; lexical paths resolve at the declaring group. -/
 def checkRule (model : DmModel) (language : Language) (rule : DmRule)
     (world : World := { now := { epochMillis := 0 } }) :
     Lowering (CheckedResolvedValidationRule model.flat) :=
