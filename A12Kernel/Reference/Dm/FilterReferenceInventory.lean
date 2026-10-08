@@ -88,6 +88,13 @@ private partial def argumentsInventory (model : FlatModel) (group : GroupPath)
         (← argumentsInventory model group candidate reopened rest))
 end
 
+/-- Inventory a body's references before certifying its base star; key-filter body errors can
+precede that base's star requirement (spec/07 §3). Own-read checks remain a precondition. -/
+def filterBodyInventoryAtLevels (model : FlatModel) (declaringGroup : GroupPath)
+    (candidate reopened : List RepeatableLevel) (expression : Expr) :
+    Lowering (List FilterIndexedReference × Bool) :=
+  expressionInventory model declaringGroup candidate reopened expression
+
 /-- Recover the filter walk's authored reference order, including keys, scopes and nested bodies.
 This is the post-read walk input, not whole-condition admission: own read/operator checks precede
 it, and marked semantic-index refusal follows parsing (spec/07 §3). -/
@@ -95,6 +102,6 @@ def filterBodyInventory (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (expression : Expr) :
     Lowering (List FilterIndexedReference × Bool) :=
   let candidate := source.path.axes.map (·.level)
-  expressionInventory model declaringGroup candidate (candidate.drop source.path.firstStar) expression
+  filterBodyInventoryAtLevels model declaringGroup candidate (candidate.drop source.path.firstStar) expression
 
 end A12Kernel.Dm

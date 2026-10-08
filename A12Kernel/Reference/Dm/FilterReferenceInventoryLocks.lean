@@ -397,4 +397,49 @@ example : ["FieldFilled", "FieldNotFilled"].all (fun operator =>
       (KernelStaticDiagnostic.semanticIndexKeyNotField.kernelCode,
        KernelStaticDiagnostic.semanticIndexKeyNotField.kernelCode)) = true := by native_decide
 
+private def filteredKeyCases : List (String × KernelStaticDiagnostic) := [
+  ("Rows*/Tag Having FieldFilled(Rows/Tag)", .semanticIndexKeyStarred),
+  ("Rows*/Tag Having FieldFilled(Rows/Tag For Expected)", .semanticIndexOnSemanticIndex),
+  ("Rows*/Tag Having FieldFilled($Rows/Tag)", .semanticIndexKeyInvalidIteration),
+  ("Rows*/Tag Having [$Rows/N] > 0", .semanticIndexKeyInvalidIteration),
+  ("Rows*/Tag Having [$Rows/Tag] > \"keep\"", .semanticIndexKeyInvalidIteration),
+  ("Rows*/Tag Having FieldFilled(Rows/Tag For Missing)", .invalidEntity),
+  ("Rows*/Tag Having FieldFilled(Rows/Tag For Rows)", .semanticIndexKeyNotField),
+  ("Rows*/Tag Having RepetitionNotUnique(Rows/Tag)", .disallowedConstructInFilterCondition),
+  ("$Rows*/Tag Having FieldFilled(Expected)", .invalidOuterIteration),
+  ("$Rows*/Tag Having [Rows/Tag] > \"keep\"", .invalidTypeForComparison),
+  ("Rows*/Tag Having FieldFilled(Parties/Tag)", .invalidIterationInFilterCondition),
+  ("Rows*/Tag Having FieldFilled(Expected)", .noIterationForWildcard),
+  ("Rows*/Tag Having [Rows/Tag] > \"keep\"", .invalidTypeForComparison),
+  ("Expected Having FieldFilled(Expected)", .wildcardsRequired),
+  ("Expected Having [Expected] > \"keep\"", .invalidTypeForComparison),
+  ("Rows/Tag Having FieldFilled(Rows/Tag)", .semanticIndexKeyInvalidIteration),
+  ("Rows*/Lines/Qty Having FieldFilled(Rows/Lines/Qty)", .semanticIndexKeyInvalidIteration),
+  ("Rows*/Tag Having FieldFilled($Expected)", .noIterationForWildcard),
+  ("$Rows*/Tag Having FieldFilled(Rows/Tag)", .invalidOuterIteration),
+  ("Rows Having [Missing] > 0", .noGroupsAllowed),
+  ("Rows*/Tag->Missing Having FieldFilled(Rows/Tag)", .noEnumeration),
+  ("Rows*/Tag->Missing Having FieldFilled(Parties/Tag)", .invalidIterationInFilterCondition),
+  ("Missing*/Tag Having [Expected] > \"keep\"", .invalidEntity)]
+
+example : ["FieldFilled", "FieldNotFilled"].all (fun operator => filteredKeyCases.all fun (key, diagnostic) =>
+    bothReaders ("Sum(Rows*/N Having " ++ operator ++ "(Rows/N For " ++ key ++ "))")
+      diagnostic.kernelCode) = true := by native_decide
+
+example : readerResults "Sum(Rows*/N Having FieldFilled(Rows/N For Rows/Tag Having FieldFilled(Rows/Tag)))"
+      rowBoundModel true =
+    (KernelStaticDiagnostic.wildcardsRequired.kernelCode, KernelStaticDiagnostic.wildcardsRequired.kernelCode) := by native_decide
+
+private def capturedKeyBodyLeaves : List String := [
+  "AllFieldsFilled($Rows/N, Out)", "NumberOfFilledFields($Rows/N, Out) > 0",
+  "Sum($Rows/N, Out) > 0", "FirstFilledValue($Rows/N, Out) > 0",
+  "Length($Rows/Tag) > 0", "GroupFilled($Rows)",
+  "FieldValueIncludedInValueList($Rows/Tag, \"keep\")"]
+
+example : capturedKeyBodyLeaves.all (fun leaf =>
+    let operation := "Sum(Rows*/N Having FieldFilled(Rows/N For Rows*/Tag Having FieldFilled(Rows/Tag) And " ++ leaf ++ "))"
+    bothReaders operation KernelStaticDiagnostic.semanticIndexKeyInvalidIteration.kernelCode &&
+    readerResults operation rowBoundModel true ==
+      (KernelStaticDiagnostic.semanticIndexKeyStarred.kernelCode, KernelStaticDiagnostic.semanticIndexKeyStarred.kernelCode)) = true := by native_decide
+
 end A12Kernel.Dm.FilterReferenceInventoryLocks

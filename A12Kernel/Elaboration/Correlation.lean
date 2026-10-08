@@ -722,13 +722,11 @@ def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : Group
 
 /-- Resolve and check every body leaf before the enclosing filter walk and construct gates.
 The staged result retains forbidden constructs without manufacturing an executable body (spec/07 §3). -/
-def elaborateStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
-    (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
+def elaborateHavingBodyAtLevels (model : FlatModel) (declaringGroup : GroupPath)
+    (candidateLevels reopenedLevels : List RepeatableLevel) (authored : SurfaceCorrelatedHaving)
     (bindingGroup : GroupPath := declaringGroup)
     (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
     Except CorrelationElabError HavingBodyAdmission := do
-  let candidateLevels := source.path.axes.map (·.level)
-  let reopenedLevels := candidateLevels.drop source.path.firstStar
   let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let resolveTemporalEntity (reference : SurfaceHavingPresenceRef) :=
     model.resolveHavingEntityRead declaringGroup outerLevels { origin := reference.origin, field := reference.field }
@@ -789,6 +787,16 @@ def elaborateStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
     groupPresence := model.resolveHavingGroupPresence declaringGroup outerLevels
     groupFill := model.resolveHavingGroupFill declaringGroup outerLevels
     presence := model.resolveHavingPresenceInEnvironment declaringGroup outerLevels } authored
+
+/-- A checked star supplies the candidate and reopened levels for ordinary filter bodies. -/
+def elaborateStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
+    (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
+    (bindingGroup : GroupPath := declaringGroup)
+    (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
+    Except CorrelationElabError HavingBodyAdmission :=
+  let candidate := source.path.axes.map (·.level)
+  elaborateHavingBodyAtLevels model declaringGroup candidate (candidate.drop source.path.firstStar)
+    authored bindingGroup compilePattern
 
 /-- Certify a body after its own checks and the enclosing filter walk have passed.
 Both typed and parsed admission routes use the same environment and iteration witnesses. -/

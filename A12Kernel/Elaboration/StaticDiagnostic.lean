@@ -133,6 +133,8 @@ inductive KernelStaticDiagnostic where
   | indexFieldNonRepeatableEnum
   /-- A wildcard attached to a relative upward step. Refused only under a **strict** parse: a lenient one admits the same spelling, which is the opposite of the rule-context star beside it. -/
   | wildcardOnRelativeStep
+  /-- A captured reference is checked after parsing has left filter mode (spec/07 §3). -/
+  | invalidOuterIteration
   /-- An operand the operator requires to be starred, written without a star. -/
   | wildcardsRequired
   /-- A wildcard on the rule's own context group. Unconditional, so lenience does not excuse it. -/
@@ -503,6 +505,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .indexFieldRepeatabilityMismatch => "INVALID_INDEX_FIELD_REP"
   | .indexFieldNotIterating => "INVALID_INDEX_FIELD_REP_ITER"
   | .indexFieldNonRepeatableEnum => "INVALID_INDEX_FIELD_NONREP_ENUM"
+  | .invalidOuterIteration => "MVK_INVALID_OUTER_ITERATION"
   | .wildcardOnRelativeStep => "MVK_INVALID_WILDCARD_REL"
   | .wildcardsRequired => "MVK_WILDCARDS_REQUIRED"
   | .wildcardOnRuleContext => "MVK_INVALID_WILDCARD_FOR_RULEGROUP"
@@ -690,7 +693,7 @@ def all : List KernelStaticDiagnostic :=
     .categoryNotAllowed,
     .indexFieldUnresolved, .indexFieldAmbiguous, .indexFieldComposedIndex,
     .indexFieldRepeatabilityMismatch, .indexFieldNotIterating, .indexFieldNonRepeatableEnum,
-    .wildcardOnRelativeStep, .wildcardsRequired, .wildcardOnRuleContext,
+    .wildcardOnRelativeStep, .invalidOuterIteration, .wildcardsRequired, .wildcardOnRuleContext,
     .groupNotRepeatable, .entityNotInGroup, .entitiesInDifferentRootGroups, .invalidRootGroup,
     .tooManyParentGroups, .fieldNameNotUnique,
     .tooManyDivisionsInRegion, .nestedPowerOnLeft, .exponentScaleNotWhole,
