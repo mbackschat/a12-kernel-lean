@@ -555,9 +555,9 @@ def SurfaceHavingDateRangePredicate.entities : SurfaceHavingDateRangePredicate �
 
 inductive SurfaceCorrelatedHaving where
   | dateRange (source : SurfaceHavingDateRangePredicate)
-  | compareStringExpression (op : EqualityOp) (left right : StringExpr SurfaceHavingSelectedOperand String)
+  | compareStringExpression (op : SurfaceComparisonOp) (left right : StringExpr SurfaceHavingSelectedOperand String)
   | compareSelected (op : EqualityOp) (left right : SurfaceHavingSelectedOperand)
-  | compareBoolean (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool)
+  | compareBoolean (op : SurfaceComparisonOp) (reference : SurfaceHavingStringRef) (expected : Bool)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef)
   | compareTemporalExpression (op : SurfaceComparisonOp) (left right : SurfaceHavingTemporalExpression)
   | compareTemporal (op : SurfaceComparisonOp) (left right : SurfaceHavingTemporalOperand)
@@ -565,10 +565,9 @@ inductive SurfaceCorrelatedHaving where
       (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
   | numeric (op : SurfaceComparisonOp)
       (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
-  /-- A String or Enumeration projection against a literal retains an equality-only operator
-      (spec/04). Text-literal ordering is therefore unrepresentable on this filter surface;
-      SG17 owns integration of the existing comparison-entry refusal into this route. -/
-  | compareStrings (op : EqualityOp) (reference : SurfaceHavingStringRef)
+  /-- Retain the authored operator until operand reads and the comparison-entry gate have run;
+      only equality/inequality can reach the checked text comparison (spec/04). -/
+  | compareStrings (op : SurfaceComparisonOp) (reference : SurfaceHavingStringRef)
       (expected : String)
   | literalList (quantifier : ValueListQuantifier) (subjects : SurfaceHavingEntitySource)
       (values : List String)
@@ -681,17 +680,16 @@ inductive CorrelationElabError where
       (available : List RepeatableLevel) (actual : RepeatableLevel)
   | equalityScaleMismatch (leftPath : List String) (leftScale : Nat)
       (rightPath : List String) (rightScale : Nat)
-  /-- An equality against a literal carrying more fraction digits than the field's scale. -/
   | literalScaleMismatch (path : List String) (fieldScale : Nat) (literalScale : Int)
   | constantNumericComparison
+  | comparisonEntry (diagnostic : KernelStaticDiagnostic)
   | numericExpressionUnsupported
   | temporalPartPrecision (field : FieldId) (part : TemporalNumericPart)
   | numericOperandFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
   | missingInner
   | missingOuter
   | errorGuardMismatch (errorPath guardPath : List String)
-  /-- A marked reference crossing a level the reading rule does not bind, with the level the walk
-      refuses. -/
+  /-- The repetition walk refuses this level because the reading rule does not bind the marked read. -/
   | outerLevelUnbound (path : List String) (unbound : UnboundOperandLevel)
   | dateRangeComponentsMismatch (leftPath rightPath : List String)
   | incoherentCore
@@ -729,6 +727,7 @@ and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-
 The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
+  | .comparisonEntry diagnostic => some diagnostic
   | .temporalPartPrecision _ _ => some .invalidDateType
   | .dateRange diagnostic => some diagnostic
   | .dateComponents (.extractorPartialPrecision _ _ _) => some .invalidDateType
@@ -747,6 +746,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .dateRangeComponentsMismatch _ _ => some .invalidCompareToDateRange
   | .text (.enumerationOperand _ (.invalidLiteral _)) =>
       some .invalidStringConstantForEnumComparison
+  | .text (.literalKindMismatch _ .boolean actual) => literalComparisonDiagnostic? .booleanLike actual
   | .text _ => none
   | .fieldNotNumber _ actual => numericComparisonDiagnostic? actual
   | .orderingFieldNotNumber _ actual partner => orderingComparisonDiagnostic? actual partner

@@ -344,6 +344,7 @@ private def correlationElaborationResult : CorrelationElabError →
   | .dateRange _ | .dateComponents _ | .uniquenessKind _ | .uniquenessFormat _ | .membershipKind _ | .membershipBaseType _ | .membershipStringLiteralKind _ | .fieldFill _ | .groupFill _ | .groupPresence _ | .groupListStarNotAllowed | .stringPattern _ | .typeValidityOperand _ | .typeValidityName _ | .text _ | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute | .literalScaleMismatch _ _ _
   | .constantNumericComparison | .numericExpressionUnsupported
+  | .comparisonEntry _
   | .temporalPartPrecision _ _
   | .numericOperandFieldNotNumber _ _ | .dateRangeComponentsMismatch _ _ => throw .incoherentCore
   -- The constant leaf splits from the placement refusal for the Kernel projection only; the public

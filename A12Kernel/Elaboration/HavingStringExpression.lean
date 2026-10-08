@@ -40,11 +40,22 @@ private def expressionAdmitted (model : FlatModel) (candidateLevels outerLevels 
           (model.lookupUniqueId ref.field).toOption.any fun declaration => (admitStringComputationValueField declaration).isOk
       | _ => false
 
+private def operandsAdmitted (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel)
+    (left right : StringExpr HavingStringSource) : Bool :=
+  let isCategory : StringExpr HavingStringSource → Bool | .category .. => true | _ => false
+  expressionAdmitted model candidateLevels outerLevels (isCategory right) left &&
+    expressionAdmitted model candidateLevels outerLevels (isCategory left) right
+
+/-- `CheckOpUtils.isConstant` classifies authored literals and their braces, not expressions
+without field dependencies. String lowering erases braces but retains concatenation nodes. -/
+private def stringComparisonEntry : StringExpr HavingStringSource → ComparisonEntryOperand
+  | .literal _ => .literal .string
+  | _ => .expression .string
+
 def HavingStringComparison.wellFormed (source : HavingStringComparison) (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
-  let isCategory : StringExpr HavingStringSource → Bool | .category .. => true | _ => false
-  expressionAdmitted model candidateLevels outerLevels (isCategory source.right) source.left &&
-    expressionAdmitted model candidateLevels outerLevels (isCategory source.left) source.right &&
+  operandsAdmitted model candidateLevels outerLevels source.left source.right &&
+    comparisonConstantPairAllowed (stringComparisonEntry source.left) (stringComparisonEntry source.right) &&
     match source.left, source.right with
     | .category _ projection, .literal text | .literal text, .category _ projection => projection.categoryTokens.contains text
     | _, _ => true
@@ -54,7 +65,7 @@ candidate/captured environment and the operator's field-value versus entity read
 def elaborateHavingStringComparison (model : FlatModel) (declaringGroup : GroupPath)
     (candidateLevels outerLevels : List RepeatableLevel)
     (resolve : SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatFieldDecl)
-    (operator : EqualityOp) (left right : StringExpr SurfaceHavingSelectedOperand String) :
+    (operator : SurfaceComparisonOp) (left right : StringExpr SurfaceHavingSelectedOperand String) :
     Except CorrelationElabError HavingStringComparison := do
   let direct (source : SurfaceHavingSelectedOperand) (valueRead : Bool) := do
     let .field ref := source | throw CorrelationElabError.numericExpressionUnsupported
@@ -80,7 +91,13 @@ def elaborateHavingStringComparison (model : FlatModel) (declaringGroup : GroupP
     | .range source start finish => do
         let (ref, declaration) ← direct source false
         pure (.range (.field { origin := ref.origin, field := declaration.id }) start finish)
-  let result : HavingStringComparison := { operator, left := ← expression left, right := ← expression right }
+  let first ← expression left
+  let second ← expression right
+  if !operandsAdmitted model candidateLevels outerLevels first second then throw .numericExpressionUnsupported
+  discard <| (checkComparisonEntry (if operator.toEquality?.isSome then .equality else .ordering)
+    (stringComparisonEntry first) (stringComparisonEntry second)).mapError .comparisonEntry
+  let some equality := operator.toEquality? | throw .incoherentCore
+  let result : HavingStringComparison := { operator := equality, left := first, right := second }
   if !result.wellFormed model candidateLevels outerLevels then throw .numericExpressionUnsupported
   pure result
 

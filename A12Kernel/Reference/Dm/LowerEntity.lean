@@ -257,8 +257,7 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
       match lowerHavingStringExpression left, lowerHavingStringExpression right with
       | .ok left, .ok right =>
           if stringComparison && (isCompoundStringExpression left || isCompoundStringExpression right) then
-            let some equality := surfaceOp.toEquality? | refuse "Having" "String expression equality operator"
-            return .compareStringExpression equality left right
+            return .compareStringExpression surfaceOp left right
       | _, _ => pure ()
       if selectedNonNumeric typing left || selectedNonNumeric typing right then
         let some equality := surfaceOp.toEquality? | refuse "Having" "selected comparison operator"
@@ -280,14 +279,16 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
         | .field _, .field _ => pure ()
         | _, _ => return .compareTemporal surfaceOp l r
       match left, right with
-      | .value { path, index := none, category := none }, .constant literal
-      | .constant literal, .value { path, index := none, category := none } =>
-          match path.havingField?, surfaceOp.toEquality?, literal with
-          | some (origin, field), some equality, "True" =>
-              pure (.compareBoolean equality { origin, field } true)
-          | some (origin, field), some equality, "False" =>
-              pure (.compareBoolean equality { origin, field } false)
-          | _, _, _ => refuse "Having" "Boolean comparison"
+      | .value { path, index := none, category }, .constant literal
+      | .constant literal, .value { path, index := none, category } =>
+          match path.havingField?, literal with
+          | some (origin, field), "True" =>
+              pure (.compareBoolean surfaceOp
+                { origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored } true)
+          | some (origin, field), "False" =>
+              pure (.compareBoolean surfaceOp
+                { origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored } false)
+          | _, _ => refuse "Having" "Boolean comparison"
       | .value { path := left, index := none, category := leftCategory },
           .value { path := right, index := none, category := rightCategory } =>
           match left.havingField?, right.havingField? with
@@ -303,12 +304,10 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
       | .value { path, index := none, category }, .string expected
       | .string expected, .value { path, index := none, category } =>
           if isTemporalConstant expected then refuse "Having" "temporal constant" else
-          match path.havingField?, surfaceOp with
-          | some (origin, field), .equal => pure (.compareStrings .equal
+          match path.havingField? with
+          | some (origin, field) => pure (.compareStrings surfaceOp
               { origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored } expected)
-          | some (origin, field), .notEqual => pure (.compareStrings .notEqual
-              { origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored } expected)
-          | _, _ => refuse "Having" "String comparison"
+          | none => refuse "Having" "String comparison"
       | _, _ => pure (.numeric surfaceOp (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField left)
           (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField right))
   | other => refuse "Having" other.construct

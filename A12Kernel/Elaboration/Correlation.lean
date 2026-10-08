@@ -233,6 +233,10 @@ private def FlatModel.resolveHavingFieldValueRead (model : FlatModel) (declaring
   let declaration ← (displaceGroupRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
     (model.havingGroupRead declaringGroup reference)).mapError .resolve
   requireOuterFieldAvailable origin outerLevels declaration
+  (declaration.checkEntityCategoryRead (match projectionRef with
+    | .stored => .stored | .category category => .projected category)).mapError fun
+      | .resolve error => .resolve error
+      | error => .fieldFill error
   match declaration.projectedReadRefusal? projectionRef with
   | some refusal => throw (.resolve refusal)
   | none => pure declaration
@@ -293,22 +297,24 @@ private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
     projection and literal-domain checks rather than treating a category as a stored token. -/
 private def FlatModel.resolveHavingStringInEnvironment (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
-    (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : String) :
-    Except CorrelationElabError HavingStringRef := do
+    (op : SurfaceComparisonOp) (reference : SurfaceHavingStringRef) (expected : String) :
+    Except CorrelationElabError (EqualityOp × HavingStringRef) := do
   let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels reference.origin
     reference.field reference.projectionRef
+  discard <| (checkComparisonEntry (if op.toEquality?.isSome then .equality else .ordering)
+    (.field declaration.policy.kind.surfaceKind) (.literal .string)).mapError .comparisonEntry
+  let some equality := op.toEquality? | throw .incoherentCore
   let operand ← match declaration.policy.kind with
     | .enumeration => do
-        let surfaceOp := match op with | .equal => SurfaceComparisonOp.equal | .notEqual => .notEqual
         let .compare (.enumeration _ operand _) ←
-          (elaborateEnumerationCore declaration surfaceOp reference.projectionRef expected).mapError .text
+          (elaborateEnumerationCore declaration op reference.projectionRef expected).mapError .text
           | throw .incoherentCore
         pure (.enumeration operand)
     | _ =>
         match declaration.toStringValueField?, reference.projectionRef with
         | some field, .stored => pure (.string field)
         | _, _ => throw (.fieldNotStringValue declaration.path declaration.policy.kind.surfaceKind)
-  pure { origin := reference.origin, operand }
+  pure (equality, { origin := reference.origin, operand })
 
 private def havingTextOperand (declaration : FlatFieldDecl)
     (projectionRef : EnumerationProjectionRef) :
@@ -415,15 +421,17 @@ private def FlatModel.resolveHavingTemporalConstant (model : FlatModel)
 
 private def FlatModel.resolveHavingBooleanInEnvironment (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
-    (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool) :
+    (op : SurfaceComparisonOp) (reference : SurfaceHavingStringRef) (expected : Bool) :
     Except CorrelationElabError FlatComparison := do
   let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels
     reference.origin reference.field reference.projectionRef
-  if reference.projectionRef != .stored then throw .incoherentCore
+  discard <| (checkComparisonEntry (if op.toEquality?.isSome then .equality else .ordering)
+    (.field declaration.policy.kind.surfaceKind) (.literal .boolean)).mapError .comparisonEntry
+  let some equality := op.toEquality? | throw .incoherentCore
   match declaration.policy.kind with
-  | .boolean => pure (.boolean op { id := declaration.id } expected)
+  | .boolean => pure (.boolean equality { id := declaration.id } expected)
   | .confirm =>
-      if expected then pure (.confirm op { id := declaration.id })
+      if expected then pure (.confirm equality { id := declaration.id })
       else throw (.text (.illegalConfirmLiteral declaration.path))
   | kind => throw (.text (.literalKindMismatch declaration.path .boolean kind.surfaceKind))
 

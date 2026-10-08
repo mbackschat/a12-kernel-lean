@@ -19,11 +19,11 @@ private def SurfaceComparisonOp.toCorrelation : SurfaceComparisonOp → Correlat
     each route chooses all of them together, and a route that admits no String or presence leaf
     supplies a refusing resolver rather than a different combinator. -/
 structure HavingLeafResolvers extends HavingNumericResolvers where
-  stringExpression : EqualityOp → StringExpr SurfaceHavingSelectedOperand String → StringExpr SurfaceHavingSelectedOperand String →
+  stringExpression : SurfaceComparisonOp → StringExpr SurfaceHavingSelectedOperand String → StringExpr SurfaceHavingSelectedOperand String →
     Except CorrelationElabError HavingStringComparison
   selectedComparison : EqualityOp → SurfaceHavingSelectedOperand → SurfaceHavingSelectedOperand →
     Except CorrelationElabError HavingSelectedComparison
-  boolean : EqualityOp → SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatComparison
+  boolean : SurfaceComparisonOp → SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatComparison
   fields : SurfaceComparisonOp → SurfaceHavingStringRef → SurfaceHavingStringRef →
     Except CorrelationElabError (Option FlatComparison)
 
@@ -33,8 +33,8 @@ structure HavingLeafResolvers extends HavingNumericResolvers where
   temporalExpressionPart : TemporalNumericPart → SurfaceHavingTemporalExpression → Except CorrelationElabError HavingNumericAtom
   temporal : SurfaceComparisonOp → SurfaceHavingTemporalOperand → SurfaceHavingTemporalOperand →
     Except CorrelationElabError (Option (HavingOrigin × HavingOrigin × FlatComparison))
-  string : EqualityOp → SurfaceHavingStringRef → String →
-    Except CorrelationElabError HavingStringRef
+  string : SurfaceComparisonOp → SurfaceHavingStringRef → String →
+    Except CorrelationElabError (EqualityOp × HavingStringRef)
   literalMembership : SurfaceHavingStringRef → Sum (List Int) (List String) →
     Except CorrelationElabError FlatLiteralMembership
   literalList : SurfaceHavingEntitySource → List String → Except CorrelationElabError HavingFieldValueList
@@ -164,8 +164,8 @@ def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
   | .numeric op left right => elaborateHavingNumeric resolvers op left right
   | .tolerance range left right => elaborateHavingNumericExpression resolvers (.tolerance range) left right
   | .compareStrings op reference expected => do
-      pure (.compareStringLiteral op
-        (← resolvers.string op reference expected) expected)
+      let (equality, source) ← resolvers.string op reference expected
+      pure (.compareStringLiteral equality source expected)
   | .literalMembership operator reference values => do
       pure (.leaf (.literalMembership reference.origin operator (← resolvers.literalMembership reference values)))
   | .literalList quantifier subjects values => do
