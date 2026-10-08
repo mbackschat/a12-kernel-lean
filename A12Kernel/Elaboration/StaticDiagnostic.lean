@@ -25,6 +25,7 @@ inductive KernelStaticDiagnostic where
   | invalidTypeForComparison
   /-- A filter leaf reads a field that no iteration in scope binds — measured with an absolute root-level field inside a starred operand's filter. The message names a wildcard because the filter's own binding comes from the star it qualifies. -/
   | noIterationForWildcard
+  | disallowedConstructInFilterCondition
   /-- A filter leaf reads a **different** repeatable group's field without a star. Distinct from the class above: the field is repeatable rather than root-level, so an iteration exists and is the wrong one. -/
   | invalidIterationInFilterCondition
   /-- Operands drawn from two different comparability categories, each individually admissible. -/
@@ -449,6 +450,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidTypesForComparison => "MVK_INVALID_TYPES_FOR_COMPARISON"
   | .invalidTypeForComparison => "MVK_INVALID_TYPE_FOR_COMPARISON"
   | .noIterationForWildcard => "MVK_NO_ITERATION_FOR_WILDCARD"
+  | .disallowedConstructInFilterCondition => "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION"
   | .invalidIterationInFilterCondition =>
       "MVK_INVALID_ITERATION_IN_FILTER_CONDITION"
   | .varyingTypesNotAllowed => "MVK_VARYING_TYPES_NOT_ALLOWED"
@@ -668,7 +670,7 @@ def all : List KernelStaticDiagnostic :=
   [.invalidStringConstantForEnumComparison,
     .onlyStringEnumNumberDateAllowed, .onlyStringEnumNumberAllowed,
     .invalidTypesForComparison, .invalidTypeForComparison,
-    .noIterationForWildcard, .invalidIterationInFilterCondition,
+    .noIterationForWildcard, .invalidIterationInFilterCondition, .disallowedConstructInFilterCondition,
     .numberAndNonNumber, .onlyStringEnumNumberCmpDateAllowed,
     .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
     .invalidCompareToYesNo,

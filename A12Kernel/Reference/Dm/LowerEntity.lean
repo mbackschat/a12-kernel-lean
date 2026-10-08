@@ -169,6 +169,11 @@ private def isRangeConstruction : Expr → Bool
 repetition atoms. Typed field pairs, Boolean/text literals and presence retain their operand domains. -/
 partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × GroupPath) := none) :
     Lowering SurfaceCorrelatedHaving := match expression with
+  | .custom name quoted => do
+      let spelling := if quoted then CustomConditionNameSpelling.quoted name else .unquoted name
+      let some checked := checkCustomConditionName (fun _ => false) spelling
+        | refuse "CustomCondition" "invalid name"
+      pure (.customCondition checked)
   | .parens body => lowerHaving body typing
   | .logic op (first :: rest) => do
       let join := match op with | .and => SurfaceCorrelatedHaving.and | .or => SurfaceCorrelatedHaving.or

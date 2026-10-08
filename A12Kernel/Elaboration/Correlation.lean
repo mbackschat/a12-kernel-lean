@@ -89,6 +89,7 @@ private def FlatModel.resolveHavingNumberRead (model : FlatModel) (declaringGrou
     reference reads the captured outer row, not the level the filter reopens. -/
 private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) : SurfaceCorrelatedHaving → Bool
+  | .customCondition _ => false
   | .compareFields _ left right =>
       [left, right].any fun reference => reference.origin == .inner &&
         (model.resolveNumberInGroup declaringGroup group reference.field).isOk
@@ -571,6 +572,7 @@ def CheckedStarHaving.condition
 def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
     (declaringGroup : GroupPath) (candidateLevels : List RepeatableLevel) :
     SurfaceCorrelatedHaving → Option CorrelationElabError
+  | .customCondition _ => none
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
         | .collectionCount count => (count.source.first :: count.source.rest).findSome? entity
@@ -728,7 +730,7 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   let resolveTemporalEntity (reference : SurfaceHavingPresenceRef) :=
     model.resolveHavingEntityRead declaringGroup outerLevels { origin := reference.origin, field := reference.field }
   let numeric := model.havingNumericResolvers declaringGroup candidateLevels outerLevels
-  let condition ← elaborateHavingCoreWith {
+  let body ← elaborateHavingBodyWith {
     toHavingNumericResolvers := numeric
     boolean := model.resolveHavingBooleanInEnvironment declaringGroup outerLevels
     temporalDifference := fun unit left right => do
@@ -785,6 +787,7 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     presence := model.resolveHavingPresenceInEnvironment declaringGroup outerLevels } authored
   if let some refusal := authored.candidateEnvironmentRefusal? model declaringGroup candidateLevels then
     throw refusal
+  let condition ← body.toCore (·.reachesReopenedLevel model reopenedLevels)
   if hReopened : condition.reachesReopenedLevel model reopenedLevels = true then
     if hWellFormed :
         condition.wellFormedForEnvironments model candidateLevels outerLevels = true then

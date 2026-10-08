@@ -345,6 +345,7 @@ private def correlationElaborationResult : CorrelationElabError →
   | .disjunctionOutsideStarRoute | .literalScaleMismatch _ _ _
   | .constantNumericComparison | .numericExpressionUnsupported
   | .comparisonEntry _
+  | .customConditionInFilter
   | .temporalPartPrecision _ _
   | .numericOperandFieldNotNumber _ _ | .dateRangeComponentsMismatch _ _ => throw .incoherentCore
   -- The constant leaf splits from the placement refusal for the Kernel projection only; the public

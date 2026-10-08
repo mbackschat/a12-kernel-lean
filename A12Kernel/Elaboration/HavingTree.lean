@@ -133,6 +133,7 @@ private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
 
 def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving → Except CorrelationElabError CorrelatedHaving
+  | .customCondition _ => throw .customConditionInFilter
   | .compareStringExpression op left right =>
       (fun comparison => .leaf (.stringExpression comparison)) <$> resolvers.stringExpression op left right
   | .compareSelected op left right =>
@@ -196,5 +197,44 @@ def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
   | .or left right => do
       pure (.or (← elaborateHavingCoreWith resolvers left)
         (← elaborateHavingCoreWith resolvers right))
+
+/-- The custom-condition branch retains checked siblings only for the filter's iteration gate;
+it has no executable body. The construct gate follows body and iteration checks (spec/07 §3). -/
+inductive HavingBodyAdmission where
+  | ordinary (body : CorrelatedHaving)
+  | customCondition (siblings : List CorrelatedHaving)
+
+namespace HavingBodyAdmission
+
+private def fragments : HavingBodyAdmission → List CorrelatedHaving
+  | .ordinary body => [body]
+  | .customCondition siblings => siblings
+
+private def combine (join : CorrelatedHaving → CorrelatedHaving → CorrelatedHaving)
+    (left right : HavingBodyAdmission) : HavingBodyAdmission :=
+  match left, right with
+  | .ordinary left, .ordinary right => .ordinary (join left right)
+  | _, _ => .customCondition (left.fragments ++ right.fragments)
+
+def toCore (reachesIteration : CorrelatedHaving → Bool) :
+    HavingBodyAdmission → Except CorrelationElabError CorrelatedHaving
+  | .ordinary body => .ok body
+  | .customCondition siblings =>
+      .error (if siblings.any reachesIteration then .customConditionInFilter else .missingInner)
+
+end HavingBodyAdmission
+
+/-- Complete all ordinary body checks before deciding a custom condition's enclosing filter gates.
+No callback is invoked or executable custom leaf manufactured for a forbidden filter. -/
+def elaborateHavingBodyWith (resolvers : HavingLeafResolvers) :
+    SurfaceCorrelatedHaving → Except CorrelationElabError HavingBodyAdmission
+  | .customCondition _ => pure (.customCondition [])
+  | .and left right => do
+      pure (HavingBodyAdmission.combine .and (← elaborateHavingBodyWith resolvers left)
+        (← elaborateHavingBodyWith resolvers right))
+  | .or left right => do
+      pure (HavingBodyAdmission.combine .or (← elaborateHavingBodyWith resolvers left)
+        (← elaborateHavingBodyWith resolvers right))
+  | source => HavingBodyAdmission.ordinary <$> elaborateHavingCoreWith resolvers source
 
 end A12Kernel

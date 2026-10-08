@@ -145,4 +145,11 @@ theorem resolvedSingleCorrelatedRule_wellFormed_equalityScalesAgree
   exact correlatedHaving_wellFormed_equalityScalesAgree
     rule.star.having.condition model rule.group wellFormed.2
 
+/-- A custom condition cannot escape static filter admission, even when a checked sibling supplies iteration. -/
+theorem havingBodyAdmission_customCondition_refused (siblings : List CorrelatedHaving)
+    (reachesIteration : CorrelatedHaving → Bool) :
+    ((HavingBodyAdmission.customCondition siblings).toCore reachesIteration).isOk = false := by
+  simp only [HavingBodyAdmission.toCore]
+  split <;> rfl
+
 end A12Kernel
