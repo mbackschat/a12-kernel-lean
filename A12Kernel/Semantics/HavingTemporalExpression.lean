@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.HavingTemporalTypes
+import A12Kernel.Semantics.ScalarTemporalDifference
 
 namespace A12Kernel
 
@@ -53,11 +54,18 @@ private def coreReferenceSlots : HavingTemporalCore → List (HavingFieldListSlo
   | .apply _ first rest => coreReferenceSlots first ++ rest.flatMap coreReferenceSlots
 private def atomReferenceSlots : HavingTemporalAtom → List (HavingFieldListSlot HavingTemporalExpressionRef)
   | .selection _ slots => slots.map (·.map fun reference => { origin := reference.origin, source := .temporal reference.field })
+  | .shift _ source amount => coreReferenceSlots source ++ amountReferenceSlots amount
+  | .partialDate source => [.direct { origin := source.reference.origin, source := .temporal source.reference.field }]
   | .field reference => [.direct { origin := reference.origin, source := .temporal reference.field }]
   | .rangeBound origin field components _ => [.direct { origin, source := .range field components }]
   | .dateConstruction components => dateReferenceSlots components
   | .timeConstruction components => timeReferenceSlots components
   | _ => []
+private def amountReferenceSlots (amount : HavingTemporalAmount) : List (HavingFieldListSlot HavingTemporalExpressionRef) :=
+  amount.flatMapAtomsSubterm fun source _ => match source with
+    | .inl reference => [.direct { origin := reference.origin, source := .number reference.field }]
+    | .inr (_, source) => coreReferenceSlots source
+decreasing_by all_goals simp_all +arith <;> omega
 private def dateComponentReferenceSlots : HavingDateComponent → List (HavingFieldListSlot HavingTemporalExpressionRef)
   | .expression _ source => coreReferenceSlots source
   | .direct origin component => (show Option HavingTemporalExpressionRef from match component with
@@ -95,12 +103,14 @@ def presenceSlots (source : HavingTemporalExpression) : List (HavingFieldListSlo
 
 /-- Checked core constructors retain the same source-slot boundary as authored elaboration
 (spec/05 §§3,6); a hand-built tree cannot carry a value-expression selector here. -/
-def coreAdmittedSourceSlot : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation → Bool
+def coreAdmittedSourceSlot (source : HavingTemporalCore) (withPartialDate : Bool := false) : Bool :=
+  match source with
+  | .atom (.partialDate _) => withPartialDate
   | .atom (.selection _ _) | .apply (.extremum _) _ _ => false
   | _ => true
 
-def admittedSourceSlot (source : HavingTemporalExpression) : Bool :=
-  !source.grouped && coreAdmittedSourceSlot source.core
+def admittedSourceSlot (source : HavingTemporalExpression) (withPartialDate : Bool := false) : Bool :=
+  !source.grouped && coreAdmittedSourceSlot source.core withPartialDate
 
 def componentsWith (baseYear : Option Int) :
     TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation → Option TemporalComponents
@@ -115,9 +125,19 @@ def componentsWith (baseYear : Option Int) :
       | .dateLiteral _ yearPresent => some ({ TemporalComponents.fullDate with year := yearPresent }.withBaseYear baseYear.isSome)
       | .timeLiteral _ | .timeConstruction _ => some TemporalComponents.time
       | .dateTimeLiteral _ | .now => some TemporalComponents.now
-      | .today | .baseYearBound _ | .dateConstruction _ => some TemporalComponents.fullDate
+      | .shift unit source amount => do
+          if !coreAdmittedSourceSlot source true then none else pure ()
+          let components ← componentsWith baseYear source
+          if !(match unit with
+            | .days => components.day
+            | .months => components.month && !components.hasTime
+            | .years => components.year && !components.hasTime
+            | .hours | .minutes | .seconds => components.isFullDateTime) then none else pure ()
+          if !amount.isAdmittedResolvedNumericOperation || amount.numericOperationAuthoringCheck != .accepted then none
+          else some components
+      | .partialDate _ | .today | .baseYearBound _ | .dateConstruction _ => some TemporalComponents.fullDate
   | .apply (.constructor .dateTime) date [time] => do
-      if !coreAdmittedSourceSlot date || !coreAdmittedSourceSlot time then none else pure ()
+      if !coreAdmittedSourceSlot date true || !coreAdmittedSourceSlot time then none else pure ()
       let date ← componentsWith baseYear date
       let time ← componentsWith baseYear time
       if !date.hasDate || !date.year || date.hasTime || time.hasDate || !time.hasTime then none
@@ -148,6 +168,27 @@ private def readAtom (profile : ModelZone.ConcreteProfile) (baseYear : Option In
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
     HavingTemporalAtom → Except Error (SimpleComparisonOperand ScalarTemporalValue)
   | .selection kind slots => kind.evaluate baseYear profile phase context frame slots
+  | .shift unit source amount => do
+      let source ← evaluateCore profile baseYear phase context frame source
+      if phase == .computation then
+        if let .unknown _ := source then return source
+      let amount ← readAmount profile baseYear phase context frame amount
+      (applyScalarTemporalShift source amount (shiftScalarTemporalValue profile unit)).mapError fun _ => context.unsupportedDateCalendar
+  | .partialDate source => do
+      let reference := source.reference
+      let cell ← context.read (frame.envAt reference.origin) reference.field.id
+      match observeCell phase cell with
+      | .value (.partialDate text) =>
+          match classifyPartialDateStored source.format source.mode source.youngerThan1900Check text with
+          | .presentEmpty => pure .notEvaluated
+          | .rejected cause => pure (.unknown cause.toFormalCause)
+          | .admitted value => match value.value.resolve source.endpoint with
+              | .nonRelevant => pure (.value .nonRelevant true)
+              | .date date =>
+                  let some instant := profile.resolveLocal? { date, time := { hour := 0, minute := 0, second := 0, valid := by decide } }
+                    | throw context.unsupportedDateCalendar
+                  pure (.value (.date { instant, parts := date.civil.parts, basis := .storedGregorian }) true)
+      | observation => pure (projectScalarTemporalObservationWith baseYear (some profile) reference.field observation)
   | .field reference => do
       let cell ← context.read (frame.envAt reference.origin) reference.field.id
       pure (projectScalarTemporalObservationWith baseYear (some profile)
@@ -217,6 +258,27 @@ private def evaluateCore (profile : ModelZone.ConcreteProfile) (baseYear : Optio
 
 termination_by sizeOf core
 
+private def readAmount (profile : ModelZone.ConcreteProfile) (baseYear : Option Int) (phase : Phase)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) (amount : HavingTemporalAmount) :
+    Except Error (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
+  let resolved : Except (Sum FormalCause Error) _ := amount.mapMSubterm fun source _hNumericSource => do
+    let value ← (match _hSource : source with
+      | .inl reference => do
+          let cell ← context.read (frame.envAt reference.origin) reference.field.id
+          pure ((observeCell phase cell).asDirectNumericComparisonOperand reference.field.info).toValidationArithmetic
+      | .inr (part, source) => do
+          let source ← evaluateCore profile baseYear phase context frame source
+          (part.observeScalarCore profile source NumericValidationUnavailable.formal .nonRelevant).mapError fun _ => context.unsupportedDateCalendar).mapError Sum.inr
+    match phase, value with
+    | .computation, .error (.formal cause) => throw (.inl cause)
+    | _, value => pure value
+  match resolved with
+  | .error (.inl cause) => pure (.error (.formal cause))
+  | .error (.inr fault) => throw fault
+  | .ok expression => pure (expression.lowerForEvaluation.evalNumericOperationTree id)
+termination_by sizeOf amount
+decreasing_by all_goals simp_all +arith <;> omega
+
 private def readDateOperand (profile : ModelZone.ConcreteProfile) (baseYear : Option Int) (phase : Phase)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) (component : HavingDateComponent) :
     StateT DateComponentRelevance (Except Error) CheckedConstructedDateComponent := do
@@ -271,6 +333,17 @@ def readNumeric (source : HavingTemporalExpression) (part : TemporalNumericPart)
     Except Error (Except Unavailable NumericArithmeticOutcome) := do
   let value ← source.evaluate phase context frame
   (part.observeScalarCore source.profile value formal nonRelevant).mapError fun _ => context.unsupportedDateCalendar
+
+/-- Recursive differences share the phase-specific operand order with ordinary temporal expressions. -/
+def readDifference (left right : HavingTemporalExpression) (unit : TemporalOperationUnit) (phase : Phase)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame)
+    (formal : FormalCause → Unavailable) (nonRelevant : Unavailable) :
+    Except Error (Except Unavailable NumericArithmeticOutcome) := do
+  match ← readTemporalPair phase (fun source => source.evaluate phase context frame)
+      scalarTemporalFormalCause? left right with
+  | .error cause => pure (.error (formal cause))
+  | .ok (first, second) =>
+      (observeScalarTemporalDifference left.profile unit first second formal nonRelevant).mapError fun _ => context.unsupportedDateCalendar
 
 end HavingTemporalExpression
 

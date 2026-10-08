@@ -9,7 +9,7 @@ inductive HavingTemporalSelection where
   | extremum (operator : TemporalExtremumOp)
   deriving Repr, DecidableEq
 
-/-- Only selection admits partial-Date cells; direct temporal expression reads keep their own gate. -/
+/-- Selection retains partial-Date format separately from direct temporal field reads (spec/07 §5). -/
 structure HavingTemporalSelectionRef extends HavingTemporalRef where
   partialFormat : Option FullDateTargetFormat := none
   deriving Repr, DecidableEq

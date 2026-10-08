@@ -4,28 +4,28 @@ import A12Kernel.Elaboration.DateTimeDayShiftDifferenceEvaluation
 
 namespace A12Kernel
 
-/-- A first-position shift cause stops before the direct DateTime operand. -/
+/-- A first-position shift cause in computation stops before the direct DateTime operand. -/
 theorem checkedDateTimeDayShiftDifference_first_unavailable
     (checked : CheckedDateTimeDayShiftDifference model)
-    (phase : Phase) (input : CheckedDocument model)
+    (input : CheckedDocument model)
     (cause : FormalCause)
     (position : checked.position = .first)
     (shift :
-      checked.shift.evaluate phase input = .ok (.unavailable cause)) :
-    checked.evaluate phase input = .ok (.unknown cause) := by
-  simp [CheckedDateTimeDayShiftDifference.evaluate, position, shift]
+      checked.shift.evaluate .computation input = .ok (.unavailable cause)) :
+    checked.evaluate .computation input = .ok (.unknown cause) := by
+  simp [CheckedDateTimeDayShiftDifference.evaluate, readTemporalPairWith, bind, Except.bind, pure, Except.pure, Except.mapError, position, shift]
 
-/-- A second-position direct DateTime cause stops before the shift operand. -/
+/-- A second-position direct DateTime cause in computation stops before the shift operand. -/
 theorem checkedDateTimeDayShiftDifference_second_unavailable
     (checked : CheckedDateTimeDayShiftDifference model)
-    (phase : Phase) (input : CheckedDocument model)
+    (input : CheckedDocument model)
     (cause : FormalCause)
     (position : checked.position = .second)
     (other :
-      checked.other.readCalendarDayOperand phase input =
+      checked.other.readCalendarDayOperand .computation input =
         .ok (.unavailable cause)) :
-    checked.evaluate phase input = .ok (.unknown cause) := by
-  simp [CheckedDateTimeDayShiftDifference.evaluate, position, other]
+    checked.evaluate .computation input = .ok (.unknown cause) := by
+  simp [CheckedDateTimeDayShiftDifference.evaluate, readTemporalPairWith, bind, Except.bind, pure, Except.pure, Except.mapError, position, other]
 
 /-- Both operands select the same concrete profile because they were checked against
     one model zone id. -/
@@ -37,28 +37,28 @@ theorem checkedDateTimeDayShiftDifference_profiles_eq
     checked.shift.profileMatches.symm.trans checked.other.profileMatches
   exact Option.some.inj selected
 
-/-- A first-position dynamic shift cause stops before the direct DateTime operand. -/
+/-- A first-position dynamic shift cause in computation stops before the direct DateTime operand. -/
 theorem checkedNowDateTimeDayShiftDifference_first_unavailable
     (checked : CheckedNowDateTimeDayShiftDifference model)
-    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (world : World) (input : CheckedDocument model)
     (cause : FormalCause)
     (position : checked.position = .first)
     (shift :
-      checked.shift.evaluate phase world input = .ok (.unavailable cause)) :
-    checked.evaluate phase world input = .ok (.unknown cause) := by
-  simp [CheckedNowDateTimeDayShiftDifference.evaluate, position, shift]
+      checked.shift.evaluate .computation world input = .ok (.unavailable cause)) :
+    checked.evaluate .computation world input = .ok (.unknown cause) := by
+  simp [CheckedNowDateTimeDayShiftDifference.evaluate, readTemporalPairWith, bind, Except.bind, pure, Except.pure, Except.mapError, position, shift]
 
-/-- A second-position direct DateTime cause stops before the dynamic shift operand. -/
+/-- A second-position direct DateTime cause in computation stops before the dynamic shift operand. -/
 theorem checkedNowDateTimeDayShiftDifference_second_unavailable
     (checked : CheckedNowDateTimeDayShiftDifference model)
-    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (world : World) (input : CheckedDocument model)
     (cause : FormalCause)
     (position : checked.position = .second)
     (other :
-      checked.other.readCalendarDayOperand phase input =
+      checked.other.readCalendarDayOperand .computation input =
         .ok (.unavailable cause)) :
-    checked.evaluate phase world input = .ok (.unknown cause) := by
-  simp [CheckedNowDateTimeDayShiftDifference.evaluate, position, other]
+    checked.evaluate .computation world input = .ok (.unknown cause) := by
+  simp [CheckedNowDateTimeDayShiftDifference.evaluate, readTemporalPairWith, bind, Except.bind, pure, Except.pure, Except.mapError, position, other]
 
 /-- The dynamic shift and direct DateTime select the same concrete model-zone profile. -/
 theorem checkedNowDateTimeDayShiftDifference_profiles_eq

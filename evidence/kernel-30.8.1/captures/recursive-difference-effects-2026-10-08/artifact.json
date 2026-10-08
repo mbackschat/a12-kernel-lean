@@ -1,0 +1,3038 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "DifferenceEffects_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "R_constructed",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_direct",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_ordinaryControl",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shift",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedComp",
+              "field" : "Form/constructed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedHavingComp",
+              "field" : "Form/constructedHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseComp",
+              "field" : "Form/constructedReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseHavingComp",
+              "field" : "Form/constructedReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directComp",
+              "field" : "Form/direct",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directHavingComp",
+              "field" : "Form/directHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseComp",
+              "field" : "Form/directReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseHavingComp",
+              "field" : "Form/directReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ordinaryControlComp",
+              "field" : "Form/ordinaryControl",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Stamp",
+                "Form/ordinaryControl"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ordinaryControlHavingComp",
+              "field" : "Form/ordinaryControlHaving",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ]
+            },
+            {
+              "code" : "shiftComp",
+              "field" : "Form/shift",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftHavingComp",
+              "field" : "Form/shiftHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseComp",
+              "field" : "Form/shiftReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseHavingComp",
+              "field" : "Form/shiftReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/constructed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/direct",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ordinaryControl",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ordinaryControlHaving",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Form/shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructed",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructed"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/direct",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/direct"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shift",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shift"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/ordinaryControl",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ordinaryControlHaving",
+                "value" : "7"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Anchor" : 1,
+                "Stamp" : "2024-01-01T00:00:00",
+                "Weight" : 7,
+                "constructed" : null,
+                "constructedHaving" : null,
+                "constructedReverse" : null,
+                "constructedReverseHaving" : null,
+                "direct" : null,
+                "directHaving" : null,
+                "directReverse" : null,
+                "directReverseHaving" : null,
+                "ordinaryControl" : 0,
+                "ordinaryControlHaving" : 7,
+                "shift" : null,
+                "shiftHaving" : null,
+                "shiftReverse" : null,
+                "shiftReverseHaving" : null,
+                "Rows" : [
+                  {
+                    "Stamp" : "2024-01-01T00:00:00",
+                    "Weight" : 7
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "R_constructed",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_direct",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_ordinaryControl",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shift",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedComp",
+              "field" : "Form/constructed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedHavingComp",
+              "field" : "Form/constructedHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseComp",
+              "field" : "Form/constructedReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseHavingComp",
+              "field" : "Form/constructedReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directComp",
+              "field" : "Form/direct",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directHavingComp",
+              "field" : "Form/directHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseComp",
+              "field" : "Form/directReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseHavingComp",
+              "field" : "Form/directReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ordinaryControlComp",
+              "field" : "Form/ordinaryControl",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Stamp",
+                "Form/ordinaryControl"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ordinaryControlHavingComp",
+              "field" : "Form/ordinaryControlHaving",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ]
+            },
+            {
+              "code" : "shiftComp",
+              "field" : "Form/shift",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftHavingComp",
+              "field" : "Form/shiftHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseComp",
+              "field" : "Form/shiftReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseHavingComp",
+              "field" : "Form/shiftReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/constructed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/direct",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ordinaryControl",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ordinaryControlHaving",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Form/shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructed",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructed"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/direct",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/direct"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shift",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shift"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/ordinaryControl",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ordinaryControlHaving",
+                "value" : "7"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Anchor" : 1,
+                "Stamp" : "2024-01-01T00:00:00",
+                "Weight" : 7,
+                "constructed" : null,
+                "constructedHaving" : null,
+                "constructedReverse" : null,
+                "constructedReverseHaving" : null,
+                "direct" : null,
+                "directHaving" : null,
+                "directReverse" : null,
+                "directReverseHaving" : null,
+                "ordinaryControl" : 0,
+                "ordinaryControlHaving" : 7,
+                "shift" : null,
+                "shiftHaving" : null,
+                "shiftReverse" : null,
+                "shiftReverseHaving" : null,
+                "Rows" : [
+                  {
+                    "Stamp" : "2024-01-01T00:00:00",
+                    "Weight" : 7
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "R_constructed",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_direct",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_ordinaryControl",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [
+                "Form/Stamp"
+              ]
+            },
+            {
+              "code" : "R_shift",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedComp",
+              "field" : "Form/constructed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedHavingComp",
+              "field" : "Form/constructedHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseComp",
+              "field" : "Form/constructedReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseHavingComp",
+              "field" : "Form/constructedReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directComp",
+              "field" : "Form/direct",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directHavingComp",
+              "field" : "Form/directHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseComp",
+              "field" : "Form/directReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseHavingComp",
+              "field" : "Form/directReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ordinaryControlComp",
+              "field" : "Form/ordinaryControl",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Stamp",
+                "Form/ordinaryControl"
+              ],
+              "fillToFix" : [
+                "Form/Stamp",
+                "Form/ordinaryControl"
+              ]
+            },
+            {
+              "code" : "ordinaryControlHavingComp",
+              "field" : "Form/ordinaryControlHaving",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ]
+            },
+            {
+              "code" : "shiftComp",
+              "field" : "Form/shift",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftHavingComp",
+              "field" : "Form/shiftHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseComp",
+              "field" : "Form/shiftReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseHavingComp",
+              "field" : "Form/shiftReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/constructed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/direct",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ordinaryControl",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ordinaryControlHaving",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Form/shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructed",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructed"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/direct",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/direct"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shift",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shift"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/ordinaryControl",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ordinaryControlHaving",
+                "value" : "7"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Anchor" : 1,
+                "Stamp" : null,
+                "Weight" : 7,
+                "constructed" : null,
+                "constructedHaving" : null,
+                "constructedReverse" : null,
+                "constructedReverseHaving" : null,
+                "direct" : null,
+                "directHaving" : null,
+                "directReverse" : null,
+                "directReverseHaving" : null,
+                "ordinaryControl" : 0,
+                "ordinaryControlHaving" : 7,
+                "shift" : null,
+                "shiftHaving" : null,
+                "shiftReverse" : null,
+                "shiftReverseHaving" : null,
+                "Rows" : [
+                  {
+                    "Stamp" : null,
+                    "Weight" : 7
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "R_constructed",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_direct",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_ordinaryControl",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Anchor",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [
+                "Form/Stamp"
+              ]
+            },
+            {
+              "code" : "R_shift",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedComp",
+              "field" : "Form/constructed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedHavingComp",
+              "field" : "Form/constructedHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseComp",
+              "field" : "Form/constructedReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseHavingComp",
+              "field" : "Form/constructedReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directComp",
+              "field" : "Form/direct",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directHavingComp",
+              "field" : "Form/directHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseComp",
+              "field" : "Form/directReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseHavingComp",
+              "field" : "Form/directReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ordinaryControlComp",
+              "field" : "Form/ordinaryControl",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Stamp",
+                "Form/ordinaryControl"
+              ],
+              "fillToFix" : [
+                "Form/Stamp",
+                "Form/ordinaryControl"
+              ]
+            },
+            {
+              "code" : "ordinaryControlHavingComp",
+              "field" : "Form/ordinaryControlHaving",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ]
+            },
+            {
+              "code" : "shiftComp",
+              "field" : "Form/shift",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftHavingComp",
+              "field" : "Form/shiftHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseComp",
+              "field" : "Form/shiftReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseHavingComp",
+              "field" : "Form/shiftReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/constructed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/direct",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ordinaryControl",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ordinaryControlHaving",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "Form/shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructed",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructed"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/direct",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/direct"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shift",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shift"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/ordinaryControl",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ordinaryControlHaving",
+                "value" : "7"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Anchor" : 1,
+                "Stamp" : null,
+                "Weight" : 7,
+                "constructed" : null,
+                "constructedHaving" : null,
+                "constructedReverse" : null,
+                "constructedReverseHaving" : null,
+                "direct" : null,
+                "directHaving" : null,
+                "directReverse" : null,
+                "directReverseHaving" : null,
+                "ordinaryControl" : 0,
+                "ordinaryControlHaving" : 7,
+                "shift" : null,
+                "shiftHaving" : null,
+                "shiftReverse" : null,
+                "shiftReverseHaving" : null,
+                "Rows" : [
+                  {
+                    "Stamp" : null,
+                    "Weight" : 7
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "R_constructed",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_direct",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_ordinaryControlHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code" : "R_shift",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedComp",
+              "field" : "Form/constructed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedHavingComp",
+              "field" : "Form/constructedHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseComp",
+              "field" : "Form/constructedReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseHavingComp",
+              "field" : "Form/constructedReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Rows/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directComp",
+              "field" : "Form/direct",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directHavingComp",
+              "field" : "Form/directHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseComp",
+              "field" : "Form/directReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseHavingComp",
+              "field" : "Form/directReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ordinaryControlHavingComp",
+              "field" : "Form/ordinaryControlHaving",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ]
+            },
+            {
+              "code" : "shiftComp",
+              "field" : "Form/shift",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftHavingComp",
+              "field" : "Form/shiftHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseComp",
+              "field" : "Form/shiftReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseHavingComp",
+              "field" : "Form/shiftReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/constructed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/direct",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ordinaryControl",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ordinaryControlHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Rows/Stamp",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Stamp"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Stamp",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Stamp"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Anchor" : 1,
+                "Stamp" : "bad",
+                "Weight" : 7,
+                "constructed" : null,
+                "constructedHaving" : null,
+                "constructedReverse" : null,
+                "constructedReverseHaving" : null,
+                "direct" : null,
+                "directHaving" : null,
+                "directReverse" : null,
+                "directReverseHaving" : null,
+                "ordinaryControl" : null,
+                "ordinaryControlHaving" : null,
+                "shift" : null,
+                "shiftHaving" : null,
+                "shiftReverse" : null,
+                "shiftReverseHaving" : null,
+                "Rows" : [
+                  {
+                    "Stamp" : "bad",
+                    "Weight" : 7
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "R_constructed",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_constructedReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_direct",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_directReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_ordinaryControlHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/Anchor"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight"
+              ]
+            },
+            {
+              "code" : "R_shift",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverse",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "R_shiftReverseHaving",
+              "field" : "Form/Anchor",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedComp",
+              "field" : "Form/constructed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedHavingComp",
+              "field" : "Form/constructedHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseComp",
+              "field" : "Form/constructedReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "constructedReverseHavingComp",
+              "field" : "Form/constructedReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Rows/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directComp",
+              "field" : "Form/direct",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directHavingComp",
+              "field" : "Form/directHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseComp",
+              "field" : "Form/directReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "directReverseHavingComp",
+              "field" : "Form/directReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ordinaryControlHavingComp",
+              "field" : "Form/ordinaryControlHaving",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/Stamp",
+                "/Form[1]/Rows[0]/Weight",
+                "Form/ordinaryControlHaving"
+              ]
+            },
+            {
+              "code" : "shiftComp",
+              "field" : "Form/shift",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftHavingComp",
+              "field" : "Form/shiftHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseComp",
+              "field" : "Form/shiftReverse",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "shiftReverseHavingComp",
+              "field" : "Form/shiftReverseHaving",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/constructed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/constructedReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/direct",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/directReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ordinaryControl",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ordinaryControlHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftHaving",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverse",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/shiftReverseHaving",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/constructedReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/constructedReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/directReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/directReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverse",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverse"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/shiftReverseHaving",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/shiftReverseHaving"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Rows/Stamp",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Stamp"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Stamp",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Stamp"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Anchor" : 1,
+                "Stamp" : "bad",
+                "Weight" : 7,
+                "constructed" : null,
+                "constructedHaving" : null,
+                "constructedReverse" : null,
+                "constructedReverseHaving" : null,
+                "direct" : null,
+                "directHaving" : null,
+                "directReverse" : null,
+                "directReverseHaving" : null,
+                "ordinaryControl" : null,
+                "ordinaryControlHaving" : null,
+                "shift" : null,
+                "shiftHaving" : null,
+                "shiftReverse" : null,
+                "shiftReverseHaving" : null,
+                "Rows" : [
+                  {
+                    "Stamp" : "bad",
+                    "Weight" : 7
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

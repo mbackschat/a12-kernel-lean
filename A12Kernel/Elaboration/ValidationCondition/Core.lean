@@ -302,7 +302,7 @@ private def numericClassificationSource : NumericValidationAtom → Bool
 
 private def orderedNumericClassificationSource : OrderedNumericValidationAtom model → Bool
   | .indexed _ | .indexedString _ => true
-  | .temporalPart source => !source.source.fieldIds.isEmpty
+  | .temporalExpression source => !source.fieldIds.isEmpty
   | .ordinary source => numericClassificationSource source
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _ | .booleanValueCount _
   | .aggregate _ _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _

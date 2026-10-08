@@ -83,7 +83,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
       | .firstFilled _ | .groupCount _ | .product _ | .collectionCount _ | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .clockPart _ _ _ | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
-      | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ | .temporalExpressionPart _ _ => false
+      | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ | .temporalExpressionPart _ _ | .temporalDifference _ _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
   -- The legacy one-group adapter admits only the leaves it was built for. The other
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
@@ -258,6 +258,9 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
       | .dateRangeBoundPart origin field _ part => model.exposesDateRangeBoundPart field part &&
           (model.lookupUniqueId field.id).toOption.any fun declaration =>
             repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
+      | .temporalDifference unit left right => left.wellFormed model candidateLevels outerLevels &&
+          right.wellFormed model candidateLevels outerLevels && left.admittedSourceSlot true && right.admittedSourceSlot true &&
+          (left.components?).any (fun first => (right.components?).any (unit.admitsScalarDifference model.hasBaseYear first))
       | .temporalExpressionPart part source => source.wellFormed model candidateLevels outerLevels &&
           source.admittedSourceSlot && source.components?.any (fun components => part.admitsComponents components model.hasBaseYear)
       | .temporalPart origin field part => part.admittedBy field model.hasBaseYear &&
@@ -382,6 +385,9 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
         | .dateRangeBoundPart origin field _ _ => origin == .inner &&
             (model.lookupUniqueId field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
+        | .temporalDifference _ left right => (left.presenceSlots ++ right.presenceSlots).any fun slot =>
+            slot.references.any (·.origin == .inner) &&
+              (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
         | .temporalExpressionPart _ source => source.presenceSlots.any fun slot =>
             slot.references.any (·.origin == .inner) &&
               (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)

@@ -1,0 +1,101 @@
+{
+  "model": "DifferenceEffects_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "filled",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Rows": [
+            {
+              "Stamp": "2024-01-01T00:00:00",
+              "Weight": "7"
+            }
+          ],
+          "direct": "99",
+          "directHaving": "99",
+          "directReverse": "99",
+          "directReverseHaving": "99",
+          "shift": "99",
+          "shiftHaving": "99",
+          "shiftReverse": "99",
+          "shiftReverseHaving": "99",
+          "constructed": "99",
+          "constructedHaving": "99",
+          "constructedReverse": "99",
+          "constructedReverseHaving": "99",
+          "ordinaryControl": "99",
+          "ordinaryControlHaving": "99",
+          "Stamp": "2024-01-01T00:00:00",
+          "Weight": "7"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Rows": [
+            {
+              "Stamp": "",
+              "Weight": "7"
+            }
+          ],
+          "direct": "99",
+          "directHaving": "99",
+          "directReverse": "99",
+          "directReverseHaving": "99",
+          "shift": "99",
+          "shiftHaving": "99",
+          "shiftReverse": "99",
+          "shiftReverseHaving": "99",
+          "constructed": "99",
+          "constructedHaving": "99",
+          "constructedReverse": "99",
+          "constructedReverseHaving": "99",
+          "ordinaryControl": "99",
+          "ordinaryControlHaving": "99",
+          "Stamp": "",
+          "Weight": "7"
+        }
+      }
+    },
+    {
+      "name": "malformed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "1",
+          "Rows": [
+            {
+              "Stamp": "bad",
+              "Weight": "7"
+            }
+          ],
+          "direct": "99",
+          "directHaving": "99",
+          "directReverse": "99",
+          "directReverseHaving": "99",
+          "shift": "99",
+          "shiftHaving": "99",
+          "shiftReverse": "99",
+          "shiftReverseHaving": "99",
+          "constructed": "99",
+          "constructedHaving": "99",
+          "constructedReverse": "99",
+          "constructedReverseHaving": "99",
+          "ordinaryControl": "99",
+          "ordinaryControlHaving": "99",
+          "Stamp": "bad",
+          "Weight": "7"
+        }
+      }
+    }
+  ]
+}

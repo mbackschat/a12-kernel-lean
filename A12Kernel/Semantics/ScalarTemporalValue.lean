@@ -143,6 +143,53 @@ def temporalShiftAmountToInt32 (value : Rat) : Int :=
   let lowBits := truncated % modulus
   if lowBits < signBit then lowBits else lowBits - modulus
 
+/-- Both shift families preserve source missingness when arithmetic has no value. Relevance is
+independent of that payload, while reached formal causes remain unavailable (BedingungsOperatorHelper.addTime;
+temporal numeric effects grid, 2026-10-04). The caller reaches the amount before this pure classification. -/
+def applyScalarTemporalShift
+    (source : SimpleComparisonOperand ScalarTemporalValue)
+    (amount : Except NumericValidationUnavailable NumericArithmeticOutcome)
+    (shift : ScalarTemporalValue → Rat → Except ScalarTemporalPrimitiveFault ScalarTemporalValue) :
+    Except ScalarTemporalPrimitiveFault (SimpleComparisonOperand ScalarTemporalValue) := do
+  match source, amount with
+  | .unknown cause, _ | _, .error (.formal cause) => pure (.unknown cause)
+  | .value .nonRelevant _, _ | _, .error .nonRelevant => pure (.value .nonRelevant true)
+  | _, .error _ => throw .calendarUnavailable
+  | .notEvaluated, .ok .notEvaluated => pure (.value .noValue false)
+  | .value _ given, .ok .notEvaluated => pure (.value .noValue given)
+  | .notEvaluated, .ok (.value _ _) => pure .notEvaluated
+  | .value value given, .ok (.value amount fillability) =>
+      let given := given && !fillability.canGrow && !fillability.canShrink
+      match value with
+      | .noValue => pure (.value .noValue given)
+      | value => pure (.value (← shift value amount) given)
+
+
+/-- Calendar units mutate the model-zone calendar; sub-day units translate the exact instant
+(spec/05 §2 and the calendar-expression checkpoint). No stored-value floor applies here. -/
+def shiftScalarTemporalValue (profile : ModelZone.ConcreteProfile) (unit : TemporalOperationUnit)
+    (value : ScalarTemporalValue) (amount : Rat) : Except ScalarTemporalPrimitiveFault ScalarTemporalValue := do
+  match unit with
+  | .hours | .minutes | .seconds =>
+      let unit : DateTimeSubdayUnit := match unit with | .hours => .hours | .minutes => .minutes | _ => .seconds
+      match value with
+      | .instant instant => pure (.instant (instant.shift unit (temporalShiftAmountToInt32 amount)))
+      | _ => throw .calendarUnavailable
+  | .days | .months | .years =>
+      let unit : DateShiftUnit := match unit with | .days => .days | .months => .months | _ => .years
+      let instant ← match value with
+        | .date value | .yearless value _ => pure value.instant
+        | .instant instant => pure instant
+        | _ => throw .calendarUnavailable
+      let some (label, shifted) := profile.shiftCalendar? unit instant (temporalShiftAmountToInt32 amount)
+        | throw .calendarUnavailable
+      match value with
+      | .date _ => pure (.date { instant := shifted, parts := label.parts, basis := .legacyHybrid })
+      | .yearless _ _ => pure (.yearless { instant := shifted, parts := label.parts, basis := .legacyHybrid }
+          { month := label.parts.month, day := label.parts.day })
+      | .instant _ => pure (.instant shifted)
+      | _ => throw .calendarUnavailable
+
 /-- Constructor projections preserve fillability and cause-free non-relevance before the
 Date or Time constructor selects its result domain (spec/05 §§3,6). -/
 def constructorComponentOfNumeric : Except (Option FormalCause) NumericArithmeticOutcome → TimeConstructionComponent

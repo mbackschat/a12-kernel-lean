@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.ScalarTemporalDifference
 import A12Kernel.Elaboration.ValueAsDateTimeExtraction
 import A12Kernel.Semantics.DateTimeDifference
 
@@ -93,32 +94,27 @@ private def finish
   | some result => .ok result
   | none => .error (.operationUnavailable checked.position)
 
-/-- Evaluate the shift and direct DateTime in authored order. The first reached formal
-    cause stops before the later operand, while cause-free no-value still reaches it. -/
+/-- Evaluate the shift and direct DateTime in authored order. Computation stops at a first formal
+    cause; validation and cause-free no-value reach the later operand (spec/05 §2). -/
 def evaluate (checked : CheckedDateTimeSubdayShiftDifference model)
     (phase : Phase) (input : CheckedDocument model) :
     Except DateTimeSubdayShiftDifferenceFault NumericOperand :=
-  match checked.position with
-  | .first =>
-      match checked.shift.evaluate phase input with
-      | .error error => .error (.shift error)
-      | .ok (.unavailable cause) => .ok (.unknown cause)
-      | .ok .nonRelevant => .error (.operationUnavailable .first)
-      | .ok shiftResult =>
-          match checked.other.readDateTimeDifferenceOperand phase input with
-          | .error error => .error (.document error)
-          | .ok (.unavailable cause) => .ok (.unknown cause)
-          | .ok other => checked.finish shiftResult other
-  | .second =>
-      match checked.other.readDateTimeDifferenceOperand phase input with
-      | .error error => .error (.document error)
-      | .ok (.unavailable cause) => .ok (.unknown cause)
-      | .ok other =>
-          match checked.shift.evaluate phase input with
-          | .error error => .error (.shift error)
-          | .ok (.unavailable cause) => .ok (.unknown cause)
-          | .ok .nonRelevant => .error (.operationUnavailable .second)
-          | .ok shiftResult => checked.finish shiftResult other
+  do
+    match checked.position with
+    | .first =>
+        let pair ← readTemporalPairWith phase ((checked.shift.evaluate phase input).mapError .shift)
+          (fun result => match result with | .unavailable cause => some cause | _ => none)
+          (fun () => (checked.other.readDateTimeDifferenceOperand phase input).mapError .document)
+        match pair with
+        | .error cause => pure (.unknown cause)
+        | .ok (shiftResult, other) => checked.finish shiftResult other
+    | .second =>
+        let pair ← readTemporalPairWith phase ((checked.other.readDateTimeDifferenceOperand phase input).mapError .document)
+          (fun result => match result with | .unavailable cause => some cause | _ => none)
+          (fun () => (checked.shift.evaluate phase input).mapError .shift)
+        match pair with
+        | .error cause => pure (.unknown cause)
+        | .ok (other, shiftResult) => checked.finish shiftResult other
 
 end CheckedDateTimeSubdayShiftDifference
 
@@ -160,27 +156,22 @@ private def finish
 def evaluate (checked : CheckedShiftedNowDateTimeDifference model)
     (phase : Phase) (world : World) (input : CheckedDocument model) :
     Except DateTimeSubdayShiftDifferenceFault NumericOperand :=
-  match checked.position with
-  | .first =>
-      match checked.shift.evaluate phase world input with
-      | .error error => .error (.shift error)
-      | .ok (.unavailable cause) => .ok (.unknown cause)
-      | .ok .nonRelevant => .error (.operationUnavailable .first)
-      | .ok shiftResult =>
-          match checked.other.readDateTimeDifferenceOperand phase input with
-          | .error error => .error (.document error)
-          | .ok (.unavailable cause) => .ok (.unknown cause)
-          | .ok other => checked.finish shiftResult other
-  | .second =>
-      match checked.other.readDateTimeDifferenceOperand phase input with
-      | .error error => .error (.document error)
-      | .ok (.unavailable cause) => .ok (.unknown cause)
-      | .ok other =>
-          match checked.shift.evaluate phase world input with
-          | .error error => .error (.shift error)
-          | .ok (.unavailable cause) => .ok (.unknown cause)
-          | .ok .nonRelevant => .error (.operationUnavailable .second)
-          | .ok shiftResult => checked.finish shiftResult other
+  do
+    match checked.position with
+    | .first =>
+        let pair ← readTemporalPairWith phase ((checked.shift.evaluate phase world input).mapError .shift)
+          (fun result => match result with | .unavailable cause => some cause | _ => none)
+          (fun () => (checked.other.readDateTimeDifferenceOperand phase input).mapError .document)
+        match pair with
+        | .error cause => pure (.unknown cause)
+        | .ok (shiftResult, other) => checked.finish shiftResult other
+    | .second =>
+        let pair ← readTemporalPairWith phase ((checked.other.readDateTimeDifferenceOperand phase input).mapError .document)
+          (fun result => match result with | .unavailable cause => some cause | _ => none)
+          (fun () => (checked.shift.evaluate phase world input).mapError .shift)
+        match pair with
+        | .error cause => pure (.unknown cause)
+        | .ok (other, shiftResult) => checked.finish shiftResult other
 
 end CheckedShiftedNowDateTimeDifference
 

@@ -420,11 +420,12 @@ theorem readDateDifference_evaluated
     (evaluated : DateDifferenceOperand.evaluate unit leftOperand rightOperand = .ok operand) :
     context.readNumericComputationAtom (.dateDifference unit left right) =
       .ok operand.toComputationResult := by
-  simp only [ScalarComputationContext.readNumericComputationAtom,
-    ScalarComputationContext.readNumericComputationAtomWith]
-  rw [leftResolved, rightResolved]
-  dsimp only [Except.bind, Bind.bind, Pure.pure]
-  rw [evaluated]
+  cases leftOperand <;>
+    simp_all [ScalarComputationContext.readNumericComputationAtom,
+      ScalarComputationContext.readNumericComputationAtomWith,
+      readTemporalPair, readTemporalPairWith, bind, Except.bind, pure, Except.pure,
+      DateDifferenceOperand.evaluate, NumericOperand.toComputationResult]
+  subst operand
   rfl
 
 /-- A checked sub-day source resolves each admitted field/`Now` operand once and maps their exact instant difference into computation outcome space. -/
@@ -442,10 +443,11 @@ theorem readDateTimeDifference_evaluated
       .ok ((DateTimeDifferenceOperand.evaluate unit
         leftOperand rightOperand)
         |>.toComputationResult) := by
-  simp only [ScalarComputationContext.readNumericComputationAtom,
-    ScalarComputationContext.readNumericComputationAtomWith]
-  rw [leftResolved, rightResolved]
-  rfl
+  cases leftOperand <;>
+    simp_all [ScalarComputationContext.readNumericComputationAtom,
+      ScalarComputationContext.readNumericComputationAtomWith,
+      readTemporalPair, readTemporalPairWith, bind, Except.bind, pure, Except.pure,
+      DateTimeDifferenceOperand.evaluate, NumericOperand.toComputationResult]
 
 /-- A supported checked calendar-day source preserves its exact resolved instants and maps the selected profile result once into computation outcome space. -/
 theorem readCalendarDayDifference_evaluated
@@ -458,11 +460,12 @@ theorem readCalendarDayDifference_evaluated
     (evaluated : CalendarDayDifferenceOperand.evaluate profile leftOperand rightOperand = .ok operand) :
     context.readNumericComputationAtom (.dayDifference profile left right) =
       .ok operand.toComputationResult := by
-  simp only [ScalarComputationContext.readNumericComputationAtom,
-    ScalarComputationContext.readNumericComputationAtomWith]
-  rw [leftResolved, rightResolved]
-  dsimp only [Except.bind, Bind.bind, Pure.pure]
-  rw [evaluated]
+  cases leftOperand <;>
+    simp_all [ScalarComputationContext.readNumericComputationAtom,
+      ScalarComputationContext.readNumericComputationAtomWith,
+      readTemporalPair, readTemporalPairWith, bind, Except.bind, pure, Except.pure,
+      CalendarDayDifferenceOperand.evaluate, NumericOperand.toComputationResult]
+  subst operand
   rfl
 
 /-- A computation-phase empty Number atom evaluates to the real numeric value zero. -/

@@ -1,0 +1,566 @@
+[
+  {
+    "target": "config",
+    "op": "modify",
+    "time-zone": "Europe/Berlin",
+    "base-year": 2024
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Rows",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Stamp",
+    "kind": "DATETIME",
+    "dateTime": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Weight",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Stamp",
+    "kind": "DATETIME",
+    "dateTime": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Weight",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "direct",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/direct",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(/Form/Stamp, DateFromDateTime(\"31.03.2024T02:30:00\"))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_direct",
+    "condition": "FieldFilled(Anchor) And DifferenceInDays(/Form/Stamp, DateFromDateTime(\"31.03.2024T02:30:00\")) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "directHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/directHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/Weight Having (DifferenceInDays(Rows/Stamp, DateFromDateTime(\"31.03.2024T02:30:00\")) == 0))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_directHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(Rows/Stamp, DateFromDateTime(\"31.03.2024T02:30:00\")) == 0)) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "directReverse",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/directReverse",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), /Form/Stamp)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_directReverse",
+    "condition": "FieldFilled(Anchor) And DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), /Form/Stamp) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "directReverseHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/directReverseHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Rows/Stamp) == 0))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_directReverseHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Rows/Stamp) == 0)) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shift",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shift",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(AddDays(/Form/Stamp, 1), DateFromDateTime(\"31.03.2024T02:30:00\"))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shift",
+    "condition": "FieldFilled(Anchor) And DifferenceInDays(AddDays(/Form/Stamp, 1), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/Weight Having (DifferenceInDays(AddDays(Rows/Stamp, 1), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(AddDays(Rows/Stamp, 1), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0)) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftReverse",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftReverse",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), AddDays(/Form/Stamp, 1))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftReverse",
+    "condition": "FieldFilled(Anchor) And DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), AddDays(/Form/Stamp, 1)) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "shiftReverseHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/shiftReverseHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), AddDays(Rows/Stamp, 1)) == 0))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_shiftReverseHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), AddDays(Rows/Stamp, 1)) == 0)) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "constructed",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/constructed",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(Date(DayFromDate(/Form/Stamp), \"03\", \"2024\"), DateFromDateTime(\"31.03.2024T02:30:00\"))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_constructed",
+    "condition": "FieldFilled(Anchor) And DifferenceInDays(Date(DayFromDate(/Form/Stamp), \"03\", \"2024\"), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "constructedHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/constructedHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/Weight Having (DifferenceInDays(Date(DayFromDate(Rows/Stamp), \"03\", \"2024\"), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_constructedHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(Date(DayFromDate(Rows/Stamp), \"03\", \"2024\"), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0)) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "constructedReverse",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/constructedReverse",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Date(DayFromDate(/Form/Stamp), \"03\", \"2024\"))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_constructedReverse",
+    "condition": "FieldFilled(Anchor) And DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Date(DayFromDate(/Form/Stamp), \"03\", \"2024\")) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "constructedReverseHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/constructedReverseHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Date(DayFromDate(Rows/Stamp), \"03\", \"2024\")) == 0))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_constructedReverseHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Date(DayFromDate(Rows/Stamp), \"03\", \"2024\")) == 0)) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "ordinaryControl",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/ordinaryControl",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(AddDays(/Form/Stamp, 1), Date(\"02\", \"01\", \"2024\"))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_ordinaryControl",
+    "condition": "FieldFilled(Anchor) And DifferenceInDays(AddDays(/Form/Stamp, 1), Date(\"02\", \"01\", \"2024\")) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "ordinaryControlHaving",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/ordinaryControlHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/Weight Having (DifferenceInDays(AddDays(Rows/Stamp, 1), Date(\"02\", \"01\", \"2024\")) == 0))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "R_ordinaryControlHaving",
+    "condition": "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(AddDays(Rows/Stamp, 1), Date(\"02\", \"01\", \"2024\")) == 0)) == 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Difference evaluation control."
+      }
+    ]
+  }
+]

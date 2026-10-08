@@ -260,8 +260,8 @@ private def orderedNumericAtomIterationScope :
   | .indexed source => selectedIterationScope (.inl source.toCheckedSemanticIndexSource)
   | .indexedString source =>
       mergeIterationScopeList (source.selection.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
-  | .temporalPart source =>
-      mergeIterationScopeList (source.source.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
+  | .temporalExpression source =>
+      mergeIterationScopeList (source.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
   | .ordinary source => ordinaryNumericAtomIterationScope model source
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       checkedNumberSourceIterationScope source

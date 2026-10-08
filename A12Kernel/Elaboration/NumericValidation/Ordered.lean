@@ -16,7 +16,7 @@ namespace A12Kernel
 inductive OrderedNumericValidationAtom (model : FlatModel) where
   | indexed (source : CheckedNumericSemanticIndexSource model)
   | indexedString (source : CheckedIndexedStringNumericSource model)
-  | temporalPart (source : CheckedTemporalNumericExpression model)
+  | temporalExpression (source : CheckedTemporalNumericExpression model)
   | ordinary (source : NumericValidationAtom)
   | firstFilled (source : CheckedNumberEntitySource model)
   | valueCount (expected : Rat) (source : CheckedNumberEntitySource model)
@@ -102,7 +102,7 @@ private def checkedTokenValueCountAdmittedIn
 def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .indexed source => NumericScaleSummary.field source.field.info.scale
   | .indexedString source => NumericScaleSummary.field source.projection.scale
-  | .temporalPart _ => NumericScaleSummary.field 0
+  | .temporalExpression _ => NumericScaleSummary.field 0
   | .ordinary source => numericValidationSummary source
   | .firstFilled source => source.scaleSummary
   | .valueCount _ _ => NumericScaleSummary.field 0
@@ -118,7 +118,7 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
     field dependencies. Field-backed atoms require addressing when a checked declaration repeats. -/
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .indexed _ | .indexedString _ => true
-  | .temporalPart source => source.source.fieldIds.any fun field =>
+  | .temporalExpression source => source.fieldIds.any fun field =>
       (model.lookupUniqueId field).toOption.any (fun declaration => !declaration.repeatableScope.isEmpty)
   | .ordinary (.boundCurrentRepetition _) => true
   | .ordinary (.filledGroupCount groups) =>
@@ -150,7 +150,7 @@ def admitted (atom : OrderedNumericValidationAtom model)
   | .indexedString source =>
       (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed) &&
         bound source.selection.bindingScopes
-  | .temporalPart source => bound source.source.bindingScopes && source.source.boundFieldIds.all fun field =>
+  | .temporalExpression source => bound source.bindingScopes && source.boundFieldIds.all fun field =>
       (model.lookupUniqueId field).toOption.any fun declaration => match scope with
         | .sameGroup => declaration.groupPath == rowGroup && declaration.repeatableScope.isEmpty
         | .sameGroupAddressed => declaration.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
@@ -196,7 +196,7 @@ def referencesField (atom : OrderedNumericValidationAtom model)
   match atom with
   | .indexed source => source.toCheckedSemanticIndexSource.referencesField field
   | .indexedString source => source.referencesField field
-  | .temporalPart source => source.source.referencesField field
+  | .temporalExpression source => source.referencesField field
   | .ordinary source => source.referencesField model field
   | .firstFilled source => source.referencesField field
   | .valueCount _ source => source.referencesField field
@@ -227,7 +227,7 @@ def referencesErrorField (atom : OrderedNumericValidationAtom model)
   | .temporalDistinctCount run =>
       run.source.referencesField field CorrelatedHaving.referencesMarkedField
   | .filledFieldCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .indexed _ | .indexedString _ | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
+  | .indexed _ | .indexedString _ | .temporalExpression _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
       atom.referencesField field
 
 /-- Whether this exact checked atom retains any filtered entity-list slot. This is static source structure, not a statement about which runtime branch or candidate will be reached. -/
@@ -239,7 +239,7 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
   | .tokenDistinctCount source => source.hasHaving
   | .temporalDistinctCount run => run.source.hasHaving
   | .filledFieldCount source => source.hasHaving
-  | .temporalPart source => source.source.core.hasHaving
+  | .temporalExpression source => source.hasHaving
   | .indexed _ | .indexedString _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
 
 end OrderedNumericValidationAtom
@@ -279,7 +279,7 @@ def OrderedNumericComparison.requiresAddressedValidation
 /-- Whether the rule must retain temporal runtime effects while evaluating its numeric leaves. -/
 def OrderedNumericComparison.hasTemporalExpression (comparison : OrderedNumericComparison model) : Bool :=
   let temporal : OrderedNumericValidationAtom model → Bool
-    | .temporalPart _ => true
+    | .temporalExpression _ => true
     | _ => false
   comparison.left.anyAtom temporal || comparison.right.anyAtom temporal
 
@@ -293,7 +293,7 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .filledFieldCount source => source.supportsPartialCount
   | .indexed _ | .indexedString _ | .valueCount _ _ | .tokenValueCount _ | .booleanValueCount _ | .tokenDistinctCount _ | .temporalDistinctCount _ => true
   | .sumOfProducts _ => true
-  | .temporalPart source => !source.source.core.hasHaving
+  | .temporalExpression source => !source.hasHaving
 
 def OrderedNumericComparison.supportsAddressedPartial
     (comparison : OrderedNumericComparison model) : Bool :=

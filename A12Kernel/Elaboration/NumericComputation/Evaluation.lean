@@ -247,22 +247,31 @@ def readNumericComputationAtomWith
           | none => throw (.fieldKindMismatch source.fieldId)
       | .unknown cause | .poison cause => pure (.poison cause)
   | .dateDifference unit left right => do
-      let leftOperand ← context.readDateDifferenceOperand left
-      let rightOperand ← context.readDateDifferenceOperand right
-      match DateDifferenceOperand.evaluate unit leftOperand rightOperand with
-      | .error _ => throw .unsupportedDateCalendar
-      | .ok operand => pure operand.toComputationResult
+      let pair ← readTemporalPair .computation (context.readDateDifferenceOperand)
+        (fun operand => match operand with | .unavailable cause => some cause | _ => none) left right
+      match pair with
+      | .error cause => pure (.poison cause)
+      | .ok (leftOperand, rightOperand) =>
+          match DateDifferenceOperand.evaluate unit leftOperand rightOperand with
+          | .error _ => throw .unsupportedDateCalendar
+          | .ok operand => pure operand.toComputationResult
   | .dateTimeDifference unit left right => do
-      let leftOperand ← context.readDateTimeDifferenceOperand left
-      let rightOperand ← context.readDateTimeDifferenceOperand right
-      pure ((DateTimeDifferenceOperand.evaluate unit
-        leftOperand rightOperand).toComputationResult)
+      let pair ← readTemporalPair .computation (context.readDateTimeDifferenceOperand)
+        (fun operand => match operand with | .unavailable cause => some cause | _ => none) left right
+      match pair with
+      | .error cause => pure (.poison cause)
+      | .ok (leftOperand, rightOperand) =>
+          pure ((DateTimeDifferenceOperand.evaluate unit
+            leftOperand rightOperand).toComputationResult)
   | .dayDifference profile left right => do
-      let leftOperand ← context.readCalendarDayDifferenceOperand profile left
-      let rightOperand ← context.readCalendarDayDifferenceOperand profile right
-      match CalendarDayDifferenceOperand.evaluate profile leftOperand rightOperand with
-      | .error _ => throw .unsupportedDateCalendar
-      | .ok operand => pure operand.toComputationResult
+      let pair ← readTemporalPair .computation (context.readCalendarDayDifferenceOperand profile)
+        (fun operand => match operand with | .unavailable cause => some cause | _ => none) left right
+      match pair with
+      | .error cause => pure (.poison cause)
+      | .ok (leftOperand, rightOperand) =>
+          match CalendarDayDifferenceOperand.evaluate profile leftOperand rightOperand with
+          | .error _ => throw .unsupportedDateCalendar
+          | .ok operand => pure operand.toComputationResult
   | .aggregate op source => readAggregate op source
   | .filledGroupCount groups => readGroupCount groups
 
@@ -297,7 +306,7 @@ def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
     CheckedNumericComputationAtom model →
       Except NumericComputationFault NumericComputationResult
   | .indexed _ | .indexedString _ => throw .repeatableContextRequired
-  | .temporalPart source => context.readTemporalNumericExpression source
+  | .temporalExpression source => context.readTemporalNumericExpression source
   | .filledFieldCount source => source.evaluateComputationCount context
   | .firstFilled source =>
       match source.evaluateDirectComputationFirstFilled? context.read with
@@ -574,7 +583,7 @@ def readCheckedNumericComputationAtom
       let observation ← source.toCheckedSemanticIndexSource.observeColumnWith .computation readColumn context.outer
         context.scalar.read context.scalar.storedText |>.mapError .indexSelection
       pure ((observation.asDirectNumericComparisonOperand source.field.info).toComputationResult)
-  | .temporalPart source =>
+  | .temporalExpression source =>
       let scalar := context.scalarContext model
       let scalar := scalar.withIndexColumnReader model (context.indexColumn?.getD context.scalar.semanticIndexColumnReader)
       scalar.readTemporalNumericExpression source
@@ -709,7 +718,7 @@ def CheckedNumericComputationAtom.numericComputationFault? :
         match CheckedFieldFillList.computationSources { operands := [operand] } with
         | .ok _ => none
         | .error error => some (.fieldFillSource error)
-  | .indexed _ | .indexedString _ | .temporalPart _ | .firstFilled _ => none
+  | .indexed _ | .indexedString _ | .temporalExpression _ | .firstFilled _ => none
   | .valueCount _ _ => none
   | .tokenDistinctCount _ | .temporalDistinctCount _ => none
   | .tokenValueCount _ => none

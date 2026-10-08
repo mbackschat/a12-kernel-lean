@@ -698,28 +698,30 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-temporal-aggregate-gate"></a>
 - [Which temporal format gate each aggregate carrier uses, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-temporal-aggregate-gate)
 <a id="src-pr2-date-extraction-diagnostics"></a>
-- [Date-extraction diagnostic matrix, reviewed inbound 2026-09-01](sources/temporal-and-message-probes.md#src-pr2-date-extraction-diagnostics)
+- [Date-extraction diagnostics](sources/temporal-and-message-probes.md#src-pr2-date-extraction-diagnostics)
 <a id="src-message-address-dialects"></a>
 - [A message address is written in one of two dialects, and which one depends on the operand](sources/message-and-pointer-probes.md#src-message-address-dialects)
 
 <a id="src-omitting-date-formats"></a>
-- [What a component-omitting DATE format stores, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-omitting-date-formats)
+- [Component-omitting DATE storage](sources/temporal-and-message-probes.md#src-omitting-date-formats)
 <a id="src-filled-field-count"></a>
 - [`NumberOfFilledFields` formal invalidity](sources/temporal-and-message-probes.md#src-filled-field-count)
 <a id="src-date-from-datetime"></a>
 - [`DateFromDateTime` reads and component gates](sources/temporal-and-message-probes.md#src-date-from-datetime)
 <a id="src-date-from-datetime-computation"></a>
-- [`DateFromDateTime` scalar computation reaches the full-Date target channels, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-date-from-datetime-computation)
+- [`DateFromDateTime` scalar full-Date target channels](sources/temporal-and-message-probes.md#src-date-from-datetime-computation)
 <a id="src-date-from-datetime-repeatable-computation"></a>
-- [`DateFromDateTime` computes exact repeatable rows, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-date-from-datetime-repeatable-computation)
+- [`DateFromDateTime` exact repeatable computation](sources/temporal-and-message-probes.md#src-date-from-datetime-repeatable-computation)
 <a id="src-recursive-date-components"></a>
 - [Date components](sources/temporal-runtime-fold-probes.md#src-recursive-date-components)
+<a id="src-recursive-difference-effects"></a>
+- [Direct, shifted and constructed day-difference operand order in both phases, measured 2026-10-08](sources/temporal-runtime-fold-probes.md#src-recursive-difference-effects)
 <a id="src-indexed-partial-date-endpoints"></a>
-- [Indexed partial-Date endpoint selection and clearing, measured 2026-10-06](sources/temporal-and-message-probes.md#src-indexed-partial-date-endpoints)
+- [Indexed partial-Date endpoints and clearing](sources/temporal-and-message-probes.md#src-indexed-partial-date-endpoints)
 <a id="src-value-as-date-locus"></a>
-- [Where a partial-Date `ValueAsDate` operand may be read, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-value-as-date-locus)
+- [Partial-Date `ValueAsDate` operand placement](sources/temporal-and-message-probes.md#src-value-as-date-locus)
 <a id="src-rule-message-semantic-index"></a>
-- [The semantic-index suffix on a rule-message parameter, measured locally 2026-08-23](sources/message-and-pointer-probes.md#src-rule-message-semantic-index)
+- [Semantic-index suffixes in rule-message parameters](sources/message-and-pointer-probes.md#src-rule-message-semantic-index)
 <a id="src-date-range-endpoint-shapes"></a>
 - [Which operand shapes a DateRange endpoint admits, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-endpoint-shapes)
 <a id="src-nested-rule-locus"></a>

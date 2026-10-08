@@ -1,0 +1,669 @@
+{
+  "header" : {
+    "id" : "DifferenceEffects_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "DifferenceEffects_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false,
+      "baseYear" : "2024"
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Stamp",
+                "name" : "Stamp",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Weight",
+                "name" : "Weight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Stamp",
+            "name" : "Stamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Weight",
+            "name" : "Weight",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/direct",
+            "name" : "direct",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/directComp",
+            "name" : "directComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../direct",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInDays(/Form/Stamp, DateFromDateTime(\"31.03.2024T02:30:00\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_direct",
+            "name" : "R_direct",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_direct",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInDays(/Form/Stamp, DateFromDateTime(\"31.03.2024T02:30:00\")) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/directHaving",
+            "name" : "directHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/directHavingComp",
+            "name" : "directHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../directHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/Weight Having (DifferenceInDays(Rows/Stamp, DateFromDateTime(\"31.03.2024T02:30:00\")) == 0))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_directHaving",
+            "name" : "R_directHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_directHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(Rows/Stamp, DateFromDateTime(\"31.03.2024T02:30:00\")) == 0)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/directReverse",
+            "name" : "directReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/directReverseComp",
+            "name" : "directReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../directReverse",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), /Form/Stamp)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_directReverse",
+            "name" : "R_directReverse",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_directReverse",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), /Form/Stamp) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/directReverseHaving",
+            "name" : "directReverseHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/directReverseHavingComp",
+            "name" : "directReverseHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../directReverseHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Rows/Stamp) == 0))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_directReverseHaving",
+            "name" : "R_directReverseHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_directReverseHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Rows/Stamp) == 0)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shift",
+            "name" : "shift",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftComp",
+            "name" : "shiftComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shift",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInDays(AddDays(/Form/Stamp, 1), DateFromDateTime(\"31.03.2024T02:30:00\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shift",
+            "name" : "R_shift",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shift",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInDays(AddDays(/Form/Stamp, 1), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftHaving",
+            "name" : "shiftHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftHavingComp",
+            "name" : "shiftHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/Weight Having (DifferenceInDays(AddDays(Rows/Stamp, 1), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftHaving",
+            "name" : "R_shiftHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(AddDays(Rows/Stamp, 1), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftReverse",
+            "name" : "shiftReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftReverseComp",
+            "name" : "shiftReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftReverse",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), AddDays(/Form/Stamp, 1))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftReverse",
+            "name" : "R_shiftReverse",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftReverse",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), AddDays(/Form/Stamp, 1)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/shiftReverseHaving",
+            "name" : "shiftReverseHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/shiftReverseHavingComp",
+            "name" : "shiftReverseHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../shiftReverseHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), AddDays(Rows/Stamp, 1)) == 0))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_shiftReverseHaving",
+            "name" : "R_shiftReverseHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_shiftReverseHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), AddDays(Rows/Stamp, 1)) == 0)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/constructed",
+            "name" : "constructed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/constructedComp",
+            "name" : "constructedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../constructed",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInDays(Date(DayFromDate(/Form/Stamp), \"03\", \"2024\"), DateFromDateTime(\"31.03.2024T02:30:00\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_constructed",
+            "name" : "R_constructed",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_constructed",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInDays(Date(DayFromDate(/Form/Stamp), \"03\", \"2024\"), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/constructedHaving",
+            "name" : "constructedHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/constructedHavingComp",
+            "name" : "constructedHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../constructedHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/Weight Having (DifferenceInDays(Date(DayFromDate(Rows/Stamp), \"03\", \"2024\"), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_constructedHaving",
+            "name" : "R_constructedHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_constructedHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(Date(DayFromDate(Rows/Stamp), \"03\", \"2024\"), DateFromDateTime(\"31.03.2024T02:30:00\")) == 0)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/constructedReverse",
+            "name" : "constructedReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/constructedReverseComp",
+            "name" : "constructedReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../constructedReverse",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Date(DayFromDate(/Form/Stamp), \"03\", \"2024\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_constructedReverse",
+            "name" : "R_constructedReverse",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_constructedReverse",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Date(DayFromDate(/Form/Stamp), \"03\", \"2024\")) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/constructedReverseHaving",
+            "name" : "constructedReverseHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/constructedReverseHavingComp",
+            "name" : "constructedReverseHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../constructedReverseHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Date(DayFromDate(Rows/Stamp), \"03\", \"2024\")) == 0))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_constructedReverseHaving",
+            "name" : "R_constructedReverseHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_constructedReverseHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(DateFromDateTime(\"31.03.2024T02:30:00\"), Date(DayFromDate(Rows/Stamp), \"03\", \"2024\")) == 0)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ordinaryControl",
+            "name" : "ordinaryControl",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ordinaryControlComp",
+            "name" : "ordinaryControlComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ordinaryControl",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInDays(AddDays(/Form/Stamp, 1), Date(\"02\", \"01\", \"2024\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_ordinaryControl",
+            "name" : "R_ordinaryControl",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_ordinaryControl",
+              "errorCondition" : "FieldFilled(Anchor) And DifferenceInDays(AddDays(/Form/Stamp, 1), Date(\"02\", \"01\", \"2024\")) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ordinaryControlHaving",
+            "name" : "ordinaryControlHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ordinaryControlHavingComp",
+            "name" : "ordinaryControlHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ordinaryControlHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/Weight Having (DifferenceInDays(AddDays(Rows/Stamp, 1), Date(\"02\", \"01\", \"2024\")) == 0))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R_ordinaryControlHaving",
+            "name" : "R_ordinaryControlHaving",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R_ordinaryControlHaving",
+              "errorCondition" : "FieldFilled(Anchor) And Sum(Rows*/Weight Having (DifferenceInDays(AddDays(Rows/Stamp, 1), Date(\"02\", \"01\", \"2024\")) == 0)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Difference evaluation control."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -34,7 +34,7 @@ def Expr.havingTemporalConstructor (isTemporalSelection : List Argument → Bool
   | .call "EndOfDateRange" [.mk (.constant "BaseYear") none none] none none => false
   | .call name arguments none none =>
       (["FirstFilledValue", "MinValue", "MaxValue", "Min", "Max"].contains name && isTemporalSelection arguments) ||
-        ["Time", "Date", "DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
+        ["AddDays", "AddMonths", "AddYears", "AddHours", "AddMinutes", "AddSeconds", "ValueAsDate", "Time", "Date", "DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
   | _ => false
 
 mutual
@@ -99,6 +99,13 @@ private partial def lowerHavingTimeComponents (arguments : List Argument) : Lowe
 /-- Source slots use unbracketed entities and reject grouping, like ordinary temporal lowering
 (spec/12 §3). Every field keeps its own captured/candidate origin. -/
 partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowering SurfaceHavingTemporalExpression
+  | .call "ValueAsDate" [.mk (.entity { path, index := none, category := none }) none none, .mk (.constant endpoint) none none] none none => do
+      let some (origin, field) := path.havingField? | refuse "ValueAsDate" "partial Date entity"
+      let endpoint ← match endpoint with
+        | "FirstDay" => pure ValueAsDateEndpoint.firstDay
+        | "LastDay" => pure ValueAsDateEndpoint.lastDay
+        | _ => refuse "ValueAsDate" "endpoint"
+      pure (.partialDate { origin, field } endpoint)
   | .entity { path, index := none, category := none } => do
       if !sourceSlot then refuse "Having" "bare temporal value"
       let some (origin, field) := path.havingField? | refuse "Having" "temporal entity"
@@ -130,6 +137,16 @@ partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowerin
   | .call "Date" arguments none none => .dateConstruction <$> lowerHavingDateComponents arguments
   | .call "DateTime" [.mk date none none, .mk time none none] none none => do
       pure (.dateTime (← lowerHavingTemporalExpression true date) (← lowerHavingTemporalExpression true time))
+  | .call name [.mk source none none, .mk amount none none] none none => do
+      let unit ← match name with
+        | "AddDays" => pure TemporalOperationUnit.days
+        | "AddMonths" => pure TemporalOperationUnit.months
+        | "AddYears" => pure TemporalOperationUnit.years
+        | "AddHours" => pure TemporalOperationUnit.hours
+        | "AddMinutes" => pure TemporalOperationUnit.minutes
+        | "AddSeconds" => pure TemporalOperationUnit.seconds
+        | _ => refuse "Having" "temporal binary operator"
+      pure (.shift unit (← lowerHavingTemporalExpression true source) (← lowerHavingTemporalAmount amount))
   | .call "DateFromDateTime" [.mk source none none] none none =>
       .dateFromDateTime <$> lowerHavingTemporalExpression true source
   | .call "TimeFromDateTime" [.mk source none none] none none =>
@@ -153,6 +170,17 @@ partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowerin
       | _, _, _ => refuse "Having" "temporal literal"
   | other => refuse "Having" other.construct
 
+private partial def lowerHavingTemporalAmount (expression : Expr) : Lowering SurfaceHavingTemporalAmount :=
+  let atom : Expr → Lowering (Sum SurfaceHavingNumberRef (TemporalNumericPart × SurfaceHavingTemporalExpression))
+    | .value { path, index := none, category := none } => do
+        let some (origin, field) := path.havingField? | refuse "Having" "shift amount path"
+        pure (.inl { origin, field })
+    | .call name [.mk source none none] none none => do
+        let some part := (datePart? name).map TemporalNumericPart.date |>.orElse (fun _ => (timePart? name).map TemporalNumericPart.time)
+          | refuse "Having" "shift amount extractor"
+        pure (.inr (part, ← lowerHavingTemporalExpression true source))
+    | _ => refuse "Having" "shift amount"
+  lowerNumericExpr atom (fun expression => do atom (.value (← numericFieldFormReference expression))) expression
 end
 
 end A12Kernel.Dm

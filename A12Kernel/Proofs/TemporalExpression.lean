@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.TemporalExpression
+import A12Kernel.Semantics.ScalarTemporalDifference
 
 /-! # Temporal expression dependencies and argument evaluation
 
@@ -78,5 +79,21 @@ theorem temporalExpression_evalWithResult_transform_error
     (cause : Error) (failed : source.evalWithResult read apply = .error cause) :
     (TemporalExpressionOf.apply operation source []).evalWithResult read apply = .error cause :=
   temporalExpression_evalWithResult_apply_head_error source [] operation read apply cause failed
+
+/-- A formal first operand suppresses any later computation read, independently of its result. -/
+theorem readTemporalPair_computation_first_formal
+    (read : Source → Except Error Operand) (formalCause? : Operand → Option FormalCause)
+    (left right : Source) (value : Operand) (cause : FormalCause)
+    (first : read left = .ok value) (formal : formalCause? value = some cause) :
+    readTemporalPair .computation read formalCause? left right = .ok (.error cause) := by
+  simp [readTemporalPair, readTemporalPairWith, bind, Except.bind, pure, Except.pure, first, formal]
+
+/-- Validation retains a later structural failure even when the first result has a formal cause. -/
+theorem readTemporalPair_validation_second_fault
+    (read : Source → Except Error Operand) (formalCause? : Operand → Option FormalCause)
+    (left right : Source) (value : Operand) (fault : Error)
+    (first : read left = .ok value) (second : read right = .error fault) :
+    readTemporalPair .validation read formalCause? left right = .error fault := by
+  simp [readTemporalPair, readTemporalPairWith, bind, Except.bind, first, second]
 
 end A12Kernel

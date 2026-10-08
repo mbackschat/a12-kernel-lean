@@ -27,7 +27,7 @@ abbrev NumericComputationAtom := ResolvedNumericAtom FlatFieldDecl
 inductive SurfaceNumericComputationAtom where
   | indexed (source : SurfaceSemanticIndex)
   | indexedString (source : SurfaceSemanticIndex) (operation : IndexedStringNumericOperation)
-  | temporalPart (source : SurfaceScalarTemporalExpression) (part : TemporalNumericPart)
+  | temporalExpression (source : SurfaceTemporalNumericExpression)
   | numeric (source : SurfaceNumericAtom SurfaceNumberEntitySource)
   | filledFieldCount (source : SurfaceFieldEntitySource)
   | firstFilled (source : SurfaceNumberEntitySource)
@@ -44,7 +44,7 @@ inductive SurfaceNumericComputationAtom where
 inductive CheckedNumericComputationAtom (model : FlatModel) where
   | indexed (source : CheckedNumericSemanticIndexSource model)
   | indexedString (source : CheckedIndexedStringNumericSource model)
-  | temporalPart (source : CheckedTemporalNumericExpression model)
+  | temporalExpression (source : CheckedTemporalNumericExpression model)
   | numeric
       (source : ResolvedNumericAtom FlatFieldDecl
         (CheckedNumberEntitySource model))

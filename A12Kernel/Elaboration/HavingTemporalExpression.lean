@@ -89,6 +89,13 @@ def wellFormed (source : HavingTemporalExpression) (model : FlatModel)
     source.components?.isSome && source.references.all (·.matchesModel model) &&
     source.presenceSlots.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
     (HavingTemporalCore.allAtoms source.core).all fun
+      | .shift _ _ amount =>
+          amount.allAtoms (fun | .inl _ => true | .inr (part, core) => projectionAdmitted model part core) &&
+            (amount.summary? (fun | .inl reference => .field reference.field.info.scale | .inr _ => .field 0)).isSome
+      | .partialDate source => (model.lookupUniqueId source.reference.field.id).toOption.any fun declaration =>
+          (certifyPartialDateInputField declaration).toOption.any fun checked =>
+            checked.field == source.reference.field && checked.format == source.format &&
+              checked.mode == source.mode && checked.policy.youngerThan1900Check == source.youngerThan1900Check
       | .selection kind slots => kind.wellFormed model candidateLevels outerLevels slots
       | .field reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
           declaration.fieldValueReadRefusal?.isNone && !(declaration.toTemporalTargetPolicy?.any (·.partialMode != .full))
@@ -108,6 +115,17 @@ private def resolveCore (model : FlatModel)
     SurfaceHavingTemporalExpression → Except CorrelationElabError
       (TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation)
   | .selection kind source => do pure (.atom (.selection kind (← resolveSelection kind source)))
+  | .shift unit source amount => do
+      if !source.admittedSourceSlot true then throw .numericExpressionUnsupported
+      let source ← resolveCore model resolveSelection resolve source
+      let amount ← resolveAmount model resolveSelection resolve amount
+      pure (.atom (.shift unit source amount))
+  | .partialDate reference endpoint => do
+      let declaration ← resolve { origin := reference.origin, field := reference.field }
+      let .ok checked := certifyPartialDateInputField declaration | throw .numericExpressionUnsupported
+      pure (.atom (.partialDate {
+        reference := { origin := reference.origin, field := checked.field }
+        format := checked.format, mode := checked.mode, youngerThan1900Check := checked.policy.youngerThan1900Check, endpoint }))
   | .field reference => do
       let declaration ← resolve { origin := reference.origin, field := reference.field }
       let some field := declaration.toTemporalField? | throw .numericExpressionUnsupported
@@ -136,7 +154,7 @@ private def resolveCore (model : FlatModel)
       let rest ← rest.mapM (resolveCore model resolveSelection resolve)
       pure (.apply (.extremum operator) first rest)
   | .dateTime date time => do
-      if !date.admittedSourceSlot || !time.admittedSourceSlot then throw .numericExpressionUnsupported
+      if !date.admittedSourceSlot true || !time.admittedSourceSlot then throw .numericExpressionUnsupported
       pure (.apply (.constructor .dateTime) (← resolveCore model resolveSelection resolve date) [← resolveCore model resolveSelection resolve time])
   | .dateFromDateTime source => do
       if !source.admittedSourceSlot then throw .numericExpressionUnsupported
@@ -144,6 +162,28 @@ private def resolveCore (model : FlatModel)
   | .timeFromDateTime source => do
       if !source.admittedSourceSlot then throw .numericExpressionUnsupported
       pure (.apply (.constructor .timeFromDateTime) (← resolveCore model resolveSelection resolve source) [])
+
+private def resolveAmount (model : FlatModel)
+    (resolveSelection : HavingTemporalSelection → SurfaceHavingEntitySource →
+      Except CorrelationElabError (List (HavingFieldListSlot HavingTemporalSelectionRef)))
+    (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl)
+    (amount : SurfaceHavingTemporalAmount) : Except CorrelationElabError HavingTemporalAmount := do
+  let result ← amount.mapMSubterm fun source _hNumericSource => do
+    match _hSource : source with
+    | .inl reference =>
+        let declaration ← resolve { origin := reference.origin, field := reference.field }
+        let some field := declaration.toNumberField? | throw .numericExpressionUnsupported
+        pure (.inl { origin := reference.origin, field })
+    | .inr (part, source) =>
+        if !source.admittedSourceSlot then throw .numericExpressionUnsupported
+        let core ← resolveCore model resolveSelection resolve source
+        if !projectionAdmitted model part core then throw .numericExpressionUnsupported
+        pure (.inr (part, core))
+  if !result.isAdmittedResolvedNumericOperation || result.numericOperationAuthoringCheck != .accepted ||
+      (result.summary? (fun | .inl reference => .field reference.field.info.scale | .inr _ => .field 0)).isNone then
+    throw .numericExpressionUnsupported
+  pure result
+decreasing_by all_goals simp_all +arith <;> omega
 
 private def resolveDateOperand (model : FlatModel)
     (resolveSelection : HavingTemporalSelection → SurfaceHavingEntitySource → Except CorrelationElabError (List (HavingFieldListSlot HavingTemporalSelectionRef)))

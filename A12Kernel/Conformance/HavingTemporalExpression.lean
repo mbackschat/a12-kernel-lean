@@ -149,4 +149,81 @@ example : (rangeSource).evaluate .validation { base with read := fun _ _ => pure
     (({ rangeSource .inner .finish monthComponents with baseYear := some 2024 }).components?) =
       some { monthComponents with year := true } := by native_decide
 
+private def shiftNumber (origin : HavingOrigin := .outer) : HavingNumberRef :=
+  { origin, field := { id := 2, info := { scale := 0, signed := true } } }
+private def shifted (amount : HavingTemporalAmount := .atom (.inl shiftNumber)) :=
+  source (.atom (.shift .seconds fieldSource.core amount))
+private def shiftContext (amount : CheckedCell := empty) : ResolvingCorrelationContext CorrelationRuntimeFault :=
+  { base with read := fun _ id => pure (if id == 1 then stamp 3600000 else amount) }
+
+example : (shifted.evaluate .validation shiftContext frame) =
+      .ok (.value (.instant { epochMillis := 3600000 }) false) ∧
+    (shifted.readNumeric (.time .hour) .validation shiftContext frame (fun _ => ()) ()) =
+      .ok (.ok (.value 1 .both)) ∧
+    (shifted.evaluate .validation (shiftContext required) frame) = .ok (.unknown .required) ∧
+    (shifted.evaluate .computation (shiftContext required) frame) =
+      .ok (.value (.instant { epochMillis := 3600000 }) false) := by native_decide
+
+private def shiftFault : ResolvingCorrelationContext CorrelationRuntimeFault := { base with
+  read := fun _ id => if id == 1 then pure invalid else .error (.storedTextUnavailable id) }
+example : shifted.evaluate .validation shiftFault frame = .error (.storedTextUnavailable 2) ∧
+    shifted.evaluate .computation shiftFault frame = .ok (.unknown .malformed) ∧
+    shifted.evaluate .computation { shiftFault with read := fun _ id => if id == 1 then pure empty else .error (.storedTextUnavailable id) } frame =
+      .error (.storedTextUnavailable 2) := by native_decide
+
+private def nestedShift := shifted (.binary .add
+  (.atom (.inr (.time .hour, time.core))) (.atom (.inl shiftNumber)))
+example : nestedShift.references.map (fun reference => (reference.origin, reference.fieldId)) =
+      [(.inner, 1), (.inner, 1), (.outer, 2)] ∧
+    nestedShift.evaluate .computation shiftContext frame =
+      .ok (.value (.instant { epochMillis := 3601000 }) false) ∧
+    (shifted (.literal { value := 4294967297, authoredScale := 0 })).evaluate .computation base frame =
+      .ok (.value (.instant { epochMillis := 1000 }) true) ∧
+    (shifted (.literal { value := -1.8, authoredScale := 1 })).evaluate .computation base frame =
+      .ok (.value (.instant { epochMillis := -1000 }) true) := by native_decide
+
+private def shiftModel : FlatModel := { model with fields := model.fields ++ [{
+  id := 2, name := "Amount", groupPath := ["Rows"], repeatableScope := [10]
+  policy := { kind := .number { scale := 0, signed := true } } }] }
+example : shifted.wellFormed shiftModel [10] [10] = true ∧
+    shifted.wellFormed shiftModel [10] [] = false ∧
+    ({ shifted with core := .atom (.shift .years fieldSource.core (.literal { value := 1, authoredScale := 0 })) }).wellFormed shiftModel [10] [10] = false ∧
+    (shifted (.atom (.inr (.time .hour, (.atom (.timeLiteral { hour := 8, minute := 0, second := 0, valid := by decide })))))).wellFormed shiftModel [10] [10] = false := by native_decide
+
+private def outerSource := source (.atom (.field (ref 1 .outer)))
+example : fieldSource.readDifference outerSource .seconds .computation laterFault frame (fun _ => ()) () =
+      .ok (.error ()) ∧
+    fieldSource.readDifference outerSource .seconds .validation laterFault frame (fun _ => ()) () =
+      .error (.storedTextUnavailable 1) ∧
+    (HavingNumericAtom.temporalDifference .seconds fieldSource outerSource).fieldOrigins =
+      [(.inner, 1), (.outer, 1)] ∧
+    fieldSource.readDifference shifted .seconds .computation shiftContext frame (fun _ => ()) () =
+      .ok (.ok (.value 0 .both)) := by native_decide
+
+private def partialRef : HavingTemporalRef := {
+  origin := .inner
+  field := { id := 1, kind := .date, components := TemporalComponents.fullDate } }
+private def partialSource (endpoint : ValueAsDateEndpoint) := source (.atom (.partialDate {
+  reference := partialRef, format := .yearMonthDayDashes, mode := .yearOptional,
+  youngerThan1900Check := false, endpoint }))
+private def partialContext (text : String) : ResolvingCorrelationContext CorrelationRuntimeFault :=
+  { base with read := fun _ _ => pure { rawPresent := true, parsed := some (.partialDate text), findings := [] } }
+
+example : [Phase.validation, .computation].all (fun phase =>
+    (partialSource .firstDay).evaluate phase (partialContext "0000-00-00") frame == .ok (.value .nonRelevant true) &&
+    (partialSource .firstDay).readDifference (partialSource .lastDay) .days phase (partialContext "2024-02-00") frame
+      (fun _ => ()) () == .ok (.ok (.value 28 .fixed)) &&
+    (partialSource .firstDay).readDifference (partialSource .lastDay) .days phase (partialContext "2024-00-00") frame
+      (fun _ => ()) () == .ok (.ok (.value 365 .fixed))) = true := by native_decide
+
+private def partialModel : FlatModel := { model with fields := [{
+  id := 1, name := "Partial", groupPath := ["Rows"], repeatableScope := [10]
+  policy := { kind := .temporal .date TemporalComponents.fullDate }
+  temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .yearOptional } }] }
+example : (partialSource .firstDay).wellFormed partialModel [10] [] = true ∧
+    (partialSource .firstDay).wellFormed partialModel [] [10] = false ∧
+    ({ partialSource .firstDay with core := .atom (.partialDate {
+      reference := partialRef, format := .dayMonthYearDots, mode := .yearOptional,
+      youngerThan1900Check := false, endpoint := .firstDay }) }).wellFormed partialModel [10] [] = false := by native_decide
+
 end A12Kernel.Conformance.HavingTemporalExpression

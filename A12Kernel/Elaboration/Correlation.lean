@@ -95,7 +95,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
         | .firstFilled _ | .groupCount _ | .product _ | .collectionCount _ | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ | .fieldValueAsNumber _
-            | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ | .temporalExpressionPart _ _ => false
+            | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ | .temporalExpressionPart _ _ | .temporalDifference _ _ _ => false
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
         | .repetition _ => false
@@ -132,6 +132,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     dayDifference := fun _ _ => throw .stringLeafOutsideStarRoute
     selectedComparison := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalExpression := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    temporalDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalExpressionPart := fun _ _ => throw .stringLeafOutsideStarRoute
     temporal := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateTimeDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -171,6 +172,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     dayDifference := fun _ _ => throw .stringLeafOutsideStarRoute
     selectedComparison := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalExpression := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    temporalDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalExpressionPart := fun _ _ => throw .stringLeafOutsideStarRoute
     temporal := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateTimeDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -499,6 +501,7 @@ def CorrelatedHaving.outerIterationScopes
         | .field reference => [outerHavingNumberIterationScope model reference]
         | .stringLength origin field | .stringRange origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
         | .dateRangeBoundPart origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
+        | .temporalDifference _ left right => (left.presenceSlots ++ right.presenceSlots).map (·.outerIterationScope? model)
         | .temporalExpressionPart _ source => source.presenceSlots.map (·.outerIterationScope? model)
         | .temporalPart origin field _ => [outerHavingFieldIterationScope model origin field.id]
         | .repetition reference => [outerHavingRepetitionIterationScope model reference]
@@ -563,6 +566,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
+        | .temporalDifference _ left right => (left.fields ++ right.fields).findSome? fun ref => field ref.origin ref.field
         | .temporalExpressionPart _ source =>
             ((source.entitySources.flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
               source.fields.findSome? fun ref => field ref.origin ref.field
@@ -699,6 +703,16 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       let some source := declaration.toTemporalField? | throw .numericExpressionUnsupported
       if !part.admittedBy source model.hasBaseYear then throw .numericExpressionUnsupported
       pure source
+    temporalDifference := fun unit left right => do
+      if !left.admittedSourceSlot true || !right.admittedSourceSlot true then throw .numericExpressionUnsupported
+      let left ← HavingTemporalExpression.elaborate model resolveTemporalEntity left
+        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)
+      let right ← HavingTemporalExpression.elaborate model resolveTemporalEntity right
+        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)
+      let some first := left.components? | throw .numericExpressionUnsupported
+      let some second := right.components? | throw .numericExpressionUnsupported
+      if !unit.admitsScalarDifference model.hasBaseYear first second then throw .numericExpressionUnsupported
+      pure (.temporalDifference unit left right)
     temporalExpressionPart := fun part source => do
       let source ← HavingTemporalExpression.elaborate model resolveTemporalEntity source
         (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)

@@ -15,12 +15,6 @@ This capsule retains every admitted stored Date omission and resolves a known-ye
 
 namespace A12Kernel
 
-/-- The operation-level result keeps unknown-year non-relevance distinct from a resolved Date. -/
-inductive ValueAsDateResolution where
-  | date (value : FullDate)
-  | nonRelevant
-  deriving Repr, DecidableEq
-
 /-- One phase read after endpoint completion. Non-relevance is not a formal cause and therefore must not be forged into `CellObservation.unknown` or collapsed into ordinary emptiness. -/
 inductive ValueAsDateObservation where
   | empty
@@ -29,16 +23,6 @@ inductive ValueAsDateObservation where
   | unavailable (cause : FormalCause)
   deriving Repr, DecidableEq
 
-namespace PartiallyKnownDateValue
-
-/-- Resolve only known-year intervals. The unknown-year case follows the runtime’s early non-relevance branch. -/
-def resolve : PartiallyKnownDateValue → ValueAsDateEndpoint → ValueAsDateResolution
-  | .full date, _ => .date date
-  | .omittedDay date, endpoint => .date (date.resolve endpoint)
-  | .omittedMonth date, endpoint => .date (date.resolve endpoint)
-  | .omittedYear, _ => .nonRelevant
-
-end PartiallyKnownDateValue
 
 namespace AdmittedPartiallyKnownDate
 

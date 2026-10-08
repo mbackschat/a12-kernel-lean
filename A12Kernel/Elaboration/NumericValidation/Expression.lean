@@ -8,14 +8,6 @@ entity-list comparison assembly. This keeps recursive temporal consumers below t
 
 namespace A12Kernel
 
-/-- Lift one already-classified validation numeric operand into the arithmetic outcome domain. Number and temporal component reads share this exact boundary. -/
-def NumericOperand.toValidationArithmetic
-    (operand : NumericOperand) :
-    Except NumericValidationUnavailable NumericArithmeticOutcome :=
-  match operand with
-  | .value amount fillability => .ok (.value amount fillability)
-  | .unknown cause => .error (.formal cause)
-
 /-- Evaluate a checked standalone operation through the shared one-pass lowering and arithmetic engine. The caller selects the already-checked atom observation policy. -/
 def CheckedNumericValidationExpression.evalWith
     (checked : CheckedNumericValidationExpression model)

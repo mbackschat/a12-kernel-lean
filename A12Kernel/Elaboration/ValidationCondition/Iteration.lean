@@ -205,7 +205,7 @@ private def numericEntityGuardShape? :
   -- The token distinct count shares the Number one's fold, but no measurement crosses that carrier
   -- boundary for the guard, so it classifies nothing and an iterating rule it alone would guard stays
   -- refused as unclassified.
-  | .indexed _ | .indexedString _ | .temporalPart _ | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
+  | .indexed _ | .indexedString _ | .temporalExpression _ | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
   | .temporalDistinctCount _ => none
 
 private def positiveCountThresholdIsUnguarded

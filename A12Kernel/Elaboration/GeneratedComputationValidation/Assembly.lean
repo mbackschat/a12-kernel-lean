@@ -445,7 +445,7 @@ def CheckedNumericComputationAtom.toValidationAtom :
   | .tokenDistinctCount source => pure (.tokenDistinctCount source)
   | .indexed source => pure (.indexed source)
   | .indexedString source => pure (.indexedString source)
-  | .temporalPart source => pure (.temporalPart source)
+  | .temporalExpression source => pure (.temporalExpression source)
   | .temporalDistinctCount run => pure (.temporalDistinctCount run)
   | .tokenValueCount source =>
       pure (.tokenValueCount source)

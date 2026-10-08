@@ -447,16 +447,16 @@ theorem checkedConstructedDateShift_real_domain_failure
   rw [amount]
   rfl
 
-/-- A reached first-source cause decides the generated two-source difference without any hypothesis about the second checked source. -/
+/-- In computation, a reached first-source cause decides the difference before the second source (spec/05 §2). -/
 theorem checkedConstructedDateDifference_first_unavailable
     (checked : CheckedConstructedDateDifference model)
-    (phase : Phase) (input : CheckedDocument model)
+    (input : CheckedDocument model)
     (world : Option World)
     (cause : FormalCause)
     (first :
-      checked.first.evaluate phase input world = .ok (.unavailable cause)) :
-    checked.evaluate phase input world = .ok (.error cause) := by
-  simp [CheckedConstructedDateDifference.evaluate, first]
+      checked.first.evaluate .computation input world = .ok (.unavailable cause)) :
+    checked.evaluate .computation input world = .ok (.error cause) := by
+  simp [CheckedConstructedDateDifference.evaluate, readTemporalPair, readTemporalPairWith, bind, Except.bind, pure, Except.pure, Except.mapError, first]
 
 /-- Once the first source resolves, the second source's exact reached formal cause is retained. -/
 theorem checkedConstructedDateDifference_second_unavailable
@@ -469,7 +469,7 @@ theorem checkedConstructedDateDifference_second_unavailable
     (second :
       checked.second.evaluate phase input world = .ok (.unavailable cause)) :
     checked.evaluate phase input world = .ok (.error cause) := by
-  simp [CheckedConstructedDateDifference.evaluate, first, second]
+  cases phase <;> simp [CheckedConstructedDateDifference.evaluate, readTemporalPair, readTemporalPairWith, bind, Except.bind, pure, Except.pure, Except.mapError, first, second]
 
 /-- A structural first-source failure stops before the second source and remains outside semantic unreal. -/
 theorem checkedConstructedDateDifference_first_fault
@@ -478,7 +478,7 @@ theorem checkedConstructedDateDifference_first_fault
     (error : ConstructedDateEvaluationFault)
     (first : checked.first.evaluate phase input world = .error error) :
     checked.evaluate phase input world = .error (.source error) := by
-  simp [CheckedConstructedDateDifference.evaluate, first]
+  simp [CheckedConstructedDateDifference.evaluate, readTemporalPair, readTemporalPairWith, bind, Except.bind, Except.mapError, first]
 
 /-- Both constructed sources necessarily carry the same selected profile because they were checked against one model zone id. -/
 theorem checkedConstructedDateDifference_profiles_eq
@@ -507,39 +507,37 @@ theorem checkedConstructedDateDifference_utc_unchanged
       | .years => first.differenceLegacy? .years second := by
   cases unit <;> rfl
 
-/-- With the shift authored first, its reached cause decides the mixed difference
-    before the direct constructed operand is evaluated. -/
+/-- Computation stops at the first shifted source's formal cause (spec/05 §2). -/
 theorem checkedConstructedDateShift_difference_first_unavailable
     (checked : CheckedConstructedDateShift model)
     (other : CheckedConstructedDateComponents model)
     (unit : DateShiftUnit)
     (unitAdmitted :
       checked.source.profile.admitsConstructedDateDifference unit = true)
-    (phase : Phase) (input : CheckedDocument model)
+    (input : CheckedDocument model)
     (world : Option World) (cause : FormalCause)
     (shift :
-      checked.evaluate phase input world = .ok (.unavailable cause)) :
+      checked.evaluate .computation input world = .ok (.unavailable cause)) :
     checked.evaluateDifferenceWith other .first unit unitAdmitted
-        phase input world =
+        .computation input world =
       .ok (.error cause) := by
-  simp [CheckedConstructedDateShift.evaluateDifferenceWith, shift]
+  simp [CheckedConstructedDateShift.evaluateDifferenceWith, readTemporalPair, readTemporalPairWith, bind, Except.bind, pure, Except.pure, Except.mapError, shift]
 
-/-- With the direct constructed operand authored first, its reached cause decides
-    the mixed difference before the checked shift is evaluated. -/
+/-- Computation stops at the first constructed source's formal cause (spec/05 §2). -/
 theorem checkedConstructedDateShift_difference_second_constructed_unavailable
     (checked : CheckedConstructedDateShift model)
     (other : CheckedConstructedDateComponents model)
     (unit : DateShiftUnit)
     (unitAdmitted :
       checked.source.profile.admitsConstructedDateDifference unit = true)
-    (phase : Phase) (input : CheckedDocument model)
+    (input : CheckedDocument model)
     (world : Option World) (cause : FormalCause)
     (constructed :
-      other.evaluateValue phase input world = .ok (.unavailable cause)) :
+      other.evaluateValue .computation input world = .ok (.unavailable cause)) :
     checked.evaluateDifferenceWith other .second unit unitAdmitted
-        phase input world =
+        .computation input world =
       .ok (.error cause) := by
-  simp [CheckedConstructedDateShift.evaluateDifferenceWith, constructed]
+  simp [CheckedConstructedDateShift.evaluateDifferenceWith, readTemporalPair, readTemporalPairWith, bind, Except.bind, pure, Except.pure, Except.mapError, constructed]
 
 /-- The mixed difference's direct and shifted sources select the same concrete
     profile because both were checked against one model zone id. -/

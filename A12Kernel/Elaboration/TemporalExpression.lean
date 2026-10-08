@@ -323,26 +323,6 @@ def elaborateScalarTemporalComparison (model : FlatModel) (rowGroup : GroupPath)
       some <$> scalarProfile model else pure none
   pure { left, right, operator, comparisonZone?, modelWellFormed := left.modelWellFormed }
 
-/-- Both shift families preserve source missingness when arithmetic has no value. Relevance is
-independent of that payload, while reached formal causes remain unavailable (BedingungsOperatorHelper.addTime;
-temporal numeric effects grid, 2026-10-04). The caller reaches the amount before this pure classification. -/
-private def applyScalarTemporalShift
-    (source : SimpleComparisonOperand ScalarTemporalValue)
-    (amount : Except NumericValidationUnavailable NumericArithmeticOutcome)
-    (shift : ScalarTemporalValue → Rat → Except ScalarTemporalEvaluationFault ScalarTemporalValue) :
-    Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
-  match source, amount with
-  | .unknown cause, _ | _, .error (.formal cause) => pure (.unknown cause)
-  | .value .nonRelevant _, _ | _, .error .nonRelevant => pure (.value .nonRelevant true)
-  | _, .error _ => throw .calendarUnavailable
-  | .notEvaluated, .ok .notEvaluated => pure (.value .noValue false)
-  | .value _ given, .ok .notEvaluated => pure (.value .noValue given)
-  | .notEvaluated, .ok (.value _ _) => pure .notEvaluated
-  | .value value given, .ok (.value amount fillability) =>
-      let given := given && !fillability.canGrow && !fillability.canShrink
-      match value with
-      | .noValue => pure (.value .noValue given)
-      | value => pure (.value (← shift value amount) given)
 
 mutual
 private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context : ScalarComputationContext)
@@ -407,25 +387,12 @@ private def applyScalarTemporalTransform (phase : Phase) (context : ScalarComput
   match operation with
   | .calendarShift profile unit amount =>
       let amount ← readRecursiveScalarAmount phase context partialRead? amount
-      applyScalarTemporalShift source amount fun value amount => do
-        let instant ← match value with
-          | .date value | .yearless value _ => pure value.instant
-          | .instant instant => pure instant
-          | _ => throw .calendarUnavailable
-        let some (label, shifted) := profile.shiftCalendar? unit instant (temporalShiftAmountToInt32 amount)
-          | throw .calendarUnavailable
-        match value with
-        | .date _ => pure (.date { instant := shifted, parts := label.parts, basis := .legacyHybrid })
-        | .yearless _ _ => pure (.yearless { instant := shifted, parts := label.parts, basis := .legacyHybrid }
-            { month := label.parts.month, day := label.parts.day })
-        | .instant _ => pure (.instant shifted)
-        | _ => throw .calendarUnavailable
-  | .subdayShift _ unit amount =>
+      (applyScalarTemporalShift source amount (shiftScalarTemporalValue profile (match unit with
+        | .days => .days | .months => .months | .years => .years))).mapError ScalarTemporalPrimitiveFault.toEvaluation
+  | .subdayShift profile unit amount =>
       let amount ← readRecursiveScalarAmount phase context partialRead? amount
-      applyScalarTemporalShift source amount fun value amount =>
-        match value with
-        | .instant instant => pure (.instant (instant.shift unit (temporalShiftAmountToInt32 amount)))
-        | _ => throw .calendarUnavailable
+      (applyScalarTemporalShift source amount (shiftScalarTemporalValue profile (match unit with
+        | .hours => .hours | .minutes => .minutes | .seconds => .seconds))).mapError ScalarTemporalPrimitiveFault.toEvaluation
   | .dateFromDateTime profile =>
       (ScalarTemporalConstructorOp.dateFromDateTime.apply profile [source]).mapError ScalarTemporalPrimitiveFault.toEvaluation
   | .timeFromDateTime profile =>

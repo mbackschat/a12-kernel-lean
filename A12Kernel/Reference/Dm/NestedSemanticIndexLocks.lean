@@ -476,7 +476,7 @@ private def temporalAdmission : Option (Bool × Bool) := do
     (.indexed {
       target := { base := .absolute, groups := ["Form", "Parents", "Rows"], field := "N" }
       key := .literal (.text "a") }) (.date .year)).toOption
-  let atom : OrderedNumericValidationAtom (profileModel .date) := .temporalPart selected
+  let atom : OrderedNumericValidationAtom (profileModel .date) := .temporalExpression selected
   pure (atom.admitted (group .parent) .sameGroupAddressed, atom.admitted (group .root) .sameGroupAddressed)
 
 private def numericReuse (expression : String) : Option (Bool × Bool) := do

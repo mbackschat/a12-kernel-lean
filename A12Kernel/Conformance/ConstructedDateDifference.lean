@@ -252,4 +252,40 @@ example :
           (constructed 1916 10 1) = some (.value 1 false) := by
   native_decide
 
+private def orderedFailures (phase : Phase) : Option Bool := do
+  let checkedModel : FlatModel := { model "UTC" with fields := [{
+    id := 1, name := "Day", groupPath := ["Form"]
+    policy := { kind := .number { scale := 0, signed := false } }
+    numericTargetConstraints := { maximum := some 31 } }] }
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler checkedModel).toOption
+  let input ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := [{
+    address := { field := 1, path := [] }, stored := "bad", raw := .rejected .malformed }] }).toOption
+  let first ← (elaborateConstructedDateSources checkedModel {
+    (sources { year := 2024, month := 1, day := 1 }) with day := .numberField 1 }).toOption
+  let second ← (elaborateConstructedDateSources checkedModel {
+    (sources { year := 2024, month := 1, day := 1 }) with day := .todayExtractor .day }).toOption
+  if h : first.profile.admitsConstructedDateDifference .days = true then
+    let checked : CheckedConstructedDateDifference checkedModel := { first, second, unit := .days, unitAdmitted := h }
+    let direct := match checked.evaluate phase input none with
+      | .ok (.error .malformed) => phase == .computation
+      | .error (.source .todayWorldRequired) => phase == .validation
+      | _ => false
+    let shifted : CheckedConstructedDateShift checkedModel := { source := first, unit := .days, amount := .literal 1 }
+    let shiftFirst := match shifted.evaluateDifferenceWith second .first .days h phase input none with
+      | .ok (.error .malformed) => phase == .computation
+      | .error (.constructedSource .todayWorldRequired) => phase == .validation
+      | _ => false
+    let laterShift : CheckedConstructedDateShift checkedModel := { source := second, unit := .days, amount := .literal 1 }
+    if next : second.profile.admitsConstructedDateDifference .days = true then
+      let shiftSecond := match laterShift.evaluateDifferenceWith first .second .days next phase input none with
+        | .ok (.error .malformed) => phase == .computation
+        | .error (.shiftSource (.source .todayWorldRequired)) => phase == .validation
+        | _ => false
+      pure (direct && shiftFirst && shiftSecond)
+    else none
+  else none
+
+example : orderedFailures .validation = some true ∧ orderedFailures .computation = some true := by native_decide
+
 end A12Kernel.Conformance.ConstructedDateDifference

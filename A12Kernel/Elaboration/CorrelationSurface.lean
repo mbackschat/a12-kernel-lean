@@ -61,6 +61,9 @@ inductive SurfaceHavingTimeComponent (Temporal : Type := Empty) where
 
 /-- Constructor operands retain an origin at every field, including mixed captured/candidate reads. -/
 inductive SurfaceHavingTemporalExpression where
+  | shift (unit : TemporalOperationUnit) (source : SurfaceHavingTemporalExpression)
+      (amount : AuthoredNumericExpr (Sum SurfaceHavingNumberRef (TemporalNumericPart × SurfaceHavingTemporalExpression)))
+  | partialDate (reference : SurfaceHavingTemporalRef) (endpoint : ValueAsDateEndpoint)
   | selection (kind : HavingTemporalSelection) (source : SurfaceHavingEntitySource)
   | combine (operator : TemporalExtremumOp) (first : SurfaceHavingTemporalExpression) (rest : List SurfaceHavingTemporalExpression)
   | field (reference : SurfaceHavingTemporalRef)
@@ -78,6 +81,8 @@ inductive SurfaceHavingTemporalExpression where
   | dateFromDateTime (source : SurfaceHavingTemporalExpression)
   | timeFromDateTime (source : SurfaceHavingTemporalExpression)
 
+abbrev SurfaceHavingTemporalAmount := AuthoredNumericExpr (Sum SurfaceHavingNumberRef (TemporalNumericPart × SurfaceHavingTemporalExpression))
+
 abbrev SurfaceHavingDateComponents := SurfaceConstructedDateComponents (SurfaceHavingDateComponent SurfaceHavingTemporalExpression)
 abbrev SurfaceHavingTimeComponents := TimeComponentPrefix (SurfaceHavingTimeComponent SurfaceHavingTemporalExpression)
 
@@ -94,6 +99,8 @@ private def format : SurfaceHavingTemporalExpression → Std.Format
   | .combine operator first rest => formatNode "combine" [repr operator, format first,
       "[" ++ Std.Format.joinSep (rest.map format) ", " ++ "]"]
   | .field reference => formatNode "field" [repr reference]
+  | .shift unit source amount => formatNode "shift" [repr unit, format source, formatAmount amount]
+  | .partialDate reference endpoint => formatNode "partialDate" [repr reference, repr endpoint]
   | .rangeBound reference bound => formatNode "rangeBound" [repr reference, repr bound]
   | .timeConstruction components => formatNode "timeConstruction" [formatTime components]
   | .dateConstruction components => formatNode "dateConstruction" [formatDate components]
@@ -108,6 +115,11 @@ private def format : SurfaceHavingTemporalExpression → Std.Format
   | .dateFromDateTime source => formatNode "dateFromDateTime" [format source]
   | .timeFromDateTime source => formatNode "timeFromDateTime" [format source]
 
+private def formatAmount (amount : SurfaceHavingTemporalAmount) : Std.Format :=
+  amount.formatWithSubterm fun source _ => match source with
+    | .inl reference => repr reference
+    | .inr (part, source) => repr part ++ " (" ++ format source ++ ")"
+decreasing_by all_goals simp_all +arith <;> omega
 private def formatDateComponent : SurfaceHavingDateComponent SurfaceHavingTemporalExpression → Std.Format
   | .field ref => formatNode "field" [repr ref]
   | .constant value => formatNode "constant" [repr value]
@@ -139,7 +151,9 @@ instance : Repr SurfaceHavingTemporalExpression where
 
 /-- Temporal source slots exclude value-list selectors, extrema and grouping (spec/05 §§3,6;
 ordinary SurfaceScalarTemporalExpression.admittedSourceSlot). -/
-def admittedSourceSlot : SurfaceHavingTemporalExpression → Bool
+def admittedSourceSlot (source : SurfaceHavingTemporalExpression) (withPartialDate : Bool := false) : Bool :=
+  match source with
+  | .partialDate _ _ => withPartialDate
   | .selection _ _ | .combine _ _ _ | .grouped _ => false
   | _ => true
 
@@ -168,6 +182,12 @@ private def decideEqual (left right : SurfaceHavingTemporalExpression) : Decidab
     exact decidable_of_iff (first = next) (by simp)
   case selection.selection kind source other next =>
     exact decidable_of_iff (kind = other ∧ source = next) (by simp)
+  case shift.shift unit source amount nextUnit nextSource nextAmount =>
+    letI := decideEqual source nextSource
+    letI := decideAmountEqual amount nextAmount
+    exact decidable_of_iff (unit = nextUnit ∧ source = nextSource ∧ amount = nextAmount) (by simp)
+  case partialDate.partialDate first endpoint next other =>
+    exact decidable_of_iff (first = next ∧ endpoint = other) (by simp)
   case field.field first next => exact decidable_of_iff (first = next) (by simp)
   case rangeBound.rangeBound source bound next other =>
     exact decidable_of_iff (source = next ∧ bound = other) (by simp)
@@ -218,6 +238,14 @@ private def decideTimeComponentEqual (left right : SurfaceHavingTimeComponent Su
     exact decidable_of_iff (part = other ∧ source = next) (by simp)
   case nowExtractor.nowExtractor source next => exact decidable_of_iff (source = next) (by simp)
 
+private def decideAmountEqual (left right : SurfaceHavingTemporalAmount) : Decidable (left = right) :=
+  left.decideEqWithSubterm right fun a b _ _ => match a, b with
+    | .inl source, .inl next => decidable_of_iff (source = next) (by simp)
+    | .inr (part, source), .inr (nextPart, nextSource) =>
+        letI := decideEqual source nextSource
+        decidable_of_iff (part = nextPart ∧ source = nextSource) (by simp)
+    | .inl _, .inr _ | .inr _, .inl _ => isFalse (by intro h; cases h)
+decreasing_by all_goals simp_all +arith <;> omega
 private def decideDateYearEqual (left right : SurfaceConstructedDateYear (SurfaceHavingDateComponent SurfaceHavingTemporalExpression)) : Decidable (left = right) := by
   cases left <;> cases right
   all_goals first | (apply isFalse; intro h; cases h; done) | skip
@@ -261,13 +289,19 @@ end SurfaceHavingTemporalExpression
 
 mutual
 def SurfaceHavingTemporalExpression.fields : SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
-  | .field reference | .rangeBound reference _ => [reference]
+  | .shift _ source amount => source.fields ++ amountFields amount
+  | .field reference | .rangeBound reference _ | .partialDate reference _ => [reference]
   | .timeConstruction components => timeFields components
   | .dateConstruction components => dateFields components
   | .grouped source | .dateFromDateTime source | .timeFromDateTime source => source.fields
   | .dateTime date time => date.fields ++ time.fields
   | .combine _ first rest => first.fields ++ rest.flatMap (·.fields)
   | _ => []
+private def amountFields (amount : SurfaceHavingTemporalAmount) : List SurfaceHavingTemporalRef :=
+  amount.flatMapAtomsSubterm fun source _ => match source with
+    | .inl reference => [{ origin := reference.origin, field := reference.field }]
+    | .inr (_, source) => source.fields
+decreasing_by all_goals simp_all +arith <;> omega
 private def dateComponentFields : SurfaceHavingDateComponent SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
   | .field ref | .extractor _ ref => [{ origin := ref.origin, field := ref.field }]
   | .expression _ source => source.fields
@@ -315,6 +349,7 @@ def SurfaceHavingCollectionCount.source : SurfaceHavingCollectionCount → Surfa
   | .filledFields source | .numberValue _ source | .tokenValue _ source | .booleanValue _ source => source
 
 inductive SurfaceHavingNumericAtom where
+  | temporalDifference (unit : TemporalOperationUnit) (left right : SurfaceHavingTemporalExpression)
   | firstFilled (source : SurfaceHavingEntitySource)
   | groupCount (source : SurfaceHavingEntitySource)
   | product (source : SurfaceHavingEntitySource)
@@ -599,6 +634,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
+        | .temporalDifference _ left right => (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .temporalExpressionPart _ source =>
             ((source.entitySources.flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
               source.fields.findSome? fun reference => field reference.origin reference.field

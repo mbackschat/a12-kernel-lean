@@ -221,8 +221,22 @@ def lowerCompleteComputationNumericAtom (model : FlatModel) (rowGroup : GroupPat
   match lowerComputationNumericAtom model rowGroup expression with
   | .ok source => pure source
   | .error original => do
-      let .call name [.mk source none none] none none := expression | throw original
-      let some part := temporalNumericPart? name | throw original
-      pure (.temporalPart (← lowerScalarTemporalExpressionAt model rowGroup .source source) part)
+      match expression with
+      | .call name [.mk source none none] none none =>
+          let some part := temporalNumericPart? name | throw original
+          pure (.temporalExpression (.projection part (← lowerScalarTemporalExpressionAt model rowGroup .source source)))
+      | .call name [.mk left none none, .mk right none none] none none =>
+          let unit ← match name with
+            | "DifferenceInDays" => pure TemporalOperationUnit.days
+            | "DifferenceInMonths" => pure TemporalOperationUnit.months
+            | "DifferenceInYears" => pure TemporalOperationUnit.years
+            | "DifferenceInHours" => pure TemporalOperationUnit.hours
+            | "DifferenceInMinutes" => pure TemporalOperationUnit.minutes
+            | "DifferenceInSeconds" => pure TemporalOperationUnit.seconds
+            | _ => throw original
+          pure (.temporalExpression (.difference unit
+            (← lowerScalarTemporalExpressionAt model rowGroup .source left)
+            (← lowerScalarTemporalExpressionAt model rowGroup .source right)))
+      | _ => throw original
 
 end A12Kernel.Dm

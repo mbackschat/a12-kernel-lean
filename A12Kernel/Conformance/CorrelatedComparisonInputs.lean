@@ -428,7 +428,7 @@ example : subdayCondition.fieldIds = [1] ∧ subdayCondition.markedFieldIds = [1
     subdayAtom.fieldOrigins = [(.inner, 1), (.outer, 1)] := by native_decide
 
 example : subdayAtom.readValidationResolving toleranceRead frame = .error "captured read" ∧
-    subdayAtom.readComputationResolving toleranceRead frame = .error "captured read" ∧
+    subdayAtom.readComputationResolving toleranceRead frame = .ok (.poison .malformed) ∧
     subdayAtom.readValidationResolving { toleranceRead with read := fun _ _ => .error "first read" } frame = .error "first read" ∧
     subdayAtom.readComputationResolving { toleranceRead with read := fun _ _ => .error "first read" } frame = .error "first read" := by native_decide
 

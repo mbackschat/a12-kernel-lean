@@ -906,6 +906,8 @@ run_cmd do
 #print axioms A12Kernel.exactNumericScaleComparisonAllowedWithSuppression_false
 #print axioms A12Kernel.temporalExpression_evalWith_congr
 #print axioms A12Kernel.temporalExpression_evalWithResult_transform_error
+#print axioms A12Kernel.readTemporalPair_computation_first_formal
+#print axioms A12Kernel.readTemporalPair_validation_second_fault
 #print axioms A12Kernel.temporalExpression_evalWithResult_apply_head_error
 #print axioms A12Kernel.temporalExpression_evalWithResult_apply_tail_error
 #print axioms A12Kernel.authoredNumericSummary_group

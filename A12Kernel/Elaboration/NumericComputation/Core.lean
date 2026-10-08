@@ -45,7 +45,7 @@ def FlatModel.admitsNumericComputationOperand
     (model : FlatModel) (scope : List RepeatableLevel) : CheckedNumericComputationAtom model → Bool
   | .indexed source => source.toCheckedSemanticIndexSource.bindingScopes.all (·.isPrefixOf scope)
   | .indexedString source => source.selection.bindingScopes.all (·.isPrefixOf scope)
-  | .temporalPart source => source.source.bindingScopes.all (·.isPrefixOf scope)
+  | .temporalExpression source => source.bindingScopes.all (·.isPrefixOf scope)
   | .filledFieldCount source =>
       !source.operands.isEmpty && source.rowBoundBool scope &&
         source.operands.all fun operand =>
@@ -157,7 +157,7 @@ def CheckedNumericComputationAtom.numericScaleSummary
   | .indexed source => NumericScaleSummary.field source.field.info.scale
   | .indexedString source => NumericScaleSummary.field source.projection.scale
   | .firstFilled source => source.scaleSummary
-  | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _
+  | .temporalExpression _ | .tokenDistinctCount _ | .temporalDistinctCount _
   | .valueCount _ _ | .filledFieldCount _ => NumericScaleSummary.field 0
   | .tokenValueCount source => source.scaleSummary
   | .booleanValueCount source => source.scaleSummary
@@ -207,7 +207,7 @@ def CheckedNumericComputationAtom.referencesWith
   | .firstFilled source => source.referencesField field (fun having _ => filterReads having)
   | .valueCount _ source => source.referencesField field (fun having _ => filterReads having)
   | .tokenDistinctCount source => source.referencesField field (fun having _ => filterReads having)
-  | .temporalPart source => source.source.referencesWith field filterReads
+  | .temporalExpression source => source.referencesWith field filterReads
   | .temporalDistinctCount run => run.source.referencesField field (fun having _ => filterReads having)
   | .tokenValueCount source => source.referencesField field (fun having _ => filterReads having)
   | .booleanValueCount source => source.referencesField field (fun having _ => filterReads having)
@@ -354,8 +354,8 @@ def FlatModel.elaborateNumericComputationAtom
     | .indexed source =>
         (elaborateNumericSemanticIndexSource model declaringGroup source
           (some (model.repeatableScopeForGroupPath targetGroup))).map .indexed |>.mapError .semanticIndex
-    | .temporalPart source part =>
-        (elaborateTemporalNumericExpression model declaringGroup source part (some targetGroup)).map .temporalPart
+    | .temporalExpression source =>
+        (elaborateTemporalNumericOperation model declaringGroup source (some targetGroup)).map .temporalExpression
           |>.mapError .temporalExpression
     | .filledFieldCount source =>
         (elaborateComputationFieldFillList model declaringGroup targetGroup source .count).map .filledFieldCount

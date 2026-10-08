@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-08-02"></a>
+### SPEC-2026-10-08-02 — temporal differences preserve phase-specific operand failure order
+
+- `status`: pending
+- `canonical`: [spec/05 §2](../spec/05-dates-and-time.md#2-addition-and-difference-are-asymmetric-and-calendar-corrected).
+- `delta`: The first formally unavailable operand stops computation before the second temporal operand; validation still reaches the second. Cause-free absence does not stop evaluation. Preserve this distinction through recursive sources and Having filters.
+- `basis`: [Difference effect checkpoint](sources/temporal-runtime-fold-probes.md#src-recursive-difference-effects), Kernel 30.8.1, both strategies, clean a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`. Day-difference direct, shifted and constructed sources are runtime calibrated; the common generated template supports the ordering across units.
+- `acceptance`: Reconcile ordinary and filtered recursive differences without eagerly reaching a later computation failure or suppressing a later validation failure. Preserve first-formal, gap-first and empty-first controls. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
 <a id="spec-2026-10-08-01"></a>
 ### SPEC-2026-10-08-01 — year extraction retains constructed Time's anchor
 

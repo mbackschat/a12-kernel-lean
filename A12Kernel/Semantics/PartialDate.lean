@@ -113,4 +113,21 @@ def PartiallyKnownDateValue.storedComponents :
   | .omittedMonth date => (some date.first.civil.parts.year, none, none)
   | .omittedYear => (none, none, none)
 
+/-- The operation-level result keeps unknown-year non-relevance distinct from a resolved Date. -/
+inductive ValueAsDateResolution where
+  | date (value : FullDate)
+  | nonRelevant
+  deriving Repr, DecidableEq
+
+namespace PartiallyKnownDateValue
+
+/-- Resolve only known-year intervals. The unknown-year case follows the runtime’s early non-relevance branch. -/
+def resolve : PartiallyKnownDateValue → ValueAsDateEndpoint → ValueAsDateResolution
+  | .full date, _ => .date date
+  | .omittedDay date, endpoint => .date (date.resolve endpoint)
+  | .omittedMonth date, endpoint => .date (date.resolve endpoint)
+  | .omittedYear, _ => .nonRelevant
+
+end PartiallyKnownDateValue
+
 end A12Kernel

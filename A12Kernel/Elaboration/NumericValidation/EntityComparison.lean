@@ -73,8 +73,8 @@ private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : Group
   | .indexed source =>
       (elaborateNumericSemanticIndexSource model rowGroup source
         (some (model.repeatableScopeForGroupPath bindingGroup))).map .indexed |>.mapError .semanticIndex
-  | .temporalPart source part =>
-      (elaborateTemporalNumericExpression model rowGroup source part (some bindingGroup)).map .temporalPart
+  | .temporalExpression source =>
+      (elaborateTemporalNumericOperation model rowGroup source (some bindingGroup)).map .temporalExpression
         |>.mapError .temporalExpression
   | .numeric (.aggregate .distinctCount source) => do
       match ← (elaborateDistinctCountSource model rowGroup source (bindingGroup? := some bindingGroup)).mapError .numberSource with

@@ -690,7 +690,7 @@ private def numericMissingBinding (expression : String) : Option Bool := do
     flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
     (input "2024-01-01" "2024-01-03" {})).toOption
   let document ← (checkDocument prepared "en_US" document.data).toOption
-  pure (!((OrderedNumericValidationAtom.temporalPart source).resolveAddressed {
+  pure (!((OrderedNumericValidationAtom.temporalExpression source).resolveAddressed {
     scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable },
     outer := [], input := .checked document }).isOk)
 
@@ -713,7 +713,7 @@ private def indexedNumericContexts (expression : String) : Option (List (Option 
     scalar, document := checked.computationFillContext.document, outer := [],
     filterRead := checked.computationFillContext.read, filterStoredText := checked.computationFillContext.storedText,
     starRead := checked.computationFillContext.read, starStoredText := checked.computationFillContext.storedText }
-  let atom := CheckedNumericComputationAtom.temporalPart source
+  let atom := CheckedNumericComputationAtom.temporalExpression source
   let explicit := { context with indexColumn? := some scalar.semanticIndexColumnReader }
   pure ([scalar.readCheckedNumericComputationAtom atom, context.readCheckedNumericComputationAtom atom,
     explicit.readCheckedNumericComputationAtom atom].map fun result =>

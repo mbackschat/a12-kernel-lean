@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.ConstructedDateDifference
+import A12Kernel.Semantics.ScalarTemporalDifference
 import A12Kernel.Elaboration.ConstructedDateShiftEvaluation
 import A12Kernel.Semantics.DateTimeDayDifference
 
@@ -98,19 +98,16 @@ def evaluate (checked : CheckedConstructedDateDifference model)
     (world : Option World) :
     Except ConstructedDateDifferenceFault
       (Except FormalCause ConstructedDateNumericResult) :=
-  match checked.first.evaluate phase input world with
-  | .error error => .error (.source error)
-  | .ok (.unavailable cause) => .ok (.error cause)
-  | .ok (.resolved first) =>
-      match checked.second.evaluate phase input world with
-      | .error error => .error (.source error)
-      | .ok (.unavailable cause) => .ok (.error cause)
-      | .ok (.resolved second) =>
-          match differenceResolved?
-              checked.first.profile checked.unit first second with
-          | some result => .ok (.ok result)
-          | none =>
-              .error (.operationUnavailable checked.unit first second)
+  do
+    let pair ← (readTemporalPair phase (fun (source : CheckedConstructedDateComponents model) => source.evaluate phase input world)
+      (fun | .unavailable cause => some cause | _ => none) checked.first checked.second).mapError ConstructedDateDifferenceFault.source
+    match pair with
+    | .error cause => pure (.error cause)
+    | .ok (.unavailable cause, _) | .ok (_, .unavailable cause) => pure (.error cause)
+    | .ok (.resolved first, .resolved second) =>
+        match differenceResolved? checked.first.profile checked.unit first second with
+        | some result => pure (.ok result)
+        | none => throw (.operationUnavailable checked.unit first second)
 
 end CheckedConstructedDateDifference
 
@@ -238,29 +235,21 @@ def evaluateDifferenceWith
     (world : Option World) :
     Except ConstructedDateShiftDifferenceFault
       (Except FormalCause ConstructedDateNumericResult) :=
-  match position with
-  | .first =>
-      match checked.evaluate phase input world with
-      | .error error => .error (.shiftSource error)
-      | .ok (.unavailable cause) => .ok (.error cause)
-      | .ok shiftResult =>
-          match other.evaluateValue phase input world with
-          | .error error => .error (.constructedSource error)
-          | .ok (.unavailable cause) => .ok (.error cause)
-          | .ok otherResult =>
-              checked.finishDifference position unit
-                shiftResult otherResult
-  | .second =>
-      match other.evaluateValue phase input world with
-      | .error error => .error (.constructedSource error)
-      | .ok (.unavailable cause) => .ok (.error cause)
-      | .ok otherResult =>
-          match checked.evaluate phase input world with
-          | .error error => .error (.shiftSource error)
-          | .ok (.unavailable cause) => .ok (.error cause)
-          | .ok shiftResult =>
-              checked.finishDifference position unit
-                shiftResult otherResult
+  do
+    let readShift (_ : Unit) := (checked.evaluate phase input world).mapError ConstructedDateShiftDifferenceFault.shiftSource
+    let readOther (_ : Unit) := (other.evaluateValue phase input world).mapError ConstructedDateShiftDifferenceFault.constructedSource
+    let formalCause? : ConstructedDateValue → Option FormalCause := fun
+      | .unavailable cause => some cause
+      | _ => none
+    let pair ← match position with
+      | .first => readTemporalPair phase (fun action => action ()) formalCause? readShift readOther
+      | .second => readTemporalPair phase (fun action => action ()) formalCause? readOther readShift
+    match pair with
+    | .error cause => pure (.error cause)
+    | .ok (first, second) =>
+        match position with
+        | .first => checked.finishDifference position unit first second
+        | .second => checked.finishDifference position unit second first
 
 end CheckedConstructedDateShift
 

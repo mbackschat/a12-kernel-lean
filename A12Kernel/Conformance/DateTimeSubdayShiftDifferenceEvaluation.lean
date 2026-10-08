@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.DateTimeSubdayShiftDifferenceEvaluation
+import A12Kernel.Elaboration.DateTimeDayShiftDifferenceEvaluation
 
 /-! # Checked DateTime sub-day shift/difference locks -/
 
@@ -217,5 +218,33 @@ example : (do
         .value 0 .both,
         .value 1 .both) := by
   native_decide
+
+private def lateProfileFailure (phase : Phase) : Option Bool := do
+  let model : FlatModel := { fields := [{
+    id := 1, name := "Stamp", groupPath := ["Form"]
+    policy := { kind := .temporal .dateTime TemporalComponents.now } }], timeZoneId := "Europe/Berlin" }
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler model).toOption
+  let input ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := [{
+    address := { field := 1, path := [] }, stored := "bad", raw := .rejected .malformed }] }).toOption
+  let elapsed ← (elaborateShiftedNowDateTimeDifference model .seconds (.literal 1) 1 .seconds .second).toOption
+  let days ← (elaborateNowDateTimeDayShiftDifference model (.literal 1) 1 .second).toOption
+  let world : World := { now := { epochMillis := -999999999999999 } }
+  let elapsedResult := match elapsed.evaluate phase world input with
+    | .ok (.unknown .malformed) => phase == .computation
+    | .error (.shift (.shiftedInstantOutsideProfile _)) => phase == .validation
+    | _ => false
+  let dayResult := match days.evaluate phase world input with
+    | .ok (.unknown .malformed) => phase == .computation
+    | .error (.shift (.sourceOutsideProfile _)) => phase == .validation
+    | _ => false
+  let reversedElapsed := match { elapsed with position := .first }.evaluate phase world input with
+    | .error (.shift (.shiftedInstantOutsideProfile _)) => true
+    | _ => false
+  let reversedDays := match { days with position := .first }.evaluate phase world input with
+    | .error (.shift (.sourceOutsideProfile _)) => true
+    | _ => false
+  pure (elapsedResult && dayResult && reversedElapsed && reversedDays)
+
+example : lateProfileFailure .validation = some true ∧ lateProfileFailure .computation = some true := by native_decide
 
 end A12Kernel.Conformance.DateTimeSubdayShiftDifferenceEvaluation

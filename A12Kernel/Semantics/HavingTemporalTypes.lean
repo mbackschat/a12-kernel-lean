@@ -3,6 +3,8 @@ import A12Kernel.Semantics.HavingDateValidity
 import A12Kernel.Semantics.ScalarTemporalValue
 import A12Kernel.Semantics.TemporalExpression
 import A12Kernel.Semantics.HavingTemporalSelection
+import A12Kernel.Semantics.PartialDateInput
+import A12Kernel.Semantics.NumericExpressionStructure
 
 namespace A12Kernel
 
@@ -18,7 +20,19 @@ inductive HavingTemporalOperation where
   | extremum (operator : TemporalExtremumOp)
   deriving Repr, DecidableEq
 
+/-- Partial-Date completion retains the declaration profile and authored interval endpoint (spec/05 §3). -/
+structure HavingPartialDateSource where
+  reference : HavingTemporalRef
+  format : FullDateTargetFormat
+  mode : TemporalPartialMode
+  youngerThan1900Check : Bool
+  endpoint : ValueAsDateEndpoint
+  deriving Repr, DecidableEq
+
 inductive HavingTemporalAtom where
+  | shift (unit : TemporalOperationUnit) (source : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation)
+      (amount : AuthoredNumericExpr (Sum HavingNumberRef (TemporalNumericPart × TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation)))
+  | partialDate (source : HavingPartialDateSource)
   | selection (kind : HavingTemporalSelection) (slots : List (HavingFieldListSlot HavingTemporalSelectionRef))
   | field (reference : HavingTemporalRef)
   | rangeBound (origin : HavingOrigin) (source : FlatDateRangeField) (components : TemporalComponents) (bound : DateRangeBound)
@@ -32,6 +46,8 @@ inductive HavingTemporalAtom where
   | baseYearBound (bound : BaseYearRangeEndpoint)
 
 abbrev HavingTemporalCore := TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation
+abbrev HavingTemporalAmount := AuthoredNumericExpr (Sum HavingNumberRef (TemporalNumericPart × HavingTemporalCore))
+
 abbrev HavingDateComponent := HavingTemporalComponent ResolvedConstructedDateSource DateNumericPart HavingTemporalCore
 abbrev HavingTimeComponent := HavingTemporalComponent ResolvedTimeConstructionSource TimeNumericPart HavingTemporalCore
 abbrev HavingDateComponents := ResolvedConstructedDateComponents HavingDateComponent
@@ -42,6 +58,8 @@ mutual
 private def format : HavingTemporalAtom → Std.Format
   | .selection kind slots => "selection " ++ repr kind ++ " " ++ repr slots
   | .field ref => "field " ++ repr ref
+  | .partialDate source => "partialDate " ++ repr source
+  | .shift unit source amount => "shift " ++ repr unit ++ " (" ++ formatCore source ++ ") (" ++ formatAmount amount ++ ")"
   | .rangeBound origin source components bound => "rangeBound " ++ repr (origin, source, components, bound)
   | .dateConstruction components => formatDate components
   | .timeConstruction components => formatTime components
@@ -55,6 +73,11 @@ private def formatCore : HavingTemporalCore → Std.Format
   | .atom atom => format atom
   | .apply op first rest => "apply " ++ repr op ++ " (" ++ formatCore first ++ ") [" ++
       Std.Format.joinSep (rest.map formatCore) ", " ++ "]"
+private def formatAmount (amount : HavingTemporalAmount) : Std.Format :=
+  amount.formatWithSubterm fun source _ => match source with
+    | .inl reference => repr reference
+    | .inr (part, source) => repr part ++ " (" ++ formatCore source ++ ")"
+decreasing_by all_goals simp_all +arith; omega
 private def formatDateComponent : HavingDateComponent → Std.Format
   | .direct origin source => "direct " ++ repr (origin, source)
   | .expression part source => "expression " ++ repr part ++ " (" ++ formatCore source ++ ")"
@@ -96,6 +119,11 @@ private def decideEqual (left right : HavingTemporalAtom) : Decidable (left = ri
   case timeLiteral.timeLiteral value next => exact decidable_of_iff (value = next) (by simp)
   case dateTimeLiteral.dateTimeLiteral value next => exact decidable_of_iff (value = next) (by simp)
   case baseYearBound.baseYearBound value next => exact decidable_of_iff (value = next) (by simp)
+  case shift.shift unit source amount nextUnit nextSource nextAmount =>
+    letI := decideCoreEqual source nextSource
+    letI := decideAmountEqual amount nextAmount
+    exact decidable_of_iff (unit = nextUnit ∧ source = nextSource ∧ amount = nextAmount) (by simp)
+  case partialDate.partialDate source next => exact decidable_of_iff (source = next) (by simp)
   case today.today => exact isTrue rfl
   case now.now => exact isTrue rfl
 private def decideCoreEqual (left right : HavingTemporalCore) : Decidable (left = right) :=
@@ -132,6 +160,14 @@ private def decideTimeComponentEqual (left right : HavingTimeComponent) : Decida
   | .expression part source, .expression nextPart nextSource =>
       letI := decideCoreEqual source nextSource
       decidable_of_iff (part = nextPart ∧ source = nextSource) (by simp)
+private def decideAmountEqual (left right : HavingTemporalAmount) : Decidable (left = right) :=
+  left.decideEqWithSubterm right fun a b _ _ => match a, b with
+    | .inl source, .inl next => decidable_of_iff (source = next) (by simp)
+    | .inr (part, source), .inr (nextPart, nextSource) =>
+        letI := decideCoreEqual source nextSource
+        decidable_of_iff (part = nextPart ∧ source = nextSource) (by simp)
+    | .inl _, .inr _ | .inr _, .inl _ => isFalse (by intro h; cases h)
+decreasing_by all_goals simp_all +arith; omega
 private def decideDateYearEqual (left right : ResolvedConstructedDateYear HavingDateComponent) : Decidable (left = right) := by
   cases left <;> cases right
   all_goals first | (apply isFalse; intro h; cases h; done) | skip
@@ -175,9 +211,15 @@ def HavingTemporalCore.allAtoms : HavingTemporalCore → List HavingTemporalAtom
   | .atom source => source :: constructorAtoms source
   | .apply _ first rest => HavingTemporalCore.allAtoms first ++ rest.flatMap HavingTemporalCore.allAtoms
 private def constructorAtoms : HavingTemporalAtom → List HavingTemporalAtom
+  | .shift _ source amount => HavingTemporalCore.allAtoms source ++ amountAtoms amount
   | .dateConstruction source => dateAtoms source
   | .timeConstruction source => timeAtoms source
   | _ => []
+private def amountAtoms (amount : HavingTemporalAmount) : List HavingTemporalAtom :=
+  amount.flatMapAtomsSubterm fun source _ => match source with
+    | .inl _ => []
+    | .inr (_, source) => HavingTemporalCore.allAtoms source
+decreasing_by all_goals simp_all +arith; omega
 private def dateOperandAtoms : HavingDateComponent → List HavingTemporalAtom
   | .expression _ source => HavingTemporalCore.allAtoms source
   | .direct _ _ => []

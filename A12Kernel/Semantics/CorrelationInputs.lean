@@ -11,6 +11,7 @@ namespace A12Kernel
 
 /-- Clock and model constants carry no row origin, so arithmetic cannot make them satisfy a filter reference requirement (spec/07 §3). Field and repetition atoms retain their own origins. -/
 inductive HavingNumericAtom where
+  | temporalDifference (unit : TemporalOperationUnit) (left right : HavingTemporalExpression)
   | firstFilled (slots : List (HavingFieldListSlot HavingNumberRef))
   | groupCount (operands : List HavingGroupCountOperand)
   | product (source : HavingNumericProduct)
@@ -33,6 +34,7 @@ inductive HavingNumericAtom where
   deriving Repr, DecidableEq
 
 def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
+  | .temporalDifference _ left right => (left.references ++ right.references).map (·.origin)
   | .groupCount operands => operands.map (·.origin)
   | .temporalExpressionPart _ source => source.references.map (·.origin)
   | .product source => [source.left.origin, source.right.origin]
@@ -48,6 +50,7 @@ def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
 
 /-- Preserve each read's own origin inside a multi-source numeric atom (spec/07 §3). -/
 def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin × FieldId)
+  | .temporalDifference _ left right => (left.references ++ right.references).map (fun ref => (ref.origin, ref.fieldId))
   | .groupCount operands => operands.flatMap fun operand => operand.source.members.map (operand.origin, ·)
   | .temporalExpressionPart _ source => source.references.map (fun ref => (ref.origin, ref.fieldId))
   | .product source => [(source.left.origin, source.left.field.id), (source.right.origin, source.right.field.id)]
@@ -63,6 +66,7 @@ def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin ×
   | .temporalPart origin source _ => [(origin, source.id)]
 
 def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
+  | .temporalDifference _ _ _ => .field 0
   | .product source => source.summary
   | .temporalExpressionPart _ _ => .field 0
   | .groupCount _ | .collectionCount _ | .aggregate .distinctCount _ => .field 0
@@ -176,20 +180,22 @@ private def readHavingSubdayDifference (phase : Phase)
     (world : Option World) (unavailable : Error)
     (unit : DateTimeSubdayUnit) (left right : FlatTemporalOperand HavingTemporalRef) : Except Error NumericOperand := do
   let observe (reference : HavingTemporalRef) := observeCell phase <$> read (frame.envAt reference.origin) reference.field.id
-  let first ← left.readDateTimeDifferenceOperand observe world unavailable unavailable
-  let second ← right.readDateTimeDifferenceOperand observe world unavailable unavailable
-  pure (DateTimeDifferenceOperand.evaluate unit first second)
+  match ← readTemporalPair phase (fun source => source.readDateTimeDifferenceOperand observe world unavailable unavailable)
+      (fun | .unavailable cause => some cause | _ => none) left right with
+  | .error cause => pure (.unknown cause)
+  | .ok (first, second) => pure (DateTimeDifferenceOperand.evaluate unit first second)
 
 private def readHavingCalendarDifference (phase : Phase)
     (read : Env → FieldId → Except Error CheckedCell) (frame : CorrelationFrame)
     (readOperand : (HavingTemporalRef → Except Error CellObservation) →
       ResolvedDateDifferenceOperand HavingTemporalRef → Except Error Operand)
+    (formalCause? : Operand → Option FormalCause)
     (evaluate : Operand → Operand → Except Unit NumericOperand)
     (left right : ResolvedDateDifferenceOperand HavingTemporalRef) : Except Error (Except Unit NumericOperand) := do
   let observe reference := observeCell phase <$> read (frame.envAt reference.origin) reference.field.id
-  let first ← readOperand observe left
-  let second ← readOperand observe right
-  pure (evaluate first second)
+  match ← readTemporalPair phase (readOperand observe) formalCause? left right with
+  | .error cause => pure (.ok (.unknown cause))
+  | .ok (first, second) => pure (evaluate first second)
 
 private def readHavingToday (world : Option World) (unavailable : Error)
     (profile : ModelZone.ConcreteProfile) : Except Error DateParts :=
@@ -217,14 +223,16 @@ private def readHavingDayOperand (profile : ModelZone.ConcreteProfile)
 
 def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → Except Unit NumericArithmeticOutcome
+  | .temporalDifference unit left right =>
+      ((left.readDifference right unit .validation context.asResolving frame (fun _ => ()) ()).mapError (fun _ => ())).bind id
   | .temporalExpressionPart part source =>
       ((source.readNumeric part .validation context.asResolving frame (fun _ => ()) ()).mapError (fun _ => ())).bind id
   | .dateDifference unit left right =>
       (readHavingCalendarDifference .validation (fun env field => .ok (context.read env field)) frame
-        (readHavingDateOperand context.world ()) (DateDifferenceOperand.evaluate unit) left right).bind (fun result => result.bind havingArithmetic)
+        (readHavingDateOperand context.world ()) (fun | .unavailable cause => some cause | _ => none) (DateDifferenceOperand.evaluate unit) left right).bind (fun result => result.bind havingArithmetic)
   | .dayDifference profile left right =>
       (readHavingCalendarDifference .validation (fun env field => .ok (context.read env field)) frame
-        (readHavingDayOperand profile context.world ()) (CalendarDayDifferenceOperand.evaluate profile) left right).bind (fun result => result.bind havingArithmetic)
+        (readHavingDayOperand profile context.world ()) (fun | .unavailable cause => some cause | _ => none) (CalendarDayDifferenceOperand.evaluate profile) left right).bind (fun result => result.bind havingArithmetic)
   | .product source =>
       match source.evaluate .validation context.asResolving frame with
       | .ok operand => havingArithmetic operand
@@ -273,11 +281,12 @@ def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : Cor
 def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) :
     HavingNumericAtom → Except Error (Except Unit NumericArithmeticOutcome)
+  | .temporalDifference unit left right => left.readDifference right unit .validation context frame (fun _ => ()) ()
   | .temporalExpressionPart part source => source.readNumeric part .validation context frame (fun _ => ()) ()
   | .dateDifference unit left right => do
-      pure ((← readHavingCalendarDifference .validation context.read frame (readHavingDateOperand context.world context.unsupportedDateCalendar) (DateDifferenceOperand.evaluate unit) left right).bind havingArithmetic)
+      pure ((← readHavingCalendarDifference .validation context.read frame (readHavingDateOperand context.world context.unsupportedDateCalendar) (fun | .unavailable cause => some cause | _ => none) (DateDifferenceOperand.evaluate unit) left right).bind havingArithmetic)
   | .dayDifference profile left right => do
-      pure ((← readHavingCalendarDifference .validation context.read frame (readHavingDayOperand profile context.world context.unsupportedDateCalendar) (CalendarDayDifferenceOperand.evaluate profile) left right).bind havingArithmetic)
+      pure ((← readHavingCalendarDifference .validation context.read frame (readHavingDayOperand profile context.world context.unsupportedDateCalendar) (fun | .unavailable cause => some cause | _ => none) (CalendarDayDifferenceOperand.evaluate profile) left right).bind havingArithmetic)
   | .product source => do
       pure (havingArithmetic (← source.evaluate .validation context frame))
   | .groupCount operands => do
@@ -318,6 +327,12 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
 
 def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) : HavingNumericAtom → Except Error NumericComputationResult
+  | .temporalDifference unit left right => do
+      let result ← left.readDifference right unit .computation context frame NumericComputationResult.poison .domainFailure
+      pure (match result with
+        | .error result => result
+        | .ok (.value amount _) => .value amount
+        | .ok .notEvaluated => .domainFailure)
   | .temporalExpressionPart part source => do
       let result ← source.readNumeric part .computation context frame NumericComputationResult.poison .domainFailure
       pure (match result with
@@ -325,10 +340,10 @@ def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationCo
         | .ok (.value amount _) => .value amount
         | .ok .notEvaluated => .domainFailure)
   | .dateDifference unit left right => do
-      let result ← readHavingCalendarDifference .computation context.read frame (readHavingDateOperand context.world context.unsupportedDateCalendar) (DateDifferenceOperand.evaluate unit) left right
+      let result ← readHavingCalendarDifference .computation context.read frame (readHavingDateOperand context.world context.unsupportedDateCalendar) (fun | .unavailable cause => some cause | _ => none) (DateDifferenceOperand.evaluate unit) left right
       (result.map NumericOperand.toComputationResult).mapError fun _ => context.unsupportedDateCalendar
   | .dayDifference profile left right => do
-      let result ← readHavingCalendarDifference .computation context.read frame (readHavingDayOperand profile context.world context.unsupportedDateCalendar) (CalendarDayDifferenceOperand.evaluate profile) left right
+      let result ← readHavingCalendarDifference .computation context.read frame (readHavingDayOperand profile context.world context.unsupportedDateCalendar) (fun | .unavailable cause => some cause | _ => none) (CalendarDayDifferenceOperand.evaluate profile) left right
       (result.map NumericOperand.toComputationResult).mapError fun _ => context.unsupportedDateCalendar
   | .product source => do
       pure ((← source.evaluate .computation context frame).toComputationResult)

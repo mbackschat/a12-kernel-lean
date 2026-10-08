@@ -263,6 +263,10 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
             if !model.exposesDateRangeBoundPart field part then throw (.incoherentHavingField field.id)
             let declaration ← (model.lookupUniqueId field.id).mapError (fun _ => .incoherentHavingField field.id)
             pure [← havingFieldPointerFor source environment declaration origin]
+        | .temporalDifference _ left right => do
+            for reference in left.references ++ right.references do
+              if !reference.matchesModel model then throw (.incoherentHavingField reference.fieldId)
+            havingEntityListReferencePointers source environment (left.presenceSlots ++ right.presenceSlots)
         | .temporalExpressionPart _ expression => do
             for reference in expression.references do
               if !reference.matchesModel model then throw (.incoherentHavingField reference.fieldId)
@@ -479,8 +483,9 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env)
     Except ReferenceProjectionError (List MessagePointer) := match atom with
   | .indexed source => source.toCheckedSemanticIndexSource.referencePointers environment inputs
   | .indexedString source => source.selection.referencePointers environment inputs
-  | .temporalPart source =>
-      temporalExpressionPointers source.source.core environment inputs
+  | .temporalExpression source => do
+      let pointers ← source.core.sources.mapM fun expression => temporalExpressionPointers expression.core environment inputs
+      pure pointers.flatten
   | .ordinary (.filledGroupCount groups) =>
       (·.flatten) <$> groups.mapM fun reference =>
         fixedGroupPointers model reference environment

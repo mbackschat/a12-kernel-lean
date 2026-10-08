@@ -38,6 +38,7 @@ structure HavingLeafResolvers where
 
   temporalExpression : SurfaceComparisonOp → SurfaceHavingTemporalExpression → SurfaceHavingTemporalExpression →
     Except CorrelationElabError HavingTemporalComparison
+  temporalDifference : TemporalOperationUnit → SurfaceHavingTemporalExpression → SurfaceHavingTemporalExpression → Except CorrelationElabError HavingNumericAtom
   temporalExpressionPart : TemporalNumericPart → SurfaceHavingTemporalExpression → Except CorrelationElabError HavingNumericAtom
   temporal : SurfaceComparisonOp → SurfaceHavingTemporalOperand → SurfaceHavingTemporalOperand →
     Except CorrelationElabError (Option (HavingOrigin × HavingOrigin × FlatComparison))
@@ -112,6 +113,7 @@ private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
         pure (.stringRange origin source start finish)
     | .dateRangeBoundPart origin reference bound part =>
         (fun source => .dateRangeBoundPart origin source bound part) <$> resolvers.dateRangeBoundPart origin reference part
+    | .temporalDifference unit left right => resolvers.temporalDifference unit left right
     | .temporalExpressionPart part source => resolvers.temporalExpressionPart part source
     | .temporalPart origin reference part =>
         (fun source => .temporalPart origin source part) <$> resolvers.temporalPart origin reference part

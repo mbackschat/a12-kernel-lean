@@ -73,6 +73,9 @@ import A12Kernel.Semantics.StarCompleteness
 import A12Kernel.Semantics.StarAddressing
 import A12Kernel.Semantics.NumericAggregate
 import A12Kernel.Semantics.PartialDate
+import A12Kernel.Semantics.PartialDateInput
+import A12Kernel.Semantics.NumericExpressionStructure
+import A12Kernel.Semantics.ScalarTemporalDifference
 import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Semantics.ValidationFillQuantifier
 import A12Kernel.Semantics.GroupPresence

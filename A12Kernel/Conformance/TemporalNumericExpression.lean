@@ -47,8 +47,9 @@ private def generated (source : SurfaceScalarTemporalExpression) (target : Rat)
   let model := { model with fields := model.fields ++ [{
     id := 1, groupPath := ["Form"], name := "Target",
     policy := { kind := .number { scale := 0, signed := true } } }] }
-  let operation ← (elaborateCompleteNumericComputationOperation model ["Form"] 1
-    (.atom (.temporalPart (.timeConstruction (.hour (.inr (.hour, source)))) (.time .hour)))).toOption
+  let numeric : SurfaceNumericComputationAtom :=
+    .temporalExpression (.projection (.time .hour) (.timeConstruction (.hour (.inr (.hour, source)))))
+  let operation ← (elaborateCompleteNumericComputationOperation model ["Form"] 1 (.atom numeric)).toOption
   let rule ← (assembleGeneratedNumericOperationRule model operation "GeneratedClock" none
     { parts := [.text "Clock mismatch"] }).toOption
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 1704112496000 } }
@@ -65,5 +66,24 @@ example : generated .now 13 = some none ∧
     generated (.timeFromDateTime stamp) 1 = some (some .omission) ∧
     generated (.timeFromDateTime stamp) 1 (.rejected .malformed) = some none := by
   native_decide
+
+private def differenceStops (phase : Phase) (unit : TemporalOperationUnit)
+    (source : SurfaceScalarTemporalExpression) (cell : CheckedCell) : Bool :=
+  let project (source : SurfaceScalarTemporalExpression) :=
+    if unit == .months || unit == .years then .dateFromDateTime source else source
+  match elaborateTemporalNumericOperation model ["Form"] (.difference unit (project source)
+      (project (.dateTimeLiteral ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by decide))))) with
+  | .error _ => false
+  | .ok checked =>
+      match checked.evalResult phase { read := fun _ => cell } with
+      | .ok (.error (.formal .malformed)) => phase == .computation
+      | .error .dateTimeLabelUnresolved => phase == .validation
+      | _ => false
+
+example : [TemporalOperationUnit.days, .months, .years, .hours, .minutes, .seconds].all (fun unit =>
+    [Phase.validation, .computation].all fun phase =>
+      differenceStops phase unit stamp (checkAdmittedRawCell (.rejected .malformed)) &&
+      differenceStops phase unit (.subdayShift .seconds stamp (.literal { value := 1, authoredScale := 0 }))
+        (checkAdmittedRawCell (.rejected .malformed))) = true := by native_decide
 
 end A12Kernel.Conformance.TemporalNumericExpression

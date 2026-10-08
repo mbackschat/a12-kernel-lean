@@ -22,14 +22,6 @@ namespace A12Kernel
 /-- Model-resolved numeric-validation atoms. Numeric Base Year and component sources remain non-expandable scale-0 atoms rather than becoming authored literals. -/
 abbrev NumericValidationAtom := ResolvedNumericAtom FlatNumberField
 
-/-- Numeric source unavailability preserves a reached formal cell cause when one exists while representing unresolved/erroneous group product state without fabricating such a cause. Both project to `Verdict.unknown`; the distinction remains available to Explain and later checked-document consumers. -/
-inductive NumericValidationUnavailable where
-  | formal (cause : FormalCause)
-  | groupState
-  | nonRelevant
-  | silentlyUnavailable
-  deriving Repr, DecidableEq
-
 /-- One exclusive backing input for addressed validation. Generated computation validation retains its established bounded document/read pair; whole-rule full validation consumes the immutable checked document; partial validation pairs that same document with its call-local availability-aware read. The forms cannot drift inside one context. -/
 inductive AddressedValidationInput (model : FlatModel) where
   | legacy (document : Document) (read : Env → FieldId → CheckedCell)

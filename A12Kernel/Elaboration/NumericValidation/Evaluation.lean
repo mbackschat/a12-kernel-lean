@@ -118,8 +118,8 @@ def resolve (atom : OrderedNumericValidationAtom model)
         context.resolveNumericValidationAtom source
       else
         .error .nonRelevant
-  | .temporalPart source =>
-      if source.source.fieldIds.all isRelevant then
+  | .temporalExpression source =>
+      if source.fieldIds.all isRelevant then
         (source.evalResult .validation context.fields).toOption.getD (.error .groupState)
       else .error .nonRelevant
   | .firstFilled source =>
@@ -169,23 +169,23 @@ def resolveResult (atom : OrderedNumericValidationAtom model)
     (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) :
     Except ScalarTemporalEvaluationFault (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
   match atom with
-  | .temporalPart source =>
-      if source.source.fieldIds.all isRelevant then source.evalResult .validation context.fields
+  | .temporalExpression source =>
+      if source.fieldIds.all isRelevant then source.evalResult .validation context.fields
       else pure (.error .nonRelevant)
   | _ => pure (atom.resolve context isRelevant)
 
 private def temporalNumericFields (source : CheckedTemporalNumericExpression model)
     (context : AddressedValidationEvaluationContext model) : Except CheckedAddressingError FlatContext := do
-  for scope in source.source.bindingScopes do
+  for scope in source.bindingScopes do
     discard <| (context.outer.pathForScope scope).mapError CheckedAddressingError.environment
-  let fields := source.source.fieldIds.filter fun field =>
+  let fields := source.fieldIds.filter fun field =>
     (context.outer.pathForScope (model.fieldRepeatableScope field)).isOk
   let cells ← fields.mapM fun field => do
     pure (field, ← context.readCell context.outer field)
   let storedText ← match context.input with
     | .checked document | .partialView document _ => pure (document.storedTextIn context.outer)
     | .legacy _ _ => do
-        if source.source.storedTextFields.any (fun field => (model.lookupUniqueId field).toOption.any
+        if source.storedTextFields.any (fun field => (model.lookupUniqueId field).toOption.any
             (fun declaration => !declaration.repeatableScope.isEmpty)) then
           throw (.checkedDocumentRequired [])
         pure context.scalar.fields.storedText
@@ -196,7 +196,7 @@ private def temporalNumericFields (source : CheckedTemporalNumericExpression mod
 private def temporalNumericAddressed (source : CheckedTemporalNumericExpression model)
     (context : AddressedValidationEvaluationContext model) :
     Except CheckedAddressingError (Option ComputationFillContext) := do
-  if !source.source.requiresAddressed then return none
+  if !source.requiresAddressed then return none
   match context.input with
   | .checked document => pure (some document.indexedComputationFillContext)
   | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired [])
@@ -316,7 +316,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
         | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired source.group.path)
       let observation ← source.toCheckedSemanticIndexSource.observeDocument document context.outer .validation
       pure ((observation.asDirectNumericComparisonOperand source.field.info).toValidationArithmetic)
-  | .temporalPart source => do
+  | .temporalExpression source => do
       let fields ← temporalNumericFields source context
       let addressed ← temporalNumericAddressed source context
       (source.evalResult .validation fields addressed context.outer).mapError (fun _ => .temporalUnavailable)
@@ -452,7 +452,7 @@ def resolveAddressedResult (atom : OrderedNumericValidationAtom model)
     Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault)
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
-  | .temporalPart source =>
+  | .temporalExpression source =>
       let fields ← (temporalNumericFields source context).mapError Sum.inl
       let addressed ← (temporalNumericAddressed source context).mapError Sum.inl
       (source.evalResult .validation fields addressed context.outer).mapError Sum.inr
@@ -668,7 +668,7 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
   | .sumOfProducts source =>
       resolvePartialValueCount context fun document =>
         source.evaluatePartialDocument document context.outer scope context.readPartialCell
-  | .temporalPart _ =>
+  | .temporalExpression _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/
@@ -683,7 +683,7 @@ def OrderedNumericComparison.evalAddressedPartialResult?
     some do
       let resolve := fun atom => do
         match atom with
-        | .temporalPart source =>
+        | .temporalExpression source =>
             let document ← match context.input with
               | .checked document | .partialView document _ => pure document
               | .legacy _ _ => throw (Sum.inl (.checkedDocumentRequired []))

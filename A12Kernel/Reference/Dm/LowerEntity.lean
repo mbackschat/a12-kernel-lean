@@ -103,6 +103,16 @@ where
               let (origin, field) ← path.havingField?
               pure { origin, field }
           | _ => none
+        if (dateDifferenceOperandWith? field left).isNone || (dateDifferenceOperandWith? field right).isNone then
+          let unit ← match id with
+            | "DifferenceInDays" => pure TemporalOperationUnit.days
+            | "DifferenceInMonths" => pure TemporalOperationUnit.months
+            | "DifferenceInYears" => pure TemporalOperationUnit.years
+            | "DifferenceInHours" => pure TemporalOperationUnit.hours
+            | "DifferenceInMinutes" => pure TemporalOperationUnit.minutes
+            | "DifferenceInSeconds" => pure TemporalOperationUnit.seconds
+            | _ => refuse "Having" "difference unit"
+          return .temporalDifference unit (← lowerHavingTemporalExpression true left) (← lowerHavingTemporalExpression true right)
         if id == "DifferenceInDays" || (calendarUnit? id).isSome then
           let some left := dateDifferenceOperandWith? field left | refuse "Having" "difference left"
           let some right := dateDifferenceOperandWith? field right | refuse "Having" "difference right"

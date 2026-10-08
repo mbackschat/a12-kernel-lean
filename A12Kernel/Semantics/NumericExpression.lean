@@ -14,6 +14,22 @@ poison and arithmetic domain failure. Model and path admission remain with the c
 
 namespace A12Kernel
 
+/-- Numeric source unavailability preserves a reached formal cell cause when one exists while representing unresolved/erroneous group product state without fabricating such a cause. Both project to `Verdict.unknown`; the distinction remains available to Explain and later checked-document consumers. -/
+inductive NumericValidationUnavailable where
+  | formal (cause : FormalCause)
+  | groupState
+  | nonRelevant
+  | silentlyUnavailable
+  deriving Repr, DecidableEq
+
+/-- Lift one already-classified validation numeric operand into the arithmetic outcome domain. Number and temporal component reads share this exact boundary. -/
+def NumericOperand.toValidationArithmetic
+    (operand : NumericOperand) :
+    Except NumericValidationUnavailable NumericArithmeticOutcome :=
+  match operand with
+  | .value amount fillability => .ok (.value amount fillability)
+  | .unknown cause => .error (.formal cause)
+
 def NumericOperand.toComputationResult : NumericOperand → NumericComputationResult
   | .value amount _ => .value amount
   | .unknown cause => .poison cause

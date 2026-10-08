@@ -45,7 +45,7 @@ example : atoms.all (fun atom => atom.readComputationResolving {
     bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure"
     worldUnavailable := "world unavailable"
     storedTextUnavailable := fun _ => "stored text unavailable"
-    typeValidityValueFailure := "type validity value failure", groupUnavailable := fun _ => "group unavailable" } frame == .error "captured read") = true := by native_decide
+    typeValidityValueFailure := "type validity value failure", groupUnavailable := fun _ => "group unavailable" } frame == .ok (.poison .malformed)) = true := by native_decide
 
 private def condition (atom : HavingNumericAtom) : CorrelatedHaving := .leaf (.numeric {
   op := .ordinary .equal, left := .atom atom, right := .literal { value := 0, authoredScale := 0 } })
@@ -120,8 +120,10 @@ example : clockAtoms.all (fun atom =>
     CorrelatedHaving.evalComputationIn (.and holds (condition atom)) noClock frame == .error .calendarUnavailable) = true := by native_decide
 
 example : clockAtoms.all (fun atom =>
-    [emptyCell, invalid].all (fun cell =>
-      atom.readComputation (pair cell (dateCell .storedGregorian)) frame == .error ()) &&
+    atom.readComputation (pair emptyCell (dateCell .storedGregorian)) frame == .error () &&
+    atom.readComputation (pair invalid (dateCell .storedGregorian)) frame ==
+      (match atom with | .dateDifference .years _ _ => .error () | _ => .ok (.poison .malformed)) &&
+    atom.readValidation (pair invalid (dateCell .storedGregorian)) frame == .error () &&
     atom.readComputation { (pair emptyCell (dateCell .storedGregorian)) with
       world := some { now := { epochMillis := 0 } } } frame == .ok (.value 0) &&
     atom.readComputation { (pair invalid (dateCell .storedGregorian)) with
@@ -152,7 +154,9 @@ example : [DateTimeSubdayUnit.hours, .minutes, .seconds].all (fun unit =>
     CorrelatedHaving.evalComputationIn (.or holds (condition atom)) noClock frame == .ok .holds &&
     CorrelatedHaving.evalComputationIn (.and fails (condition atom)) noClock frame == .ok .notTrue &&
     CorrelatedHaving.evalComputationIn (.and holds (condition atom)) noClock frame == .error .calendarUnavailable &&
-    [emptyCell, invalid].all (fun cell => atom.readComputation (pair cell instantCell) frame == .error ()) &&
+    atom.readComputation (pair emptyCell instantCell) frame == .error () &&
+    atom.readComputation (pair invalid instantCell) frame == .ok (.poison .malformed) &&
+    atom.readValidation (pair invalid instantCell) frame == .error () &&
     atom.readComputation { clock with read := fun _ _ => emptyCell } frame == .ok (.value 0) &&
     atom.readComputation { clock with read := fun _ _ => invalid } frame == .ok (.poison .malformed)) = true := by native_decide
 
