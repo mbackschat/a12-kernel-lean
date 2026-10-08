@@ -216,7 +216,7 @@ private def ownIteration : HavingBodyAdmission → Bool
   | .ordinary _ => false
   | .forbidden iterates _ => iterates
 
-private def combine (join : CorrelatedHaving → CorrelatedHaving → CorrelatedHaving)
+def combine (join : CorrelatedHaving → CorrelatedHaving → CorrelatedHaving)
     (left right : HavingBodyAdmission) : HavingBodyAdmission :=
   match left, right with
   | .ordinary left, .ordinary right => .ordinary (join left right)

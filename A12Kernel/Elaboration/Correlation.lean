@@ -720,19 +720,20 @@ def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : Group
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels }
 
-/-- Lower the supported filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
-def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
+/-- Resolve and check every body leaf before the enclosing filter walk and construct gates.
+The staged result retains forbidden constructs without manufacturing an executable body (spec/07 §3). -/
+def elaborateStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
     (bindingGroup : GroupPath := declaringGroup)
     (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
-    Except CorrelationElabError (CheckedStarHaving model source bindingGroup) := do
+    Except CorrelationElabError HavingBodyAdmission := do
   let candidateLevels := source.path.axes.map (·.level)
   let reopenedLevels := candidateLevels.drop source.path.firstStar
   let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let resolveTemporalEntity (reference : SurfaceHavingPresenceRef) :=
     model.resolveHavingEntityRead declaringGroup outerLevels { origin := reference.origin, field := reference.field }
   let numeric := model.havingNumericResolvers declaringGroup candidateLevels outerLevels
-  let body ← elaborateHavingBodyWith {
+  elaborateHavingBodyWith {
     repetitionNotUnique := elaborateHavingRepetitionAdmission model declaringGroup candidateLevels outerLevels reopenedLevels
     toHavingNumericResolvers := numeric
     boolean := model.resolveHavingBooleanInEnvironment declaringGroup outerLevels
@@ -788,8 +789,16 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     groupPresence := model.resolveHavingGroupPresence declaringGroup outerLevels
     groupFill := model.resolveHavingGroupFill declaringGroup outerLevels
     presence := model.resolveHavingPresenceInEnvironment declaringGroup outerLevels } authored
-  if let some refusal := authored.candidateEnvironmentRefusal? model declaringGroup candidateLevels then
-    throw refusal
+
+/-- Certify a body after its own checks and the enclosing filter walk have passed.
+Both typed and parsed admission routes use the same environment and iteration witnesses. -/
+def finishStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
+    (source : CheckedStarFieldPath model) (body : HavingBodyAdmission)
+    (bindingGroup : GroupPath := declaringGroup) :
+    Except CorrelationElabError (CheckedStarHaving model source bindingGroup) := do
+  let candidateLevels := source.path.axes.map (·.level)
+  let reopenedLevels := candidateLevels.drop source.path.firstStar
+  let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let condition ← body.toCore (·.reachesReopenedLevel model reopenedLevels)
   if hReopened : condition.reachesReopenedLevel model reopenedLevels = true then
     if hWellFormed :
@@ -802,6 +811,18 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       throw .incoherentCore
   else
     throw .missingInner
+
+/-- Lower the supported filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
+def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
+    (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
+    (bindingGroup : GroupPath := declaringGroup)
+    (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
+    Except CorrelationElabError (CheckedStarHaving model source bindingGroup) := do
+  let candidateLevels := source.path.axes.map (·.level)
+  let body ← elaborateStarHavingBody model declaringGroup source authored bindingGroup compilePattern
+  if let some refusal := authored.candidateEnvironmentRefusal? model declaringGroup candidateLevels then
+    throw refusal
+  finishStarHavingBody model declaringGroup source body bindingGroup
 
 namespace CheckedStarFieldPath
 

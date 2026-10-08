@@ -78,6 +78,7 @@ private def lowerPatternGuard (model : FlatModel) (group : GroupPath)
 partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool := false)
     (expression : Expr) (targetGroup? : Option GroupPath := none) :
     Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) :=
+  let filterBinding? := if expression.hasHaving then some (targetGroup?.getD group) else none
   match expression with
   | .custom _ _ => refuse "CustomCondition" "not admitted in computation guards"
   | .compare .patternMatched left right => lowerPatternGuard model group .matched left right
@@ -127,26 +128,26 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       let some path := field.fieldEntity? | refuse "InvalidType" "field operand"
       pure (.predicate (.typeValidity .invalid path name))
   | .call "FieldValuesNotUnique" arguments none none =>
-      (.predicate ∘ .uniqueness) <$> lowerEntitySource model group arguments
+      (.predicate ∘ .uniqueness) <$> lowerEntitySource model group arguments filterBinding?
   | .call "DateRangesOverlap" arguments none none =>
-      (.predicate ∘ .overlap) <$> lowerEntitySource model group arguments
+      (.predicate ∘ .overlap) <$> lowerEntitySource model group arguments filterBinding?
   | .call "AtLeastOneDateRangeOverlaps" [scalar] (some values) none => do
       pure (.predicate (.scalarOverlap {
         scalar := ← lowerEntityOperand model group scalar
-        list := ← lowerEntitySource model group values }))
+        list := ← lowerEntitySource model group values filterBinding? }))
   | .call id arguments (some values) none => do
       let some quantifier := valueListQuantifier? id | refuse ("Guard/" ++ id)
-      let fields ← lowerEntitySource model group arguments
+      let fields ← lowerEntitySource model group arguments filterBinding?
       match values.mapM (fun | .mk (.string value) none => some value | _ => none) with
       | some literals => pure (.predicate (.tokenLiteralValueList { quantifier, fields, values := literals }))
       | none => pure (.predicate (.entityValueList {
-          quantifier, fields, values := ← lowerEntitySource model group values }))
+          quantifier, fields, values := ← lowerEntitySource model group values filterBinding? }))
   | .call id arguments none none => match scalarMembershipOp? id with
       | some operator => .predicate <$> lowerScalarMembership operator arguments
       | none => match fieldFillOp? id with
-          | some operator => .fieldFill operator <$> lowerEntitySource model group arguments
+          | some operator => .fieldFill operator <$> lowerEntitySource model group arguments filterBinding?
           | none => match groupQuantifier? id with
-              | some operator => .groupFill operator <$> lowerEntitySource model group arguments
+              | some operator => .groupFill operator <$> lowerEntitySource model group arguments filterBinding?
               | none => refuse ("Guard/" ++ id)
   | expression@(.compare op left right) =>
       let scalarPair : Option (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) := do
@@ -200,10 +201,11 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       | some surface => pure surface
       | none => do
           let some operator := op.toNumeric? | refuse "Comparison" "operator"
+          let atom := fun expression => lowerCompleteComputationNumericAtom model group expression filterBinding?
           pure (.numeric {
             op := operator
-            left := ← lowerNumericExpr (lowerCompleteComputationNumericAtom model group) (lowerNumericFieldAtom model group (lowerCompleteComputationNumericAtom model group)) left
-            right := ← lowerNumericExpr (lowerCompleteComputationNumericAtom model group) (lowerNumericFieldAtom model group (lowerCompleteComputationNumericAtom model group)) right
+            left := ← lowerNumericExpr atom (lowerNumericFieldAtom model group atom) left
+            right := ← lowerNumericExpr atom (lowerNumericFieldAtom model group atom) right
             suppressExactScaleWarning := suppress })
   | other => refuse ("Guard/" ++ other.construct)
 
@@ -358,8 +360,10 @@ private def lowerComputationWith (allowParallelGuards : Bool)
     return (target, .rows step)
   match target.policy.kind with
   | .number _ => do
-      let expressions ← operations.mapM
-        (lowerNumericExpr (lowerCompleteComputationNumericAtom model computation.group) (lowerNumericFieldAtom model computation.group (lowerCompleteComputationNumericAtom model computation.group)))
+      let expressions ← operations.mapM fun expression => do
+        let filterBinding? := if expression.hasHaving then some target.groupPath else none
+        let atom := fun operand => lowerCompleteComputationNumericAtom model computation.group operand filterBinding?
+        lowerNumericExpr atom (lowerNumericFieldAtom model computation.group atom) expression
       match elaborated "NumberComputation"
           (elaborateCompleteNumericTargetComputationTable model computation.group target.id
             (guards.zip expressions) suppress (if row then .row else .fixed) common) with

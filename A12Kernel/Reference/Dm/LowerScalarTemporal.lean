@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.LowerNumeric
 import A12Kernel.Reference.Dm.LowerHavingNumeric
 import A12Kernel.Elaboration.TemporalNumericExpression
+import A12Kernel.Elaboration.NumericComputation.Core
 
 /-! # Scalar temporal source and numeric projection lowering -/
 
@@ -216,26 +217,34 @@ def lowerScalarDateComponents (model : FlatModel) (rowGroup : GroupPath)
 /-- Reuse established numeric atoms first; recursive temporal operands retain the common source
 syntax and enter the same checked projection on both numeric arms. -/
 def lowerCompleteComputationNumericAtom (model : FlatModel) (rowGroup : GroupPath)
-    (expression : Expr) : Lowering SurfaceNumericComputationAtom :=
-  match lowerComputationNumericAtom model rowGroup expression with
-  | .ok source => pure source
-  | .error original => do
-      match expression with
-      | .call name [.mk source none] none none =>
-          let some part := temporalNumericPart? name | throw original
-          pure (.temporalExpression (.projection part (← lowerScalarTemporalExpressionAt model rowGroup .source source)))
-      | .call name [.mk left none, .mk right none] none none =>
-          let unit ← match name with
-            | "DifferenceInDays" => pure TemporalOperationUnit.days
-            | "DifferenceInMonths" => pure TemporalOperationUnit.months
-            | "DifferenceInYears" => pure TemporalOperationUnit.years
-            | "DifferenceInHours" => pure TemporalOperationUnit.hours
-            | "DifferenceInMinutes" => pure TemporalOperationUnit.minutes
-            | "DifferenceInSeconds" => pure TemporalOperationUnit.seconds
-            | _ => throw original
-          pure (.temporalExpression (.difference unit
-            (← lowerScalarTemporalExpressionAt model rowGroup .source left)
-            (← lowerScalarTemporalExpressionAt model rowGroup .source right)))
-      | _ => throw original
+    (expression : Expr) (bindingGroup? : Option GroupPath := none) : Lowering SurfaceNumericComputationAtom := do
+  let surface ← lower
+  if let some bindingGroup := bindingGroup? then
+    discard <| (model.numericComputationAtomType rowGroup bindingGroup surface).mapError fun error => {
+      construct := "NumericOperand"
+      detail := error.diagnostic?.map (·.kernelCode) |>.getD (oneLine ((repr error).pretty 100000)) }
+  pure surface
+where
+  lower : Lowering SurfaceNumericComputationAtom :=
+    match lowerComputationNumericAtom model rowGroup expression bindingGroup? with
+    | .ok source => pure source
+    | .error original => do
+        match expression with
+        | .call name [.mk source none] none none =>
+            let some part := temporalNumericPart? name | throw original
+            pure (.temporalExpression (.projection part (← lowerScalarTemporalExpressionAt model rowGroup .source source)))
+        | .call name [.mk left none, .mk right none] none none =>
+            let unit ← match name with
+              | "DifferenceInDays" => pure TemporalOperationUnit.days
+              | "DifferenceInMonths" => pure TemporalOperationUnit.months
+              | "DifferenceInYears" => pure TemporalOperationUnit.years
+              | "DifferenceInHours" => pure TemporalOperationUnit.hours
+              | "DifferenceInMinutes" => pure TemporalOperationUnit.minutes
+              | "DifferenceInSeconds" => pure TemporalOperationUnit.seconds
+              | _ => throw original
+            pure (.temporalExpression (.difference unit
+              (← lowerScalarTemporalExpressionAt model rowGroup .source left)
+              (← lowerScalarTemporalExpressionAt model rowGroup .source right)))
+        | _ => throw original
 
 end A12Kernel.Dm

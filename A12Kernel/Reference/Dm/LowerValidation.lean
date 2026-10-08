@@ -93,6 +93,7 @@ private def lowerFirstFilledComparisonOperand (model : FlatModel) (rowGroup : Gr
 private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : World)
     (suppress : Bool) (leaf : Expr) (bindingGroup : GroupPath) :
     List (Lowering (CheckedValidationCondition model)) :=
+  let filterBinding? := if leaf.hasHaving then some bindingGroup else none
   let flat := match lowerFlat model rowGroup leaf with
     | some surface => [do
         let checked ← elaborated "Flat" (elaborate model rowGroup surface)
@@ -181,7 +182,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
     | _ => []
   let uniqueness := match leaf with
     | .call "FieldValuesNotUnique" arguments none none =>
-        let operands := lowerEntitySource model rowGroup arguments
+        let operands := lowerEntitySource model rowGroup arguments filterBinding?
         [do
           let source ← elaborated "FieldValuesNotUnique"
             (elaborateNumberValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some rowGroup))
@@ -203,7 +204,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         match valueListQuantifier? id with
         | none => []
         | some quantifier =>
-            let fields := lowerEntitySource model rowGroup arguments
+            let fields := lowerEntitySource model rowGroup arguments filterBinding?
             let literals := values.mapM fun
               | .mk (.string value) none => some value
               | _ => none
@@ -214,7 +215,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
                   (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
                 elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.literals source) rowGroup)]
             | none =>
-                let values := lowerEntitySource model rowGroup values
+                let values := lowerEntitySource model rowGroup values filterBinding?
                 [do
                   let source ← elaborated id (elaborateNumberEntityValueListSource model rowGroup
                     { quantifier, fields := ← fields, values := ← values }
@@ -229,7 +230,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
   let fieldFill := match leaf with
     | .call id arguments none none => match fieldFillOp? id with
         | some operator => [do
-            let source ← lowerEntitySource model rowGroup arguments
+            let source ← lowerEntitySource model rowGroup arguments filterBinding?
             elaborated id (CheckedValidationCondition.fromFieldFill model rowGroup operator source bindingGroup)]
         | none => []
     | _ => []
@@ -296,7 +297,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
       -- numeric carriers' own refusal is the one reported.
       ++ (match (do
             let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
-            let atom := lowerCompleteComputationNumericAtom model rowGroup
+            let atom := fun expression => lowerCompleteComputationNumericAtom model rowGroup expression filterBinding?
             match elaborateEntityNumericComparison model rowGroup numericOp
                 (← lowerNumericExpr atom (lowerNumericFieldAtom model rowGroup atom) left) (← lowerNumericExpr atom (lowerNumericFieldAtom model rowGroup atom) right) suppress bindingGroup with
             | .error .readsNoList => pure none

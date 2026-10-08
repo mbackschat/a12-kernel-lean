@@ -115,4 +115,16 @@ theorem conditionRefusal_invalid_implies_earlier_clear (shape : ConditionShape)
     cases hf : shape.filterIteratesOrIndexes <;> cases hn : shape.allLeavesNegative <;>
     simp_all
 
+/-- A refused reference prefix fixes the filter walk's diagnostic independently of later reads. -/
+theorem filterReferenceWalk_prefix_determines (front suffix : List FilterIndexedReference)
+    (diagnostic : KernelStaticDiagnostic) (h : filterReferenceWalk front = .error diagnostic) :
+    filterReferenceWalk (front ++ suffix) = .error diagnostic := by
+  induction front with
+  | nil => simp [filterReferenceWalk] at h
+  | cons reference rest ih =>
+      cases hMarked : reference.marked <;>
+        cases hHere : filterIndexScan reference.levels false <;>
+        cases hRest : filterReferenceWalk rest <;>
+        simp_all [filterReferenceWalk, Bind.bind, Pure.pure, Except.pure, Except.bind]
+
 end A12Kernel

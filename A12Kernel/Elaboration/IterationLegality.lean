@@ -1,3 +1,5 @@
+import A12Kernel.Elaboration.StaticDiagnostic
+
 /-! # Static legality of iteration, parallel iteration, and the semantic index
 
 Three ways of naming a repetition share one static gate, and a consumer that treats them as independent features gets the refusals wrong. **Iteration** is the rule's own walk over its error field's repeatable ancestors. **Parallel iteration** happens when a condition also names a repeatable group that is neither above nor below the error field's path; the two walks are then matched by equal index-field values, which is why both groups must declare an index field of the same name. The **semantic index** names one repetition by its index field's *value* rather than by position.
@@ -185,5 +187,55 @@ def conditionRefusal (shape : ConditionShape) : Option IterationRefusal :=
     some .parallelIterationInvalid
   else
     none
+
+/-- One resolved level in a filter body's reference walk. The two geometric facts are
+independent: an iteration can lie on the filtered path without binding a level reopened by it
+(spec/07 §3, CheckEntitySpecImpl.checkIndicesInFilterCondition). -/
+structure FilterIndexLevel where
+  marker : IndexMarker
+  onFilteredPath : Bool := true
+  reopensFilteredLevel : Bool := false
+  deriving Repr, DecidableEq
+
+/-- The filter walk skips a marked reference itself. Its key and filter descendants remain
+separate entries in the authored walk; marking the parent does not suppress those entries. -/
+structure FilterIndexedReference where
+  levels : List FilterIndexLevel
+  marked : Bool := false
+  deriving Repr, DecidableEq
+
+/-- Check one reference, retaining whether it binds a reopened filter level. Off-path iteration
+precedes below-wildcard iteration; an index refusal occurs at its own authored level (spec/07 §3). -/
+def filterIndexScan : List FilterIndexLevel → Bool → Except KernelStaticDiagnostic Bool
+  | [], _ => .ok false
+  | level :: rest, outerWildcard => do
+      match level.marker with
+      | .semanticIndex => throw .semanticIndexNotAllowed
+      | .wildcard => filterIndexScan rest true
+      | .iteration =>
+          if !level.onFilteredPath then throw .invalidIterationInFilterCondition
+          if outerWildcard then throw .noWildcard
+          let later ← filterIndexScan rest outerWildcard
+          pure (level.reopensFilteredLevel || later)
+      | .fixed | .unspecified => filterIndexScan rest outerWildcard
+
+/-- Read order determines the first refusal. Wildcard state belongs to one reference, while
+reopened-level participation is accumulated over the whole body (spec/07 §3). -/
+def filterReferenceWalk : List FilterIndexedReference → Except KernelStaticDiagnostic Bool
+  | [] => .ok false
+  | reference :: rest => do
+      let here ← if reference.marked then pure false else filterIndexScan reference.levels false
+      let later ← filterReferenceWalk rest
+      pure (here || later)
+
+/-- The body's reference walk finishes before its iteration demand or forbidden-construct gate.
+Own read, key, comparison and operand checks must already have passed. This gate excludes the
+post-parse marked-index refusal, whose later timing is part of spec/07 §3. -/
+def filterBodyRefusal (references : List FilterIndexedReference) (forbiddenConstruct : Bool) :
+    Option KernelStaticDiagnostic :=
+  match filterReferenceWalk references with
+  | .error diagnostic => some diagnostic
+  | .ok false => some .noIterationForWildcard
+  | .ok true => if forbiddenConstruct then some .disallowedConstructInFilterCondition else none
 
 end A12Kernel

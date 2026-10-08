@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.IterationLegality
 
 Each case fixes one reading a consumer would otherwise adopt: that a wildcard is local to its own level, that the refusal class names the defect, or that `RepetitionNotUnique` and parallel iteration are independently legal.
 
-Every refusal below has a measured witness rule; the admitted controls are measured too, and here they do as much work as the refusals, because the whole content of the parallel-iteration gate is that a construct legal alone is illegal in combination ([checkpoint](../../docs/SOURCES.md#src-iteration-and-semantic-index-legality)).
+The ordinary-reference and parallel-iteration cases have measured witness rules and admitted controls: the parallel-iteration gate distinguishes a construct legal alone from its illegal combination ([checkpoint](../../docs/SOURCES.md#src-iteration-and-semantic-index-legality)).
 -/
 
 namespace A12Kernel.Conformance.IterationLegality
@@ -179,5 +179,47 @@ example :
       IterationRefusal.semanticIndexInvalidIter.catalogKey = "MVK_SEMANTIC_INDEX_INVALID_ITER" ∧
       IterationRefusal.all.length = 7 := by
   native_decide
+
+/- The filter-walk cases below use spec/07 §3 and its parser/checker source account; they are
+internal separators, not additional retained Kernel observations. -/
+private def filterLevel (marker : IndexMarker) (onPath : Bool := true)
+    (reopened : Bool := false) : FilterIndexLevel :=
+  { marker, onFilteredPath := onPath, reopensFilteredLevel := reopened }
+
+private def filterRead (levels : List FilterIndexLevel) (marked : Bool := false) : FilterIndexedReference :=
+  { levels, marked }
+
+example : filterBodyRefusal [filterRead [filterLevel .iteration true true]] false = none ∧
+    filterBodyRefusal [filterRead [filterLevel .wildcard]] false = some .noIterationForWildcard ∧
+    filterBodyRefusal [filterRead [filterLevel .iteration true true] true] false = some .noIterationForWildcard := by decide
+
+example : filterBodyRefusal [filterRead [filterLevel .wildcard, filterLevel .iteration false]] false =
+      some .invalidIterationInFilterCondition ∧
+    filterBodyRefusal [filterRead [filterLevel .wildcard, filterLevel .iteration true true]] false =
+      some .noWildcard ∧
+    filterBodyRefusal [filterRead [filterLevel .iteration true true, filterLevel .semanticIndex]] false =
+      some .semanticIndexNotAllowed := by decide
+
+example : filterBodyRefusal [filterRead [filterLevel .semanticIndex] true,
+      filterRead [filterLevel .iteration true true]] false = none ∧
+    filterBodyRefusal [filterRead [filterLevel .semanticIndex] true,
+      filterRead [filterLevel .iteration false]] false = some .invalidIterationInFilterCondition ∧
+    filterBodyRefusal [filterRead [filterLevel .wildcard],
+      filterRead [filterLevel .iteration true true]] false = none := by decide
+
+example : filterBodyRefusal [filterRead [filterLevel .fixed, filterLevel .unspecified],
+      filterRead [filterLevel .iteration true true]] false = none ∧
+    filterBodyRefusal [filterRead [filterLevel .wildcard, filterLevel .semanticIndex]] false =
+      some .semanticIndexNotAllowed ∧
+    filterBodyRefusal [filterRead [filterLevel .wildcard false],
+      filterRead [filterLevel .iteration true true]] false = none := by decide
+
+example : filterBodyRefusal [filterRead [filterLevel .semanticIndex],
+      filterRead [filterLevel .iteration false]] true = some .semanticIndexNotAllowed ∧
+    filterBodyRefusal [filterRead [filterLevel .iteration false],
+      filterRead [filterLevel .semanticIndex]] true = some .invalidIterationInFilterCondition ∧
+    filterBodyRefusal [] true = some .noIterationForWildcard ∧
+    filterBodyRefusal [filterRead [filterLevel .iteration true true]] true =
+      some .disallowedConstructInFilterCondition := by decide
 
 end A12Kernel.Conformance.IterationLegality

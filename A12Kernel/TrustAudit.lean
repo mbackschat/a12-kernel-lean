@@ -2792,6 +2792,7 @@ run_cmd do
 #print axioms A12Kernel.dynEnumLegality_valueCalc_implies_earlier_passed
 #print axioms A12Kernel.dynEnumLegality_mem_all
 #print axioms A12Kernel.indexScan_wildcard_absorbs
+#print axioms A12Kernel.filterReferenceWalk_prefix_determines
 #print axioms A12Kernel.indexScan_prefix_determines
 #print axioms A12Kernel.indexScan_class_follows_reference
 #print axioms A12Kernel.conditionRefusal_needs_parallelIteration

@@ -614,7 +614,7 @@ private def FlatModel.resolveNumericComputationAtoms
 
 /-- The type one operand contributes to the operation's typing walk: a field read by its declaration,
 and every other operand, once it elaborates, a Number. -/
-private def FlatModel.numericComputationAtomType
+def FlatModel.numericComputationAtomType
     (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
     SurfaceNumericComputationAtom → Except NumericComputationElabError NumericOperandType
   | .numeric (.field reference) => do
