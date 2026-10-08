@@ -16,7 +16,9 @@ Start from the relevant [`spec/` clause](../spec/SEMANTICS-MAP.md), then:
 1. identify the claim class with the engine routing rule;
 2. use the clause table for the subsystem, then the question-to-locus index for the exact decisive class, template, backing bean, method, or service;
 3. follow a12-dmkits’ guard-checked [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) for its exhaustive prose/test/corpus inventory;
-4. consult this file’s focused packets only for cross-layer mechanisms not answered by one locus.
+4. consult the [cross-layer packets](sources/cross-layer-routes.md#focused-cross-layer-packets) only for mechanisms not answered by one locus.
+
+Search a topic with `rg -n '<topic>' docs/SOURCES.md`, then read only its linked record. The checkpoint and historical compatibility indexes preserve citations; they are not a required sequential read. Detailed claims and limits belong in the destination, so new navigation labels should name the topic briefly.
 
 ### How far to trust a 40-character revision receipt
 
@@ -38,61 +40,18 @@ Search reusable provenance entries with `rg -n '^<a id="src-' docs/SOURCES.md`, 
 | Public result partition, application, or service orchestration | runtime-service/API layer | local evaluator details not visible there |
 | Whether a source-derived account actually manifests | maintained kernel-executing differential/probe | completeness beyond its cases |
 
-**What the CLI *does* reach is the static consistency oracle, and that is a first-class local route.** `model check`, `workspace check`, `rule check`, and computation dry-run validation call the real kernel's `checkConsistency` and can therefore support a static `KERNEL_CONFIRMED` claim, with the kernel message surfaced as the diagnostic summary and the extracted `MVK_*` as its code. So a **static-legality** question, such as which diagnostic class an illegal model draws, whether a gate reads the whole operand list, or whether a spelling is admitted, is measurable here and does not belong upstream.
+Use the CLI’s static consistency checks for admission claims; its runtime evaluation verbs run the peer interpreter. Follow the [static observation identity and limits](sources/cross-layer-routes.md#src-static-observation-route) before interpreting envelopes: `MVK_*` is extracted from a rendered message, and neither `verification` nor a code alone establishes a Kernel observation.
 
-**The CLI's own fail-fast spec validation pre-empts kernel declaration gates, and then the route measures the tool.** Confirmed 2026-08-29 on two independent gates.
+Observation commands use the owner-approved measurement checkout, while the primary peer checkout remains the read-only knowledge source. The [measurement pin and calibration](sources/cross-layer-routes.md#src-measurement-checkout-route) own exact identities and authorization limits. Revalidate availability before use; [probe procedures](TESTING-KERNEL-PROBES.md) own operating steps.
 
-**Partly resolved the same day.** From a12-dmkits `01bc94279f0aee06fd8d9ccfad2e116354aa409e` these refusals carry the standard `rejected` envelope with `RK_INVALID_VALUE` and `source: PRECHECK`, so the layer is machine-readable, and the messages no longer attribute a local refusal to the kernel. The preflight itself stays, and `model check` over a hand-edited **copy** of a model reaches the kernel's own verdict ([reconciliation](#src-2026-08-29-reconciliation)). From the [2026-08-30 handback](#src-2026-08-30-reconciliation) the peer's own skill rule scopes rather than forbids that route: hand-writing a shape into a copy is measurement and never authoring, and the copy is never persisted from or kept.
+For runtime claims, consult the maintained probe’s [observation channels and limits](sources/cross-layer-routes.md#src-runtime-observation-route). Full, partial, computation and applied-result channels establish different claims; a schema version alone does not identify an artifact’s observed shape.
 
-The originating observation, before the envelope fix: `field add` refused `maxFractionalDigits` above 14 with stderr *"invalid field spec: maxFractionalDigits must be ≤ 14 (the kernel's cap)"*, and refused an Enumeration category whose value list is shorter, longer, or empty against its enum's values, both exiting 2 with **no envelope at all** while attributing the rule to the kernel. That is how such a row becomes a false attribution, and it is why neither the kernel's `fieldScaleCap` gate nor its category-alignment gate is reachable through the `field add` route itself.
-
-One limit on the replacement envelope: `RK_INVALID_VALUE` with `source: PRECHECK` does not discriminate **which** local gate refused, since the schema gate emits the same pair.
-
-The tell is the envelope, not the message: a kernel verdict carries `verification: KERNEL_CONFIRMED` and an `MVK_*` diagnostic, while a front-end refusal carries neither and writes plain stderr. Read it before attributing any refusal. **It really is the pair, and neither field attributes on its own** — measured at a12-dmkits `041346095`, after this project asserted the opposite and was corrected.
-
-**The `MVK_*` code itself is derived, not reported, and every claim phrased as "the Kernel reports `MVK_X`" is one layer off.** The kernel's `Notification` carries a severity and a message and **no code field at all**; a12-dmkits extracts the code from the message's terminal bracketed key, so what this route hands back is that extraction ([inbound](#inbound-2026-09-06b)).
-
-The codes stay usable as refusal-class identities, because the bracketed key is the kernel's own identifier inside its own message — but the accurate phrasing is that the kernel's message *carries* the key, not that the kernel reports a code, and a claim about the code as an **object** — its form, its presence, its absence — is a claim about the extraction, while a claim about its *identity* is not, because `MVKErrorLookup` is what places the key in the message and does so for every key. That distinction is not pedantic: a peer finding stood from June to 2026-09-06 asserting a code-shape quirk that was only ever a property of the extractor, and it survived because it was written as though it were the kernel's.
-
-`source: KERNEL` reaches a **codeless** deserialize-tier refusal, and an `MVK_*` code rides `source: PRECHECK` on eleven client-side codes that rulekit's typed builders mint deliberately, so an author sees the class the kernel would name. Only both together resolve to a kernel notification, and `verification` is weaker than either: the DSL-bearing authoring verbs asserted it unconditionally before `842ef01a6` ([reconciliation](#src-2026-08-30-reconciliation)). Treat every **declaration-shape** claim whose gate the CLI duplicates as not re-dischargeable here until an escape hatch exists, and note that this affects re-verification only: an accepted declaration still reaches the kernel's own oracle normally.
-
-The reusable provenance route is the measurement checkout's own `../a12-rulekit-measure/scripts/prepare-dmtool-source.sh` — a12-dmkits' script, not this repository's, and the prefix is load-bearing because `scripts/` here resolves to a directory that has never held it. It accepts only the checkout's exact clean HEAD, reuses or rebuilds the JVM launcher as needed, and verifies its reported revision before returning it. Each retained observation records the actual launcher and kernel versions from that run rather than inheriting the historical 2026-08-06 launcher identity. [`TESTING.md`](TESTING.md#structured-dmtool-probes-and-feedback) owns the probe method and the required persisted-read-back check.
-
-**Two checkouts, and measurement runs in the second one.** `../a12-rulekit` stays the source of truth for reading peer code, findings, and specs, and remains strictly immutable. Observation commands run instead in the owner-approved read-only measurement checkout `../a12-rulekit-measure`, **pinned to a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`**, re-pinned 2026-09-28 from `2304a684939621a8848e1261be9ab8e6278dc532` at the owner's request, the peer's `main` having advanced by several hundred commits, including the [`-27a` letter's](#inbound-2026-09-27a-provenance) landings, since the previous pin.
-
-The launcher was rebuilt at that pin and reports it clean through the same `prepare-dmtool-source.sh` route, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, catalog verified against 30.8.1; both checkouts read clean before and after. Receipts stamped an earlier pin stay valid as identities of their own bytes and are not comparable with a hash produced after a re-pin. The pin before this one was `2304a6849`, taken 2026-09-22 from `9c86459b3` because `computeResults` and the inline-document fidelity fix land at `526778fa7`, which the [applied-state measurement](sources/evaluation-and-application-routes.md#src-errored-target-applied-state) needs; the [2026-09-21 dispositions](#inbound-2026-09-21-corrections) own the re-pin before that.
-
-The root [`CLAUDE.md`](../CLAUDE.md) carve-out owns the exception's limits, and nothing in it permits editing, staging, or extending either checkout. The reason is availability rather than capability: the primary checkout is normally dirty because a peer session is working it, and the preparation script refuses a dirty tree, which had reduced kernel correspondence to windows lasting under a minute.
-
-The 2026-09-08 pin, two before the current one, was taken from `6a669c56d` for the reasons its [record](#inbound-2026-09-08-instrument) owns, and was verified there as `dmtool` 0.13.0, source clean, kernel `30.8.1` built and runtime.
-
-Receipts stamped an earlier pin keep their meaning, because a pin is recorded and never rewritten — which is the point of recording it. Re-pin the measurement checkout only deliberately, for an upstream instrument fix this project actually needs, and record the new revision here in the same change.
-
-**The route's method is calibrated at a clean exact-source launcher.** Before using this route for a new claim it was run against an answer already measured independently, so a method error would surface as disagreement rather than as a plausible new fact. At clean a12-dmkits revision `cd41ea94b470a190f7d766ea6d7adf26b6ba74cf`, dmtool `0.12.1` with built/runtime kernel `30.8.1` accepted `FieldValuesNotUnique(CountedOn, DueOn)`, rejected the two-operand Date/String list with `MVK_VARYING_TYPES_NOT_ALLOWED`, and rejected both Date/String/Boolean and Date/Boolean/String with `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED` and the mixing code absent.
-
-That reproduces a12-dmkits `5f1c08dc`/`618d2847` for `SPEC-2026-08-05-04`. The two-operand rejection proves the mixing gate is live in the same model. The accepted rule persisted, read back structurally as `FieldValuesNotUnique(/Probe/CountedOn, /Probe/DueOn)`, and survived `model check`, all `KERNEL_CONFIRMED`.
-
-**The same clean route establishes fixed filled-group computation admission and its nearest boundaries.** Computation dry-run accepts two and three distinct disjoint fixed groups, including a nested fixed terminal beside a disjoint sibling, and rejects a one-group plain list with `MVK_PARAMSIZE_INVALIDGN`, an exact duplicate with `MVK_DUPLICATE_PARAM1`, an ancestor/descendant pair and root/descendant pair with `MVK_DUPLICATE_PARAM2`, and an unstarred repeatable group with `MVK_NO_WILDCARD`. No fixed list above three was measured, so correspondence for larger lists remains unverified. A starred repeatable group is accepted alone and beside a fixed group; matching `rule check` controls admit both spellings. The ordinary nonrepeatable root with `*` is rejected `MVK_INVALID_WILDCARD`.
-
-The accepted two-fixed-group computation persisted, read back as `NumberOfFilledGroups(Beta, Gamma)`, and survived `model check`, all `KERNEL_CONFIRMED`. This is static consistency evidence only and does not widen the measured compute-time presence account to repeatable operands or nested descendants of an operand group.
-
-**The `dmtool` CLI is not a route to kernel runtime, and no flag makes it one.** Its runtime verbs — `model eval`, `rule eval`, `model compute` — run on the kernel-free `dm.interpreter` as the sole eval engine on every target. The opt-in `--kernel` eval engine was **retired** at a12-dmkits Set V on 2026-07-12 and the flag is now actively rejected on every profile, because kernel runtime validation needs Groovy code generation that the native binary cannot host. The kernel remains reachable through the CLI **only** for the static consistency gate, `rule check` and `model check`. So a `model compute` reading answers what the *interpreter* computes, which is never the oracle. Kernel runtime is reached only from a12-dmkits' JVM estate, and it now has **two** shapes there: a purpose-written maintained differential, and the parameterized probe below.
-
-**Kernel runtime has a maintained parameterized route, accepted upstream on request.** The `:adapter:kernelProbe` Gradle task runs the real kernel over a supplied model and documents on **both** codegen strategies and writes one deterministic JSON artifact this project pins by SHA-256 and replays, so a runtime question no longer costs a purpose-written Kotlin test. Accepted at a12-dmkits `06b84701969979a2e5a2b63de7445a6a1d521473` for the `compute` exposure, on top of `34e1c7c5` for the original `validateFull` probe; the normative contract is [`KERNEL-PROBE-SPEC.md`](../../a12-rulekit/docs/KERNEL-PROBE-SPEC.md) §2 to §4 with the request and artifact schemas beside it under `../a12-rulekit/adapter/src/test/resources/kernel-probe/`.
-
-```sh
-./gradlew :adapter:kernelProbe -Prequest=<request.json> -Pout=<artifact.json>
-```
-
-The request's `observe` key selects the entry points. `validateFull` is always observed and cannot be dropped, because an engine block's `messages` is a required key of `schemaVersion` 1 and an unlooked-at empty list would be indistinguishable from nothing firing; `observe: ["compute"]` is refused for exactly that reason, and a compute-only consumer therefore pays a validation pass per row per strategy. Adding `compute` adds a per-engine `computations` block: `outcomes` sorted by `field`, each carrying `cleared`, `errored`, and a `value` that is **absent on a clear**, plus the `formalErrorsInOperands` channel. `enginesAgree` is derived over every channel a block reports rather than over the messages alone. Three claim limits travel with the route, and each one defeats a tempting reading.
-
-**`validatePart` is a third observation, accepted upstream at a12-dmkits `8cad1224f86e91c46f0db3573adb4f0fe894a959` after this project recorded the coverage leg as unreachable.** Asking for it makes each row's `relevant` required — a set of `{path}` objects naming the covered fields — and adds a `partialMessages` block to each engine block, so a retained artifact produced without it keeps its bytes and its digest. An **absent** `relevant` is "not observed" and an **empty** one is the `noneRelevant` request; the two stay distinct end to end and `partialMessages` renders even when empty, so an empty result is readable as a measurement rather than as an omission. Omit `reps` unless a specific repetition is the point: it takes one entry per path *part*, not per repeatable part, and the probe otherwise fills the all-wildcard form.
-
-`validateFull` remains the invariant control on a `validatePart` row, because it cannot see the coverage and must answer identically whatever it is.
-
-`formalErrorsInOperands` is the checked-plan inventory of [`09-computations.md` §3.3](../spec/09-computations.md#33-what-compute-reports), never a cause edge: it is emitted whether or not anything was skipped, its operand set includes fields merely *contained by* a referenced group rather than a read trace, and a target cleared because the computation it read was itself ERRORED names nothing in it. The originating ERRORED instance's message is exposed when `computeResults` is requested; the [current exposure checkpoint](sources/computation-placement-and-constant-probes.md#src-2026-09-03-reconciliation) distinguishes that channel from the dependent clear's erased cause. And `schemaVersion` stayed `1` by deliberate byte-compatibility, so the version no longer determines the artifact's shape and a retained artifact must record what its request asked for.
-
-[`TESTING.md`](TESTING.md#the-kernel-runtime-probe-route) owns the operating method; the [fixed-group first-filled checkpoint](#src-group-first-filled-runtime-order) records this repository's first use and its exact claim boundary.
+<a id="src-static-observation-route"></a>
+- [Static observation identity and diagnostic limits](sources/cross-layer-routes.md#src-static-observation-route)
+<a id="src-measurement-checkout-route"></a>
+- [Measurement checkout, pin and calibration](sources/cross-layer-routes.md#src-measurement-checkout-route)
+<a id="src-runtime-observation-route"></a>
+- [Runtime observation channels and claim limits](sources/cross-layer-routes.md#src-runtime-observation-route)
 
 The `.st` files are mandatory review inputs whenever generated control flow matters. They decide, among other things, rule-level early returns, computation alternative continuation, loop placement, exception handling, and validation-versus-computation structure. A template that only interpolates a backing-bean property does not decide the operation.
 
@@ -182,19 +141,19 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-REVIEWED
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-THROUGH-2026-09-06.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-05b"></a>
-- Reviewed 2026-09-05b handback — three entries accepted, one peer premise retracted, and one overlap found by reading
+- Inbound 2026 09 05b
 <a id="inbound-2026-09-05c"></a>
-- Reviewed 2026-09-05c handback — the reassigned row measured, and one over-admission found from a description of this project's code
+- Inbound 2026 09 05c
 <a id="inbound-2026-09-05d"></a>
-- Reviewed 2026-09-05d handback — the DateTime family's cross-kind comparison, the last item open between the two projects
+- Inbound 2026 09 05d
 <a id="inbound-2026-09-05e"></a>
-- Reported 2026-09-05e — `NumberOfDifferentValues`' temporal admission gate, with later local re-derivation
+- Inbound 2026 09 05e
 <a id="inbound-2026-09-05f"></a>
-- Reported 2026-09-05f — the distinct count's temporal identity is the decoded date, and the first-operand grid's envelope
+- Inbound 2026 09 05f
 <a id="inbound-2026-09-06b"></a>
-- Reported 2026-09-06b — the kernel supplies no diagnostic code at all, and every `MVK_*` this project consumes is a12-dmkits' extraction from the message
+- Inbound 2026 09 06b
 <a id="inbound-2026-09-06a"></a>
-- Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged
+- Inbound 2026 09 06a
 
 <a id="inbound-2026-10-03"></a>
 #### Reviewed 2026-10-03 peer handback
@@ -267,357 +226,357 @@ The letter is the peer's `-2026-10-02`, delivered by its session and frozen at S
 Deleted from this hub; the records' full text is `docs/SOURCES.md` at `cdb479d937968be6e4a839191fe6cd9dd7c86fbd`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-10-01a-provenance"></a>
-- Reviewed 2026-10-01a handback — the group argument's event order holds on the peer's own models in both condition languages, a parent walk is checked before the names after it, and a reserved dotted suffix splits by whether it may end a name
+- Inbound 2026 10 01a provenance
 <a id="inbound-2026-10-01a-event-order"></a>
-- Reviewed 2026-10-01a event-order grid — the peer's typed models in both condition languages confirm every delta row of [`SPEC-2026-10-01-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-01)
+- Inbound 2026 10 01a event order — [`SPEC-2026-10-01-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-01)
 <a id="inbound-2026-10-01a-parent-walk-and-dotted-names"></a>
-- Reviewed 2026-10-01a parent and dotted grids — a parent walk's depth check answers before the names after it, and a reserved dotted suffix that may end a name draws `INVALID_GROUP` while the others draw `MVK_UNEXPECTED_TOKEN`
+- Inbound 2026 10 01a parent walk and dotted names
 
 ### Inbound 2026-10-01 handback
 
 Deleted from this hub; the records' full text is `docs/SOURCES.md` at `cdb479d937968be6e4a839191fe6cd9dd7c86fbd`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-10-01-provenance"></a>
-- Reviewed 2026-10-01 handback — the group argument's availability, fallback and refusal layers hold on the peer's own model, a keyword followed by a token is still the keyword, and an absent key makes a mixed product zero in either operand order
+- Inbound 2026 10 01 provenance
 <a id="inbound-2026-10-01-group-arguments"></a>
-- Reviewed 2026-10-01 group-argument grid — the peer's Library model confirms every delta row of [`SPEC-2026-09-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-30-01), and a group keyword followed by a token is still the keyword
+- Inbound 2026 10 01 group arguments — [`SPEC-2026-09-30-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-30-01)
 <a id="inbound-2026-10-01-mixed-absent-product"></a>
-- Reviewed 2026-10-01 mixed-product handback — an absent key makes the mixed product zero in either operand order
+- Inbound 2026 10 01 mixed absent product
 
 ### Inbound 2026-09-30a handback
 
 Deleted from this hub; the records' full text is `docs/SOURCES.md` at `a5aac437de724678adf5e96bb9681892abdb0a9d`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-30a-provenance"></a>
-- Reviewed 2026-09-30a handback — a message may name a group its condition reads into and reach it by a relative path, a group read makes its fields message members, two independently keyed product operands pair by position, and any `]` ends the pattern gate's nested-opener scan
+- Inbound 2026 09 30a provenance
 <a id="inbound-2026-09-30a-message-reference-admission"></a>
-- Reviewed 2026-09-30a message-reference handback — a message may name a group its condition reads into, and a group read makes its fields message members
+- Inbound 2026 09 30a message reference admission
 <a id="inbound-2026-09-30a-relative-render"></a>
-- Reviewed 2026-09-30a relative-render handback — a relative group parameter renders the firing row's coordinate
+- Inbound 2026 09 30a relative render
 <a id="inbound-2026-09-30a-keyed-products"></a>
-- Reviewed 2026-09-30a keyed-product handback — two independently keyed product operands pair by position
+- Inbound 2026 09 30a keyed products
 <a id="inbound-2026-09-30a-regex-operands"></a>
-- Reviewed 2026-09-30a pattern-operand handback — any `]` ends the pattern gate's nested-opener scan
+- Inbound 2026 09 30a regex operands
 
 ### Inbound 2026-09-28 parse-event account
 
 Deleted from this hub; the records' full text is `docs/SOURCES.md` at `a5aac437de724678adf5e96bb9681892abdb0a9d`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-28-parse-events"></a>
-- Reviewed 2026-09-28 parse-event account — a refused text's class follows lexing on demand, look-ahead without checks and checks at completion, and a syntax failure's class is what failed crossed with whether the text had ended
+- Inbound 2026 09 28 parse events
 
 ### Inbound 2026-09-27a handback
 
 Deleted from this hub; the records' full text is `docs/SOURCES.md` at `a5aac437de724678adf5e96bb9681892abdb0a9d`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-27a-provenance"></a>
-- Reviewed 2026-09-27a handback — a variant filter drops a field from the default-variant checks but not from the authored model, so the index and sort nominations' invalid classes are reachable, and nine clauses gain measured rows
+- Inbound 2026 09 27a provenance
 <a id="inbound-2026-09-27a-variant-filter-stages"></a>
-- Reviewed 2026-09-27a variant-filter handback — a variant filter drops a field from the default-variant checks but not from every stage
+- Inbound 2026 09 27a variant filter stages
 <a id="inbound-2026-09-27a-index-and-sort-lookup"></a>
-- Reviewed 2026-09-27a index-and-sort handback — an index or sort nomination's name-resolution classes are reachable under a variant filter
+- Inbound 2026 09 27a index and sort lookup
 <a id="inbound-2026-09-27a-token-demand"></a>
-- Reviewed 2026-09-27a token-demand handback — a refused text's class follows the tokens the parser demands
+- Inbound 2026 09 27a token demand
 <a id="inbound-2026-09-27a-number-literal-whitespace"></a>
-- Reviewed 2026-09-27a number-literal handback — a signed number literal's token boundary under whitespace and comments
+- Inbound 2026 09 27a number literal whitespace
 <a id="inbound-2026-09-27a-field-message-render"></a>
-- Reviewed 2026-09-27a field-message handback — a field message without a pattern depends on its locale and text
+- Inbound 2026 09 27a field message render
 <a id="inbound-2026-09-27a-element-paths"></a>
-- Reviewed 2026-09-27a element-path handback — declared element names, and the path classes that withhold a field's message
+- Inbound 2026 09 27a element paths
 <a id="inbound-2026-09-27a-current-repetition"></a>
-- Reviewed 2026-09-27a repetition handback — the `CurrentRepetition` operand rows on fixed and repeatable groups
+- Inbound 2026 09 27a current repetition
 <a id="inbound-2026-09-27a-keyed-lower-lists"></a>
-- Reviewed 2026-09-27a keyed-star handback — where a star may stand below a keyed group, and a keyed cell under `PatternMatched`
+- Inbound 2026 09 27a keyed lower lists
 <a id="inbound-2026-09-27a-index-key-dialect"></a>
-- Reviewed 2026-09-27a index-key handback — a String index key is kept or refused by its index field's pattern and length bounds
+- Inbound 2026 09 27a index key dialect
 <a id="inbound-2026-09-27a-keyed-parent-stars"></a>
-- Reviewed 2026-09-27a keyed-parent handback — a keyed parent's selection over its weighted child rows
+- Inbound 2026 09 27a keyed parent stars
 <a id="inbound-2026-09-27a-consistent"></a>
-- Reviewed 2026-09-27a composition handback — a left child's failure answers before a right child's inside nested operations
+- Inbound 2026 09 27a consistent
 
 ### Inbound 2026-09-26o through 2026-09-27 handbacks
 
 Deleted from this hub; the records' full text is `docs/SOURCES.md` at `73595edc0671fd49e6fac7ba192c5b22d0010f7f`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-27-completed-steps"></a>
-- Reviewed 2026-09-27 walked-step, comment and count handback — a walked path checks only the steps whose production completed, a comment is a token the grammar places, and the peer confirms `SPEC-2026-09-26-05` on its own fixture
+- Inbound 2026 09 27 completed steps
 <a id="inbound-2026-09-27-comment-placement"></a>
-- Reviewed 2026-09-27 comment-placement rows — a comment is a token the grammar places
+- Inbound 2026 09 27 comment placement
 <a id="inbound-2026-09-27-count-and-list"></a>
-- Reviewed 2026-09-27 count-placement and overlap-list rows — the peer confirms `SPEC-2026-09-26-05` on its own fixture
+- Inbound 2026 09 27 count and list
 <a id="inbound-2026-09-26p-walked-path"></a>
-- Reviewed 2026-09-26p walked-path and field-copy handback — a `$`-marked, up-run-led or starred path raises its class as it is read even when it never closes, and the peer confirms `SPEC-2026-09-26-04` on its own fixture
+- Inbound 2026 09 26p walked path
 <a id="inbound-2026-09-26o-production-close"></a>
-- Reviewed 2026-09-26o production-close handback — a reference or an arithmetic chain is checked where its production closes, a star after a bare name is that name's, up-steps chain only through `/`, and only `Time()` takes an empty argument list
+- Inbound 2026 09 26o production close
 
 ### Inbound 2026-09-26m and 2026-09-26n handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-26m-THROUGH-2026-09-26n.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-26n-field-message-gates"></a>
-- Reviewed 2026-09-26n field-message handback — a field type's own message takes its condition language's two tokens as the pieces of a split that drops trailing empty pieces, reports one class per field from the first failing declared locale, and draws nothing where a path class stops the element walk
+- Inbound 2026 09 26n field message gates
 <a id="inbound-2026-09-26m-message-characters"></a>
-- Reviewed 2026-09-26m message-character handback — a rule message's two character gates are the four line characters and Java's `\p{C}` asked per code point, and a computation's and a field's message draw the same classes on the rows each carries
+- Inbound 2026 09 26m message characters
 <a id="inbound-2026-09-26m-model-texts"></a>
-- Reviewed 2026-09-26m model-text handback — the codeless repertoire refusal meets every text of a rule, a computation and a field or group's names, annotations and enumeration entries, once per element, but no label
+- Inbound 2026 09 26m model texts
 <a id="inbound-2026-09-26m-error-target-paths"></a>
-- Reviewed 2026-09-26m error-target handback — a declared error target takes `..` lexically from the rule element, and a group target is judged like an unnamed field except the rule's own group, which fails the build
+- Inbound 2026 09 26m error target paths
 <a id="inbound-2026-09-26m-index-key-pattern"></a>
-- Reviewed 2026-09-26m index-key handback — a String index key must meet its length bounds and its pattern, the pattern matched over code points
+- Inbound 2026 09 26m index key pattern
 <a id="inbound-2026-09-26m-marked-keyed-read"></a>
-- Reviewed 2026-09-26m marked-keyed-read handback — a `$`-marked keyed read in a body draws the index class from a root rule reporting at the root too, and after the parse
+- Inbound 2026 09 26m marked keyed read
 
 ### Inbound 2026-09-26i through 2026-09-26l handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-26i-THROUGH-2026-09-26l.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-26l-repeatable-root"></a>
-- Reviewed 2026-09-26l repeatable-root handback — a `RepetitionNotUnique` rule at a repeatable root holding every key compares the root's own rows across the document
+- Inbound 2026 09 26l repeatable root
 <a id="inbound-2026-09-26k-paired-gates"></a>
-- Reviewed 2026-09-26k paired-gate handback — `RepetitionNotUnique` reads every key and its scope before any gate, orders its key-list and placement gates pair by pair, and admits keys at a repeatable root
+- Inbound 2026 09 26k paired gates
 <a id="inbound-2026-09-26k-empty-star"></a>
-- Reviewed 2026-09-26k empty-star handback — an empty group's missing star answers ahead of its emptiness on every group carrier, and an empty repeatable root starred draws the root class
+- Inbound 2026 09 26k empty star
 <a id="inbound-2026-09-26j-count-star"></a>
-- Reviewed 2026-09-26j count-star handback — a lone unstarred repeatable group draws the missing star ahead of the count's arity, and a rule declared in the group binds it
+- Inbound 2026 09 26j count star
 <a id="inbound-2026-09-26i-expansion-order"></a>
-- Reviewed 2026-09-26i expansion-order handback — a group operand is read depth-first in declaration order, its index field in place, and its first field sets the list's family
+- Inbound 2026 09 26i expansion order
 
 ### Inbound 2026-09-26f through 2026-09-26h handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-26f-THROUGH-2026-09-26h.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-26h-empty-scope"></a>
-- Reviewed 2026-09-26h empty-scope handback — an empty `@From` scope draws the empty-group class ahead of the scope's repeat gate
+- Inbound 2026 09 26h empty scope
 <a id="inbound-2026-09-26h-list-reads"></a>
-- Reviewed 2026-09-26h list-read handback — eight more list carriers read every operand before their duplicate gate, the plural overlap before its scalar slot's gate, and both root gates ask an index-selected root
+- Inbound 2026 09 26h list reads
 <a id="inbound-2026-09-26g-type-match"></a>
-- Reviewed 2026-09-26g type-match handback — `FirstFilledValue`'s type match compares neither a Boolean's stored values nor a Number's fraction digits
+- Inbound 2026 09 26g type match
 <a id="inbound-2026-09-26f-gate-order"></a>
-- Reviewed 2026-09-26f gate-order handback — `RepetitionNotUnique` judges its key list gate by gate over the whole list before exactly one branch, and an outsider whose read is clean meets the rule-group gate
+- Inbound 2026 09 26f gate order
 
 ### Inbound 2026-09-26d and 2026-09-26e handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-26d-THROUGH-2026-09-26e.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-26e-labelled-target"></a>
-- Reviewed 2026-09-26e labelled-target handback — a String copied into an Enumeration draws the comparison class at a labelled target and the calculation's class at an unlabelled one
+- Inbound 2026 09 26e labelled target
 <a id="inbound-2026-09-26d-constant-typing"></a>
-- Reviewed 2026-09-26d constant-typing handback — a written-out constant is typed by its shape and the calendar before the comparison walk
+- Inbound 2026 09 26d constant typing
 <a id="inbound-2026-09-26d-filter-walk"></a>
-- Reviewed 2026-09-26d filter-walk handback — a key-owned filter is walked against the key, and the walk reads every spec in the body
+- Inbound 2026 09 26d filter walk
 <a id="inbound-2026-09-26d-marked-read"></a>
-- Reviewed 2026-09-26d marked-read handback — a `$`-marked read in a body is judged as the rule's own read
+- Inbound 2026 09 26d marked read
 <a id="inbound-2026-09-26d-reference-set"></a>
-- Reviewed 2026-09-26d reference-set handback — the post-parse error-field gates count only references outside every filter body and marked ones inside
+- Inbound 2026 09 26d reference set
 
 ### Inbound 2026-09-26b and 2026-09-26c handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-26b-THROUGH-2026-09-26c.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-26c-joined-comparison"></a>
-- Reviewed 2026-09-26c joined-comparison handback — a field copied into a field draws the class its kind pair draws in a comparison, and a Boolean field source leaves the constant ladder
+- Inbound 2026 09 26c joined comparison
 <a id="inbound-2026-09-26c-target-read"></a>
-- Reviewed 2026-09-26c target-read and member-order handback — a partially known Date or raw String read draws its read class alone, and a computation's members answer in the order A12 joins them
+- Inbound 2026 09 26c target read
 <a id="inbound-2026-09-26c-star-above-index"></a>
-- Reviewed 2026-09-26c star-above-index handback — a star on an unindexed repetition above the index group is refused even from a rule that iterates that level
+- Inbound 2026 09 26c star above index
 <a id="inbound-2026-09-26b-dispositions"></a>
-- Reviewed 2026-09-26b field-value read handback — `SPEC-2026-09-25-09`, `-25-10` and `-26-01` confirmed on the peer's carrier
+- Inbound 2026 09 26b dispositions
 <a id="inbound-2026-09-26b-entity-list-category"></a>
-- Reviewed 2026-09-26b entity-list category handback — an Enumeration's category is refused by every entity list whose carrier refuses one, and a category behind a group draws the group class
+- Inbound 2026 09 26b entity list category
 
 ### Inbound 2026-09-25i and 2026-09-26 handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-25i-THROUGH-2026-09-26.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-25i-key-addressing"></a>
-- Reviewed 2026-09-25i key-addressing handback — a key addresses only its index group's level, a defective key answers first, and the key's own crossing draws the semantic-index class
+- Inbound 2026 09 25i key addressing
 <a id="inbound-2026-09-25i-literal-key"></a>
-- Reviewed 2026-09-25i literal-key handback — a quoted key is judged by the index field, and an unquoted digit sequence is an entity name
+- Inbound 2026 09 25i literal key
 <a id="inbound-2026-09-25i-rule-iteration"></a>
-- Reviewed 2026-09-25i rule-iteration handback — the level a rule iterates addresses a scalar slot's read, from the declaring group or the error field's
+- Inbound 2026 09 25i rule iteration
 <a id="inbound-2026-09-25i-keyed-duplicate"></a>
-- Reviewed 2026-09-25i keyed-duplicate handback — a keyed group and a keyed field of it repeat only under one key
+- Inbound 2026 09 25i keyed duplicate
 <a id="inbound-2026-09-25i-enum-source"></a>
-- Reviewed 2026-09-25i enumeration-source handback — a starred source meets the star gate after its category and before the target's source gate, and a climbing source is judged as a local one
+- Inbound 2026 09 25i enum source
 <a id="inbound-2026-09-26-climbing-read"></a>
-- Reviewed 2026-09-26 climbing-read handback — a climbing read is judged at the level it lands on
+- Inbound 2026 09 26 climbing read
 <a id="inbound-2026-09-26-index-key-shape"></a>
-- Reviewed 2026-09-26 index-key handback — a constant key meets its index field's value validation as a shape test, one rule per kind
+- Inbound 2026 09 26 index key shape
 
 ### Inbound 2026-09-25g and 2026-09-25h handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-25g-THROUGH-2026-09-25h.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-25g-value-list-order"></a>
-- Reviewed 2026-09-25g value-list handback — `SPEC-2026-09-25-08` confirmed, and the construct's five gate positions measured
+- Inbound 2026 09 25g value list order
 <a id="inbound-2026-09-25g-date-class"></a>
-- Reviewed 2026-09-25g ordering handback — `SPEC-2026-09-25-07` confirmed with the Date on either side
+- Inbound 2026 09 25g date class
 <a id="inbound-2026-09-25g-field-value-read"></a>
-- Reviewed 2026-09-25g field-value read handback — `SPEC-2026-09-25-06` confirmed, and a filter's body refuses a repeatable group it does not iterate
+- Inbound 2026 09 25g field value read
 <a id="inbound-2026-09-25g-rounding-mode"></a>
-- Reviewed 2026-09-25g rounding-mode handback — `RoundDown` beside `!=` is refused
+- Inbound 2026 09 25g rounding mode
 <a id="inbound-2026-09-25g-banded-rounding"></a>
-- Reviewed 2026-09-25g banded-rounding handback — a banded computation's mode rounds to zero places, `Exact` floors to the target's digits, and the validation compares the operation as authored
+- Inbound 2026 09 25g banded rounding
 <a id="inbound-2026-09-25g-keyed-group"></a>
-- Reviewed 2026-09-25g keyed-group handback — a keyed group's operand reads the selected row's cells, a lower repeatable level included
+- Inbound 2026 09 25g keyed group
 <a id="inbound-2026-09-25h-category-index-relevance"></a>
-- Reviewed 2026-09-25h category handback — a category read over an index cell the document makes unavailable tracks the value read
+- Inbound 2026 09 25h category index relevance
 
 ### Inbound 2026-09-25e and 2026-09-25f handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-25e-THROUGH-2026-09-25f.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-25f-value-list-base-type"></a>
-- Reviewed 2026-09-25f base-type handback — `SPEC-2026-09-25-05` confirmed on every pair it names
+- Inbound 2026 09 25f value list base type
 <a id="inbound-2026-09-25f-field-value-read"></a>
-- Reviewed 2026-09-25f field-value read handback — the bracket asks its gates as it closes, wherever it stands, and a scalar value list's members ask theirs during the parse
+- Inbound 2026 09 25f field value read
 <a id="inbound-2026-09-25f-generated-text"></a>
-- Reviewed 2026-09-25f generated-text handback — a computation's members are parsed inside the one condition generated from them
+- Inbound 2026 09 25f generated text
 <a id="inbound-2026-09-25f-bare-entity"></a>
-- Reviewed 2026-09-25f bare-entity handback — a bare entity stands only where an operator's argument is typed as one
+- Inbound 2026 09 25f bare entity
 <a id="inbound-2026-09-25e-below-star-placement"></a>
-- Reviewed 2026-09-25e placement handback — the below-star placement holds on every carrier `SPEC-2026-09-25-02` names
+- Inbound 2026 09 25e below star placement
 <a id="inbound-2026-09-25e-sum-of-products-reach"></a>
-- Reviewed 2026-09-25e `SumOfProducts` handback — the operator's chain keeps its order from outside its fields' groups, and a star on a bound level counts
+- Inbound 2026 09 25e sum of products reach
 <a id="inbound-2026-09-25e-value-list-base-type"></a>
-- Reviewed 2026-09-25e base-type handback — the value-list quantifiers ask one base type ahead of their kind gate, the temporal kinds sharing one and a custom declaration String's
+- Inbound 2026 09 25e value list base type
 <a id="inbound-2026-09-25e-comparison-arm-order"></a>
-- Reviewed 2026-09-25e arm-order handback — a comparison between two fields answers its kind arms in a fixed order, and only the first draws a class
+- Inbound 2026 09 25e comparison arm order
 
 ### Inbound 2026-09-25b and 2026-09-25c handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-25b-THROUGH-2026-09-25c.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-25b-index-type-table"></a>
-- Reviewed 2026-09-25b index-type handback — which two index kinds pair is a measured table, and a marked filter reference draws the class its read draws outside the filter
+- Inbound 2026 09 25b index type table
 <a id="inbound-2026-09-25b-condition-class-order"></a>
-- Reviewed 2026-09-25b class-order handback — a refused condition text draws the class raised first, an operator's gate as soon as its call is read
+- Inbound 2026 09 25b condition class order
 <a id="inbound-2026-09-25b-condition-positions"></a>
-- Reviewed 2026-09-25b position handback — parentheses group conditions only, and a sign stands on a number literal alone
+- Inbound 2026 09 25b condition positions
 <a id="inbound-2026-09-25b-computation-texts"></a>
-- Reviewed 2026-09-25b computation-text handback — the suppression member's class answers first, a parse-time class erases the calculation module's, and a filter's gate answers for its own predicates
+- Inbound 2026 09 25b computation texts
 <a id="inbound-2026-09-25b-message"></a>
-- Reviewed 2026-09-25b message handback — the unreferenced-target class withholds the error-text checker's classes, and an answered locale leaves `RULE_HAS_NO_ERRORTEXT` to the other
+- Inbound 2026 09 25b message
 <a id="inbound-2026-09-25b-joint-level-slots"></a>
-- Reviewed 2026-09-25b joint-level handback — a field read on a jointly iterated level meets its scalar slot's own gate
+- Inbound 2026 09 25b joint level slots
 <a id="inbound-2026-09-25c-gate-raise-points"></a>
-- Reviewed 2026-09-25c gate-order handback — a gate is raised where the production that owns it ends
+- Inbound 2026 09 25c gate raise points
 <a id="inbound-2026-09-25c-form-keyword"></a>
-- Reviewed 2026-09-25c form-keyword handback — a form construct's class is raised on its keyword wherever a condition opens
+- Inbound 2026 09 25c form keyword
 <a id="inbound-2026-09-25c-key-filter"></a>
-- Reviewed 2026-09-25c key-filter handback — a `Having` after a field-valued index key is the key's filter
+- Inbound 2026 09 25c key filter
 <a id="inbound-2026-09-25c-filter-body"></a>
-- Reviewed 2026-09-25c filter-body handback — a body's comparison draws its outside class, and the filter's chain is raised at two points around the body
+- Inbound 2026 09 25c filter body
 <a id="inbound-2026-09-25c-calculation-stages"></a>
-- Reviewed 2026-09-25c calculation handback — the calculation module asks its stages in order, its rounding mode judges each alternative, and a variant-filtered computation is no cycle node
+- Inbound 2026 09 25c calculation stages
 
 ### Inbound 2026-09-24c through 2026-09-25 handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-24c-THROUGH-2026-09-25.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-25-fixed-group-star"></a>
-- Reviewed 2026-09-25 fixed-group-star handback — a star on a fixed group draws `MVK_INVALID_WILDCARD` alone at every position measured, and of two defects the one read first answers
+- Inbound 2026 09 25 fixed group star
 <a id="inbound-2026-09-25-message-withheld"></a>
-- Reviewed 2026-09-25 message-withholding handback — a refused DSL member withholds the error-text checker's classes, the message's presence classes stand, and only a declared locale's last entry is examined
+- Inbound 2026 09 25 message withheld
 <a id="inbound-2026-09-25-keyed-group-walk"></a>
-- Reviewed 2026-09-25 keyed group-walk handback — the order-aware walk over a keyed group's fields stops at the first filled cell, and a String index is decided as a Number index is
+- Inbound 2026 09 25 keyed group walk
 <a id="inbound-2026-09-25-bare-group-placement"></a>
-- Reviewed 2026-09-25 bare-group placement handback — a bare repeatable group operand places its refusal as a field read does, and `AllGroupsFilled` joins the below-star carriers
+- Inbound 2026 09 25 bare group placement
 <a id="inbound-2026-09-25-comment-terminators"></a>
-- Reviewed 2026-09-25 comment handback — a `;;` comment admits every character but the two line terminators, and a lone carriage return ends it
+- Inbound 2026 09 25 comment terminators
 <a id="inbound-2026-09-25-operator-gates-wait"></a>
-- Reviewed 2026-09-25 operator-gates handback — every gate of an operator's own waits for its operands to be read
+- Inbound 2026 09 25 operator gates wait
 <a id="inbound-2026-09-25-parallel-index-gates"></a>
-- Reviewed `kf371` route table — a level beside the error field's group meets its index gates one level at a time, outermost first
+- Inbound 2026 09 25 parallel index gates
 <a id="inbound-2026-09-24e-misplaced-star"></a>
-- Reviewed 2026-09-24e misplaced-star handback — a star on a field or fixed group draws `MVK_INVALID_WILDCARD` alone, even where the same reference leaves a repeatable level unstarred
+- Inbound 2026 09 24e misplaced star
 <a id="inbound-2026-09-24e-nested-partial-star"></a>
-- Reviewed 2026-09-24e nested partial-star handback — a star that leaves one nested level bare counts as the unstarred read, ahead of the unreferenced-target class
+- Inbound 2026 09 24e nested partial star
 <a id="inbound-2026-09-24e-message-withheld"></a>
-- Reviewed 2026-09-24e message-withholding handback — a message is judged only beside a sound DSL member, post-parse classes included, and a name or error-code class does not withhold it
+- Inbound 2026 09 24e message withheld
 <a id="inbound-2026-09-24e-filter-leaf"></a>
-- Reviewed 2026-09-24e filter-leaf handback — a `Having` filter's own leaf and a semantic index's value half are not per-row reads for containment
+- Inbound 2026 09 24e filter leaf
 <a id="inbound-2026-09-24d-star-containment"></a>
-- Reviewed 2026-09-24d star-containment handback — containment, not binding, answers a per-row read into a written field outside the declaring group, and the written field's position names the walk's class
+- Inbound 2026 09 24d star containment
 <a id="inbound-2026-09-24d-mixed-group-count"></a>
-- Reviewed 2026-09-24d mixed group-count handback — a partial `NumberOfFilledGroups` list mixing a starred and a fixed operand is undecided when either operand is
+- Inbound 2026 09 24d mixed group count
 <a id="inbound-2026-09-24c-path-walk"></a>
-- Reviewed 2026-09-24c path-walk handback — an up-step stands only in a relative path's leading run, and the short-name fallback answers a relative path's first segment alone
+- Inbound 2026 09 24c path walk
 <a id="inbound-2026-09-24c-field-slot"></a>
-- Reviewed 2026-09-24c field-slot handback — a group in `FieldFilled` or `FieldNotFilled` meets the walk, then a root's class, then the kind gate, and a star follows them
+- Inbound 2026 09 24c field slot
 <a id="inbound-2026-09-24c-group-operand-walk"></a>
-- Reviewed 2026-09-24c group-operand walk handback — an unstarred repeatable group draws the missing star ahead of every carrier gate, and a repeatable root is walked like any group
+- Inbound 2026 09 24c group operand walk
 
 ### Inbound 2026-09-24 and 2026-09-24b handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-24b-keyed-partial-read"></a>
-- 2026-09-24b keyed partial-read handback: relevance at the selected coordinate
+- Inbound 2026 09 24b keyed partial read
 <a id="inbound-2026-09-24b-lexer-and-blank-text"></a>
-- Reviewed 2026-09-24b lexer and blank-text handback — whitespace is the lexer's five characters, the suppression list is parsed as preamble text, and member blankness follows `isWhitespace`
+- Inbound 2026 09 24b lexer and blank text
 <a id="inbound-2026-09-24b-category-read-poison"></a>
-- Reviewed 2026-09-24b category-read poison handback — a computation's category read of a malformed Enumeration cell poisons like its value read
+- Inbound 2026 09 24b category read poison
 <a id="inbound-2026-09-24b-kf463-validation"></a>
-- Reviewed 2026-09-24b `kf463` validation handback — a below-star `Seal` counts by its decided content, a malformed-only one leaves the count unavailable, and the extent is per operand
+- Inbound 2026 09 24b kf463 validation
 <a id="inbound-2026-09-24b-kf464-partial-group-extent"></a>
-- Reviewed 2026-09-24b `kf464` first-table handback — a field-expanding aggregate over a starred group is evaluable under partial validation exactly when every field it contains is
+- Inbound 2026 09 24b kf464 partial group extent
 <a id="inbound-2026-09-24b-kf464-partial-group-count"></a>
-- Reviewed 2026-09-24b `kf464` second-table handback — `NumberOfFilledGroups` under partial validation is a four-step walk over the counted group's own instances
+- Inbound 2026 09 24b kf464 partial group count
 <a id="inbound-2026-09-24b-dispositions"></a>
-- Reviewed 2026-09-24b dispositions handback — three outbound entries accepted, and the root gate reaches every value-list quantifier and either side of the field-read spelling
+- Inbound 2026 09 24b dispositions
 <a id="inbound-2026-09-24-ancestor-starred-group-count"></a>
-- Reviewed 2026-09-24 ancestor-starred group-count handback — a fixed group below a starred level is a sole `NumberOfFilledGroups` operand, and it counts filled instances only
+- Inbound 2026 09 24 ancestor starred group count
 
 ### Inbound 2026-09-23 handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-23.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-23d-grandparent-fill-and-malformed-key"></a>
-- Reviewed 2026-09-23 grandparent-fill and malformed-key handback — the cascade fill reaches depth two, and a malformed field-valued key is unknown or poison on every keyed consumer
+- Inbound 2026 09 23d grandparent fill and malformed key
 <a id="inbound-2026-09-23c-computation-cascade-reads"></a>
-- Reviewed 2026-09-23 computation-cascade handback — a computed field's stored value is read by nothing inside one call, and a precondition has no row gate
+- Inbound 2026 09 23c computation cascade reads
 <a id="inbound-2026-09-23b-entity-list-operand-reads"></a>
-- Reviewed 2026-09-23 entity-list operand-read handback — an unreadable operand answers first across the family, and the date walk sits behind the list gates
+- Inbound 2026 09 23b entity list operand reads
 <a id="inbound-2026-09-23-first-filled-gate-positions"></a>
-- Reviewed 2026-09-23 `FirstFilledValue` gate-position handback — operand reads first, then duplicates, root and arity, then Confirm wherever it stands
+- Inbound 2026 09 23 first filled gate positions
 <a id="inbound-2026-09-23-entity-list-root-group-gate"></a>
-- Reviewed 2026-09-23 entity-list root-group gate — a Kernel gate the shared Lean shape did not ask
+- Inbound 2026 09 23 entity list root group gate
 <a id="inbound-2026-09-22e-first-filled-gate-order"></a>
-- Reviewed 2026-09-23 `FirstFilledValue` gate-order handback — duplicates, then Confirm, then one type over the expanded fields, and a Kernel row behind a Lean lock
+- Inbound 2026 09 22e first filled gate order
 
 ### Inbound 2026-09-22 handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-22.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-22d-first-filled-cross-kind"></a>
-- Reviewed 2026-09-22 `FirstFilledValue` cross-kind handback — the date-bearing pairs measured at a date format, and a bound this project had relayed withdrawn
+- Inbound 2026 09 22d first filled cross kind
 <a id="inbound-2026-09-22-temporal-category"></a>
-- Reviewed 2026-09-22 temporal-category handback — the four-member category measured, and a clause that was careful turned into an overclaim by the arrival of its own evidence
+- Inbound 2026 09 22 temporal category
 <a id="inbound-2026-09-22-dispositions"></a>
-- Reviewed 2026-09-22 dispositions handback — the whole pending queue answered, three clauses qualified, and both instrument asks implemented
+- Inbound 2026 09 22 dispositions
 
 ### Inbound 2026-09-21 handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-21.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-21b-corrections"></a>
-- Reviewed 2026-09-21b reply handback — both contrary entries accepted, our own replacement reading corrected, and four clauses changed
+- Inbound 2026 09 21b corrections
 <a id="inbound-2026-09-21-corrections"></a>
-- Reviewed 2026-09-21 corrections handback — 163 new peer findings triaged, sixteen clauses corrected, one Lean precedence defect found, and two of their rows refuted
+- Inbound 2026 09 21 corrections
 
 ### Inbound 2026-09-07 and 2026-09-08 handbacks
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-07-THROUGH-2026-09-08.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-08-corrections"></a>
-- Reviewed 2026-09-08 corrections handback — three entries confirmed, one of their titles refuted, and the observation hash preimage changed
+- Inbound 2026 09 08 corrections
 <a id="inbound-2026-09-08-instrument"></a>
-- Reviewed 2026-09-08 instrument handback — malformed model input reclassified, and one authoring restriction removed that opened a refusal class
+- Inbound 2026 09 08 instrument
 <a id="inbound-2026-09-08"></a>
-- Reviewed 2026-09-08 handback — four pending entries answered, three declaration knobs made authorable, and two kernel derivations opened
+- Inbound 2026 09 08
 <a id="inbound-2026-09-07-dispositions"></a>
-- Reviewed 2026-09-07 dispositions — nine entries answered at one revision, one of ours refuted, one assumption discharged, and two rows sent unasked
+- Inbound 2026 09 07 dispositions
 
 ## Provenance checkpoint index
 
@@ -626,16 +585,16 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 ### Kernel lock source index
 
 <a id="src-kernel-lock-index"></a>
-- [Known Kernel locks and deliberate non-locks](sources/kernel-locks.md#src-kernel-lock-index)
+- [Kernel lock index](sources/kernel-locks.md#src-kernel-lock-index)
 
 ### DateRange construction source checkpoints
 
 <a id="src-full-date-stored-input"></a>
-- [Stored full-Date input and formal causes](sources/date-range-construction.md#src-full-date-stored-input)
+- [Full date stored input](sources/date-range-construction.md#src-full-date-stored-input)
 <a id="src-date-range-stored-input"></a>
-- [Stored DateRange input and formal causes](sources/date-range-construction.md#src-date-range-stored-input)
+- [Date range stored input](sources/date-range-construction.md#src-date-range-stored-input)
 <a id="src-date-range-construction-equality"></a>
-- [Filled DateRange construction equality](sources/date-range-construction.md#src-date-range-construction-equality)
+- [Date range construction equality](sources/date-range-construction.md#src-date-range-construction-equality)
 <a id="src-date-range-year-fragment-construction"></a>
 - [Year-fragment DateRange construction](sources/date-range-construction.md#src-date-range-year-fragment-construction)
 <a id="src-date-range-year-month-fragment-construction"></a>
@@ -645,58 +604,58 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-date-range-yearless-construction-target"></a>
 - [Yearless DateRange construction targets](sources/date-range-construction.md#src-date-range-yearless-construction-target)
 <a id="src-indexed-date-range-construction-target"></a>
-- [String-indexed DateRange construction targets](sources/date-range-construction.md#src-indexed-date-range-construction-target)
+- [Indexed date range construction target](sources/date-range-construction.md#src-indexed-date-range-construction-target)
 <a id="src-date-range-bound-extraction"></a>
-- [Stored DateRange bound extraction](sources/date-range-construction.md#src-date-range-bound-extraction)
+- [Date range bound extraction](sources/date-range-construction.md#src-date-range-bound-extraction)
 <a id="src-date-range-plural-overlap"></a>
-- [Plural scalar-versus-list DateRange overlap](sources/date-range-construction.md#src-date-range-plural-overlap)
+- [Date range plural overlap](sources/date-range-construction.md#src-date-range-plural-overlap)
 <a id="src-date-range-fragment-first-filled"></a>
-- [Fragment DateRange `FirstFilledValue`](sources/date-range-construction.md#src-date-range-fragment-first-filled)
+- [Date range fragment first filled](sources/date-range-construction.md#src-date-range-fragment-first-filled)
 <a id="src-date-range-direct-first-filled"></a>
-- [Direct-field-list DateRange `FirstFilledValue`](sources/date-range-construction.md#src-date-range-direct-first-filled)
+- [Date range direct first filled](sources/date-range-construction.md#src-date-range-direct-first-filled)
 <a id="src-date-range-yearless-overlap"></a>
-- [Unconfigured yearless DateRange overlap, measured locally 2026-08-22](sources/date-range-construction.md#src-date-range-yearless-overlap)
+- [Date range yearless overlap](sources/date-range-construction.md#src-date-range-yearless-overlap)
 <a id="src-date-range-mixed-year-overlap"></a>
-- [Mixed-year DateRange overlap admission and completion, measured locally 2026-08-22](sources/date-range-construction.md#src-date-range-mixed-year-overlap)
+- [Date range mixed year overlap](sources/date-range-construction.md#src-date-range-mixed-year-overlap)
 <a id="src-date-range-bound-base-year"></a>
-- [DateRange bound extraction and Base-Year completion, measured locally 2026-08-22](sources/date-range-construction.md#src-date-range-bound-base-year)
+- [Date range bound base year](sources/date-range-construction.md#src-date-range-bound-base-year)
 <a id="src-date-range-component-set-crossing"></a>
-- [DateRange component-set crossing, measured locally 2026-08-22](sources/date-range-construction.md#src-date-range-component-set-crossing)
+- [Date range component set crossing](sources/date-range-construction.md#src-date-range-component-set-crossing)
 <a id="src-date-range-construction-operand-grid"></a>
-- [DateRange construction-operand refusal grid, measured locally 2026-08-23](sources/date-range-construction.md#src-date-range-construction-operand-grid)
+- [Date range construction operand grid](sources/date-range-construction.md#src-date-range-construction-operand-grid)
 <a id="src-date-range-exact-and-configured-constructor-targets"></a>
-- [Exact ISO and configured-fragment constructor targets, measured locally 2026-08-23](sources/date-range-construction.md#src-date-range-exact-and-configured-constructor-targets)
+- [Date range exact and configured constructor targets](sources/date-range-construction.md#src-date-range-exact-and-configured-constructor-targets)
 <a id="src-date-range-year-fragment-constructor-target"></a>
-- [Year-bearing fragment constructor targets, measured locally 2026-08-23](sources/date-range-construction.md#src-date-range-year-fragment-constructor-target)
+- [Date range year fragment constructor target](sources/date-range-construction.md#src-date-range-year-fragment-constructor-target)
 <a id="src-date-range-construction-target-crossing"></a>
-- [DateRange construction target spellings, measured locally 2026-08-23](sources/date-range-construction.md#src-date-range-construction-target-crossing)
+- [Date range construction target crossing](sources/date-range-construction.md#src-date-range-construction-target-crossing)
 
 ### Temporal and message source checkpoints
 
 <a id="src-semantic-index-kind-independence"></a>
-- [The index field's kind and the selected target's kind are independent, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-semantic-index-kind-independence)
+- [Semantic index kind independence](sources/temporal-and-message-probes.md#src-semantic-index-kind-independence)
 <a id="src-rule-message-parameter-grammar"></a>
-- [The rule-message parameter grammar: paths, quoting, category, and Base Year, measured locally 2026-08-24](sources/message-and-pointer-probes.md#src-rule-message-parameter-grammar)
+- [Rule message parameter grammar](sources/message-and-pointer-probes.md#src-rule-message-parameter-grammar)
 <a id="src-rule-message-parameter-rendering"></a>
-- [What a rule-message parameter renders, measured locally 2026-08-24](sources/message-and-pointer-probes.md#src-rule-message-parameter-rendering)
+- [Rule message parameter rendering](sources/message-and-pointer-probes.md#src-rule-message-parameter-rendering)
 <a id="src-time-datetime-stored-input"></a>
-- [Stored Time and DateTime input causes, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-time-datetime-stored-input)
+- [Time datetime stored input](sources/temporal-and-message-probes.md#src-time-datetime-stored-input)
 <a id="src-temporal-operation-granularity-separability"></a>
-- [A temporal operation's operand gate needs the unit's own component, and only two of its axes are separable on declared formats](sources/temporal-and-message-probes.md#src-temporal-operation-granularity-separability)
+- [Temporal operation granularity separability](sources/temporal-and-message-probes.md#src-temporal-operation-granularity-separability)
 <a id="src-declared-format-temporal-input"></a>
-- [Declared-format temporal input correction and widened grid, reviewed inbound 2026-08-29](sources/temporal-and-message-probes.md#src-declared-format-temporal-input)
+- [Declared format temporal input](sources/temporal-and-message-probes.md#src-declared-format-temporal-input)
 <a id="src-temporal-format-vocabulary"></a>
-- [Cross-kind temporal format admission in the original measured subset, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-temporal-format-vocabulary)
+- [Temporal format vocabulary](sources/temporal-and-message-probes.md#src-temporal-format-vocabulary)
 <a id="src-partial-date-input-causes"></a>
-- [Which formal cause a partially known Date draws, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-partial-date-input-causes)
+- [Partial date input causes](sources/temporal-and-message-probes.md#src-partial-date-input-causes)
 <a id="src-partial-date-presence"></a>
 - [Partial-Date, component-omitting Date and DateFragment presence, measured 2026-10-02](sources/temporal-and-message-probes.md#src-partial-date-presence)
 <a id="src-partial-date-readers"></a>
 - [Partial-Date requiredness, group content and uniqueness; computed fragment identity and yearless computation, measured 2026-10-02](sources/temporal-and-message-probes.md#src-partial-date-readers)
 <a id="src-date-decoded-identity-witness"></a>
-- [Whether two stored Date texts can decode to one instant, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-decoded-identity-witness)
+- [Date decoded identity witness](sources/temporal-and-message-probes.md#src-date-decoded-identity-witness)
 <a id="src-temporal-aggregate-gate"></a>
-- [Which temporal format gate each aggregate carrier uses, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-temporal-aggregate-gate)
+- [Temporal aggregate gate](sources/temporal-and-message-probes.md#src-temporal-aggregate-gate)
 <a id="src-pr2-date-extraction-diagnostics"></a>
 - [Date-extraction diagnostics](sources/temporal-and-message-probes.md#src-pr2-date-extraction-diagnostics)
 <a id="src-message-address-dialects"></a>
@@ -715,7 +674,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-recursive-date-components"></a>
 - [Date components](sources/temporal-runtime-fold-probes.md#src-recursive-date-components)
 <a id="src-temporal-numeric-amounts"></a>
-- [Wider numeric shift amounts](sources/temporal-runtime-fold-probes.md#src-temporal-numeric-amounts)
+- [Temporal numeric amounts](sources/temporal-runtime-fold-probes.md#src-temporal-numeric-amounts)
 
 <a id="src-mixed-baseyear-sources"></a>
 - [Mixed BaseYear sources](sources/temporal-runtime-fold-probes.md#src-mixed-baseyear-sources)
@@ -730,95 +689,95 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-date-range-endpoint-shapes"></a>
 - [Admitted DateRange endpoint shapes](sources/temporal-and-message-probes.md#src-date-range-endpoint-shapes)
 <a id="src-nested-rule-locus"></a>
-- [A rule locus that iterates two repeatable levels, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-nested-rule-locus)
+- [Nested rule locus](sources/temporal-and-message-probes.md#src-nested-rule-locus)
 <a id="src-computation-operand-scope"></a>
-- [Which repeatable scopes a computation operand may sit in, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-computation-operand-scope)
+- [Computation operand scope](sources/temporal-and-message-probes.md#src-computation-operand-scope)
 <a id="src-string-integer-source-scale-suppression"></a>
-- [String integer-source computation scale suppression, measured locally 2026-09-09](sources/computation-placement-and-constant-probes.md#src-string-integer-source-scale-suppression)
+- [String integer source scale suppression](sources/computation-placement-and-constant-probes.md#src-string-integer-source-scale-suppression)
 <a id="src-date-range-bound-component-scale-suppression"></a>
-- [DateRange component assignment scale and computation suppression, measured locally 2026-09-09](sources/temporal-and-message-probes.md#src-date-range-bound-component-scale-suppression)
+- [Date range bound component scale suppression](sources/temporal-and-message-probes.md#src-date-range-bound-component-scale-suppression)
 <a id="src-date-range-bound-component-runtime"></a>
-- [What a computed DateRange-endpoint component evaluates to, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-bound-component-runtime)
+- [Date range bound component runtime](sources/temporal-and-message-probes.md#src-date-range-bound-component-runtime)
 <a id="src-date-range-bound-component"></a>
-- [The numeric component of a selected DateRange endpoint, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-bound-component)
+- [Date range bound component](sources/temporal-and-message-probes.md#src-date-range-bound-component)
 <a id="src-date-range-yearless-locus"></a>
-- [The rule-locus gate over unconfigured yearless DateRange carriers, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-yearless-locus)
+- [Date range yearless locus](sources/temporal-and-message-probes.md#src-date-range-yearless-locus)
 <a id="src-date-range-rule-locus"></a>
-- [The rule-locus gate over four DateRange condition carriers, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-rule-locus)
+- [Date range rule locus](sources/temporal-and-message-probes.md#src-date-range-rule-locus)
 <a id="src-date-range-list-crossing"></a>
-- [Direct-list DateRange `FirstFilledValue` gates and rendered crossing, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-list-crossing)
+- [Date range list crossing](sources/temporal-and-message-probes.md#src-date-range-list-crossing)
 <a id="src-date-range-interpretation-first-filled"></a>
-- [Direct-list DateRange `FirstFilledValue` across year interpretations, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-date-range-interpretation-first-filled)
+- [Date range interpretation first filled](sources/temporal-and-message-probes.md#src-date-range-interpretation-first-filled)
 <a id="src-date-range-interpretation-first-filled-star"></a>
-- [Direct-star DateRange `FirstFilledValue` across year interpretations, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-date-range-interpretation-first-filled-star)
+- [Date range interpretation first filled star](sources/temporal-and-message-probes.md#src-date-range-interpretation-first-filled-star)
 <a id="src-date-range-repeatable-first-filled"></a>
-- [Sibling-star DateRange `FirstFilledValue` into exact repeatable targets, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-date-range-repeatable-first-filled)
+- [Date range repeatable first filled](sources/repeatable-temporal-computation-probes.md#src-date-range-repeatable-first-filled)
 <a id="src-datetime-repeatable-first-filled"></a>
-- [Sibling-star DateTime `FirstFilledValue` into exact repeatable targets, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-datetime-repeatable-first-filled)
+- [Datetime repeatable first filled](sources/repeatable-temporal-computation-probes.md#src-datetime-repeatable-first-filled)
 <a id="src-full-date-repeatable-first-filled"></a>
-- [Checked sibling-star FULL Date target admission, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-full-date-repeatable-first-filled)
+- [Full date repeatable first filled](sources/repeatable-temporal-computation-probes.md#src-full-date-repeatable-first-filled)
 <a id="src-time-repeatable-first-filled"></a>
-- [Sibling-star Time `FirstFilledValue` target admission and runtime, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-first-filled)
+- [Time repeatable first filled](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-first-filled)
 <a id="src-time-repeatable-constant-construction"></a>
-- [Repeatable constant `Time(...)` construction result classification, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-constant-construction)
+- [Time repeatable constant construction](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-constant-construction)
 <a id="src-time-repeatable-number-components"></a>
-- [Repeatable Number-backed `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-number-components)
+- [Time repeatable number components](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-number-components)
 <a id="src-time-repeatable-string-components"></a>
-- [Repeatable digit-String-backed `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-string-components)
+- [Time repeatable string components](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-string-components)
 <a id="src-time-repeatable-direct-extractor-components"></a>
-- [Repeatable direct-extractor `Time(...)` construction across root, enclosing, and leaf scopes, measured locally 2026-08-27](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-direct-extractor-components)
+- [Time repeatable direct extractor components](sources/repeatable-temporal-computation-probes.md#src-time-repeatable-direct-extractor-components)
 <a id="src-datetime-component-sibling-parallel-refusal"></a>
 - [Sibling-parallel refusal for DateTime component extractors, measured locally 2026-08-27](sources/temporal-and-message-probes.md#src-datetime-component-sibling-parallel-refusal)
 <a id="src-date-range-unconfigured-interpretation-first-filled-star"></a>
-- [Unconfigured interpreted DateRange declaration-order discriminator, corrected 2026-08-24](sources/temporal-and-message-probes.md#src-date-range-unconfigured-interpretation-first-filled-star)
+- [Date range unconfigured interpretation first filled star](sources/temporal-and-message-probes.md#src-date-range-unconfigured-interpretation-first-filled-star)
 <a id="src-date-range-unconfigured-bound"></a>
-- [Unconfigured yearless bound extraction and its component-set consumer gates, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-unconfigured-bound)
+- [Date range unconfigured bound](sources/temporal-and-message-probes.md#src-date-range-unconfigured-bound)
 <a id="src-date-range-interpretation-comparison"></a>
-- [Equality across declared year interpretations, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-interpretation-comparison)
+- [Date range interpretation comparison](sources/temporal-and-message-probes.md#src-date-range-interpretation-comparison)
 <a id="src-date-range-stored-comparison"></a>
-- [Stored-versus-stored DateRange comparability and cross-spelling identity, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-stored-comparison)
+- [Date range stored comparison](sources/temporal-and-message-probes.md#src-date-range-stored-comparison)
 <a id="src-date-range-interpretation-overlap-refusal"></a>
-- [`interpretationOfYear` as an overlap operand and its placed-year calendar check, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-interpretation-overlap-refusal)
+- [Date range interpretation overlap refusal](sources/temporal-and-message-probes.md#src-date-range-interpretation-overlap-refusal)
 <a id="src-date-range-year-interpretation"></a>
-- [Wrapping yearless ranges and `interpretationOfYear`, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-year-interpretation)
+- [Date range year interpretation](sources/temporal-and-message-probes.md#src-date-range-year-interpretation)
 <a id="src-date-range-yearless-group-carrier"></a>
-- [Yearless DateRange group carriers, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-yearless-group-carrier)
+- [Date range yearless group carrier](sources/temporal-and-message-probes.md#src-date-range-yearless-group-carrier)
 <a id="src-date-range-starred-yearless-overlap"></a>
-- [Starred yearless DateRange overlap, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-starred-yearless-overlap)
+- [Date range starred yearless overlap](sources/temporal-and-message-probes.md#src-date-range-starred-yearless-overlap)
 <a id="src-date-range-plural-year-class"></a>
-- [Plural DateRange overlap year class and fragment operands, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
+- [Date range plural year class](sources/temporal-and-message-probes.md#src-date-range-plural-year-class)
 <a id="src-keyed-parameter-admits-the-index-field-only"></a>
-- [A keyed parameter admits the condition's own keyed field or the group's index field, and nothing else](sources/message-and-pointer-probes.md#src-keyed-parameter-admits-the-index-field-only)
+- [Keyed parameter admits the index field only](sources/message-and-pointer-probes.md#src-keyed-parameter-admits-the-index-field-only)
 
 <a id="src-rulegroup-shorthand-root-gate"></a>
-- [`$#RuleGroup$` alone is refused when its owning declaration sits directly in the root group](sources/message-and-pointer-probes.md#src-rulegroup-shorthand-root-gate)
+- [Rulegroup shorthand root gate](sources/message-and-pointer-probes.md#src-rulegroup-shorthand-root-gate)
 <a id="src-rulegroup-root-gate-on-the-rule-carrier"></a>
 - [That same root-group refusal is the validation-rule carrier's too](sources/message-and-pointer-probes.md#src-rulegroup-root-gate-on-the-rule-carrier)
 
 <a id="src-2026-09-05-german-shorthand-render-reconciliation"></a>
-- [Reviewed a12-dmkits handback rendering the German shorthands, closing the retired-terminal row, and confirming the computation carrier on render](sources/message-and-pointer-probes.md#src-2026-09-05-german-shorthand-render-reconciliation)
+- [2026 09 05 german shorthand render reconciliation](sources/message-and-pointer-probes.md#src-2026-09-05-german-shorthand-render-reconciliation)
 
 <a id="src-2026-09-05-group-parameter-render-reconciliation"></a>
-- [Reviewed a12-dmkits handback completing the group position's bilingual table and separating the rendered coordinate on a doubly nested topology](sources/message-and-pointer-probes.md#src-2026-09-05-group-parameter-render-reconciliation)
+- [2026 09 05 group parameter render reconciliation](sources/message-and-pointer-probes.md#src-2026-09-05-group-parameter-render-reconciliation)
 
 <a id="src-2026-09-05-second-reconciliation"></a>
 - [Reviewed a12-dmkits letter accepting the two-gate entry, correcting its attribution, and narrowing two clauses this project had already accepted](sources/computation-placement-and-constant-probes.md#src-2026-09-05-second-reconciliation) — also the route for their shipped `dmtool operators Having` gate text, read by running the launcher at `ede777e55`
 
 <a id="src-2026-09-05-reconciliation"></a>
-- [Reviewed 2026-09-04 a12-dmkits letter closing all four outbound entries, correcting one clause of ours, and shipping all four instrument fixes](sources/computation-placement-and-constant-probes.md#src-2026-09-05-reconciliation)
+- [2026 09 05 reconciliation](sources/computation-placement-and-constant-probes.md#src-2026-09-05-reconciliation)
 
 <a id="src-2026-09-06-ladder-handback"></a>
 - [Reviewed 2026-09-06 a12-dmkits handback re-deriving the constant-assignment ladder and shipping its corrective](#src-2026-09-06-ladder-handback-detail)
 <a id="src-2026-09-04-reconciliation"></a>
-- [Reviewed 2026-09-04 a12-dmkits handback adopting both temporal corrections, and refuting one claim of ours](sources/computation-placement-and-constant-probes.md#src-2026-09-04-reconciliation)
+- [2026 09 04 reconciliation](sources/computation-placement-and-constant-probes.md#src-2026-09-04-reconciliation)
 <a id="src-2026-09-03-reconciliation"></a>
-- [Reviewed 2026-09-03 a12-dmkits handback on the nine `Having`, capture, and temporal entries](sources/computation-placement-and-constant-probes.md#src-2026-09-03-reconciliation)
+- [2026 09 03 reconciliation](sources/computation-placement-and-constant-probes.md#src-2026-09-03-reconciliation)
 <a id="src-2026-08-30-reconciliation"></a>
-- [Reviewed 2026-08-30 a12-dmkits reconciliation, retraction, and instrument answers](sources/computation-placement-and-constant-probes.md#src-2026-08-30-reconciliation)
+- [2026 08 30 reconciliation](sources/computation-placement-and-constant-probes.md#src-2026-08-30-reconciliation)
 <a id="src-2026-08-29-reconciliation"></a>
-- [Reviewed 2026-08-29 a12-dmkits reconciliation and correction batch](sources/computation-placement-and-constant-probes.md#src-2026-08-29-reconciliation)
+- [2026 08 29 reconciliation](sources/computation-placement-and-constant-probes.md#src-2026-08-29-reconciliation)
 <a id="src-date-range-direct-list-cross-group-sources"></a>
-- [A direct-list `FirstFilledValue` places its sources freely](sources/computation-placement-and-constant-probes.md#src-date-range-direct-list-cross-group-sources)
+- [Date range direct list cross group sources](sources/computation-placement-and-constant-probes.md#src-date-range-direct-list-cross-group-sources)
 <a id="src-having-filter-condition-scope"></a>
 - [Having binds the filtered level and admits group-presence leaves](sources/having-filter-probes.md#src-having-filter-condition-scope)
 <a id="src-having-filter-nontrue-row"></a>
@@ -826,55 +785,55 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-having-filter-condition-grammar"></a>
 - [Having uses ordinary condition grammar and observed refusal classes](sources/having-filter-probes.md#src-having-filter-condition-grammar)
 <a id="src-having-filter-presence-leaf"></a>
-- [Both presence polarities are real per-row filter predicates and exact complements over clean cells](sources/having-filter-probes.md#src-having-filter-presence-leaf)
+- [Having filter presence leaf](sources/having-filter-probes.md#src-having-filter-presence-leaf)
 <a id="src-having-filter-disjunction"></a>
-- [A filter's `Or` is strong-Kleene, so a true disjunct keeps its row against an unavailable one](sources/having-filter-probes.md#src-having-filter-disjunction)
+- [Having filter disjunction](sources/having-filter-probes.md#src-having-filter-disjunction)
 <a id="src-string-inequality-empty-operand"></a>
-- [An absent String operand suppresses its comparison under inequality too](sources/having-filter-probes.md#src-string-inequality-empty-operand)
+- [String inequality empty operand](sources/having-filter-probes.md#src-string-inequality-empty-operand)
 <a id="src-filtered-aggregate-computation-arm"></a>
-- [A filtered aggregate's computation arm poisons on a reached operand and never reads an excluded one](sources/having-filter-probes.md#src-filtered-aggregate-computation-arm)
+- [Filtered aggregate computation arm](sources/having-filter-probes.md#src-filtered-aggregate-computation-arm)
 <a id="src-and-order-computation-arm"></a>
-- [A filter's conjunction short-circuits on a false operand too, so the computation arm's order sensitivity is not the disjunction's alone](sources/having-filter-probes.md#src-and-order-computation-arm)
+- [And order computation arm](sources/having-filter-probes.md#src-and-order-computation-arm)
 <a id="src-off-path-captured-filter-runtime"></a>
-- [An admitted off-path `$` reference is evaluated per host row](sources/having-filter-probes.md#src-off-path-captured-filter-runtime)
+- [Off path captured filter runtime](sources/having-filter-probes.md#src-off-path-captured-filter-runtime)
 
 <a id="src-filter-scope-versus-iteration-gates"></a>
-- [A filter's scope gate and its other-iteration prohibition are two gates, separated by one conjunct](sources/having-filter-probes.md#src-filter-scope-versus-iteration-gates)
+- [Filter scope versus iteration gates](sources/having-filter-probes.md#src-filter-scope-versus-iteration-gates)
 
 <a id="src-repetition-numeric-source-kinds"></a>
-- [Mixing with `CurrentRepetition` does not narrow a repeatable Number target's admitted source kinds](sources/group-and-iteration-probes.md#src-repetition-numeric-source-kinds)
+- [Repetition numeric source kinds](sources/group-and-iteration-probes.md#src-repetition-numeric-source-kinds)
 
 <a id="src-repetition-operand-partial-relevance"></a>
-- [`CurrentRepetition` is structural for partial-validation relevance too, so a rule that reads it alone fires under a coverage that suppresses its field-reading neighbour](sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)
+- [Repetition operand partial relevance](sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)
 
 <a id="src-ancestor-declared-repetition-computation"></a>
-- [A computation's declaring group selects neither its iteration nor its values; containment of the target is the only thing it decides](sources/group-and-iteration-probes.md#src-ancestor-declared-repetition-computation)
+- [Ancestor declared repetition computation](sources/group-and-iteration-probes.md#src-ancestor-declared-repetition-computation)
 
 <a id="src-repetition-aggregate-operand-scope"></a>
-- [An aggregate operand answers the calculated-field ban through a star, and answers no scope rule at all](sources/group-and-iteration-probes.md#src-repetition-aggregate-operand-scope)
+- [Repetition aggregate operand scope](sources/group-and-iteration-probes.md#src-repetition-aggregate-operand-scope)
 
 <a id="src-repetition-source-kinds-runtime"></a>
-- [Every widened source beside a repetition operand reads at its own declaration's scope in the reading row](sources/group-and-iteration-probes.md#src-repetition-source-kinds-runtime)
+- [Repetition source kinds runtime](sources/group-and-iteration-probes.md#src-repetition-source-kinds-runtime)
 <a id="src-currentrepetition-operand-carriers"></a>
-- [The operand is an ordinary Number expression wherever one is legal, while `$` is filter-only by site and no aggregate accepts it](sources/group-and-iteration-probes.md#src-currentrepetition-operand-carriers)
+- [Currentrepetition operand carriers](sources/group-and-iteration-probes.md#src-currentrepetition-operand-carriers)
 
 <a id="src-filter-repetition-reference-reads-its-path"></a>
-- [A `CurrentRepetition` leaf answers both filter gates through its path's repeatable scope, so a nonrepeatable group under the star satisfies the scope gate alone](sources/having-filter-probes.md#src-filter-repetition-reference-reads-its-path)
+- [Filter repetition reference reads its path](sources/having-filter-probes.md#src-filter-repetition-reference-reads-its-path)
 
 <a id="src-fixed-repetition-having"></a>
-- [A fixed group's filter index is one while its path still controls binding](sources/having-filter-probes.md#src-fixed-repetition-having)
+- [Fixed repetition having](sources/having-filter-probes.md#src-fixed-repetition-having)
 
 <a id="src-filter-reference-above-the-star"></a>
-- [A level above the star but still on the operand's path is scope-gated and rescuable, not iteration-prohibited](sources/having-filter-probes.md#src-filter-reference-above-the-star)
+- [Filter reference above the star](sources/having-filter-probes.md#src-filter-reference-above-the-star)
 
 <a id="src-parameter-token-versus-group-declaration-alphabet"></a>
-- [The parameter's name token is wider than any group may be named, and a quoted segment is refused where the bare spelling reaches lookup](sources/message-and-pointer-probes.md#src-parameter-token-versus-group-declaration-alphabet)
+- [Parameter token versus group declaration alphabet](sources/message-and-pointer-probes.md#src-parameter-token-versus-group-declaration-alphabet)
 
 <a id="src-terminal-bundle-on-the-computation-carrier"></a>
-- [The parameter terminal bundle is shared with the computation message carrier, where `RuleGroup` names the computation's own group](sources/message-and-pointer-probes.md#src-terminal-bundle-on-the-computation-carrier)
+- [Terminal bundle on the computation carrier](sources/message-and-pointer-probes.md#src-terminal-bundle-on-the-computation-carrier)
 
 <a id="src-name-position-index-terminal"></a>
-- [`index(...)` is a live name-position terminal with three refusal codes of its own, and the group position has no index syntax at all](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
+- [Name position index terminal](sources/message-and-pointer-probes.md#src-name-position-index-terminal)
 <a id="src-message-template-character-repertoire"></a>
 - [The rule-message template's repertoire is the BMP rather than printable ASCII, its control class covers the C1 block and the invisible format characters, the ASCII bound belongs to a parameter body alone, and the name position's condition-reference gate is `INVALID_FIELD`](sources/message-and-pointer-probes.md#src-message-template-character-repertoire)
 
@@ -892,23 +851,23 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-starred-group-value-count-classes"></a>
 - [A starred group naming nothing answers in the segment order on the filled-field and value-count carriers too, and a fixed group below a star is admitted on every one of them](sources/path-resolution-class-probes.md#src-starred-group-value-count-classes)
 <a id="src-pattern-and-key-resolver-classes"></a>
-- [A pattern comparison's field and a `RepetitionNotUnique` key draw the shared resolver classes, and a field read from the rule that iterates it is admitted on the pattern and group-list carriers](sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)
+- [Pattern and key resolver classes](sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)
 <a id="src-group-operand-resolution-classes"></a>
-- [A group operand that does not resolve draws the class of the segment that missed, fixed or starred](sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)
+- [Group operand resolution classes](sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)
 <a id="src-short-name-ambiguity-every-carrier"></a>
-- [A bare name that matches several fields model-wide draws `MVK_FIELDNAME_NOT_UNIQUE` on every carrier asked, a computation included](sources/path-resolution-class-probes.md#src-short-name-ambiguity-every-carrier)
+- [Short name ambiguity every carrier](sources/path-resolution-class-probes.md#src-short-name-ambiguity-every-carrier)
 <a id="src-starred-path-segment-order"></a>
-- [A starred path is judged segment by segment, so a star on a nonrepeatable segment outranks a later miss and a miss outranks its own star](sources/path-resolution-class-probes.md#src-starred-path-segment-order)
+- [Starred path segment order](sources/path-resolution-class-probes.md#src-starred-path-segment-order)
 <a id="src-resolver-failure-classes-every-carrier"></a>
-- [A field name that does not resolve draws one of three classes on every carrier asked, and the root class turns on the first segment](sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)
+- [Resolver failure classes every carrier](sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)
 <a id="src-condition-class-projection"></a>
-- [Under `==`, a rule condition's comparison refusals follow one kind arm for field pairs and point-in-time partners in either position, with `BaseYear` met as a Number opposite every kind but a Date](sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)
+- [Condition class projection](sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection)
 <a id="src-computation-self-read-sweep"></a>
 - [A computation reading its own target draws the target-read class on every carrier measured once the read is reached, once per occurrence, a precondition's read included](sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)
 <a id="src-field-copy-comparison-grid"></a>
-- [A field copied into a field of another kind draws the comparison walk's arm order on every pair of nine kinds, a temporal pair meets the format question, and the display arm answers ahead of the Enumeration calculation](sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)
+- [Field copy comparison grid](sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)
 <a id="src-entity-list-kind-empty-and-root-carriers"></a>
-- [`Sum` refuses a String in every position and form, an empty starred group answers ahead of the group-list star gate, and the root gate reaches the value list and a computation](sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)
+- [Entity list kind empty and root carriers](sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)
 <a id="src-value-list-slot-kind-set"></a>
 - [The String-literal value list's slot gate is one class over seven kinds and does not read the slot's shape, with NUMBER inside the admitted set](sources/static-admission-and-class-probes.md#src-value-list-slot-kind-set)
 <a id="src-variant-filter-declaration-omission"></a>
@@ -941,19 +900,19 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Across the `en_US` and `de_DE` message locales measured, the `index(...)` value suffix follows the condition language, `Wert` under German and `value` under English, each refusing the other](sources/message-and-pointer-probes.md#src-index-german-suffix)
 
 <a id="src-value-list-base-type-cross-pairs"></a>
-- [Every cross pair of base types the value-list quantifier's homogeneity gate was asked draws `MVK_VARYING_TYPES_NOT_ALLOWED`, the token families in both orders on both sides and the boolean kinds in both orders against a literal](sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs)
+- [Value list base type cross pairs](sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs)
 <a id="src-field-value-read-grid"></a>
-- [The field-value read's gates reach a root group, a filter body's iterated level, a value-list member, a copied computation operand and a `Today` comparison, and a partner whose read fails answers ahead of an ordering's kind class](sources/static-admission-and-class-probes.md#src-field-value-read-grid)
+- [Field value read grid](sources/static-admission-and-class-probes.md#src-field-value-read-grid)
 <a id="src-field-value-read-carriers"></a>
-- [The field-value read's gates answer ahead of an arithmetic operator's class, on a computation's operand writing a String, an Enumeration, a Time or a Number, and on a category read](sources/static-admission-and-class-probes.md#src-field-value-read-carriers)
+- [Field value read carriers](sources/static-admission-and-class-probes.md#src-field-value-read-carriers)
 <a id="src-field-value-read-remaining-sites"></a>
-- [A pattern comparison's field and a DateRange comparison's sides answer the field-value read's classes, a scalar membership's group subject waits for its members, a declaring group's own group takes no short-name fallback, and a computation reading a repeatable group draws the missing-star class](sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)
+- [Field value read remaining sites](sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)
 <a id="src-field-value-read-predictions"></a>
-- [A field an operator names as a parameter asks the group gate alone, a category read of a field declaring no Enumeration draws `MVK_NO_ENUMERATION` on every carrier measured, entity lists included, and a repeatable or parallel computation target reads as a nonrepeatable one does, its own group drawing the group class](sources/static-admission-and-class-probes.md#src-field-value-read-predictions)
+- [Field value read predictions](sources/static-admission-and-class-probes.md#src-field-value-read-predictions)
 <a id="src-value-list-cross-list-repeat-order"></a>
-- [A reference repeated across a value-list quantifier's two lists is asked after its base-type and kind gates, and one repeated within the field list before them](sources/static-admission-and-class-probes.md#src-value-list-cross-list-repeat-order)
+- [Value list cross list repeat order](sources/static-admission-and-class-probes.md#src-value-list-cross-list-repeat-order)
 <a id="src-ordering-date-class-reads-the-pair"></a>
-- [An ordering's date-kind class reads the pair: a Date on either side of a Number, constant or field, draws `MVK_INVALID_COMPARE_TO_DATE`](sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair)
+- [Ordering date class reads the pair](sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair)
 <a id="src-value-list-quantifier-kind-gate-partitions-three-ways"></a>
 - [The value-list quantifiers' kind gate partitions three ways, they admit a sole field operand, and an Enumeration field side is legal against valid tokens](sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)
 <a id="src-partial-date-precision-operand-gate"></a>
@@ -975,7 +934,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-constant-computation-admits-a-repeatable-target"></a>
 - [A constant computation admits a repeatable target at every declaring-group choice; only a star in a precondition refuses](sources/static-admission-and-class-probes.md#src-constant-computation-admits-a-repeatable-target)
 <a id="src-pattern-comparison-left-kind-gate-is-total"></a>
-- [The pattern comparison's left-kind gate is total: DATE_RANGE draws the same class as the other seven kinds](sources/static-admission-and-class-probes.md#src-pattern-comparison-left-kind-gate-is-total)
+- [Pattern comparison left kind gate is total](sources/static-admission-and-class-probes.md#src-pattern-comparison-left-kind-gate-is-total)
 <a id="src-custom-validity-operand-refuses-every-kind-with-one-class"></a>
 - [The custom-validity operand gate names its admitted set: every refused kind draws one class, where the Boolean constant's target gate partitions four ways](sources/static-admission-and-class-probes.md#src-custom-validity-operand-refuses-every-kind-with-one-class)
 <a id="src-temporal-declaration-without-a-format"></a>
@@ -989,7 +948,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-daterange-scalar-slot-rejects-every-nonscalar-form"></a>
 - [`AtLeastOneDateRangeOverlaps` rejects every non-scalar form in its scalar slot with one class, and admits all five in its `In` slot](sources/static-admission-and-class-probes.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)
 <a id="src-later-position-class-is-total-and-presence-is-admitted"></a>
-- [Every later-position kind draws `MVK_DATE_AND_NONDATE` at the temporal extrema, and a starred group over a nonrepeatable terminal is admitted with its expansion gated](sources/static-admission-and-class-probes.md#src-later-position-class-is-total-and-presence-is-admitted)
+- [Later position class is total and presence is admitted](sources/static-admission-and-class-probes.md#src-later-position-class-is-total-and-presence-is-admitted)
 <a id="src-later-position-kinds-and-group-expansion-class"></a>
 - [A Boolean in a temporal extremum's later position draws `MVK_DATE_AND_NONDATE`; a mixed starred-group expansion draws `MVK_NOT_SORTABLE` instead](sources/static-admission-and-class-probes.md#src-later-position-kinds-and-group-expansion-class)
 <a id="src-parser-static-legality-sweep"></a>
@@ -1000,7 +959,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-first-filled-reads-the-format-string"></a>
 - [The four entity-list carriers split two-and-two on one field pair: the extrema and the distinct count read the component set, `FirstFilledValue` and `FieldValuesNotUnique` read the format string](sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string)
 <a id="src-equal-set-spelling-families-carrier-split"></a>
-- [The two-and-two carrier split holds across all three equal-set spelling families, the extrema ignore component order as well as spelling, and a declared Base Year changes none of it](sources/static-admission-and-class-probes.md#src-equal-set-spelling-families-carrier-split)
+- [Equal set spelling families carrier split](sources/static-admission-and-class-probes.md#src-equal-set-spelling-families-carrier-split)
 <a id="src-filtered-star-supplies-the-leading-kind"></a>
 - [A `Having`-filtered star supplies the extremum's leading kind exactly as a plain star does, measured on the pairing](sources/static-admission-and-class-probes.md#src-filtered-star-supplies-the-leading-kind)
 <a id="src-filtered-star-temporal-carriers-and-binding-depth"></a>
@@ -1011,9 +970,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`NumberOfDifferentValues` admits Custom as string-like, splits homogeneity into two codes, and counts expanded operands for arity](sources/static-admission-and-class-probes.md#src-distinct-count-operand-domain)
 
 <a id="src-extensible-enumeration-has-no-dm-json-carrier"></a>
-- [Extensible Enumeration is a String type's runtime quality with no DM-JSON carrier](sources/static-admission-and-class-probes.md#src-extensible-enumeration-has-no-dm-json-carrier)
+- [Extensible enumeration has no dm json carrier](sources/static-admission-and-class-probes.md#src-extensible-enumeration-has-no-dm-json-carrier)
 <a id="src-validtype-operand-gates"></a>
-- [The custom-type validity operand gates, with their exact codes and the two confusable wildcard refusals](sources/static-admission-and-class-probes.md#src-validtype-operand-gates)
+- [Validtype operand gates](sources/static-admission-and-class-probes.md#src-validtype-operand-gates)
 <a id="src-entity-list-sole-operand-arity"></a>
 - [`FirstFilledValue`'s sole-operand rule is the disjunction its own Kernel message states — more than one field **or** at least one group — while the entity-valued value list admits a sole field on each side](sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)
 
@@ -1021,16 +980,16 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The six `@NotInD` declaration properties never reach validation codegen or the runtime, the structural-mapping tool is their sole semantic consumer and overrides the format there, and the annotation's own no-effect Javadoc is falsified by its use on the decimal separator](sources/diagnostic-class-vocabulary-and-sweeps.md#src-notind-declaration-properties-are-mapping-provenance)
 
 <a id="src-aggregate-operand-list-takes-paths-only"></a>
-- [Composition is one-way: an aggregate nests inside a wrapper, but no expression nests inside an aggregate's operand list](sources/computation-placement-and-constant-probes.md#src-aggregate-operand-list-takes-paths-only)
+- [Aggregate operand list takes paths only](sources/computation-placement-and-constant-probes.md#src-aggregate-operand-list-takes-paths-only)
 
 <a id="src-number-operation-typing"></a>
-- [A Number computation's operation is typed in one post-order walk on the condition carrier's rules, and a well-typed non-Number result meets the target's comparison, measured locally 2026-10-02](sources/computation-placement-and-constant-probes.md#src-number-operation-typing)
+- [Number operation typing](sources/computation-placement-and-constant-probes.md#src-number-operation-typing)
 
 <a id="src-number-operation-node-gates"></a>
-- [A Number operation's authoring gates are asked at each node as it closes, after that node's typing, and a call checks nothing itself, measured locally 2026-10-02](sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates)
+- [Number operation node gates](sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates)
 
 <a id="src-number-operation-division-walk"></a>
-- [The division check walks each checked node's subtree through value functions and stops at the first brace, addition or power, so a call shares an enclosing operator's walk and asks nothing at the root, measured locally 2026-10-02](sources/computation-placement-and-constant-probes.md#src-number-operation-division-walk)
+- [Number operation division walk](sources/computation-placement-and-constant-probes.md#src-number-operation-division-walk)
 
 <a id="src-power-derived-scale-and-operand-shapes"></a>
 - [`^` restricts neither operand's shape; a non-literal exponent derives unknown scale, and that is what a computed target refuses](sources/computation-placement-and-constant-probes.md#src-power-derived-scale-and-operand-shapes)
@@ -1061,32 +1020,32 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A computed value keeps no typed form past its store — all five store overloads render to text, so a computed DATE_TIME cell retains no instant and is indistinguishable from an authored one](sources/computation-placement-and-constant-probes.md#src-computed-value-is-not-retained-past-its-store)
 
 <a id="src-two-positions-share-the-root-gate"></a>
-- [Both parameter positions share one root gate and then split, the name position answering `INVALID_ENTITY` where the group position answers `INVALID_GROUP`](sources/message-and-pointer-probes.md#src-two-positions-share-the-root-gate)
+- [Two positions share the root gate](sources/message-and-pointer-probes.md#src-two-positions-share-the-root-gate)
 <a id="src-message-name-position-refusals"></a>
-- [The name position's path refusals carry their own classes, and a name that resolves to a group is refused as no read field](sources/message-and-pointer-probes.md#src-message-name-position-refusals)
+- [Message name position refusals](sources/message-and-pointer-probes.md#src-message-name-position-refusals)
 <a id="src-message-name-position-carriers"></a>
-- [A group in a form pointer draws its own class, a keyed form passes a group to the index gate, the message's short-name tier ignores the model flag, and a lone absolute segment resolves](sources/message-and-pointer-probes.md#src-message-name-position-carriers)
+- [Message name position carriers](sources/message-and-pointer-probes.md#src-message-name-position-carriers)
 <a id="src-message-parameter-decoder"></a>
 - [A rule message's parameter is parsed on its own and refused at its parser's first event: the name position's decision reads the whole entity first](sources/message-and-pointer-probes.md#src-message-parameter-decoder)
 
 <a id="src-presence-confirm-custom-carriers"></a>
-- [The presence leaf admits Confirm and Custom, and an unregistered Custom type faults only on a present value](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)
+- [Presence confirm custom carriers](sources/having-filter-probes.md#src-presence-confirm-custom-carriers)
 <a id="src-nested-self-exclusion"></a>
-- [Self-exclusion survives nesting under a disjunction and still tracks the evaluating row](sources/having-filter-probes.md#src-nested-self-exclusion)
+- [Nested self exclusion](sources/having-filter-probes.md#src-nested-self-exclusion)
 <a id="src-three-level-filter-nesting"></a>
-- [A filter's bracketing is honoured at three levels, separated from two flattenings by one document](sources/having-filter-probes.md#src-three-level-filter-nesting)
+- [Three level filter nesting](sources/having-filter-probes.md#src-three-level-filter-nesting)
 <a id="src-correlated-filter-string-computed-target"></a>
-- [A correlated filter drives a String computed target, and an empty candidate set produces no outcome](sources/having-filter-probes.md#src-correlated-filter-string-computed-target)
+- [Correlated filter string computed target](sources/having-filter-probes.md#src-correlated-filter-string-computed-target)
 <a id="src-currentrepetition-host-iteration"></a>
-- [`CurrentRepetition` is admitted exactly where the enclosing iteration binds its group](sources/having-filter-probes.md#src-currentrepetition-host-iteration)
+- [Currentrepetition host iteration](sources/having-filter-probes.md#src-currentrepetition-host-iteration)
 <a id="src-self-exclusion-and-nested-filter-runtime"></a>
 - [`CurrentRepetition` self-exclusion is an exact complement pair, `$` binds a per-row computed target, and a nested `Or` selects its own rows](sources/having-filter-probes.md#src-self-exclusion-and-nested-filter-runtime)
 <a id="src-presence-leaf-operand-kinds"></a>
-- [The presence leaf reads the same three states on a temporal, Enumeration, DateRange, and Boolean operand](sources/having-filter-probes.md#src-presence-leaf-operand-kinds)
+- [Presence leaf operand kinds](sources/having-filter-probes.md#src-presence-leaf-operand-kinds)
 <a id="src-bare-outer-reference-redundant-marker"></a>
-- [On a level the star does not reopen, the `$` marker is admitted, redundant, and not what satisfies the scope gate](sources/having-filter-probes.md#src-bare-outer-reference-redundant-marker)
+- [Bare outer reference redundant marker](sources/having-filter-probes.md#src-bare-outer-reference-redundant-marker)
 <a id="src-correlated-filter-runtime"></a>
-- [`$` binds the captured outer row and the candidate set includes it](sources/having-filter-probes.md#src-correlated-filter-runtime)
+- [Correlated filter runtime](sources/having-filter-probes.md#src-correlated-filter-runtime)
 <a id="src-pattern-invalid-string-cell"></a>
 - [String formal-invalid input](sources/evaluation-and-application-routes.md#src-pattern-invalid-string-cell)
 <a id="src-filter-condition-carrier-independence"></a>
@@ -1094,45 +1053,45 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-nested-correlated-filter-and-poison-scope"></a>
 - [Nested correlation and poison scope](sources/having-filter-probes.md#src-nested-correlated-filter-and-poison-scope)
 <a id="src-outer-origin-filter-leaves"></a>
-- [A `$`-marked reference does not bind the filtered level, and both newer leaves read the captured row](sources/having-filter-probes.md#src-outer-origin-filter-leaves)
+- [Outer origin filter leaves](sources/having-filter-probes.md#src-outer-origin-filter-leaves)
 
 <a id="src-starred-operand-message-polarity"></a>
-- [A computation's message type follows what can still grow](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
+- [Starred operand message polarity](sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
 <a id="src-filled-field-count-nested-capacity"></a>
-- [A group `NumberOfFilledFields` moves against declared slot capacity, not declared field count](sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)
+- [Filled field count nested capacity](sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)
 <a id="src-filled-field-count-deep-capacity"></a>
-- [Slot capacity compounds through nested repetition levels and stops at the operand group](sources/group-list-and-capacity-probes.md#src-filled-field-count-deep-capacity)
+- [Filled field count deep capacity](sources/group-list-and-capacity-probes.md#src-filled-field-count-deep-capacity)
 <a id="src-filtered-field-fill-ranges"></a>
 - [Filtered field-fill selected ranges and deciding polarity](sources/group-list-and-capacity-probes.md#src-filtered-field-fill-ranges)
 
 <a id="src-group-field-fill-declared-slots"></a>
-- [Field-group quantifiers retain declared slots and bound-parent capacity](sources/group-list-and-capacity-probes.md#src-group-field-fill-declared-slots)
+- [Group field fill declared slots](sources/group-list-and-capacity-probes.md#src-group-field-fill-declared-slots)
 <a id="src-computation-star-binding-gate"></a>
 - [A repeatable level a star leaves unstarred must be bound: below the first star it draws the missing-star class on every carrier measured, and above it a fixed-target computation's class follows where its target lies](sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)
 <a id="src-validation-below-star-placement"></a>
-- [Below the first star the error field places the refusal on twenty-two validation star carriers: containment from a rule group it lies outside, the missing star from one it lies in](sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)
+- [Validation below star placement](sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)
 <a id="src-validation-below-star-placement-kinds"></a>
-- [The same placement holds on the token, temporal, DateRange, Boolean, Enumeration and `SumOfProducts` carriers, on either value-list side, on a group under a filled-field carrier and on a filtered star](sources/group-list-and-capacity-probes.md#src-validation-below-star-placement-kinds)
+- [Validation below star placement kinds](sources/group-list-and-capacity-probes.md#src-validation-below-star-placement-kinds)
 <a id="src-walk-batch-reading-scope"></a>
-- [The error field's scope binds a validation read's levels only when the error field lies at or below the rule group, and a computation places its refusal by its target](sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)
+- [Walk batch reading scope](sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)
 <a id="src-ancestor-starred-group-count-computation"></a>
 - [`NumberOfFilledGroups` counts a fixed group below a star on the computation arm by content per in-capacity instance, and a computation reading a malformed-only operand group emits no implicit message](sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation)
 <a id="src-below-star-group-computation"></a>
-- [A fixed group below a star is admitted and computed on the expansion account on the computation arm too](sources/group-list-and-capacity-probes.md#src-below-star-group-computation)
+- [Below star group computation](sources/group-list-and-capacity-probes.md#src-below-star-group-computation)
 <a id="src-below-star-group-runtime"></a>
-- [A fixed group below a star counts its own fields in every reopened in-capacity row, moves until every declared slot below the star is filled, and a group operand's value count stays growable while a reopened row is missing](sources/group-list-and-capacity-probes.md#src-below-star-group-runtime)
+- [Below star group runtime](sources/group-list-and-capacity-probes.md#src-below-star-group-runtime)
 <a id="src-group-count-list-extent"></a>
-- [A group-count list's extent is its operand list, and a starred member breaks that](sources/group-list-and-capacity-probes.md#src-group-count-list-extent)
+- [Group count list extent](sources/group-list-and-capacity-probes.md#src-group-count-list-extent)
 
 <a id="src-group-count-unavailability"></a>
-- [A group error makes a filled-group count unknown only when that group has no admitted content](sources/group-list-and-capacity-probes.md#src-group-count-unavailability)
+- [Group count unavailability](sources/group-list-and-capacity-probes.md#src-group-count-unavailability)
 
 <a id="src-group-count-static-gates-both-arms"></a>
-- [The group-count static gate table is the same on both arms](sources/group-list-and-capacity-probes.md#src-group-count-static-gates-both-arms)
+- [Group count static gates both arms](sources/group-list-and-capacity-probes.md#src-group-count-static-gates-both-arms)
 <a id="src-group-count-gates-repeatable-scope"></a>
-- [The group-count gate table survives a repeatable declaring group, and a filter refuses a group operand](sources/group-list-and-capacity-probes.md#src-group-count-gates-repeatable-scope)
+- [Group count gates repeatable scope](sources/group-list-and-capacity-probes.md#src-group-count-gates-repeatable-scope)
 <a id="src-fixed-group-repeatable-ancestor-carriers"></a>
-- [Fixed child groups bind to the declaring repeatable row on every measured carrier](sources/group-list-and-capacity-probes.md#src-fixed-group-repeatable-ancestor-carriers)
+- [Fixed group repeatable ancestor carriers](sources/group-list-and-capacity-probes.md#src-fixed-group-repeatable-ancestor-carriers)
 
 <a id="src-repeatability-declaration-domain"></a>
 - [A repeatable group always carries a finite maximum, and absence means nonrepeatable](sources/group-list-and-capacity-probes.md#src-repeatability-declaration-domain)
@@ -1147,115 +1106,115 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-mandatory-information-presence-matrix"></a>
 - [Mandatory-information derivation separates field, root-only, and ignored rule shapes](sources/rule-set-meta-information.md#src-mandatory-information-presence-matrix)
 <a id="src-mandatory-information-repeatable-presence"></a>
-- [Mandatory-information derivation preserves connective and starred presence-operator identity](sources/rule-set-meta-information.md#src-mandatory-information-repeatable-presence)
+- [Mandatory information repeatable presence](sources/rule-set-meta-information.md#src-mandatory-information-repeatable-presence)
 <a id="src-mandatory-information-composition-matrix"></a>
 - [Mandatory-information derivation distinguishes root-relative fields and finite dependency closure](sources/rule-set-meta-information.md#src-mandatory-information-composition-matrix)
 <a id="src-mandatory-information-boolean-formulas"></a>
-- [Mandatory-information derivation preserves two-level negative-field Boolean structure](sources/rule-set-meta-information.md#src-mandatory-information-boolean-formulas)
+- [Mandatory information boolean formulas](sources/rule-set-meta-information.md#src-mandatory-information-boolean-formulas)
 <a id="src-mandatory-information-boolean-formula-positions"></a>
-- [Mandatory-information 2×2 negative-field formulas ignore shared-field position](sources/rule-set-meta-information.md#src-mandatory-information-boolean-formula-positions)
+- [Mandatory information boolean formula positions](sources/rule-set-meta-information.md#src-mandatory-information-boolean-formula-positions)
 <a id="src-mandatory-information-field-cycles"></a>
-- [Mandatory-information derivation closes a seeded direct field cycle and leaves an unseeded cycle inert](sources/rule-set-meta-information.md#src-mandatory-information-field-cycles)
+- [Mandatory information field cycles](sources/rule-set-meta-information.md#src-mandatory-information-field-cycles)
 <a id="src-mandatory-information-field-list-cycles"></a>
-- [Mandatory-information derivation closes seeded existential and universal field-list cycles without self-support](sources/rule-set-meta-information.md#src-mandatory-information-field-list-cycles)
+- [Mandatory information field list cycles](sources/rule-set-meta-information.md#src-mandatory-information-field-list-cycles)
 <a id="src-mandatory-information-longer-cycles"></a>
-- [Mandatory-information derivation closes exact four-node direct and multi-list-edge cycles without self-support](sources/rule-set-meta-information.md#src-mandatory-information-longer-cycles)
+- [Mandatory information longer cycles](sources/rule-set-meta-information.md#src-mandatory-information-longer-cycles)
 <a id="src-mandatory-information-field-list-guards"></a>
-- [Mandatory-information derivation distinguishes existential and universal filled-field guards](sources/rule-set-meta-information.md#src-mandatory-information-field-list-guards)
+- [Mandatory information field list guards](sources/rule-set-meta-information.md#src-mandatory-information-field-list-guards)
 <a id="src-mandatory-information-distinct-count"></a>
-- [Mandatory-information derivation preserves filled-count and distinct-count operator identity](sources/rule-set-meta-information.md#src-mandatory-information-distinct-count)
+- [Mandatory information distinct count](sources/rule-set-meta-information.md#src-mandatory-information-distinct-count)
 <a id="src-mandatory-information-info-severity"></a>
-- [Mandatory-information derivation ignores INFO negative field rules](sources/rule-set-meta-information.md#src-mandatory-information-info-severity)
+- [Mandatory information info severity](sources/rule-set-meta-information.md#src-mandatory-information-info-severity)
 <a id="src-mandatory-information-reversed-strict-count"></a>
-- [Mandatory-information derivation recognizes reversed strict filled-count guards](sources/rule-set-meta-information.md#src-mandatory-information-reversed-strict-count)
+- [Mandatory information reversed strict count](sources/rule-set-meta-information.md#src-mandatory-information-reversed-strict-count)
 <a id="src-mandatory-information-false-count-guards"></a>
-- [Mandatory-information derivation admits false filled-count guards](sources/rule-set-meta-information.md#src-mandatory-information-false-count-guards)
+- [Mandatory information false count guards](sources/rule-set-meta-information.md#src-mandatory-information-false-count-guards)
 <a id="src-mandatory-information-count-seed-cardinality"></a>
-- [Mandatory-information derivation returns the zero-, one-, and two-seed filled-count results](sources/rule-set-meta-information.md#src-mandatory-information-count-seed-cardinality)
+- [Mandatory information count seed cardinality](sources/rule-set-meta-information.md#src-mandatory-information-count-seed-cardinality)
 <a id="src-mandatory-information-count-dependencies"></a>
-- [Mandatory-information derivation closes through a dependency-derived filled-count operand and reused target](sources/rule-set-meta-information.md#src-mandatory-information-count-dependencies)
+- [Mandatory information count dependencies](sources/rule-set-meta-information.md#src-mandatory-information-count-dependencies)
 <a id="src-mandatory-information-count-chain"></a>
-- [Mandatory-information derivation closes one filled-count target-to-operand chain](sources/rule-set-meta-information.md#src-mandatory-information-count-chain)
+- [Mandatory information count chain](sources/rule-set-meta-information.md#src-mandatory-information-count-chain)
 <a id="src-mandatory-information-count-chain-orders"></a>
-- [Mandatory-information count-chain closure is stable across all six measured category orders](sources/rule-set-meta-information.md#src-mandatory-information-count-chain-orders)
+- [Mandatory information count chain orders](sources/rule-set-meta-information.md#src-mandatory-information-count-chain-orders)
 <a id="src-mandatory-information-count-target-only"></a>
-- [Mandatory-information derivation returns an isolated true count target and its root](sources/rule-set-meta-information.md#src-mandatory-information-count-target-only)
+- [Mandatory information count target only](sources/rule-set-meta-information.md#src-mandatory-information-count-target-only)
 <a id="src-mandatory-information-distinct-target-only"></a>
-- [Mandatory-information derivation keeps isolated distinct-count targets inert](sources/rule-set-meta-information.md#src-mandatory-information-distinct-target-only)
+- [Mandatory information distinct target only](sources/rule-set-meta-information.md#src-mandatory-information-distinct-target-only)
 <a id="src-mandatory-information-distinct-comparisons"></a>
-- [Mandatory-information derivation preserves the isolated distinct-count comparison matrix](sources/rule-set-meta-information.md#src-mandatory-information-distinct-comparisons)
+- [Mandatory information distinct comparisons](sources/rule-set-meta-information.md#src-mandatory-information-distinct-comparisons)
 <a id="src-mandatory-information-declared-required"></a>
-- [Mandatory-information derivation separates unconditional and parent-present field declarations](sources/rule-set-meta-information.md#src-mandatory-information-declared-required)
+- [Mandatory information declared required](sources/rule-set-meta-information.md#src-mandatory-information-declared-required)
 <a id="src-mandatory-information-declaration-closure"></a>
-- [Parent-present field declarations close from declaration, root, and direct-field seeds](sources/rule-set-meta-information.md#src-mandatory-information-declaration-closure)
+- [Mandatory information declaration closure](sources/rule-set-meta-information.md#src-mandatory-information-declaration-closure)
 <a id="src-mandatory-information-semantic-index"></a>
-- [A semantic-indexed operand excludes every referenced field from mandatory-information derivation](sources/rule-set-meta-information.md#src-mandatory-information-semantic-index)
+- [Mandatory information semantic index](sources/rule-set-meta-information.md#src-mandatory-information-semantic-index)
 <a id="src-mandatory-information-parallel-iteration"></a>
-- [A parallel-iterated rule contributes no referenced field to mandatory information](sources/rule-set-meta-information.md#src-mandatory-information-parallel-iteration)
+- [Mandatory information parallel iteration](sources/rule-set-meta-information.md#src-mandatory-information-parallel-iteration)
 <a id="src-mandatory-information-cross-root"></a>
-- [A cross-root negative disjunction contributes neither referenced field nor its independent root](sources/rule-set-meta-information.md#src-mandatory-information-cross-root)
+- [Mandatory information cross root](sources/rule-set-meta-information.md#src-mandatory-information-cross-root)
 <a id="src-mandatory-information-generated-index"></a>
-- [A generated optional repeatable String index requirement contributes nothing and supplies no global root seed](sources/rule-set-meta-information.md#src-mandatory-information-generated-index)
+- [Mandatory information generated index](sources/rule-set-meta-information.md#src-mandatory-information-generated-index)
 <a id="src-mandatory-information-generated-computation-validation"></a>
-- [A direct nonrepeatable scale-0 Number copy's generated validation contributes nothing and supplies no global root seed](sources/rule-set-meta-information.md#src-mandatory-information-generated-computation-validation)
+- [Mandatory information generated computation validation](sources/rule-set-meta-information.md#src-mandatory-information-generated-computation-validation)
 <a id="src-dynamic-enumeration-legality"></a>
 - [Dynamic-enumeration derivation refuses in four ordered stages, eleven of twelve classes attributed to one witness rule each](sources/rule-set-meta-information.md#src-dynamic-enumeration-legality)
 
 <a id="src-index-and-sort-field-declaration"></a>
-- [A group's index and sort nominations share one cascade](sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration)
+- [Index and sort field declaration](sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration)
 
 <a id="src-temporal-constructor-operand-positions"></a>
 - [A temporal constructor checks each operand position separately, and two classes distinguish a misplaced extractor from an inadmissible one](sources/static-admission-and-class-probes.md#src-temporal-constructor-operand-positions)
 
 <a id="src-form-condition-constructs"></a>
-- [The form-level constructs are German-only, so an A12 model's diagnostic for them depends on its condition language](sources/diagnostic-class-vocabulary-and-sweeps.md#src-form-condition-constructs)
+- [Form condition constructs](sources/diagnostic-class-vocabulary-and-sweeps.md#src-form-condition-constructs)
 
 <a id="src-generated-rule-identity"></a>
-- [The four auto-generated rules carry three projections that partition them differently](sources/model-structure-and-declaration-probes.md#src-generated-rule-identity)
+- [Generated rule identity](sources/model-structure-and-declaration-probes.md#src-generated-rule-identity)
 
 <a id="src-entity-container-integrity"></a>
-- [The per-entity integrity walk reads the entity's name rather than its identifier, and its first four stages hide the whole subtree](sources/model-structure-and-declaration-probes.md#src-entity-container-integrity)
+- [Entity container integrity](sources/model-structure-and-declaration-probes.md#src-entity-container-integrity)
 <a id="src-error-target-declaration"></a>
-- [A rule's error field draws two different iteration classes depending on how its condition reaches it, and the class turns on the reference partition rather than on any star in the text](sources/model-structure-and-declaration-probes.md#src-error-target-declaration)
+- [Error target declaration](sources/model-structure-and-declaration-probes.md#src-error-target-declaration)
 <a id="src-index-group-resolution"></a>
-- [Exactly one index group may govern a reference, and the walk that finds it examines only the innermost one's declared count](sources/model-structure-and-declaration-probes.md#src-index-group-resolution)
+- [Index group resolution](sources/model-structure-and-declaration-probes.md#src-index-group-resolution)
 <a id="src-rule-change-propagation"></a>
-- [The Kernel's own rule-change service declines to propagate a move in an A12 model, and an independent implementation performs that propagation soundly](sources/model-structure-and-declaration-probes.md#src-rule-change-propagation)
+- [Rule change propagation](sources/model-structure-and-declaration-probes.md#src-rule-change-propagation)
 <a id="src-repeatability-restriction"></a>
-- [A rule counting repetitions is read backwards as a repeatability restriction, and the pass that does so is reached by neither available gate](sources/model-structure-and-declaration-probes.md#src-repeatability-restriction)
+- [Repeatability restriction](sources/model-structure-and-declaration-probes.md#src-repeatability-restriction)
 <a id="src-error-text-row-parameter"></a>
-- [An error text's row-index parameter is refused when the condition reaches its group only through a star, and the rule is existential over the condition's references](sources/model-structure-and-declaration-probes.md#src-error-text-row-parameter)
+- [Error text row parameter](sources/model-structure-and-declaration-probes.md#src-error-text-row-parameter)
 <a id="src-enumeration-category-constant"></a>
-- [A literal compared against an enumeration's category is refused by a class the carrier chooses, and an enumeration value is not a category value](sources/static-admission-and-class-probes.md#src-enumeration-category-constant)
+- [Enumeration category constant](sources/static-admission-and-class-probes.md#src-enumeration-category-constant)
 <a id="src-computation-normal-form-generation"></a>
-- [An A12 computation's normalized condition is generated from its structure](sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-normal-form-generation)
+- [Computation normal form generation](sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-normal-form-generation)
 <a id="src-table-enumeration-inertness"></a>
-- [`ValueNotConsistent` is inert in an A12 document model](sources/diagnostic-class-vocabulary-and-sweeps.md#src-table-enumeration-inertness)
+- [Table enumeration inertness](sources/diagnostic-class-vocabulary-and-sweeps.md#src-table-enumeration-inertness)
 <a id="src-iteration-and-semantic-index-legality"></a>
-- [Iteration, parallel iteration, and the semantic index share one two-layer static gate](sources/diagnostic-class-vocabulary-and-sweeps.md#src-iteration-and-semantic-index-legality)
+- [Iteration and semantic index legality](sources/diagnostic-class-vocabulary-and-sweeps.md#src-iteration-and-semantic-index-legality)
 
 <a id="src-over-limit-computation-target"></a>
-- [An over-limit row receives no computed value](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
+- [Over limit computation target](sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)
 <a id="src-boolean-first-filled-false-is-filled"></a>
 - [`FirstFilledValue` selects a Boolean `false` because its filled predicate is presence, and an all-empty selection mints no outcome](sources/evaluation-and-application-routes.md#src-boolean-first-filled-false-is-filled)
 <a id="src-first-filled-malformed-terminates-and-inventory-reports"></a>
 - [A malformed `FirstFilledValue` source terminates the scan where an empty one falls through, and the eager operand inventory still reports the suffix the scan never read](sources/evaluation-and-application-routes.md#src-first-filled-malformed-terminates-and-inventory-reports)
 <a id="src-mixed-chain-string-target-rejection"></a>
-- [A rejected middle String remains visible through the Number and filtered Enumeration dependents](sources/evaluation-and-application-routes.md#src-mixed-chain-string-target-rejection)
+- [Mixed chain string target rejection](sources/evaluation-and-application-routes.md#src-mixed-chain-string-target-rejection)
 
 <a id="src-negation-pair-grid"></a>
-- [Over ten separating documents no predicate fires together with its complement](sources/evaluation-and-application-routes.md#src-negation-pair-grid)
+- [Negation pair grid](sources/evaluation-and-application-routes.md#src-negation-pair-grid)
 <a id="src-negated-corpus"></a>
-- [Every retained corpus rule negated by De Morgan over the complement table never fires together with its original](sources/evaluation-and-application-routes.md#src-negated-corpus)
+- [Negated corpus](sources/evaluation-and-application-routes.md#src-negated-corpus)
 <a id="src-peer-corpus-replay"></a>
-- [The peer's 33 kernel-verified corpus cases replay with 19 matches, no divergence and 18 instances Lean cannot represent](sources/evaluation-and-application-routes.md#src-peer-corpus-replay)
+- [Peer corpus replay](sources/evaluation-and-application-routes.md#src-peer-corpus-replay)
 <a id="src-negation-pair-supplement"></a>
 - [`Valid`/`Invalid` complement only over a `Date(...)` construction, and German spellings fire as English ones](sources/evaluation-and-application-routes.md#src-negation-pair-supplement)
 <a id="src-field-fill-mixed-list"></a>
 - [Field-fill lists mixing direct fields, fixed groups and a starred field read each operand by its own source](sources/evaluation-and-application-routes.md#src-field-fill-mixed-list)
 
 <a id="src-firstfilled-string-boolean-runtime"></a>
-- [Fixed and parent-local starred String and Boolean computation outcomes](sources/evaluation-and-application-routes.md#src-firstfilled-string-boolean-runtime)
+- [Firstfilled string boolean runtime](sources/evaluation-and-application-routes.md#src-firstfilled-string-boolean-runtime)
 
 <a id="src-selected-typed-first-filled"></a>
 - [Selected first-filled](sources/evaluation-and-application-routes.md#src-selected-typed-first-filled)
@@ -1263,35 +1222,35 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-first-filled-formal-branch-four-carriers"></a>
 - [First-filled formal failure across six carriers](sources/evaluation-and-application-routes.md#src-first-filled-formal-branch-four-carriers)
 <a id="src-number-formal-cascade-code-axis-and-load-canonicalisation"></a>
-- [The Number formal cascade's surfaced code and its message text are independent axes, and the canonical Document JSON load removes four refusals' preconditions](sources/evaluation-and-application-routes.md#src-number-formal-cascade-code-axis-and-load-canonicalisation)
+- [Number formal cascade code axis and load canonicalisation](sources/evaluation-and-application-routes.md#src-number-formal-cascade-code-axis-and-load-canonicalisation)
 <a id="src-index-iteration-and-constant-refusal-classes"></a>
-- [Twenty-five parser refusal classes across the index, iteration, date-construction and constant families](sources/diagnostic-class-vocabulary-and-sweeps.md#src-index-iteration-and-constant-refusal-classes)
+- [Index iteration and constant refusal classes](sources/diagnostic-class-vocabulary-and-sweeps.md#src-index-iteration-and-constant-refusal-classes)
 <a id="src-codegen-classes-reach-ordinary-authoring"></a>
 - [The Kernel code-generation check family is reachable from ordinary authoring, because the consistency check runs the generator](sources/diagnostic-class-vocabulary-and-sweeps.md#src-codegen-classes-reach-ordinary-authoring)
 <a id="src-unraised-diagnostic-vocabulary"></a>
-- [Fifteen catalog keys the Kernel declares but never reports](sources/diagnostic-class-vocabulary-and-sweeps.md#src-unraised-diagnostic-vocabulary)
+- [Unraised diagnostic vocabulary](sources/diagnostic-class-vocabulary-and-sweeps.md#src-unraised-diagnostic-vocabulary)
 <a id="src-default-locale-message-bundles"></a>
-- [The default-locale message bundle is a placeholder for every tool-time catalog](sources/diagnostic-class-vocabulary-and-sweeps.md#src-default-locale-message-bundles)
+- [Default locale message bundles](sources/diagnostic-class-vocabulary-and-sweeps.md#src-default-locale-message-bundles)
 <a id="src-shipped-custom-field-type-vocabulary"></a>
-- [The thirteen shipped custom field types and their thirty-six refusal keys](sources/diagnostic-class-vocabulary-and-sweeps.md#src-shipped-custom-field-type-vocabulary)
+- [Shipped custom field type vocabulary](sources/diagnostic-class-vocabulary-and-sweeps.md#src-shipped-custom-field-type-vocabulary)
 <a id="src-universal-value-formal-precheck"></a>
-- [The type-independent formal pre-check every stored value passes](sources/static-admission-and-class-probes.md#src-universal-value-formal-precheck)
+- [Universal value formal precheck](sources/static-admission-and-class-probes.md#src-universal-value-formal-precheck)
 <a id="src-unraised-diagnostic-runtime-corroboration"></a>
-- [A second carrier for the never-raised form-line diagnostic](sources/diagnostic-class-vocabulary-and-sweeps.md#src-unraised-diagnostic-runtime-corroboration)
+- [Unraised diagnostic runtime corroboration](sources/diagnostic-class-vocabulary-and-sweeps.md#src-unraised-diagnostic-runtime-corroboration)
 <a id="src-date-range-list-iso-arity-and-fragment-suffix"></a>
-- [The direct-field DateRange list executes at ISO/slash, recurses past three sources, reports a fragment suffix's formal failure, and renders an empty-separator `MM` target](sources/temporal-runtime-fold-probes.md#src-date-range-list-iso-arity-and-fragment-suffix)
+- [Date range list iso arity and fragment suffix](sources/temporal-runtime-fold-probes.md#src-date-range-list-iso-arity-and-fragment-suffix)
 <a id="src-yearless-extrema-base-year-ordering"></a>
 - [The extrema order a yearless list under a declared Base Year on both strategies, and no document on such a model can say what they order on](sources/temporal-runtime-fold-probes.md#src-yearless-extrema-base-year-ordering)
 <a id="src-extrema-component-omitting-fold"></a>
-- [The extrema fold a component-omitting operand, yearless included, and order it correctly](sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold)
+- [Extrema component omitting fold](sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold)
 <a id="src-cross-kind-format-runtime-parser"></a>
 - [The runtime text parser is the declared format's, not the declared kind's](sources/temporal-runtime-fold-probes.md#src-cross-kind-format-runtime-parser)
 <a id="src-distinct-count-group-expansion-fold"></a>
-- [A group operand's distinct count reaches its whole subtree at runtime, and an uninstantiated row contributes nothing](sources/temporal-runtime-fold-probes.md#src-distinct-count-group-expansion-fold)
+- [Distinct count group expansion fold](sources/temporal-runtime-fold-probes.md#src-distinct-count-group-expansion-fold)
 <a id="src-distinct-count-time-bearing-fold"></a>
-- [The distinct count folds a time-bearing operand too, and a TIME agrees with a time-only DATETIME](sources/temporal-runtime-fold-probes.md#src-distinct-count-time-bearing-fold)
+- [Distinct count time bearing fold](sources/temporal-runtime-fold-probes.md#src-distinct-count-time-bearing-fold)
 <a id="src-distinct-count-component-omitting-fold"></a>
-- [The distinct count folds a component-omitting date at its declared precision](sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)
+- [Distinct count component omitting fold](sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)
 <a id="src-distinct-count-temporal-identity-both-strategies"></a>
 - [Distinct temporal identity, both strategies](sources/temporal-runtime-fold-probes.md#src-distinct-count-temporal-identity-both-strategies)
 <a id="src-having-numeric-expression-runtime"></a>
@@ -1304,13 +1263,13 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-filter-reference-level-runtime"></a>
 - [Non-reopened filter references are constant per host row or document](sources/having-filter-probes.md#src-filter-reference-level-runtime)
 <a id="src-repeatable-computation-row-extent"></a>
-- [A repeatable computation's row extent is exactly the instantiated rows, with no phantom tail](sources/group-list-and-capacity-probes.md#src-repeatable-computation-row-extent)
+- [Repeatable computation row extent](sources/group-list-and-capacity-probes.md#src-repeatable-computation-row-extent)
 <a id="src-distinct-count-first-operand-class"></a>
 - [`NumberOfDifferentValues` classifies by its first operand](sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)
 <a id="src-extrema-operand-family-is-positional"></a>
 - [`MinValue`/`MaxValue` pick their operand family from the first operand, and the two families draw different codes](sources/group-list-and-capacity-probes.md#src-extrema-operand-family-is-positional)
 <a id="src-capacity-consumer-sweep"></a>
-- [The declared-capacity extent reaches the last four operand-stream consumers](sources/group-list-and-capacity-probes.md#src-capacity-consumer-sweep)
+- [Capacity consumer sweep](sources/group-list-and-capacity-probes.md#src-capacity-consumer-sweep)
 <a id="src-validation-capacity-consumers"></a>
 - [Validation operand capacity](sources/group-list-and-capacity-probes.md#src-validation-capacity-consumers)
 <a id="src-group-capacity-consumers"></a>
@@ -1318,13 +1277,13 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-over-limit-finding-text"></a>
 - [`zuGrosseZeile` renders no coordinate, and two over-limit groups report independently](sources/over-repetition-probes.md#src-over-limit-finding-text)
 <a id="src-starred-group-count-computation"></a>
-- [The computation arm counts a starred repeatable group's instantiated rows](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
+- [Starred group count computation](sources/group-and-iteration-probes.md#src-starred-group-count-computation)
 <a id="src-partial-coverage-group-operands"></a>
-- [The count needs every operand field covered, where the presence predicates read what they can see](sources/group-list-and-capacity-probes.md#src-partial-coverage-group-operands)
+- [Partial coverage group operands](sources/group-list-and-capacity-probes.md#src-partial-coverage-group-operands)
 <a id="src-group-count-empty-gate"></a>
-- [A comparison reading a filled-group count fires on an instance without content, where one of field reads alone does not, measured locally 2026-10-02](sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)
+- [Group count empty gate](sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)
 <a id="src-rule-bucket-empty-gate"></a>
-- [A count lifts the content gate only from a comparison's small side, a count of different values does too, and a once rule on a repeatable root runs with no gate, measured locally 2026-10-02](sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate)
+- [Rule bucket empty gate](sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate)
 <a id="src-empty-gate-count-beneath-and"></a>
 - [A small-side count lifts the content gate from beneath `And` too, 2026-10-02](sources/group-list-and-capacity-probes.md#src-empty-gate-count-beneath-and)
 <a id="src-starred-group-quantifier-capacity"></a>
@@ -1338,13 +1297,13 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-address-dialect-selector"></a>
 - [An unbound repeatable level is what selects a message pointer's slash spelling](sources/message-and-pointer-probes.md#src-address-dialect-selector)
 <a id="src-repeatable-descendant-group-count"></a>
-- [A repeatable descendant makes its shell count structurally](sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count)
+- [Repeatable descendant group count](sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count)
 <a id="src-deep-repeatable-descendant-group-count"></a>
-- [Repetition depth does not bound a group-count operand's row constituent](sources/group-and-iteration-probes.md#src-deep-repeatable-descendant-group-count)
+- [Deep repeatable descendant group count](sources/group-and-iteration-probes.md#src-deep-repeatable-descendant-group-count)
 <a id="src-nested-star-bound-outer-level"></a>
-- [A nested star answers from its own enclosing row](sources/group-and-iteration-probes.md#src-nested-star-bound-outer-level)
+- [Nested star bound outer level](sources/group-and-iteration-probes.md#src-nested-star-bound-outer-level)
 <a id="src-group-operand-over-limit-extent"></a>
-- [A fixed group operand's extent excludes an over-limit row, and the count is zero rather than unknown](sources/group-and-iteration-probes.md#src-group-operand-over-limit-extent)
+- [Group operand over limit extent](sources/group-and-iteration-probes.md#src-group-operand-over-limit-extent)
 <a id="src-group-count-row-domains"></a>
 - [The half-instantiated shell, the starred group over a repeatable descendant, and the unreachable row-domain discriminator](sources/group-and-iteration-probes.md#src-group-count-row-domains)
 <a id="src-over-limit-finding-multiplicity"></a>
@@ -1357,41 +1316,41 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-address-index-position-classes"></a>
 - [The over-limit class follows the coordinate's position, and a repeatable root group draws the serial class throughout](sources/over-repetition-probes.md#src-address-index-position-classes)
 <a id="src-nested-descendant-group-count-invalid"></a>
-- [A formally invalid nested descendant still fills its group](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-invalid)
+- [Nested descendant group count invalid](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-invalid)
 <a id="src-nested-descendant-group-count-runtime"></a>
-- [A group-count operand reads its whole subtree](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-runtime)
+- [Nested descendant group count runtime](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-runtime)
 <a id="src-nested-descendant-group-count-admission"></a>
-- [A fixed group-count operand admits nested descendants](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-admission)
+- [Nested descendant group count admission](sources/group-and-iteration-probes.md#src-nested-descendant-group-count-admission)
 <a id="src-empty-declared-group"></a>
-- [An empty declared group is kernel-valid](sources/group-and-iteration-probes.md#src-empty-declared-group)
+- [Empty declared group](sources/group-and-iteration-probes.md#src-empty-declared-group)
 <a id="src-short-name-flag-gates-the-model-wide-tier"></a>
-- [`fieldRefByShortNameAllowed` gates the model-wide short-name tier and not the declaring-group one](sources/group-and-iteration-probes.md#src-short-name-flag-gates-the-model-wide-tier)
+- [Short name flag gates the model wide tier](sources/group-and-iteration-probes.md#src-short-name-flag-gates-the-model-wide-tier)
 <a id="src-multi-root-short-name-reach"></a>
-- [A model may declare more than one root group, and the short-name tier spans them](sources/group-and-iteration-probes.md#src-multi-root-short-name-reach)
+- [Multi root short name reach](sources/group-and-iteration-probes.md#src-multi-root-short-name-reach)
 <a id="src-message-group-parameter"></a>
-- [The rule-message group parameter `$#…$`](sources/message-and-pointer-probes.md#src-message-group-parameter)
+- [Message group parameter](sources/message-and-pointer-probes.md#src-message-group-parameter)
 <a id="src-message-group-availability"></a>
-- [A group parameter may name any available group, the rule's own group, an ancestor, or a group holding a field the condition reads, and a path without a leading slash resolves from the rule's group](sources/message-and-pointer-probes.md#src-message-group-availability)
+- [Message group availability](sources/message-and-pointer-probes.md#src-message-group-availability)
 <a id="src-message-group-argument-layers"></a>
 - [A group argument is refused in layers, a lexer or separator fault before the lookup with its field short-name fallback, then a token left after the path](sources/message-and-pointer-probes.md#src-message-group-argument-layers)
 <a id="src-message-group-argument-events"></a>
 - [A group argument's classes follow its parser's events, and a keyword that is also a name is decided by the token after it](sources/message-and-pointer-probes.md#src-message-group-argument-events)
 <a id="src-message-group-walk-and-dotted-names"></a>
-- [A parent walk ends where the parser decides, two or more up-steps before a token that continues no name count one more, a turning point is compared by its first word, and a dotted continuation joins its name](sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)
+- [Message group walk and dotted names](sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)
 <a id="src-german-condition-language-terminals"></a>
-- [The group position's keyword set is selected by condition language in both directions, and the retired terminals are not](sources/message-and-pointer-probes.md#src-german-condition-language-terminals)
+- [German condition language terminals](sources/message-and-pointer-probes.md#src-german-condition-language-terminals)
 
 <a id="src-message-group-parameter-rendered-index"></a>
-- [An admitted group parameter renders the firing row's repetition index](sources/message-and-pointer-probes.md#src-message-group-parameter-rendered-index)
+- [Message group parameter rendered index](sources/message-and-pointer-probes.md#src-message-group-parameter-rendered-index)
 
 <a id="src-message-group-parameter-resolution"></a>
-- [How the rule-message group parameter resolves](sources/message-and-pointer-probes.md#src-message-group-parameter-resolution)
+- [Message group parameter resolution](sources/message-and-pointer-probes.md#src-message-group-parameter-resolution)
 <a id="src-dmtool-2026-08-22-instrument-handback"></a>
-- [Reviewed 2026-08-22 instrument handback and its two Kernel measurements](sources/temporal-and-message-probes.md#src-dmtool-2026-08-22-instrument-handback)
+- [Dmtool 2026 08 22 instrument handback](sources/temporal-and-message-probes.md#src-dmtool-2026-08-22-instrument-handback)
 <a id="src-2026-08-23-reconciliation"></a>
-- [Reviewed 2026-08-23 a12-dmkits reconciliation and correction batch](sources/temporal-and-message-probes.md#src-2026-08-23-reconciliation)
+- [2026 08 23 reconciliation](sources/temporal-and-message-probes.md#src-2026-08-23-reconciliation)
 <a id="src-date-range-2026-08-19-reconciliation"></a>
-- [Reviewed 2026-08-19 DateRange reconciliation and correction batch](sources/temporal-and-message-probes.md#src-date-range-2026-08-19-reconciliation)
+- [Date range 2026 08 19 reconciliation](sources/temporal-and-message-probes.md#src-date-range-2026-08-19-reconciliation)
 
 ### Group and iteration source checkpoints
 
@@ -1400,17 +1359,17 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="inbound-entity-list-group-operand-validator-cardinality-and-cleared-value-batch"></a>
 - [Inbound entity-list group-operand, validator-cardinality, and cleared-value batch](sources/inbound-group-operand-batches.md#inbound-entity-list-group-operand-validator-cardinality-and-cleared-value-batch)
 <a id="src-first-filled-additional-kind-computations"></a>
-- [Direct one-star additional-kind `FirstFilledValue` computations](sources/group-and-iteration-probes.md#src-first-filled-additional-kind-computations)
+- [First filled additional kind computations](sources/group-and-iteration-probes.md#src-first-filled-additional-kind-computations)
 <a id="src-first-filled-kind-computations"></a>
-- [Direct one-star established-kind `FirstFilledValue` computations](sources/group-and-iteration-probes.md#src-first-filled-kind-computations)
+- [First filled kind computations](sources/group-and-iteration-probes.md#src-first-filled-kind-computations)
 <a id="src-current-repetition-root-condition"></a>
-- [Nonrepeatable-root `CurrentRepetition` condition](sources/group-and-iteration-probes.md#src-current-repetition-root-condition)
+- [Current repetition root condition](sources/group-and-iteration-probes.md#src-current-repetition-root-condition)
 <a id="src-current-repetition-repeatable-condition"></a>
-- [Same-group repeatable `CurrentRepetition` validation](sources/group-and-iteration-probes.md#src-current-repetition-repeatable-condition)
+- [Current repetition repeatable condition](sources/group-and-iteration-probes.md#src-current-repetition-repeatable-condition)
 <a id="src-current-repetition-computation-dependency"></a>
-- [Computation `CurrentRepetition` structural dependency](sources/group-and-iteration-probes.md#src-current-repetition-computation-dependency)
+- [Current repetition computation dependency](sources/group-and-iteration-probes.md#src-current-repetition-computation-dependency)
 <a id="src-group-list-rnu-admission-correction"></a>
-- [Group-list and RNU admission correction](sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction)
+- [Group list rnu admission correction](sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction)
 <a id="src-entity-list-group-gates"></a>
 - [Entity-list group gates](sources/inbound-group-operand-batches.md#src-entity-list-group-gates)
 <a id="src-field-values-not-unique-group-admission"></a>
@@ -1422,11 +1381,11 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-number-group-value-count-computation-capacity"></a>
 - [Number group value-count computation capacity](sources/inbound-group-operand-batches.md#src-number-group-value-count-computation-capacity)
 <a id="src-token-group-partial-runtime"></a>
-- [Token group partial-validation runtime](sources/inbound-group-operand-batches.md#src-token-group-partial-runtime)
+- [Token group partial runtime](sources/inbound-group-operand-batches.md#src-token-group-partial-runtime)
 <a id="src-token-group-value-count-computation-capacity"></a>
 - [Token group value-count computation capacity](sources/inbound-group-operand-batches.md#src-token-group-value-count-computation-capacity)
 <a id="src-boolean-group-value-count-computation-capacity"></a>
-- [Boolean/Confirm group value-count computation capacity](sources/inbound-group-operand-batches.md#src-boolean-group-value-count-computation-capacity)
+- [Boolean group value count computation capacity](sources/inbound-group-operand-batches.md#src-boolean-group-value-count-computation-capacity)
 <a id="src-false-boolean-group-value-count-computation-capacity"></a>
 - [False Boolean-group value-count computation capacity](sources/inbound-group-operand-batches.md#src-false-boolean-group-value-count-computation-capacity)
 <a id="src-boolean-group-value-count-computation-shape-matrix"></a>
@@ -1434,13 +1393,13 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-boolean-fixed-group-value-count-computation"></a>
 - [Boolean fixed-group value-count computation](sources/inbound-group-operand-batches.md#src-boolean-fixed-group-value-count-computation)
 <a id="src-boolean-confirm-constant-computation-targets"></a>
-- [Boolean and Confirm constant computation targets](sources/inbound-group-operand-batches.md#src-boolean-confirm-constant-computation-targets)
+- [Boolean confirm constant computation targets](sources/inbound-group-operand-batches.md#src-boolean-confirm-constant-computation-targets)
 <a id="src-token-value-count-group-runtime"></a>
 - [Token group value-count runtime](sources/inbound-group-operand-batches.md#src-token-value-count-group-runtime)
 <a id="src-token-value-count-fixed-group-admission"></a>
 - [Token fixed-group value-count admission](sources/inbound-group-operand-batches.md#src-token-value-count-fixed-group-admission)
 <a id="src-filled-field-group-runtime"></a>
-- [Filled-field group-count runtime](sources/inbound-group-operand-batches.md#src-filled-field-group-runtime)
+- [Filled field group runtime](sources/inbound-group-operand-batches.md#src-filled-field-group-runtime)
 <a id="src-group-operand-capacity-consumer-sweep"></a>
 - [Fixed-group capacity: six carriers](sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)
 <a id="src-starred-group-operand-extent"></a>
@@ -1460,11 +1419,11 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-capacity-projection-computation-arm"></a>
 - [Computation capacity projection](sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)
 <a id="src-filtered-star-capacity-both-arms"></a>
-- [A filtered Number star answers from its in-capacity rows on both arms, so an over-limit row is never kept and never makes the filter unknown](sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)
+- [Filtered star capacity both arms](sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)
 <a id="src-starred-field-operand-peer-reproduction"></a>
 - [Starred field operand, empty-domain zero, and the operand-scoped over-repetition channel, reproduced by a12-dmkits](sources/inbound-group-operand-batches.md#src-starred-field-operand-peer-reproduction)
 <a id="src-star-over-repetition-domain"></a>
-- [Over-repetition exclusion from starred numeric domains](sources/over-repetition-probes.md#src-star-over-repetition-domain)
+- [Star over repetition domain](sources/over-repetition-probes.md#src-star-over-repetition-domain)
 <a id="src-temporal-field-values-not-unique-group-runtime"></a>
 - [Temporal field-values-not-unique group runtime](sources/inbound-group-operand-batches.md#src-temporal-field-values-not-unique-group-runtime)
 <a id="src-boolean-value-count-group-runtime"></a>
@@ -1478,15 +1437,15 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-extrema-sortable-kind-set"></a>
 - [The extrema's admitted kind set is Number or Date](sources/inbound-group-operand-batches.md#src-extrema-sortable-kind-set)
 <a id="src-group-runtime-and-reference"></a>
-- [Group runtime and reference correction](sources/inbound-group-operand-batches.md#src-group-runtime-and-reference)
+- [Group runtime and reference](sources/inbound-group-operand-batches.md#src-group-runtime-and-reference)
 <a id="src-group-first-filled-runtime-order"></a>
-- [Fixed-group first-filled runtime order](sources/inbound-group-operand-batches.md#src-group-first-filled-runtime-order)
+- [Group first filled runtime order](sources/inbound-group-operand-batches.md#src-group-first-filled-runtime-order)
 <a id="src-star-group-first-filled-runtime-order"></a>
-- [Starred-group first-filled runtime order](sources/inbound-group-operand-batches.md#src-star-group-first-filled-runtime-order)
+- [Star group first filled runtime order](sources/inbound-group-operand-batches.md#src-star-group-first-filled-runtime-order)
 <a id="src-sum-of-products-owning-group"></a>
-- [`SumOfProducts` owning-group and diagnostic matrix, reviewed inbound 2026-08-29](sources/inbound-group-operand-batches.md#src-sum-of-products-owning-group)
+- [Sum of products owning group](sources/inbound-group-operand-batches.md#src-sum-of-products-owning-group)
 <a id="src-count-partial-extent"></a>
-- [Direct starred count partial-extent checkpoint](sources/inbound-group-operand-batches.md#src-count-partial-extent)
+- [Count partial extent](sources/inbound-group-operand-batches.md#src-count-partial-extent)
 <a id="src-pr2-correlated-operand-identity"></a>
 - [Correlated direct-operand identity inside `Having`, reviewed inbound 2026-09-01](sources/inbound-group-operand-batches.md#src-pr2-correlated-operand-identity)
 <a id="src-pr2-distinct-count-kind-families"></a>
@@ -1501,75 +1460,75 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="computation-definition-execution-and-result"></a>
 - [Computation definition, execution, and result](sources/cross-layer-routes.md#computation-definition-execution-and-result)
 <a id="src-fixed-computation-target-scope"></a>
-- [Fixed target owns cross-group computation scope](sources/computation-placement-and-constant-probes.md#src-fixed-computation-target-scope)
+- [Fixed computation target scope](sources/computation-placement-and-constant-probes.md#src-fixed-computation-target-scope)
 <a id="src-cross-group-computation-authoring-block"></a>
-- [Cross-group computation placement is unauthorable through the structured verbs](sources/computation-placement-and-constant-probes.md#src-cross-group-computation-authoring-block)
+- [Cross group computation authoring block](sources/computation-placement-and-constant-probes.md#src-cross-group-computation-authoring-block)
 <a id="src-computation-declaring-group-gate"></a>
-- [Computation declaring group: containment gate and target-owned execution](sources/computation-placement-and-constant-probes.md#src-computation-declaring-group-gate)
+- [Computation declaring group gate](sources/computation-placement-and-constant-probes.md#src-computation-declaring-group-gate)
 <a id="src-cross-group-repeatable-constant-target"></a>
-- [A repeatable target declared cross-group iterates from its own scope](sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)
+- [Cross group repeatable constant target](sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)
 <a id="src-repeatable-string-constant-target-check"></a>
 - [A String constant its target rejects keeps the exact attempted value](sources/computation-placement-and-constant-probes.md#src-repeatable-string-constant-target-check)
 <a id="src-repeatable-number-constant-target-check"></a>
-- [A Number constant: scale refuses at authoring, range errors per row](sources/computation-placement-and-constant-probes.md#src-repeatable-number-constant-target-check)
+- [Repeatable number constant target check](sources/computation-placement-and-constant-probes.md#src-repeatable-number-constant-target-check)
 <a id="src-repeatable-number-constant-scale-rendering"></a>
 - [A Number constant's scale is read twice, differently: the gate keeps trailing zeros, the store strips them and pads](sources/computation-placement-and-constant-probes.md#src-repeatable-number-constant-scale-rendering)
 
 <a id="src-date-constant-target-formatting"></a>
-- [A Date constant is classified by its own spelling and stored in the target's format](sources/temporal-constant-and-base-year-probes.md#src-date-constant-target-formatting)
+- [Date constant target formatting](sources/temporal-constant-and-base-year-probes.md#src-date-constant-target-formatting)
 
 <a id="src-date-constant-pre-1900-target"></a>
-- [A Date constant reaches the target's opt-in pre-1900 policy after rendering](sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)
+- [Date constant pre 1900 target](sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)
 <a id="src-datetime-errored-target"></a>
 - [A computed DateTime whose rendering its own target would reject is ERRORED and poisons its readers: a five-digit year, and a date one day below the Gregorian floor, measured locally 2026-10-02](sources/temporal-constant-and-base-year-probes.md#src-datetime-errored-target)
 
 <a id="src-constant-literal-family-gate"></a>
 - [A bare constant's admission is gated by the target's declared format string, never its kind](sources/temporal-constant-and-base-year-probes.md#src-constant-literal-family-gate)
 <a id="src-temporal-format-gate-not-component-sets"></a>
-- [The temporal admission gate reads family and year agreement, never component sets](sources/temporal-constant-and-base-year-probes.md#src-temporal-format-gate-not-component-sets)
+- [Temporal format gate not component sets](sources/temporal-constant-and-base-year-probes.md#src-temporal-format-gate-not-component-sets)
 <a id="src-yearless-anchor-is-the-base-year"></a>
-- [A yearless temporal literal resolves against the model's Base Year, while its calendar check ignores that year](sources/temporal-constant-and-base-year-probes.md#src-yearless-anchor-is-the-base-year)
+- [Yearless anchor is the base year](sources/temporal-constant-and-base-year-probes.md#src-yearless-anchor-is-the-base-year)
 <a id="src-temporal-constant-literal-composition"></a>
 - [The temporal literal vocabulary composes, and the Base Year gate reads year disagreement](sources/temporal-constant-and-base-year-probes.md#src-temporal-constant-literal-composition)
 <a id="src-yearless-constant-family"></a>
 - [An omitted-year literal is a temporal constant at every target, 2026-10-02](sources/temporal-constant-and-base-year-probes.md#src-yearless-constant-family)
 
 <a id="src-datetime-constant-zone-split"></a>
-- [A DateTime constant is checked against two different zones at two different phases](sources/temporal-constant-and-base-year-probes.md#src-datetime-constant-zone-split)
+- [Datetime constant zone split](sources/temporal-constant-and-base-year-probes.md#src-datetime-constant-zone-split)
 
 <a id="src-component-omitting-date-formats"></a>
-- [A component-omitting date target needs every component its format names, and the Base Year supplies the year](sources/temporal-constant-and-base-year-probes.md#src-component-omitting-date-formats)
+- [Component omitting date formats](sources/temporal-constant-and-base-year-probes.md#src-component-omitting-date-formats)
 
 <a id="src-base-year-yearless-store"></a>
-- [A declared Base Year gates a yearless target's authoring and contributes nothing to its store](sources/temporal-constant-and-base-year-probes.md#src-base-year-yearless-store)
+- [Base year yearless store](sources/temporal-constant-and-base-year-probes.md#src-base-year-yearless-store)
 <a id="src-fixed-target-star-placement"></a>
-- [Fixed computation target under a star operand: no placement gate](sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement)
+- [Fixed target star placement](sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement)
 <a id="src-unsuppressed-assignment-scale-reach"></a>
-- [The unsuppressed assignment-scale overflow has no authored witness](sources/computation-placement-and-constant-probes.md#src-unsuppressed-assignment-scale-reach)
+- [Unsuppressed assignment scale reach](sources/computation-placement-and-constant-probes.md#src-unsuppressed-assignment-scale-reach)
 <a id="src-dotted-short-date-format"></a>
-- [The dotted short date `dd.MM.` reads day-first and writes both dots, measured locally 2026-09-22](sources/temporal-and-message-probes.md#src-dotted-short-date-format)
+- [Dotted short date format](sources/temporal-and-message-probes.md#src-dotted-short-date-format)
 <a id="src-valueless-outcome-minting-and-application"></a>
-- [Two valueless outcomes leave the document identical and the result collection different, measured locally 2026-09-22](sources/evaluation-and-application-routes.md#src-valueless-outcome-minting-and-application)
+- [Valueless outcome minting and application](sources/evaluation-and-application-routes.md#src-valueless-outcome-minting-and-application)
 <a id="src-errored-target-applied-state"></a>
-- [An ERRORED computed target is cleared in the applied document and never carries its attempted payload, measured locally 2026-09-22](sources/evaluation-and-application-routes.md#src-errored-target-applied-state)
+- [Errored target applied state](sources/evaluation-and-application-routes.md#src-errored-target-applied-state)
 <a id="src-applied-document-over-limit-unobservable"></a>
-- [The applied document of an over-capacity input cannot be observed, because the Kernel's own serializer refuses to write it, measured locally 2026-09-22](sources/evaluation-and-application-routes.md#src-applied-document-over-limit-unobservable)
+- [Applied document over limit unobservable](sources/evaluation-and-application-routes.md#src-applied-document-over-limit-unobservable)
 <a id="src-repeatable-string-application"></a>
-- [Finite one- and two-level String separate-destination application, measured locally 2026-08-26](sources/evaluation-and-application-routes.md#src-repeatable-string-application)
+- [Repeatable string application](sources/evaluation-and-application-routes.md#src-repeatable-string-application)
 <a id="src-repeatable-number-aggregate-cascade"></a>
-- [Repeatable Number producer and aggregate cascade](sources/evaluation-and-application-routes.md#src-repeatable-number-aggregate-cascade)
+- [Repeatable number aggregate cascade](sources/evaluation-and-application-routes.md#src-repeatable-number-aggregate-cascade)
 <a id="src-repeatable-numeric-wrappers-extrema"></a>
-- [Repeatable numeric wrappers and extrema](sources/evaluation-and-application-routes.md#src-repeatable-numeric-wrappers-extrema)
+- [Repeatable numeric wrappers extrema](sources/evaluation-and-application-routes.md#src-repeatable-numeric-wrappers-extrema)
 <a id="src-operation-valued-extrema"></a>
 - [Operation-valued extrema](sources/evaluation-and-application-routes.md#src-operation-valued-extrema)
 <a id="src-aggregate-repeatable-suffixes"></a>
-- [Aggregate-to-repeatable suffixes](sources/evaluation-and-application-routes.md#src-aggregate-repeatable-suffixes)
+- [Aggregate repeatable suffixes](sources/evaluation-and-application-routes.md#src-aggregate-repeatable-suffixes)
 <a id="src-nested-current-repetition-cascades"></a>
-- [Nested `CurrentRepetition` cascades](sources/evaluation-and-application-routes.md#src-nested-current-repetition-cascades)
+- [Nested current repetition cascades](sources/evaluation-and-application-routes.md#src-nested-current-repetition-cascades)
 <a id="src-scalar-mixed-consumer-first-dependency-order"></a>
-- [Consumer-first mixed scalar dependency order, measured locally 2026-08-25](sources/computation-scheduling-probes.md#src-scalar-mixed-consumer-first-dependency-order)
+- [Scalar mixed consumer first dependency order](sources/computation-scheduling-probes.md#src-scalar-mixed-consumer-first-dependency-order)
 <a id="src-repeatable-diamond-per-row-states"></a>
-- [A repeatable dependency diamond keeps all three producer states apart within one call](sources/computation-scheduling-probes.md#src-repeatable-diamond-per-row-states)
+- [Repeatable diamond per row states](sources/computation-scheduling-probes.md#src-repeatable-diamond-per-row-states)
 <a id="src-diamond-dependency-clear-kinds"></a>
 - [A four-deep dependency diamond orders correctly, and a silently cleared producer reads EMPTY where an errored one poisons](sources/computation-scheduling-probes.md#src-diamond-dependency-clear-kinds)
 <a id="src-join-poison-and-substitution"></a>
@@ -1583,7 +1542,7 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-guarded-document-steps"></a>
 - [A presence guard on a whole-document step clears it as empty when not met and as poison when it reads poison, and a guard on a computed Number reads its completion, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-guarded-document-steps)
 <a id="src-first-filled-join"></a>
-- [A `FirstFilledValue` reads a computed upstream fresh, falls through a cleared one and ends its scan at a poisoned one, on seven kinds at a join, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-first-filled-join)
+- [First filled join](sources/computation-scheduling-probes.md#src-first-filled-join)
 <a id="src-extractor-join"></a>
 - [Extractor and mixed-shift joins](sources/computation-scheduling-probes.md#src-extractor-join)
 <a id="src-guard-on-malformed-source"></a>
@@ -1613,7 +1572,7 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-first-filled-capacity"></a>
 - [A typed or filtered `FirstFilledValue` star leaves an over-limit row out on the computation arm, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-first-filled-capacity)
 <a id="src-repeatable-nested-star-aggregate"></a>
-- [A root sum over a two-level star reads every inner row's fresh computed copy, poisons on a malformed inner source, and leaves an over-limit inner row out with its source, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-repeatable-nested-star-aggregate)
+- [Repeatable nested star aggregate](sources/computation-scheduling-probes.md#src-repeatable-nested-star-aggregate)
 <a id="src-computation-precondition-names"></a>
 - [A computation precondition's presence slot answers the rule slot's classes, bound by the target, ahead of its operation's and an unguarded sibling's classes, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-computation-precondition-names)
 <a id="src-join-operators-and-guards"></a>
@@ -1623,7 +1582,7 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-repeatable-join-operators-and-guards"></a>
 - [Operators, computed-target fill guards and a fixed computed read on two repetition levels, measured locally 2026-10-01](sources/computation-scheduling-probes.md#src-repeatable-join-operators-and-guards)
 <a id="src-scalar-mixed-reverse-authored-triple"></a>
-- [Reverse-authored mixed scalar triple, measured locally 2026-09-01](sources/computation-scheduling-probes.md#src-scalar-mixed-reverse-authored-triple)
+- [Scalar mixed reverse authored triple](sources/computation-scheduling-probes.md#src-scalar-mixed-reverse-authored-triple)
 <a id="src-numeric-extremum-call-boundary"></a>
 - [Numeric extremum call boundary](sources/evaluation-and-application-routes.md#src-numeric-extremum-call-boundary)
 <a id="src-custom-field-type-spi"></a>
@@ -1632,17 +1591,17 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-custom-validity-route"></a>
 - [Named-type validation](sources/evaluation-and-application-routes.md#src-custom-validity-route)
 <a id="src-field-values-not-unique-route"></a>
-- [`FieldValuesNotUnique` source route](sources/evaluation-and-application-routes.md#src-field-values-not-unique-route)
+- [Field values not unique route](sources/evaluation-and-application-routes.md#src-field-values-not-unique-route)
 <a id="src-fieldless-numeric-computation"></a>
-- [Fieldless repeatable numeric computation](sources/evaluation-and-application-routes.md#src-fieldless-numeric-computation)
+- [Fieldless numeric computation](sources/evaluation-and-application-routes.md#src-fieldless-numeric-computation)
 <a id="src-addressed-numeric-binary"></a>
-- [Addressed numeric binary computation](sources/evaluation-and-application-routes.md#src-addressed-numeric-binary)
+- [Addressed numeric binary](sources/evaluation-and-application-routes.md#src-addressed-numeric-binary)
 <a id="src-number-repeatable-first-filled"></a>
-- [Sibling-star Number `FirstFilledValue` target admission and ordered runtime, measured locally 2026-08-27](sources/evaluation-and-application-routes.md#src-number-repeatable-first-filled)
+- [Number repeatable first filled](sources/evaluation-and-application-routes.md#src-number-repeatable-first-filled)
 <a id="src-computed-target-reference"></a>
-- [Computed-target reference source route](sources/evaluation-and-application-routes.md#src-computed-target-reference)
+- [Computed target reference](sources/evaluation-and-application-routes.md#src-computed-target-reference)
 <a id="src-temporal-construction-route"></a>
-- [Temporal construction and calendar profiles](sources/temporal-and-message-probes.md#src-temporal-construction-route)
+- [Temporal construction route](sources/temporal-and-message-probes.md#src-temporal-construction-route)
 <a id="src-message-construction-route"></a>
 - [Message/reference rules](sources/message-and-pointer-probes.md#src-message-construction-route)
 <a id="src-selected-message-reference-resolution"></a>
@@ -1650,6 +1609,100 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 
 ### Inbound provenance checkpoints
 
+
+### Additional family checkpoints
+
+<a id="src-peer-adapter-diagnostics-replay"></a>
+- [Peer adapter diagnostics replay](sources/evaluation-and-application-routes.md#src-peer-adapter-diagnostics-replay)
+
+<a id="src-numeric-computation-guards"></a>
+- [Numeric computation guards read empty as zero and distinguish arithmetic failure from reached poison](sources/computation-scheduling-probes.md#src-numeric-computation-guards)
+
+<a id="src-comparison-computation-guards"></a>
+- [Typed comparison guards](sources/computation-scheduling-probes.md#src-comparison-computation-guards)
+
+<a id="src-overlap-computation-guards"></a>
+- [Overlap guards](sources/computation-scheduling-probes.md#src-overlap-computation-guards)
+
+<a id="src-compositional-computation-guards"></a>
+- [Shared computation guards](sources/computation-scheduling-probes.md#src-compositional-computation-guards)
+
+<a id="src-calendar-expression-family"></a>
+- [Calendar expressions](sources/temporal-runtime-fold-probes.md#src-calendar-expression-family)
+
+<a id="src-compositional-temporal-expressions"></a>
+- [Scalar temporal expressions](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-expressions)
+
+<a id="src-peer-ba-computations-replay"></a>
+- [Six transferred peer computation models replay on 30 runtime documents](sources/evaluation-and-application-routes.md#src-peer-ba-computations-replay)
+
+<a id="src-text-computation-guards"></a>
+- [Text computation guards](sources/computation-scheduling-probes.md#src-text-computation-guards)
+
+<a id="src-peer-computation-shapes-replay"></a>
+- [Invoice replay](sources/evaluation-and-application-routes.md#src-peer-computation-shapes-replay)
+
+<a id="src-field-fill-computation-guards"></a>
+- [Field-fill computation guards](sources/computation-scheduling-probes.md#src-field-fill-computation-guards)
+
+
+<a id="src-group-presence-computation-guards"></a>
+- [Group-presence guards](sources/computation-scheduling-probes.md#src-group-presence-computation-guards)
+
+
+<a id="src-group-presence-conditional-dependencies"></a>
+- [Group dependencies](sources/computation-scheduling-probes.md#src-group-presence-conditional-dependencies)
+
+<a id="src-group-conditional-profiles"></a>
+- [Group profiles](sources/computation-scheduling-probes.md#src-group-conditional-profiles)
+
+<a id="src-repeatable-group-profiles"></a>
+- [Repeatable target-profile guards](sources/computation-scheduling-probes.md#src-repeatable-group-profiles)
+
+<a id="src-filled-field-count-expressions"></a>
+- [Filled-field count expression admission, 2026-10-03](sources/group-list-and-capacity-probes.md#src-filled-field-count-expressions)
+
+<a id="src-compositional-temporal-disposition"></a>
+- [Temporal slots and label failures](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition).
+
+<a id="src-string-expression-family"></a>
+- [String expression family](sources/evaluation-and-application-routes.md#src-string-expression-family)
+
+<a id="src-validation-iteration-domain"></a>
+- [Rule iteration](sources/evaluation-and-application-routes.md#src-validation-iteration-domain)
+
+<a id="src-recursive-temporal-numeric-expression"></a>
+- [Recursive temporal numeric expression](sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression)
+
+<a id="src-uniqueness-computation-guards"></a>
+- [Uniqueness guards](sources/computation-scheduling-probes.md#src-uniqueness-computation-guards)
+
+<a id="src-type-validity-computation-guards"></a>
+- [Named-type computation guards](sources/computation-scheduling-probes.md#src-type-validity-computation-guards)
+
+<a id="src-product-partial-capacity"></a>
+- [Partial product declared capacity](sources/group-and-iteration-probes.md#src-product-partial-capacity)
+
+<a id="src-recursive-date-validity"></a>
+- [Date validity](sources/temporal-runtime-fold-probes.md#src-recursive-date-validity)
+
+<a id="src-indexed-time-components"></a>
+- [Indexed Time components](sources/temporal-runtime-fold-probes.md#src-indexed-time-components)
+
+<a id="src-indexed-type-validity"></a>
+- [Indexed type validity](sources/computation-scheduling-probes.md#src-indexed-type-validity)
+
+<a id="src-indexed-patterns"></a>
+- [Indexed patterns](sources/computation-scheduling-probes.md#src-indexed-patterns)
+
+<a id="src-partial-temporal-reads"></a>
+- [Partial temporal reads](sources/temporal-runtime-fold-probes.md#src-partial-temporal-reads)
+
+<a id="src-having-temporal-constant-effects"></a>
+- [Temporal filter constants](sources/having-filter-probes.md#src-having-temporal-constant-effects)
+
+<a id="src-having-range-family"></a>
+- [Having ranges](sources/having-filter-probes.md#src-having-range-family)
 
 ## Question-to-locus index
 
@@ -1719,95 +1772,3 @@ An a12-dmkits interpreter agreement is triangulation. A maintained adapter test 
 ## Maintenance rule
 
 Edit the source shard when its provenance or drill route changes; change this hub only for navigation. [Documentation discipline](DOC-DISCIPLINE.md) owns the update boundaries.
-
-<a id="src-peer-adapter-diagnostics-replay"></a>
-- [The peer's retained computation fixture and seven runtime documents replay with 18 matches and one document refusal](sources/evaluation-and-application-routes.md#src-peer-adapter-diagnostics-replay)
-
-<a id="src-numeric-computation-guards"></a>
-- [Numeric computation guards read empty as zero and distinguish arithmetic failure from reached poison](sources/computation-scheduling-probes.md#src-numeric-computation-guards)
-
-<a id="src-comparison-computation-guards"></a>
-- [Typed comparison guards](sources/computation-scheduling-probes.md#src-comparison-computation-guards)
-
-<a id="src-overlap-computation-guards"></a>
-- [Overlap guards](sources/computation-scheduling-probes.md#src-overlap-computation-guards)
-
-<a id="src-compositional-computation-guards"></a>
-- [Shared computation guards](sources/computation-scheduling-probes.md#src-compositional-computation-guards)
-
-<a id="src-calendar-expression-family"></a>
-- [Calendar expressions](sources/temporal-runtime-fold-probes.md#src-calendar-expression-family)
-
-<a id="src-compositional-temporal-expressions"></a>
-- [Scalar temporal expressions](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-expressions)
-
-<a id="src-peer-ba-computations-replay"></a>
-- [Six transferred peer computation models replay on 30 runtime documents](sources/evaluation-and-application-routes.md#src-peer-ba-computations-replay)
-
-<a id="src-text-computation-guards"></a>
-- [String and Enumeration computation guards](sources/computation-scheduling-probes.md#src-text-computation-guards)
-
-<a id="src-peer-computation-shapes-replay"></a>
-- [Invoice replay](sources/evaluation-and-application-routes.md#src-peer-computation-shapes-replay)
-
-<a id="src-field-fill-computation-guards"></a>
-- [Field-fill computation guards](sources/computation-scheduling-probes.md#src-field-fill-computation-guards)
-
-
-<a id="src-group-presence-computation-guards"></a>
-- [Group-presence guards](sources/computation-scheduling-probes.md#src-group-presence-computation-guards)
-
-
-<a id="src-group-presence-conditional-dependencies"></a>
-- [Group dependencies](sources/computation-scheduling-probes.md#src-group-presence-conditional-dependencies)
-
-<a id="src-group-conditional-profiles"></a>
-- [Group profiles](sources/computation-scheduling-probes.md#src-group-conditional-profiles)
-
-<a id="src-repeatable-group-profiles"></a>
-- [Repeatable target-profile guards](sources/computation-scheduling-probes.md#src-repeatable-group-profiles)
-
-<a id="src-filled-field-count-expressions"></a>
-- [Filled-field count expression admission, 2026-10-03](sources/group-list-and-capacity-probes.md#src-filled-field-count-expressions)
-
-<a id="src-compositional-temporal-disposition"></a>
-- [Temporal slots and label failures](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition).
-
-<a id="src-string-expression-family"></a>
-- [Shared String expressions](sources/evaluation-and-application-routes.md#src-string-expression-family)
-
-<a id="src-validation-iteration-domain"></a>
-- [Rule iteration](sources/evaluation-and-application-routes.md#src-validation-iteration-domain)
-
-<a id="src-recursive-temporal-numeric-expression"></a>
-- [Recursive temporal numeric expressions](sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression)
-
-<a id="src-uniqueness-computation-guards"></a>
-- [Uniqueness guards](sources/computation-scheduling-probes.md#src-uniqueness-computation-guards)
-
-<a id="src-type-validity-computation-guards"></a>
-- [Named-type computation guards](sources/computation-scheduling-probes.md#src-type-validity-computation-guards)
-
-<a id="src-product-partial-capacity"></a>
-- [Partial product declared capacity](sources/group-and-iteration-probes.md#src-product-partial-capacity)
-
-<a id="src-recursive-date-validity"></a>
-- [Date validity](sources/temporal-runtime-fold-probes.md#src-recursive-date-validity)
-
-<a id="src-indexed-time-components"></a>
-- [Indexed Time components](sources/temporal-runtime-fold-probes.md#src-indexed-time-components)
-
-<a id="src-indexed-type-validity"></a>
-- [Indexed named-type validity](sources/computation-scheduling-probes.md#src-indexed-type-validity)
-
-<a id="src-indexed-patterns"></a>
-- [Indexed pattern predicates](sources/computation-scheduling-probes.md#src-indexed-patterns)
-
-<a id="src-partial-temporal-reads"></a>
-- [Partial temporal reads](sources/temporal-runtime-fold-probes.md#src-partial-temporal-reads)
-
-<a id="src-having-temporal-constant-effects"></a>
-- [Temporal filter constants](sources/having-filter-probes.md#src-having-temporal-constant-effects)
-
-<a id="src-having-range-family"></a>
-- [Having ranges](sources/having-filter-probes.md#src-having-range-family)
