@@ -127,6 +127,8 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 
 <a id="gap-sg17"></a>
 - [open obligation](gaps/paths-and-groups.md#gap-sg17)
+<a id="gap-sg17-closure-matrix"></a>
+- [Remaining Having closure matrix](gaps/paths-and-groups.md#gap-sg17-closure-matrix)
 
 <a id="sg20--filter-reference-scope-and-iteration-gates"></a>
 ### SG20 — filter reference scope and iteration gates
