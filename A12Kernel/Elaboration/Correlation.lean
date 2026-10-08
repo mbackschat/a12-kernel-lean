@@ -94,7 +94,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
         (model.resolveNumberInGroup declaringGroup group reference.field).isOk
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
-        | .groupCount _ | .product _ | .collectionCount _ | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ | .fieldValueAsNumber _
+        | .firstFilled _ | .groupCount _ | .product _ | .collectionCount _ | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ | .fieldValueAsNumber _
             | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ | .temporalExpressionPart _ _ => false
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
@@ -102,7 +102,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .compareTemporalExpression _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .dateValidity _ _ | .uniqueness _ | .literalList _ _ _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
+  | .compareSelected _ _ _ | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .compareTemporalExpression _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .dateValidity _ _ | .uniqueness _ | .literalList _ _ _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -118,6 +118,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
   discard <| elaborateHavingCoreWith {
+    firstFilled := fun _ => throw .stringLeafOutsideStarRoute
     groupCount := fun _ => throw .stringLeafOutsideStarRoute
     product := fun _ => throw .stringLeafOutsideStarRoute
     collectionCount := fun _ => throw .stringLeafOutsideStarRoute
@@ -129,6 +130,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
     dateDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dayDifference := fun _ _ => throw .stringLeafOutsideStarRoute
+    selectedComparison := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalExpression := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalExpressionPart := fun _ _ => throw .stringLeafOutsideStarRoute
     temporal := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -155,6 +157,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   let readsGroup := authored.readsGroupNumber model declaringGroup group
   let condition ← (elaborateHavingCoreWith {
+    firstFilled := fun _ => throw .stringLeafOutsideStarRoute
     groupCount := fun _ => throw .stringLeafOutsideStarRoute
     product := fun _ => throw .stringLeafOutsideStarRoute
     collectionCount := fun _ => throw .stringLeafOutsideStarRoute
@@ -166,6 +169,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
     dateDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dayDifference := fun _ _ => throw .stringLeafOutsideStarRoute
+    selectedComparison := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalExpression := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalExpressionPart := fun _ _ => throw .stringLeafOutsideStarRoute
     temporal := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -485,7 +489,7 @@ def CorrelatedHaving.outerIterationScopes
             if operand.origin == .outer && !operand.bindingScope.isEmpty then some operand.bindingScope else none
         | .product source => source.presenceSlots.map (·.outerIterationScope? model)
         | .collectionCount source => source.presenceSlots.map (·.outerIterationScope? model)
-        | .aggregate _ slots => (HavingNumberAggregate.presenceSlots slots).map (·.outerIterationScope? model)
+        | .firstFilled slots | .aggregate _ slots => (HavingNumberAggregate.presenceSlots slots).map (·.outerIterationScope? model)
         | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map fun reference =>
             outerHavingFieldIterationScope model reference.origin reference.field.id
         | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map fun reference =>
@@ -495,10 +499,11 @@ def CorrelatedHaving.outerIterationScopes
         | .field reference => [outerHavingNumberIterationScope model reference]
         | .stringLength origin field | .stringRange origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
         | .dateRangeBoundPart origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
-        | .temporalExpressionPart _ source => source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.fieldId
+        | .temporalExpressionPart _ source => source.presenceSlots.map (·.outerIterationScope? model)
         | .temporalPart origin field _ => [outerHavingFieldIterationScope model origin field.id]
         | .repetition reference => [outerHavingRepetitionIterationScope model reference]
-  | .leaf (.temporalExpression comparison) => comparison.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.fieldId
+  | .leaf (.selectedComparison comparison) => comparison.presenceSlots.map (·.outerIterationScope? model)
+  | .leaf (.temporalExpression comparison) => comparison.presenceSlots.map (·.outerIterationScope? model)
   | .leaf (.simpleComparison left right comparison) =>
       comparison.inputFields.1.map (fun field => outerHavingFieldIterationScope model left field.id) ++
         comparison.inputFields.2.map (fun field => outerHavingFieldIterationScope model right field.id)
@@ -553,12 +558,14 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
         | .collectionCount count => (count.source.first :: count.source.rest).findSome? entity
-        | .groupCount source | .product source | .aggregate _ source => (source.first :: source.rest).findSome? entity
+        | .firstFilled source | .groupCount source | .product source | .aggregate _ source => (source.first :: source.rest).findSome? entity
         | .dateDifference _ left right | .dayDifference left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
-        | .temporalExpressionPart _ source => source.fields.findSome? fun ref => field ref.origin ref.field
+        | .temporalExpressionPart _ source =>
+            ((source.entitySources.flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
+              source.fields.findSome? fun ref => field ref.origin ref.field
         | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ => none
         | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
@@ -567,8 +574,10 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .compareSelected _ left right => (left.entities ++ right.entities).findSome? entity
   | .compareTemporalExpression _ left right =>
-      (left.fields ++ right.fields).findSome? fun ref => field ref.origin ref.field
+      (((left.entitySources ++ right.entitySources).flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
+        (left.fields ++ right.fields).findSome? fun ref => field ref.origin ref.field
   | .compareTemporal _ left right =>
       (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
   | .literalMembership _ reference _ => field reference.origin reference.field
@@ -632,6 +641,7 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
         | none => throw .numericExpressionUnsupported
     | .now => throw .numericExpressionUnsupported
   let condition ← elaborateHavingCoreWith {
+    firstFilled := HavingNumberAggregate.elaborate model declaringGroup candidateLevels outerLevels
     groupCount := elaborateHavingGroupCount model declaringGroup candidateLevels outerLevels
     product := elaborateHavingNumericProduct model declaringGroup candidateLevels outerLevels
     collectionCount := elaborateHavingCollectionCount model declaringGroup candidateLevels outerLevels
@@ -691,13 +701,18 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       pure source
     temporalExpressionPart := fun part source => do
       let source ← HavingTemporalExpression.elaborate model resolveTemporalEntity source
-      if source.grouped then throw .numericExpressionUnsupported
+        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)
+      if !source.admittedSourceSlot then throw .numericExpressionUnsupported
       let some components := source.components? | throw .numericExpressionUnsupported
       if !part.admitsComponents components model.hasBaseYear then throw .numericExpressionUnsupported
       pure (.temporalExpressionPart part source)
+    selectedComparison := elaborateHavingSelectedComparison model declaringGroup candidateLevels outerLevels
+      (fun reference => model.resolveHavingEntityRead declaringGroup outerLevels reference)
     temporalExpression := fun operator left right => do
       let left ← HavingTemporalExpression.elaborate model resolveTemporalEntity left
+        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)
       let right ← HavingTemporalExpression.elaborate model resolveTemporalEntity right
+        (fun kind => kind.elaborate model declaringGroup candidateLevels outerLevels)
       if !HavingTemporalExpression.comparisonAdmitted operator.toTemporal left right then throw .numericExpressionUnsupported
       pure { operator := operator.toTemporal, left, right }
     temporal := model.resolveHavingTemporalConstant declaringGroup outerLevels

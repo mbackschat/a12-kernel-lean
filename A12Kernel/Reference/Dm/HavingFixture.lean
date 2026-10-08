@@ -20,7 +20,8 @@ def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     (ruleExpected : String := "9") (clock : Instant := { epochMillis := 0 })
     (ruleCondition : Option String := none) (computationPrecondition : Option String := none)
     (zoneRules : ModelZoneRules := ModelZoneRules.unavailable)
-    (rowsOverride : Option (Array Json) := none) : Option (Verdict × List String) := do
+    (rowsOverride : Option (Array Json) := none)
+    (customFieldValidator? : String → Option RegisteredCustomFieldValidator := fun _ => none) : Option (Verdict × List String) := do
   let dm : DmModel := {
     flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let row := fun (tag n : String) => Json.mkObj [("Tag", Json.str tag), ("N", Json.str n)]
@@ -28,7 +29,7 @@ def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     ("Error", Json.str "ready"), ("Expected", Json.str expected),
     ("Rows", Json.arr (rowsOverride.getD #[row first "2", row second "5", row first "7"]))] ++ extra))])).toOption
   if !input.refusals.isEmpty then none
-  let world : World := { now := clock, modelZoneRules := zoneRules }
+  let world : World := { now := clock, modelZoneRules := zoneRules, customFieldValidator? }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
   let operation := operationOverride.getD ("Sum(Rows*/N Having " ++ filter ++ ")")
@@ -68,4 +69,14 @@ def referencesFor (filter : String) (modelOverride : FlatModel := model) (carrie
   pure (pointers.contains { field := 3, coordinates := [.wildcard] },
     pointers.contains { field := 3, coordinates := [.concrete 2] })
 
+def admissions (fixture : FlatModel) (filter : String) : Bool × Bool :=
+  let operation := "Sum(Rows*/N Having " ++ filter ++ ")"
+  let dm : DmModel := { flat := fixture, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let world : World := { now := { epochMillis := 0 } }
+  ((checkRule dm .english {
+    group := ["Form"], name := "Select", errorCode := "SELECT", errorEntityRelPath := "../Error"
+    condition := "FieldFilled(Error) And " ++ operation ++ " == 9", severity := "ERROR" } world).isOk,
+   (lowerComputation fixture .english {
+    group := ["Form"], name := "Select", targetRelPath := "../Out", commonPrecondition := none
+    alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).isOk)
 end A12Kernel.Dm.HavingFixture

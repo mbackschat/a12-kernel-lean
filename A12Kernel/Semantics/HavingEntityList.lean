@@ -77,12 +77,15 @@ private def foldExtent (source : HavingEntityExtent)
 The ordinary group walk's declaration-major ordering and in-capacity domain (spec/07 §5) are
 retained without eagerly acquiring a later declaration or inventing capacity-tail cells.
 Each exhausted declaration's omitted tail invokes `onOmitted` before the next declaration;
-the default ignores it, while field-fill consumers use one marker (`evalComputation_omittedRun`). -/
+the default ignores it, while field-fill consumers use one marker (`evalComputation_omittedRun`).
+`onEmpty` observes an entire extent with no concrete cells after all its declarations are
+exhausted; first-filled selection distinguishes that prefix from an omitted tail (spec/07 §5). -/
 def foldRead (origin : Ref → HavingOrigin) (field : Ref → FieldId)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame)
     (step : Accumulator → Ref → Env → Except Error (Sum Accumulator Result))
     (accumulator : Accumulator) (slots : List (HavingFieldListSlot Ref))
-    (onOmitted : Accumulator → Ref → Except Error (Sum Accumulator Result) := fun next _ => pure (.inl next)) :
+    (onOmitted : Accumulator → Ref → Except Error (Sum Accumulator Result) := fun next _ => pure (.inl next))
+    (onEmpty : Accumulator → Except Error (Sum Accumulator Result) := fun next => pure (.inl next)) :
     Except Error (Sum Accumulator Result) := match slots with
   | [] => pure (.inl accumulator)
   | slot :: remaining => do
@@ -90,9 +93,21 @@ def foldRead (origin : Ref → HavingOrigin) (field : Ref → FieldId)
         | .direct reference => step accumulator reference (frame.envAt (origin reference))
         | .extent source references => do
             let some groups := context.groups | throw (context.groupUnavailable source.groupPath)
-            foldExtent source origin field groups frame step onOmitted accumulator references
+            let result ← foldExtent source origin field groups frame
+              (fun (current, _) reference environment => do
+                match ← step current reference environment with
+                | .inl next => pure (.inl (next, true))
+                | .inr result => pure (.inr result))
+              (fun (current, seen) reference => do
+                match ← onOmitted current reference with
+                | .inl next => pure (.inl (next, seen))
+                | .inr result => pure (.inr result)) (accumulator, false) references
+            match result with
+            | .inl (next, false) => onEmpty next
+            | .inl (next, true) => pure (.inl next)
+            | .inr result => pure (.inr result)
       match result with
-      | .inl next => foldRead origin field context frame step next remaining onOmitted
+      | .inl next => foldRead origin field context frame step next remaining onOmitted onEmpty
       | .inr result => pure (.inr result)
 
 end HavingFieldListSlot

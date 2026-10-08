@@ -19,13 +19,13 @@ private def stamp (millis : Int) : CheckedCell := {
     { hour := 0, minute := 0, second := 0, valid := by decide } .legacyHybrid)) }
 private def ref (id : FieldId := 1) (origin : HavingOrigin := .inner) : HavingTemporalRef :=
   { origin, field := { id, kind := .dateTime, components := TemporalComponents.now } }
-private def source (core : TemporalExpressionOf HavingTemporalAtom ScalarTemporalConstructorOp) :
+private def source (core : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation) :
     A12Kernel.HavingTemporalExpression := { core, profile := .utc, baseYear := none }
 private def fieldSource := source (.atom (.field (ref)))
-private def date := source (.apply .dateFromDateTime fieldSource.core [])
-private def time := source (.apply .timeFromDateTime fieldSource.core [])
-private def joined := source (.apply .dateTime date.core
-  [.apply .timeFromDateTime (.atom (.field (ref 1 .outer))) []])
+private def date := source (.apply (.constructor .dateFromDateTime) fieldSource.core [])
+private def time := source (.apply (.constructor .timeFromDateTime) fieldSource.core [])
+private def joined := source (.apply (.constructor .dateTime) date.core
+  [.apply (.constructor .timeFromDateTime) (.atom (.field (ref 1 .outer))) []])
 private def base : ResolvingCorrelationContext CorrelationRuntimeFault :=
   ({ read := fun env _ => stamp (if env == frame.innerEnv then 0 else 3600000) } : CorrelationContext).asResolving
 
@@ -44,7 +44,7 @@ example : joined.evaluate .validation laterFault frame = .error (.storedTextUnav
     joined.evaluate .computation { laterFault with read := fun env id => if env == frame.innerEnv then pure empty else .error (.storedTextUnavailable id) } frame =
       .error (.storedTextUnavailable 1) := by native_decide
 
-private def clockJoined := source (.apply .dateTime date.core [.apply .timeFromDateTime (.atom .now) []])
+private def clockJoined := source (.apply (.constructor .dateTime) date.core [.apply (.constructor .timeFromDateTime) (.atom .now) []])
 example : clockJoined.evaluate .validation { base with read := fun _ _ => pure invalid } frame = .error .worldUnavailable ∧
     clockJoined.evaluate .computation { base with read := fun _ _ => pure invalid } frame = .ok (.unknown .malformed) ∧
     clockJoined.evaluate .computation { base with read := fun _ _ => pure empty } frame = .error .worldUnavailable := by native_decide
@@ -80,8 +80,8 @@ example : joined.wellFormed model [10] [10] = true ∧
     joined.wellFormed model [] [10] = false ∧
     ({ joined with profile := .europeBerlin }).wellFormed model [10] [10] = false ∧
     ({ joined with baseYear := some 2024 }).wellFormed model [10] [10] = false ∧
-    (source (.apply .dateTime date.core [])).wellFormed model [10] [10] = false ∧
-    (source (.apply .dateTime time.core [date.core])).wellFormed model [10] [10] = false ∧
+    (source (.apply (.constructor .dateTime) date.core [])).wellFormed model [10] [10] = false ∧
+    (source (.apply (.constructor .dateTime) time.core [date.core])).wellFormed model [10] [10] = false ∧
     (source (.atom (.field { (ref) with field := { id := 1, kind := .dateTime, components := TemporalComponents.time } }))).wellFormed model [10] [10] = false := by native_decide
 
 private def yearlessModel : FlatModel := { model with baseYear := some 2024, fields := model.fields.map fun field => { field with
@@ -111,7 +111,7 @@ private def rangeCell (origin : HavingOrigin) : CheckedCell := {
       parts := { year := 1970, month := 1, day := 2 }, basis := .legacyHybrid } })) }
 private def rangeContext : ResolvingCorrelationContext CorrelationRuntimeFault := { base with
   read := fun env _ => pure (rangeCell (if env == frame.innerEnv then .inner else .outer)) }
-private def rangeJoined := source (.apply .dateTime (rangeSource).core [.apply .timeFromDateTime (.atom .now) []])
+private def rangeJoined := source (.apply (.constructor .dateTime) (rangeSource).core [.apply (.constructor .timeFromDateTime) (.atom .now) []])
 
 example : [Phase.validation, .computation].all (fun phase =>
     [HavingOrigin.inner, .outer].all fun origin => [DateRangeBound.start, .finish].all fun bound =>

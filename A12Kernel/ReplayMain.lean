@@ -1,3 +1,7 @@
+import A12Kernel.Reference.Dm.HavingSelectionGroupLocks
+import A12Kernel.Reference.Dm.HavingSelectedComparisonLocks
+import A12Kernel.Reference.Dm.HavingSelectionProfilesLocks
+import A12Kernel.Reference.Dm.HavingSelectionLocks
 import A12Kernel.Reference.Dm.HavingCollectionCountLocks
 import A12Kernel.Reference.Dm.HavingTimeConstructionLocks
 import A12Kernel.Reference.Dm.HavingDateValidityLocks

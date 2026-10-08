@@ -298,6 +298,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-collection-counts"></a>
 - [Collection counts and paired products inside Having](implementation/repetition-and-paths.md#cap-having-collection-counts)
 
+<a id="cap-having-selection"></a>
+- [First-filled and temporal selection inside Having](implementation/repetition-and-paths.md#cap-having-selection)
+
 <a id="cap-having-direct-number-aggregates"></a>
 - [Number entity aggregates inside Having](implementation/repetition-and-paths.md#cap-having-direct-number-aggregates)
 

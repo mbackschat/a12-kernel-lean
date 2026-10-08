@@ -497,6 +497,7 @@ run_cmd do
 #print axioms A12Kernel.outer_repetition_reference_stableIn
 #print axioms A12Kernel.outer_number_reference_stable
 #print axioms A12Kernel.inner_number_reference_local
+#print axioms A12Kernel.havingFirstFilled_direct_terminal
 #print axioms A12Kernel.havingFilledFields_computation_capacity_independent
 #print axioms A12Kernel.correlatedHaving_truthIn_iff_holdsIn
 #print axioms A12Kernel.correlatedHaving_truth_iff_holds

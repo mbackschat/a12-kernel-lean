@@ -74,6 +74,8 @@ abbrev SurfaceHavingTimeComponents := TimeComponentPrefix SurfaceHavingTimeCompo
 
 /-- Constructor operands retain an origin at every field, including mixed captured/candidate reads. -/
 inductive SurfaceHavingTemporalExpression where
+  | selection (kind : HavingTemporalSelection) (source : SurfaceHavingEntitySource)
+  | combine (operator : TemporalExtremumOp) (first : SurfaceHavingTemporalExpression) (rest : List SurfaceHavingTemporalExpression)
   | field (reference : SurfaceHavingTemporalRef)
   | rangeBound (reference : SurfaceHavingTemporalRef) (bound : DateRangeBound)
   | timeConstruction (components : SurfaceHavingTimeComponents)
@@ -88,7 +90,91 @@ inductive SurfaceHavingTemporalExpression where
   | dateTime (date time : SurfaceHavingTemporalExpression)
   | dateFromDateTime (source : SurfaceHavingTemporalExpression)
   | timeFromDateTime (source : SurfaceHavingTemporalExpression)
-  deriving Repr, DecidableEq
+
+namespace SurfaceHavingTemporalExpression
+
+private def formatNode (name : String) (arguments : List Std.Format) : Std.Format :=
+  name ++ " (" ++ Std.Format.joinSep arguments ") (" ++ ")"
+
+-- The nested-list deriving handler emits an opaque printer; TemporalExpressionOf's total
+-- structural printer preserves the trusted elaboration boundary.
+private def format : SurfaceHavingTemporalExpression → Std.Format
+  | .selection kind source => formatNode "selection" [repr kind, repr source]
+  | .combine operator first rest => formatNode "combine" [repr operator, format first,
+      "[" ++ Std.Format.joinSep (rest.map format) ", " ++ "]"]
+  | .field reference => formatNode "field" [repr reference]
+  | .rangeBound reference bound => formatNode "rangeBound" [repr reference, repr bound]
+  | .timeConstruction components => formatNode "timeConstruction" [repr components]
+  | .dateConstruction components => formatNode "dateConstruction" [repr components]
+  | .dateLiteral source => formatNode "dateLiteral" [repr source]
+  | .timeLiteral value => formatNode "timeLiteral" [repr value]
+  | .dateTimeLiteral value => formatNode "dateTimeLiteral" [repr value]
+  | .today => "today"
+  | .now => "now"
+  | .baseYearBound bound => formatNode "baseYearBound" [repr bound]
+  | .grouped source => formatNode "grouped" [format source]
+  | .dateTime date time => formatNode "dateTime" [format date, format time]
+  | .dateFromDateTime source => formatNode "dateFromDateTime" [format source]
+  | .timeFromDateTime source => formatNode "timeFromDateTime" [format source]
+
+instance : Repr SurfaceHavingTemporalExpression where
+  reprPrec source _ := format source
+
+/-- Temporal source slots exclude value-list selectors, extrema and grouping (spec/05 §§3,6;
+ordinary SurfaceScalarTemporalExpression.admittedSourceSlot). -/
+def admittedSourceSlot : SurfaceHavingTemporalExpression → Bool
+  | .selection _ _ | .combine _ _ _ | .grouped _ => false
+  | _ => true
+
+-- As for TemporalExpressionOf, recursive operand lists need structural equality: the pinned
+-- Lean deriving handler does not support DecidableEq for nested inductives.
+mutual
+private def decideEqual (left right : SurfaceHavingTemporalExpression) : Decidable (left = right) := by
+  cases left <;> cases right
+  all_goals first | (apply isFalse; intro h; cases h; done) | skip
+  case combine.combine op first rest other next remaining =>
+    letI := decideEqual first next
+    letI := decideListEqual rest remaining
+    exact decidable_of_iff (op = other ∧ first = next ∧ rest = remaining) (by simp)
+  case grouped.grouped first next =>
+    letI := decideEqual first next
+    exact decidable_of_iff (first = next) (by simp)
+  case dateTime.dateTime first rest next remaining =>
+    letI := decideEqual first next
+    letI := decideEqual rest remaining
+    exact decidable_of_iff (first = next ∧ rest = remaining) (by simp)
+  case dateFromDateTime.dateFromDateTime first next =>
+    letI := decideEqual first next
+    exact decidable_of_iff (first = next) (by simp)
+  case timeFromDateTime.timeFromDateTime first next =>
+    letI := decideEqual first next
+    exact decidable_of_iff (first = next) (by simp)
+  case selection.selection kind source other next =>
+    exact decidable_of_iff (kind = other ∧ source = next) (by simp)
+  case field.field first next => exact decidable_of_iff (first = next) (by simp)
+  case rangeBound.rangeBound source bound next other =>
+    exact decidable_of_iff (source = next ∧ bound = other) (by simp)
+  case timeConstruction.timeConstruction first next => exact decidable_of_iff (first = next) (by simp)
+  case dateConstruction.dateConstruction first next => exact decidable_of_iff (first = next) (by simp)
+  case dateLiteral.dateLiteral first next => exact decidable_of_iff (first = next) (by simp)
+  case timeLiteral.timeLiteral first next => exact decidable_of_iff (first = next) (by simp)
+  case dateTimeLiteral.dateTimeLiteral first next => exact decidable_of_iff (first = next) (by simp)
+  case baseYearBound.baseYearBound first next => exact decidable_of_iff (first = next) (by simp)
+  case today.today => exact isTrue rfl
+  case now.now => exact isTrue rfl
+private def decideListEqual (left right : List SurfaceHavingTemporalExpression) : Decidable (left = right) :=
+  match left, right with
+  | [], [] => isTrue rfl
+  | [], _ :: _ | _ :: _, [] => isFalse (by intro h; cases h)
+  | first :: rest, next :: remaining =>
+      letI := decideEqual first next
+      letI := decideListEqual rest remaining
+      decidable_of_iff (first = next ∧ rest = remaining) (by simp)
+end
+
+instance : DecidableEq SurfaceHavingTemporalExpression := decideEqual
+
+end SurfaceHavingTemporalExpression
 
 def SurfaceHavingTemporalExpression.fields : SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
   | .field reference | .rangeBound reference _ => [reference]
@@ -98,6 +184,14 @@ def SurfaceHavingTemporalExpression.fields : SurfaceHavingTemporalExpression →
   | .dateConstruction components => components.references.map fun ref => { origin := ref.origin, field := ref.field }
   | .grouped source | .dateFromDateTime source | .timeFromDateTime source => source.fields
   | .dateTime date time => date.fields ++ time.fields
+  | .combine _ first rest => first.fields ++ rest.flatMap (·.fields)
+  | _ => []
+
+def SurfaceHavingTemporalExpression.entitySources : SurfaceHavingTemporalExpression → List SurfaceHavingEntitySource
+  | .selection _ source => [source]
+  | .grouped source | .dateFromDateTime source | .timeFromDateTime source => source.entitySources
+  | .dateTime date time => date.entitySources ++ time.entitySources
+  | .combine _ first rest => first.entitySources ++ rest.flatMap (·.entitySources)
   | _ => []
 
 inductive SurfaceHavingCollectionCount where
@@ -111,6 +205,7 @@ def SurfaceHavingCollectionCount.source : SurfaceHavingCollectionCount → Surfa
   | .filledFields source | .numberValue _ source | .tokenValue _ source | .booleanValue _ source => source
 
 inductive SurfaceHavingNumericAtom where
+  | firstFilled (source : SurfaceHavingEntitySource)
   | groupCount (source : SurfaceHavingEntitySource)
   | product (source : SurfaceHavingEntitySource)
   | collectionCount (source : SurfaceHavingCollectionCount)
@@ -145,7 +240,22 @@ def SurfaceHavingTemporalOperand.fields : SurfaceHavingTemporalOperand → List 
   | .grouped source => source.fields
   | _ => []
 
+inductive SurfaceHavingSelectedOperand where
+  | field (reference : SurfaceHavingStringRef)
+  | firstFilled (source : SurfaceHavingEntitySource)
+  | text (value : String)
+  | boolean (value : Bool)
+  deriving Repr, DecidableEq
+
+def SurfaceHavingSelectedOperand.entities : SurfaceHavingSelectedOperand → List SurfaceHavingEntityOperand
+  | .field reference => [.entity {
+      origin := reference.origin, field := reference.field
+      form := match reference.projectionRef with | .stored => .stored | .category name => .projected name }]
+  | .firstFilled source => source.first :: source.rest
+  | .text _ | .boolean _ => []
+
 inductive SurfaceCorrelatedHaving where
+  | compareSelected (op : EqualityOp) (left right : SurfaceHavingSelectedOperand)
   | compareBoolean (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef)
   | compareTemporalExpression (op : SurfaceComparisonOp) (left right : SurfaceHavingTemporalExpression)
@@ -374,12 +484,14 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
         | .collectionCount count => (count.source.first :: count.source.rest).findSome? entity
-        | .groupCount source | .product source | .aggregate _ source => (source.first :: source.rest).findSome? entity
+        | .firstFilled source | .groupCount source | .product source | .aggregate _ source => (source.first :: source.rest).findSome? entity
         | .dateDifference _ left right | .dayDifference left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
-        | .temporalExpressionPart _ source => source.fields.findSome? fun reference => field reference.origin reference.field
+        | .temporalExpressionPart _ source =>
+            ((source.entitySources.flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
+              source.fields.findSome? fun reference => field reference.origin reference.field
         | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ => none
         | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
@@ -388,8 +500,10 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .compareSelected _ left right => (left.entities ++ right.entities).findSome? entity
   | .compareTemporalExpression _ left right =>
-      (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
+      (((left.entitySources ++ right.entitySources).flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
+        (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
   | .compareTemporal _ left right =>
       (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
   | .literalMembership _ reference _ => field reference.origin reference.field

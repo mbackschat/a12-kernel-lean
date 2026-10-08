@@ -77,6 +77,29 @@ def elaborateHavingEntityList (model : FlatModel) (declaringGroup : GroupPath)
     throw (.fieldFill .tooFewFields)
   havingResolvedEntitySlots operands
 
+/-- Text-valued selectors retain category selection on direct and starred fields; group expansions
+remain stored reads, as in the ordinary projected token count (spec/06 §B.3). -/
+def resolveHavingProjectedEntityList (model : FlatModel) (declaringGroup : GroupPath)
+    (candidateLevels outerLevels : List RepeatableLevel) (source : SurfaceHavingEntitySource) :
+    Except CorrelationElabError (List (HavingFieldListSlot (ResolvedHavingDirectFieldOperand model))) := do
+  let storedStar : SurfaceHavingEntityOperand → SurfaceHavingEntityOperand
+    | .star origin path _ => .star origin path
+    | other => other
+  let operands ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels
+    { first := storedStar source.first, rest := source.rest.map storedStar }
+  checkHavingEntityDuplicates operands
+  checkHavingEntityRoots operands
+  if operands.length < 2 && !operands.any (fun (_, operand) => operand.isAlreadyMany) then
+    throw (.fieldFill .tooFewFields)
+  let slots ← havingResolvedEntitySlots operands
+  (slots.zip (source.first :: source.rest)).mapM fun (slot, authored) => do
+    match authored with
+    | .star _ _ (.projected category) =>
+        match slot with
+        | .extent (.starField _ _) _ => pure (slot.map fun ref => { ref with form := .projected category })
+        | _ => throw .numericExpressionUnsupported
+    | _ => pure slot
+
 namespace HavingFieldListSlot
 
 def bindingScope? (model : FlatModel) : HavingFieldListSlot HavingPresenceRef → Option (List RepeatableLevel)
@@ -133,14 +156,24 @@ def wellFormedForEnvironments (model : FlatModel) (candidateLevels outerLevels :
 
 end HavingFieldListSlot
 
-def havingEntityListWellFormed (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel)
-    (slots : List (HavingFieldListSlot HavingPresenceRef)) : Bool :=
+/-- Duplicate identity belongs to the typed operand: a stored read and a category read of the
+same field are distinct authored operands (spec/07 §5). Extent certification stays kind-neutral. -/
+def havingTypedEntityListWellFormed [BEq Ref] (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel)
+    (presence : Ref → HavingPresenceRef) (slots : List (HavingFieldListSlot Ref)) : Bool :=
+  let shape := slots.map (·.map presence)
   !slots.isEmpty && (slots.length > 1 || slots.any (! ·.isDirect)) &&
-    slots.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
-    (firstDuplicateInEncounterOrder? HavingFieldListSlot.exactIdentity? slots).isNone &&
-    !(slots.any fun left => slots.any fun right =>
+    shape.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
+    (firstDuplicateInEncounterOrder? (fun slot => match slot with
+      | .direct reference => some (Sum.inl reference : Sum Ref (HavingOrigin × GroupPath))
+      | .extent (.group group) (reference :: _) => some (.inr ((presence reference).origin, group.path))
+      | _ => none) slots).isNone &&
+    !(shape.any fun left => shape.any fun right =>
       (left.entityPath? model).any fun (leftPath, leftGroup) =>
         (right.entityPath? model).any fun (rightPath, rightGroup) =>
           entityListPathsOverlap leftPath rightPath leftGroup rightGroup)
+
+def havingEntityListWellFormed (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel)
+    (slots : List (HavingFieldListSlot HavingPresenceRef)) : Bool :=
+  havingTypedEntityListWellFormed model candidateLevels outerLevels id slots
 
 end A12Kernel

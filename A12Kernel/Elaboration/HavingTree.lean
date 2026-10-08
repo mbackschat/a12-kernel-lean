@@ -22,6 +22,9 @@ structure ResolvedHavingNumberRef where
     each route chooses all of them together, and a route that admits no String or presence leaf
     supplies a refusing resolver rather than a different combinator. -/
 structure HavingLeafResolvers where
+  selectedComparison : EqualityOp → SurfaceHavingSelectedOperand → SurfaceHavingSelectedOperand →
+    Except CorrelationElabError HavingSelectedComparison
+  firstFilled : SurfaceHavingEntitySource → Except CorrelationElabError (List (HavingFieldListSlot HavingNumberRef))
   groupCount : SurfaceHavingEntitySource → Except CorrelationElabError (List HavingGroupCountOperand)
   product : SurfaceHavingEntitySource → Except CorrelationElabError HavingNumericProduct
   collectionCount : SurfaceHavingCollectionCount → Except CorrelationElabError HavingCollectionCount
@@ -88,6 +91,7 @@ private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
     (op : NumericValidationOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
     Except CorrelationElabError CorrelatedHaving := do
   let resolve : SurfaceHavingNumericAtom → Except CorrelationElabError HavingNumericAtom
+    | .firstFilled source => HavingNumericAtom.firstFilled <$> resolvers.firstFilled source
     | .groupCount source => HavingNumericAtom.groupCount <$> resolvers.groupCount source
     | .product source => HavingNumericAtom.product <$> resolvers.product source
     | .collectionCount source => HavingNumericAtom.collectionCount <$> resolvers.collectionCount source
@@ -175,6 +179,8 @@ private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
 
 def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving → Except CorrelationElabError CorrelatedHaving
+  | .compareSelected op left right =>
+      (fun comparison => .leaf (.selectedComparison comparison)) <$> resolvers.selectedComparison op left right
   | .compareBoolean op reference expected => do
       pure (.leaf (.simpleComparison reference.origin .inner (← resolvers.boolean op reference expected)))
   | .compareTemporalExpression op left right => (fun comparison => .leaf (.temporalExpression comparison)) <$> resolvers.temporalExpression op left right

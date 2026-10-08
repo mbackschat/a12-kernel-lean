@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.HavingSelectedComparison
 import A12Kernel.Elaboration.HavingGroupCount
 import A12Kernel.Elaboration.HavingNumericProduct
 import A12Kernel.Elaboration.HavingCollectionCount
@@ -70,7 +71,7 @@ def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
       | _, _ => false
   -- Text, Boolean/Confirm and presence carry no declared scale; their kind gates belong to
   -- wellFormedForEnvironments.
-  | .temporalExpression _ | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => true
+  | .selectedComparison _ | .temporalExpression _ | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => true
 
 /-- Every leaf under the shared connective tree satisfies the static scale law. -/
 def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :=
@@ -80,14 +81,14 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
     (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
-      | .groupCount _ | .product _ | .collectionCount _ | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .clockPart _ _ _ | .fieldValueAsNumber _ _ => false
+      | .firstFilled _ | .groupCount _ | .product _ | .collectionCount _ | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .clockPart _ _ _ | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
       | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ | .temporalExpressionPart _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
   -- The legacy one-group adapter admits only the leaves it was built for. The other
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
   -- extending an adapter no current consumer needs them on.
-  | .temporalExpression _ | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
+  | .selectedComparison _ | .temporalExpression _ | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
 
 def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
     (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
@@ -223,7 +224,7 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
       | .groupCount operands => HavingGroupCount.wellFormed operands model candidateLevels outerLevels
       | .product source => source.wellFormed model candidateLevels outerLevels
       | .collectionCount source => source.wellFormed model candidateLevels outerLevels
-      | .aggregate _ slots => HavingNumberAggregate.wellFormed model candidateLevels outerLevels slots
+      | .firstFilled slots | .aggregate _ slots => HavingNumberAggregate.wellFormed model candidateLevels outerLevels slots
       | .dateDifference unit left right => unit.compatible model.hasBaseYear
           (left.componentsWith (·.field.components)) (right.componentsWith (·.field.components)) &&
           [left, right].all (calendarSourceAdmitted model candidateLevels outerLevels)
@@ -258,12 +259,13 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
           (model.lookupUniqueId field.id).toOption.any fun declaration =>
             repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
       | .temporalExpressionPart part source => source.wellFormed model candidateLevels outerLevels &&
-          !source.grouped && source.components?.any (fun components => part.admitsComponents components model.hasBaseYear)
+          source.admittedSourceSlot && source.components?.any (fun components => part.admitsComponents components model.hasBaseYear)
       | .temporalPart origin field part => part.admittedBy field model.hasBaseYear &&
           (model.lookupUniqueId field.id).toOption.any fun declaration =>
             declaration.toTemporalField? == some field &&
               repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
       | .repetition reference => reference.availableIn model candidateLevels outerLevels
+  | .selectedComparison comparison => comparison.wellFormed model candidateLevels outerLevels
   | .temporalExpression comparison =>
       comparison.left.wellFormed model candidateLevels outerLevels &&
         comparison.right.wellFormed model candidateLevels outerLevels &&
@@ -360,7 +362,7 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
         | .collectionCount source => source.presenceSlots.any fun slot =>
             slot.references.any (·.origin == .inner) &&
               (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
-        | .aggregate _ slots => (HavingNumberAggregate.presenceSlots slots).any fun slot =>
+        | .firstFilled slots | .aggregate _ slots => (HavingNumberAggregate.presenceSlots slots).any fun slot =>
             slot.references.any (·.origin == .inner) &&
               (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
         | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).any fun reference => reference.origin == .inner &&
@@ -380,17 +382,20 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
         | .dateRangeBoundPart origin field _ _ => origin == .inner &&
             (model.lookupUniqueId field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
-        | .temporalExpressionPart _ source => source.references.any fun ref => ref.origin == .inner &&
-            (model.lookupUniqueId ref.fieldId).toOption.any fun declaration =>
-              declaration.repeatableScope.any reopenedLevels.contains
+        | .temporalExpressionPart _ source => source.presenceSlots.any fun slot =>
+            slot.references.any (·.origin == .inner) &&
+              (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
         | .temporalPart origin field _ => origin == .inner &&
             (model.lookupUniqueId field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
         | .repetition reference => reference.origin == .inner &&
             (reference.scope? model).any (·.any reopenedLevels.contains)
-  | .temporalExpression comparison => comparison.references.any fun ref => ref.origin == .inner &&
-      (model.lookupUniqueId ref.fieldId).toOption.any fun declaration =>
-        declaration.repeatableScope.any reopenedLevels.contains
+  | .selectedComparison comparison => comparison.presenceSlots.any fun slot =>
+      slot.references.any (·.origin == .inner) &&
+        (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
+  | .temporalExpression comparison => comparison.presenceSlots.any fun slot =>
+      slot.references.any (·.origin == .inner) &&
+        (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
   | .simpleComparison left right comparison =>
       ([(left, comparison.inputFields.1), (right, comparison.inputFields.2)]).any fun (origin, fields) =>
         origin == .inner && fields.any fun field =>

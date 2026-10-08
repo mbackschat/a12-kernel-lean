@@ -62,34 +62,16 @@ private def havingMember? : Expr → Option SurfaceHavingDirectFieldOperand
       pure { origin, field, form := category.map FieldEntityReadForm.projected |>.getD .stored }
   | _ => none
 
-private def havingEntity? : Expr → Option SurfaceHavingDirectFieldOperand
-  | .entity reference => havingMember? (.value reference)
-  | _ => none
-
-private def havingEntityListMembers (arguments : List Argument) : Lowering SurfaceHavingEntitySource := do
-  let operands ← arguments.mapM fun
-    | .mk (.constant "RuleGroup") none none => pure (.group .inner (.ruleGroup false))
-    | .mk (.entity { path, index := none, category }) none none => do
-        if path.segments.any (·.star) then
-          pure (.star (if path.correlated then .outer else .inner)
-            { base := path.base, groups := path.starGroups }
-            (category.map FieldEntityReadForm.projected |>.getD .stored))
-        else
-          let some reference := havingEntity? (.entity { path, index := none, category }) |
-            refuse "Having" "field-list entity"
-          pure (.entity reference)
-    | _ => refuse "Having" "field-list operand"
-  let first :: rest := operands | refuse "Having" "empty field list"
-  pure { first, rest }
 
 
 private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
-  | .call "NumberOfFilledGroups" arguments none none => .groupCount <$> havingEntityListMembers arguments
-  | .call "SumOfProducts" arguments none none => .product <$> havingEntityListMembers arguments
+  | .call "FirstFilledValue" arguments none none => .firstFilled <$> lowerHavingEntitySource arguments
+  | .call "NumberOfFilledGroups" arguments none none => .groupCount <$> lowerHavingEntitySource arguments
+  | .call "SumOfProducts" arguments none none => .product <$> lowerHavingEntitySource arguments
   | .call "NumberOfFilledFields" arguments none none =>
-      (.collectionCount ∘ .filledFields) <$> havingEntityListMembers arguments
+      (.collectionCount ∘ .filledFields) <$> lowerHavingEntitySource arguments
   | .call "NumberOfValueInFields" [.mk expected none none] (some listed) none => do
-      let source ← havingEntityListMembers listed
+      let source ← lowerHavingEntitySource listed
       let count ← match expected with
         | .number text => do
             let some literal := decodeNumber? text | refuse "NumberOfValueInFields" "expected value"
@@ -106,11 +88,11 @@ private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
         let directRangeBound := match source with
           | .call name _ _ _ => name == "StartOfDateRange" || name == "EndOfDateRange"
           | _ => false
-        if source.havingTemporalConstructor && !directRangeBound then
+        if source.havingTemporalConstructor (fun _ => true) && !directRangeBound then
           if let some part := ((datePart? id).map TemporalNumericPart.date).orElse (fun _ => (timePart? id).map TemporalNumericPart.time) then
             return .temporalExpressionPart part (← lowerHavingTemporalExpression true source)
       if let some op := aggregateOp? id then do
-        pure (.aggregate op (← havingEntityListMembers arguments))
+        pure (.aggregate op (← lowerHavingEntitySource arguments))
       else lowerNonAggregateHavingNumericAtom (.call id arguments none none)
   | other => lowerNonAggregateHavingNumericAtom other
 where
@@ -192,28 +174,91 @@ private def lowerHavingNumericField (source : Expr) : Lowering SurfaceHavingNume
   lowerHavingNumericAtom (.value reference)
 
 
+private inductive HavingOperandClass where
+  | number | temporal | text | boolean | dateRange | unsupported
+  deriving DecidableEq
+
+private def havingDeclarationClass (declaration : FlatFieldDecl) : HavingOperandClass :=
+  match declaration.policy.kind with
+  | .number _ => .number
+  | .temporal _ _ => .temporal
+  | .string | .enumeration => .text
+  | .boolean => .boolean
+  | .dateRange => .dateRange
+  | .confirm => .unsupported
+
+/-- Dispatch reads the leading expanded declaration; checked elaboration still owns shape,
+whole-list agreement and scope (spec/04 extrema; spec/07 FirstFilledValue). -/
+private partial def havingOperandClass? (typing : Option (FlatModel × GroupPath)) : Expr → Option HavingOperandClass
+  | .constant "RuleGroup" => do
+      let (model, group) ← typing
+      havingDeclarationClass <$> (model.groupSubtreeFields group).head?
+  | .entity { path, .. } | .value { path, .. } => do
+      let (model, group) ← typing
+      let path : Path := { path with
+        correlated := false
+        segments := path.segments.map fun (segment : Segment) => { segment with star := false } }
+      let field ← path.toFieldPath?
+      match (model.resolveFieldDeclarationUnchecked group field).toOption with
+      | some declaration => some (havingDeclarationClass declaration)
+      | none => do
+          let path ← model.groupNamedBy? group field
+          havingDeclarationClass <$> (model.groupSubtreeFields path).head?
+  | .braces source => havingOperandClass? typing source
+  | .number _ => some .number
+  | .string value => some (if isTemporalConstant value then .temporal else .text)
+  | .constant "True" | .constant "False" => some .boolean
+  | .constant "Now" | .constant "Today" => some .temporal
+  | expression@(.call name arguments none none) =>
+      if ["FirstFilledValue", "MinValue", "MaxValue", "Min", "Max"].contains name then
+        arguments.findSome? fun | .mk source none none => havingOperandClass? typing source | _ => none
+      else if ["StartOfDateRange", "EndOfDateRange"].contains name || expression.havingTemporalConstructor then
+        some .temporal else none
+  | _ => none
+
+private def temporalHavingSelection (typing : Option (FlatModel × GroupPath)) (arguments : List Argument) : Bool :=
+  (arguments.findSome? fun | .mk source none none => havingOperandClass? typing source | _ => none) == some .temporal
+
+private def selectedNonNumeric (typing : Option (FlatModel × GroupPath)) : Expr → Bool
+  | .braces source => selectedNonNumeric typing source
+  | expression@(.call "FirstFilledValue" _ none none) =>
+      (havingOperandClass? typing expression).any fun kind => kind != .number && kind != .temporal
+  | _ => false
+
+private def lowerHavingSelectedOperand : Expr → Lowering SurfaceHavingSelectedOperand
+  | .braces source => lowerHavingSelectedOperand source
+  | .call "FirstFilledValue" arguments none none => .firstFilled <$> lowerHavingEntitySource arguments
+  | .constant "True" => pure (.boolean true)
+  | .constant "False" => pure (.boolean false)
+  | .string value => if isTemporalConstant value then refuse "Having" "temporal token literal" else pure (.text value)
+  | .value { path, index := none, category } => do
+      let some (origin, field) := path.havingField? | refuse "Having" "selected comparison field"
+      pure (.field { origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored })
+  | _ => refuse "Having" "selected comparison operand"
+
 /-- A filter comparison uses the shared numeric expression reader over correlated field and
 repetition atoms. Typed field pairs, Boolean/text literals and presence retain their operand domains. -/
-partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
-  | .parens body => lowerHaving body
+partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × GroupPath) := none) :
+    Lowering SurfaceCorrelatedHaving := match expression with
+  | .parens body => lowerHaving body typing
   | .logic op (first :: rest) => do
       let join := match op with | .and => SurfaceCorrelatedHaving.and | .or => SurfaceCorrelatedHaving.or
-      let mut result ← lowerHaving first
-      for part in rest do result := join result (← lowerHaving part)
+      let mut result ← lowerHaving first typing
+      for part in rest do result := join result (← lowerHaving part typing)
       pure result
   | .call id arguments (some members) none => do
       let some operator := valueListQuantifier? id | refuse "Having" id
       let plain (arguments : List Argument) := arguments.mapM fun
         | .mk expression none none => pure expression
         | _ => refuse "Having" "direct membership fields"
-      let subjects ← havingEntityListMembers arguments
+      let subjects ← lowerHavingEntitySource arguments
       let values ← plain members
       if let some literals := values.mapM (fun | .string value => some value | _ => none) then
         return .literalList operator subjects literals
-      pure (.fieldMembership (.quantified operator) subjects (← havingEntityListMembers members))
+      pure (.fieldMembership (.quantified operator) subjects (← lowerHavingEntitySource members))
   | .call id arguments none none => do
       if id == "FieldValuesNotUnique" then
-        return .uniqueness (← havingEntityListMembers arguments)
+        return .uniqueness (← lowerHavingEntitySource arguments)
       if id == "FieldValueIncludedInValueList" || id == "FieldValueNotIncludedInValueList" then
         let operator := if id == "FieldValueIncludedInValueList" then ValueListMembershipOp.included else .notIncluded
         let .mk (.entity { path, index := none, category }) none none :: rest := arguments |
@@ -256,7 +301,7 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
             return .presence polarity { origin, field }
         | _ => refuse "Having" "presence arity"
       let some operator := fieldFillOp? id | refuse "Having" id
-      pure (.fieldFill operator (← havingEntityListMembers arguments))
+      pure (.fieldFill operator (← lowerHavingEntitySource arguments))
   | .compare op@(.tolerance _) left right => do
       let some (.tolerance range) := op.toNumeric? | refuse "Having" "tolerance band"
       pure (.tolerance range
@@ -269,9 +314,13 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
         let some source := right.patternConstant? | refuse "Having" "pattern constant"
         return .stringPattern (if op == .patternMatched then .matched else .violated) { origin, field } source
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
-      if left.havingTemporalConstructor || right.havingTemporalConstructor then
+      if left.havingTemporalConstructor (temporalHavingSelection typing) ||
+          right.havingTemporalConstructor (temporalHavingSelection typing) then
         return .compareTemporalExpression surfaceOp
           (← lowerHavingTemporalExpression false left) (← lowerHavingTemporalExpression false right)
+      if selectedNonNumeric typing left || selectedNonNumeric typing right then
+        let some equality := surfaceOp.toEquality? | refuse "Having" "selected comparison operator"
+        return .compareSelected equality (← lowerHavingSelectedOperand left) (← lowerHavingSelectedOperand right)
       let rec temporal : Expr → Option SurfaceHavingTemporalOperand
         | .value { path, index := none, category := none } => do
             let (origin, field) ← path.havingField?
@@ -409,7 +458,7 @@ def lowerEntityOperand (model : FlatModel) (group : GroupPath) :
         if category.isSome then refuse "EntityOperand" "category on a star"
         match filter with
         | none => pure (.star star)
-        | some body => pure (.starHaving star (← lowerHaving body))
+        | some body => pure (.starHaving star (← lowerHaving body (some (model, group))))
       else
         if filter.isSome then refuse "EntityOperand" "filter on an unstarred operand"
         match path.toFieldPath?, path.toGroupPath? with
@@ -444,7 +493,7 @@ def lowerProjectedTokenOperand (model : FlatModel) (group : GroupPath) (argument
         let some star := path.toStarFieldPath? | refuse "EntityOperand" "star path"
         match filter with
         | none => pure (.star star projection)
-        | some body => pure (.starHaving star projection (← lowerHaving body))
+        | some body => pure (.starHaving star projection (← lowerHaving body (some (model, group))))
       else
         let some field := path.toFieldPath? | refuse "EntityOperand" "path"
         if filter.isSome then refuse "EntityOperand" "filter on an unstarred operand"
@@ -477,8 +526,8 @@ def lowerProductAggregate (model : FlatModel) (group : GroupPath) (arguments : L
     | refuse "SumOfProducts" "operands"
   let some left := leftPath.toStarFieldPath? | refuse "SumOfProducts" "operand"
   let some right := rightPath.toStarFieldPath? | refuse "SumOfProducts" "operand"
-  pure { left, right, leftHaving := ← leftFilter.mapM lowerHaving
-         rightHaving := ← rightFilter.mapM lowerHaving
+  pure { left, right, leftHaving := ← leftFilter.mapM (fun body => lowerHaving body (some (model, group)))
+         rightHaving := ← rightFilter.mapM (fun body => lowerHaving body (some (model, group)))
          leftKey := ← leftIndex.mapM (fun key => (·.key) <$> lowerKeyedExtent model group leftPath key)
          rightKey := ← rightIndex.mapM (fun key => (·.key) <$> lowerKeyedExtent model group rightPath key) }
 

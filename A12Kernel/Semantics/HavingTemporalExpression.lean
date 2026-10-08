@@ -2,6 +2,7 @@ import A12Kernel.Semantics.TimeConstructionInputs
 import A12Kernel.Semantics.HavingDateValidity
 import A12Kernel.Semantics.ScalarTemporalValue
 import A12Kernel.Semantics.TemporalExpression
+import A12Kernel.Semantics.HavingTemporalSelection
 
 namespace A12Kernel
 
@@ -50,6 +51,7 @@ private def HavingTimeComponents.read (components : HavingTimeComponents) (profi
         pure (.value (part.extract label.time).num)) phase
 
 inductive HavingTemporalAtom where
+  | selection (kind : HavingTemporalSelection) (slots : List (HavingFieldListSlot HavingTemporalSelectionRef))
   | field (reference : HavingTemporalRef)
   | rangeBound (origin : HavingOrigin) (source : FlatDateRangeField) (components : TemporalComponents) (bound : DateRangeBound)
   | timeConstruction (components : HavingTimeComponents)
@@ -62,8 +64,13 @@ inductive HavingTemporalAtom where
   | baseYearBound (bound : BaseYearRangeEndpoint)
   deriving Repr, DecidableEq
 
+inductive HavingTemporalOperation where
+  | constructor (operation : ScalarTemporalConstructorOp)
+  | extremum (operator : TemporalExtremumOp)
+  deriving Repr, DecidableEq
+
 structure HavingTemporalExpression where
-  core : TemporalExpressionOf HavingTemporalAtom ScalarTemporalConstructorOp
+  core : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation
   profile : ModelZone.ConcreteProfile
   baseYear : Option Int
   grouped : Bool := false
@@ -71,27 +78,49 @@ structure HavingTemporalExpression where
 
 namespace HavingTemporalExpression
 
+def referenceSlots (source : HavingTemporalExpression) : List (HavingFieldListSlot HavingTemporalExpressionRef) :=
+  source.core.atoms.flatMap fun atom =>
+    match atom with
+    | .selection _ slots => slots.map (·.map fun reference => { origin := reference.origin, source := .temporal reference.field })
+    | atom => (show List HavingTemporalExpressionRef from match atom with
+        | .field reference => [{ origin := reference.origin, source := .temporal reference.field }]
+        | .rangeBound origin field components _ => [{ origin, source := .range field components }]
+        | .timeConstruction components => components.sources.filterMap fun (origin, component) =>
+            match component with
+            | .number field => some { origin, source := .number field }
+            | .string field => some { origin, source := .string field }
+            | .extractor field _ => some { origin, source := .temporal field }
+            | _ => none
+        | .dateConstruction components => components.sources.filterMap fun (origin, component) =>
+            match component with
+            | .numberField field => some { origin, source := .number field }
+            | .stringField field => some { origin, source := .string field }
+            | .dateYearField field | .extractor field _ _ => some { origin, source := .temporal field }
+            | _ => none
+        | _ => []).map HavingFieldListSlot.direct
+
 def references (source : HavingTemporalExpression) : List HavingTemporalExpressionRef :=
-  source.core.atoms.flatMap fun
-    | .field reference => [{ origin := reference.origin, source := .temporal reference.field }]
-    | .rangeBound origin field components _ => [{ origin, source := .range field components }]
-    | .timeConstruction components => components.sources.filterMap fun (origin, component) =>
-        match component with
-        | .number field => some { origin, source := .number field }
-        | .string field => some { origin, source := .string field }
-        | .extractor field _ => some { origin, source := .temporal field }
-        | _ => none
-    | .dateConstruction components => components.sources.filterMap fun (origin, component) =>
-        match component with
-        | .numberField field => some { origin, source := .number field }
-        | .stringField field => some { origin, source := .string field }
-        | .dateYearField field | .extractor field _ _ => some { origin, source := .temporal field }
-        | _ => none
-    | _ => []
+  source.referenceSlots.flatMap (·.references)
+
+def presenceSlots (source : HavingTemporalExpression) : List (HavingFieldListSlot HavingPresenceRef) :=
+  source.referenceSlots.map (·.map fun reference => { origin := reference.origin, field := reference.fieldId })
+
+/-- Checked core constructors retain the same source-slot boundary as authored elaboration
+(spec/05 §§3,6); a hand-built tree cannot carry a value-expression selector here. -/
+private def coreAdmittedSourceSlot : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation → Bool
+  | .atom (.selection _ _) | .apply (.extremum _) _ _ => false
+  | _ => true
+
+def admittedSourceSlot (source : HavingTemporalExpression) : Bool :=
+  !source.grouped && coreAdmittedSourceSlot source.core
 
 def componentsWith (baseYear : Option Int) :
-    TemporalExpressionOf HavingTemporalAtom ScalarTemporalConstructorOp → Option TemporalComponents
+    TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation → Option TemporalComponents
   | .atom atom => match atom with
+      | .selection _ slots => do
+          let reference ← (slots.flatMap (·.references)).head?
+          pure (if reference.field.components.hasDate then reference.field.components.withBaseYear baseYear.isSome
+            else reference.field.components)
       | .field reference => some (if reference.field.components.hasDate then
           reference.field.components.withBaseYear baseYear.isSome else reference.field.components)
       | .rangeBound _ _ components _ => some (components.withBaseYear baseYear.isSome)
@@ -99,17 +128,28 @@ def componentsWith (baseYear : Option Int) :
       | .timeLiteral _ | .timeConstruction _ => some TemporalComponents.time
       | .dateTimeLiteral _ | .now => some TemporalComponents.now
       | .today | .baseYearBound _ | .dateConstruction _ => some TemporalComponents.fullDate
-  | .apply .dateTime date [time] => do
+  | .apply (.constructor .dateTime) date [time] => do
+      if !coreAdmittedSourceSlot date || !coreAdmittedSourceSlot time then none else pure ()
       let date ← componentsWith baseYear date
       let time ← componentsWith baseYear time
       if !date.hasDate || !date.year || date.hasTime || time.hasDate || !time.hasTime then none
       else some TemporalComponents.now
-  | .apply .dateFromDateTime source [] => do
+  | .apply (.constructor .dateFromDateTime) source [] => do
+      if !coreAdmittedSourceSlot source then none else pure ()
       let components ← componentsWith baseYear source
       if components.isFullDateTime then some TemporalComponents.fullDate else none
-  | .apply .timeFromDateTime source [] => do
+  | .apply (.constructor .timeFromDateTime) source [] => do
+      if !coreAdmittedSourceSlot source then none else pure ()
       let components ← componentsWith baseYear source
       if components.isFullDateTime then some TemporalComponents.time else none
+  | .apply (.extremum _) first rest => do
+      let components ← componentsWith baseYear first
+      let remaining ← rest.mapM (componentsWith baseYear)
+      let constant : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation → Bool
+        | .atom (.dateLiteral _ _) | .atom (.timeLiteral _) | .atom (.dateTimeLiteral _) | .atom .now | .atom .today => true
+        | _ => false
+      if remaining.all (· == components) && ((first :: rest).filter constant).length ≤ 1 then
+        some components else none
   | _ => none
 
 def components? (source : HavingTemporalExpression) : Option TemporalComponents :=
@@ -118,6 +158,7 @@ def components? (source : HavingTemporalExpression) : Option TemporalComponents 
 private def readAtom (source : HavingTemporalExpression) (phase : Phase)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
     HavingTemporalAtom → Except Error (SimpleComparisonOperand ScalarTemporalValue)
+  | .selection kind slots => kind.evaluate source.baseYear source.profile phase context frame slots
   | .field reference => do
       let cell ← context.read (frame.envAt reference.origin) reference.field.id
       pure (projectScalarTemporalObservationWith source.baseYear (some source.profile)
@@ -165,7 +206,11 @@ def evaluate (source : HavingTemporalExpression) (phase : Phase)
   let result := source.core.evalWithResult
     (fun atom => do reached (← (source.readAtom phase context frame atom).mapError Sum.inr))
     (fun operation operands => do
-      let value ← (operation.apply source.profile operands).mapError fun
+      let result := match operation with
+        | .constructor operation => operation.apply source.profile operands
+        | .extremum operator => pure (evalTemporalExtremumAggregate (ScalarTemporalValue.select operator)
+            { operands, hasUninstantiatedTail := false, hasHaving := false })
+      let value ← result.mapError fun
         | .calendarUnavailable => .inr context.unsupportedDateCalendar
         | .dateTimeLabelUnresolved => .inr context.temporalValueFailure
       reached value)
@@ -190,6 +235,9 @@ structure HavingTemporalComparison where
   deriving Repr, DecidableEq
 
 namespace HavingTemporalComparison
+
+def presenceSlots (comparison : HavingTemporalComparison) : List (HavingFieldListSlot HavingPresenceRef) :=
+  comparison.left.presenceSlots ++ comparison.right.presenceSlots
 
 def references (comparison : HavingTemporalComparison) : List HavingTemporalExpressionRef :=
   comparison.left.references ++ comparison.right.references

@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.HavingFirstFilled
 import A12Kernel.Semantics.HavingGroupCount
 import A12Kernel.Semantics.HavingNumericProduct
 import A12Kernel.Semantics.HavingCollectionCount
@@ -10,6 +11,7 @@ namespace A12Kernel
 
 /-- Clock and model constants carry no row origin, so arithmetic cannot make them satisfy a filter reference requirement (spec/07 §3). Field and repetition atoms retain their own origins. -/
 inductive HavingNumericAtom where
+  | firstFilled (slots : List (HavingFieldListSlot HavingNumberRef))
   | groupCount (operands : List HavingGroupCountOperand)
   | product (source : HavingNumericProduct)
   | collectionCount (source : HavingCollectionCount)
@@ -35,7 +37,7 @@ def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
   | .temporalExpressionPart _ source => source.references.map (·.origin)
   | .product source => [source.left.origin, source.right.origin]
   | .collectionCount source => (source.presenceSlots.flatMap (·.references)).map (·.origin)
-  | .aggregate _ slots => (slots.flatMap (·.references)).map (·.origin)
+  | .firstFilled slots | .aggregate _ slots => (slots.flatMap (·.references)).map (·.origin)
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (·.origin)
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (·.origin)
   | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => []
@@ -50,7 +52,7 @@ def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin ×
   | .temporalExpressionPart _ source => source.references.map (fun ref => (ref.origin, ref.fieldId))
   | .product source => [(source.left.origin, source.left.field.id), (source.right.origin, source.right.field.id)]
   | .collectionCount source => (source.presenceSlots.flatMap (·.references)).map (fun ref => (ref.origin, ref.field))
-  | .aggregate _ slots => (slots.flatMap (·.references)).map (fun reference => (reference.origin, reference.field.id))
+  | .firstFilled slots | .aggregate _ slots => (slots.flatMap (·.references)).map (fun reference => (reference.origin, reference.field.id))
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (fun reference => (reference.origin, reference.field.id))
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (fun reference => (reference.origin, reference.field.id))
   | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ | .repetition _ => []
@@ -64,7 +66,7 @@ def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
   | .product source => source.summary
   | .temporalExpressionPart _ _ => .field 0
   | .groupCount _ | .collectionCount _ | .aggregate .distinctCount _ => .field 0
-  | .aggregate _ slots => (slots.flatMap (·.references)).foldl (fun summary reference => summary.union (.field reference.field.info.scale)) (.field 0)
+  | .firstFilled slots | .aggregate _ slots => (slots.flatMap (·.references)).foldl (fun summary reference => summary.union (.field reference.field.info.scale)) (.field 0)
   | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ => .field 0
   | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => .field 0
   | .fieldValueAsNumber _ source => .field source.scale
@@ -235,6 +237,10 @@ def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : Cor
       match source.evaluate .validation context.asResolving frame with
       | .ok (some operand) => havingArithmetic operand
       | _ => .error ()
+  | .firstFilled slots =>
+      match HavingFirstFilled.number .validation context.asResolving frame slots with
+      | .ok operand => havingArithmetic operand
+      | .error _ => .error ()
   | .aggregate op slots =>
       match HavingNumberAggregate.evaluate .validation context.asResolving frame op slots with
       | .ok operand => havingArithmetic operand
@@ -278,6 +284,8 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
       pure ((← HavingGroupCount.evaluate .validation context frame operands).map havingArithmetic |>.getD (.error ()))
   | .collectionCount source => do
       pure ((← source.evaluate .validation context frame).map havingArithmetic |>.getD (.error ()))
+  | .firstFilled slots => do
+      pure (havingArithmetic (← HavingFirstFilled.number .validation context frame slots))
   | .aggregate op slots => do
       pure (havingArithmetic (← HavingNumberAggregate.evaluate .validation context frame op slots))
   | .dateTimeDifference unit left right => do
@@ -328,6 +336,8 @@ def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationCo
       pure ((← HavingGroupCount.evaluate .computation context frame operands).map NumericOperand.toComputationResult |>.getD .domainFailure)
   | .collectionCount source => do
       pure ((← source.evaluate .computation context frame).map NumericOperand.toComputationResult |>.getD .domainFailure)
+  | .firstFilled slots => do
+      pure ((← HavingFirstFilled.number .computation context frame slots).toComputationResult)
   | .aggregate op slots => do
       pure ((← HavingNumberAggregate.evaluate .computation context frame op slots).toComputationResult)
   | .dateTimeDifference unit left right => do

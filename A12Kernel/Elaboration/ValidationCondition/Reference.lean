@@ -244,7 +244,7 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
         | .groupCount operands => havingEntityListReferencePointers source environment (operands.map (·.presenceSlot))
         | .product product => havingEntityListReferencePointers source environment product.presenceSlots
         | .collectionCount count => havingEntityListReferencePointers source environment count.presenceSlots
-        | .aggregate _ slots => havingEntityListReferencePointers source environment (HavingNumberAggregate.presenceSlots slots)
+        | .firstFilled slots | .aggregate _ slots => havingEntityListReferencePointers source environment (HavingNumberAggregate.presenceSlots slots)
         | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).mapM fun reference => do
             let declaration ← (model.lookupUniqueId reference.field.id).mapError (fun _ => .incoherentHavingField reference.field.id)
             if declaration.toTemporalField? != some reference.field then throw (.incoherentHavingField reference.field.id)
@@ -263,10 +263,10 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
             if !model.exposesDateRangeBoundPart field part then throw (.incoherentHavingField field.id)
             let declaration ← (model.lookupUniqueId field.id).mapError (fun _ => .incoherentHavingField field.id)
             pure [← havingFieldPointerFor source environment declaration origin]
-        | .temporalExpressionPart _ expression => expression.references.mapM fun reference => do
-            let declaration ← (model.lookupUniqueId reference.fieldId).mapError (fun _ => .incoherentHavingField reference.fieldId)
-            if !reference.matchesModel model then throw (.incoherentHavingField reference.fieldId)
-            havingFieldPointerFor source environment declaration reference.origin
+        | .temporalExpressionPart _ expression => do
+            for reference in expression.references do
+              if !reference.matchesModel model then throw (.incoherentHavingField reference.fieldId)
+            havingEntityListReferencePointers source environment expression.presenceSlots
         | .temporalPart origin field _ => do
             let declaration ← match model.lookupUniqueId field.id with
               | .ok declaration =>
@@ -276,10 +276,12 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
             pure [← havingFieldPointerFor source environment declaration origin]
         | .repetition _ => pure []
       pure pointers.flatten
-  | .leaf (.temporalExpression comparison) => comparison.references.mapM fun reference => do
-      let declaration ← (model.lookupUniqueId reference.fieldId).mapError (fun _ => .incoherentHavingField reference.fieldId)
-      if !reference.matchesModel model then throw (.incoherentHavingField reference.fieldId)
-      havingFieldPointerFor source environment declaration reference.origin
+  | .leaf (.selectedComparison comparison) =>
+      havingEntityListReferencePointers source environment comparison.presenceSlots
+  | .leaf (.temporalExpression comparison) => do
+      for reference in comparison.references do
+        if !reference.matchesModel model then throw (.incoherentHavingField reference.fieldId)
+      havingEntityListReferencePointers source environment comparison.presenceSlots
   | .leaf (.simpleComparison left right comparison) => do
       let pointers ← [(left, comparison.inputFields.1), (right, comparison.inputFields.2)].mapM fun (origin, fields) =>
         fields.mapM fun field => do

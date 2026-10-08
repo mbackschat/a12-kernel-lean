@@ -1,3 +1,6 @@
+import A12Kernel.Conformance.HavingSelectedComparison
+import A12Kernel.Conformance.HavingFirstFilled
+import A12Kernel.Conformance.HavingTemporalSelection
 import A12Kernel.Conformance.HavingCollectionCount
 import A12Kernel.Conformance.HavingGroupCount
 import A12Kernel.Conformance.HavingNumericProduct

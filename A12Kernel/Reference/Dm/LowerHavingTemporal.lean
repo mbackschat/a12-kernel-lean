@@ -9,13 +9,32 @@ def Path.havingField? (path : Path) : Option (HavingOrigin × SurfaceFieldPath) 
   pure (if path.correlated then .outer else .inner, field)
 
 
-/-- Only constructor-containing expressions select the recursive Having route; established direct
-comparisons retain their existing admission and diagnostics (spec/04 and spec/05). -/
-def Expr.havingTemporalConstructor : Expr → Bool
-  | .braces source => source.havingTemporalConstructor
+def lowerHavingEntitySource (arguments : List Argument) : Lowering SurfaceHavingEntitySource := do
+  let operands ← arguments.mapM fun
+    | .mk (.constant "RuleGroup") none none => pure (.group .inner (.ruleGroup false))
+    | .mk (.entity { path, index := none, category }) none none => do
+        if path.segments.any (·.star) then
+          pure (.star (if path.correlated then .outer else .inner)
+            { base := path.base, groups := path.starGroups }
+            (category.map FieldEntityReadForm.projected |>.getD .stored))
+        else
+          let some (origin, field) := path.havingField? |
+            refuse "Having" "field-list entity"
+          pure (.entity { origin, field, form := category.map FieldEntityReadForm.projected |>.getD .stored })
+    | _ => refuse "Having" "field-list operand"
+  let first :: rest := operands | refuse "Having" "empty field list"
+  pure { first, rest }
+
+
+/-- Constructors and model-classified temporal selectors use the recursive Having route.
+Established direct comparisons retain their admission and diagnostics (spec/04 and spec/05). -/
+def Expr.havingTemporalConstructor (isTemporalSelection : List Argument → Bool := fun _ => false) : Expr → Bool
+  | .braces source => source.havingTemporalConstructor isTemporalSelection
   | .call "StartOfDateRange" [.mk (.constant "BaseYear") none none] none none
   | .call "EndOfDateRange" [.mk (.constant "BaseYear") none none] none none => false
-  | .call name _ _ _ => ["Time", "Date", "DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
+  | .call name arguments none none =>
+      (["FirstFilledValue", "MinValue", "MaxValue", "Min", "Max"].contains name && isTemporalSelection arguments) ||
+        ["Time", "Date", "DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
   | _ => false
 
 private def lowerHavingDateComponent : Expr → Lowering SurfaceHavingDateComponent
@@ -78,7 +97,7 @@ private def lowerHavingTimeComponents (arguments : List Argument) : Lowering Sur
 
 /-- Source slots use unbracketed entities and reject grouping, like ordinary temporal lowering
 (spec/12 §3). Every field keeps its own captured/candidate origin. -/
-def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowering SurfaceHavingTemporalExpression
+partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowering SurfaceHavingTemporalExpression
   | .entity { path, index := none, category := none } => do
       if !sourceSlot then refuse "Having" "bare temporal value"
       let some (origin, field) := path.havingField? | refuse "Having" "temporal entity"
@@ -90,6 +109,22 @@ def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowering Surfac
   | .braces source => do
       if sourceSlot then refuse "Having" "grouped temporal source"
       .grouped <$> lowerHavingTemporalExpression false source
+  | expression@(.call "Min" arguments none none) | expression@(.call "Max" arguments none none) => do
+      if sourceSlot then refuse "Having" "extremum in temporal source slot"
+      let lower : Argument → Lowering SurfaceHavingTemporalExpression
+        | .mk operand none none => lowerHavingTemporalExpression false operand
+        | _ => refuse "Having" "temporal extremum modifier"
+      let first :: rest ← arguments.mapM lower | refuse "Having" "empty temporal extremum"
+      pure (.combine (if expression.construct == "Min" then .minimum else .maximum) first rest)
+  | .call "FirstFilledValue" arguments none none => do
+      if sourceSlot then refuse "Having" "selection in temporal source slot"
+      .selection .firstFilled <$> lowerHavingEntitySource arguments
+  | .call "MinValue" arguments none none => do
+      if sourceSlot then refuse "Having" "extremum in temporal source slot"
+      .selection (.extremum .minimum) <$> lowerHavingEntitySource arguments
+  | .call "MaxValue" arguments none none => do
+      if sourceSlot then refuse "Having" "extremum in temporal source slot"
+      .selection (.extremum .maximum) <$> lowerHavingEntitySource arguments
   | .call "Time" arguments none none => .timeConstruction <$> lowerHavingTimeComponents arguments
   | .call "Date" arguments none none => .dateConstruction <$> lowerHavingDateComponents arguments
   | .call "DateTime" [.mk date none none, .mk time none none] none none => do

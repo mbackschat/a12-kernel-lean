@@ -31,17 +31,8 @@ private def tokenSlotsMatch (model : FlatModel) (slots : List (HavingFieldListSl
 def HavingCollectionCount.wellFormed (source : HavingCollectionCount) (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
   (match source with
-    | .tokenValue _ slots =>
-        !slots.isEmpty && (slots.length > 1 || slots.any (! ·.isDirect)) &&
-          source.presenceSlots.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
-          (firstDuplicateInEncounterOrder? (fun slot => match slot with
-            | .direct ref => some (ref.origin, Sum.inl ref.operand)
-            | .extent (.group group) (ref :: _) => some (ref.origin, Sum.inr group.path)
-            | _ => none) slots).isNone &&
-          !(source.presenceSlots.any fun left => source.presenceSlots.any fun right =>
-            (left.entityPath? model).any fun (leftPath, leftGroup) =>
-              (right.entityPath? model).any fun (rightPath, rightGroup) =>
-                entityListPathsOverlap leftPath rightPath leftGroup rightGroup)
+    | .tokenValue _ slots => havingTypedEntityListWellFormed model candidateLevels outerLevels
+        (fun (ref : HavingStringRef) => ({ origin := ref.origin, field := ref.field.id } : HavingPresenceRef)) slots
     | _ => havingEntityListWellFormed model candidateLevels outerLevels source.presenceSlots) &&
     match source with
     | .filledFields slots capacity => HavingCollectionCount.capacity? model slots == capacity
@@ -74,28 +65,6 @@ private def tokenSlots (checked : List (HavingFieldListSlot (ResolvedHavingDirec
     throw .numericExpressionUnsupported
   pure slots
 
-/-- Token value counts retain category selection on direct and starred fields; group expansions
-remain stored reads, as in the ordinary projected token count (spec/06 §B.3). -/
-private def resolveTokenCountSlots (model : FlatModel) (declaringGroup : GroupPath)
-    (candidateLevels outerLevels : List RepeatableLevel) (source : SurfaceHavingEntitySource) :
-    Except CorrelationElabError (List (HavingFieldListSlot (ResolvedHavingDirectFieldOperand model))) := do
-  let storedStar : SurfaceHavingEntityOperand → SurfaceHavingEntityOperand
-    | .star origin path _ => .star origin path
-    | other => other
-  let operands ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels
-    { first := storedStar source.first, rest := source.rest.map storedStar }
-  checkHavingEntityDuplicates operands
-  checkHavingEntityRoots operands
-  if operands.length < 2 && !operands.any (fun (_, operand) => operand.isAlreadyMany) then
-    throw (.fieldFill .tooFewFields)
-  let slots ← havingResolvedEntitySlots operands
-  (slots.zip (source.first :: source.rest)).mapM fun (slot, authored) => do
-    match authored with
-    | .star _ _ (.projected category) =>
-        match slot with
-        | .extent (.starField _ _) _ => pure (slot.map fun ref => { ref with form := .projected category })
-        | _ => throw .numericExpressionUnsupported
-    | _ => pure slot
 
 def elaborateHavingCollectionCount (model : FlatModel) (declaringGroup : GroupPath)
     (candidateLevels outerLevels : List RepeatableLevel) :
@@ -103,7 +72,7 @@ def elaborateHavingCollectionCount (model : FlatModel) (declaringGroup : GroupPa
   | .numberValue expected source =>
       .numberValue expected <$> HavingNumberAggregate.elaborate model declaringGroup candidateLevels outerLevels source
   | .tokenValue expected source => do
-      let checked ← resolveTokenCountSlots model declaringGroup candidateLevels outerLevels source
+      let checked ← resolveHavingProjectedEntityList model declaringGroup candidateLevels outerLevels source
       pure (.tokenValue expected (← tokenSlots checked (some expected)))
   | .booleanValue expected source => do
       let checked ← elaborateHavingEntityList model declaringGroup candidateLevels outerLevels source
