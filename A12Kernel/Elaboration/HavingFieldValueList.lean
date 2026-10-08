@@ -26,9 +26,12 @@ private def tokenReferencesWellFormed (model : FlatModel)
   let references := slots.flatMap (·.references)
   slots.all (fun slot => slot.references.all (fun ref =>
     (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
-      -- Group/star expansion supplies stored reads; only direct syntax names a category
-      -- (havingResolvedEntitySlots, spec/06 §B.3).
-      (slot.isDirect || declaration.toTextFieldComparison?.any (fun (operand, _) => operand == ref.operand)) &&
+      -- A field star preserves its authored category; a group expansion always reads stored
+      -- tokens (spec/06 §B.3), so only group extents require the stored comparison here.
+      (match slot with
+        | .extent (.group _) _ | .extent (.starredGroup _ _) _ =>
+            declaration.toTextFieldComparison?.any (fun (operand, _) => operand == ref.operand)
+        | _ => true) &&
       match ref.operand with
       | .string _ => model.directComparableIn? declaration.repeatableScope ref.operand == some .plainString
       | .enumeration operand => (model.checkedEnumerationOperandIn? declaration.repeatableScope operand).isSome)) &&

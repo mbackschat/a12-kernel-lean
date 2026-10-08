@@ -15,35 +15,56 @@ private def ordinaryOperand (model : FlatModel) (declaringGroup : GroupPath) :
         .star field
       else .starredGroup path
 
+/-- Keep projection identity through list admission; a starred field's ordinary source carries
+only its address, while category read gates and indirect duplicates also need its projection
+(spec/07 §3 and CheckEntitySpecLenientImpl.checkCategory). -/
+structure ResolvedHavingEntityOperand (model : FlatModel) where
+  origin : HavingOrigin
+  operand : ResolvedFieldEntityOperand model
+  form : FieldEntityReadForm
+
+namespace ResolvedHavingEntityOperand
+
+def categoryPath? (read : ResolvedHavingEntityOperand model) : Option (List String) :=
+  if read.form == .stored then none else some read.operand.entityPath
+
+end ResolvedHavingEntityOperand
+
 /-- Ordinary entity-list shape and category gates are applied before the enclosing filter's
 candidate-scope gate. Captured references retain their immediate host-scope check (spec/07 §3). -/
 def resolveHavingEntityListOperands (model : FlatModel) (declaringGroup : GroupPath)
     (_candidateLevels outerLevels : List RepeatableLevel) (source : SurfaceHavingEntitySource) :
-    Except CorrelationElabError (List (HavingOrigin × ResolvedFieldEntityOperand model)) := do
+    Except CorrelationElabError (List (ResolvedHavingEntityOperand model)) := do
   model.validate |>.mapError .resolve
   (source.first :: source.rest).mapM fun authored => do
     let operand ← resolveFieldEntityOperandIn model declaringGroup []
       (ordinaryOperand model declaringGroup authored) (some declaringGroup) declaringGroup
       |>.mapError .fieldFill
-    if let .star _ _ (.projected _) := authored then
-      throw (.fieldFill (.categoryNotAllowed operand.entityPath))
     let operand := match operand with
       | .group reference => .group { reference with boundRepeatableScope := model.repeatableScopeForGroupPath reference.path }
       | other => other
     if authored.origin == .outer then
       if !operand.bindingScope.isPrefixOf outerLevels then
         throw (.fieldOutsideEnvironment .outer operand.entityPath outerLevels operand.bindingScope)
-    if let .entity reference := authored then
-      if reference.form != .stored && operand.subtreePath?.isSome then
-        throw (.resolve (.groupInFieldValueRead operand.entityPath none (.invalidEntity reference.field)))
-    pure (authored.origin, operand)
+    let form := match authored with
+      | .entity reference => reference.form
+      | .star _ _ form => form
+      | .group .. => .stored
+    if form != .stored then
+      match operand with
+      | .star source => source.declaration.checkEntityCategoryRead form |>.mapError .fieldFill
+      | .field .. => pure ()
+      | _ => throw (.comparisonEntry .noGroupsAllowed)
+    pure { origin := authored.origin, operand, form }
 
 /-- Preserve the authored extent while projecting its declared members for a typed consumer. -/
-def havingResolvedEntitySlots (operands : List (HavingOrigin × ResolvedFieldEntityOperand model)) :
+def havingResolvedEntitySlots (operands : List (ResolvedHavingEntityOperand model)) :
     Except CorrelationElabError (List (HavingFieldListSlot (ResolvedHavingDirectFieldOperand model))) := do
-  operands.mapM fun (origin, operand) => do
+  operands.mapM fun read => do
+    let origin := read.origin
+    let operand := read.operand
     let references := operand.expansionDeclarations.map fun declaration =>
-      ({ origin, declaration, form := .stored } : ResolvedHavingDirectFieldOperand model)
+      ({ origin, declaration, form := read.form } : ResolvedHavingDirectFieldOperand model)
     match operand with
     | .field declaration form => pure (.direct { origin, declaration, form })
     | .star source => pure (.extent (.starField source.declaration.groupPath source.path) references)
@@ -52,19 +73,21 @@ def havingResolvedEntitySlots (operands : List (HavingOrigin × ResolvedFieldEnt
     | .starredGroupPresence source => pure (.extent (.starredGroup source.groupPath source.path) references)
     | _ => throw .incoherentCore
 
-def checkHavingEntityDuplicates (operands : List (HavingOrigin × ResolvedFieldEntityOperand model)) :
+def checkHavingEntityDuplicates (operands : List (ResolvedHavingEntityOperand model)) :
     Except CorrelationElabError Unit := do
   if let some (_, duplicate) := firstDuplicateInEncounterOrder?
-      (fun (origin, operand) => operand.exactIdentity?.map (origin, ·)) operands then
+      (fun read => read.operand.exactIdentity?.map (read.origin, ·)) operands then
     match duplicate with
     | .field (field, _) | .indexed (field, _) => throw (.fieldFill (.duplicateOperand field))
     | .fixedGroup path | .keyedGroup path _ => throw (.fieldFill (.duplicateGroupOperand path))
-  if let some (left, right) := firstResolvedOperandOverlap? (operands.map (·.2)) then
-    throw (.fieldFill (.overlappingOperands left right))
+  for left in operands do
+    if let some right := operands.find? (fun right =>
+        left.form == right.form && left.operand.overlaps right.operand) then
+      throw (.fieldFill (.overlappingOperands left.operand.entityPath right.operand.entityPath))
 
-def checkHavingEntityRoots (operands : List (HavingOrigin × ResolvedFieldEntityOperand model)) :
+def checkHavingEntityRoots (operands : List (ResolvedHavingEntityOperand model)) :
     Except CorrelationElabError Unit := do
-  if let some path := operands.findSome? (fun (_, operand) => operand.rootGroupPath?) then
+  if let some path := operands.findSome? (fun read => read.operand.rootGroupPath?) then
     throw (.fieldFill (.rootGroupOperand path))
 
 def elaborateHavingEntityList (model : FlatModel) (declaringGroup : GroupPath)
@@ -73,9 +96,9 @@ def elaborateHavingEntityList (model : FlatModel) (declaringGroup : GroupPath)
   let operands ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels source
   checkHavingEntityDuplicates operands
   checkHavingEntityRoots operands
-  if let some path := operands.findSome? (fun (_, operand) => operand.categoryPath?) then
+  if let some path := operands.findSome? (·.categoryPath?) then
     throw (.fieldFill (.categoryNotAllowed path))
-  if operands.length < 2 && !operands.any (fun (_, operand) => operand.isAlreadyMany) then
+  if operands.length < 2 && !operands.any (fun read => read.operand.isAlreadyMany) then
     throw (.fieldFill .tooFewFields)
   havingResolvedEntitySlots operands
 
@@ -84,23 +107,12 @@ remain stored reads, as in the ordinary projected token count (spec/06 §B.3). -
 def resolveHavingProjectedEntityList (model : FlatModel) (declaringGroup : GroupPath)
     (candidateLevels outerLevels : List RepeatableLevel) (source : SurfaceHavingEntitySource) :
     Except CorrelationElabError (List (HavingFieldListSlot (ResolvedHavingDirectFieldOperand model))) := do
-  let storedStar : SurfaceHavingEntityOperand → SurfaceHavingEntityOperand
-    | .star origin path _ => .star origin path
-    | other => other
-  let operands ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels
-    { first := storedStar source.first, rest := source.rest.map storedStar }
+  let operands ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels source
   checkHavingEntityDuplicates operands
   checkHavingEntityRoots operands
-  if operands.length < 2 && !operands.any (fun (_, operand) => operand.isAlreadyMany) then
+  if operands.length < 2 && !operands.any (fun read => read.operand.isAlreadyMany) then
     throw (.fieldFill .tooFewFields)
-  let slots ← havingResolvedEntitySlots operands
-  (slots.zip (source.first :: source.rest)).mapM fun (slot, authored) => do
-    match authored with
-    | .star _ _ (.projected category) =>
-        match slot with
-        | .extent (.starField _ _) _ => pure (slot.map fun ref => { ref with form := .projected category })
-        | _ => throw .numericExpressionUnsupported
-    | _ => pure slot
+  havingResolvedEntitySlots operands
 
 namespace HavingFieldListSlot
 

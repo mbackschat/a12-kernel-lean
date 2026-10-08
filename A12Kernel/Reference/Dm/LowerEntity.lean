@@ -88,6 +88,7 @@ private partial def havingOperandClass? (typing : Option (FlatModel × GroupPath
   | .constant "RuleGroup" => do
       let (model, group) ← typing
       havingDeclarationClass <$> (model.groupSubtreeFields group).head?
+  | .entity { category := some _, .. } | .value { category := some _, .. } => some .text
   | .entity { path, .. } | .value { path, .. } => do
       let (model, group) ← typing
       let path : Path := { path with

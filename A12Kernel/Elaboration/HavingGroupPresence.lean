@@ -24,12 +24,12 @@ def FlatModel.resolveHavingGroupFill (model : FlatModel) (declaringGroup : Group
     Except CorrelationElabError (HavingGroupOperand × List HavingGroupOperand) := do
   let resolved ← resolveHavingEntityListOperands model declaringGroup [] outerLevels { first, rest }
   checkHavingEntityDuplicates resolved
-  if let some path := resolved.findSome? fun (_, operand) => operand.categoryPath? then
+  if let some path := resolved.findSome? fun read => read.categoryPath? then
     throw (.groupFill (.categoryNotAllowed path))
-  if let some path := resolved.findSome? fun (_, operand) => operand.rootGroupPath? then
+  if let some path := resolved.findSome? fun read => read.operand.rootGroupPath? then
     if operator.requiresMultipleOperands || !rest.isEmpty then
       throw (.groupFill (.rootGroupOperand path))
-  if operator.requiresMultipleOperands && resolved.any (fun (_, operand) => match operand with
+  if operator.requiresMultipleOperands && resolved.any (fun read => match read.operand with
       | .starredGroup _ | .starredGroupPresence _ => true | _ => false) then
     throw .groupListStarNotAllowed
   if operator.requiresMultipleOperands && rest.isEmpty then throw (.groupFill .tooFewFields)
@@ -40,7 +40,9 @@ def FlatModel.resolveHavingGroupFill (model : FlatModel) (declaringGroup : Group
       members := (model.groupSubtreeFields reference.path).map (·.id)
       starPath
       dependencyKind := if reference.isRoot && starPath.isNone then .conditionalPresence else .ordinaryList }
-  let operands ← resolved.mapM fun (origin, operand) => match operand with
+  let operands ← resolved.mapM fun read => do
+    let origin := read.origin
+    match read.operand with
     | .field declaration .stored => pure (.field { origin, field := declaration.id })
     | .group reference => pure (group origin reference)
     | .starredGroup source => pure (group origin { path := source.group.path, origin := .path } (some source.path))

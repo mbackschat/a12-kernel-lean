@@ -185,7 +185,7 @@ private def certificate (shape : Nat) (projected literalMembers : Bool) : Option
   pure (source.wellFormedForEnvironments (.quantified .atLeastOne) certificateModel [10] [])
 
 example : [0, 1, 2].all (fun shape => [false, true].all (fun literals => decide (
-    certificate shape false literals = some true ∧ certificate shape true literals = some false))) = true ∧
+    certificate shape false literals = some true ∧ certificate shape true literals = some (shape == 1)))) = true ∧
     certificate 3 true true = some true ∧ certificate 3 true false = some true := by native_decide
 
 end A12Kernel.Conformance.HavingMembershipExtent

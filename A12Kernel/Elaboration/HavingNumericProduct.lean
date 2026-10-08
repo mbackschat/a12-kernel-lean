@@ -16,7 +16,11 @@ def elaborateHavingNumericProduct (model : FlatModel) (declaringGroup : GroupPat
     (candidateLevels outerLevels : List RepeatableLevel) (source : SurfaceHavingEntitySource) :
     Except CorrelationElabError HavingNumericProduct := do
   let operands ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels source
-  let [(leftOrigin, .star left), (rightOrigin, .star right)] := operands | throw .numericExpressionUnsupported
+  if let some path := operands.findSome? (·.categoryPath?) then
+    throw (.fieldFill (.categoryNotAllowed path))
+  let [{ origin := leftOrigin, operand := .star left, form := .stored },
+      { origin := rightOrigin, operand := .star right, form := .stored }] := operands
+    | throw .numericExpressionUnsupported
   if left.declaration.groupPath != right.declaration.groupPath then throw .numericExpressionUnsupported
   if left.path.firstStar + 1 != left.path.axes.length || left.path != right.path then throw .numericExpressionUnsupported
   let some leftField := left.declaration.toNumberField? | throw .numericExpressionUnsupported

@@ -91,16 +91,16 @@ def elaborateHavingDateRange (model : FlatModel) (declaringGroup : GroupPath)
       let operands ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels combined
       checkHavingEntityDuplicates operands
       checkHavingEntityRoots operands
-      if let some path := operands.findSome? (fun (_, operand) => operand.categoryPath?) then
+      if let some path := operands.findSome? (·.categoryPath?) then
         throw (.fieldFill (.categoryNotAllowed path))
-      if operands.length < 2 && !operands.any (fun (_, operand) => operand.isAlreadyMany) then throw (.fieldFill .tooFewFields)
-      if scalar.isNone && operands.any (fun (_, operand) => match operand with
+      if operands.length < 2 && !operands.any (fun read => read.operand.isAlreadyMany) then throw (.fieldFill .tooFewFields)
+      if scalar.isNone && operands.any (fun read => match read.operand with
           | .group _ | .starredGroup _ | .starredGroupPresence _ => true | _ => false) then
         throw (.dateRange .noGroupsAllowed)
-      if scalar.isSome && !(operands.head?.any fun (_, operand) => match operand with | .field _ _ => true | _ => false) then
+      if scalar.isSome && !(operands.head?.any fun read => match read.operand with | .field _ _ => true | _ => false) then
         throw (.dateRange .noGroupsAllowed)
-      for (_, operand) in operands do
-        for declaration in operand.expansionDeclarations do
+      for read in operands do
+        for declaration in read.operand.expansionDeclarations do
           if declaration.toDateRangeField?.isNone then throw (.dateRange .noDateRange)
           if declaration.toDateRangeDeclarationPolicy?.any (·.interpretationOfYear.isSome) then
             throw (.dateRange .invalidDateRangeFormat)

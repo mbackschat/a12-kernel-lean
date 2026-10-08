@@ -22,23 +22,24 @@ def elaborateHavingRepetitionAdmission (model : FlatModel) (declaringGroup : Gro
     | [reference] => pure reference
     | _ => throw .incoherentCore
   checkHavingEntityDuplicates reads
-  if let some path := reads.findSome? (fun (_, operand) => operand.categoryPath?) then
+  if let some path := reads.findSome? (·.categoryPath?) then
     throw (.fieldFill (.categoryNotAllowed path))
-  if let some path := reads.findSome? (fun (_, operand) => operand.subtreePath?) then
+  if let some path := reads.findSome? (fun read => read.operand.subtreePath?) then
     throw (.repetitionNotUnique (.groupKey path))
-  if reads.any (fun (_, operand) => hasStar operand) then
+  if reads.any (fun read => hasStar read.operand) then
     throw (.comparisonEntry .noWildcardsAllowed)
-  let declarations := reads.flatMap (fun (_, operand) => operand.expansionDeclarations)
+  let declarations := reads.flatMap (fun read => read.operand.expansionDeclarations)
   if let some raw := declarations.find? (·.isRawString) then
     throw (.repetitionNotUnique (.rawStringValue raw.path))
-  if let some (_, operand) := scopeRead then
+  if let some read := scopeRead then
+    let operand := read.operand
     if operand.subtreePath?.isNone then
       throw (.repetitionNotUnique (.scopeIsField operand.entityPath))
     if hasStar operand then throw (.comparisonEntry .noWildcardsAllowed)
   let _ ← checkRepetitionReferenceAdmission model declaringGroup declarations
-    (scopeRead.map fun (_, operand) => (operand.entityPath, operand.subtreePath?.isNone))
+    (scopeRead.map fun read => (read.operand.entityPath, read.operand.subtreePath?.isNone))
     |>.mapError .repetitionNotUnique
-  pure ((reads ++ scopeRead.toList).any fun (origin, operand) =>
-    origin == .inner && operand.bindingScope.any reopenedLevels.contains)
+  pure ((reads ++ scopeRead.toList).any fun read =>
+    read.origin == .inner && read.operand.bindingScope.any reopenedLevels.contains)
 
 end A12Kernel
