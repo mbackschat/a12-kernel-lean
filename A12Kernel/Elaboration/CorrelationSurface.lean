@@ -543,7 +543,7 @@ def SurfaceHavingDateRangeOperand.references : SurfaceHavingDateRangeOperand â†’
   | .constructed start finish => [start, finish]
 
 inductive SurfaceHavingDateRangePredicate where
-  | compare (operator : EqualityOp) (left right : SurfaceHavingDateRangeOperand)
+  | compare (operator : SurfaceComparisonOp) (left right : SurfaceHavingDateRangeOperand)
   | overlap (scalar : Option SurfaceHavingPresenceRef) (source : SurfaceHavingEntitySource)
   deriving Repr, DecidableEq
 
@@ -556,7 +556,7 @@ def SurfaceHavingDateRangePredicate.entities : SurfaceHavingDateRangePredicate â
 inductive SurfaceCorrelatedHaving where
   | dateRange (source : SurfaceHavingDateRangePredicate)
   | compareStringExpression (op : SurfaceComparisonOp) (left right : StringExpr SurfaceHavingSelectedOperand String)
-  | compareSelected (op : EqualityOp) (left right : SurfaceHavingSelectedOperand)
+  | compareSelected (op : SurfaceComparisonOp) (left right : SurfaceHavingSelectedOperand)
   | compareBoolean (op : SurfaceComparisonOp) (reference : SurfaceHavingStringRef) (expected : Bool)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef)
   | compareTemporalExpression (op : SurfaceComparisonOp) (left right : SurfaceHavingTemporalExpression)

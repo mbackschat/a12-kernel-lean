@@ -151,6 +151,7 @@ private def lowerHavingRangeReference : Expr → Lowering SurfaceHavingPresenceR
   | _ => refuse "Having" "direct DateRange entity"
 
 private def lowerHavingRangeOperand : Expr → Lowering SurfaceHavingDateRangeOperand
+  | .braces source => lowerHavingRangeOperand source
   | .call "DateRange" [.mk start none none, .mk finish none none] none none =>
       return .constructed (← lowerHavingRangeReference start) (← lowerHavingRangeReference finish)
   | .value { path, index := none, category := none } =>
@@ -160,6 +161,7 @@ private def lowerHavingRangeOperand : Expr → Lowering SurfaceHavingDateRangeOp
   | _ => refuse "Having" "DateRange comparison operand"
 
 private def isRangeConstruction : Expr → Bool
+  | .braces source => isRangeConstruction source
   | .call "DateRange" _ _ _ => true
   | _ => false
 
@@ -246,8 +248,7 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
         return .stringPattern (if op == .patternMatched then .matched else .violated) { origin, field } source
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
       if isRangeConstruction left || isRangeConstruction right then
-        let some equality := surfaceOp.toEquality? | refuse "Having" "DateRange equality operator"
-        return .dateRange (.compare equality (← lowerHavingRangeOperand left) (← lowerHavingRangeOperand right))
+        return .dateRange (.compare surfaceOp (← lowerHavingRangeOperand left) (← lowerHavingRangeOperand right))
       if left.havingTemporalConstructor (temporalHavingSelection typing) ||
           right.havingTemporalConstructor (temporalHavingSelection typing) then
         return .compareTemporalExpression surfaceOp
@@ -260,8 +261,7 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
             return .compareStringExpression surfaceOp left right
       | _, _ => pure ()
       if selectedNonNumeric typing left || selectedNonNumeric typing right then
-        let some equality := surfaceOp.toEquality? | refuse "Having" "selected comparison operator"
-        return .compareSelected equality (← lowerHavingSelectedOperand left) (← lowerHavingSelectedOperand right)
+        return .compareSelected surfaceOp (← lowerHavingSelectedOperand left) (← lowerHavingSelectedOperand right)
       let rec temporal : Expr → Option SurfaceHavingTemporalOperand
         | .value { path, index := none, category := none } => do
             let (origin, field) ← path.havingField?

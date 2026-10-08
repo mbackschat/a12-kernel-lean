@@ -79,4 +79,13 @@ def admissions (fixture : FlatModel) (filter : String) : Bool × Bool :=
    (lowerComputation fixture .english {
     group := ["Form"], name := "Select", targetRelPath := "../Out", commonPrecondition := none
     alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).isOk)
+def filterDiagnostic? (fixture : FlatModel) (filter : String) : Option KernelStaticDiagnostic := do
+  let parsed ← (parseText .english filter).toOption
+  let authored ← (lowerHaving parsed.body (some (fixture, ["Form"]))).toOption
+  let source ← (elaborateStarFieldPath fixture ["Form"] {
+    base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "N" }).toOption
+  match elaborateStarHavingCore fixture ["Form"] source authored with
+  | .error error => error.diagnostic?
+  | .ok _ => none
+
 end A12Kernel.Dm.HavingFixture

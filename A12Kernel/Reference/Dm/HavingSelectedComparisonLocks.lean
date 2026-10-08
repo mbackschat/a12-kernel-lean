@@ -118,4 +118,35 @@ example : HavingFixture.runModel customModel "FirstFilledValue(Rows/Tag,$Expecte
       "keep" "bad" "keep" (ruleExpected := "5") (customFieldValidator? := customValidator) =
       some (.fired .omission, []) := by native_decide
 
+private def ordered (left operator right : String) (reverse : Bool) : String :=
+  if reverse then right ++ " " ++ operator ++ " " ++ left else left ++ " " ++ operator ++ " " ++ right
+
+private def selectionEntries : List (FlatModel × String × String) := [
+  (HavingFixture.model, "FirstFilledValue(Rows/Tag,$Expected)", "\"keep\""),
+  (enumerationModel, "FirstFilledValue(Rows/Tag -> Label,$Expected -> Label)", "\"KEEP\""),
+  (booleanModel, "FirstFilledValue(Rows/Tag,$Expected)", "True"),
+  (rangeModel, "FirstFilledValue(Rows/Tag,$Expected)", "[$Expected]")]
+
+example : selectionEntries.all (fun (fixture, left, right) =>
+    ["<", "<=", ">", ">="].all fun operator => [false, true].all fun reverse =>
+      let filter := ordered left operator right reverse
+      HavingFixture.filterDiagnostic? fixture filter == some .invalidTypeForComparison &&
+      HavingFixture.admissions fixture filter == (false, false)) = true := by native_decide
+
+example : ["<", "<=", ">", ">="].all (fun operator => [false, true].all fun reverse =>
+    HavingFixture.filterDiagnostic? enumerationModel
+      (ordered "FirstFilledValue(Rows/Tag -> Missing,$Expected -> Label)" operator "\"KEEP\"" reverse) ==
+        some .categoryUnknown) = true := by native_decide
+
+example : (HavingFixture.filterDiagnostic? HavingFixture.model
+    "FirstFilledValue($Expected,$Expected) == \"keep\"").any (fun diagnostic =>
+      diagnostic != .invalidTypeForComparison &&
+      ["<", "<=", ">", ">="].all fun operator => [false, true].all fun reverse =>
+        HavingFixture.filterDiagnostic? HavingFixture.model
+          (ordered "FirstFilledValue($Expected,$Expected)" operator "\"keep\"" reverse) == some diagnostic) = true := by native_decide
+
+example : selectionEntries.all (fun (fixture, left, right) =>
+    ["==", "!="].all fun operator => [false, true].all fun reverse =>
+      HavingFixture.admissions fixture (ordered left operator right reverse) == (true, true)) = true := by native_decide
+
 end A12Kernel.Dm.HavingSelectedComparisonLocks

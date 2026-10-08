@@ -185,6 +185,29 @@ private def pointerModel (yearless : Bool) : FlatModel :=
   { model yearless with fields := (model yearless).fields ++ [{
     id := 18, name := "Token", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } }] }
 
+example : ["<", "<=", ">", ">="].all (fun operator => [false, true].all fun reverse =>
+    let left := "{" ++ construction ++ "}"
+    let right := "{[Rows/Tag]}"
+    let filter := if reverse then right ++ " " ++ operator ++ " " ++ left else left ++ " " ++ operator ++ " " ++ right
+    HavingFixture.filterDiagnostic? (model false) filter == some .invalidTypeForComparison) = true ∧
+    run ("{" ++ construction ++ "} == {[Rows/Tag]}") "18" = v18 := by native_decide
+
+example : [false, true].all (fun yearless =>
+    ["<", "<=", ">", ">="].all fun operator => [false, true].all fun reverse =>
+      ["[Rows/Tag]", "DateRange($Start,$Finish)"].all fun other =>
+        let filter := if reverse then other ++ " " ++ operator ++ " " ++ construction
+          else construction ++ " " ++ operator ++ " " ++ other
+        HavingFixture.filterDiagnostic? (model yearless) filter == some .invalidTypeForComparison &&
+        HavingFixture.admissions (model yearless) filter == (false, false)) = true := by native_decide
+
+example : ["<", "=="].all (fun operator =>
+    HavingFixture.filterDiagnostic? (withFormats (model true) [(8, "MM")])
+      (construction ++ " " ++ operator ++ " [Rows/Tag]") == some .wrongDateFormatForOp) = true ∧
+    HavingFixture.filterDiagnostic? (withFormats (model true) [(8, "MM"), (9, "MM")])
+      (construction ++ " < [Rows/Tag]") = some .invalidTypeForComparison ∧
+    HavingFixture.filterDiagnostic? (withFormats (model true) [(8, "MM"), (9, "MM")])
+      (construction ++ " == [Rows/Tag]") = some .invalidCompareToDateRange := by native_decide
+
 private def constructionOrigins (yearless : Bool) : Option Bool := do
   let parsed ← (parseText .english
     ("FieldValuesNotUnique(/Form/Rows*/Token Having " ++

@@ -21,7 +21,7 @@ private def SurfaceComparisonOp.toCorrelation : SurfaceComparisonOp → Correlat
 structure HavingLeafResolvers extends HavingNumericResolvers where
   stringExpression : SurfaceComparisonOp → StringExpr SurfaceHavingSelectedOperand String → StringExpr SurfaceHavingSelectedOperand String →
     Except CorrelationElabError HavingStringComparison
-  selectedComparison : EqualityOp → SurfaceHavingSelectedOperand → SurfaceHavingSelectedOperand →
+  selectedComparison : SurfaceComparisonOp → SurfaceHavingSelectedOperand → SurfaceHavingSelectedOperand →
     Except CorrelationElabError HavingSelectedComparison
   boolean : SurfaceComparisonOp → SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatComparison
   fields : SurfaceComparisonOp → SurfaceHavingStringRef → SurfaceHavingStringRef →

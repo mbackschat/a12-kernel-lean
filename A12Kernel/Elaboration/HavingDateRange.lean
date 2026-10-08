@@ -79,8 +79,11 @@ def elaborateHavingDateRange (model : FlatModel) (declaringGroup : GroupPath)
   | .compare operator left right =>
       let left ← operand left
       let right ← operand right
-      if operandComponents model left != operandComponents model right then throw (.dateRange .wrongDateFormatForOp)
-      pure (.compare operator left right)
+      discard <| (checkComparisonEntry (if operator.toEquality?.isSome then .equality else .ordering)
+        (.expression .dateRange) (.expression .dateRange)).mapError .comparisonEntry
+      let some equality := operator.toEquality? | throw .incoherentCore
+      if operandComponents model left != operandComponents model right then throw (.dateRange .invalidCompareToDateRange)
+      pure (.compare equality left right)
   | .overlap scalar source =>
       let combined : SurfaceHavingEntitySource := match scalar with
         | none => source

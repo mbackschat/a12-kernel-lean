@@ -73,7 +73,7 @@ def resolveHavingSelectedReference (reference : ResolvedHavingDirectFieldOperand
 def elaborateHavingSelectedComparison (model : FlatModel) (declaringGroup : GroupPath)
     (candidateLevels outerLevels : List RepeatableLevel)
     (resolve : SurfaceHavingStringRef → Except CorrelationElabError FlatFieldDecl)
-    (operator : EqualityOp) (left right : SurfaceHavingSelectedOperand) :
+    (operator : SurfaceComparisonOp) (left right : SurfaceHavingSelectedOperand) :
     Except CorrelationElabError HavingSelectedComparison := do
   let operand : SurfaceHavingSelectedOperand → Except CorrelationElabError HavingSelectedOperand
     | .text value => pure (.text value)
@@ -86,7 +86,23 @@ def elaborateHavingSelectedComparison (model : FlatModel) (declaringGroup : Grou
     | .firstFilled source => do
         let slots ← resolveHavingProjectedEntityList model declaringGroup candidateLevels outerLevels source
         .firstFilled <$> slots.mapM (·.mapM resolveHavingSelectedReference)
-  let result : HavingSelectedComparison := { operator, left := ← operand left, right := ← operand right }
+  let first ← operand left
+  let second ← operand right
+  let entry (source : HavingSelectedOperand) := do
+    if !source.wellFormed model candidateLevels outerLevels then throw CorrelationElabError.numericExpressionUnsupported
+    let some profile := source.profile? model | throw .incoherentCore
+    let kind : SurfaceScalarKind := match profile with
+      | .text => .string | .boolean => .boolean | .dateRange _ => .dateRange
+    pure (match source with
+      | .text _ | .boolean _ => ComparisonEntryOperand.literal kind
+      | .field _ => .field kind
+      | .firstFilled _ => .expression kind)
+  let leftEntry ← entry first
+  let rightEntry ← entry second
+  discard <| (checkComparisonEntry (if operator.toEquality?.isSome then .equality else .ordering)
+    leftEntry rightEntry).mapError .comparisonEntry
+  let some equality := operator.toEquality? | throw .incoherentCore
+  let result : HavingSelectedComparison := { operator := equality, left := first, right := second }
   if !result.wellFormed model candidateLevels outerLevels then throw .numericExpressionUnsupported
   pure result
 
