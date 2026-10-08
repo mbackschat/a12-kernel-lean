@@ -157,7 +157,7 @@ end DateRangeFormat
 A non-full partial mode belongs to a full Date declaration. The opt-in pre-1900 check belongs to a
 Date declaration **whose format carries a year**: the Kernel refuses a year-free one outright with
 `MVK_ADDITIONAL_CHECK_INVALID`, and its message keys on the components rather than on the kind
-([inbound](../../docs/SOURCES.md#inbound-2026-09-05c)). This arm admitted every year-free Date
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05c)). This arm admitted every year-free Date
 declaration with the guard set, which is an **over**-admission — a legal-looking model the Kernel
 rejects — and the opposite direction from the under-admissions the kind/format sweep was finding, so
 that sweep could not have surfaced it.
@@ -168,7 +168,7 @@ carriers cannot be told apart here — a collapse that was a representational be
 the twelve admitted fragment formats and found the five year-free spellings refused and the seven
 year-bearing ones admitted, exactly as DATE behaves; the Kernel's own `TypeConverter.convertDateFragment`
 turns a fragment declaration into a Date declaration carrying the flag, which is why the agreement is
-structural rather than coincidental ([inbound](../../docs/SOURCES.md#inbound-2026-09-08)). A case
+structural rather than coincidental ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-08)). A case
 naming a fragment format would vary nothing and is deliberately absent.
 
 The same finding puts DATE_RANGE on the other side: it takes the guard on all eight admitted

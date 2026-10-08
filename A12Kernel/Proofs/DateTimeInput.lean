@@ -32,7 +32,7 @@ re-derives which spelling produced the cell.
 
 The declared **kind** was a second conjunct and is gone, for the reason its Time sibling's was: it was
 provable and wrong, since the Kernel classifies a DATE-declared date-and-time format exactly as it
-classifies a DATE_TIME one ([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). -/
+classifies a DATE_TIME one ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05b)). -/
 theorem checkedDateTimeInputField_format_declared
     (checked : CheckedDateTimeInputField) :
     DateTimeTargetFormat.ofSource? checked.policy.format = some checked.format :=

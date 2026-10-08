@@ -183,7 +183,7 @@ private def targetPathsWith (extra : List RowAddr)
    fourth takes `.noValue`; and a fifth project's task row takes `.noValue` too, although nothing
    about that task row's own coordinate is out of range. Measured on kernel 30.8.1 across both
    codegen strategies on this same two-level topology
-   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)), where a seeded excess row
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)), where a seeded excess row
    reports `cleared`. Every in-capacity row here has no source, so `.noValue` is also its scan
    result — the discriminator is the *presence* of the entry, which dropping the row would lose. -/
 /- **An over-limit row clears where its in-capacity twin computes, and an over-limit ancestor does
@@ -193,7 +193,7 @@ private def targetPathsWith (extra : List RowAddr)
    `max 4`: the fifth project's task row reads `.noValue` although its own `Choices` source is filled
    and would have produced a value, so the exclusion is the ancestor's. Measured on kernel 30.8.1
    across both codegen strategies, where a seeded excess row reports `cleared`
-   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). Dropping the row instead
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)). Dropping the row instead
    of clearing it passes every unseeded fixture and leaves a stale value. -/
 example :
     (targetPathsWith [{ group := 30, path := [1, 3] }, { group := 30, path := [1, 4] }]

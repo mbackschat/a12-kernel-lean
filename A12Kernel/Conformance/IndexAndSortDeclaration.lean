@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.IndexAndSortDeclaration
 
 /-! # Locks on the index- and sort-field declaration cascade
 
-The cases pin the cascade's order, the one arm on which the two roles differ, and the four catalog keys a consumer switches on. The two value-validation classes and their accepted controls are measured; the unresolved arm is reached by a nominated field the default variant drops and by a relative nomination whose local namesake is absent, measured by the peer, while the group arm has no known witness ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-index-and-sort-lookup)), while a name resolving nowhere in the authored model fails the build first, which the [checkpoint](../../docs/SOURCES.md#src-index-and-sort-field-declaration) records.
+The cases pin the cascade's order, the one arm on which the two roles differ, and the four catalog keys a consumer switches on. The two value-validation classes and their accepted controls are measured; the unresolved arm is reached by a nominated field the default variant drops and by a relative nomination whose local namesake is absent, measured by the peer, while the group arm has no known witness ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)), while a name resolving nowhere in the authored model fails the build first, which the [checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration) records.
 -/
 
 namespace A12Kernel.Conformance.IndexAndSortDeclaration
@@ -76,7 +76,7 @@ example :
 
 /- The peer's ordering-lookup model: a root `/Order/Key` beside a repeatable `/Order/Items` holding
    `Key` and `Spare`, the group nominating `Key` or `../Key`
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-index-and-sort-lookup)). Ids 1 and 2 are the
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)). Ids 1 and 2 are the
    parent's and the local `Key`. -/
 private def items : GroupPath := ["Order", "Items"]
 

@@ -221,7 +221,7 @@ example :
 
 /- Declaring `Target` as its group's index is the only change, and it turns the admitted copy into the
 index-target refusal, from the target's group and from its ancestor alike
-([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections)). -/
 private def indexedModel : FlatModel := {
   model with
     repeatableGroups := [

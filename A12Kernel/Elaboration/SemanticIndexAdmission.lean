@@ -33,7 +33,7 @@ own, while a string key takes none, so a `Having` after it is the operand's. On 
 group key draws the kind class, a refused comparison or an iteration the filter does not cover in its
 body answers ahead of stage A even on a starred key, and an unstarred key draws the filter's star
 class ahead of the last stage. The peer measures these, and no input here carries a filter
-([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-key-filter)).
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-key-filter)).
 
 This capsule owns the **order**. Resolution of the index group itself belongs to
 [`IndexGroupResolution`](IndexGroupResolution.lean) and is consumed whole rather than restated; the
@@ -78,7 +78,7 @@ inductive SemanticIndexAdmissionKey where
   /-- `[A For "k"]` — a string constant, paired with whether the index field's type accepts it. For a
   String index field that verdict is a conjunction of the declared length bounds and the declared
   pattern, either failing refuses the key, and the pattern is matched against the whole key over code
-  points ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-index-key-pattern)). -/
+  points ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-index-key-pattern)). -/
   | constant (text : String) (applicableToIndexField : Bool)
   deriving Repr, DecidableEq
 

@@ -48,7 +48,7 @@ class, and from one level below `$#../../Probe$` draws it
 up-step past the root, `$#../Store$` from a root-group rule, draws the same class; which Kernel step
 produces it is not separated. The
 value suffix's two classes are measured on the A12 route
-([checkpoint](../../docs/SOURCES.md#src-message-parameter-surface-and-iteration-gates)). The two
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)). The two
 coordinate specifiers remain **source-derived and unwitnessed**: they are old-world spellings whose
 grammar productions this project's A12-only route does not reach.
 

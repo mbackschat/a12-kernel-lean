@@ -127,7 +127,7 @@ example :
         some "MVK_REPEATABLE_LEVEL_REQUIRED" ∧
       -- The separator for that class: the pair below has no repeatable level EITHER, and differs
       -- only in owning group. "No repeatable level" is therefore necessary and not sufficient, the
-      -- owning-group gate answering first ([inbound](../../../docs/SOURCES.md#inbound-2026-09-21-corrections)).
+      -- owning-group gate answering first ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections)).
       productDiagnosticCode?
           (plainProductPath ["Form"] "UnsignedA")
           (plainProductPath ["Form", "Totals"] "Carried") =
@@ -146,7 +146,7 @@ example :
 
 /- **The operator's chain asks owning groups, then the filter, then the stars**, the peer's rows
 mirrored with `Rows*/Details*` for its two starred levels
-([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-sum-of-products-reach)). A two-star operand
+([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-sum-of-products-reach)). A two-star operand
 beside a fixed field of another group draws the group class and, filtered, the filter class, where
 asking each operand's stars as it is read names the star class for both. A star on a level the
 declaring group binds is still counted, from a fixed sibling and from that level itself. -/
@@ -162,7 +162,7 @@ example :
   native_decide
 
 /- **A pair that reads a row meets that read first, and outside the error field's group that read is
-containment's** ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-sum-of-products-reach)). The
+containment's** ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-sum-of-products-reach)). The
 peer's rows 7, 8 and 12 write into a fixed group beside the declaring one, mirrored by `Totals` and
 the root here, and its row 9 is the contained control. The declaring group binding `Rows` does not
 bind it for a rule whose error field lies outside that group, so asking only the declaring group

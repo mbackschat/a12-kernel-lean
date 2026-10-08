@@ -489,7 +489,7 @@ each side before any gate reads it. A String opposite an Enumeration certifies b
 the family match, and a String opposite a Number fails the value side's certification. Both texts
 draw `MVK_VARYING_TYPES_NOT_ALLOWED`, measured on the stored form's spelling
 ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs),
-[inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)); dropping either arm to
+[inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-value-list-base-type)); dropping either arm to
 no class would pass every other lock. -/
 example :
     projectedDiagnostic? (projectedAuthored .atLeastOne

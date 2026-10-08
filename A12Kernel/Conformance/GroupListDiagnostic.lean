@@ -310,7 +310,7 @@ private def countAtDiagnostic? (rowGroup : GroupPath) (operands : List SurfaceGr
    not the Kernel's there: a sole count meets the count's arity, a paired one the negative-condition
    class unguarded and admission guarded
    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction),
-   [inbound](../../docs/SOURCES.md#inbound-2026-09-26j-count-star)). The comparison route, which sees
+   [inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26j-count-star)). The comparison route, which sees
    no guard, refuses the pair without a class. From the root the walk refuses, and a lone repeatable
    group, a repeatable root included, draws the missing star ahead of arity, which a lone fixed group
    meets. -/
@@ -438,7 +438,7 @@ private def presenceRuleClass (groups : GroupPath) : Option (Option KernelStatic
 /- An empty group's missing star answers ahead of its emptiness: the empty repeatable `Hollow`,
    unstarred, draws the walk's class through presence, a quantifier and the count, and so does the
    empty repeatable root `Archive`; starred, their reads pass and the emptiness answers, the root with
-   its own class ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-empty-star)). The root class is
+   its own class ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-empty-star)). The root class is
    measured on the count; the quantifier reads the operand by the same check, an assumption SG9
    records. -/
 example :

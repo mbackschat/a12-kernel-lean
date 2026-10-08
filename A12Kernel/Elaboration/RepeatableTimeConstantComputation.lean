@@ -8,13 +8,13 @@ import A12Kernel.Elaboration.StaticDiagnostic
 
 The Kernel admits a bare clock constant into a repeatable target from the target's own group and from
 any ancestor of it, and writes it once per instantiated target row, exactly as the sibling constant
-families do ([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)).
+families do ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)).
 
 Like the Date sibling, this family's target is checked at **neither** time: the literal's own spelling
 decides admission, and the store is a rendering. The literal is an exact `HH:mm:ss` clock — `"12:30"`
 without seconds is not one — and every admitted clock passes the target's basic check, so
 `TimeTargetOutcome` carries no error branch at all
-([checkpoint](../../docs/SOURCES.md#src-constant-literal-family-gate)).
+([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-constant-literal-family-gate)).
 
 **What decides admission is the target's declared format string, and the Kernel does not read the
 field's kind.** A DATE-declared field whose format is `HH:mm:ss` admits this constant and stores
@@ -22,7 +22,7 @@ field's kind.** A DATE-declared field whose format is `HH:mm:ss` admits this con
 instead. This carrier therefore takes `CheckedClockFormatTarget`, the certificate that reads the format and
 not the kind. It was once the only family entitled to it; every scalar clock carrier now takes it,
 each having earned its own measured row
-([checkpoint](../../docs/SOURCES.md#src-temporal-computed-target-gate-reads-format-not-kind)).
+([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)).
 What survives as a refusal is the format gate, which claims no Kernel class.
 
 A clock carries no date and no zone: it reaches the declared renderer directly, never an `Instant`,

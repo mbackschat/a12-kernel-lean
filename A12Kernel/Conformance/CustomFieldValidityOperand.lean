@@ -94,7 +94,7 @@ example : admission? 6 = some .noStringOrEnumOrExtEnum := by native_decide
 A temporal operand lies outside the admitted set the Kernel's own text names, and it draws exactly
 the class the Number and Boolean rows above do. All four kinds this module had left unmeasured —
 DATE, TIME, DATE_TIME and DATE_RANGE — landed on it together
-([checkpoint](../../docs/SOURCES.md#src-custom-validity-operand-refuses-every-kind-with-one-class)),
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-custom-validity-operand-refuses-every-kind-with-one-class)),
 so the gate names the admitted set rather than partitioning the refused ones. That is the opposite
 of the Boolean constant's target gate, which partitions four ways, and the reason neither was read
 off the other. -/

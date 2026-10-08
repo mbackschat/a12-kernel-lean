@@ -231,7 +231,7 @@ example : ruleDiagnostic? 2 (key ["Probe", "Rows"] "RowVal") = none := by
 
 The Kernel reads every key, asks the list's duplicate gate, then judges the key list gate by gate,
 each over the whole list, and only then runs one of two branches: with `@From` the scope's gates,
-without it the placement gates ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)).
+without it the placement gates ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26f-gate-order)).
 The carrier mirrors the peer's: `Claims` and `Payments` are keyed on the same index field, so a read
 of one from a rule about the other iterates jointly and reaches the placement gates. The rows are
 the peer's; its category and starred rows have no spelling here, since a key is a plain field path.
@@ -365,7 +365,7 @@ example :
    of the raw one whatever the key order, and the duplicate gate ahead of both: a group named twice
    draws the direct class, and a group beside a key it holds, the root beside any key included, the
    nested one, whichever is written first
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates)). The peer's duplicate rows
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-paired-gates)). The peer's duplicate rows
    name the fixed `Insured` and the root; on the repeatable `Claims`, [`kf388`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf388)
    measures a group before its own field, and the group named twice is carried over. -/
 example :
@@ -451,7 +451,7 @@ example :
    iterated `Payments` key alone draws the rule-group class and beside a key of `Claims` the
    shared-path one, in either order. An outsider under no repetition at all reads cleanly too, so a
    second key in the fixed `Insured` is the rule-group gate's rather than the repeatable-group one's
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26f-gate-order)). -/
 example :
     policyVerdict ["Policy", "Claims"] ["Policy", "Claims"] (rel [] "ClaimRef")
         [key ["Policy", "Payments"] "PayRef"] = some (some .notInSamePath) ∧
@@ -518,7 +518,7 @@ private def fleetVerdict (repeatable : Bool) (writtenGroup : GroupPath) (first :
 
 /- At a repeatable root, keys all sitting directly in the root skip the repeatable-group gate and
    are admitted, the root being their reference group
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates); what they fire on is locked in
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-paired-gates); what they fire on is locked in
    `RepetitionNotUniqueValidationRule`). A key in a fixed subgroup brings the class back, alone or
    beside a direct key, a key in a repeatable subgroup is admitted, and at a fixed root a direct key is
    the measured sole-key shape. -/

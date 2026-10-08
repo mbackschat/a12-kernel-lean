@@ -55,7 +55,7 @@ one code per shape, so this fragment reproduces the class; what it does not repr
 **position** the lexer code additionally carries, which is a payload rather than a class.
 
 Measured at the [group-parameter resolution
-checkpoint](../../docs/SOURCES.md#src-message-group-parameter-resolution) and the [argument-layer
+checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-parameter-resolution) and the [argument-layer
 checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers): an
 unbalanced quote, an empty or digit-first quoted name, and a character such as `[`, `*` or `%` draw
 `MVK_LEXER_STANDARD_ERROR`, a trailing separator `MVK_INCOMPLETE_INPUT`, and a doubled separator or a
@@ -126,7 +126,7 @@ private def stringLiteral : List Char → Option (List Char × List Char)
 that fault when it reaches the token, so nothing after it can answer first. The token set is read from
 the Kernel's parameter lexer, and the rows the [argument-layer
 checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers) and the
-[token-alphabet checkpoint](../../docs/SOURCES.md#src-parameter-token-versus-group-declaration-alphabet)
+[token-alphabet checkpoint](../../docs/sources/message-and-pointer-probes.md#src-parameter-token-versus-group-declaration-alphabet)
 measure agree with it: a quoted name must open on a letter, the longest run of name characters is one
 token, so `1x` is a digit-initial name while `1` alone is a number, and `-`, `+`, `(`, `)`, `.` and
 whitespace form tokens while `[`, `*`, `%` and a letter outside the seven German ones do not. A word is

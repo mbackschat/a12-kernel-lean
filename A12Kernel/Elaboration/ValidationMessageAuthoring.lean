@@ -30,7 +30,7 @@ mapping and the caller supplies only the stored token. An absent stored token re
 string, which is measured. A token the category does not map cannot arise, and that is now the
 Kernel's rule rather than this fragment's convenience: a category's token list must have exactly as
 many entries as the enum has values, paired by position, so every value carries exactly one token
-([reconciliation](../../docs/SOURCES.md#src-2026-08-29-reconciliation)).
+([reconciliation](../../docs/sources/computation-placement-and-constant-probes.md#src-2026-08-29-reconciliation)).
 
 A field reference may finally carry a **semantic-index key**, `For "k"` or `For SomeField`, after any
 value or category suffix — that order is the grammar's, not a preference. Its gate is on the
@@ -43,7 +43,7 @@ together with that index field, and a *third* field of the same group, keyed ide
 refused. What must match is the keyed group and key plus the displayed field being one of those two,
 not the group's fields at large; a fixture whose group declares only those two cannot tell the two
 readings apart, which is how both this project and a12-dmkits published the wide one
-([checkpoint](../../docs/SOURCES.md#src-keyed-parameter-admits-the-index-field-only)). The unkeyed
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-keyed-parameter-admits-the-index-field-only)). The unkeyed
 spelling of a keyed field stays refused, so condition membership belongs to the unkeyed form alone,
 and the pairing is exact in the other direction too: a keyed condition operand does not license an
 unkeyed parameter.
@@ -95,7 +95,7 @@ inductive ValidationMessageTemplateError where
   /-- A character outside the template's BMP repertoire. The Kernel refuses it **codelessly**, through
   the runtime formal class its message text belongs to rather than through a bracketed parameter key. -/
   | unsupportedCharacter (character : Char)
-  /-- Preserve the other check's cause beside the repertoire refusal ([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)); an unsupported-fragment cause remains local rather than acquiring a Kernel class. -/
+  /-- Preserve the other check's cause beside the repertoire refusal ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-repertoire-co-reporting)); an unsupported-fragment cause remains local rather than acquiring a Kernel class. -/
   | unsupportedCharacterWithError (character : Char)
       (cause : ValidationMessageTemplateError)
   | oddDollarCount
@@ -186,7 +186,7 @@ private def isLineSeparator (character : Char) : Bool :=
 
 /-- The Kernel's `INVALID_CHARACTERS` class over a message template: every code point Java's `\p{C}`
 matches on JDK 21, control, format, private-use and unassigned alike, asked after the line gate so a
-line separator keeps its own class ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). -/
+line separator keeps its own class ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). -/
 private def isControlCharacter (character : Char) : Bool :=
   isJavaOtherCategory character
 
@@ -198,7 +198,7 @@ a bracketed key, through the runtime formal class its message text belongs to. -
 private def isSupportedTemplateCharacter (character : Char) : Bool :=
   character.toNat < 0x10000
 
-/-- Retain one local locator for the repertoire refusal; the Kernel reports the template once even with two offending characters ([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)). -/
+/-- Retain one local locator for the repertoire refusal; the Kernel reports the template once even with two offending characters ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-repertoire-co-reporting)). -/
 def firstUnsupportedMessageTemplateCharacter? (source : String) : Option Char :=
   source.toList.find? (fun character => !isSupportedTemplateCharacter character)
 
@@ -218,7 +218,7 @@ structure ValidationMessageKeywordProfile where
   It is data for the same reason the terminals around it are: the Kernel takes `value` under an
   English condition language and `Wert` under German, whatever the message's locale, and each draws a
   lexer refusal in the other's model on the `index(...)` terminal
-  ([checkpoint](../../docs/SOURCES.md#src-index-german-suffix)).
+  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-index-german-suffix)).
   This was the one suffix the parser matched as a literal while every sibling was supplied, so a
   German model would have been read with the English word. -/
   valueSuffixTerminal : String
@@ -292,8 +292,8 @@ def validateMessageTemplateSource (source : String) :
 
 /-- Add the codeless repertoire refusal to a producer's result, keeping the producer's own first
 failure beside it. It stands beside a named class on a rule's message
-([checkpoint](../../docs/SOURCES.md#src-message-repertoire-co-reporting)) and beside the control class
-on a field's pattern message ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). -/
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-repertoire-co-reporting)) and beside the control class
+on a field's pattern message ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). -/
 def withMessageRepertoire (source : String)
     (checked : Except ValidationMessageTemplateError α) :
     Except ValidationMessageTemplateError α :=
@@ -592,7 +592,7 @@ private def resolveMessageReference (model : FlatModel)
 
 /-- Check the category after entity resolution and condition membership, including an empty name.
 
-The [category-order checkpoint](../../docs/SOURCES.md#src-message-category-gate-order) separates
+The [category-order checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-category-gate-order) separates
 these prerequisite failures from the missing-name refusal. Kind and declared-category checks then
 reuse the existing Enumeration projection boundary. -/
 private def resolveMessageCategory

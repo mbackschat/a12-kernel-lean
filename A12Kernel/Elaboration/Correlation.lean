@@ -224,7 +224,7 @@ private def requireOuterFieldAvailable (origin : HavingOrigin) (outerLevels : Li
     group draws the group class, measured on the level the filter iterates, on a fixed group
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid))
     and on a repeatable group the filter does not iterate
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-field-value-read)). The value gates are asked
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-field-value-read)). The value gates are asked
     on the same production's account; no row reads a raw String or a partial Date in a body. A marked reference's captured
     environment is asked before the value gates and the leaf's kind gate on the assumption that it
     is the reader's class, as an unstarred repeatable level is; no row pairs it with either. -/
@@ -569,7 +569,7 @@ def CheckedStarHaving.condition
     candidate environment does not hold. The star route asks it once every leaf has resolved and
     passed its comparison's kind and scale gates, because the Kernel names a body's refused
     comparison ahead of the filter's iteration class, on a repetition the filter does not iterate
-    too ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)). -/
+    too ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-filter-body)). -/
 def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
     (declaringGroup : GroupPath) (candidateLevels : List RepeatableLevel) :
     SurfaceCorrelatedHaving → Option CorrelationElabError

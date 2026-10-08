@@ -4,8 +4,8 @@ import A12Kernel.Elaboration.IndexParameterResolution
 
 The resolution classes, the not-iterating class, and the non-repeatable branch's whole admitting matrix
 are measured; the composed-index and repeatability-mismatch classes are source-derived and honestly
-unwitnessed ([resolution](../../docs/SOURCES.md#src-index-terminal-refusal-classes),
-[non-repeatable gate](../../docs/SOURCES.md#src-nonrepeatable-index-field-gate)).
+unwitnessed ([resolution](../../docs/sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes),
+[non-repeatable gate](../../docs/sources/message-and-pointer-probes.md#src-nonrepeatable-index-field-gate)).
 
 The matrix separates the resolution cascade's internal order, resolution's independence from the
 condition, the mismatch class in **both** directions, the two branch-local classes against each other,

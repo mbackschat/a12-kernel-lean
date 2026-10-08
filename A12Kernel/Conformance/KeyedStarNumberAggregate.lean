@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.KeyedStarNumberAggregate
 
 The fixture is the peer's `KeyedGroupFieldListDiffTest` model: a keyed repeatable `Packages` holding a
 repeatable `Items`, with `P1` holding two item rows weighing 2 and 5 and `P2` its key alone
-([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-keyed-parent-stars)). Its `Sum`, `MaxValue` and
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-keyed-parent-stars)). Its `Sum`, `MaxValue` and
 `MinValue` over `P1` are Kernel-measured. The measured rows cannot tell a keyed selection from a star
 over every package, because `P2` has no item, so one variant gives `P2` items of its own: the
 selected row's rows alone contribute, which the measured `FirstFilledValue` and `NoGroupFilled` rows

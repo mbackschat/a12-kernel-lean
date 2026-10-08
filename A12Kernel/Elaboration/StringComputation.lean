@@ -57,7 +57,7 @@ a concatenation around the read
 ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep)),
 a raw target, which the generated comparison reads before the operation, and a copied field that
 comparison refuses. The raw row is measured with
-a String field source ([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)); a literal
+a String field source ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26c-target-read)); a literal
 source takes it by that read, which does not depend on the operation. -/
 def targetDiagnostic? :
     StringComputationElabError → Option KernelStaticDiagnostic

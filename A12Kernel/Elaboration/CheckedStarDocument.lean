@@ -476,7 +476,7 @@ uninstantiated** capacity, at the operand's own depth.
     here. The tail is a fact about the operand, not about one consumer: kernel 30.8.1 keeps a
     `NumberOfValueInFields` over a group growable while a reopened row is still missing, on the
     Number and String arms as on the Boolean one
-    ([checkpoint](../../docs/SOURCES.md#src-below-star-group-runtime)), and the temporal extrema's
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-below-star-group-runtime)), and the temporal extrema's
     `given` flag reads the same omitted tail.
 
     A scope no deeper than the operand's own depth contributes nothing: every one of its levels is

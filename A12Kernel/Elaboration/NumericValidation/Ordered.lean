@@ -214,7 +214,7 @@ def referencesField (atom : OrderedNumericValidationAtom model)
 /-- Whether this atom reaches `field` for the rule's error-field gates: as `referencesField` does,
     except that a filter's unmarked reads do not count. The Kernel's gates keep only the references
     outside every filter body and the `$`-marked ones inside
-    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
+    ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-reference-set)). -/
 def referencesErrorField (atom : OrderedNumericValidationAtom model)
     (field : FieldId) : Bool :=
   match atom with

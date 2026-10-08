@@ -55,7 +55,7 @@ def observations (checked : CheckedFilledFieldCountGroupSource model)
     counted and does not make the count unknown: on a document whose in-capacity rows are
     instantiated and empty and whose only filled cell lies beyond capacity, kernel 30.8.1 answers
     `0` and fires a `< 1` rule, which an unknown count would leave silent
-    ([checkpoint](../../docs/SOURCES.md#src-group-operand-over-limit-extent)). The complete
+    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-group-operand-over-limit-extent)). The complete
     formal-cell view stays available on the checked document for the group consumers that have no
     such measurement. -/
 def evaluateCheckedDocumentValidation
@@ -69,10 +69,10 @@ def evaluateCheckedDocumentValidation
 
     A fixed group's capacity is its subtree's: a repeatable descendant admits more cells than the
     subtree declares fields, and the declaration count would freeze the count early
-    ([checkpoint](../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). A fixed group below
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)). A fixed group below
     a starred level also multiplies in every level the star reopens, since kernel 30.8.1 types
     `Rows*/Detail` `VALUE` only once both of Detail's fields are filled in both rows `Rows` admits
-    ([checkpoint](../../docs/SOURCES.md#src-below-star-group-runtime)).
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-below-star-group-runtime)).
     A terminal repeatable star runs against the same slot capacity: below it the Kernel types an
     `== 0` and an `== 1` member OMISSION and a `> 0` member VALUE, on the
     [starred-extent](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent)

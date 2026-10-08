@@ -8,8 +8,8 @@ spelling decodes to. Every expected value is a Kernel 30.8.1 class measured at t
 [argument-layer](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers),
 [argument-event](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-events)
 and [walk and dotted-name](../../docs/sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)
-checkpoints or in the peer's grids ([inbound](../../docs/SOURCES.md#inbound-2026-10-01-group-arguments),
-[inbound](../../docs/SOURCES.md#inbound-2026-10-01a-provenance)),
+checkpoints or in the peer's grids ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-01-group-arguments),
+[inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-01a-provenance)),
 on spellings translated to this fixture's `Order`, `Head`, `Deeper` and `Side`. What a decoded group
 then resolves to, and the classes its lookup and availability draw, are locked with the message
 template in `Conformance/MessageGroupPosition.lean`.
@@ -176,7 +176,7 @@ private def germanSyntaxFault (argument : String) (fault : MessageParameterFault
   germanRefused argument = some (.syntax fault)
 
 /- Under the German condition language the same decisions fall on the German words, as the peer's
-German rows measure ([inbound](../../docs/SOURCES.md#inbound-2026-10-01a-provenance)): `RegelKontext`
+German rows measure ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-01a-provenance)): `RegelKontext`
 is a keyword whatever follows, `LfdNr` is the keyword alone and a path segment before a separator,
 `Fuer` and `Referenzjahr` are never names, `RegelKontext` after a walk is a token left after it, `Wert` cannot end a dotted name, and the English
 shorthands are ordinary names. -/

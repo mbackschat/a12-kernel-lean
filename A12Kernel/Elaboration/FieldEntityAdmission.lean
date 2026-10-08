@@ -17,7 +17,7 @@ inductive FieldEntityReadForm where
 /-- One direct field operand authored inside a `Having` expression. The origin is part of the
     operand rather than ambient filter state because `$P` and `P` are different exact operands even
     when both paths resolve to the same declaration
-    ([checkpoint](../../docs/SOURCES.md#src-pr2-correlated-operand-identity)). -/
+    ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-correlated-operand-identity)). -/
 structure SurfaceHavingDirectFieldOperand where
   origin : HavingOrigin
   field : SurfaceFieldPath
@@ -89,7 +89,7 @@ inductive FieldEntityShapeElabError where
   | overlappingOperands (ancestor descendant : List String)
   /-- A fixed root group in a list that passed both duplicate scans. Every entity of a model lies
       under its root, so this arm is reached only by a root alone or beside another root's entities
-      ([checkpoint](../../docs/SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate)). -/
+      ([checkpoint](../../docs/sources/inbound-handbacks.md#inbound-2026-09-23-entity-list-root-group-gate)). -/
   | rootGroupOperand (path : GroupPath)
   /-- On a fixed-target arm, an operand leaves a repeatable level for its evaluation to bind. The
       whole list is judged before the duplicate scans, as the Kernel's missing-star bar is
@@ -107,7 +107,7 @@ a row measured at one carrier fixes the code everywhere.
 **Whether a gate fires does vary, and the arity gate is measured to.** All three value-list
 quantifiers accept a *sole unstarred field* operand, where the entity-list carriers refuse one with
 `MVK_PARAMSIZE_INVALIDN`
-([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)), so
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)), so
 each carrier passes the `EntityListArity` it applies. -/
 def FieldEntityShapeElabError.diagnostic? :
     FieldEntityShapeElabError → Option KernelStaticDiagnostic
@@ -273,7 +273,7 @@ def elaborateHavingDirectFieldSource (model : FlatModel)
 
 /-- One comparability category admitted by the Kernel's field-list operators. String and Enumeration remain distinct even though both use the token runtime domain.
 
-`temporal` collapses DATE, TIME, DATETIME and DATEFRAGMENT, and that collapse is **measured rather than assumed**. A cross-kind temporal pair whose formats also differ moves two variables and is answered by the prior format gate, so only a pair sharing one identical declared format asks this gate anything. Four such pairs are admitted: DATE beside DATEFRAGMENT at `yyyy`, TIME beside DATETIME at `HH:mm:ss`, and a DATE declared with that same clock format beside each of the clock kinds ([inbound](../../docs/SOURCES.md#inbound-2026-09-22-temporal-category)).
+`temporal` collapses DATE, TIME, DATETIME and DATEFRAGMENT, and that collapse is **measured rather than assumed**. A cross-kind temporal pair whose formats also differ moves two variables and is answered by the prior format gate, so only a pair sharing one identical declared format asks this gate anything. Four such pairs are admitted: DATE beside DATEFRAGMENT at `yyyy`, TIME beside DATETIME at `HH:mm:ss`, and a DATE declared with that same clock format beside each of the clock kinds ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-22-temporal-category)).
 
 **The last two pairs are what make this one category rather than two.** Two admitted same-shape pairs are equally what two categories each holding two kinds would produce, so the pairs alone cannot tell one category from two; the spanning edge leaves every kind one measured edge from the rest. [`Conformance/TemporalValuesNotUnique`](../Conformance/TemporalValuesNotUnique.lean) locks all four with the format-gate and category-mismatch controls that keep them readable. This estate's DATEFRAGMENT shares `.date`'s constructor, so the first pair varies nothing here and the matrix rests on the other three. -/
 inductive FieldListComparabilityCategory where

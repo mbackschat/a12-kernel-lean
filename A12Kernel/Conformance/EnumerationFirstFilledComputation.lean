@@ -273,7 +273,7 @@ example :
 
 /- Exhaustion stays no-value; a first formal error poisons before a later token. A category read of a
    token outside its source's domain is such an error, not an empty slot the scan passes over
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-category-read-poison)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-category-read-poison)). -/
 example :
     outcomeOf (source (direct "Compatible") [category "Projected" "Target"]) []
         (directRead .empty .empty) (starRead .empty .empty .empty) =

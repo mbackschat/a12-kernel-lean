@@ -644,7 +644,7 @@ example :
 
 /- A formally unavailable key field suppresses validation and poisons computation before row selection.
    The malformed key is the Kernel's measured row: it is not a key that matches no row, which would
-   read empty instead ([inbound](../../docs/SOURCES.md#inbound-2026-09-23d-grandparent-fill-and-malformed-key)). -/
+   read empty instead ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-23d-grandparent-fill-and-malformed-key)). -/
 example :
     let column := raw [1]
       (fun _ => .parsed (.num 5))

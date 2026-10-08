@@ -19,7 +19,7 @@ same cell and a consumer's answer would depend on which it asked.
 So this module holds one exhaustive table rather than more per-family rows. The denominator is the
 Kernel's own admitted format vocabulary — twelve formats, derived by probing rather than hand-listed,
 and complete over the 135-candidate declaration universe
-([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). Hand-copying that list is precisely what went
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05b)). Hand-copying that list is precisely what went
 wrong twice on the peer's side, so the list here is a fixture to be checked against its owner rather
 than a claim of its own: the count is asserted, and a format the vocabulary gains would need this
 table extended before it could pass.

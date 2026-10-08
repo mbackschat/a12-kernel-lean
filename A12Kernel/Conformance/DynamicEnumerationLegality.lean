@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.UnraisedDiagnostic
 
 Each case fixes one reading a consumer would otherwise adopt: that a String field is simply admissible, that a length bound is unrelated to a value list, that the stages report independently, or that the code identifies its cause.
 
-The catalog keys are the exact codes the `dynamicEnumerations` probe route surfaced, each drawn by a single witness rule in a model carrying no other rule, so the attribution is the rule rather than the model ([checkpoint](../../docs/SOURCES.md#src-dynamic-enumeration-legality)).
+The catalog keys are the exact codes the `dynamicEnumerations` probe route surfaced, each drawn by a single witness rule in a model carrying no other rule, so the attribution is the rule rather than the model ([checkpoint](../../docs/sources/rule-set-meta-information.md#src-dynamic-enumeration-legality)).
 -/
 
 namespace A12Kernel.Conformance.DynamicEnumerationLegality

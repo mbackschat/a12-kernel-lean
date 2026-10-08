@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.ErrorTextParameterModelKind
 `INVALID_HASH_LFDNR_FOR_PARALLEL_ITERATION` is measured with its admitted control; the four H-model-side
 classes are source-derived and unwitnessed from this project's A12-only route, which the shadowing law
 explains rather than excuses
-([checkpoint](../../docs/SOURCES.md#src-message-parameter-surface-and-iteration-gates)).
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)).
 
 The matrix separates the kind test from the iteration test it precedes, the serial parameter's
 independence from the kind, the suppression asymmetry an unparsed condition creates between neighbours,

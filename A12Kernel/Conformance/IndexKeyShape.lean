@@ -6,9 +6,9 @@ Every expected verdict is the Kernel's, read through the admission cascade's key
 the empty key meets its own disjunct: `true` is an admitted key and `false` the
 `MVK_INDEX_VALUE_INVALID` refusal. The rows are the peer's
 `CheckerIndexKeyConstantAgreementTest`, one per discriminating shape of each kind
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26-index-key-shape)), and its
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26-index-key-shape)), and its
 `IndexKeyNormalizationPopulation` line-terminator rows
-([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-index-key-dialect)).
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-key-dialect)).
 
 The String patterns are injected, so each fixture's matcher is a hand-written stand-in for its Java
 pattern. Those rows lock that the fit asks the length and the pattern together over the collapsed
@@ -139,7 +139,7 @@ example :
   native_decide
 
 /- An Enumeration key is a stored token exactly, case-sensitively
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-literal-key)); a declaration lacking the
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25i-literal-key)); a declaration lacking the
    policy its kind needs answers nothing rather than a guess. -/
 example :
     let tiers : FlatFieldDecl :=

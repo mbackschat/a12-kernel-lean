@@ -7,7 +7,7 @@ namespace A12Kernel
 
 /-- Two checked constants with the same target and the same wall label execute identically however
 they are placed: iteration comes from the target's scope and a constant supplies no other source
-([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)). -/
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)). -/
 theorem checkedRepeatableDateTimeConstantComputation_execute_ignoresDeclaringGroup
     {model : FlatModel}
     (first second : CheckedRepeatableDateTimeConstantComputation model)

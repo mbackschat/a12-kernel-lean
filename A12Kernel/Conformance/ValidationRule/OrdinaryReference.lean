@@ -715,7 +715,7 @@ private def filteredBooleanAssembly? (origin : HavingOrigin) :
 
 /- The token and Boolean value counts take the error field from their filter as the aggregates do:
    a marked read references it and an unmarked one does not
-   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). The rows the rule rests on
+   ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-reference-set)). The rows the rule rests on
    read a numeric aggregate's filter; these lock the two carriers' own arms of that predicate. -/
 example :
     filteredTokenAssembly? .outer = some none ∧

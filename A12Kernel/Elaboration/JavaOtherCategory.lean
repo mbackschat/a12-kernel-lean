@@ -2,7 +2,7 @@
 
 A message template's control gate refuses every code point Java's regex `\p{C}` matches, asked of one
 code point at a time: the control, format, private-use, surrogate and unassigned categories
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). The unassigned part is not a
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). The unassigned part is not a
 rule but a fact of the running JDK's Unicode version, so this set is pinned to one: JDK 21, whose
 character database is Unicode 15.0 (measured 2026-09-26 on OpenJDK 21.0.12.1: `U+1FAE8` and `U+31350`,
 added in 15.0, are assigned there, while `U+2FFC`, `U+31EF` and `U+2EBF0`, added in 15.1, are not).

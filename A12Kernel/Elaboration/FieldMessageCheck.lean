@@ -7,8 +7,8 @@ A field declaration can carry its own message per locale: a String pattern's inv
 Enumeration's invalid-value text, a required field's text, or a String text with no pattern to pair.
 The model check reads them as one field, not one text at a time
 ([`spec/11`](../../spec/11-messages-and-custom.md),
-[inbound](../../docs/SOURCES.md#inbound-2026-09-26n-field-message-gates),
-[inbound](../../docs/SOURCES.md#inbound-2026-09-27a-field-message-render)):
+[inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates),
+[inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-field-message-render)):
 
 - the locales are asked **in the order the model declares them**, whatever order the entries are
   written in, and a locale the model does not declare is never asked;

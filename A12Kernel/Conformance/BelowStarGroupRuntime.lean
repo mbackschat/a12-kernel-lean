@@ -8,7 +8,7 @@ import A12Kernel.Elaboration.NumericAggregate
 Kernel 30.8.1 admits `Rows*/Detail`, a fixed group inside the repeatable `Rows`, on
 `NumberOfFilledFields`, the seven field-fill quantifiers and the three `NumberOfValueInFields` arms,
 and its answers over eight documents are retained at the
-[runtime checkpoint](../../docs/SOURCES.md#src-below-star-group-runtime). This module replays that
+[runtime checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-below-star-group-runtime). This module replays that
 matrix through each carrier's own checked source. The operand reaches only the group's own fields,
 in every row the star reopens and none beyond the declared maximum, and a count moves until every
 declared slot below the star is filled.
@@ -135,7 +135,7 @@ example :
 /-! ## The computation arm
 
 The same eight documents under `compute`, with one Number target per consumer, are retained at the
-[computation checkpoint](../../docs/SOURCES.md#src-below-star-group-computation). A malformed
+[computation checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-below-star-group-computation). A malformed
 `Amount` leaves every Number consumer without an outcome, which is poison here. -/
 
 private def computedValue : Except CheckedAddressingError NumericOperand → Option Rat

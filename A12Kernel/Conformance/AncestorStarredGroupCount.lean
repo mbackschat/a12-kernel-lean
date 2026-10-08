@@ -7,10 +7,10 @@ import A12Kernel.Elaboration.ValidationRule
 
 The Kernel admits `NumberOfFilledGroups(Batches*/Seal)`, alone or beside a fixed group, although
 `Seal` does not repeat, and counts the batch environments whose `Seal` is filled rather than the
-batch rows ([inbound](../../docs/SOURCES.md#inbound-2026-09-24-ancestor-starred-group-count)). The
+batch rows ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24-ancestor-starred-group-count)). The
 thirteen documents below are the peer's `kf463` validation table, read by the three operand lists
 of that table this carrier owns; its fixed-only pair and a lone starred row count have carriers of
-their own ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf463-validation)). The one that separates a
+their own ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf463-validation)). The one that separates a
 content count from a row count instantiates two batches and fills neither `Seal`: a row count
 answers two, and the Kernel zero. A malformed-only instance separates this arm from the computation
 arm, which counts it.

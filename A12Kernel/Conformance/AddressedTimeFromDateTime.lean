@@ -114,7 +114,7 @@ from that base, and only a group the target does not lie below is refused. An un
 is refused on this family's own `targetLookup` channel, since its error type has no separate target
 constructor. Two declared groups are refused, one strictly below the target and one at the target's
 own depth beside it, so containment is separated in both directions rather than only against an
-unrelated path. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)
+unrelated path. The [declaring-group gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computation-declaring-group-gate)
 owns the Kernel measurement. -/
 example :
     elabError? (checkAddressedTimeFromDateTime model ["Schedule"]

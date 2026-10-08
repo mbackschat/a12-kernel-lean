@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ComputationSelfValidation
 /-! # The implicit self-validation message's type, over a starred operand
 
 Replays the ten retained documents of the [message-polarity
-checkpoint](../../docs/SOURCES.md#src-starred-operand-message-polarity) at the clause that derives
+checkpoint](../../docs/sources/group-and-iteration-probes.md#src-starred-operand-message-polarity) at the clause that derives
 the type, on both Kernel codegen strategies' agreeing observation.
 
 The computed values are **inputs** here, read off the same capture; the clauses that produce them

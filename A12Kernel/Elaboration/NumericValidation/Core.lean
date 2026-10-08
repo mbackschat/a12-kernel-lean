@@ -138,7 +138,7 @@ operand: the coordinate reads no cell either way, so an outer-scope row reports 
 never the constant one (peer `kf451`, measured 2026-09-22). A name resolving to no group under a
 declared root answers ahead of that gate with the entity class, and a path naming a field of a
 group that passed it the field class, both measured from a root rule
-([inbound](../../../docs/SOURCES.md#inbound-2026-09-27a-current-repetition)) and carried to the
+([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-current-repetition)) and carried to the
 addressed carrier unmeasured. A missing root and the plain-reference arm stay unmapped: no row
 measures either. -/
 def repetitionScopeDiagnostic? :
@@ -165,7 +165,7 @@ has no constructor here. The format projection is deliberately narrower: only co
 The **declared kind is not read**, and that is measured rather than assumed: the same
 `MVK_WRONG_DATE_FORMAT_FOR_OP` comes back for a DATE-declared complete-date field and for a
 TIME-declared one, so the component set alone selects the code
-([checkpoint](../../../docs/SOURCES.md#src-temporal-operand-family-is-the-formats-not-the-kinds)). -/
+([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-operand-family-is-the-formats-not-the-kinds)). -/
 def temporalFieldPartDiagnostic? :
     NumericValidationElabError → Option KernelStaticDiagnostic
   | .temporalFieldPartSourceNotTemporal _ (.date .year) => some .noDate

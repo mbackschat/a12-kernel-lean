@@ -286,7 +286,7 @@ example :
 /- **The target gate reads the declared format, not the declared kind.** A DATE-declared field whose
    format and components are the clock's takes this computation exactly as the TIME-declared target
    does, which the Kernel admits for this family and for `TimeFromDateTime` alike
-   ([checkpoint](../../docs/SOURCES.md#src-temporal-computed-target-gate-reads-format-not-kind)). The
+   ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)). The
    TIME-declared control beside it is what keeps the row from reading as "any target is admitted". -/
 example :
     ((checked? clockShapedDateTarget.id (star "Time")).isSome,

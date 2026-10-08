@@ -57,7 +57,7 @@ structure CheckedDateRangeConstructionComputation (model : FlatModel) where
   declaringGroup : GroupPath
   /-- The declaring group is a representable path. Placement itself is unconstrained here — a
   construction reads two nonrepeatable endpoints, so nothing iterates and the Kernel's containment
-  gate cannot fire ([checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement)) — but the
+  gate cannot fire ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement)) — but the
   group must still be a group, and nothing else in this certificate implies it. -/
   declaringGroupValid : GroupPath.isValid declaringGroup = true
   format : DateRangeConstructionTargetFormat

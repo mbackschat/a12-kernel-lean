@@ -44,14 +44,14 @@ structure SurfaceSemanticIndex where
 
 /-- The measured exact-text literal semantic-index suffix on the reserved `RuleGroup` entity.
 Keeping this surface distinct excludes unmeasured numeric literals, field-valued keys, and
-wildcard-plus-index combinations ([checkpoint](../../docs/SOURCES.md#src-pr2-rulegroup-semantic-index)). -/
+wildcard-plus-index combinations ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-rulegroup-semantic-index)). -/
 structure SurfaceRuleGroupSemanticIndex where
   token : String
   deriving Repr, DecidableEq
 
 /-- The exact reviewed two-field `NumberOfFilledFields` carrier: two authored target paths, one
 exact-text semantic-index key, and no runtime count claim. Other arities and key forms have distinct
-surface types or no representation ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+surface types or no representation ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-semantic-index-carrier-matrix)). -/
 structure SurfaceFilledFieldCountSemanticIndexPair where
   firstTarget : SurfaceFieldPath
   secondTarget : SurfaceFieldPath
@@ -60,7 +60,7 @@ structure SurfaceFilledFieldCountSemanticIndexPair where
 
 /-- The exact reviewed one-level starred Number target with a literal text semantic-index suffix.
 Other target kinds, repetition topologies, and key forms have no representation in this certificate
-([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-semantic-index-carrier-matrix)). -/
 structure SurfaceStarredNumberSemanticIndexUse where
   target : SurfaceStarFieldPath
   token : String
@@ -110,7 +110,7 @@ def diagnostic? : SemanticIndexElabError → Option KernelStaticDiagnostic
 
 /-- Exact diagnostic projection measured for the `RuleGroup` literal suffix. A missing index on
 other carriers requires its own evidence before it can inherit this code
-([checkpoint](../../docs/SOURCES.md#src-pr2-rulegroup-semantic-index)). -/
+([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-rulegroup-semantic-index)). -/
 def ruleGroupDiagnostic? : SemanticIndexElabError → Option KernelStaticDiagnostic
   | .missingIndexField _ => some .noIndexField
   | error => error.diagnostic?
@@ -470,7 +470,7 @@ def elaborateTextSemanticIndexGroupSelection (model : FlatModel)
 /-- Certify the reviewed literal semantic-index suffix on `RuleGroup`. A known nonrepeatable group
 has no index declaration and therefore reaches the same missing-index class as an unindexed
 repeatable group; an unknown group still fails as a resolution error
-([checkpoint](../../docs/SOURCES.md#src-pr2-rulegroup-semantic-index)). -/
+([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-rulegroup-semantic-index)). -/
 def elaborateRuleGroupSemanticIndexSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceRuleGroupSemanticIndex) :
     Except SemanticIndexElabError (CheckedRuleGroupSemanticIndexSource model) :=

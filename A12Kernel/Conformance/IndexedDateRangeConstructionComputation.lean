@@ -236,7 +236,7 @@ private def formalFinding (field : FieldId) (path : List Nat)
   cause
 }
 
-/- Placement is unconstrained here too, and this family had no cell in either direction before. Declaring at the indexed group puts the fixed target above the declaring group and is admitted, because a construction reads nonrepeatable endpoints and derives no iteration; an unrepresentable declaring group is refused on the target channel. Measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). -/
+/- Placement is unconstrained here too, and this family had no cell in either direction before. Declaring at the indexed group puts the fixed target above the declaring group and is admitted, because a construction reads nonrepeatable endpoints and derives no iteration; an unrepresentable declaring group is refused on the target channel. Measured at the [fixed-target star placement checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement). -/
 example :
     (operationAt? ["Order", "Items"] "sku1" "sku2").isSome = true ∧
       (operationAt? [] "sku1" "sku2").isNone = true := by

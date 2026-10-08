@@ -133,7 +133,7 @@ private def starredAggregate? (op : NumericAggregateOp) (rowCount : Nat)
    `5`, and its control the same `12`. The two group forms were briefly split here on the fixed
    measurement alone; a starred-operand probe answered every arm identically — `5` against a `12`
    control, `0` against a `1` control for the count, and the malformed pair evaluable above capacity
-   and non-evaluable below it ([checkpoint](../../docs/SOURCES.md#src-starred-group-operand-extent)).
+   and non-evaluable below it ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent)).
    The case stays because a resolver that narrowed only the unstarred form would pass every other
    case in this module. -/
 example :

@@ -57,7 +57,7 @@ private def stringPatternNamedDiagnostic? (template : String) : Option (Option S
     error.namedStringPatternDiagnostic?.map KernelStaticDiagnostic.kernelCode
 
 /- **The field's own message meets the rule message's two character gates, line before control**
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). Each row sits in the one
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). Each row sits in the one
    declared locale's message of a `[A-Z]+` pattern. Beside the line feed the Kernel also reports a
    codeless line-break finding, as it does beside a rule message's line feed; that finding is not this
    projection's. The supplementary scalar is the codeless repertoire refusal alone, so it projects no
@@ -75,7 +75,7 @@ example :
 
 /- The field's message meets the same `\p{C}` set, and its refusal of a supplementary character stands
    beside the named class the text draws, as on a rule's message
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). -/
 example :
     ["a" ++ cp 0xFEFF ++ "b", "a" ++ cp 0x200E ++ "b", "a" ++ cp 0xE000 ++ "b",
         "a" ++ cp 0x0378 ++ "b", "a" ++ cp 0xF0000 ++ "b", "a" ++ cp 0xE0001 ++ "b"].map
@@ -90,7 +90,7 @@ example :
 /- The gates beyond the characters, in the Kernel's order: dollar parity ahead of the parameters, the
    character gates ahead of both, and every parameter other than the two tokens, the empty one included,
    `INVALID_PARAMETER` (ledger (`EXP-2026-07-30-01`),
-   [inbound](../../docs/SOURCES.md#inbound-2026-09-26n-field-message-gates)). The German spelling is a
+   [inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates)). The German spelling is a
    wrong name in an English model, and so is a token with one non-ASCII letter
    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)).
    An empty text is the pairing class, not a character one. -/
@@ -119,7 +119,7 @@ example :
 /- **The parameters are Java's `split` pieces, whose trailing empty pieces are dropped**: an empty pair at
    the very end, or alone, names no parameter and is admitted, where the same pair at the start is an
    empty parameter. The admitted pair renders verbatim, `Cost $$` and `$$` measured on both runtime
-   strategies ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-field-message-render)). -/
+   strategies ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-field-message-render)). -/
 example :
     stringPatternTemplateError? "capitals only $$" = none ∧
     stringPatternTemplateError? "$$" = none ∧

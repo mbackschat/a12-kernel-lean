@@ -219,6 +219,18 @@ for prefix in cap src gap; do
     failed=true
   done < <(grep -h "^<a id=\"${prefix}-" "${shards[@]}" | sort | uniq -d)
 
+  if [[ "$prefix" == "src" ]]; then
+    # SOURCES.md routes directly to family owners; each record stays searchable in its owner.
+    # DOC-DISCIPLINE.md requires each source family to be reachable without a duplicate index.
+    for shard in "${shards[@]}"; do
+      if ! grep -Fq "](sources/${shard##*/})" "$hub"; then
+        echo "${hub}: missing source-family link to ${shard}" >&2
+        failed=true
+      fi
+    done
+    continue
+  fi
+
   while IFS= read -r anchor; do
     [[ -z "$anchor" ]] && continue
     if ! grep -Fqx "$anchor" "$hub"; then

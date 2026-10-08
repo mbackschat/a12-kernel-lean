@@ -30,7 +30,7 @@ private def unrelated := timeField 6 "UnrelatedClock" ["Summary"] []
 /-- A **DATE**-declared repeatable target at the complete-clock format and component set. The Kernel
 admits a clock computation into it exactly as into the TIME-declared target beside it, from the
 target's own declaring group and from the root alike
-([checkpoint](../../docs/SOURCES.md#src-temporal-computed-target-gate-reads-format-not-kind)). -/
+([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)). -/
 private def clockShapedDateTarget : FlatFieldDecl :=
   { id := 7, name := "SelectedDateShaped", groupPath := ["Projects", "Tasks"]
     repeatableScope := [10, 30]

@@ -288,7 +288,7 @@ its own capacity makes a `Details` cell unavailable although the `Items` ancesto
 `Details` coordinate below it are both in capacity, while the identical cell one `Lines` row earlier
 stays a value. The row list is dense because the checked document rejects a sparse one. Measured on
 kernel 30.8.1, where the same shape stamps `Details` and its cell but leaves the in-cap sibling
-clean (`tri-inner-over`, [checkpoint](../../docs/SOURCES.md#src-over-limit-finding-multiplicity)). -/
+clean (`tri-inner-over`, [checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity)). -/
 example : ((checked? {
     instantiatedRows :=
       [row1, row2] ++
@@ -312,7 +312,7 @@ example : ((checked? {
 /- Two violated axes on one cell collapse to one finding, not two: the overlay records that the cell
 is unreachable, never how many ancestors made it so. This is the Lean counterpart of the Kernel's
 own absorption, where a nested over-limit row draws no code of its own and every finding beneath it
-names the outermost violation ([checkpoint](../../docs/SOURCES.md#src-nested-over-limit-attribution)). -/
+names the outermost violation ([checkpoint](../../docs/sources/over-repetition-probes.md#src-nested-over-limit-attribution)). -/
 example : ((checked? {
     instantiatedRows :=
       ((List.range 3).map fun index => { group := 10, path := [index + 1] }) ++
@@ -334,7 +334,7 @@ only in its own cells: the same malformed value reads as over-repetition two lev
 over-limit `Items[3]` and stays malformed beneath the in-capacity `Items[2]`. The sibling is what
 makes the first reading a suppression rather than an input that was never checked. Measured on
 kernel 30.8.1, where the deep cell reports no format finding at all while its in-capacity twin
-reports `zahlHatUngueltigeZeichen` ([checkpoint](../../docs/SOURCES.md#src-over-limit-absorption-depth)). -/
+reports `zahlHatUngueltigeZeichen` ([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-absorption-depth)). -/
 example : ((checked? {
     instantiatedRows :=
       ((List.range 3).map fun index => { group := 10, path := [index + 1] }) ++

@@ -324,7 +324,7 @@ private def overCapacityRows : List RowAddr :=
 /- Full validation excludes the over-capacity cell, like computation. The only `true` sits one index
    above capacity and the count is a definite zero rather than unavailable; this case asserted the
    opposite until the starred-operand probe measured the extent
-   ([checkpoint](../../docs/SOURCES.md#src-starred-group-operand-extent)). -/
+   ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent)). -/
 example :
     checkedValidationResult? overCapacityRows [
       booleanCell 1 false, emptyComputationCell 51 1,

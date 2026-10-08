@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.JavaOtherCategory
 Locks the generated table against an edit: its range count and code-point total as measured on
 OpenJDK 21.0.12.1 on 2026-09-26, its order with a gap between neighbours, the binary search against a
 linear scan on both sides of every boundary, and the rows the peer put to the Kernel
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). -/
 
 namespace A12Kernel.Conformance.JavaOtherCategory
 

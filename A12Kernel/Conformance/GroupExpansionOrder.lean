@@ -7,7 +7,7 @@ import A12Kernel.Elaboration.TemporalExtremumOperands
 A group operand is its fields, and the kind gates read them in one order: depth-first in declaration
 order, a subgroup's fields standing at the subgroup's position and an index field at its own. The
 peer's `EntityListGroupExpansionKindLawsTest` rows fix that order on the Kernel
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26i-expansion-order)); here the fixture lists its
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26i-expansion-order)); here the fixture lists its
 fields depth-first, the representation contract `FlatModel.fields` states, and every row is one of
 the peer's on groups of the same kinds and nesting, whose names and root-level order differ from
 the peer's without any locked row depending on them. Each positional row separates an account: a later field

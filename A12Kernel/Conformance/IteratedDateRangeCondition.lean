@@ -668,7 +668,7 @@ private def filteredOverlapAssembly? (marked : Bool) : Option (Option FlatRuleAs
     | .error error => some error)
 
 /- A DateRange overlap's filter reaches the rule's error field only through a `$`-marked read, as
-   the ordered numeric carriers' filters do ([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)).
+   the ordered numeric carriers' filters do ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-reference-set)).
    The peer's rows read this rule on a numeric aggregate; that a DateRange overlap's filter follows
    it rests on the filter body being one production whatever its carrier. -/
 example :

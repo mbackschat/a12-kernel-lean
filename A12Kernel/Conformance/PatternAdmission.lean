@@ -45,7 +45,7 @@ example : ["\\A", "\\G", "\\Z", "\\z", "\\a", "\\e", "\\p{L}", "\\Q", "\\E"].all
     (fun source => !kernelPatternSourceAllowed source) = true := by native_decide
 
 /- The escape set holds `p` and not `P`: bare `\P{L}` is admitted while `\P{L}+` is refused for its
-   `}+` adjacency, not for the escape ([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). -/
+   `}+` adjacency, not for the escape ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections)). -/
 example : classifyStringPattern compilePattern "\\P{L}" = .admitted ∧
     classifyStringPattern compilePattern "\\P{L}+" = .rejected .kernelRestriction := by
   native_decide
@@ -58,7 +58,7 @@ example : ["a+", "(?=a)a", "(?!a)b", "(?i)abc", "\\R", "\\h", "[a\\[b]", "[a][b]
 
 /- Any `]` ends the scan for a nested opener, escaped or not, so an escaped delimiter followed by a
    class opener is admitted although Java reads the second `[` as nested. Measured by the peer on a
-   declared index-field pattern ([inbound](../../docs/SOURCES.md#inbound-2026-09-30a-regex-operands)). -/
+   declared index-field pattern ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-30a-regex-operands)). -/
 example : classifyStringPattern compilePattern "[a\\][b]]" = .admitted := by native_decide
 
 /- The document-model branch admits the empty source; semantic empty input is still excluded by the resolved operand classifier. -/

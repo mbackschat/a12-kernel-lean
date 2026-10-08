@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.ArithmeticShape
 
 /-! # Locks on the arithmetic shape gates
 
-Every case below replays a measured row ([checkpoint](../../docs/SOURCES.md#src-arithmetic-shape-gates));
+Every case below replays a measured row ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-arithmetic-shape-gates));
 each refusing row was taken beside an admitted control on the same model, so no class is attributed to
 the route or the fixture.
 

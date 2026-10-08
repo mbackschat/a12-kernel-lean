@@ -3,8 +3,8 @@ import A12Kernel.Elaboration.CheckedDocument
 
 /-! # Repeatable Time constant locks
 
-The Kernel rows behind these cases are the [cross-group carrier](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)
-and the [literal-family gate](../../docs/SOURCES.md#src-constant-literal-family-gate) checkpoints.
+The Kernel rows behind these cases are the [cross-group carrier](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)
+and the [literal-family gate](../../docs/sources/temporal-constant-and-base-year-probes.md#src-constant-literal-family-gate) checkpoints.
 -/
 
 namespace A12Kernel.Conformance.RepeatableTimeConstantComputation

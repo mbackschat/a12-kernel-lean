@@ -209,7 +209,7 @@ def boundLevelCount : CheckedEntityGroupSource model → Nat
     validation a group operand's extent is known exactly when this holds for the gate its operator
     asks of a starred field: the group path is not the target, so field identifiers alone can settle
     it and an identifier on a descendant group covers the fields below it
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf464-partial-group-extent)). -/
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf464-partial-group-extent)). -/
 def everyDeclarationCovers (source : CheckedEntityGroupSource model)
     (declarations : List FlatFieldDecl)
     (covers : List String → List RepeatableLevel → List RepeatableLevel → Bool) : Bool :=
@@ -256,7 +256,7 @@ def firstFieldListCategoryMismatch?
     it ahead of the repeat and the other carriers that ask it behind the repeat, both measured, and
     those other carriers behind the root gate as well, which rests on the peer's source reading; a
     carrier outside the gate asks none
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26b-entity-list-category)). -/
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26b-entity-list-category)). -/
 inductive EntityListCategoryGate where
   | absent
   | aheadOfRepeat
@@ -318,7 +318,7 @@ def firstResolvedOperandOverlap? :
 **This is measured to be per carrier, and the two sides have a reason.** All three value-list
 quantifiers accept a sole unstarred field, where `FieldValuesNotUnique` and `NumberOfDifferentValues`
 refuse one with `MVK_PARAMSIZE_INVALIDN`
-([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)). A
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)). A
 value-list quantifier compares its fields against *literals*, so one field is a complete question; an
 entity-list carrier compares them against *each other*, where one field asks nothing.
 
@@ -391,7 +391,7 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   -- list it pre-empts the varying-types gate (the 2026-09-18 extension under
   -- [`kf106`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf106)). On an entity list it is
   -- measured on the value-list quantifier's field list, ahead of the duplicate gate
-  -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)); on the other carriers its
+  -- ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-list-reads)); on the other carriers its
   -- position rests on the peer's source reading that the check answers wherever the operand's spec
   -- stands ([`kf482`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf482)).
   let categoryRead := FlatFieldDecl.checkEntityCategoryRead
@@ -468,7 +468,7 @@ def resolveFieldEntityOperands (model : FlatModel)
 
     Path resolution precedes the whole-list gates and the kind scan follows them. Every exact non-wildcard identity shares one scan, independent of field/group class; strict ancestor overlap follows it. Cardinality is structurally separate on this typed surface: its singleton direct-field input cannot also contain a repeated or overlapping pair, and a root slot is already-many, so the root gate and cardinality never both fire.
 
-    The root gate is measured on `Sum`, the extrema, `FirstFilledValue`, `NumberOfDifferentValues`, `FieldValuesNotUnique`, `DateRangesOverlap`, and `NumberOfValueInFields` on the validation arm ([checkpoint](../../docs/SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate)), and on the value-list quantifier and a String-target computation `FirstFilledValue` ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)), all three quantifiers and both value-list spellings ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-dispositions)). `AtLeastOneDateRangeOverlaps` and the Enumeration and DateRange first-filled computations inherit it across a target-kind boundary no row crosses, which refuses rather than admits where no row decides — the same loud direction `EntityListArity` takes. -/
+    The root gate is measured on `Sum`, the extrema, `FirstFilledValue`, `NumberOfDifferentValues`, `FieldValuesNotUnique`, `DateRangesOverlap`, and `NumberOfValueInFields` on the validation arm ([checkpoint](../../docs/sources/inbound-handbacks.md#inbound-2026-09-23-entity-list-root-group-gate)), and on the value-list quantifier and a String-target computation `FirstFilledValue` ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)), all three quantifiers and both value-list spellings ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-dispositions)). `AtLeastOneDateRangeOverlaps` and the Enumeration and DateRange first-filled computations inherit it across a target-kind boundary no row crosses, which refuses rather than admits where no row decides — the same loud direction `EntityListArity` takes. -/
 def elaborateFieldEntityShapeIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceFieldEntitySource)

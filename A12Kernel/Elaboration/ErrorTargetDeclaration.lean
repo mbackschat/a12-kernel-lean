@@ -48,7 +48,7 @@ and the same condition, admitted in one model kind and refused in the other.
 a level is the iteration marker, and the parse sets that marker for an unstarred per-row read just as
 it does for a starred one. Measured: a condition carrying no star anywhere draws the plain-iteration
 class, because the rule's own group binds the level
-([checkpoint](../../docs/SOURCES.md#src-error-target-declaration)). A consumer that looks for the star
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)). A consumer that looks for the star
 finds nothing and admits the rule.
 
 **Evidence.** Four of the eight classes are measured. The two cascade classes are separated against
@@ -61,7 +61,7 @@ any route this project currently has: the unknown-name class needs an error enti
 is absent from the container, the row-iteration class needs a non-A12 model, and the two custom-slot
 classes need a rule property the A12 model format does not carry — a model hand-edited to declare one
 fails DM-JSON deserialization outright, which is the measured denominator rather than a claim that no
-model can express it ([checkpoint](../../docs/SOURCES.md#src-error-target-declaration)).
+model can express it ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)).
 
 The two model-kind guards in the cascade are spelled differently in the Kernel — one tests *not H
 model* and the other tests *is A12 model* — and those are the same predicate, so the cascade below
@@ -78,9 +78,9 @@ namespace A12Kernel
 nothing"**: a declared relative path that resolves to no entity lands here too, so an unresolvable
 path draws the missing-declaration class rather than the unknown-name one. Measured — a rule whose
 path names a nonexistent sibling, and a rule whose path is the empty string, both draw the missing
-class ([checkpoint](../../docs/SOURCES.md#src-error-target-declaration)). Beside it the Kernel reports
+class ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)). Beside it the Kernel reports
 `MVK_ERROR_FIELD_MISSING`, which this module does not model and whose raising check no row isolates
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-error-target-paths)).
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
 
 `declared` therefore means an error entity object exists, and `knownToModel` is the narrower second
 question of whether the model's entity container holds its full name. -/
@@ -105,7 +105,7 @@ independent inputs rather than a classification, because the roles derived from 
 
 The list holds only the references outside every filter body and the `$`-marked ones inside: a
 body's unmarked read reaches none of these gates
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-reference-set)). -/
 structure ConditionReference where
   /-- Names the very entity the error field names. -/
   sameEntity : Bool := false
@@ -172,7 +172,7 @@ The two A12 classes are ordered and **the parallel one wins**: a profile carryin
 level *and* a parallel iteration at a nonzero index-field level answers with
 `MVK_ERROR_FIELDGROUP_ITERATION5_INVALID`. This module read it the other way until the peer measured
 the pair in both authored text orders, one order alone being unable to separate that precedence from
-"the later read decides" ([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). -/
+"the later read decides" ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections)). -/
 def formOnlyIterationRefusal (hModel : Bool) (profile : IterationProfile) :
     Option KernelStaticDiagnostic :=
   if hModel then

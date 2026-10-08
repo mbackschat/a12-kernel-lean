@@ -24,7 +24,7 @@ this one, zone resolution, and DateTime input remain separate.
 format is checked against a kind-independent vocabulary, so a **DATE** field may legally declare
 `HH:mm:ss`; the Kernel then classifies its stored text exactly as it classifies a TIME field's, over
 the complete twelve-format vocabulary on all three date-bearing kinds
-([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). A kind conjunct here left such a cell
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05b)). A kind conjunct here left such a cell
 classified by **no** classifier at all, so its text could not be classified rather than being
 classified wrongly. The format is the whole gate, and it is what keeps the families disjoint: a
 date-bearing spelling fails `TimeTargetFormat.ofSource?` and reaches its own classifier. -/

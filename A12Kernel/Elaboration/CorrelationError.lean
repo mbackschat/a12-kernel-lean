@@ -40,7 +40,7 @@ inductive CorrelationElabError where
       (partner : SurfaceScalarKind)
   /-- A side of an equality or inequality that is not a Number, which this Number fragment refuses
       while the Kernel judges the pair: it draws `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for a
-      String against a Number ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), a
+      String against a Number ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-filter-body)), a
       class the ordering gates never draw. -/
   | equalityFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
   /-- A field compared with a Number literal by `==` or `!=` that is not a Number. The partner is
@@ -100,7 +100,7 @@ namespace CorrelationElabError
 **The class is the filter's, not the wrapping operator's**, and that was the open question this
 projection existed to answer. Measured as a fourteen-filter cross against three carriers — a
 temporal extremum, a distinct count, and a filled-field count — every filter drew the identical
-class on all three ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)).
+class on all three ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-having-filter-comparison-and-scope-classes)).
 One shared projection is therefore right, where a per-carrier table would have been three copies of
 one fact.
 

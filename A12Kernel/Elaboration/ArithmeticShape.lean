@@ -30,7 +30,7 @@ owns scale, and duplicating it here would be a second account of one fact.
 constant among its operands, whatever the list's length.
 
 **Evidence.** All four classes are **measured** against the real Kernel, with admitted controls for each
-([checkpoint](../../docs/SOURCES.md#src-arithmetic-shape-gates)). The division scope is separated at four
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-arithmetic-shape-gates)). The division scope is separated at four
 boundaries, the power gate both ways, the exponent gate across literal, declared-field, unknown-scale and
 compound exponents, and the constant limit at two list lengths.
 

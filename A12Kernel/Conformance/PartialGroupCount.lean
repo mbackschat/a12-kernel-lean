@@ -8,7 +8,7 @@ repeatable terminal, a fixed group below that star, and a fixed-only list; the s
 run as whole rules on their partial routes. A second fixture replays
 `KF209`'s nine selections and three controls, which the walk reproduces because that fixture's group
 holds a second field no selection names
-([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf464-partial-group-count)).
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf464-partial-group-count)).
 -/
 
 namespace A12Kernel.Conformance.PartialGroupCount
@@ -223,7 +223,7 @@ private def pairCounts (fault : Fault) (entities : List RelevantEntityPattern) :
 
 /- A list mixing a starred and a fixed operand is undecided when either operand is, each way round,
    and decided only when both are
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-mixed-group-count)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-mixed-group-count)). -/
 example :
     [pairCounts .grade (everyField.map every),
       pairCounts .none (every lot :: atRows code [2] ++ atRows weight [2] ++ fixedFields.map every),

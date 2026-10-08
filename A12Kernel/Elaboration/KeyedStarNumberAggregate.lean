@@ -7,7 +7,7 @@ import A12Kernel.Elaboration.CheckedIndexColumn
 `Items` rows inside it: **the key selects the row and the star expands within it**, as a rule
 iterating `Packages` would read `Items*` at that row
 ([`spec/08`](../../spec/08-paths-and-references.md),
-[inbound](../../docs/SOURCES.md#inbound-2026-09-27a-keyed-parent-stars)). This module adds no
+[inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-keyed-parent-stars)). This module adds no
 aggregate: it selects the row through the shared index column and hands its environment to the
 ordinary starred Number source as the outer binding.
 

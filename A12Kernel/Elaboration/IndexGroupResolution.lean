@@ -29,7 +29,7 @@ never about absence.
 a field two index-declaring groups deep drew it under a parallel-iterating condition, the same
 condition against a field only one index group deep is admitted, and the same field under a
 non-parallel condition is admitted because the walk never runs
-([checkpoint](../../docs/SOURCES.md#src-index-group-resolution)). The other two have no witness
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-index-group-resolution)). The other two have no witness
 through this project's carrier, for two different **measured** reasons: the A12 model format carries
 a single index-field *name* rather than a list, so a group declaring several fails DM-JSON
 deserialization; and a name that resolves to nothing makes the model fail to build before any

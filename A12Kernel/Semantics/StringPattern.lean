@@ -74,7 +74,7 @@ private def containsForbiddenPatternSequence : List Char → Bool
         containsForbiddenPatternSequence (second :: remaining)
   | _ => false
 
-/-- Reject a second unescaped class opener before the next `]`. Escaping is intentionally source-local: an immediately preceding backslash protects a following opener, but **not** a closer — any `]` ends the scan, so `[a\][b]]` is admitted although Java reads its second `[` as nested ([inbound](../../docs/SOURCES.md#inbound-2026-09-30a-regex-operands)). -/
+/-- Reject a second unescaped class opener before the next `]`. Escaping is intentionally source-local: an immediately preceding backslash protects a following opener, but **not** a closer — any `]` ends the scan, so `[a\][b]]` is admitted although Java reads its second `[` as nested ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-30a-regex-operands)). -/
 private def containsNestedClassOpen (source : List Char) : Bool :=
   let rec scan (insideClass previousWasBackslash : Bool) : List Char → Bool
     | [] => false

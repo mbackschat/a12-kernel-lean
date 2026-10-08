@@ -24,10 +24,10 @@ A group operand is walked like a field, its own repeatable level included: an un
 group read from outside it draws the walk's class on every carrier, ahead of each carrier's own
 gates, while the rule that sits in a repeatable root passes the walk and meets the root classes.
 The first rows are the peer's whole rules, `FieldFilled(<error field>) And <carrier>`, from the
-second `-24c` table's two models ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)).
+second `-24c` table's two models ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-group-operand-walk)).
 The later rows lock carriers at their own entry with the error field's group supplied: its position
 places the class, containment from a rule group it lies outside
-([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment), `kf371`, and the
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment), `kf371`, and the
 [validation checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement)).
 -/
 
@@ -261,7 +261,7 @@ example :
 
 `FieldFilled` and `FieldNotFilled` naming a group meet the walk first, then a root's own class, then
 the kind gate. The starred spellings, the `.*` suffix and the two-operand arity rows have no flat
-surface here ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-field-slot)). -/
+surface here ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-field-slot)). -/
 
 private def fieldSlot (model : FlatModel) (rowGroup : GroupPath) (filled : Bool)
     (path : SurfaceFieldPath) (writtenGroup : GroupPath := rowGroup) : Carrier model :=
@@ -314,7 +314,7 @@ example :
 The walk's class depends on the error field. Outside the rule group the containment class answers
 first, whatever the level's index declaration. Inside it an index-keyed level beside the error
 field's group draws the index class and a level below that group the missing star
-([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)). -/
 
 /-- The policy model with `ClaimRef` declared the index field of `Claims` and nothing else moved. -/
 private def keyedPolicyModel : FlatModel :=
@@ -349,7 +349,7 @@ private def claimsCarriers (model : FlatModel) (writtenGroup : GroupPath) : List
 /- With the error field `Insured/Remark`, `Claims` lies beside its group and the index declaration
    alone moves the class on every carrier; with the root `Holder`, `Claims` lies below its group and
    stays the missing star under the key
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)). -/
 example :
     (claimsCarriers keyedPolicyModel ["Policy", "Insured"]).map
         (atPolicyWith keyedPolicyModel remark 2) = List.replicate 11 noIndex ∧
@@ -451,7 +451,7 @@ private def fulfilmentModel : FlatModel :=
 /- Below the first star the error field places the refusal too. With it in `Summary`, outside the
    rule group, `Parcels` left unstarred under `Shipments*` draws containment from `Ledger` and from
    `Shipments`, on `Sum`'s source and on the group count; with the rule in `Summary` it stays the
-   missing star ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+   missing star ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)). -/
 example :
     let summary := ["Fulfilment", "Summary"]
     let belowStar : List SurfaceStarGroupSegment :=
@@ -532,7 +532,7 @@ example :
 
 /- `AllGroupsFilled`, `NotAllGroupsFilled` and `GroupsNotCollectivelyFilled` forbid a star, yet below
    it they draw the placed class alone, ahead of the bar the fully starred operand meets
-   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement), [inbound](../../docs/SOURCES.md#inbound-2026-09-25-bare-group-placement)). -/
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement), [inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25-bare-group-placement)). -/
 example :
     [GroupFillQuantifier.allGroupsFilled, .notAllGroupsFilled, .groupsNotCollectivelyFilled].flatMap (fun operator =>
       [false, true].map fun starLast =>
@@ -823,7 +823,7 @@ private def recoveriesModel (key : Option (String × FieldPolicy)) : FlatModel :
    name, and the same name under another type draw their three classes. The same name and type is a
    legal parallel iteration, where the field slot meets its kind gate and the other carriers, which
    join no parallel iteration, refuse claiming no class
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25-parallel-index-gates)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25-parallel-index-gates)). -/
 example :
     let entryCarriers (key : Option (String × FieldPolicy)) :=
       let carriers := claimsCarriers (recoveriesModel key) ["Policy", "Recoveries"]
@@ -838,7 +838,7 @@ example :
 /- A bare repeatable group operand places its refusal as a field read does: `Shipments` draws
    containment from `Ledger` and from `Shipments` and the missing star from `Summary`, in the field
    slot, the sole and paired quantifiers and the group count
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25-bare-group-placement)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25-bare-group-placement)). -/
 example :
     let summary := ["Fulfilment", "Summary"]
     let shipments : SurfaceGroupReference := .path { base := .absolute, groups := ["Fulfilment", "Shipments"] }
@@ -854,7 +854,7 @@ example :
 
 /- A list's own gates wait for its operands to be read: the star bar under `AllGroupsFilled` with
    `Shipments` unstarred above the star, the root gate, and the exact and nested duplicate each give
-   way to the read's placed class ([inbound](../../docs/SOURCES.md#inbound-2026-09-25-operator-gates-wait)). -/
+   way to the read's placed class ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25-operator-gates-wait)). -/
 example :
     let summary := ["Fulfilment", "Summary"]
     let sealPath (shipments parcels : Bool) : SurfaceStarGroupPath :=

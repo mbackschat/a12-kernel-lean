@@ -3,8 +3,8 @@ import A12Kernel.Elaboration.CheckedDocument
 
 /-! # Repeatable ordinary Number constant locks
 
-The Kernel rows behind these cases are the [cross-group carrier](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)
-and the [target-check](../../docs/SOURCES.md#src-repeatable-number-constant-target-check) checkpoints.
+The Kernel rows behind these cases are the [cross-group carrier](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)
+and the [target-check](../../docs/sources/computation-placement-and-constant-probes.md#src-repeatable-number-constant-target-check) checkpoints.
 -/
 
 namespace A12Kernel.Conformance.RepeatableNumberConstantComputation
@@ -210,7 +210,7 @@ example : (match checkRepeatableNumberConstantComputation model ["Probe"] note.i
 
 A second fixture, because declaring an index changes which of its fields may be written. `Slot` is
 the index of `Hires` and `Fee` an ordinary sibling, both Number, as on the Kernel's row
-([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). The Kernel's separating control,
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections)). The Kernel's separating control,
 a sort field declared beside the index and computed freely, has no counterpart in this model, so
 the sibling carries the admitted side. -/
 

@@ -7,14 +7,14 @@ the character gates, dollar parity, the repertoire composition and the refusal t
 vocabulary is two fixed tokens naming the owning field, never a rule-relative path, so it performs no
 lookup and needs no model or condition. The tokens are spelled in the model's **condition language**,
 `field` and `field.value` in English and `Feld` and `Feld.Wert` in German, whatever locale the message
-is written for ([inbound](../../docs/SOURCES.md#inbound-2026-09-26n-field-message-gates)).
+is written for ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates)).
 
 **The parameters are the pieces Java's `split` returns**, which drops trailing empty pieces: an empty
 dollar pair inside the text or at its start is an invalid parameter, while one at its very end, or
 alone, names no parameter and is admitted (same inbound). That is not the rule path's literal-dollar
 escape, and an admitted trailing pair renders verbatim: `Cost $$` renders `Cost $$` and `$$` renders `$$`
 on both runtime strategies
-([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-field-message-render)), so this module keeps the
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-field-message-render)), so this module keeps the
 pair's dollars as literal text.
 
 Rendering lowers caller-selected bytes directly as opaque text: this producer applies neither the rule

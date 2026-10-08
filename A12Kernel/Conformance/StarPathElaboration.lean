@@ -141,7 +141,7 @@ private def policyModel : FlatModel :=
 
 /- A starred first segment reaches the short-name fallback as an unstarred one does: an ambiguous
    name is not unique, and a unique one binds its field, so its star is a star on a field ahead of
-   the miss below it ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-path-walk)). The absolute
+   the miss below it ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-path-walk)). The absolute
    control takes no fallback, which is this account's reading and not a measured row. -/
 example :
     let relative (groups : List SurfaceStarGroupSegment) (field : String) : SurfaceStarFieldPath :=

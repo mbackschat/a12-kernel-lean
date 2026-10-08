@@ -438,7 +438,7 @@ example : (match TimeComputationRunView.validateActionTargets
    what keeps it from refusing a model this capsule's own admission certificate admits. A DateTime
    or a Date declared with the complete-clock format is a legal clock target, measured across all
    three temporal families
-   ([checkpoint](../../docs/SOURCES.md#src-computed-temporal-target-reads-the-format-not-the-kind)),
+   ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computed-temporal-target-reads-the-format-not-the-kind)),
    and `elaborateClockFormatTargetIn` admits all three declared kinds — so a kind conjunct here
    refused at apply time what admission had already accepted. The two refusals beside them hold the
    guard load-bearing: a wrong component set and a non-temporal declaration still fail. -/

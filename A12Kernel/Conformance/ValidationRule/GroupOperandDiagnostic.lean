@@ -172,7 +172,7 @@ example :
 /- Outside the repeated group the walk's placement names the class: with `Parcels` index-keyed, an
    error field in `Destination` beside it draws the index class on every measured shape, and the root
    `TrackingCode`, above it, the missing star
-   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+   ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)). -/
 example :
     let shapes (errorField : FieldId) : List RuleGroupOperandStaticAdmission :=
       [projectGroupFilledRuleAdmission semanticIndexModel ["Shipment"] errorField

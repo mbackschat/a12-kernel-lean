@@ -115,7 +115,7 @@ Detailed capability, gap, plan, and provenance records use keyed bullets instead
 - The gap bound was 12,000 until 2026-09-08. It held an open obligation to half the budget of a closed capability with no recorded reason, and inverted, because a gap carries discriminators, prerequisites, and remaining rows that a finished capability does not. Measured when it was raised: the largest gap record was 10,981 prose bytes against 19,428 for the largest capability and 19,726 for the largest checkpoint. The 80-line bound is the one that keeps a record readable in one window and is unchanged.
 - A genuinely hard topic grows by adding a named `gap-` sub-record inside its own block, not by acquiring a new `SG<n>`. The sub-record is separately addressable and separately linkable, so it costs no renumbering, no hub churn, and no cross-file reference. Reach for a new `SG<n>` only when the obligation genuinely has its own prerequisites and route. The three splits this repository has made so far were all triggered by the byte bound rather than by a seam — `SG17` out of `SG13` after it hit the ceiling three times, `SG20` out of `SG17` at its second, `SG24` out of `SG22` — which is the pressure the raised bound is meant to remove.
 - The record measure counts a record's prose and not its link targets, so a bound means the same thing wherever its shard sits. Moving the gap records one directory deeper on 2026-09-07 added three bytes per link and would otherwise have pushed two of them over a bound they had passed unchanged that morning, with five more within a hundred bytes.
-- One operational hub or shard must stay below 200,000 bytes. Create a family shard and retain a stable compatibility entry in the hub before crossing the bound.
+- One operational hub or shard must stay below 200,000 bytes. Create a family shard and retain its navigation entry in the hub before crossing the bound. Source-family links go directly to the detailed owner; capability and gap hubs retain their record-level compatibility entries.
 - Links target the narrowest stable owner or record anchor. Record text states current truth only; Git owns chronology unless an intentional historical owner applies.
 - A link labelled “source checkpoint” targets a specific `src-` anchor. Use “source registry” for an intentional hub-level link when no narrower reusable checkpoint exists.
 
@@ -131,7 +131,7 @@ When handed-off selected work relies on an external source, the selected gap's e
 
 The 500-character threshold is an agent-efficiency guard, not a readability target. Review an over-limit line for multiple claims and choose the representation that makes retrieval and mutation cheapest. Prefer a semantic split; an indivisible claim may stay on one line or use a structured continuation when that is more efficient for agents.
 
-The executable [`documentation-hygiene guard`](../scripts/check-doc-hygiene.sh) applies these limits to the implementation, source, and gap hubs and every one of their shards. It also rejects records above 80 physical lines, semicolon-packed omnibus claims, exact revision/hash identities outside provenance owners, completed or correction chronology introduced as an open-gap bullet, generic hub links labelled as source checkpoints, wide legacy capability tables, duplicate detailed anchors, and a shard anchor missing or unlinked from its hub. There are no path or line exceptions: split or consolidate the record at its semantic boundary.
+The executable [`documentation-hygiene guard`](../scripts/check-doc-hygiene.sh) applies these limits to the implementation, source, and gap hubs and every one of their shards. It also rejects records above 80 physical lines, semicolon-packed omnibus claims, exact revision/hash identities outside provenance owners, completed or correction chronology introduced as an open-gap bullet, generic hub links labelled as source checkpoints, wide legacy capability tables, duplicate detailed anchors, and a capability/gap shard anchor missing or unlinked from its hub. Source records are reached directly through the hub’s family-file links; every source family must be linked, and detailed source anchors remain unique. There are no path or line exceptions: split or consolidate the record at its semantic boundary.
 
 ### `limit` bounds a positive claim; `denominator` names the surface searched for a negative one
 
@@ -172,7 +172,7 @@ Query converted records directly:
 ```sh
 rg -n '^<a id="cap-' docs/IMPLEMENTATION-MAP.md
 rg -n '^<a id="gap-' docs/SEMANTICS-GAPS.md
-rg -n '^<a id="src-' docs/SOURCES.md
+rg -n '^<a id="src-' docs/sources/
 rg -n '^<a id="cap-' docs/implementation
 rg -n '^<a id="src-' docs/sources
 rg -n '^- `state`:|^- `blocked-on`:|^- `reopen-when`:' docs/SEMANTICS-GAPS.md
@@ -180,4 +180,4 @@ rg -n '^- `route-state`:|^- `(red|green|supporting)-locus`:|^- `route-limit`:' d
 rg -n '^- `assurance`:|^- `remains`:' docs/implementation
 ```
 
-The hubs are compatibility and navigation owners, not generated copies of their shards. A new capability or checkpoint adds one stable hub entry and one detailed shard record in the same change. Existing work updates only the detailed record unless its stable identity or summary changes.
+The hubs are compatibility and navigation owners, not generated copies of their shards. A new capability adds one stable hub entry and one detailed shard record in the same change. A source checkpoint adds its detailed record to the existing family owner; the source hub changes only when a family file or drill route changes. Link citations directly to the detailed source record. Existing work updates only its detailed record unless the navigation changes.

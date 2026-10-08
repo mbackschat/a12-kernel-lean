@@ -3,8 +3,8 @@ import A12Kernel.Elaboration.CheckedDocument
 
 /-! # Repeatable Date constant locks
 
-The Kernel rows behind these cases are the [cross-group carrier](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)
-and the [Date-constant target-formatting](../../docs/SOURCES.md#src-date-constant-target-formatting)
+The Kernel rows behind these cases are the [cross-group carrier](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)
+and the [Date-constant target-formatting](../../docs/sources/temporal-constant-and-base-year-probes.md#src-date-constant-target-formatting)
 checkpoints. The second is what this family exists to lock: the target's declared format is a
 **rendering** of one literal date and never an admission gate.
 -/
@@ -143,7 +143,7 @@ example : (outcomes? ["Probe"] iso.id 2, outcomes? ["Probe", "Rows"] iso.id 2,
    the application projection turns into a clear. Measured on kernel 30.8.1 across both codegen
    strategies: unseeded excess rows report no outcome under the changed-subset projection, and a
    **seeded** one reports `cleared` with no value in the same run where its in-capacity siblings
-   compute ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). Dropping the row
+   compute ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)). Dropping the row
    instead would pass every unseeded fixture and leave a stale value the Kernel removes. -/
 example :
     ((outcomes? ["Probe"] iso.id 3).map (·.map (·.outcome)),
@@ -171,7 +171,7 @@ example : (outcome? ["Probe"] year.id, outcome? ["Probe"] yearMonth.id,
    **no year at all** — `03` and `03-05` — although the model declares 2024 and the constant supplies
    it. Measured on kernel 30.8.1 across both codegen strategies, where the same constant into `MM`,
    `MM-dd`, `yyyy-MM`, `yyyy`, and a complete target stored those five different texts in one run
-   ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)). A carrier completing the store
+   ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-base-year-yearless-store)). A carrier completing the store
    from the Base Year would pass every year-leading row above and fail exactly here. -/
 example : (outcome? ["Probe"] monthOnly.id, outcome? ["Probe"] monthDay.id,
     baseYearOutcome? monthOnly.id, baseYearOutcome? monthDay.id) =
@@ -194,7 +194,7 @@ example : ([monthOnly.id, monthDay.id].map fun target =>
    into `MMdd` and `1106` into `ddMM`, with the dashed `MM-dd` control storing `06-11` beside them.
    The two compact texts are exact reverses, so a renderer copying either spelling from the other
    fails here and nowhere else in this family. Measured on kernel 30.8.1 on both codegen strategies
-   in one run ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)). -/
+   in one run ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-base-year-yearless-store)). -/
 example : ([monthDayCompact.id, dayMonthCompact.id, monthDay.id].map fun target =>
       baseYearOutcome? target june11) =
     [some (.accepted (stored "0611")), some (.accepted (stored "1106")),
@@ -230,7 +230,7 @@ example : (match checkRepeatableDateConstantComputation model ["Probe"] note.id 
 /- The declaration's own additional check is **delegated, not restated**: a target opting into the
    pre-1900 check errors on a 1899 constant while retaining the exact attempted text, and the same
    constant is accepted by the unguarded target beside it. Both outcomes are measured on this exact
-   constant carrier ([checkpoint](../../docs/SOURCES.md#src-date-constant-pre-1900-target)); this case
+   constant carrier ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)); this case
    additionally locks that the carrier reaches the shared check rather than carrying a copy of it. -/
 example : (outcome? ["Probe"] guarded.id old, outcome? ["Probe"] iso.id old) =
     (some (.errored (stored "1899-12-31") .before1900),

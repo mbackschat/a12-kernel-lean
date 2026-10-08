@@ -206,7 +206,7 @@ private def nestedFilled (count : Nat) : List ClassifiedCellInput :=
    direct field beside a `max 3` descendant row holding one field admits four cells, so a document at
    two or three filled cells can still grow and fires OMISSION, and only the fourth is fixed. Measured
    on kernel 30.8.1 at the
-   [nested-capacity checkpoint](../../docs/SOURCES.md#src-filled-field-count-nested-capacity); the two
+   [nested-capacity checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity); the two
    numbers coincide exactly when the subtree owns no repeatable descendant, which every other fixture
    here satisfies. -/
 example :
@@ -260,7 +260,7 @@ private def deepInnerCells (outer : Nat) : List ClassifiedCellInput :=
 /- Capacity **compounds** through a second nesting level rather than adding each level once. Two
    `max 2` levels beneath one direct field admit `1 + 2 * (1 + 2 * 1) = 7` cells, so the count is
    still grow-only at five and fixed only at seven. Measured on kernel 30.8.1 at the
-   [deep-capacity checkpoint](../../docs/SOURCES.md#src-filled-field-count-deep-capacity), whose
+   [deep-capacity checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-deep-capacity), whose
    walk separates this reading from three others: summing each level once bounds at five, the
    declaration count at three, and instantiated rather than declared rows would fix every saturated
    document including the three-cell one below. -/
@@ -316,7 +316,7 @@ private def nestedStarCount (outer : Env) : Option FilledFieldCount := do
    first row's cell there too and the two bindings would be indistinguishable. Unbound the
    operand refuses rather than guessing a row, which is what makes this shape a reading question
    rather than a representational one. Measured on kernel 30.8.1 at the
-   [nested-star checkpoint](../../docs/SOURCES.md#src-nested-star-bound-outer-level), where the
+   [nested-star checkpoint](../../docs/sources/group-and-iteration-probes.md#src-nested-star-bound-outer-level), where the
    same condition draws exactly one message, on the first outer row. -/
 example :
     nestedStarCount [(40, 1)] = some (.value 1) ∧
@@ -363,7 +363,7 @@ private def threeLevelRows : List RowAddr :=
 /- The extent reaches a cell **three** repetition levels below the operand, so no axis count bounds
    it. The depth-2 reading this clause once carried would answer zero on the first document, and the
    empty control shows the first is not a group counting unconditionally. Measured on kernel 30.8.1
-   at the [group-operand extent checkpoint](../../docs/SOURCES.md#src-group-operand-over-limit-extent),
+   at the [group-operand extent checkpoint](../../docs/sources/group-and-iteration-probes.md#src-group-operand-over-limit-extent),
    where `AtLeastOneFieldFilled` and `NoFieldFilled` over the same operand agree in the same run. -/
 example :
     threeLevelCount threeLevelRows [cell 62 [1, 1, 1] "x"] = some (.value 1) ∧
@@ -382,7 +382,7 @@ private def threeLevelInnerRows : List RowAddr :=
    count unknown**, at the outer level and the inner one alike. The distinction is what the fixture
    is built for: the in-capacity rows are instantiated and empty, so an account that retained the
    offending cell as formally invalid would answer unknown, and kernel 30.8.1 fires a `< 1` rule on
-   these documents ([checkpoint](../../docs/SOURCES.md#src-group-operand-over-limit-extent)). Each
+   these documents ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-group-operand-over-limit-extent)). Each
    control differs only in the offending index. -/
 example :
     threeLevelCount (threeLevelOuterRows.take 2) [cell 60 [2] "x"] = some (.value 1) ∧
@@ -419,7 +419,7 @@ private def threeLevelFill
    different polarity: `AtLeastOneFieldFilled` fires VALUE, `NoFieldFilled` fires OMISSION. The empty
    control separates a firing from an operator that fires unconditionally, and it is the document on
    which the two exchange places. Measured in the same run as the count
-   ([checkpoint](../../docs/SOURCES.md#src-group-operand-over-limit-extent)). -/
+   ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-group-operand-over-limit-extent)). -/
 example :
     (threeLevelFill .atLeastOneFieldFilled threeLevelRows [cell 62 [1, 1, 1] "x"],
      threeLevelFill .noFieldFilled threeLevelRows [cell 62 [1, 1, 1] "x"],
@@ -503,7 +503,7 @@ private def threeLevelContent (rows : List RowAddr)
    the count has no way to express. Kernel-measured as one pair in one run: `NumberOfFilledGroups`
    drops to one operand on the empty document and stays at two on the over-limit one, while the
    count's `< 1` rule fires on both
-   ([checkpoint](../../docs/SOURCES.md#src-group-operand-over-limit-extent)). A consumer that derived
+   ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-group-operand-over-limit-extent)). A consumer that derived
    either operator from the other would answer these two documents alike. -/
 example :
     (threeLevelContent threeLevelOuterRows [cell 60 [3] "x"],

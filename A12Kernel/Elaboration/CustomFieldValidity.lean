@@ -69,7 +69,7 @@ def elaborateCustomFieldValidityOperand (model : FlatModel) (source : FieldId) :
             pure { source, declaration, admitted := hDecl }
       -- Every kind outside the admitted set draws one class, the temporal families and DATE_RANGE
       -- included, so this gate names the admitted set rather than partitioning the refused ones
-      -- ([checkpoint](../../docs/SOURCES.md#src-custom-validity-operand-refuses-every-kind-with-one-class)).
+      -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-custom-validity-operand-refuses-every-kind-with-one-class)).
       | .number | .boolean | .confirm | .temporal _ | .dateRange =>
           throw (.inadmissibleKind source declaration.policy.kind.surfaceKind)
 

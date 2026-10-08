@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.ComputationNormalForm
 
 The one theorem this module exists for is a semantic-preservation bridge: every normalized condition the joiner emits from a structured computation passes the shape half of the calculation checker. It is what makes the shape classes unreachable from a model that declares its computations structurally, and it is the obligation a reimplementer that emits its own condition inherits.
 
-The rounding-mode results characterize the arm the generator leaves to a member declared beside the structure: this check fires exactly when the declared mode is not exact and some alternative declares no tolerance range. That `RoundDown` counts as not exact is measured ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-rounding-mode)).
+The rounding-mode results characterize the arm the generator leaves to a member declared beside the structure: this check fires exactly when the declared mode is not exact and some alternative declares no tolerance range. That `RoundDown` counts as not exact is measured ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-rounding-mode)).
 -/
 
 namespace A12Kernel

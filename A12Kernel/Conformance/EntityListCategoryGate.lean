@@ -13,7 +13,7 @@ An entity list whose carrier refuses a category draws `MVK_CATEGORY_NOT_ALLOWED`
 Enumeration's declared category, and where the gate stands against the list's repeat depends on the
 carrier: the counts ask it ahead of the repeat and the other carriers behind it, both measured, and
 behind the root gate too by the peer's source reading
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26b-entity-list-category), `kf482`). Of the 22
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26b-entity-list-category), `kf482`). Of the 22
 operators the peer measures, the Lean carriers that ask it are the three routes of
 `FieldValuesNotUnique`, the token `NumberOfDifferentValues`, both `DateRangesOverlap` routes, and
 the shared field-fill list on validation and computation. The
@@ -150,7 +150,7 @@ private def archiveRoot : SurfaceFieldEntityOperand :=
 
 /- Two positions no row measures, taken from the peer's source reading of which carriers ask the
    gate behind the repeat and the root gate
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26b-entity-list-category)): `DateRangesOverlap`
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26b-entity-list-category)): `DateRangesOverlap`
    answers a repeated category with the duplicate class, and beside a second model root the root
    gate answers ahead of the category. These locks hold that reading, not a measurement. -/
 example :
@@ -162,7 +162,7 @@ example :
    `FieldValuesNotUnique` row measures it: a repeated field ahead of a category draws the duplicate
    class. That these routes share the token row's position rests on the peer's source reading that
    the gate belongs to the operator's carrier, whatever its operands' kind
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26b-entity-list-category)); the yearless route
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26b-entity-list-category)); the yearless route
    rests on the same reading for `DateRangesOverlap`. -/
 example :
     [decide (elaborateNumberValuesNotUniqueSource orderModel ["Order"]

@@ -67,10 +67,10 @@ def selectedTokenDomains (checked : CheckedTokenEntitySource model) :
 
 Vacuously true for a String-family list, which exposes none — the measured Kernel rule constrains a
 literal's *value* only where an Enumeration declaration supplies a domain to constrain it against
-([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
 
 The union is measured, over disjoint declared domains on all three quantifiers
-([checkpoint](../../docs/SOURCES.md#src-value-list-literal-domain-is-the-union)). This project
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-literal-domain-is-the-union)). This project
 previously required membership in **every** selected domain, which refuses a literal the Kernel
 admits whenever the operands declare different domains; an equal-domain list cannot tell the two
 apart, which is why the reading survived until a disjoint pair was measured.
@@ -128,7 +128,7 @@ structure CheckedTokenEntityValueListSource (model : FlatModel) where
     one this carrier first shipped: an Enumeration field side is legal against String literals
     provided every literal is a declared token, and one that is not draws
     `MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY`
-    ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
     The literal certificate is stated unconditionally because a String side exposes no domain and
     satisfies it vacuously, so one field serves both families without a per-family branch. -/
 structure CheckedTokenEntityStringLiteralValueListSource (model : FlatModel) where
@@ -182,7 +182,7 @@ inductive TokenEntityStringLiteralValueListElabError where
 /-- The kinds this carrier's field slot admits. The partition is exhaustive over `FieldKind` and
     every refusing constructor is measured: DATE, TIME, DATETIME and DATEFRAGMENT on the temporal
     arm, plus DATERANGE, BOOLEAN and CONFIRM
-    ([checkpoint](../../docs/SOURCES.md#src-value-list-slot-kind-set)).
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-slot-kind-set)).
 
     NUMBER is the separator rather than an eighth refusal. It clears this gate and then draws the
     comparison class against String literals, which is what shows the gate reads the declared kind
@@ -264,7 +264,7 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
       (CheckedTokenEntityStringLiteralValueListSource model) := do
   -- **A sole unstarred field is legal here**, on all three quantifiers, where the entity-list
   -- carriers refuse one with `MVK_PARAMSIZE_INVALIDN`
-  -- ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+  -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
   -- The rule is the carrier's, not the shared checker's: comparing fields against *literals* is a
   -- complete question with one field, where comparing them against each other is not.
   let shape ← elaborateFieldEntityShapeIn model declaringGroup
@@ -317,7 +317,7 @@ def diagnostic? : TokenEntityStringLiteralValueListElabError →
   | .slotKindNotStringEnumNumber _ => some .onlyStringEnumNumberAllowed
   | .slotNumberAgainstStringLiterals _ => some .invalidTypesForComparison
   -- The field list's value validation, measured on this form against a literal
-  -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)).
+  -- ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-value-list-order)).
   | .fields (.rawStringValue _) => some .rawTypeOperandInvalid
   -- Delegated rather than dropped: the field side's own projection now carries the three-way kind
   -- partition this carrier's message vocabulary draws.
@@ -335,16 +335,16 @@ namespace TokenEntityValueListElabError
 /-- Project a side's refusal through that side's own classes. Each side runs the shared shape gates
     before the cross-side scan, so a root on either side draws the root class, beside its own field
     across the `In` too, where a single list would report the nested duplicate
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-dispositions)).
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-dispositions)).
 
     A side's kind refusal is not the String-literal form's. The field list's own gates answer ahead
     of certification on the stored form, so a field-side kind refusal there is a Number list whose
     value side shares its base type, which no literal opposes. On the projected form it is a list
     certified before it could be gated. Either way it claims no class. A value-side one is always the base-type class, since the fields
     certified as String or Enumeration and the value is neither
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)). The stored form
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-value-list-base-type)). The stored form
     refuses either side's raw String by the construct's value validation
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)). The projected form
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-value-list-order)). The projected form
     certifies the value side before the repeat across the lists that the Kernel asks first, so its
     raw refusal claims no class. A cross-list repeat
     takes the shape's duplicate and containment classes, the exact repeat measured drawing
@@ -409,7 +409,7 @@ private def crossListRepeat? (operands : List (ResolvedFieldEntityOperand model)
     family and exact-reference gates. The field list meets the base-type and kind-set gates and its
     value validation, and the value list the first field's base type. A repeat across the lists comes
     next, and the value list's value validation last
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)). Every operand of both
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-value-list-order)). Every operand of both
     lists is read before those gates, so a name resolving to nothing in the value list answers ahead
     of the field list's gates: opposite a raw String it draws the entity class
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).

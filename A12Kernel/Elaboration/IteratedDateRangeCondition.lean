@@ -186,7 +186,7 @@ def filters : IteratedDateRangeCondition model → List CorrelatedHaving
 
 /-- Whether this condition reaches `field` for the rule's error-field gates: an operand read at the
 row, or a filter's `$`-marked read, which the Kernel judges as the rule's own
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). Whether a starred or group
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-reference-set)). Whether a starred or group
 operand reaches the error field is not decided here, since no row reads one alone. -/
 def referencesErrorField (condition : IteratedDateRangeCondition model)
     (field : FieldId) : Bool :=

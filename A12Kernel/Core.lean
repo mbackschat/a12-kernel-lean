@@ -297,7 +297,7 @@ def TemporalComponents.withBaseYear (components : TemporalComponents)
     Measured in both directions and with controls: a DATE-declared field whose format is `HH:mm:ss`
     compares with a TIME field and is refused against a Date one, while a TIME-declared field whose
     format is `yyyy-MM-dd` compares with a Date field and is refused against a clock
-    ([checkpoint](../docs/SOURCES.md#src-temporal-value-family-is-the-formats-not-the-kinds)). So each
+    ([checkpoint](../docs/sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds)). So each
     kind appears on both sides of both outcomes and the declared kind carries no part of the rule. A
     set with neither date nor time components has no family and admits no temporal value. -/
 def TemporalComponents.family? (components : TemporalComponents) :

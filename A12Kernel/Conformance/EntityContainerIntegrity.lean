@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.EntityContainerIntegrity
 
 The max-value rows are measured on a model declaring repeatability zero; the stage ordering and the
 blocking/accumulating split are read from the walk
-([checkpoint](../../docs/SOURCES.md#src-entity-container-integrity)).
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-entity-container-integrity)).
 -/
 
 namespace A12Kernel.Conformance.EntityContainerIntegrity

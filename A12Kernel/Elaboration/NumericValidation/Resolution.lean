@@ -42,7 +42,7 @@ def elaborateRepeatableNumericComparison
 against a literal threshold. This is the shape the Kernel admits and the scalar carrier refuses: a
 bare repeatable member is refused `MVK_NO_WILDCARD` upstream, so the star is mandatory rather than
 optional, and a starred member contributes its in-capacity instantiated row count
-([checkpoint](../../../docs/SOURCES.md#src-group-count-list-extent)).
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-list-extent)).
 
 The fixed-only list keeps the established scalar atom untouched and is refused here, so widening
 this operator costs the already-measured form nothing; a lone star is admitted. The duplicate gate reaches every member: any

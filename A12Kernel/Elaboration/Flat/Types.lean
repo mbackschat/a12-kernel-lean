@@ -141,13 +141,13 @@ def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
     The four temporal kinds share one base type, and every other kind is its own. A custom
     declaration shares String's, because it carries the String kind (`customTypeRequiresString`).
     Measured: a Date beside a date fragment, a Time beside a DateTime and a String beside a custom
-    declaration share one ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)).
+    declaration share one ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-value-list-base-type)).
     Every cross pair measured differs. On the field list, an Enumeration beside a String and a
     Boolean beside a Confirm in both orders, and a Number beside a Date, a Number before a String, a
     date range beside a String and a Boolean beside a Date in the order measured
-    ([checkpoint](../../../docs/SOURCES.md#src-value-list-base-type-cross-pairs)); a String beside a
+    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs)); a String beside a
     Number (the inbound above) and beside a Date
-    ([checkpoint](../../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
     Opposite a field value list, a String and an Enumeration in either direction, an Enumeration
     opposite a Number and a Number opposite a String (the cross-pair checkpoint), and a String
     opposite a Number or a Time (the inbound). The pairs no row reaches follow the Kernel's per-type
@@ -389,7 +389,7 @@ structure RepeatableGroupDecl where
   `none` is a **staging** absence, never an unbounded group: a Kernel-valid model always
   declares a finite maximum strictly greater than zero — `1` included — and a group declaring none
   is nonrepeatable rather than unbounded
-  ([checkpoint](../../../docs/SOURCES.md#src-repeatability-domain-peer-measurement)).
+  ([checkpoint](../../../docs/sources/inbound-group-operand-batches.md#src-repeatability-domain-peer-measurement)).
   Every consumer keeping a `none` branch therefore answers a shape outside that measured domain, and
   the DM reader always retains the maximum; keep those branches total and do not write a clause that depends on their unreachability. -/
   repeatability : Option Nat := none
@@ -401,7 +401,7 @@ structure FlatModel where
   /-- Every field in the model's depth-first declaration order, so a subgroup's fields stand at the
   subgroup's declared position. A group operand's expansion is this list filtered to its subtree, and
   the Kernel reads a group in exactly that order when its first field sets a list's family
-  ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26i-expansion-order)). `validate` does not
+  ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26i-expansion-order)). `validate` does not
   check the order: a list that leaves a group's subtree and re-enters it denotes no Kernel model, and
   its expansions follow the list as given, so a fixture locking an expansion keeps each expanded
   group's own fields in depth-first order. -/
@@ -436,7 +436,7 @@ inductive RequirednessScope where
 /-- Where the written field lies relative to the group declaring its computation or rule. The Kernel
     asks this containment question first of every read that leaves a repeatable level unstarred,
     whatever binds that level
-    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+    ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)). -/
 inductive WrittenFieldPlacement where
   /-- At or below the declaring group. -/
   | contained
@@ -501,7 +501,7 @@ def UnboundOperandLevel.passesWalk (unbound : UnboundOperandLevel) : Bool :=
     it, a level parallel to the written field's group draws the index class when it declares an index
     field and the written field's path declares none, and every other level the missing-star class,
     so an index below the written field's group moves nothing
-    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). With both chains
+    ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)). With both chains
     keyed the level meets its index gates
     ([`kf371`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf371)). A legal parallel iteration,
     a level the written field binds, and a shape no row measures claim no class: the Kernel admits
@@ -526,7 +526,7 @@ def UnboundOperandLevel.diagnostic? (unbound : UnboundOperandLevel) :
 
 /-- Why a presence predicate's field slot naming a group is refused, in the Kernel's gate order: the
     repetition walk, then a root's own class, then the kind gate
-    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24c-field-slot)). -/
+    ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-field-slot)). -/
 inductive GroupFieldSlotRefusal where
   /-- The group crosses a repeatable level the reading rule does not bind. -/
   | unboundLevel (unbound : UnboundOperandLevel)

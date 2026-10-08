@@ -114,7 +114,7 @@ example : classifyResult? (dateField "yyyy-MM-dd") "Europe/Paris" "2024-01-01" =
 /- **The declared kind is not read, and the three kinds classify identically.** A TIME or DATE_TIME
 field may legally declare `yyyy-MM-dd`, and the Kernel then classifies its stored text exactly as it
 classifies a DATE field's, over the complete twelve-format vocabulary on all three date-bearing kinds
-([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). A kind conjunct here refused certification
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05b)). A kind conjunct here refused certification
 outright, so such a cell was classified by **no** classifier at all and its text could not be
 classified rather than being classified wrongly. Admission alone would not settle it: the four values
 are the ones that separate this classifier's causes — an unreal component, the calendar floor, an

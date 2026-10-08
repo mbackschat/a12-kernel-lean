@@ -779,7 +779,7 @@ theorem sameFieldEquality_selfMatches (star : SingleCorrelatedStar)
     candidate-invariant and the whole filter is all-or-nothing within one host row. The Kernel agrees
     on both carriers: an above-level `Gate` gives one host row every candidate and its sibling none,
     and a nonrepeatable leaf does the same across the whole document
-    ([checkpoint](../../docs/SOURCES.md#src-filter-reference-level-runtime)).
+    ([checkpoint](../../docs/sources/having-filter-probes.md#src-filter-reference-level-runtime)).
 
     Stated on the truth function rather than on any reference shape, so it covers every leaf and
     connective at once; the addressing supplies the invariance hypothesis for a non-reopened level. -/

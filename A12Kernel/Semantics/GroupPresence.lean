@@ -168,7 +168,7 @@ def GroupPresenceState.asGroupListPresence
     the relevant set, or the count is undecided. One coverage separates them — a group's
     filled cell relevant and its empty sibling not — where the Kernel fires `GroupFilled`
     and `AtLeastOneGroupFilled` and leaves `NumberOfFilledGroups` silent
-    ([checkpoint](../../docs/SOURCES.md#src-partial-coverage-group-operands)). Do not
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-partial-coverage-group-operands)). Do not
     collapse the two projections; the divergence is measured, not conservatism. -/
 def GroupPresenceState.asFilledGroupCountPresence
     (state : GroupPresenceState) : GroupListPresenceState :=
@@ -279,7 +279,7 @@ end FilledGroupCount
     error blocks only the *negative* answer, so a group whose content is already admitted stays
     filled however its other descendants failed, and only a group with no admitted content is left
     undecided by one. Measured on both codegen strategies at the [unavailability
-    checkpoint](../../docs/SOURCES.md#src-group-count-unavailability). -/
+    checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-count-unavailability). -/
 def numberOfFilledGroups (states : List GroupPresenceState) : FilledGroupCount :=
   if states.any (fun state => state.asFilledGroupCountPresence == .unavailable) then .unknown
   else .value (states.countP fun state => state.asFilledGroupCountPresence == .filled)
@@ -289,7 +289,7 @@ def numberOfFilledGroups (states : List GroupPresenceState) : FilledGroupCount :
     an error block only the negative answer, as `numberOfFilledGroups` does, while under partial
     validation a fixed group carrying a malformed covered cell beside admitted content leaves the
     count undecidable
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf464-partial-group-count)). -/
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf464-partial-group-count)). -/
 def GroupPresenceState.decidesPartialCount (state : GroupPresenceState) : Bool :=
   state.relevance == .fullyRelevant && !state.erroneous
 
@@ -304,7 +304,7 @@ def numberOfFilledGroupsPartial (states : List GroupPresenceState) : FilledGroup
     instantiated **row count**, which is structural and so is always available.
 
     That a starred member contributes rows rather than filled rows is measured at the [list-extent
-    checkpoint](../../docs/SOURCES.md#src-group-count-list-extent): an instantiated but wholly empty
+    checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-count-list-extent): an instantiated but wholly empty
     row still counts, under an operator named `NumberOfFilledGroups`. It is the same quantity the
     sole-star validation carrier already computes, so the two cannot disagree. -/
 inductive ValidationGroupCountOperand where
@@ -421,18 +421,18 @@ def numberOfFilledGroupsForComputation (groups : List (List CellObservation)) : 
 
     A fixed operand's content has **two constituents and either suffices**: an admitted
     descendant cell anywhere in its subtree, or an instantiated row in a repeatable descendant
-    ([checkpoint](../../docs/SOURCES.md#src-repeatable-descendant-group-count)). The second is
+    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count)). The second is
     carried separately because row instantiation is not expressible as a cell read at any width,
     which is exactly why a caller with no row topology must refuse the shape rather than answer
     it as absent. A caller whose operand owns no repeatable descendant passes `false`.
 
     `starredRows` takes the **in-capacity** instantiated row count, and excluding an over-limit row
     is the caller's; this arm's exclusion is measured separately from validation's
-    ([checkpoint](../../docs/SOURCES.md#src-starred-group-count-computation)).
+    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-starred-group-count-computation)).
 
     `instances` is a fixed group below a starred level: one `fixed` reading per in-capacity
     environment of its starred ancestry, so it counts the instances holding content rather than the
-    ancestor rows ([checkpoint](../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)). -/
+    ancestor rows ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation)). -/
 inductive GroupCountOperandReading where
   | fixed (cells : List CellObservation) (rowInstantiated : Bool)
   | starredRows (rows : Nat)
@@ -455,7 +455,7 @@ def GroupCountOperandReading.contribution : GroupCountOperandReading → Nat
     one list without either reinterpreting the other.
 
     Measured at the [starred group-count
-    checkpoint](../../docs/SOURCES.md#src-starred-group-count-computation): three instantiated
+    checkpoint](../../docs/sources/group-and-iteration-probes.md#src-starred-group-count-computation): three instantiated
     empty rows count three, and emptying a fixed operand beside them drops the total by exactly
     one. `numberOfFilledGroupsForComputationOperands_fixed` states that the fixed-only list is
     the established plain multi-group count, so this generalizes that clause rather than

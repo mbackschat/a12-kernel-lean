@@ -17,7 +17,7 @@ structure HavingTemporalSelectionRef extends HavingTemporalRef where
 namespace HavingTemporalSelectionRef
 
 /-- Selection completes a checked partial value to its earliest date and preserves unknown-year
-non-relevance (spec/05; SOURCES.md#inbound-2026-10-02-partial-date-readers). -/
+non-relevance (spec/05; docs/sources/inbound-handbacks.md#inbound-2026-10-02-partial-date-readers). -/
 def project (reference : HavingTemporalSelectionRef) (baseYear : Option Int)
     (profile : ModelZone.ConcreteProfile) (observation : CellObservation) :
     SimpleComparisonOperand ScalarTemporalValue :=

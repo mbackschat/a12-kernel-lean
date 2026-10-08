@@ -5,7 +5,7 @@ namespace A12Kernel
 
 /-- The two reviewed field-fill carriers that accept one index-selected group followed by one direct
 field. Keeping the operator closed here prevents the static admission from transferring to another
-quantifier ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+quantifier ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-semantic-index-carrier-matrix)). -/
 inductive IndexedGroupFieldFillOperator where
   | allFieldsFilled
   | noFieldFilled
@@ -13,7 +13,7 @@ inductive IndexedGroupFieldFillOperator where
 
 /-- The exact reviewed indexed-group/direct-field authoring shape. Stars, filters, selected fields,
 additional operands, and reversed order have no representation in this certificate
-([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-semantic-index-carrier-matrix)). -/
 structure SurfaceIndexedGroupFieldFillPair where
   operator : IndexedGroupFieldFillOperator
   group : SurfaceGroupPath

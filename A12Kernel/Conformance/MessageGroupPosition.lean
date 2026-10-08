@@ -35,7 +35,7 @@ sitting directly in the root group may not write `$#RuleGroup$` at all, while `$
 absolute spelling of that very group are both admitted from the same locus. The rows here are one
 level down, where all four spellings are admitted; the root-locus rows below are where the shorthand
 parts from the other two. Measured on the computation carrier first
-([checkpoint](../../docs/SOURCES.md#src-rulegroup-shorthand-root-gate)) and then on this one
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-rulegroup-shorthand-root-gate)) and then on this one
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-rulegroup-root-gate-on-the-rule-carrier)),
 which is the crossing that closed it. -/
 example :
@@ -220,7 +220,7 @@ placement refusal with a separator or a `-` after it; one level down it resolves
 after it draws the syntax class. `RootGroup` with a `-` after it resolves the same way, but with a
 separator after it the argument is a path whose first segment names no group below the rule's group
 (a12-dmkits `MessageGroupArgumentAgreementTest` at `c785a4b6f`, Kernel 30.8.1,
-[inbound](../../docs/SOURCES.md#inbound-2026-10-01-group-arguments)). -/
+[inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-01-group-arguments)). -/
 example :
     let aside := pathAt .absolute ["Order", "Side"] "Aside"
     let deep := pathAt (.relative 0) ["Head", "Deeper"] "Deep"
@@ -316,7 +316,7 @@ example :
 names after it, and before a turning point's dotted continuation, which only its first word is
 compared by. Two or more up-steps ending on a separator before a token that continues no name count
 one step more, which only a walk reaching the root exactly can show
-([inbound](../../docs/SOURCES.md#inbound-2026-10-01a-parent-walk-and-dotted-names), [checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-01a-parent-walk-and-dotted-names), [checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)). -/
 example :
     let base := pathTemplateError? ["Order", "Head", "Deeper", "Base"] (bare "Bottom")
     let deeper := pathTemplateError? ["Order", "Head", "Deeper"] (bare "Deep")
@@ -392,7 +392,7 @@ example :
   native_decide
 
 /- The peer's turning-point rows on this fixture: the turning point is checked before the child below
-it ([inbound](../../docs/SOURCES.md#inbound-2026-10-01-group-arguments)). -/
+it ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-01-group-arguments)). -/
 example :
     let aside := pathAt .absolute ["Order", "Side"] "Aside"
     pathTemplateError? ["Order", "Head"] aside "In $#..Wrong/Missing$" =

@@ -281,7 +281,7 @@ private def FlatModel.scalarSubjectRead (model : FlatModel) (declaringGroup writ
 /-- A scalar membership's field-valued members are field-value reads, whose gates the Kernel asks as
     each bracket closes, during the parse and so ahead of the subject's kind gate and the member
     list's duplicate and base-type gates
-    ([inbound](../../../../docs/SOURCES.md#inbound-2026-09-25f-field-value-read)). A category member
+    ([inbound](../../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25f-field-value-read)). A category member
     asks the category read's gates.
 
     The subject's gates split around the members. A plain subject naming a fixed group or a root is

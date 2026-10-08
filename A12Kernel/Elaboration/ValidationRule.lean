@@ -31,13 +31,13 @@ namespace FlatRuleAssemblyError
     Inside it the error field's scope must be a strict prefix of the condition's iteration: the
     condition then reads a level past it, and the first such level is the outermost one refused,
     with the index class for a keyed level parallel to the error field's group and the missing star
-    otherwise ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)).
+    otherwise ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)).
 
     The level is not attributed to the operand that derived it. The DateRange and marked-filter
     readers are measured to follow the walk
     ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)),
     and a repetition key's level is walked at the key itself, measured from a host outside it
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates)); an error field with
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-paired-gates)); an error field with
     repeatable levels of its own takes the class unmeasured
     ([SG9](../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)).
     An error field in a sibling repeatable scope inside the rule group is not a prefix and does not
@@ -827,7 +827,7 @@ def assembleResolvedValidationRule (model : FlatModel)
     condition errorField errorCode severity messagePlan
   -- The walk's refusal answers ahead of the per-level negative-condition gate, which is measured only
   -- where the error field binds the level; every other refusal keeps its place behind that gate
-  -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)).
+  -- ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-group-operand-walk)).
   match assembled with
   | .error error =>
       match error.unboundLevel? model condition.declaringGroup with

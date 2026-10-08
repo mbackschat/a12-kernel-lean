@@ -34,8 +34,8 @@ distinction a later message-rendering consumer would have to reintroduce.
 
 **Evidence.** `FIELD_NO_ENUM`, `INVALID_CATEGORY`, the suffix-missing class, and the two value-set and
 category-mapping classes are measured
-([checkpoint](../../docs/SOURCES.md#src-index-terminal-refusal-classes),
-[cross-field pairs](../../docs/SOURCES.md#src-message-parameter-surface-and-iteration-gates)).
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes),
+[cross-field pairs](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)).
 `INVALID_INDEX_FIELD_ENUM_XML_TO_DISPLAY` and `INVALID_INDEX_FIELD_INCONSISTENT_TYPES` are
 **source-derived and unwitnessed**: the first needs two Enumeration index fields differing only in display
 labels, the second one Enumeration against another kind under a shared short name, and the Kernel's own

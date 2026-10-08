@@ -178,7 +178,7 @@ private def root (field : FieldId) : CellAddr := { field, path := [] }
 /- The empty selection clears a seeded false target, while a filled true source preserves true. Kernel-calibrated
    per kind on a seeded target — BOOLEAN, CUSTOM, DATE_FRAGMENT, DATE, STRING, ENUM, TIME, DATE_TIME and DATE_RANGE
    all clear, NUMBER returns the fillable zero
-   ([provenance](../../docs/SOURCES.md#inbound-2026-09-07-dispositions)). The seed is what makes the clear
+   ([provenance](../../docs/sources/inbound-handbacks.md#inbound-2026-09-07-dispositions)). The seed is what makes the clear
    observable at all: an unseeded target reports nothing under either account, which is how a published clause of
    this project once came to call the same run "no outcome". -/
 example :

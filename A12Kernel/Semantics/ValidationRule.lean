@@ -64,7 +64,7 @@ structure MessageCategoryInput where
 
 /-- One admitted group-position parameter, already resolved to the group it names, carrying what the
 Kernel renders for it: the **1-based repetition index** of that group in the firing row, and `1` for a
-nonrepeatable group ([checkpoint](../../docs/SOURCES.md#src-message-group-parameter-rendered-index)).
+nonrepeatable group ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-parameter-rendered-index)).
 The index is the row's own, not a firing ordinal — a rule firing on rows 2 and 3 renders `2` and `3`.
 
 Every group admissible in this fragment is nonrepeatable, so the value it carries is always `1`: the

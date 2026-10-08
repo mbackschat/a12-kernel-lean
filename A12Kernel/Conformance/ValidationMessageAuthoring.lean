@@ -548,7 +548,7 @@ example :
    carrier** — not the printable-ASCII bound this gate used to apply, which refused message text the Kernel
    admits. Measured over fourteen admitted BMP code points spanning Latin-1, Latin Extended-A, currency,
    Greek, Cyrillic, CJK, punctuation and `U+FFFD`, and two refused supplementary-plane ones
-   ([checkpoint](../../docs/SOURCES.md#src-message-template-character-repertoire)). The refusal is the same
+   ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-template-character-repertoire)). The refusal is the same
    BMP predicate `LegalCharset` already carries for a stored value. -/
 example :
     templateError? "Prüfe $Amount$" = none ∧
@@ -570,7 +570,7 @@ example :
   native_decide
 
 /- **Both Unicode separators are the line class, and the line gate is asked first over the whole text**
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)). `U+2029` is not a control
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). `U+2029` is not a control
    character, so a reading keyed on control characters misses it; beside a tab written earlier the
    separator still answers. Either character gate withholds the parameter classes: the unknown name draws
    its entity class only in the control row, and the unclosed parameter its dollar class not at all. A
@@ -590,7 +590,7 @@ example :
   native_decide
 
 /- **The control class is Java's `\p{C}` asked per code point**
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)), so the format, private-use
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)), so the format, private-use
    and unassigned characters draw it too, and a supplementary character inside the set draws it beside
    the repertoire refusal where one outside it draws the refusal alone. -/
 example :
@@ -676,7 +676,7 @@ and meets the index gate instead, whose admitted set is the condition's own keye
 the group's declared index field and nothing further. So membership is a property of the unkeyed form
 while the keyed form answers to a different, and also finite, set — an earlier reading of this
 paragraph said keying admits any field, which a group declaring only those two fields cannot refute
-([checkpoint](../../docs/SOURCES.md#src-keyed-parameter-admits-the-index-field-only)). The pair below
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-keyed-parameter-admits-the-index-field-only)). The pair below
 holds regardless: the same field reaches two different refusals depending only on whether it carries
 a key, which is the distinction a fragment without repeatable groups can still hold. -/
 example :
@@ -722,7 +722,7 @@ example :
 already supplied by the caller and this one was matched as `.value`, so a German-language profile
 would have been read with the English word — the Kernel's own terminal tables give `value` under an
 English condition language and `Wert` under German, and each is a lexer refusal in the other's model
-([checkpoint](../../docs/SOURCES.md#src-index-terminal-admitting-spelling)).
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-index-terminal-admitting-spelling)).
 
 Each language sits on **both** sides here, which is what distinguishes a parametric parser from one
 that happens to accept both words: under the English profile `.value` selects the value part while

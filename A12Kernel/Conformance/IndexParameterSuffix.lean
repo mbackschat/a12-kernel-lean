@@ -3,8 +3,8 @@ import A12Kernel.Elaboration.IndexParameterSuffix
 /-! # Locks on the `index(...)` parameter's two suffix readings
 
 `FIELD_NO_ENUM`, `INVALID_CATEGORY`, the suffix-missing class, and the value-set and category-mapping
-classes are measured ([checkpoint](../../docs/SOURCES.md#src-index-terminal-refusal-classes),
-[cross-field pairs](../../docs/SOURCES.md#src-message-parameter-surface-and-iteration-gates)); the
+classes are measured ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes),
+[cross-field pairs](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)); the
 display-mapping and inconsistent-types classes are source-derived and honestly unwitnessed.
 
 The matrix separates the suffix-missing refusal from both readings, the two suffixes' opposite verdicts

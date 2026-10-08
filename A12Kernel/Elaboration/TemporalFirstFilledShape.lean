@@ -15,7 +15,7 @@ One of those exclusions is now known legal rather than undecided, and is named s
 read as a gate. A **partially known** Date — a full-format DATE declaration carrying `DAY_OPTIONAL`,
 `MONTH_OPTIONAL` or `YEAR_OPTIONAL` — is admitted as a `FirstFilledValue` operand on every precision,
 measured against a full-precision control across the family's five field-list operators
-([inbound](../../docs/SOURCES.md#inbound-2026-09-07-dispositions)). The split runs three against two:
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-07-dispositions)). The split runs three against two:
 the extrema and the distinct count refuse `MVK_PARTIAL_DATE_NOT_ALLOWED` and own that gate, while
 uniqueness and this operator accept them. The two `fullDate…` carriers below are full-precision profiles,
 so this certificate does not reach a partial one at all — it neither admits nor refuses it, and the
@@ -53,7 +53,7 @@ def TemporalFirstFilledStarCarrier.isDateFragment :
     That is the measured Kernel rule at this position: a DATE-declared field whose components and
     format are the clock's takes a clock value exactly as a TIME-declared one does, and a
     TIME-declared field spelled `yyyy-MM-dd` takes a Date
-    ([checkpoint](../../docs/SOURCES.md#src-temporal-computed-target-gate-reads-format-not-kind)).
+    ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)).
     Keying on the kind here was one mechanism producing the same over-refusal at every scalar
     temporal first-filled carrier, so it is corrected once rather than per carrier.
 
@@ -155,7 +155,7 @@ inductive TemporalFirstFilledFamily where
 
 /-- The carrier family a target selects, read off its profile as every carrier reads it: by format
 and never by declared kind, so a DATE declared `HH:mm:ss` is a Time target as the Kernel measures it
-([checkpoint](../../docs/SOURCES.md#src-temporal-computed-target-gate-reads-format-not-kind)). The
+([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)). The
 pre-1900 check is set aside for the choice alone, since a fragment carrying it is still the fragment
 carrier's to refuse. A declaration with no profile falls back on its declared kind, so the carrier
 that kind names states the refusal. -/

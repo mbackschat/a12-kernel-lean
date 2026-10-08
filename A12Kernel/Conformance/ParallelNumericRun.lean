@@ -149,7 +149,7 @@ private def overLimitPreliminary : Option (CheckedIndexPreliminary model) := do
    a structural `missingTargetIndex` fault on a document the checker had accepted. That was this
    family's only witnessed structural failure, and it was a defect rather than a reachable Kernel
    behaviour — the Kernel writes into in-capacity rows only
-   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). The in-capacity control
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)). The in-capacity control
    beside it is the same document without the excess row, and each list repeats because the plan
    holds two tables that each cover both rows. -/
 private def executedPaths? (preliminary : Option (CheckedIndexPreliminary model)) :

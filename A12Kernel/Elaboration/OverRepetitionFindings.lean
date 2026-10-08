@@ -32,7 +32,7 @@ from — **except at container depth one, where that same position is also posit
 class wins throughout.** So an over-instantiated repeatable **root group** draws `zuGrosseLfdNummer` on
 the row *and* on every node beneath it, and no row or context code anywhere; the familiar pair is the
 deeper-than-root case rather than the whole rule
-([checkpoint](../../docs/SOURCES.md#src-address-index-position-classes)).
+([checkpoint](../../docs/sources/over-repetition-probes.md#src-address-index-position-classes)).
 
 **The outermost violation absorbs every nested one, not only its immediate child**
 ([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-absorption-depth)), and that
@@ -61,7 +61,7 @@ inductive OverRepetitionCode where
   /-- `zuGrosseKontextnummer` — a node written beneath a violated row whose group is deeper than the
   root. Its rendered text names the violated *group*, with the offending index and the cap as separate
   numbers, and carries no coordinate
-  ([checkpoint](../../docs/SOURCES.md#src-message-address-dialects)). -/
+  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-address-dialects)). -/
   | contextNumberTooLarge
   deriving Repr, DecidableEq
 
@@ -106,7 +106,7 @@ declaring group's repeatable scope, so a cell of the violated row *itself* has a
 row's length — and the Kernel names it like any other node beneath the row. Requiring strict extension
 drops precisely the cells a field declared directly in the violated group contributes, measured on a
 repeatable root group whose direct field is reported alongside its nested one
-([checkpoint](../../docs/SOURCES.md#src-address-index-position-classes)). -/
+([checkpoint](../../docs/sources/over-repetition-probes.md#src-address-index-position-classes)). -/
 def cellWithinRow (outer : RowAddr) (cellPath : List Nat) : Bool :=
   cellPath.length ≥ outer.path.length && cellPath.take outer.path.length == outer.path
 

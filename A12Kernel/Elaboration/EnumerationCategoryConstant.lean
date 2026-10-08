@@ -12,7 +12,7 @@ with three different classes.
 and comparing it to one of the field's own values is refused, even though the literal is perfectly
 legal against the same field read directly. Measured on one model with three enumeration values and
 one two-valued category: the enumeration value is admitted against the plain reading and refused
-against the category reading ([checkpoint](../../docs/SOURCES.md#src-enumeration-category-constant)).
+against the category reading ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-enumeration-category-constant)).
 
 **The class depends on the carrier as much as on the rule.** The **value-list** carrier keeps the two
 arms apart: a literal outside the category draws the category class and a literal outside the
@@ -31,7 +31,7 @@ offender agrees on the class and may disagree on the message's named value.
 
 **Evidence.** Twelve rows on one model measure every cell: both carriers, category written and not,
 a literal valid for the enumeration but not the category, a literal valid for neither, an unknown
-category, an all-valid list, and a mixed list ([checkpoint](../../docs/SOURCES.md#src-enumeration-category-constant)).
+category, an all-valid list, and a mixed list ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-enumeration-category-constant)).
 
 This module carries no rendered message text, by the licensing boundary in [`CLAUDE.md`](../../CLAUDE.md).
 -/

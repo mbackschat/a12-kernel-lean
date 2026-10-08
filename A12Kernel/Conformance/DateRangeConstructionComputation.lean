@@ -50,7 +50,7 @@ private def dayMonthDashTarget :=
 declaring group instead, which keeps the fixture to one model root as an authored A12 model is:
 declaring at `["Order", "Rows"]` puts the fixed target above the declaring group, and the
 construction is still admitted because nonrepeatable endpoints derive no iteration. Measured at the
-[fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). -/
+[fixed-target star placement checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement). -/
 private def wrongGroupTarget := rangeField 5 ["Elsewhere"] "OtherWindow"
 private def repeatedTarget :=
   rangeField 6 ["Order", "Rows"] "RepeatedWindow" "dd.MM.yyyy" "-" [10]

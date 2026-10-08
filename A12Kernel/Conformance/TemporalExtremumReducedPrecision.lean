@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.TemporalExtremumStream
 
 The Kernel admits and **orders** a component-omitting temporal list at the shared set's own
 precision, the yearless case even with no Base Year declared, and the reversed document fires
-nothing ([checkpoint](../../docs/SOURCES.md#src-extrema-component-omitting-fold)). These rows lock
+nothing ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold)). These rows lock
 both arms, which arm a given list takes, and — the part a happy-path row would leave standing — that
 the components the declaration does not name are **discarded** rather than ordered on.
 
@@ -127,7 +127,7 @@ example :
    locks the fold's answer as independent of a component the declaration does not name; ordering on
    the cell's day would make `maximum` answer the 17th. Whether a Kernel document can carry that day
    under such a declaration is a reachability question, not measured — the ordering rows above are
-   measured on distinct months ([checkpoint](../../docs/SOURCES.md#src-extrema-component-omitting-fold)). -/
+   measured on distinct months ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold)). -/
 example :
     (maskedFoldIn? probeModel ["Month", "Month2"] .maximum none
         [(4, dateCell 2024 3 1), (5, dateCell 2024 3 17)],
@@ -160,7 +160,7 @@ private def armOf (model : FlatModel) (names : List String) :
   (admittedIn? model names).map TemporalExtremumStream.omittingDateExtremumArm
 
 /- A year-bearing set orders as a date and a yearless one as a calendar position, both measured
-   ([checkpoint](../../docs/SOURCES.md#src-extrema-component-omitting-fold)). -/
+   ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold)). -/
 example :
     (armOf probeModel ["Month", "Month2"], armOf probeModel ["MOnly", "MOnly2"]) =
       (some .dated, some .yearless) := by
@@ -173,7 +173,7 @@ example :
 
    The extrema's *ordering* under a declared Base Year is measured and it works, on both codegen
    strategies with the reversed document firing nothing
-   ([checkpoint](../../docs/SOURCES.md#src-yearless-extrema-base-year-ordering)). That row alone
+   ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-yearless-extrema-base-year-ordering)). That row alone
    cannot settle which value the fold compares, because one Base Year shifts a uniformly yearless
    list together. **A mixed-precision list can, and does — see the next section.** An earlier
    reading called `.dated` an unforced choice and argued no document could force it; that argument

@@ -21,7 +21,7 @@ inductive RuleGroupOperandStaticAdmission where
 
 /-- The only two error-field loci measured for this one-level profile. Outside the repeated group
 the walk refuses the level with the class its placement selects
-([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)). -/
 inductive OneLevelGroupErrorLocus where
   | outside (unbound : UnboundOperandLevel)
   | inside

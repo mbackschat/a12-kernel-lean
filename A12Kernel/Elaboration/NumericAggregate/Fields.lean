@@ -142,7 +142,7 @@ private def NumericProductOperandRead.declaration :
 /-- Refuse a per-row read by containment when the rule's error field lies outside the declaring
 group: the walk then binds none of the declaring group's levels
 ([`unboundReadLevel?`](../Flat/Model.lean)), measured on this operator's pairs
-([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-sum-of-products-reach)). Inside it the
+([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-sum-of-products-reach)). Inside it the
 declaring group's binding is asked as before. -/
 private def requireReadInsideRuleGroup (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) (path : List String) (scope : List RepeatableLevel) :
@@ -211,9 +211,9 @@ private def NumericProductOperandRead.toShape :
 filter, the stars, the Number question, and last whether any repeatable level is crossed. Owning
 groups before the stars, the filter before the stars and the stars before the Number question are
 measured on a pair read from outside its fields' groups
-([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-sum-of-products-reach)); owning groups before
+([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-sum-of-products-reach)); owning groups before
 the filter and before the repeatable level are measured separately
-([inbound](../../../docs/SOURCES.md#inbound-2026-09-21-corrections)). Where the filter stands against
+([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections)). Where the filter stands against
 the repeatable-level gate is not measured, since only a filtered operand on no repeatable level would
 separate them. -/
 def elaborateRowNumericProductAggregate (model : FlatModel)

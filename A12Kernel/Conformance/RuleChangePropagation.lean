@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.RuleChangePropagation
 
 Source-derived; neither class has a witness, because the one tool that performs this propagation
 reaches the model through its own editor rather than through this service
-([checkpoint](../../docs/SOURCES.md#src-rule-change-propagation)). The matrix separates the two
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-rule-change-propagation)). The matrix separates the two
 surfaces against each other, the four name-change combinations, each surface's own staging, and the
 three outcomes.
 -/

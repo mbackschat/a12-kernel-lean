@@ -54,7 +54,7 @@ def diagnostic? : AtLeastOneDateRangeOverlapsElabError →
   -- The scalar slot rejects **every** non-scalar form with this one class: plain star, filtered
   -- star, fixed group, starred group and the presence terminal, each measured against the same form
   -- admitted in the `In` slot
-  -- ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
+  -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
   -- The paired slots are what make it a property of the slot rather than of the form.
   | .scalarStarred _ | .scalarFilteredStarred _ | .scalarGroup _ =>
       some .invalidParameterForDateRangeComparison
@@ -268,7 +268,7 @@ match against the scalar that follows. Duplicates across the two sides wait for 
 both, so a root-only list holding the scalar draws the root class, a list whose own members overlap
 draws that overlap ahead of the scalar's duplicate, and a list member of another base type draws the
 base-type class ahead of the scalar's duplicate. That is the order the value-list quantifiers ask
-([§6](../../spec/06-strings-and-enumerations.md), [inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)),
+([§6](../../spec/06-strings-and-enumerations.md), [inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-value-list-order)),
 measured on this operator
 ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)). -/
 private def checkAtLeastOneDateRangeOverlapValueList (model : FlatModel)
@@ -292,7 +292,7 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
   | .ok () => do
       -- Every operand is read before the scalar slot's gate: the Kernel's read of a later
       -- operand, in either slot, answers ahead of it
-      -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)).
+      -- ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-list-reads)).
       let scalarOperand ←
         resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
             (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup)
@@ -302,7 +302,7 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
         |>.mapError .shape
       -- The Kernel's checker asks its root and base-type gates over the scalar before the slot
       -- gate; the base-type order is measured
-      -- ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)),
+      -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)),
       -- the root gate's is read, so it claims no class, for a starred root as for a fixed one.
       if let some root := scalarOperand.rootGroupPath? <|> starredRootPath? scalarOperand then
         throw (.scalarRootGroup root)

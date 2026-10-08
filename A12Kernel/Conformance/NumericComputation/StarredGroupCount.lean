@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.NumericComputation
 arity gate is conditional on the star: one operand is legal exactly when it is starred, while the
 two-operand minimum governs the unstarred form. All four rows are measured on both Kernel codegen
 strategies at the [starred group-count
-checkpoint](../../../docs/SOURCES.md#src-starred-group-count-computation) through
+checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-starred-group-count-computation) through
 `computation add --dry-run`, each `verification: KERNEL_CONFIRMED`.
 
 The runtime half is locked here too, against the same checkpoint's counted rows. The starred operand's contribution is a row count, whose
@@ -104,7 +104,7 @@ example : admitted [fixedOperand ["Probe", "Flat"], fixedOperand ["Probe", "Othe
 The whole static gate table is **arm-independent**: every class the validation arm draws over a
 mixed operand list, the computation arm draws identically, in both authored orders, measured through
 `computation add --dry-run` on a two-root model
-([checkpoint](../../../docs/SOURCES.md#src-group-count-static-gates-both-arms)). The arm boundary is
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-static-gates-both-arms)). The arm boundary is
 real for polarity — a computation's count carries none — so reusing the validation arm's gates here
 is a claim, and this is the measurement that discharges it.
 -/
@@ -344,7 +344,7 @@ example : scalarCountOf mixedList = some .repeatableContextRequired := by
 /-! ## Two starred operands
 
 The **runtime** numbers below are measured — on a12-dmkits' kernel oracle, at the [two-star
-rows](../../../docs/SOURCES.md#src-starred-group-count-computation) — and the fold that produces
+rows](../../../docs/sources/group-and-iteration-probes.md#src-starred-group-count-computation) — and the fold that produces
 them is replayed against those rows at its owning clause in
 `Conformance/StarredGroupCountComputation.lean`. What these cases add is that an elaborated
 operand list reaches that fold.
@@ -384,14 +384,14 @@ could interfere, because the ancestor's only content is the very rows the star c
 answered it — the pair counts twice, with no overlap gate and no deduplication — and that answer is
 **falsified**: the Kernel never reaches the runtime, refusing the pair `MVK_DUPLICATE_PARAM2` at
 authoring time, in either order, on a pure shell exactly as on a group with a field of its own
-([checkpoint](../../../docs/SOURCES.md#src-group-count-static-gates-both-arms)). The counting cases
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-static-gates-both-arms)). The counting cases
 that stood here locked an unauthorable shape; the gate table above replaces them.
 -/
 
 /-! ## A starred group that owns its own repeatable descendant
 
 The starred operand's own extent, on a group whose rows each contain a second repetition level.
-Measured at the [row-domain checkpoint](../../../docs/SOURCES.md#src-group-count-row-domains) on
+Measured at the [row-domain checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-group-count-row-domains) on
 both codegen strategies.
 -/
 
@@ -450,7 +450,7 @@ example : twoLevelCount [midRow 1, midRow 2, midRow 3, midRow 4] = some (.value 
 
 The same checked operand list read for the *other* question the Kernel asks of it. These close the
 route from an authored computation to its implicit self-validation message type, which the
-[message-polarity checkpoint](../../../docs/SOURCES.md#src-starred-operand-message-polarity)
+[message-polarity checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-starred-operand-message-polarity)
 measures over a model of this shape with `Rows` declared `max 5`.
 -/
 
@@ -545,7 +545,7 @@ example :
 /- **An over-limit row adds no headroom, and the producer is where that is decided.** Six and seven
    instantiated rows in a `max 5` group yield the same channel as five, because the producer counts
    in-capacity rows before building it. The measured documents type VALUE on all four targets at
-   five, six and seven rows alike ([checkpoint](../../../docs/SOURCES.md#src-starred-group-count-computation)),
+   five, six and seven rows alike ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-starred-group-count-computation)),
    which this reproduces — but they do not separate a physical-row reading from an in-capacity one
    at the *type*, since both are closed once the count reaches capacity. What separates them is the
    channel itself, so that is what this asserts. -/

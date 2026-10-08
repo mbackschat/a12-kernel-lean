@@ -7,7 +7,7 @@ reports is decided by an **ordered ladder over the pair** rather than by either 
 rows measure it at the constant-assignment carrier; the [filter cases](HavingFilterDiagnostic.lean)
 measure the same table where nothing is a target, which is why the ladder is named for neither. The
 complete eight-constant by ten-target grid behind these rows was measured in one batch
-([checkpoint](../../docs/SOURCES.md#src-constant-assignment-diagnostic-ladder)); every cell asserted
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-constant-assignment-diagnostic-ladder)); every cell asserted
 here has an observed row, and the grid is what makes the ladder legible at all.
 
 Two readings are natural and both are wrong. "The code names the target" fails on a temporal

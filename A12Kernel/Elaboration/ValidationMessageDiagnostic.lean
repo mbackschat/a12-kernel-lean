@@ -5,8 +5,8 @@ namespace A12Kernel
 
 /-- The established named class of a bounded rule-message refusal.
 
-The [retained rule-message checks](../../docs/SOURCES.md#src-message-template-character-repertoire)
-and [group lexical checks](../../docs/SOURCES.md#src-message-group-parameter-resolution) fix these
+The [retained rule-message checks](../../docs/sources/message-and-pointer-probes.md#src-message-template-character-repertoire)
+and [group lexical checks](../../docs/sources/message-and-pointer-probes.md#src-message-group-parameter-resolution) fix these
 classes, and the group position's model classes and the name position's path classes are measured at
 the [group-argument checkpoints](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)
 and the [name-position](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals) and [carrier](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers) checkpoints. This projection is for the rule producer; the shared error type alone supplies no evidence
@@ -51,10 +51,10 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
 /-- The established named class of a String-pattern field-message refusal.
 
 A line separator draws `INVALID_LINEBREAK` and a control character `INVALID_CHARACTERS`, as on a
-rule's message ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-message-characters)); an odd dollar
+rule's message ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)); an odd dollar
 count `WRONG_NUMBER_OF_DOLLARS`, a parameter other than the two tokens, the empty one included,
 `INVALID_PARAMETER`, and an empty text the pairing class `MVK_ERROR_MESSAGE_AND_PATTERN_INVALID`
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26n-field-message-gates)). The parameter-body
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates)). The parameter-body
 character refusal has no field-carrier row and stays `none`, which never means acceptance. -/
 def ValidationMessageTemplateError.namedStringPatternDiagnostic? :
     ValidationMessageTemplateError → Option KernelStaticDiagnostic

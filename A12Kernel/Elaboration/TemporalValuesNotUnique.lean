@@ -26,7 +26,7 @@ inductive TemporalValuesNotUniqueElabError where
   | mixedCategories (path : List String) (actual : SurfaceScalarKind)
   /-- A temporal operand whose declaration carries no coherent declared format. The operator's gate and its compared identity both need the exact format, so an incomplete declaration fails closed rather than defaulting here.
 
-      This is a **flat-model** state, not a Kernel one, and the difference is now measured: a temporal field may declare no format and the Kernel resolves its kind's default, producing a format string that compares equal to the default spelling at this very gate ([checkpoint](../../docs/SOURCES.md#src-temporal-declaration-without-a-format)). A flat model built by a loader that performs that resolution never reaches this arm; one built without it does, and fails closed. Claims no Kernel class because the Kernel draws none — it admits the declaration. -/
+      This is a **flat-model** state, not a Kernel one, and the difference is now measured: a temporal field may declare no format and the Kernel resolves its kind's default, producing a format string that compares equal to the default spelling at this very gate ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-declaration-without-a-format)). A flat model built by a loader that performs that resolution never reaches this arm; one built without it does, and fails closed. Claims no Kernel class because the Kernel draws none — it admits the declaration. -/
   | missingDeclaredFormat (path : List String)
   | mixedDeclaredFormats (path : List String) (found expected : String)
   | having (error : CorrelationElabError)
@@ -53,7 +53,7 @@ def path (checked : CheckedTemporalUniquenessField) : List String :=
 
 /-- The declared **precision** this operand carries. Exposed here rather than gated here: this
     operator admits every precision, and its neighbour the distinct count refuses all three
-    ([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)), so the accessor
+    ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-partial-date-precision-operand-gate)), so the accessor
     belongs to the shared certificate and the gate to the carrier that has one. -/
 def partialMode (checked : CheckedTemporalUniquenessField) : TemporalPartialMode :=
   checked.policy.partialMode

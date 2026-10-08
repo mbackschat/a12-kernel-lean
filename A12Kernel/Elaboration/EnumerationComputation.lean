@@ -88,7 +88,7 @@ inductive EnumerationComputationElabError where
 namespace EnumerationComputationElabError
 
 /-- The comparison refusals carry a measured Kernel identity: the literal-domain refusal
-([checkpoint](../../docs/SOURCES.md#src-constant-literal-family-gate)) and a copied field's
+([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-constant-literal-family-gate)) and a copied field's
 ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
 The calculation's own refusals are `calculationRefusal?`'s. The others are this project's own
 routing, or gates whose Kernel class was never observed, so they claim none. -/
@@ -106,7 +106,7 @@ def diagnostic? : EnumerationComputationElabError → Option KernelStaticDiagnos
 unlabelled target and for a wider Enumeration
 ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)),
 and for a category whose tokens leave the target's domain
-([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-enum-source)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25i-enum-source)). -/
 def calculationRefusal? : EnumerationComputationElabError → Option CalculationRefusal
   | .stringSource _ _ | .sourceOutsideTargetDomain _ _ => some .invalidEnumCalculation
   | _ => none

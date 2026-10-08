@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.ComparisonEntry
 
 /-! # Comparison-entry separators
 
-The [retained matrix](../../docs/SOURCES.md#src-comparison-entry-gates) checks complete rules.
+The [retained matrix](../../docs/sources/static-admission-and-class-probes.md#src-comparison-entry-gates) checks complete rules.
 These cases stop at the entry boundary: `ordinary` and `pattern` require their existing next checker.
 In particular the observed scale mismatch and malformed regex are not entry refusals.
 -/
@@ -71,7 +71,7 @@ example :
      "complete", "MVK_INVALID_TYPE_FOR_COMPARISON", "ordinary", "ordinary"] := by native_decide
 
 /- **Every temporal kind is orderable, and nothing a String field carries is**, each kind measured on
-itself ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)). Two date
+itself ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-value-list-base-type)). Two date
 fragments, two Times and two DateTimes reach their next checker, while a fragment or a Time against a
 String field, a CUSTOM field against a Number, and a Date, Time or fragment against a String literal
 are refused at entry. A DateTime against a Number field, and a CUSTOM field against a Number literal,

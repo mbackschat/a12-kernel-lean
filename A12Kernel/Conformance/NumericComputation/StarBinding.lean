@@ -11,7 +11,7 @@ keyed level beside the target's group and the missing star otherwise, a level be
 included. The String arm answers from the same table. Every expected value is a
 `computation add --dry-run` verdict
 ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)),
-the `Ledger` rows the peer's ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)).
+the `Ledger` rows the peer's ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)).
 -/
 
 namespace A12Kernel.Conformance.NumericComputation.StarBinding
@@ -295,7 +295,7 @@ private def ledger : GroupPath := ["Probe", "Ledger"]
    so every read that leaves a repeatable level unstarred draws containment there, on either side of
    the first star and over an index-keyed level, as the below-star read from `Batches` does; the
    fully starred control stays admitted
-   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). No row measures the
+   ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)). No row measures the
    keyed plain read or the fully starred group count from `Ledger`; they take the table's class and
    the `Sum` control's admission. -/
 example :
@@ -330,7 +330,7 @@ example :
 /- A star on a fixed group answers alone. From `Ledger` the misplaced star on `BSeal` draws the
    wildcard class, where its twin with the star moved onto `Boxes` leaves `Batches` unstarred and
    draws containment
-   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24e-misplaced-star)). -/
+   ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24e-misplaced-star)). -/
 example :
     let misplaced : AuthoredNumericExpr SurfaceNumericComputationAtom :=
       .atom (.numeric (.filledGroupCount [.starred { base := .absolute, groups := [
@@ -343,7 +343,7 @@ example :
 /- A `Having` filter's own leaf reads no row of the level it names: the starred control filtered on
    `../Batches/Key`, which spells `Batches` unstarred, stays admitted from `Ledger`, which the target
    lies outside, and from the target's own group
-   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24e-filter-leaf)). -/
+   ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24e-filter-leaf)). -/
 example :
     let star : SurfaceStarFieldPath :=
       { base := .relative 1, groups := [{ name := "Batches", starred := true }], field := "BW" }

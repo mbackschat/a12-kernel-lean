@@ -40,7 +40,7 @@ namespace FilledFieldCount
     `declaredExtent` is the number of **slots the document can hold**, not the number of fields
     declared. The two differ as soon as the operand's subtree owns a repeatable descendant, and
     passing the declaration count there freezes the movement early
-    ([checkpoint](../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). -/
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)). -/
 def availableWithFillability? (result : FilledFieldCount)
     (declaredExtent : Nat) : Option (Nat × NumericFillability) :=
   match result with

@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.ErrorTextRowParameter
 The star rule and the resolve stage's class are measured with four separating rows and a plain-message
 control; the availability gate, the shared code's second cause, the last stage's split and the
 escaped-dollar trigger are source-derived
-([checkpoint](../../docs/SOURCES.md#src-error-text-row-parameter)).
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-text-row-parameter)).
 -/
 
 namespace A12Kernel.Conformance.ErrorTextRowParameter

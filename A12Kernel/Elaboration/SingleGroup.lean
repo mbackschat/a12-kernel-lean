@@ -142,7 +142,7 @@ def overlaps (left right : ResolvedGroupReference) : Bool :=
 
     The subtree rather than the direct children is the Kernel's own rule, measured on both
     arms at the [nested group-count runtime
-    checkpoint](../../docs/SOURCES.md#src-nested-descendant-group-count-runtime): a group whose
+    checkpoint](../../docs/sources/group-and-iteration-probes.md#src-nested-descendant-group-count-runtime): a group whose
     only field lies two levels down counts as filled, and emptying that field drops the count.
 
     `none` is the explicit boundary rather than an empty group. The group may be absent from
@@ -151,7 +151,7 @@ def overlaps (left right : ResolvedGroupReference) : Bool :=
 
     A repeatable group **below** it is refused too, and that refusal is a boundary between two
     mechanisms rather than a gap. Measured at the [repeatable-descendant
-    checkpoint](../../docs/SOURCES.md#src-repeatable-descendant-group-count), a group's content
+    checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count), a group's content
     has two constituents and either suffices: an admitted descendant cell, or an **instantiated
     row** in a repeatable descendant. This query projects a group to a list of cell reads, which
     expresses the first constituent at any width and the second at none, so counting that shape
@@ -182,7 +182,7 @@ def computationDescendants? (reference : ResolvedGroupReference)
 
     The admitted shape needs only the operand itself outside any repeatable scope. **Repetition
     depth does not bound it**: a descendant two repetition levels below the operand counts exactly
-    as one level does ([checkpoint](../../docs/SOURCES.md#src-deep-repeatable-descendant-group-count)),
+    as one level does ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-deep-repeatable-descendant-group-count)),
     which is what the row constituent already implied — the validation arm tests subtree
     containment with no depth bound at all. Measured at two levels; the clause is stated for any,
     because the mechanism is containment rather than an axis count. -/
@@ -241,7 +241,7 @@ inductive FixedGroupReferenceError where
   placement a row measures, and a paired one the negative-condition class unguarded and admission
   guarded
   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction),
-  [inbound](../../docs/SOURCES.md#inbound-2026-09-26j-count-star)). -/
+  [inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26j-count-star)). -/
   | walkedRepeatableGroupUnsupported (path : GroupPath)
   /-- A computation's fixed group operand crossing a repeatable level its target's scope does not
   bind. -/
@@ -367,7 +367,7 @@ def FixedGroupReadScope.resolve (scope : FixedGroupReadScope) (model : FlatModel
 
 /-- Resolve a fixed group operand of a validation carrier whose measured admission covers the
 repeatable root its rule sits in as well as a fixed child of the rule's group
-([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-group-operand-walk)). -/
 def FlatModel.resolveValidationBoundFixedGroupReference (model : FlatModel)
     (declaringGroup : GroupPath) (surface : SurfaceGroupReference)
     (writtenGroup : GroupPath := declaringGroup) :

@@ -49,7 +49,7 @@ theorem booleanConstantComputationRun_applyToChecked_delegates
 are placed. This is the measured claim stated as a law: a root declaration and a declaration at the
 target's own group produce the same rows and the same values, because iteration comes from the
 target's scope and a constant supplies no other source
-([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)). -/
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)). -/
 theorem checkedRepeatableBooleanConstantComputation_execute_ignoresDeclaringGroup
     {model : FlatModel}
     (first second : CheckedRepeatableBooleanConstantComputation model)

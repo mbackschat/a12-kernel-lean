@@ -131,7 +131,7 @@ def referencesField (condition : CorrelatedHaving) (field : FieldId) : Bool :=
 
 /-- Fields the filter reads through a `$`-marked reference, in first authored occurrence order. The
     Kernel judges a marked read as the rule's own read, so these alone of a body's reads reach the
-    rule's error-field gates ([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
+    rule's error-field gates ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-reference-set)). -/
 def markedFieldIds : CorrelatedHaving → List FieldId
   | .leaf (.numeric comparison) =>
       ((comparison.left.atoms ++ comparison.right.atoms).flatMap (·.fieldOrigins)

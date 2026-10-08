@@ -475,7 +475,7 @@ namespace TemporalNumericPart
     on both sides of both outcomes: `HoursFromTime` admits a DATE-declared `HH:mm:ss` field and
     refuses a TIME-declared `yyyy-MM-dd` one, `YearFromDate` does the exact opposite, and the
     Kernel's own code names the format — `MVK_WRONG_DATE_FORMAT_FOR_OP`
-    ([checkpoint](../../docs/SOURCES.md#src-temporal-operand-family-is-the-formats-not-the-kinds)).
+    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-operand-family-is-the-formats-not-the-kinds)).
     The component test was already the whole rule; the kind conjunct this replaced refused two of
     those four rows for a reason the Kernel does not have. -/
 def admittedBy (part : TemporalNumericPart) (field : FlatTemporalField)

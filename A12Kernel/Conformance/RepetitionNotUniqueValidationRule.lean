@@ -684,7 +684,7 @@ The rule sits in the repeatable root `Fleet` and reports on `Plate`. With every 
 root, no repeatable group lies below the rule group, so the reference group is the root itself and
 its rows are compared across the document, as an explicit `@From` of the root compares them; a key
 in the repeatable `Drivers` keeps that group and is compared per root row
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26l-repeatable-root)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26l-repeatable-root)). -/
 
 private def text (id : FieldId) (groupPath : GroupPath) (name : String)
     (repeatableScope : List RepeatableLevel) : FlatFieldDecl :=

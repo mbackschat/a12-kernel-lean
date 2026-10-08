@@ -8,7 +8,7 @@ operator call** such as `DayFromDate(D)` — together with the slot table the ga
 seconds and admits any nonempty prefix; `DateTime` takes a date and a time and requires both. The
 three-of-three requirement is the Kernel's own, measured: dropping `Date`'s year draws its own class
 while `Time("10")` and `Time("10","30")` are admitted
-([checkpoint](../../docs/SOURCES.md#src-temporal-constructor-operand-positions)).
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-constructor-operand-positions)).
 
 **A component slot admits exactly the extractor whose component it is**, and the two ways of being
 wrong are *different classes*:
@@ -160,7 +160,7 @@ def constructorOperandRefusal (constructor : TemporalConstructor) (position : Na
 /-- Whether an operand count is admitted by the slot table alone.
 
 Measured points: `Date` with two operands is refused with its own missing-component class, and `Time`
-with one and with two is admitted ([checkpoint](../../docs/SOURCES.md#src-temporal-constructor-operand-positions)).
+with one and with two is admitted ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-constructor-operand-positions)).
 `Time` with none and `DateTime` short of two are unmeasured; the predicate states the function the slot
 table implies for them rather than leaving it undefined. -/
 def operandCountAdmitted (constructor : TemporalConstructor) (supplied : Nat) : Bool :=

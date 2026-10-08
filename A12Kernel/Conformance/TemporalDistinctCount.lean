@@ -199,7 +199,7 @@ example :
    the gate stays exact after that.** Measured on this operator: at `baseYear: "2024"` a yearless
    `MM` operand is admitted beside `yyyy-MM` and `MM-dd` beside a complete date, while `MM-dd`
    beside `yyyy-MM` is still refused because the remaining components disagree
-   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-component-omitting-fold)). The last two
+   ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)). The last two
    rows are the controls that make this the Base Year's doing: the same mixed pair is refused when
    no Base Year is declared, and a same-set yearless pair is admitted without one. -/
 example :
@@ -268,7 +268,7 @@ example :
 
 The group is admitted, and its expansion meets the component-set gate rather than the neighbour's
 format-equality one. The pair below is the whole point: one group, two operators, two verdicts
-([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)). Reusing
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-group-operand-follows-its-own-operator)). Reusing
 the neighbour's group certificate — the tempting move, since it already exists and already certifies
 temporal group expansions — would have refused the admitted half. -/
 private def groupOperand (group : String) : SurfaceFieldEntitySource :=
@@ -334,7 +334,7 @@ example :
 /-! ### Declaration order decides the class, in a group's expansion as in a scalar list
 
 The same two kinds in the other order draw a different code, and the scalar controls agree cell for
-cell ([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)). So
+cell ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-group-operand-follows-its-own-operator)). So
 the first-operand rule reaches a group's expansion rather than stopping at the authored slots, and a
 projection keyed on the *offending* kind alone would be right in one order and wrong in the other —
 which is exactly what this operator shipped before the pair was measured. -/
@@ -478,7 +478,7 @@ example :
 /- **A clock list folds on the decoded reading, and a TIME agrees with a DATETIME declared the
    degenerate `HH:mm:ss`.** The cross-kind row is the one that fixes the arm: the identity follows
    the declared component set and not the declared kind, so both operands must land in the same arm
-   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-time-bearing-fold)). The two cells carry
+   ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-time-bearing-fold)). The two cells carry
    *different* transport instants for one clock reading, which is what a kind-keyed or
    instant-keyed identity would answer 2 to. -/
 example :
@@ -556,7 +556,7 @@ example :
 
 /- **A starred repeatable group folds over every row**, which is the shape this fold used to refuse.
    The count moves 1 → 2 across two rows exactly as the Kernel's does
-   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-group-expansion-fold)), and the pair is
+   ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-group-expansion-fold)), and the pair is
    what makes this an extent measurement rather than one document that happens to answer: an
    implementation reading row one alone answers 1 for both. The third declared row keeps both counts
    growable, and the same retained artifact types both firings `OMISSION` on both strategies; this
@@ -583,7 +583,7 @@ example :
    spellings, which is the pair this operator admits and its neighbour refuses — so one calendar day
    spelled both ways counts once and two days count twice. The extent is the measured one: the count
    over a nonrepeatable group reaches its whole subtree
-   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-group-expansion-fold)). -/
+   ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-group-expansion-fold)). -/
 example :
     countGroup? "MixBox"
         [temporalCell 10 "2024-03-05" (dateValue 2024 3 5),
@@ -607,7 +607,7 @@ example :
 /- **The two neighbouring operators split on declared precision, and in the opposite direction from
    their comparability rule.** A partially known Date is refused here — it has no decoded date to
    compare — and admitted by `FieldValuesNotUnique`, which compares the exact stored text a partial
-   does have ([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)). The
+   does have ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-partial-date-precision-operand-gate)). The
    admitted full-precision pair beside it is what makes this a precision gate rather than a refusal
    of the fixture, and the uniqueness row is what makes it an asymmetry rather than a shared rule. -/
 example :

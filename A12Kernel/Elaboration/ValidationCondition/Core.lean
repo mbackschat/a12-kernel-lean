@@ -800,7 +800,7 @@ def canFireOnEmpty (condition : ValidationCondition model) : Bool :=
     condition.anyLeaf ValidationConditionLeaf.liftsEmptyGate || condition.referencesMultipleRoots
 
 /-- Whether the condition references the rule's error field: a reference outside every filter body,
-    or a `$`-marked one inside ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
+    or a `$`-marked one inside ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-reference-set)). -/
 def referencesErrorField (condition : ValidationCondition model)
     (field : FieldId) : Bool :=
   condition.anyLeaf fun leaf => leaf.referencesErrorField field

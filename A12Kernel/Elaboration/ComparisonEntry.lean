@@ -8,7 +8,7 @@ entry gate. A `kind` is the operation's result family, not the field's declared 
 
 Grouping must survive this projection: a grouped constant remains constant but a grouped clock loses
 the bare-clock exception, and a grouped field is not a bare pattern operand. The
-[comparison-entry checkpoint](../../docs/SOURCES.md#src-comparison-entry-gates) owns the observations.
+[comparison-entry checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-comparison-entry-gates) owns the observations.
 The result identifies the next checker; it is not a Boolean claim that the entire comparison is legal.
 -/
 

@@ -129,7 +129,7 @@ example :
    declaration at a clock format admits a time payload and refuses a date one; a TIME declaration at
    a date format does the exact opposite. Each kind therefore appears on both sides of both outcomes,
    which is what rules out reading the admitted set off the kind
-   ([checkpoint](../../docs/SOURCES.md#src-temporal-value-family-is-the-formats-not-the-kinds)).
+   ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds)).
    Before this correction both cross rows were malformed, so a cell the Kernel stores and compares
    read as unavailable to every consumer — a wrong value rather than a wrong diagnostic. -/
 example :

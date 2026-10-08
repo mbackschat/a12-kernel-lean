@@ -127,7 +127,7 @@ example :
 /- A selected target of another kind fails closed before any exposure question, and it now carries
 the Kernel class that refusal actually draws: a keyed reference to a non-DateRange field at an
 overlap operand is refused `MVK_NO_DATE_RANGE`
-([checkpoint](../../docs/SOURCES.md#src-keyed-date-range-overlap-admits-both-sides)). The
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-keyed-date-range-overlap-admits-both-sides)). The
 neighbouring exposure class stays unmapped, because that measurement reached this refusal and not
 that one. -/
 example :

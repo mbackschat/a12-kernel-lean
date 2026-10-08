@@ -9,12 +9,12 @@ import A12Kernel.Semantics.ComputationMessage
 
 The Kernel admits a bare DateTime constant into a repeatable target from the target's own group and
 from any ancestor of it, with execution addressed from the target's row scope exactly as for the four
-sibling constant families ([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)).
+sibling constant families ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)).
 
 **The literal's spelling owes nothing to the format the target renders into.** `"05.03.2024T12:30:00"`
 — the German date literal, `T`, and the clock literal concatenated — is admitted into a target whose
 declared format is `yyyy-MM-dd'T'HH:mm:ss`, which is the only DateTime declaration format this
-project's renderer admits ([checkpoint](../../docs/SOURCES.md#src-temporal-constant-literal-composition)).
+project's renderer admits ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-temporal-constant-literal-composition)).
 Admission is static and the literal is upstream of this carrier, which takes an already-classified
 `LocalDateTime`; `spec/12` owns the lexical rule.
 
@@ -22,7 +22,7 @@ The constant remains a wall label for storage, but the model zone still validate
 runtime. A resolvable label renders directly in the target format. A spring-forward gap produces no
 computed outcome and one `berechnungsWertFehler` residual at each in-capacity target row. The static
 model verdict has a separate host-zone dependency upstream of this carrier
-([checkpoint](../../docs/SOURCES.md#src-datetime-constant-zone-split)).
+([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-datetime-constant-zone-split)).
 
 Like the Time sibling this carrier takes `CheckedDateTimeFormatTarget`, the certificate that reads the
 declared **format string** and not the field's kind, so a DATE-declared field carrying the DateTime

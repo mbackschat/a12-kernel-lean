@@ -153,7 +153,7 @@ private def readHavingDayOperand (profile : ModelZone.ConcreteProfile)
     (fun sourceProfile => CalendarDayDifferenceOperand.ofParts sourceProfile <$> readHavingToday world unavailable sourceProfile)
 
 /-- Numeric reads retain omission and formal identity until their consumer projects them.
-The wider shift-amount controls separate these channels (SOURCES.md#src-temporal-numeric-amounts). -/
+The wider shift-amount controls separate these channels (docs/sources/temporal-runtime-fold-probes.md#src-temporal-numeric-amounts). -/
 def HavingNumericAtomOf.readArithmetic [SizeOf Temporal] (phase : Phase)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) (atom : HavingNumericAtomOf Temporal)
     (projection : TemporalNumericPart → (source : Temporal) → sizeOf source < sizeOf atom → Except Error (Except NumericValidationUnavailable NumericArithmeticOutcome))

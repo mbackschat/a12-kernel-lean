@@ -15,7 +15,7 @@ maximum, and the second even carries a comment noting the duplication — so an 
 both codes. A *present but non-positive* maximum draws only the first, measured: a root group declared
 with repeatability zero draws the invalid-maximum code on **every** entity of the model, eight of
 eight, and the inconsistency code on none, because a uniformly zero tree is still internally
-consistent ([checkpoint](../../docs/SOURCES.md#src-entity-container-integrity)).
+consistent ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-entity-container-integrity)).
 
 **The path stage reads the entity's *name*, not its identifier.** A root group whose DM-JSON `id`
 carries a dash is admitted; the same group with a dashed *name* draws the path class, and both together

@@ -135,7 +135,7 @@ private def booleanConstantOperation?
 /- The measured constant/target combinations preserve the Confirm asymmetry and each exact refusal
    code. The wrong-kind target is **not** a local unsupported refusal: it carries a Kernel class of
    its own, and which one depends on the kind
-   ([checkpoint](../../docs/SOURCES.md#src-boolean-constant-target-kind-partitions-into-four-classes)).
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-boolean-constant-target-kind-partitions-into-four-classes)).
    A String target draws neither the Confirm code nor a shared "wrong type" code, which is the
    distinction a single-code account would erase. -/
 example :

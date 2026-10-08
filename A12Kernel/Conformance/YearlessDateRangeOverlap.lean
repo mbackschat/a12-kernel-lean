@@ -278,7 +278,7 @@ example :
   native_decide
 
 /- The plural route reads its list before the scalar's own gate, as the canonical route does
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)): a starred scalar beside a list
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-list-reads)): a starred scalar beside a list
    operand that does not resolve draws the resolver's class. Beside a resolvable one the scalar's own
    refusal claims no class, since no row places a star in this route's scalar slot and the singular
    operator's measured group class is another operator's gate. -/

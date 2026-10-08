@@ -6,7 +6,7 @@ import A12Kernel.Semantics.ComputationSelfValidation
 The Kernel admits `Batches*/Seal` in a computation alone, beside a fixed group, and twice, and
 computes it as the rule arm counts it: one per in-capacity batch whose `Seal` holds content. Two
 seeded rounds on both codegen strategies, twelve and eleven documents, are retained at the
-[computation checkpoint](../../docs/SOURCES.md#src-ancestor-starred-group-count-computation), and
+[computation checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation), and
 this module replays them from elaboration through the addressed evaluator, for the computed values
 and for the type of each target's implicit message.
 
@@ -191,7 +191,7 @@ example :
 /-! ## Separators and wider shapes
 
 A second seeded run on its own model, retained at the same
-[computation checkpoint](../../docs/SOURCES.md#src-ancestor-starred-group-count-computation): one
+[computation checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation): one
 filled beside one malformed-only `Seal`, a malformed-only `Seal` in an over-limit batch, the form
 twice, a disjoint terminal star beside it, and a fixed group below two reopened levels. -/
 

@@ -32,7 +32,7 @@ requires.
 
 **Evidence.** The parallel-iteration refusal is measured with its admitted control — the identical
 parameter from the identical error field under a non-parallel condition
-([checkpoint](../../docs/SOURCES.md#src-message-parameter-surface-and-iteration-gates)). The four
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)). The four
 H-model-side classes are **source-derived and unwitnessed from this project's A12-only route**, which is
 itself the content of the shadowing claim rather than a gap in it: `NO_Z_ITERATION`, `NO_U_ITERATION` and
 `INVALID_PATH_SPEC` are unreachable from an A12 document model by construction, and no route here

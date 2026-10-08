@@ -280,7 +280,7 @@ inductive ResolvedNumericAtom (Field : Type)
 /-- The group and field path of a `CurrentRepetition` operand that names a field rather than a
     group. Its group answers first: from a root rule the field of an uniterated repeatable group
     draws that group's missing star and the field of a fixed group the field class
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-current-repetition)). -/
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-current-repetition)). -/
 def FlatModel.currentRepetitionNamedField? (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceGroupPath) : Option (SurfaceGroupPath × List String) := do
   let path ← (reference.resolveAgainst declaringGroup).toOption

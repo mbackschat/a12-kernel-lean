@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.TemporalConstructorOperand
 
 Every row below is a cell of the measured seven-operator by eight-position grid, dispatched in one
 `dmtool batch` with an accepted control per constructor
-([checkpoint](../../docs/SOURCES.md#src-temporal-constructor-operand-positions)).
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-constructor-operand-positions)).
 -/
 
 namespace A12Kernel.Conformance.TemporalConstructorOperand

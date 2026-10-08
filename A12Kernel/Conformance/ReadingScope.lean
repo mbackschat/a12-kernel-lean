@@ -214,10 +214,10 @@ example :
 /- The field slot's kind gate answers wherever the rule's iteration binds the level: a read of the
    fixed `Sub` draws the group class from a rule declared inside `Claims` and from a root rule whose
    error field lies in `Claims`, where a root rule reporting at the root draws the missing star
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-rule-iteration), `kf477`). A climbing read of
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25i-rule-iteration), `kf477`). A climbing read of
    the rule's own group from inside it is judged where it lands: `Seal2` reached by one up-step or by
    two through `Claims` draws the group class, and the unkeyed `Plain`'s `PSeal2` the missing star
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26-climbing-read), `kf480`). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26-climbing-read), `kf480`). -/
 example :
     [fieldFilled (g []) (g []) (p ["Claims"] "Sub"),
       fieldFilled (g ["Claims"]) (g ["Claims"]) (rel 0 [] "Sub"),
@@ -344,7 +344,7 @@ example :
 /- Keyed by a Number instead, the error field's path meets the String key at the measured type gate
    (the group rows of the index-gate record) and the Enumeration and Date keys too, while no row
    measures a Number key against a Boolean one, so that claims no class
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25b-index-type-table)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25b-index-type-table)). -/
 example :
     let numberKeyed : FlatModel :=
       { routeModel with fields := routeModel.fields.map fun field =>
@@ -355,7 +355,7 @@ example :
   native_decide
 
 /- The peer's type table, the rule's key first
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25b-index-type-table)). A String key splits from a
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25b-index-type-table)). A String key splits from a
    Confirm, DateTime, Time and date-range key; a Date from a date range, a Boolean from a Confirm, a
    Number from an Enumeration and an Enumeration from a Boolean. -/
 example :
@@ -383,7 +383,7 @@ example :
 /- The type step's table itself, which separates a legal pair from an unmeasured one where a
    single read cannot. Each measured row, the error field's key first, then the reverse of each
    measured split and legal pair, which claims nothing
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25b-index-type-table)). A custom type is not a
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25b-index-type-table)). A custom type is not a
    `FieldKind`, so the String rows stand for the custom-typed key too. -/
 example :
     let text : FieldKind := .string

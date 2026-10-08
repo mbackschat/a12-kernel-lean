@@ -30,11 +30,11 @@ inductive StarredGroupElabError where
 /-- The class of an empty starred group, for the carriers that measured it: the extrema, the five
 group-list quantifiers, and the group count on both arms
 ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group),
-[inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads),
+[inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-23b-entity-list-operand-reads),
 [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)).
 The read precedes every list gate, the quantifiers' star gate included. An empty **root** draws
 its own class, measured on the group count's starred repeatable root
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-empty-star)) and on a nonrepeatable root's
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-empty-star)) and on a nonrepeatable root's
 presence; the other carriers read the root by the same check, an assumption
 [SG9](../../docs/gaps/paths-and-groups.md#gap-sg9) records. -/
 def StarredGroupElabError.emptyGroupDiagnostic? :
@@ -362,7 +362,7 @@ end CheckedStarredGroupPresenceSource
     A fixed group below a starred ancestor is the third form. It contributes neither a row count nor
     one indicator: each in-capacity environment of its starred ancestry holds one instance of the
     group, and each instance is read as a fixed operand is, so an instantiated but empty instance adds
-    nothing ([inbound](../../docs/SOURCES.md#inbound-2026-09-24-ancestor-starred-group-count)). -/
+    nothing ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24-ancestor-starred-group-count)). -/
 inductive CheckedGroupCountOperand (model : FlatModel) where
   | fixed (reference : ResolvedGroupReference)
   | starred (source : CheckedStarredGroupSource model)
@@ -439,7 +439,7 @@ def modelWellFormed? : List (CheckedGroupCountOperand model) →
 /-- Whether two operands duplicate one another. Containment either way is a duplicate however each
     side is spelled, and equal paths are a duplicate too — except when **both** are starred, which
     the Kernel admits and counts once per position rather than once per group
-    ([checkpoint](../../docs/SOURCES.md#src-group-count-list-extent)). That exception is what makes
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-count-list-extent)). That exception is what makes
     this a containment rule rather than a distinctness rule, and it is measured rather than derived
     from the fixed-only carrier it generalizes. -/
 def duplicates (left right : CheckedGroupCountOperand model) : Bool :=
@@ -447,7 +447,7 @@ def duplicates (left right : CheckedGroupCountOperand model) : Bool :=
     -- A fixed terminal below a starred ancestor shares the exception on the account that the gate
     -- reads a reference's form, a star anywhere on it (peer `kf258`). The computation arm admits that
     -- pair and counts it once per position
-    -- ([checkpoint](../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)); no row
+    -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation)); no row
     -- measures it on the validation arm.
     match left, right with
     | .fixed _, _ | _, .fixed _ => true

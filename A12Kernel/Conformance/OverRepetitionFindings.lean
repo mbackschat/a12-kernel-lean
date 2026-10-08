@@ -227,7 +227,7 @@ private def triOnlyRows : List RowAddr :=
    reports **nothing** while validation still reports the subtree — the artifact's `nested-over` row,
    ten against zero. The codes are preserved, not collapsed: the operand channel carries the row code
    too, so the difference between the channels is scope alone
-   ([checkpoint](../../docs/SOURCES.md#src-over-limit-finding-multiplicity)). -/
+   ([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity)). -/
 example :
     scoped? probeOperands bothViolatedRows
         [emptyCell deepValue.id [4, 1], emptyCell deepValue2.id [4, 1]] =
@@ -267,7 +267,7 @@ private def rootCells : List ClassifiedCellInput :=
    `Vd[3]` exceeds `max 2`; the violated level sits at container depth one, so it is position 0 of its
    own address *and* of every address beneath it. Four findings, matching the measured row exactly, on
    both codegen strategies with an accepted control
-   ([checkpoint](../../docs/SOURCES.md#src-address-index-position-classes)). The pre-correction account
+   ([checkpoint](../../docs/sources/over-repetition-probes.md#src-address-index-position-classes)). The pre-correction account
    predicted one `zuGrosseZeile` plus three `zuGrosseKontextnummer` here. -/
 example : sorted (findings? rootRows rootCells) =
     some [(.serialNumberTooLarge, [3]), (.serialNumberTooLarge, [3]),

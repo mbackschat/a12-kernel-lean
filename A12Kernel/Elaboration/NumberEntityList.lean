@@ -311,7 +311,7 @@ inductive NumberEntityElabError where
   /-- A group with non-Number declarations. The offending kinds decide the extrema's class, while
       `numberLeads` retains whether the whole list's first expanded declaration is Number-valued;
       the distinct count needs that independent fact to project its positional class
-      ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). -/
+      ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). -/
   | groupExpansionNotNumber (path : List String) (kinds : List SurfaceScalarKind)
       (numberLeads : Bool)
   /-- A group slot whose subtree declares no field at all, reached only as `RuleGroup` in a rule
@@ -329,20 +329,20 @@ namespace NumberEntityElabError
 
     The extrema's admitted set is **wider than this family's representable set**: they take Number *or* a temporal kind, while every value here is a Number field. A temporal operand in first position therefore reaches an error value meaning "this family cannot hold it", and must **not** be reported as a Kernel refusal, because the Kernel admits that model and refuses it — if at all — through the temporal list's own gate. Reading the family's own limit as `MVK_NOT_SORTABLE` is the defect these arms are written against.
 
-    A temporal operand in a **later** position is the opposite case and answers `true` through `extremaRefuseLaterKind`: the first operand certified as Number, so the Kernel's own positional rule puts the whole list in the numeric family and refuses the temporal member. Both directions are measured ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)); the earlier reading that a Date is simply "admitted at this gate" was measured on the temporal list and does not survive the crossing.
+    A temporal operand in a **later** position is the opposite case and answers `true` through `extremaRefuseLaterKind`: the first operand certified as Number, so the Kernel's own positional rule puts the whole list in the numeric family and refuses the temporal member. Both directions are measured ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-extrema-operand-family-is-positional)); the earlier reading that a Date is simply "admitted at this gate" was measured on the temporal list and does not survive the crossing.
 
-    String, Enumeration, Boolean, Confirm, and DateRange are measured refused in first position; the checkpoint's kind grid records those controls. Number and every temporal kind are left to their own overloads, with the wider temporal leader set covered by the [reviewed handback](../../docs/SOURCES.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale). -/
+    String, Enumeration, Boolean, Confirm, and DateRange are measured refused in first position; the checkpoint's kind grid records those controls. Number and every temporal kind are left to their own overloads, with the wider temporal leader set covered by the [reviewed handback](../../docs/sources/inbound-handbacks.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale). -/
 private def extremaRefuseKind : SurfaceScalarKind → Bool
   | .string => true
   | .number => false
   -- A first-position temporal operand is the temporal list's, not a Kernel refusal here.
   | .temporal _ => false
   -- Measured to lead no overload, so each is refused outright where it once claimed nothing
-  -- ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). The comment
+  -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-extrema-operand-family-is-positional)). The comment
   -- here used to add "the sortable leader set is exactly `{NUMBER, DATE}`", which was refuted: the
   -- set is `{NUMBER}` plus **every** temporal kind, which is why the arm above returns `false` for
   -- `.temporal _` without inspecting the kind
-  -- ([provenance](../../docs/SOURCES.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale)).
+  -- ([provenance](../../docs/sources/inbound-handbacks.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale)).
   | .enumeration | .boolean | .confirm | .dateRange => true
 
 /-- Whether `Sum` is measured to refuse a field operand of this declared kind with its own domain
@@ -370,13 +370,13 @@ private def extremaRefuseLaterKind : SurfaceScalarKind → Bool
 
     Direct and starred field-kind refusals retain leading versus later position. The distinct count
     therefore projects its Number-leading field class as well as the group class below
-    ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). `Sum` projects its
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). `Sum` projects its
     domain class from both field arms alike, because it is not keyed by position; see `sumRefuseKind`. -/
 def aggregateDiagnostic? (op : NumericAggregateOp) :
     NumberEntityElabError → Option KernelStaticDiagnostic
   | .shape error => error.diagnostic?
   -- The filter's class is the filter's own and does not vary by wrapping carrier
-  -- ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)), so it
+  -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-having-filter-comparison-and-scope-classes)), so it
   -- reaches every aggregate alike and needs no `op` split.
   | .star (.having error) => error.diagnostic?
   | .groupExpansionNotNumber _ kinds numberLeads =>
@@ -398,7 +398,7 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       -- overload leads with. The distinct count's kind domain is string, enumeration, number, and
       -- date/time, so a Boolean or Confirm **first** operand is refused outright whatever follows
       -- it, while the same kind in a later position takes the leading family's homogeneity code
-      -- instead ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)).
+      -- instead ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)).
       | .distinctCount =>
           match actual with
           | .boolean | .confirm => some .onlyStringEnumNumberCmpDateAllowed
@@ -411,13 +411,13 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       -- **The distinct count is keyed by position, and this arm is the position that determines it.**
       -- Reaching a *later* arm implies the first operand already certified Number-valued, so the list
       -- is Number-first, and Number-first with a non-Number member draws `MVK_NUMBER_AND_NON_NUMBER`
-      -- ([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)). That is why the
+      -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-distinct-count-operand-domain)). That is why the
       -- field arm gets that fact from certification order; the group arm retains it explicitly.
       --
       -- The kind that arrived does **not** matter here, and that is measured rather than assumed:
       -- `(Number, Boolean)` draws this same code, because once an admissible operand leads, a
       -- Boolean is merely "non-number" and the domain gate no longer applies
-      -- ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). The domain
+      -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). The domain
       -- code is a **first-operand** class only.
       | .distinctCount => some .numberAndNonNumber
       | .sum => if sumRefuseKind actual then some .noNumber else none
@@ -429,7 +429,7 @@ end NumberEntityElabError
 /-- A starred single-field operand refuses through the **direct field arm**, not a star-specific one.
     The Kernel's family gate reads the declaration and not the operand form: a starred field draws
     the same code as the plain field of that kind, in either position
-    ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). Routing here is
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-extrema-operand-family-is-positional)). Routing here is
     what lets `atLaterOperand` re-key the star positionally and the existing kind predicates classify
     it; the former star arm carried neither the kind nor the position, so it could project nothing at
     all — `none` was sound only because the admitted DATE-first case shared it. -/

@@ -9,7 +9,7 @@ that sorts kinds into admitted and refused, and it is the operator's own message
 makes it legible: a Number field is *inside* the set `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED` names,
 so it passes that gate and then fails the **literal** comparison with
 `MVK_INVALID_TYPES_FOR_COMPARISON`, where DATE, BOOLEAN, DATE_RANGE and CONFIRM never reach that
-stage ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+stage ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
 Collapsing the two would report the admitted-set class for a kind the Kernel calls admitted.
 
 The kind rows use same-kind **pairs**, which reach that gate without arguing with the arity one.
@@ -244,7 +244,7 @@ example :
 previously reported for DATE alone — the other five reached no class at all, because a group's
 expansion is erased before the certification that classifies a direct field. The six rows are
 asserted together because the property is that the slot shape does not matter, not that each kind
-has an answer ([checkpoint](../../docs/SOURCES.md#src-value-list-slot-kind-set)). -/
+has an answer ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-slot-kind-set)). -/
 example :
     ["DateG", "TimeG", "DtG", "FragG", "RangeG", "BoolG"].map groupAdmission =
       List.replicate 6 (.refused (some .onlyStringEnumNumberAllowed)) ∧
@@ -364,12 +364,12 @@ example : soleAdmission .atLeastOne "AVal" =
 The quantifiers ask whether every field shares one base type before they ask whether each is a
 kind they admit, so a list mixing base types draws `MVK_VARYING_TYPES_NOT_ALLOWED` whatever its
 kinds. The four temporal kinds share one base type and a custom declaration shares String's
-([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)).
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-value-list-base-type)).
 -/
 
 /- **A mixed list draws the base-type class ahead of the kind gate.** A String beside a Number, on
    two quantifiers (the inbound above), and a String beside a Date
-   ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
    Read by the kind gate, the first draws the literal comparison's class, and the last the kind
    gate's. -/
 example :
@@ -388,7 +388,7 @@ example :
   native_decide
 
 /- **Every cross pair differs, whichever kind comes first**
-   ([checkpoint](../../docs/SOURCES.md#src-value-list-base-type-cross-pairs)). An Enumeration beside a
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-base-type-cross-pairs)). An Enumeration beside a
    String in both orders, a Boolean beside a Confirm in both orders, a Number beside a Date or before
    a String, a date range beside a String and a Boolean beside a Date. The Boolean pairs are what
    separate this gate from the kind gate, which refuses both kinds with one class, and the
@@ -470,7 +470,7 @@ private def validationModel : FlatModel :=
         policy := { kind := .string } }] }
 
 /- **Value validation is the value-list construct's fourth gate, and a repeat across the two lists
-   comes between its two askings** ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-value-list-order)).
+   comes between its two askings** ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-value-list-order)).
    The field list's value validation follows its kind gate, ahead of a value list's own repeat or
    base type; the cross-list repeat follows both lists' type gates; the value list's value validation
    comes last. So a raw String repeated across the lists, one opposite a Number, one among the values
@@ -599,7 +599,7 @@ example :
 
 /- **A category the Enumeration does not declare is read with the operand, ahead of the duplicate
    gate**, first or after a repeated String, against a declared category meeting that gate
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-list-reads)). -/
 example :
     let verdict (fields : SurfaceFieldEntitySource) : Option (Option KernelStaticDiagnostic) :=
       match elaborateTokenEntityStringLiteralValueListSource readGateModel ["Probe"]

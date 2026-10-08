@@ -369,7 +369,7 @@ example :
    which is the distinction this surface's message vocabulary draws: Number is inside the admitted
    set, so it passes the set gate and fails one step later. This row previously recorded that no
    retained observation assigned it a class; one now does, on all three slot shapes
-   ([checkpoint](../../docs/SOURCES.md#src-value-list-slot-kind-set)). -/
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-slot-kind-set)). -/
 example :
     stringLiteralListAdmission (group ["Probe", "B"]) =
       .refused (some .invalidTypesForComparison) := by
@@ -378,7 +378,7 @@ example :
 /- A group expanding to a String and a Date draws the base-type class, which that pair draws as two
    field slots. That the gate reads a group by its expansion is the Kernel's reading of the list, and
    no row measures it on a group
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-value-list-base-type)). -/
 example :
     stringLiteralListAdmission (group ["Probe", "Mixed"]) =
       .refused (some .varyingTypesNotAllowed) := by
@@ -546,7 +546,7 @@ example :
   native_decide
 
 /- The retained swapped-order group pair selects its first expanded declaration's family
-   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). `Probe/A` additionally
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). `Probe/A` additionally
    exercises recursive expansion; that topology is an internal specialization of the fixed pair. -/
 example :
     aggregateDiagnostic? .distinctCount [group ["Probe", "A"]] =
@@ -573,7 +573,7 @@ example :
   native_decide
 
 /- A starred group is read in declaration order too, as the peer measures on its own starred rows
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26i-expansion-order)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26i-expansion-order)). -/
 example : aggregateOutcome .distinctCount
     [starredGroup [{ name := "Probe" }, { name := "Kinds", starred := true }]]
     (orderedKindGroupModel true true) = (false, some .numberAndNonNumber) := by
@@ -595,7 +595,7 @@ example :
 
 `NumberOfDifferentValues` reports homogeneity from its first expanded declaration's family, so the
 same illegal pair draws two codes selected by operand order alone
-([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)). -/
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-distinct-count-operand-domain)). -/
 
 /- **Number-first with a later non-Number member draws the Number code.** The position is the whole
    content of the claim: the offending operand is a String in both rows, and only its index differs.
@@ -617,7 +617,7 @@ example :
 /- **The kind domain is a first-operand class, and these rows are what keep it from becoming a
    property of the kind.** A Boolean leading draws the domain code; the same Boolean *after* a Number
    draws the ordinary Number homogeneity code, because once an admissible operand leads it is merely
-   a non-member ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). Reading
+   a non-member ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). Reading
    the domain code off the kind alone is a defect this file has already carried once.
 
    The first-position row needs **two** flags rather than one, and that is the arity gate rather than
@@ -639,7 +639,7 @@ example :
 /- **The third family completes the pair matrix on this side.** A temporal member after a Number
    leads draws the Number code like any other non-member, so the leading family fixes the code
    without the offender's own family entering it — measured for all three pairs in both orders
-   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)).
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)).
 
    Date-first stays unclassified at this Number overload; the temporal overload owns its gate
    ([capability](../../docs/implementation/strings-and-enumerations.md#cap-temporal-distinct-count)). -/
@@ -693,7 +693,7 @@ Number family cannot hold may be a *representation* limit rather than a Kernel r
 it is depends on where it sits: the Kernel's family gate reads the **first** operand and requires
 every later one to join it, so a Date leading the list means the list was the temporal family's,
 while a Date after a Number is refused `MVK_NOT_SORTABLE`
-([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). Projecting the
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-extrema-operand-family-is-positional)). Projecting the
 family's own "not Number" error as a Kernel refusal in the first case names a verdict for a model
 the Kernel admits — the one error an importer or an Explain consumer cannot recover from — and
 projecting nothing in the second silently drops a refusal the Kernel does make. The rows below pin

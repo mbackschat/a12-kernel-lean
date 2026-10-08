@@ -102,7 +102,7 @@ private structure NonselfDateRangeFirstFilledDirectCandidate
 
 /-- One checked direct source sharing the list's one declared profile. Every source must expose the identical declared format; the shared format only has to expose the *target's* component set, so a lexical cross between the list and its target is admitted while a cross inside the list is not.
 
-A source carries **no placement requirement**: it need not lie in the declaring group, and two sources of one list need not share a group. Nothing in a direct nonrepeatable list iterates, so the Kernel's containment gate cannot fire on either side ([checkpoint](../../docs/SOURCES.md#src-date-range-direct-list-cross-group-sources)). -/
+A source carries **no placement requirement**: it need not lie in the declaring group, and two sources of one list need not share a group. Nothing in a direct nonrepeatable list iterates, so the Kernel's containment gate cannot fire on either side ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-date-range-direct-list-cross-group-sources)). -/
 structure CheckedDateRangeFirstFilledDirectSource
     (model : FlatModel) (targetField : FieldId) (format : DateRangeInputFormat)
     where

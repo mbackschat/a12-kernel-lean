@@ -3,8 +3,8 @@ import A12Kernel.Elaboration.FieldMessageCheck
 /-! # Locks on which classes a field's own messages draw
 
 Every row is the peer's `FieldTypeMessageTextLawsTest`, each model checked by the Kernel
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26n-field-message-gates),
-[inbound](../../docs/SOURCES.md#inbound-2026-09-27a-field-message-render)). An empty list is an
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates),
+[inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-field-message-render)). An empty list is an
 admitted field. The texts carry a tab (`INVALID_CHARACTERS`) or a line feed (`INVALID_LINEBREAK`)
 so each row names the locale that was asked.
 -/

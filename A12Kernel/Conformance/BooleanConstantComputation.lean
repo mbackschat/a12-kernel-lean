@@ -217,7 +217,7 @@ example :
 
 The Kernel admits a bare constant into a repeatable target from the target's own group and from any
 ancestor of it, and computes one value per instantiated target row
-([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)). -/
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)). -/
 
 private def taskApproved : FlatFieldDecl := {
   id := 20

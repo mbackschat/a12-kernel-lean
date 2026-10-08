@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.CheckedDocument
 /-! # Mixed validation `NumberOfFilledGroups` locks
 
 The Kernel rows behind these cases are the [list-extent
-checkpoint](../../docs/SOURCES.md#src-group-count-list-extent).
+checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-count-list-extent).
 -/
 
 namespace A12Kernel.Conformance.MixedFilledGroupCount
@@ -243,7 +243,7 @@ however its other descendants failed; a fixed member whose only non-empty descen
 takes the whole mixed count with it rather than contributing zero. The middle row is the separator —
 the same document with the malformed sibling removed — so the second row's absence is the error and
 not the empty content. Measured on both codegen strategies at the [unavailability
-checkpoint](../../docs/SOURCES.md#src-group-count-unavailability). -/
+checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-count-unavailability). -/
 example : (count true 2 (errored := true), count false 2, count false 2 (errored := true)) =
     (some (.value 3 { canGrow := true, canShrink := false }),
      some (.value 2 { canGrow := true, canShrink := false }),
@@ -253,7 +253,7 @@ example : (count true 2 (errored := true), count false 2, count false 2 (errored
 /- **Containment is checked before rootness, and the order is measured.** A root beside its own
 descendant draws the overlap class rather than the root class, in either operand order, exactly as
 the fixed-only list does. The root class is reserved for a root beside a *disjoint* operand, which
-this fixture's single root cannot express — the [list-extent checkpoint](../../docs/SOURCES.md#src-group-count-list-extent)
+this fixture's single root cannot express — the [list-extent checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-count-list-extent)
 carries that row on a two-root model. Running the gates the other way round reports a root the author
 must remove where the Kernel reports an overlap they must resolve. -/
 example : (kernelCode? [.fixed (.path { base := .absolute, groups := ["Probe"] }),

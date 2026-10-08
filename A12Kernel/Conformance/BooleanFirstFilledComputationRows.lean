@@ -124,7 +124,7 @@ private def elabError? (checked :
 /- Placement is containment, not parenthood, and it is separate from operand resolution. The ancestor
 `["Projects"]` admits the target with an absolute operand and with the operand re-spelled for that base; both
 admissions are Kernel-measured at the
-[declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate).
+[declaring-group gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computation-declaring-group-gate).
 `["Projects", "Choices"]` is the discriminating refusal: it is a declared group that shares the target's
 enclosing `["Projects"]` prefix without containing the target, so an account keyed on a shared first segment
 or on any common-ancestor test still admits it, and only containment refuses it. That is the shape the
@@ -299,7 +299,7 @@ example : runtimeProjection? true = some {
 
 /- Moving the declaration to an ancestor changes admission, never correlation: the ancestor-declared
 operations produce the same rows, in the same order, with the same values as the declaration at the target's
-own group. The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)
+own group. The [declaring-group gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computation-declaring-group-gate)
 measures that invariance against the Kernel across the containment range on both codegen strategies; this
 locks it for the executable account, which is what makes widening admission safe for the correlation clause. -/
 example : (do

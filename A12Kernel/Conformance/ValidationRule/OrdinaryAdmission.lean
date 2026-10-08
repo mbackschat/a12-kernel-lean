@@ -438,7 +438,7 @@ the direct-operation host-zero branch. The last two rows are the cross-family pa
 differently for a reason that is the Kernel's: an hour cannot be read from a date-only set, while a
 **year** can be read from a time-only one whenever the model declares a Base Year — measured on a
 pure TIME field under Base Year 2024, and this model declares 2020
-([checkpoint](../../../docs/SOURCES.md#src-temporal-operand-family-is-the-formats-not-the-kinds)). The
+([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-operand-family-is-the-formats-not-the-kinds)). The
 year row read `none` here until the kind conjunct was removed, which is the divergence that pair now
 guards. -/
 example :
@@ -606,7 +606,7 @@ private def ownStarFilterAssembly? (marked : Bool) : Option (Option FlatRuleAsse
 /- A filter body's unmarked read does not reference the rule's error field, so a rule reaching it
    only there is refused `MVK_ERROR_FIELD_NOT_REFERENCED`, while the same read marked does reference
    it. The peer measures this shape, a filter over the rule's own starred group reading the
-   candidate row's field ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
+   candidate row's field ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-reference-set)). -/
 example :
     ownStarFilterAssembly? false = some (some (.errorFieldNotReferenced sectionDetail.id)) ∧
       ownStarFilterAssembly? true = some none := by

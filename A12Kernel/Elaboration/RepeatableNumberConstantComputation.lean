@@ -9,7 +9,7 @@ import A12Kernel.Elaboration.StaticDiagnostic
 
 The Kernel admits a bare Number constant into a repeatable target from the target's own group and
 from any ancestor of it, and writes it once per instantiated target row
-([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)).
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)).
 
 Its target refuses on two grounds and the Kernel checks them at **different times**, which is the
 whole shape of this family. Decimal scale is an authoring gate: a literal carrying more fractional
@@ -17,7 +17,7 @@ digits than the target declares is refused `MVK_INVALID_COMPARE_DEC_PLACES`, so 
 constant never reaches runtime and is unrepresentable here rather than a runtime branch. The declared
 range is not a gate at all — an out-of-range constant is admitted and then errors on every row,
 keeping the exact attempted value uncapped
-([checkpoint](../../docs/SOURCES.md#src-repeatable-number-constant-target-check)).
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-repeatable-number-constant-target-check)).
 
 Scale is read **twice, differently**, and that is the trap. The authoring gate compares the literal's
 *authored* scale, trailing zeros included: `1.50` into a scale-0 target is refused, and the kernel's

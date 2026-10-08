@@ -80,7 +80,7 @@ def parseYearComponents? (format : OmittingDateFormat) (text : String) :
     **A declared Base Year tightens it.** Without one no year is available to decide leapness, so the
     bound is the month's greatest possible day and February reaches 29; with one, the bound is that
     month's length *in that year*, so a February 29 is admitted under a leap Base Year and refused
-    under a common one ([checkpoint](../../docs/SOURCES.md#src-yearless-day-bound-reads-the-base-year)).
+    under a common one ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-yearless-day-bound-reads-the-base-year)).
     February is the only month whose two answers differ, which is why one witness settles the whole
     rule rather than one month of it. -/
 def yearlessDayBound (baseYear : Option Int) (month : Nat) : Nat :=

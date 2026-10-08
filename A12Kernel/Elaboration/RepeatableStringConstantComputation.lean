@@ -9,12 +9,12 @@ import A12Kernel.Elaboration.StaticDiagnostic
 The Kernel admits a bare String constant into a repeatable target from the target's own group and
 from any ancestor of it, and writes it once per instantiated target row; a group the target does not
 lie below is refused `MVK_ERROR_FIELD_NOT_IN_RULEGROUP`
-([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)).
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)).
 
 Unlike the Boolean and Confirm carrier this one has a **target-rejection** branch, because a String
 target validates what is written to it. The Kernel admits an over-long constant statically and then,
 per row, keeps the exact attempted payload with the row flagged rather than truncating, blanking, or
-clearing it ([checkpoint](../../docs/SOURCES.md#src-repeatable-string-constant-target-check)). That
+clearing it ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-repeatable-string-constant-target-check)). That
 is what `StringTargetOutcome.errored` already means, so this family reuses the declaration-owned
 target check rather than adding a branch of its own.
 
@@ -40,7 +40,7 @@ The ladder returns `none` for three kinds of target this carrier still refuses. 
 **custom** String target passes every kind gate; the Kernel refuses a raw one by the generated
 comparison's read of the target, drawing `MVK_INVALID_RAW_TYPE` on the one row measured, a String
 field copied into a nonrepeatable raw target
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)), but this error does not separate
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26c-target-read)), but this error does not separate
 the two, so neither projects a class. At an **Enumeration** target the Kernel gates the literal
 rather than the kind: its domain certificate belongs to `checkAddressedEnumerationComputation`,
 which the reader uses for that target. Raw and custom refusal classification remains in

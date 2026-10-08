@@ -21,7 +21,7 @@ inductive KernelStaticDiagnostic where
   | onlyStringEnumNumberAllowed
   /-- A field whose kind the operator admits, paired with a value list its kind cannot be compared against. Distinct from the admitted-set class above, and the distinction is the operator's own message vocabulary: a Number field passes a `STRING_ENUM_NUMBER` gate and then fails the **literal** comparison, where a Date never reaches that stage. -/
   | invalidTypesForComparison
-  /-- A **numeric** comparison whose field side is neither a Number nor a temporal field. The Kernel spells this one singular, and it is a different constant from the plural neighbour above: measured inside a `Having` filter, String, Boolean, Confirm, Enumeration and DATE_RANGE all draw it, while a temporal field draws `invalidCompareToDate` instead ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)). -/
+  /-- A **numeric** comparison whose field side is neither a Number nor a temporal field. The Kernel spells this one singular, and it is a different constant from the plural neighbour above: measured inside a `Having` filter, String, Boolean, Confirm, Enumeration and DATE_RANGE all draw it, while a temporal field draws `invalidCompareToDate` instead ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-having-filter-comparison-and-scope-classes)). -/
   | invalidTypeForComparison
   /-- A filter leaf reads a field that no iteration in scope binds — measured with an absolute root-level field inside a starred operand's filter. The message names a wildcard because the filter's own binding comes from the star it qualifies. -/
   | noIterationForWildcard
@@ -34,13 +34,13 @@ inductive KernelStaticDiagnostic where
   | noBoolyAllowed
   /-- A Confirm computation target received the constant False. True is accepted, and Boolean targets accept either constant. -/
   | invalidCompareToYes
-  /-- A Boolean computation target received a constant of any other family. It is the **top** of the shared literal-comparison ladder: measured across an eight-constant by ten-target grid, a Boolean target reports this class even against a temporal constant, which outranks every other target ([checkpoint](../../docs/SOURCES.md#src-constant-assignment-diagnostic-ladder)). Its Confirm neighbour reports `invalidCompareToYes` in the same position, so the two kinds do not share a class even though they share the ladder rung. -/
+  /-- A Boolean computation target received a constant of any other family. It is the **top** of the shared literal-comparison ladder: measured across an eight-constant by ten-target grid, a Boolean target reports this class even against a temporal constant, which outranks every other target ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-constant-assignment-diagnostic-ladder)). Its Confirm neighbour reports `invalidCompareToYes` in the same position, so the two kinds do not share a class even though they share the ladder rung. -/
   | invalidCompareToYesNo
   /-- A computation's or rule's written field does not lie at or below its declaring group while the
   construct iterates. Iteration is derived from the written field's own repeatable scope or from any
   per-row read, whatever binds its level, so a bare constant into a repeatable target reaches this
   class with no operand at all
-  ([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). -/
+  ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)). -/
   | fieldNotInRuleGroup
   /-- A read's outermost unbound repeatable level lies beside the written field's group, which lies
   inside the declaring group, and that level's group declares an index field while the written
@@ -338,15 +338,15 @@ inductive KernelStaticDiagnostic where
   | invalidDateRangeFormat
   /-- A semantic index's field-valued key is read from a field **inside the indexed group itself**, so a rule iterating that group cannot key the lookup by its current row's own field. The same lookup keyed by a field outside the group, or by a literal, is admitted from that same locus. -/
   | semanticIndexContainedInIndex
-  /-- `RuleGroup For "key"` selected a containing group that declares no semantic-index field. This carrier-specific projection is calibrated independently of other semantic-index surfaces ([checkpoint](../../docs/SOURCES.md#src-pr2-rulegroup-semantic-index)). -/
+  /-- `RuleGroup For "key"` selected a containing group that declares no semantic-index field. This carrier-specific projection is calibrated independently of other semantic-index surfaces ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-rulegroup-semantic-index)). -/
   | noIndexField
   /-- A valid semantic-index suffix appears in an operator slot that forbids semantic indexing. The
   class is carrier-specific rather than an invalid-index result
-  ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+  ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-semantic-index-carrier-matrix)). -/
   | semanticIndexNotAllowed
   /-- The checked one-level Number carrier writes an otherwise-valid exact-text semantic-index
   suffix on the same selected group it stars
-  ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+  ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-semantic-index-carrier-matrix)). -/
   | semanticIndexAndWildcard
   /-- A rule's error text uses a **semantic index** its condition does not use the same way. The gate's subject is the index rather than the field: measured, a keyed parameter naming a field absent from the condition is admitted whenever the condition keys that group by that key, so the field's own membership is required only of an *unkeyed* parameter, which is refused `INVALID_FIELD` instead. The pairing is exact in both directions — a keyed condition operand does not license an unkeyed parameter, and a differently keyed one does not license this key. No clause produces it yet: the modeled message fragment is nonrepeatable, so it declares no index to pair. -/
   | indexForErrorTextInvalid
@@ -393,7 +393,7 @@ inductive KernelStaticDiagnostic where
   | noFieldsAllowed
   /-- Two `RepetitionNotUnique` keys whose repeatable groups lie on no one hierarchy path, in the form that takes no explicit scope. -/
   | notInSamePath
-  /-- Keys of `RepetitionNotUnique` in two parallel repeatable groups the rule iterates jointly, once an `@From` scope's gates pass. The construct forbids parallel iteration beside it after the parse ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates)). -/
+  /-- Keys of `RepetitionNotUnique` in two parallel repeatable groups the rule iterates jointly, once an `@From` scope's gates pass. The construct forbids parallel iteration beside it after the parse ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-paired-gates)). -/
   | parallelIterationNotAllowed
   /-- Two groups related by parallel iteration whose declared index fields differ in base type. Distinct from the missing-index class: both groups **have** an index here, and only their types disagree. -/
   | indexTypeInconsistent

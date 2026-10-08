@@ -9,7 +9,7 @@ A `Having` filter's own refusals had **no** diagnostic projection at all, so eig
 the filter or to the operator that wraps it, and it is answered by crossing rather than sampling:
 fourteen filters against three carriers — a temporal extremum, a distinct count, and a filled-field
 count — produced the identical class in every cell
-([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)). One shared
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-having-filter-comparison-and-scope-classes)). One shared
 projection is therefore right, and a per-carrier table would have been three copies of one fact.
 
 The comparison rows are the reason the two arms carry the field's kind. A numeric **ordering**

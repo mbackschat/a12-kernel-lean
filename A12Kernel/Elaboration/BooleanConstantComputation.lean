@@ -65,7 +65,7 @@ inductive BooleanConstantComputationElabError where
       iteration is derived and the target's placement is unrestricted at every declaring-group
       choice; only a star inside a precondition draws a refusal, and that one is
       `MVK_NO_WILDCARDS_ALLOWED` from the wildcard gate rather than a placement class
-      ([checkpoint](../../docs/SOURCES.md#src-constant-computation-admits-a-repeatable-target)).
+      ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-constant-computation-admits-a-repeatable-target)).
 
       This capsule refuses it anyway, deliberately and as a representation boundary: `executeResult`
       produces one `(target.id, value)` pair, and a repeatable target writes one cell per
@@ -174,7 +174,7 @@ The Kernel admits a bare constant into a **repeatable** target and computes one 
 instantiated target row, from the target's own group and from any ancestor of it alike, refusing
 only a group the target does not lie below. That row count comes from the target's own repeatable
 scope: a constant carries no operand, so no other source of iteration exists on this carrier
-([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)).
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)).
 
 The fixed family above keeps its own certificate rather than being widened. The two differ in result
 domain — one value under a `FieldId`, one per row under a `CellAddr` — so a shared carrier would

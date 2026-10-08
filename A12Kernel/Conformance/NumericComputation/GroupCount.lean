@@ -328,7 +328,7 @@ example :
 /- A root operand beside a **disjoint** one draws its own class, in either authored order, and the
    disjoint non-root pair beside it is admitted — so this is the root, not the cross-root list.
    Measured on the computation arm through `computation add --dry-run`
-   ([checkpoint](../../../docs/SOURCES.md#src-group-count-static-gates-both-arms)); the arm makes no
+   ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-static-gates-both-arms)); the arm makes no
    difference to any gate in the table. -/
 example :
     checkedCountDiagnosticIn twoRootModel [["Root"], ["Second"]] =
@@ -555,7 +555,7 @@ example :
 /-! ## The repeatable-descendant shell, on the route that carries row topology
 
 The Kernel counts a shell whose only content is a repeatable descendant **structurally** — one
-instantiated row with no filled cell still makes it count ([checkpoint](../../../docs/SOURCES.md#src-repeatable-descendant-group-count)).
+instantiated row with no filled cell still makes it count ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count)).
 The scalar route above still refuses, correctly: its whole input is a cell read. The addressed
 route carries the document, so it answers.
 -/
@@ -736,7 +736,7 @@ example :
 
 A group whose only content is a repeatable descendant **two** repetition levels down counts exactly
 as one level does, measured at the [deep repeatable-descendant
-checkpoint](../../../docs/SOURCES.md#src-deep-repeatable-descendant-group-count) on both codegen
+checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-deep-repeatable-descendant-group-count) on both codegen
 strategies. These replay that request's rows.
 -/
 

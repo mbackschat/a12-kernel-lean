@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.RepeatabilityRestriction
 
 Source-derived. The measured negative that bounds it is that a rule deriving the refusing bound is
 admitted by both available gates and leaves the model valid, so the shape is legal and the pass
-simply is not reached ([checkpoint](../../docs/SOURCES.md#src-repeatability-restriction)). The matrix
+simply is not reached ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-repeatability-restriction)). The matrix
 separates the four spellings onto two bounds, the three-way outcome in both spellings, the per-rule
 refusal against aggregation, the minimum, and the group side's six-part shape gate.
 -/

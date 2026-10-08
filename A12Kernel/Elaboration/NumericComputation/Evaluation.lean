@@ -385,7 +385,7 @@ def readGroupInstanceAt (context : NumericComputationEvaluationContext) (model :
     over-limit, and the nearest repeatable descendant level cannot be in that state: the checked
     document rejects a gap in a row sequence, so a level holding any row holds row 1
     ([case](../../Conformance/CheckedDocument.lean)), and a declared repeatability is a positive
-    integer, so row 1 is in capacity ([checkpoint](../../../docs/SOURCES.md#src-repeatability-domain-peer-measurement)).
+    integer, so row 1 is in capacity ([checkpoint](../../../docs/sources/inbound-group-operand-batches.md#src-repeatability-domain-peer-measurement)).
     What remains is the enclosing binding, which the arm excludes separately when it is over-limit.
     This is a property of this project's own types rather than a Kernel observation, so it is
     provable and not measurable; it is unproved only because `CheckedDocument` checks the
@@ -414,7 +414,7 @@ def readGroupContent (context : NumericComputationEvaluationContext) (model : Fl
     its cells at that environment's own scope, and whether a repeatable descendant holds a row under
     that environment's address, decided by the shared `ResolvedComputationGroupSource`. An over-limit
     ancestor row supplies no environment, so its instance is not read
-    ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)). -/
+    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation)). -/
 def readGroupInstances (context : NumericComputationEvaluationContext) (model : FlatModel)
     (source : CheckedStarredGroupPresenceSource model) :
     Except NumericComputationFault (List (List CellObservation × Bool)) := do
@@ -508,9 +508,9 @@ def growthOfGroupCountOperands
     answer where validation leaves the count unavailable, although this arm writes a count. What
     this reader can see is the one cause measured on this carrier: a fixed group, or one instance of
     a fixed group below a star, whose reads show only unparseable content
-    ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)). A starred
+    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation)). A starred
     row count adds no unknown of its own on validation, measured at the
-    [unavailability checkpoint](../../../docs/SOURCES.md#src-group-count-unavailability). One
+    [unavailability checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-unavailability). One
     undecided instance decides the whole below-star operand, measured beside a filled one. An
     instance in an over-limit row is not read, and suppresses nothing where the Kernel reports its
     cell only as over-limit. -/

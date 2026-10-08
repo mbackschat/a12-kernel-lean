@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.IndexGroupResolution
 
 The two-groups class is measured against the real Kernel with two admitted controls; the several-names
 and broken-name classes are source-derived, each with a measured reason why this project's carrier
-cannot reach it ([checkpoint](../../docs/SOURCES.md#src-index-group-resolution)).
+cannot reach it ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-index-group-resolution)).
 -/
 
 namespace A12Kernel.Conformance.IndexGroupResolution

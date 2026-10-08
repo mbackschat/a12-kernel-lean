@@ -40,7 +40,7 @@ structure SurfaceRepetitionNotUniqueSource where
 
 /-- The exact reviewed sole RNU key with a literal text semantic-index suffix. Composite keys,
 field-valued keys, other literal domains, and runtime duplicate evaluation have no representation
-here ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
+here ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-semantic-index-carrier-matrix)). -/
 structure SurfaceRepetitionNotUniqueSemanticIndexUse where
   target : SurfaceFieldPath
   token : String
@@ -149,9 +149,9 @@ structure CheckedRepetitionNotUniqueSource (model : FlatModel) where
 /-- One otherwise-valid sole RNU key and one valid exact-text semantic-index selection certified as
 the same target and reference group before the carrier-specific refusal is projected. It asks no
 more of the error field than the key's read does: the refusal is measured with the key itself as
-the error field ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)) and with
+the error field ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-semantic-index-carrier-matrix)) and with
 a sibling of it in the key's repeatable group
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)). It supplies no indexed RNU
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26f-gate-order)). It supplies no indexed RNU
 evaluator. -/
 structure CheckedRepetitionNotUniqueSemanticIndexRefusal (model : FlatModel) where
   declaringGroup : GroupPath
@@ -196,7 +196,7 @@ end RepetitionKeyRead
 /-- Read one key as any reference is read: resolve it, classing a path that names a group as a group
 key rather than as the field miss, then walk it against the rule's reading scope with the error field's
 group placing each level it leaves unbound. The walk's missing-star class is measured on a key
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)); its other classes here are the
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26f-gate-order)); its other classes here are the
 shared read's by assumption. -/
 private def readRepetitionKey (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except RepetitionNotUniqueElabError RepetitionKeyRead := do
@@ -277,7 +277,7 @@ private def firstKeyGroupOutside? (referenceGroup : GroupPath) :
         some declaration.groupPath
 
 /-- The `@From` scope's read, the one a key gets and asked with the keys, ahead of every gate the
-construct asks ([inbound](../../docs/SOURCES.md#inbound-2026-09-26k-paired-gates)): resolve it, walk
+construct asks ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-paired-gates)): resolve it, walk
 it, then refuse an empty group, so an empty repeatable group the rule does not iterate draws the
 walk's missing star. It returns the resolved path and whether it names a field. -/
 private def readRepetitionScope (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
@@ -315,7 +315,7 @@ private def resolveScopedReferenceGroup (model : FlatModel) (group : RepeatableG
 inside the rule group, and a repeatable group between the rule group and the deepest key, which is
 the default reference group. A rule at a repeatable root holding every key directly has none, and
 its reference group is the root, whose rows are compared across the document as an explicit `@From`
-of the root compares them ([inbound](../../docs/SOURCES.md#inbound-2026-09-26l-repeatable-root)). -/
+of the root compares them ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26l-repeatable-root)). -/
 private def resolveDefaultReferenceGroup (model : FlatModel) (declaringGroup : GroupPath)
     (declarations : List FlatFieldDecl) :
     Except RepetitionNotUniqueElabError (FlatFieldDecl × RepeatableGroupDecl) := do
@@ -414,7 +414,7 @@ private def certifyRepetitionKeys (model : FlatModel)
       pure ((← certifyRepetitionKey model modelWellFormed plan declaration) ::
         (← certifyRepetitionKeys model modelWellFormed referenceGroup remaining))
 
-/-- Resolve one typed-key branch, select its kernel-defined reference group, and derive the deepest-row topology whose bound prefix is supplied by the caller's selected outer scope. The Kernel's gates answer in their order: every key and the scope read, the key list's gates each over the whole list, then one branch ([inbound](../../docs/SOURCES.md#inbound-2026-09-26f-gate-order)). `writtenGroup` is the rule's error field's group, which places every level a read leaves unbound; the rule group cannot stand in for it, since a rule at the root iterates the error field's repetition. -/
+/-- Resolve one typed-key branch, select its kernel-defined reference group, and derive the deepest-row topology whose bound prefix is supplied by the caller's selected outer scope. The Kernel's gates answer in their order: every key and the scope read, the key list's gates each over the whole list, then one branch ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26f-gate-order)). `writtenGroup` is the rule's error field's group, which places every level a read leaves unbound; the rule group cannot stand in for it, since a rule at the root iterates the error field's repetition. -/
 def elaborateRepetitionNotUniqueSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceRepetitionNotUniqueSource)
     (writtenGroup : GroupPath) :

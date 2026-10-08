@@ -138,7 +138,7 @@ private def validation? (rows : List RowAddr)
    asserted the opposite until a starred-operand probe measured it: kernel 30.8.1 answers `0` on this
    shape and leaves the aggregate evaluable when the over-limit cell is malformed, while the same bad
    cell one index lower makes it non-evaluable
-   ([checkpoint](../../docs/SOURCES.md#src-starred-group-operand-extent)). The over-repetition
+   ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-starred-group-operand-extent)). The over-repetition
    findings stay on the immutable checked document; only the operand's extent changed. -/
 example :
     validation? overCapacityRows [

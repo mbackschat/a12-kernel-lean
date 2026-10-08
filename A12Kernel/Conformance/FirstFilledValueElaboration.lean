@@ -271,7 +271,7 @@ example :
   native_decide
 
 /- Two direct Numbers declaring different fraction digits share one list, which the Kernel admits
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26g-type-match)), and this theory keeps the wider
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26g-type-match)), and this theory keeps the wider
    declaration's scale, as for the mixed star and direct list above. -/
 example :
     errorOf (source (.field (bare "Fallback")) [.field (bare "Count")]) = none ∧

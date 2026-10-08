@@ -218,7 +218,7 @@ example :
 
 /- The shared duplicate gate precedes the measured kind projection. A repeated Confirm field is the
    only list on which both fire here, and the Kernel's order is measured on `Title, InStock, Title`
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-22e-first-filled-gate-order)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-22e-first-filled-gate-order)). -/
 example :
     firstFilledDiagnosticDecision [
       fieldAt ["Form", "Boolies"] "Accepted",
@@ -229,7 +229,7 @@ example :
 /- The Confirm class is asked over the whole expanded list before the type class, so a Confirm field
    draws it leading, trailing, and beside a group that already mixes text and number — the Kernel's
    `InStock, Title`, `Title, Weight, InStock` and `Specs, InStock` rows
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-23-first-filled-gate-positions)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-23-first-filled-gate-positions)). -/
 example :
     firstFilledDiagnosticDecision [
       fieldAt ["Form", "Boolies"] "Accepted", field "Loose"] =
@@ -243,7 +243,7 @@ example :
 /- Without a Confirm field the type class answers for each measured leader/member split, in lists
    and group expansions alike: text then a group of mixed kinds (`Title, Specs`), text then Boolean
    inside one group, Enumeration then Number, and Boolean then Number
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-22e-first-filled-gate-order)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-22e-first-filled-gate-order)). -/
 example :
     firstFilledDiagnosticDecision [field "Loose", group ["Form", "Num"]] =
       some (.mapped .varyingTypesNotAllowed) ∧
@@ -266,7 +266,7 @@ example :
 
 /- Arity and the nested duplicate also precede the Confirm class: a sole Confirm field and a Confirm
    group beside its own member, in either order, are the Kernel's `InStock` and `Flags, Flags/Fragile`
-   rows ([inbound](../../docs/SOURCES.md#inbound-2026-09-23-first-filled-gate-positions)). -/
+   rows ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-23-first-filled-gate-positions)). -/
 example :
     firstFilledDiagnosticDecision [fieldAt ["Form", "Boolies"] "Accepted"] =
       some (.mapped .paramSizeInvalidN) ∧
@@ -510,7 +510,7 @@ private def partialExplicitVerdict (scope : ValidationRelevanceScope) : Option V
 /- Both relevance shapes select the same instantiated cells, but only the wildcard covers the
    complete starred extent. The group answers exactly as its explicit expansion in each shape; the
    Kernel measures that equivalence on codes only
-   ([checkpoint](../../docs/SOURCES.md#src-token-group-partial-runtime)), so the firing's type is
+   ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-token-group-partial-runtime)), so the firing's type is
    this account's. The third declared row leaves both operands open, and the group now types the
    firing `OMISSION` as its expansion does, where it fired `VALUE` while its walk reported no tail. -/
 example :

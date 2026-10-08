@@ -79,7 +79,7 @@ private def remainderAfterPath (keywords : MessageParameterKeywords) :
 
 /-- The names after a complete parent walk. Every fault among them, a lexer fault included, answers
 only after the walk's check, which runs when the walk's own rule ends
-([inbound](../../docs/SOURCES.md#inbound-2026-10-01a-parent-walk-and-dotted-names)), and after the
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-01a-parent-walk-and-dotted-names)), and after the
 lookup of every name the parser consumed before it: a walk opens no choice that reads ahead, so
 `$#../Nope/$` draws the group class
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). A name

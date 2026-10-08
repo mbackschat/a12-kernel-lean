@@ -8,7 +8,7 @@ every field the group contains passes the extent gate its own starred field woul
 not the target: field identifiers alone settle the extent, an identifier on a descendant group
 covers the fields below it, and concrete rows beside a field wildcard are encompassed by it. Every
 coverage below is a row of the peer's first `kf464` table, whose `Lines*` column this locks on `Sum`
-and `MaxValue` ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf464-partial-group-extent)).
+and `MaxValue` ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf464-partial-group-extent)).
 -/
 
 namespace A12Kernel.Conformance.PartialStarredGroupAggregate

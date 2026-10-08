@@ -61,7 +61,7 @@ example :
 
 The declared format decides a temporal cell's family at admission, at the store, and at comparison,
 and it now does so across **all three** date-bearing kinds with each kind on both sides of both
-outcomes in every family ([inbound](../../../docs/SOURCES.md#inbound-2026-09-05d)). Neither estate's
+outcomes in every family ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-05d)). Neither estate's
 DATE/TIME grid could give that: a comparison row read off a classifier grid's DATE_TIME declaration
 would have been the scope transfer both projects spent the week catching.
 
@@ -452,7 +452,7 @@ private def policyModel (shortNames : Bool := true) : FlatModel :=
    ambiguous one is the not-unique class where a positional reading names a miss, a unique one binds
    its field so the segment below misses, and without the flag both miss. A first segment naming a
    local group takes no fallback, so a later segment never reaches it
-   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24c-path-walk)). -/
+   ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-path-walk)). -/
 example :
     let key? (m : FlatModel) (reference : SurfaceFieldPath) : Option KernelStaticDiagnostic :=
       match m.resolveField ["Policy"] reference with
@@ -716,7 +716,7 @@ example :
   native_decide
 
 /- **A scalar membership's members are field-value reads, whose gates answer ahead of the subject's
-   kind gate and the list's own gates** ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25f-field-value-read)).
+   kind gate and the list's own gates** ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25f-field-value-read)).
    A group member draws the group class against a String and a Number subject, and a raw member the
    raw class against a Boolean subject, beside a Number member and after a repeated member. A
    membership asking its subject's kind, the list's base type or its duplicates first reports

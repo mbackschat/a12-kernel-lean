@@ -63,7 +63,7 @@ example :
 /- The re-fit is judged against the expected date, the source's date plus the amount, not the raw
 landing's own date: within the offset delta of midnight the raw landing falls on another day, so the
 reading that keeps the raw landing's date gives `2024-10-27T23:30` and `2024-04-01T00:30` here. The
-Kernel gives these two results on both strategies at a12-dmkits `ed58c513` ([inbound](../../docs/SOURCES.md#inbound-2026-10-02-day-landing)). -/
+Kernel gives these two results on both strategies at a12-dmkits `ed58c513` ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-02-day-landing)). -/
 example :
     berlinDayLanding?
         (dateTime 2024 10 27 0 30 0 (by native_decide)) 1 =

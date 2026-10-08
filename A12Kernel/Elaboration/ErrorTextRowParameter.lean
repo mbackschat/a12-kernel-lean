@@ -18,7 +18,7 @@ it which of the two to fix.
 unstarred.** A condition holding both a starred and an unstarred reference to the same group admits
 the parameter; only a group reached exclusively through a star refuses. Measured, with the
 starred-only and both-references rows differing in one added conjunct
-([checkpoint](../../docs/SOURCES.md#src-error-text-row-parameter)).
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-text-row-parameter)).
 
 **The last stage's class is chosen by the parameter's own spelling, not by the failure.** One check
 decides both, and it reports the semantic-index class when the parameter wrote a semantic index and
@@ -40,7 +40,7 @@ all.
 **Evidence.** The star rule is measured with four separating rows, including the both-references row
 that identifies the rule and a plain-message control that keeps the class on the parameter rather than
 the condition; the resolve stage's class is measured on an undeclared group
-([checkpoint](../../docs/SOURCES.md#src-error-text-row-parameter)). `INVALID_CONDITION` has **no
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-text-row-parameter)). `INVALID_CONDITION` has **no
 witness**: neither the candidate-rule gate nor the whole-model gate surfaces it — both stop at the
 condition's own parse class — so the escaped-dollar quirk is recorded from the Kernel's own source
 note and not from an observation. `INVALID_PATH_SPEC_IN_PARAMETER` is guarded on a non-A12 model and

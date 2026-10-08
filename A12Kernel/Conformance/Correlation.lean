@@ -499,7 +499,7 @@ example :
 
 Measured on the Kernel at both carriers a non-reopened level can take: an above-the-star reference
 on the operand's own path is constant within one host row, and a nonrepeatable leaf is constant
-across the whole document ([checkpoint](../../docs/SOURCES.md#src-filter-reference-level-runtime)).
+across the whole document ([checkpoint](../../docs/sources/having-filter-probes.md#src-filter-reference-level-runtime)).
 Three `Items` rows under one host row therefore all pass together or all fail together, and the
 Kernel's own numbers were `30, 0, 50` against `30, 70, 50` on the same three rows — the middle cell
 is the separator, identical candidates under two filters. Both filters below reference only the

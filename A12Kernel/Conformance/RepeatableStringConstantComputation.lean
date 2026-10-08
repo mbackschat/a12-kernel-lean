@@ -3,8 +3,8 @@ import A12Kernel.Elaboration.CheckedDocument
 
 /-! # Repeatable ordinary String constant locks
 
-The Kernel rows behind these cases are the [cross-group carrier](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)
-and the [target-check](../../docs/SOURCES.md#src-repeatable-string-constant-target-check) checkpoints.
+The Kernel rows behind these cases are the [cross-group carrier](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)
+and the [target-check](../../docs/sources/computation-placement-and-constant-probes.md#src-repeatable-string-constant-target-check) checkpoints.
 -/
 
 namespace A12Kernel.Conformance.RepeatableStringConstantComputation

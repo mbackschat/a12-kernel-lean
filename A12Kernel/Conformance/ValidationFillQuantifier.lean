@@ -78,7 +78,7 @@ survive. The account "an erroneous member suppresses every quantifier over its l
 four rules that all needed the erroneous member's state, so it fitted every row and was still false.
 The two rows that refute it — an existential decided by a known TRUE, a negation decided by a known
 FALSE — are the third and fourth here, and the two clean documents are the controls that make a
-silence a reading rather than a dead fixture ([checkpoint](../../docs/SOURCES.md#src-erroneous-member-quantifier-undecidable)).
+silence a reading rather than a dead fixture ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-erroneous-member-quantifier-undecidable)).
 -/
 
 /-- The three-member lists behind the measured table. The two malformed documents carry **different**

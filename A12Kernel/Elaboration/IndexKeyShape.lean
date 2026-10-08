@@ -8,17 +8,17 @@ import A12Kernel.Semantics.ValueFormalCheck
 type would accept that constant, refusing it `MVK_INDEX_VALUE_INVALID` otherwise. The test is a
 **shape, one rule per kind**, not a value check: a Date key `2020-13-45` fits `yyyy-MM-dd`, and a
 Number key's integer digits are not counted ([`spec/08`](../../spec/08-paths-and-references.md),
-[inbound](../../docs/SOURCES.md#inbound-2026-09-26-index-key-shape)). The semantic-index admission
+[inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26-index-key-shape)). The semantic-index admission
 cascade takes the answer as its constant arm's input, and this module derives it from the
 declaration.
 
 **A String key is judged after its line terminators are collapsed**, CRLF to LF with a lone CR kept,
 by the declared length bounds and the declared pattern over the whole key, and by nothing else: a key
 carrying a line feed fits a field that permits no line breaks
-([inbound](../../docs/SOURCES.md#inbound-2026-09-27a-index-key-dialect)). The pattern is Java's and is
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-key-dialect)). The pattern is Java's and is
 injected as a whole-value matcher, as [`StringPattern`](../Semantics/StringPattern.lean) injects it;
 the matcher receives a Lean `String`, so it counts code points, which is how the Kernel counts them
-here ([inbound](../../docs/SOURCES.md#inbound-2026-09-26m-index-key-pattern)). The length bounds reuse
+here ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-index-key-pattern)). The length bounds reuse
 the stored value's UTF-16 count, an assumption: no row measures a key whose two counts differ.
 
 The empty key is not this module's business. The cascade refuses it by a separate disjunct whatever

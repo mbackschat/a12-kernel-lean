@@ -4,7 +4,7 @@ import A12Kernel.Semantics.StringPattern
 
 /-! # A12Kernel.Elaboration.StringPattern — checked two-stage pattern admission
 
-The kernel first requires Java-pattern compilation and then applies a finite source gate. Compilation remains an injected capability that returns the whole-value matcher compiled from the exact source, so checked evaluation cannot accidentally substitute a matcher for another pattern. The source scan in `Semantics.StringPattern` is an original character walk over the canonically documented exclusion families; its escape set holds `p` and not `P`, since the one uppercase-`\P` refusal once observed was the possessive `}+` adjacency of `\P{L}+` ([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). Passing this gate is not a JavaScript-portability claim.
+The kernel first requires Java-pattern compilation and then applies a finite source gate. Compilation remains an injected capability that returns the whole-value matcher compiled from the exact source, so checked evaluation cannot accidentally substitute a matcher for another pattern. The source scan in `Semantics.StringPattern` is an original character walk over the canonically documented exclusion families; its escape set holds `p` and not `P`, since the one uppercase-`\P` refusal once observed was the possessive `}+` adjacency of `\P{L}+` ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections)). Passing this gate is not a JavaScript-portability claim.
 -/
 
 namespace A12Kernel
@@ -205,7 +205,7 @@ namespace StringPatternConditionElabError
 /-- Project the measured pattern-source failure, the wrong-left-kind class, and the field operand's
 resolver classes. The left-kind gate is **total** over the kinds a declaration can carry: DATE_RANGE
 was the one the original admission matrix omitted, and it draws the same class as the other seven on
-both operators ([checkpoint](../../docs/SOURCES.md#src-pattern-comparison-left-kind-gate-is-total)).
+both operators ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-comparison-left-kind-gate-is-total)).
 The resolver classes are the shared ones on both operators
 ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)).
 The surface makes the right operand a String constant structurally; remaining local refusals stay

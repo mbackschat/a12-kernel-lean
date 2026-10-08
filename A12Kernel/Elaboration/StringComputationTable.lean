@@ -51,7 +51,7 @@ inductive StringComputationTableError where
 read of the target draws anywhere in a computation
 ([`spec/09`](../../spec/09-computations.md) §1), measured in a sole and a later alternative, and an
 unguarded alternative among several draws `MVK_ERROR_EMPTY_PRECONDITION` on a String target as on a
-Number one ([inbound](../../docs/SOURCES.md#inbound-2026-10-02a-alternative-walk)). The structural
+Number one ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-02a-alternative-walk)). The structural
 refusals claim no class. -/
 def StringComputationTableError.diagnostic? : StringComputationTableError → Option KernelStaticDiagnostic
   | .guardTargetReference _ => some .errorReferenceToCalculatedField

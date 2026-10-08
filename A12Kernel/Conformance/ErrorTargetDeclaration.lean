@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.ErrorTargetDeclaration
 
 The two cascade classes, the missing-declaration class, and the whole-rule reference class are
 measured against the real Kernel; the other four are source-derived and honestly unwitnessed
-([checkpoint](../../docs/SOURCES.md#src-error-target-declaration)). The matrix separates the two
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)). The matrix separates the two
 declaration classes under lenience, the branch the overlapping reference roles decide, the cascade's
 model split and internal order, and the accumulating custom gate against the first-match-wins gates
 beside it.
@@ -89,7 +89,7 @@ example :
    itself. The third row is the separator — a profile offending both classes answers with the
    parallel one, which the peer measured in both authored text orders precisely because a single
    order cannot distinguish that from "the later read wins"
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections)). -/
 example :
     key? (formOnly false { parallelIteration := true, indexFieldLevel := 1 }) =
         some "MVK_ERROR_FIELDGROUP_ITERATION5_INVALID" ∧
@@ -115,7 +115,7 @@ example :
    group binding a deeper level draws the plain-iteration class; the same reference with a sibling
    indexed group instead draws the parallel one; and adding a direct reference to that last condition
    admits it, which is what identifies the branch rather than the iteration as the cause
-   ([checkpoint](../../docs/SOURCES.md#src-error-target-declaration)). -/
+   ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)). -/
 example :
     key? (formOnly false {}) = none ∧
       key? (formOnly false { firstInnerLevel := some 1 }) =

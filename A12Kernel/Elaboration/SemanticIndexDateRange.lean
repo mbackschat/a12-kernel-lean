@@ -81,7 +81,7 @@ def diagnostic? : SemanticIndexDateRangeElabError → Option KernelStaticDiagnos
   | .directBound cause => cause.diagnostic?
   -- Measured on this carrier rather than inherited: a keyed reference naming a non-DateRange field
   -- at an overlap operand is refused `MVK_NO_DATE_RANGE`
-  -- ([checkpoint](../../docs/SOURCES.md#src-keyed-date-range-overlap-admits-both-sides)).
+  -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-keyed-date-range-overlap-admits-both-sides)).
   | .selectedTargetNotDateRange _ => some .noDateRange
   -- The overlap certifier's own classes carry measured codes for a *direct* operand. Reporting one
   -- here would assert that code for a keyed operand, which no observation covers.
@@ -450,7 +450,7 @@ end CheckedSemanticIndexDateRangeOverlap
 This pairing is measured rather than carried across from the keyed/direct one: the Kernel admits a
 keyed operand in both positions, and refuses the two under the *same* key with
 `MVK_DUPLICATE_PARAM1`
-([checkpoint](../../docs/SOURCES.md#src-keyed-date-range-overlap-admits-both-sides)). That refusal is
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-keyed-date-range-overlap-admits-both-sides)). That refusal is
 why this is a separate certificate rather than a relaxation of `keyedFirst`: a duplicate gate has no
 meaning when one side cannot be keyed, so the neighbouring structure could not state it.
 

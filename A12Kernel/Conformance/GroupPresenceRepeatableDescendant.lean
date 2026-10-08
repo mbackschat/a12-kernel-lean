@@ -8,7 +8,7 @@ ordinary group only the first can fire, so the second is untested until a group'
 a repeatable descendant.
 
 That shape is measured at the [repeatable-descendant
-checkpoint](../../docs/SOURCES.md#src-repeatable-descendant-group-count): one instantiated row
+checkpoint](../../docs/sources/group-and-iteration-probes.md#src-repeatable-descendant-group-count): one instantiated row
 carrying no filled cell still makes the group count. These cases lock that this arm agrees, on the
 same discriminator. This module's own fixture exercises the row constituent, because inside a
 repeatable descendant a cell cannot exist without a row; the Kernel-side shape that separates both

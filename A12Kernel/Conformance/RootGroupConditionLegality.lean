@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.RootGroupConditionLegality
 
 Every row is a measured cell: six form keywords × two star spellings × two condition languages, three
 row keywords, and an accepted control in each language
-([checkpoint](../../docs/SOURCES.md#src-form-condition-constructs)).
+([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-form-condition-constructs)).
 -/
 
 namespace A12Kernel.Conformance.RootGroupConditionLegality

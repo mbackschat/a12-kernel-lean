@@ -14,7 +14,7 @@ document into the stream, so the extrema were admissible and unevaluable.
 representation question, and it is settled by measurement rather than chosen here: an extremum's
 result is refused against a field of a different temporal family exactly as a plain field of its
 own family would be, so a domain that erased the family would accept comparisons the Kernel refuses
-([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). The fold was already
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-extrema-operand-family-is-positional)). The fold was already
 parametric in that type, so nothing about it changes; what this module supplies is the projection
 into one family's domain.
 
@@ -239,7 +239,7 @@ one.
 **Over-limit rows supply nothing.** The declared-capacity extent is a property of the operand rather
 than of the consuming operator, which is what the capacity sweep's distinct-count document separated
 from a mere value agreement
-([checkpoint](../../docs/SOURCES.md#src-capacity-consumer-sweep)). The extremum is a fifth consumer,
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-capacity-consumer-sweep)). The extremum is a fifth consumer,
 and the two accounts genuinely differ for it: an over-limit cell is formally unavailable, and this
 fold *aborts* on an unavailable operand where the sweep's uniqueness carrier merely skips one — so
 reading the complete view would answer UNKNOWN for a document the Kernel folds. No retained row

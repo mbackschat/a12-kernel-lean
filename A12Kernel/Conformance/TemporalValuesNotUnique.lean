@@ -310,7 +310,7 @@ example :
    the load-bearing ones**, because two admitted pairs are equally what two categories each holding
    two kinds would produce, and only an edge crossing between them can tell those apart. A DATE
    declared with the clock format supplies that edge to both clock kinds, leaving every kind one
-   measured edge from the rest ([inbound](../../docs/SOURCES.md#inbound-2026-09-22-temporal-category)).
+   measured edge from the rest ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-22-temporal-category)).
 
    The two controls are what keep the admissions readable. A DATE beside the TIME at **differing**
    formats is refused by the format gate with the operand class and never reaches the category

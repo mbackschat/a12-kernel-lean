@@ -94,7 +94,7 @@ inductive TimeTargetElabError where
 
 /-- One renderable complete-clock target, admitted by its declared **format** alone.
 
-    This is the Kernel's own rule at this position: measured across all three temporal families, a computed target is gated by its declared format string and not by its declared kind, so a DateTime or a DATE declared with the degenerate `HH:mm:ss` format is a legal clock target ([checkpoint](../../docs/SOURCES.md#src-computed-temporal-target-reads-the-format-not-the-kind)). The runtime's 1970 transport date and the model zone do not enter clock rendering. -/
+    This is the Kernel's own rule at this position: measured across all three temporal families, a computed target is gated by its declared format string and not by its declared kind, so a DateTime or a DATE declared with the degenerate `HH:mm:ss` format is a legal clock target ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computed-temporal-target-reads-the-format-not-the-kind)). The runtime's 1970 transport date and the model zone do not enter clock rendering. -/
 structure CheckedClockFormatTarget (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
   format : TimeTargetFormat
@@ -105,7 +105,7 @@ structure CheckedClockFormatTarget (model : FlatModel) where
 
 /-- The clock target **narrowed to a TIME declaration**, which is strictly narrower than the Kernel.
 
-    Its TIME-only narrowing is **retired**. It had been retained on carrier count — the cross-kind cell measured for the repeatable-constant carrier alone — and the carrier axis is now closed rather than enumerated: a computation *is* a comparison condition whose operand 1 is the target's own `FieldValue`, so the admission gate is `checkDateType` over the two operands' result formats, in which the target's declared kind is not a reachable input; and every computed temporal value, constant and constructed alike, reaches one `handleBerechnetenWert(VkDate, …)` overload from one emitted call site, which renders through the target's declared format, so the carrier is erased before the store ([checkpoint](../../docs/SOURCES.md#src-computed-target-gate-is-carrier-invariant)). A carrier cannot reach either decision, so no family owed a row of its own. -/
+    Its TIME-only narrowing is **retired**. It had been retained on carrier count — the cross-kind cell measured for the repeatable-constant carrier alone — and the carrier axis is now closed rather than enumerated: a computation *is* a comparison condition whose operand 1 is the target's own `FieldValue`, so the admission gate is `checkDateType` over the two operands' result formats, in which the target's declared kind is not a reachable input; and every computed temporal value, constant and constructed alike, reaches one `handleBerechnetenWert(VkDate, …)` overload from one emitted call site, which renders through the target's declared format, so the carrier is erased before the store ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computed-target-gate-is-carrier-invariant)). A carrier cannot reach either decision, so no family owed a row of its own. -/
 abbrev CheckedTimeTarget := @CheckedClockFormatTarget
 
 namespace CheckedTemporalTargetPolicy
@@ -306,9 +306,9 @@ inductive OmittedComponentDateTargetElabError where
     It constrains **only** the format, leaving `partialMode` and the declared kind free. The
     Kernel decides this shape from the declared format string alone: a `yyyy-MM` DATE and a `yyyy-MM`
     DATE_FRAGMENT accept the same constant and store the same text
-    ([checkpoint](../../docs/SOURCES.md#src-component-omitting-date-formats)), so constraining the
+    ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-component-omitting-date-formats)), so constraining the
     precision here would refuse a declaration the Kernel accepts — and the same holds of the kind,
-    which the [carrier-invariance checkpoint](../../docs/SOURCES.md#src-computed-target-gate-is-carrier-invariant)
+    which the [carrier-invariance checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computed-target-gate-is-carrier-invariant)
     closes for every carrier rather than one at a time. -/
 structure CheckedOmittedComponentDateTarget (model : FlatModel) (sourceCarriesYear : Bool := true) where
   checked : CheckedTemporalTargetPolicy model
@@ -384,7 +384,7 @@ inductive DateTimeTargetElabError where
 
 /-- One checked complete DateTime target with an executable whole-second format and concrete model-zone profile, admitted by its declared **format** alone.
 
-    This completes the family rule the clock and full-Date certificates already state: a computed temporal target is gated by its declared format string and not by its declared kind. Both halves are measured for this carrier — admission across all three families, and the **store**, where a DATE declared with the DateTime format stores `2024-03-05T12:30:00` and a DATETIME declared `yyyy-MM-dd` stores `2024-03-05`, each against its same-kind control ([checkpoint](../../docs/SOURCES.md#src-datetime-carrier-stores-by-its-format)). Rendering here is format-driven by construction, so the store row confirms the construction rather than merely being consistent with it. -/
+    This completes the family rule the clock and full-Date certificates already state: a computed temporal target is gated by its declared format string and not by its declared kind. Both halves are measured for this carrier — admission across all three families, and the **store**, where a DATE declared with the DateTime format stores `2024-03-05T12:30:00` and a DATETIME declared `yyyy-MM-dd` stores `2024-03-05`, each against its same-kind control ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-datetime-carrier-stores-by-its-format)). Rendering here is format-driven by construction, so the store row confirms the construction rather than merely being consistent with it. -/
 structure CheckedDateTimeFormatTarget (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
   format : DateTimeTargetFormat

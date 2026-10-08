@@ -26,7 +26,7 @@ no reachability question gates the clause.
 **A group operand is admitted, and its expansion is gated by this operator's rule.** The group's
 own certificate is therefore this module's rather than the neighbour's: a group carrying one
 component set in two spellings is admitted here and refused there, on the identical group
-([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)). Two
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-group-operand-follows-its-own-operator)). Two
 completed users whose gates genuinely differ is the case the reuse rule excludes, so the certificate
 is duplicated deliberately. A fixed group beneath an unstarred repeatable ancestor is refused by the
 ordinary binding rule, which is the shared shape checker's business and not this gate's.
@@ -79,7 +79,7 @@ def firstMismatchedTemporalFieldComponents?
     Deliberately not the neighbour's `CheckedTemporalUniquenessGroup`, whose `oneDeclaredFormat`
     obligation is the uniqueness carrier's gate. That certificate refuses a group carrying one
     component set in two spellings, and the Kernel **admits** exactly that group here while refusing
-    it there ([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)).
+    it there ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-group-operand-follows-its-own-operator)).
     Two completed users whose gates genuinely differ is the case the reuse rule excludes, so the
     certificate is duplicated on purpose rather than parameterized. -/
 structure CheckedTemporalDistinctCountGroup (model : FlatModel) where
@@ -174,13 +174,13 @@ inductive TemporalDistinctCountElabError where
   | mixedComponentSets (path : List String) (found expected : String)
   /-- A **partially known** Date operand. This operator compares the decoded date, which a partial
       does not have, and refuses all three declared precisions where its uniqueness neighbour admits
-      every one ([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)). -/
+      every one ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-partial-date-precision-operand-gate)). -/
   | partialDate (path : List String) (mode : TemporalPartialMode)
   /-- A group whose expansion's **first** declaration is not temporal, so the authored list is not
       this overload's at all. **No class is claimed**: the Kernel reports the leading family's own
       code — `MVK_NUMBER_AND_NON_NUMBER` for a Number-first expansion — which the Number overload
       owns, exactly as it does for a scalar list whose first operand is a Number
-      ([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)).
+      ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-group-operand-follows-its-own-operator)).
       The positional rule reaches a group's expansion in declaration order, so which family leads
       decides the code and the offending kind alone does not. -/
   | groupExpansionFirstNotTemporal (path : List String)
@@ -370,7 +370,7 @@ def firstPartialTemporalOperand? :
     certified here by `certifyDistinctCountGroup` rather than by the shared group certificate, which
     carries the neighbouring operator's format-equality gate and would refuse an expansion this
     operator admits — one component set in two spellings
-    ([checkpoint](../../docs/SOURCES.md#src-temporal-group-operand-follows-its-own-operator)).
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-group-operand-follows-its-own-operator)).
 
     An earlier version of this comment said a group slot was *declined*. It was already wrong when
     written and a conformance case locking the admitted expansion sat beside it, which is the shape

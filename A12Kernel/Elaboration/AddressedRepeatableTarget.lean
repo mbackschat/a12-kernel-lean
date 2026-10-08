@@ -8,7 +8,7 @@ This module owns the model-relative certificate shared by exact-address computat
 
 Placement through **this certificate** is containment, not parenthood: the target is admitted from its own group and from any ancestor of it, and refused only from a group it does not lie below. Several exact-address families still carry their own equality-based placement gate and are not governed by this module; [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) names them. Do not read this paragraph as an estate-wide rule.
 
-The [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate) measures both halves against the Kernel, for a bare constant and for the sibling-star operand shape these families use, and separately measures that parent-local correlation is identical from the target's own group, from one ancestor, and from the root. Admission therefore widens without moving any family's correlation clause. That correlation row covers the String sibling-star representative only; other carriers inherit the shared star-axis mechanism rather than their own row.
+The [declaring-group gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computation-declaring-group-gate) measures both halves against the Kernel, for a bare constant and for the sibling-star operand shape these families use, and separately measures that parent-local correlation is identical from the target's own group, from one ancestor, and from the root. Admission therefore widens without moving any family's correlation clause. That correlation row covers the String sibling-star representative only; other carriers inherit the shared star-axis mechanism rather than their own row.
 -/
 
 namespace A12Kernel
@@ -20,7 +20,7 @@ inductive AddressedRepeatableTargetElabError where
   /-- The target is the field a repeatable group declares as its index. The Kernel refuses it
   whether the computation is declared in that group or at an ancestor, while an ordinary sibling is
   admitted; a rule may still report on it, so this belongs to the computation's target and not to
-  the field ([inbound](../../docs/SOURCES.md#inbound-2026-09-21-corrections),
+  the field ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections),
   [checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-index-iteration-and-constant-refusal-classes)).
   Measured with a Number target under a constant and an aggregate; checked after placement, a
   position no row separates. -/

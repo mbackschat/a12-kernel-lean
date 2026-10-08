@@ -488,7 +488,7 @@ private def bodyDiagnostic? (having : SurfaceCorrelatedHaving) : Option KernelSt
 
 /- **A body's comparison is raised ahead of the filter's iteration class.** The peer measures it on a
    sibling repetition the filter does not iterate
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)). Its `Parties/Count` against
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-filter-body)). Its `Parties/Count` against
    the scale-2 `Paid` draws the scale gate's class, mirrored by `Other/Amount` here. Its control,
    `Parties/Name` against a String literal, draws the iteration class, and so does the sound Number
    twin against `Amount`. Checking each side's environment as it is read names the iteration class
@@ -530,7 +530,7 @@ example :
 
 /- **An equality with a non-Number side leaves this Number fragment and claims no class**, because
    the Kernel judges an equality by its pair and draws `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for this
-   one ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), a class no ordering gate
+   one ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-filter-body)), a class no ordering gate
    draws. The ordering `[Note] < [Amount]` is the measured String row of the ordering class. -/
 example :
     let text := surfaceNumber .inner amount.groupPath "Note"
@@ -548,7 +548,7 @@ example :
    as it does outside a filter
    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair)),
    on the account that a body's comparison draws its outside class
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), which measures no Date there. -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-filter-body)), which measures no Date there. -/
 example :
     let date := surfaceNumber .inner amount.groupPath "Due"
     let text := surfaceNumber .inner amount.groupPath "Note"
@@ -568,7 +568,7 @@ example :
    iterates, on a fixed group
    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid))
    and on a repeatable group the filter does not iterate
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-field-value-read)). A field resolver reports
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-field-value-read)). A field resolver reports
    the group as a name resolving to nothing, and the reader's missing-star class that the same read
    draws outside a filter would name the level. A group gate asking only repeatable groups leaves the
    fixed one to the field miss. -/
@@ -700,18 +700,18 @@ example : havingErrorOf ["Shop"] source
 
 A starred single-field operand takes the same verdict **and the same Kernel code** as a plain field
 of that kind, in either operand position, measured across the whole declared-kind grid
-([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). STRING, ENUM,
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-extrema-operand-family-is-positional)). STRING, ENUM,
 BOOLEAN, CONFIRM and DATERANGE each draw `MVK_NOT_SORTABLE` leading the list, and every non-Number
 kind draws it after a Number — DATE included, which is the one kind whose class depends on its
 position. An earlier version of this note added that the sortable leader set was "exactly
 `{NUMBER, DATE}`"; that was refuted — the set is `{NUMBER}` plus **every** temporal kind
-([provenance](../../docs/SOURCES.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale)),
+([provenance](../../docs/sources/inbound-handbacks.md#reviewed-2026-09-07-handback--the-extremum-leader-set-and-the-powers-derived-scale)),
 which is why the rows below assert the five refused kinds and never the set's complement.
 
 **A `Having`-filtered star reads the declaration too**, measured on the pairing rather than on the
 absolute class: each filtered row below is twinned with the plain-star row it must equal, which is
 the claim that survives even where a comparison gate reports before the operand gate
-([checkpoint](../../docs/SOURCES.md#src-filtered-star-supplies-the-leading-kind)). The filter here is
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-filtered-star-supplies-the-leading-kind)). The filter here is
 a presence leaf rather than the measured numeric one, because `SurfaceCorrelatedHaving` carries no
 number-against-literal arm; the filter's *content* is not what the gate reads. -/
 

@@ -18,7 +18,7 @@ neighbouring coverage separates:
 A fixed group is its own first instance. A list is decided when every operand is, and counts their
 sum. Each step reads the partial preliminary, so relevance and admitted content come from the same
 owner the rule evaluator uses. Every step and its separating coverage are the peer's second `kf464`
-table ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf464-partial-group-count)).
+table ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf464-partial-group-count)).
 -/
 
 namespace A12Kernel

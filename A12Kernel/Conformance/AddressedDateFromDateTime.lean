@@ -265,7 +265,7 @@ example :
       | _ => false) = true := by
   native_decide
 
-/- A regression guard, not a measurement. Execution reads the target's own repeatable scope and the resolved source declaration, never the declaring group, so these two runs agree by construction; the example fails only if a future execute path starts consulting `declaringGroup`. The Kernel's own correlation invariance under an ancestor declaration is measured separately at the [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate). -/
+/- A regression guard, not a measurement. Execution reads the target's own repeatable scope and the resolved source declaration, never the declaring group, so these two runs agree by construction; the example fails only if a future execute path starts consulting `declaringGroup`. The Kernel's own correlation invariance under an ancestor declaration is measured separately at the [declaring-group gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computation-declaring-group-gate). -/
 example : (do
     let ancestorDeclared ← ancestorOutcomes? 2 [
       outerCell "2024-06-15T00:30:00"
@@ -369,7 +369,7 @@ example :
 `["Project", "Milestones"]` group repeats and still takes a target two levels of repetition deep, and
 outer-row correlation survives it. The root `["Project"]` is refused on the source channel rather than
 the placement channel, because the operand is still spelled for the middle base — the same pair of
-codes the [declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate)
+codes the [declaring-group gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computation-declaring-group-gate)
 records as the origin of the superseded parenthood reading. -/
 example :
     nestedAncestorOperation?.isSome = true ∧
@@ -518,7 +518,7 @@ private def thirdLevelPathsWith (extra : List RowAddr)
    codegen strategies on this same `Milestones`/`Tasks`/`Subtasks` shape with all three capacities at
    two, where four documents differing only in which level overflows produce an identical eight-leaf
    computed result and report the excess rows cleared
-   ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). -/
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)). -/
 private def overInner : Option (List (List Nat × Bool)) :=
   thirdLevelPathsWith [{ group := 30, path := [1, 1, 3] }]
 

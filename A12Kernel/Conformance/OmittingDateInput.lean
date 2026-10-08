@@ -85,7 +85,7 @@ private def classify? (format text : String) : Outcome :=
 /- **The declared kind is not read, and the three kinds classify identically.** A component-omitting
 format is in the same kind-independent vocabulary as a complete one, so a TIME or DATE_TIME field may
 legally declare `yyyy-MM` or `MM-dd`, and the Kernel classifies its stored text exactly as it
-classifies a DATE field's ([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). A kind conjunct here
+classifies a DATE field's ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05b)). A kind conjunct here
 refused certification, which left such a cell classified by **no** classifier at all. The values are
 one admitted per family and one refusal, so admission alone does not carry the row. -/
 example :
@@ -226,7 +226,7 @@ example :
 The bound above holds because no year is available. Declare one and a year *is* available, so February
 follows that year's leap rule: `02-29` is admitted under a leap Base Year and refused under a common
 one, on bytes that differ in nothing but the declared year
-([checkpoint](../../docs/SOURCES.md#src-yearless-day-bound-reads-the-base-year)). February is the only
+([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-yearless-day-bound-reads-the-base-year)). February is the only
 month whose two answers differ, which is why one witness settles the rule rather than one month of it.
 
 This is a **refinement in the direction the no-Base-Year clause's own reason points**, not an exception
@@ -349,7 +349,7 @@ private def roundTrips (format : OmittingDateFormat) (month day : Nat) : Bool :=
 
 /- **A yearless target's store reads back as the components it wrote**, on every real month/day pair
    of a leap year and all four yearless spellings. Each spelling's store is separately measured
-   ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)), so this case is not what
+   ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-base-year-yearless-store)), so this case is not what
    establishes the component order; it is what keeps the two directions from drifting apart later,
    since a change to either one alone breaks it on every pair whose month and day differ. `MM` writes
    no day and reads back the implied day one. -/

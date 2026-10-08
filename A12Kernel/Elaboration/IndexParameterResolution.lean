@@ -35,8 +35,8 @@ condition that never mentions the index field it names.
 
 **Evidence.** The resolution classes, `INVALID_INDEX_FIELD_REP_ITER`, and the non-repeatable branch's
 admitting shape are measured
-([resolution and cross-check](../../docs/SOURCES.md#src-index-terminal-refusal-classes),
-[non-repeatable gate](../../docs/SOURCES.md#src-nonrepeatable-index-field-gate)).
+([resolution and cross-check](../../docs/sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes),
+[non-repeatable gate](../../docs/sources/message-and-pointer-probes.md#src-nonrepeatable-index-field-gate)).
 `INVALID_INDEX_FIELD_COMPOSED_INDEX` and `INVALID_INDEX_FIELD_REP` are **source-derived and unwitnessed**:
 the first needs a group declaring several index-field names, which the A12 model surface has no spelling
 for, and the second needs a repeatability disagreement that survives the gates before it. The

@@ -679,10 +679,10 @@ example : checkedGroupCount?.map (fun checked =>
 
 /- Two dimensions that look alike and are not. Once content is admitted, the group's own formal
    error is invisible to the count, which fires exactly as over two clean groups ([unavailability
-   checkpoint](../../docs/SOURCES.md#src-group-count-unavailability)). **Partial coverage is the
+   checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-count-unavailability)). **Partial coverage is the
    opposite**: the count needs every field of an operand group relevant and goes silent otherwise,
    even over a group whose covered cell is filled, where `GroupFilled` and the quantifiers still
-   fire ([partial-coverage checkpoint](../../docs/SOURCES.md#src-partial-coverage-group-operands)).
+   fire ([partial-coverage checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-partial-coverage-group-operands)).
    This case had carried the error dimension's answer into the coverage one by uniformity. -/
 example : checkedGroupCount?.map (fun checked =>
     (checked.core.evalSelected {

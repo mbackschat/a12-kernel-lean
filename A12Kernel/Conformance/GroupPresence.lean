@@ -110,7 +110,7 @@ example :
    blocks only the *negative* answer: an already admitted content decides the group filled however
    its siblings failed, while a group whose sole non-empty descendant is malformed leaves presence
    undecided and takes the whole count with it. Measured on both codegen strategies at the
-   [unavailability checkpoint](../../docs/SOURCES.md#src-group-count-unavailability), where the
+   [unavailability checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-count-unavailability), where the
    threshold rule fires with the invalid sibling present and goes silent when the invalid cell
    stands alone. -/
 example : numberOfFilledGroups [admittedAndErroneous, cleanFilled] = .value 2 := by native_decide
@@ -134,7 +134,7 @@ example : (numberOfFilledGroups [state [empty] true true, cleanFilled],
 example : numberOfFilledGroups [cleanFilled, cleanEmpty] = .value 1 := by native_decide
 
 /- Coverage is the dimension where the count and the presence predicates **diverge**, measured at
-   the [partial-coverage checkpoint](../../docs/SOURCES.md#src-partial-coverage-group-operands).
+   the [partial-coverage checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-partial-coverage-group-operands).
    Visible content decides `GroupFilled` and the quantifiers under partial coverage; the numeric
    count instead needs every field of every operand group in the relevant set and is otherwise
    undecided. One coverage separates them: with a group's filled cell covered and its empty sibling

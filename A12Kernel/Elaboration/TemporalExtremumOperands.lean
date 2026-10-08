@@ -29,7 +29,7 @@ way, so this is one mechanism across the entity-list operators rather than a rul
 **The measured denominator of that rule is four operators and this module covers two.** The peer
 enumerated `MinValue`, `MaxValue`, `Min` and `Max` reporting the same two codes in the same two
 orders with a family-homogeneous control in both forms
-([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). `Min`/`Max` are the **value-expression** pair
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05b)). `Min`/`Max` are the **value-expression** pair
 and a different operator from the field-list pair modelled here, so their agreement is coverage this
 project does not hold rather than a consequence of it, and nothing below should be read as deciding
 them ([SG23](../../docs/gaps/numeric-and-temporal.md)).
@@ -74,7 +74,7 @@ inductive TemporalExtremumOperandElabError where
   | groupExpansionEmpty (path : List String)
   /-- A **partially known** Date operand, which this operator admits only fully known. Measured on
       all three declared precisions at both extrema
-      ([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)). -/
+      ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-partial-date-precision-operand-gate)). -/
   | partialDate (path : List String) (mode : TemporalPartialMode)
   /-- The shared entity-list checker's own refusal: arity, the wildcard gate, and both duplicate arms. It is delegated rather than restated, because those gates do not vary by carrier. -/
   | shape (error : FieldEntityShapeElabError)
@@ -104,7 +104,7 @@ structure CheckedTemporalExtremumOperands (model : FlatModel) where
       Absence carries two meanings, told apart by the operand's own form rather than by this list.
       At any unfiltered form it means what it says: no filter. At a **filtered star** it means
       admitted but not foldable — the Kernel admits the operand
-      ([checkpoint](../../docs/SOURCES.md#src-filtered-star-temporal-carriers-and-binding-depth)),
+      ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-filtered-star-temporal-carriers-and-binding-depth)),
       so refusing it here would re-introduce the over-refusal this gate was just corrected for, while
       folding an uncertified filter could select the wrong rows. The reader declines that operand
       instead, which is the one honest answer available.
@@ -128,7 +128,7 @@ namespace TemporalExtremumOperands
     verdict** rather than the representation limit an earlier comment claimed: the extrema refuse a
     DATE_RANGE operand outright with `MVK_NOT_SORTABLE`, in either operand position, and so do both
     distinct-count members with their own two codes
-    ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). So no component
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-extrema-operand-family-is-positional)). So no component
     set is owed for it here, and none can be inferred later from an admission that does not exist. -/
 def componentsOf? (declaration : FlatFieldDecl) : Option TemporalComponents :=
   match declaration.policy.kind with
@@ -142,7 +142,7 @@ def componentsOf? (declaration : FlatFieldDecl) : Option TemporalComponents :=
     **rows**, never fields, so it cannot reach the component set of the field being read — and the
     Kernel agrees: the filtered star is admitted wherever the plain one is and draws the identical
     incompatibility against a differing set, in either operand position
-    ([checkpoint](../../docs/SOURCES.md#src-filtered-star-temporal-carriers-and-binding-depth)).
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-filtered-star-temporal-carriers-and-binding-depth)).
     No filter elaboration happens here because none is needed for this gate; the filter's own
     legality is the entity-list checker's business, delegated with every other shape gate. -/
 private def operandDeclarations (model : FlatModel) :
@@ -259,7 +259,7 @@ def diagnostic? : TemporalExtremumOperandElabError → Option KernelStaticDiagno
   | .incompatibleComponents _ _ _ => some .dateFormatsNotCompatible
   | .firstNotTemporal _ _ => none
   -- Every kind is measured in the later position now, across two models and both extremum operators
-  -- ([checkpoint](../../docs/SOURCES.md#src-later-position-class-is-total-and-presence-is-admitted)),
+  -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-later-position-class-is-total-and-presence-is-admitted)),
   -- so the projection no longer branches: the Kernel's generalizing message text turned out to be
   -- the rule. A `.temporal` operand never reaches this arm — a temporal later operand that disagrees
   -- is a component mismatch and carries its own class.

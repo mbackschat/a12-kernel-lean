@@ -377,7 +377,7 @@ example : admitted plainModel [12, 1] = false := by native_decide
 example : refusal? plainModel [1, 2, 12] = some .dateAndNonDate := by native_decide
 
 /- Boolean in later position draws the same class, measured
-   ([checkpoint](../../docs/SOURCES.md#src-later-position-kinds-and-group-expansion-class)), and
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-later-position-kinds-and-group-expansion-class)), and
    `MinValue` agrees with `MaxValue` on it. Three kinds now share this class from three separate
    families, which is what makes the Kernel's generalizing message text — *"if the first parameter is
    a date than all parameters have to be dates"* — look like a rule rather than one pair's accident.
@@ -388,7 +388,7 @@ example : admitted plainModel [1, 14] = false := by native_decide
 
 /- **Every** kind draws it. Enumeration, Confirm and DATE_RANGE were the last three unmeasured, and
    all three landed on this class beside a Boolean control on the same model
-   ([checkpoint](../../docs/SOURCES.md#src-later-position-class-is-total-and-presence-is-admitted)),
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-later-position-class-is-total-and-presence-is-admitted)),
    so the gate is now total in the later position rather than a set of measured kinds. Enumeration
    stands for the three here because the projection no longer branches on kind at all — which is the
    point: a row per kind would test the same constant. -/
@@ -405,7 +405,7 @@ The gate reads the declaration a `Having`-filtered star names, exactly as it rea
 The filter selects **rows**, so it cannot change the component set of the field being read, and the
 measured rows say the Kernel agrees: a filtered star is admitted wherever the plain star is, and
 draws the same incompatibility against a differing set
-([checkpoint](../../docs/SOURCES.md#src-filtered-star-temporal-carriers-and-binding-depth)).
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-filtered-star-temporal-carriers-and-binding-depth)).
 
 This capsule previously declined the form, on the stated ground that the neighbouring DateRange
 carrier refuses starred operands outright and reading admission across that boundary would be the
@@ -473,7 +473,7 @@ example :
 
 The **presence** form — a star above a group that is not itself a repeatable level — is admitted,
 and its component gate reads the expansion exactly as a starred repeatable group's does
-([checkpoint](../../docs/SOURCES.md#src-later-position-class-is-total-and-presence-is-admitted)).
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-later-position-class-is-total-and-presence-is-admitted)).
 The measured control that makes this a property of the *star* rather than of the group is the same
 path read **without** one, which draws `MVK_NO_WILDCARD`.
 
@@ -509,7 +509,7 @@ example :
 A partially known Date is refused as an extremum operand on all three declared precisions, and the
 gate reads the **precision**: each of the three declarations below carries the same complete
 component set as the admitted `DottedDate` beside it and differs from it in `datePrecision` alone
-([checkpoint](../../docs/SOURCES.md#src-partial-date-precision-operand-gate)). A gate reading
+([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-partial-date-precision-operand-gate)). A gate reading
 components admits every one of them, which is what this project did.
 
 This settles the **partially known** carrier and nothing beyond it: that operand never reaches the
@@ -530,7 +530,7 @@ example :
    component mismatch before a partial Date answers first, and the swapped list answers with the
    partial. The shared duplicate and arity gates precede both. These are the Kernel's
    `Released, CoverFrom, ApproxDay` rows and their neighbours
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-23b-entity-list-operand-reads)). -/
 example :
     refusal? plainModel [2, 3, 41] = some .dateFormatsNotCompatible ∧
     refusal? plainModel [2, 41, 3] = some .partialDateNotAllowed ∧

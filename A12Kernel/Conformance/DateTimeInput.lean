@@ -106,7 +106,7 @@ example :
 kind conjunct was removed, and that refusal left such a cell classified by no classifier at all — its
 text unclassifiable rather than classified wrongly. The Kernel classifies it exactly as it classifies
 a DATE_TIME field's, over the complete twelve-format vocabulary on all three date-bearing kinds
-([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05b)). -/
 example :
     (certifyDateTimeInputField (declaration (kind := .date))).toOption.isSome =
         true ∧

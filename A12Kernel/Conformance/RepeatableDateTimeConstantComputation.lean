@@ -3,9 +3,9 @@ import A12Kernel.Elaboration.CheckedDocument
 
 /-! # Repeatable DateTime constant locks
 
-The Kernel rows behind the placement and admission cases are the [cross-group carrier](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)
-and [literal-composition](../../docs/SOURCES.md#src-temporal-constant-literal-composition) checkpoints.
-The [zone-split checkpoint](../../docs/SOURCES.md#src-datetime-constant-zone-split) additionally fixes
+The Kernel rows behind the placement and admission cases are the [cross-group carrier](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)
+and [literal-composition](../../docs/sources/temporal-constant-and-base-year-probes.md#src-temporal-constant-literal-composition) checkpoints.
+The [zone-split checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-datetime-constant-zone-split) additionally fixes
 the stored text and the model-zone gap refusal on this exact carrier.
 -/
 
@@ -26,7 +26,7 @@ private def stamp := temporalField 1 "S" .dateTime TemporalComponents.now
 
 /-- A **DATE** declaration carrying the DateTime format string. The family gate reads the declared
 format and not the field's kind, and this cell is now measured on both halves — admitted, and storing
-through that format ([checkpoint](../../docs/SOURCES.md#src-datetime-carrier-stores-by-its-format)) —
+through that format ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-datetime-carrier-stores-by-its-format)) —
 so this carrier admits it. Its components are complete, which the certificate still requires. -/
 private def dateTimeShapedDate := temporalField 2 "D" .date TemporalComponents.now
   ["Probe", "Rows"] [10] "yyyy-MM-dd'T'HH:mm:ss"

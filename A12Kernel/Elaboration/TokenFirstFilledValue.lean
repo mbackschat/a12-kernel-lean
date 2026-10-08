@@ -72,7 +72,7 @@ private def measuredKindExpansion? (model : FlatModel) :
 
 /-- The Confirm class is asked over the whole expanded list before the type class, so a Confirm
     declaration in any position decides the list
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-23-first-filled-gate-positions)). The type
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-23-first-filled-gate-positions)). The type
     class compares each later declaration with the first and is projected only for a measured split
     between the leader and the first member of another family. -/
 private def firstFilledMeasuredKindError? (model : FlatModel)
@@ -115,7 +115,7 @@ def diagnostic? : FirstFilledTokenElabError → Option KernelStaticDiagnostic
   | .confirmOperand _ => some .noBoolyAllowed
   | .varyingTypes _ _ => some .varyingTypesNotAllowed
   -- The filter's class is the **filter's own**, measured identical across three structurally
-  -- different wrapping carriers ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)),
+  -- different wrapping carriers ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-having-filter-comparison-and-scope-classes)),
   -- so it delegates here rather than being dropped. Only the filter half delegates: the shared
   -- token checker's **kind** classes were measured against a String-literal value list and this is
   -- a different operator with its own message vocabulary.

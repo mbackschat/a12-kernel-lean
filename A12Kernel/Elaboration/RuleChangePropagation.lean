@@ -39,7 +39,7 @@ either — where the same rename alone would have been.
 **Evidence.** Source-derived. `dmtool`'s own `field move` **does** rewrite conditions, error-field
 relative paths and message parameters, and the result passes the Kernel's model check — measured — so
 an independent implementation performs the propagation this service declines
-([checkpoint](../../docs/SOURCES.md#src-rule-change-propagation)). That measurement establishes the
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-rule-change-propagation)). That measurement establishes the
 rewrite is possible and sound, not that the Kernel behaves differently: `dmtool` reaches the model
 through its own editor rather than through this service, so neither class has a witness on that route
 and both are stated here as the total function the Kernel computes.

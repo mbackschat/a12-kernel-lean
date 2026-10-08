@@ -10,7 +10,7 @@ cannot express the second contribution — but the fold itself stays uniform, so
 carrying a form-dependent contribution is enough and no per-form result type is needed.
 
 Measured at the [starred group-count
-checkpoint](../../docs/SOURCES.md#src-starred-group-count-computation) over seven documents on
+checkpoint](../../docs/sources/group-and-iteration-probes.md#src-starred-group-count-computation) over seven documents on
 both Kernel codegen strategies. These cases replay that table at the clause that owns the
 fold, under a stated mapping from each measured document to an operand reading: a
 filled `FlatValue` to a present fixed cell, and `n` instantiated `Rows` to `starredRows n`.
@@ -78,7 +78,7 @@ example :
 /-! ## Two starred operands, and the same group named twice
 
 Measured on a12-dmkits' kernel oracle at the [two-star
-rows](../../docs/SOURCES.md#src-starred-group-count-computation), under the same stated mapping:
+rows](../../docs/sources/group-and-iteration-probes.md#src-starred-group-count-computation), under the same stated mapping:
 each starred operand's group contributes its instantiated row count, so naming one group twice
 yields that group's reading twice. Only the runtime fold is measured there; static admission of
 these shapes is not, and `Conformance/NumericComputation/StarredGroupCount.lean` carries that

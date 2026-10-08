@@ -170,7 +170,7 @@ example :
 
 /- A temporal **operand's** admitted family is its declared format's and not its declared kind's,
 which is the rule the store and comparison already followed
-([checkpoint](../../../docs/SOURCES.md#src-temporal-operand-family-is-the-formats-not-the-kinds)).
+([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-operand-family-is-the-formats-not-the-kinds)).
 Extractors and the completed-period difference all read the component set: the kind conjunct these
 rows replaced refused the two admissions here, a wrong refusal rather than a wrong message. The
 `DateAsClock` difference stays refused because a clock carries no date at all, so the widening

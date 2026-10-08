@@ -311,7 +311,7 @@ def measuredBooleanValueCountStarredGroupShape
 /-- A measured Boolean-group computation form with one repeatable axis, no deeper repeated
     declaration, and the group certificate's constant-specific field kinds. The fixed below-star
     form joined the repeatable terminal once the Kernel computed it on the expansion account
-    ([checkpoint](../../docs/SOURCES.md#src-below-star-group-computation)). -/
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-below-star-group-computation)). -/
 structure CheckedBooleanValueCountStarredGroupSource
     (model : FlatModel) (expected : Bool) where
   group : CheckedBooleanValueCountGroup model expected

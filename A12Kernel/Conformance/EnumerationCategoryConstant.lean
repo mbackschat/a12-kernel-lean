@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.EnumerationCategoryConstant
 
 Every row replays a measured one: twelve conditions on a model with three enumeration values and one
 two-valued category, across both carriers
-([checkpoint](../../docs/SOURCES.md#src-enumeration-category-constant)).
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-enumeration-category-constant)).
 -/
 
 namespace A12Kernel.Conformance.EnumerationCategoryConstant

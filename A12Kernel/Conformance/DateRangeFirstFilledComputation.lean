@@ -340,7 +340,7 @@ example :
     }] = some "VALUE|03/10" := by
   native_decide
 
-/- The fifth temporal carrier shares the star family's placement account: declaring at the source's own repeatable group puts the fixed target above the declaring group and is admitted, because a star aggregate derives no iteration, while an unrepresentable declaring group is refused. Measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement). -/
+/- The fifth temporal carrier shares the star family's placement account: declaring at the source's own repeatable group puts the fixed target above the declaring group and is admitted, because a star aggregate derives no iteration, while an unrepresentable declaring group is refused. Measured at the [fixed-target star placement checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement). -/
 example :
     (checkedAt? ["Cart", "Lines"] yearTarget.id "YearSource").isSome = true ∧
       (checkedAt? [] yearTarget.id "YearSource").isNone = true := by

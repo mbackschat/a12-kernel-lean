@@ -222,7 +222,7 @@ namespace TokenEntityElabError
     `MVK_ONLY_STRING_ENUM_NUMBER_ALLOWED` message names, so it passes that gate and then fails the
     literal comparison with `MVK_INVALID_TYPES_FOR_COMPARISON`, while DATE, BOOLEAN, DATE_RANGE and
     CONFIRM never reach that stage
-    ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
     Collapsing the two would report the admitted-set class for a kind the Kernel says is admitted.
 
     Every other arm keeps its local identity: they are this theory's representation limits or

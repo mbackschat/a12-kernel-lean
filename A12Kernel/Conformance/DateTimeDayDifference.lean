@@ -26,7 +26,7 @@ example :
 /- Each counted step lands as `AddDays` does, its re-fit judged against the expected date: a source
 within the offset delta of midnight counts `1` across the autumn transition and `2` across the spring
 one, where judging the raw landing's own date counts `2` and `1`. Kernel values at a12-dmkits
-`ed58c513` ([inbound](../../docs/SOURCES.md#inbound-2026-10-02-day-landing)). -/
+`ed58c513` ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-02-day-landing)). -/
 example :
     EuropeBerlinLegacyProfile.differenceInDays?
         (dateTime 2024 10 26 0 30 0 (by native_decide))

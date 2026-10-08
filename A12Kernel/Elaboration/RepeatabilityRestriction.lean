@@ -36,7 +36,7 @@ all — not a refusal, just an ordinary rule.
 **Evidence.** Source-derived, with a measured negative that bounds the claim honestly. A rule
 matching every precondition above and deriving a maximum of exactly one — the refusing case — is
 **admitted** by the candidate-rule gate, persists, and leaves the model valid under the whole-model
-gate ([checkpoint](../../docs/SOURCES.md#src-repeatability-restriction)). So the rule shape is legal
+gate ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-repeatability-restriction)). So the rule shape is legal
 and the restriction pass is simply not part of either gate; it belongs to a rule-collection
 meta-information pass that no route this project has reaches. Neither class has a witness, and both
 are stated here as the total function the Kernel computes.

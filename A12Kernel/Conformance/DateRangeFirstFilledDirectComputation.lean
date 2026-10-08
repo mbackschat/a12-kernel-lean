@@ -388,9 +388,9 @@ example :
 /- Placement is unconstrained on **both** sides. The target sits in `["Other"]` while the declaring
 group and the sources stay in `["Cart"]`, and a source may equally sit in a group of its own: nothing
 in a direct nonrepeatable list iterates, so the Kernel's containment gate cannot fire anywhere in it.
-Measured at the [fixed-target star placement checkpoint](../../docs/SOURCES.md#src-fixed-target-star-placement),
+Measured at the [fixed-target star placement checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement),
 whose direct-list row admits the target shape at four placements, and at the
-[cross-group source checkpoint](../../docs/SOURCES.md#src-date-range-direct-list-cross-group-sources),
+[cross-group source checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-date-range-direct-list-cross-group-sources),
 which admits a list whose two sources lie in two different groups. A representable declaring group is
 still required, which is what the empty-path row separates. -/
 example :

@@ -106,7 +106,7 @@ private def comparisonDiagnostic? (path : GroupPath) : Option (Option KernelStat
 repeatable group the rule does not iterate, and an admitted fixed group. The unresolved name's class
 is what separates resolution from the scope gate, which a projection leaving it unmapped would hide
 (peer `PathGatePopulation.repetitionRows`,
-[inbound](../../docs/SOURCES.md#inbound-2026-09-27a-current-repetition)). -/
+[inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-current-repetition)). -/
 example : comparisonDiagnostic? ["Root", "Missing"] = some (some .invalidEntity) ∧
     comparisonDiagnostic? ["Root", "Rows"] = some (some .noWildcard) ∧
     comparisonDiagnostic? fixedPath = none := by

@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.IterationLegality
 
 Each case fixes one reading a consumer would otherwise adopt: that a wildcard is local to its own level, that the refusal class names the defect, or that `RepetitionNotUnique` and parallel iteration are independently legal.
 
-The ordinary-reference and parallel-iteration cases have measured witness rules and admitted controls: the parallel-iteration gate distinguishes a construct legal alone from its illegal combination ([checkpoint](../../docs/SOURCES.md#src-iteration-and-semantic-index-legality)).
+The ordinary-reference and parallel-iteration cases have measured witness rules and admitted controls: the parallel-iteration gate distinguishes a construct legal alone from its illegal combination ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-iteration-and-semantic-index-legality)).
 -/
 
 namespace A12Kernel.Conformance.IterationLegality
@@ -61,7 +61,7 @@ example :
 /- The rule's own iteration addresses the level above the index group where a star does not: from
    inside `Regions`, `Regions/Stores For "S1"` is admitted, while the starred `Regions*/Stores For
    "S1"` from the same rule is the lock above, the star's level carrying no relation the scan reads
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-star-above-index)). No row measures the
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26c-star-above-index)). No row measures the
    other iterated relations, such as an off-path parallel level, which the scan also admits. -/
 example :
     referenceRefusal { levels :=
@@ -107,7 +107,7 @@ example :
    class although it carries the index (`SIwild3`), while `[/It/L/V For /It/P/Q/QV]`, whose key makes
    the same crossing, draws the semantic-index class (`SIkeySI`, the case above). The peer's
    `Riders/Legs/Amount For "X"` beside `Claims/Amount For Riders/RiderRef` repeats the pair
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-key-addressing)). Deriving the flag from the
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25i-key-addressing)). Deriving the flag from the
    index marker would give this keyed value the semantic-index class. -/
 example :
     referenceRefusal { levels := [{ marker := .iteration, relation := .belowErrorPath },

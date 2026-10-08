@@ -8,7 +8,7 @@ A root group is refused as an entity-list operand with `MVK_ROOT_GROUP_REFERENCE
 asked of the list the duplicate scans return rather than of each operand as it is read. Two
 consequences separate it from a per-operand refusal, and the cases below lock both on two carriers
 the Kernel measures it on, `FirstFilledValue` and the Number `FieldValuesNotUnique`
-([inbound](../../docs/SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate)), plus the
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-23-entity-list-root-group-gate)), plus the
 value-list quantifier's root rows:
 
 * every entity of a model lies under its root, so a root beside any entity of its **own** root is a
@@ -168,7 +168,7 @@ example :
 private def quantifiers : List ValueListQuantifier := [.atLeastOne, .no, .notAll]
 
 /- The peer's value-list rows, read at a12-dmkits `40f6d53c4`
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-dispositions)). All three quantifiers share
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-dispositions)). All three quantifiers share
    the gate and its order: the duplicate scan answers ahead of it, and it answers ahead of the kind
    gate, where `Ledger` draws the root class and its Date alone the kind class. -/
 example :
@@ -261,7 +261,7 @@ example :
 The empty starred group is refused while it is resolved, and every operand is resolved before the
 duplicate scans, so it answers leading a repeated field, trailing one, and beside the root that
 contains it — the Kernel's `Lapses*` and `Sum(/Item, Hollow)` rows
-([inbound](../../docs/SOURCES.md#inbound-2026-09-23b-entity-list-operand-reads)). The shape error
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-23b-entity-list-operand-reads)). The shape error
 names the group, and both carriers project it to `MVK_GROUP_IS_EMPTY`. -/
 
 private def lapses : SurfaceFieldEntityOperand :=

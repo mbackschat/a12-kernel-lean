@@ -179,7 +179,7 @@ needs its own rows. It encodes the same rule — containment against a represent
 ancestor `["Form"]` admitted and the deeper `["Form", "Rows", "Details"]` refused even though it lies inside
 the target's own subtree. The invalid-group cause travels on the `ordinary` channel here, because this error
 type has no `target` constructor; that is a channel difference, not a different rule. The
-[declaring-group gate checkpoint](../../docs/SOURCES.md#src-computation-declaring-group-gate) owns the
+[declaring-group gate checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computation-declaring-group-gate) owns the
 Kernel measurement. -/
 example :
     errorOf target.id ["Form"] (.literal "B") = none ∧

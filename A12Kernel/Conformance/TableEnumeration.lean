@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.TableEnumeration
 
 The cases fix two things a consumer gets wrong in opposite directions: that `ValueNotConsistent` is a condition it might one day see succeed on an A12 model, and — the mirror error — that the four classes behind its table check are simply dead code rather than a gate that a later model version could open.
 
-The measured witnesses are the table check on an ordinary two-value enumeration ([checkpoint](../../docs/SOURCES.md#src-table-enumeration-inertness)) and the two shape arms ahead of it ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-gate-raise-points)). Every case below that exercises a later arm supplies the table declaration by hand, because no A12 model can.
+The measured witnesses are the table check on an ordinary two-value enumeration ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-table-enumeration-inertness)) and the two shape arms ahead of it ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-gate-raise-points)). Every case below that exercises a later arm supplies the table declaration by hand, because no A12 model can.
 -/
 
 namespace A12Kernel.Conformance.TableEnumeration

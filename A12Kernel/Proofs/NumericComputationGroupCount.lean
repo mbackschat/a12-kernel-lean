@@ -119,7 +119,7 @@ theorem readGroupCountOperand_fixed_refuses_outside_admitted_shapes
     they did so through two independent tests — the validation arm's `rowWithinGroup`, and the
     compute arm's own scan over the repeatable groups its shape query returns. The Kernel was
     measured to answer the same on this shape at any repetition depth and with only the outer row
-    instantiated ([checkpoints](../../docs/SOURCES.md#src-group-count-row-domains)), so the two
+    instantiated ([checkpoints](../../docs/sources/group-and-iteration-probes.md#src-group-count-row-domains)), so the two
     tests agreeing is the property that must not quietly lapse: without it one arm could count a
     shell the other calls empty, on a document neither arm's own cases exercise.
 

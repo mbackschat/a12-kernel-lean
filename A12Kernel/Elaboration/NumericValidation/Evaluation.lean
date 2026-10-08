@@ -64,7 +64,7 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
       -- The extent is the operand list, deliberately **not** the subtree slot capacity the field
       -- count uses. A listed group contributes at most one however many descendant rows it holds,
       -- and it counts as filled through a descendant row; both are measured
-      -- ([checkpoint](../../../docs/SOURCES.md#src-group-count-list-extent)). Only a *starred*
+      -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-list-extent)). Only a *starred*
       -- member can contribute per row, and this arm refuses one at elaboration.
       match context.groups.resolveAll groups with
       | none => .error .groupState
@@ -403,7 +403,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
       -- The extent is the sum of each member's own capacity, one per fixed group, the declared row
       -- maximum per star, and the product of the reopened levels' maxima per fixed group below a
       -- star, so a below-capacity count still types OMISSION
-      -- ([checkpoint](../../../docs/SOURCES.md#src-group-count-list-extent)). An unretained maximum
+      -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-list-extent)). An unretained maximum
       -- leaves no finite extent to reach and yields unavailability rather than an invented rule.
       match (operands.mapM CheckedGroupCountOperand.declaredExtent?).map List.sum with
       | none => pure (.error .groupState)

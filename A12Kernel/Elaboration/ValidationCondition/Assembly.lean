@@ -502,7 +502,7 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup writtenGroup :
         | .terminalRepeatable checked => (checked.group.path, checked.path.bindingScope)
         | .terminalPresence checked => (checked.groupPath, checked.path.bindingScope)
       -- A level above the first star is read per row, so the walk answers ahead of every list gate
-      -- ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25-operator-gates-wait)).
+      -- ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25-operator-gates-wait)).
       if let some unbound := model.refusedReadLevel? rowGroup writtenGroup bindingScope then
         throw (.groupReference (.unboundOperandLevel groupPath unbound))
       match source with
@@ -573,7 +573,7 @@ def fromGroupList (model : FlatModel) (rowGroup : GroupPath)
       -- The star gate answers behind the root gate: a sole starred root draws the root class under a
       -- quantifier that forbids a star. No row measures a star beside an overlap, so its place after
       -- the overlap gate is the one ordering consistent with every measured row, not a measurement
-      -- ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)).
+      -- ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-group-operand-walk)).
       if operator.requiresMultipleOperands &&
           resolved.any ResolvedGroupListOperand.isStarred then
         throw (.starredGroupNotAllowed operator)

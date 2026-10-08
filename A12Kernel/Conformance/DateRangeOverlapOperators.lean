@@ -221,7 +221,7 @@ example :
 /- **The scalar slot rejects every non-scalar form with one class.** Plain star, filtered star, fixed
    group, starred group and the presence terminal all draw
    `MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON`, each against the same form admitted in the
-   `In` slot ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
+   `In` slot ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
    The paired slots are what make this a property of the **slot** rather than of the form: without
    them a refusal here would be equally well explained by the operator refusing the shape outright,
    which is what the peer's own table measured admitted on the other side. -/
@@ -253,7 +253,7 @@ example :
 /- A **starred** group in the scalar slot draws it too, so the class is not the fixed group's alone.
    A starred group whose expansion mixes kinds draws `MVK_VARYING_TYPES_NOT_ALLOWED` instead, because
    the base-type gate reports before the slot's
-   ([checkpoint](../../docs/SOURCES.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-daterange-scalar-slot-rejects-every-nonscalar-form)).
    A fixed group of mixed kinds takes the same gate, read rather than measured on this carrier, an
    assumption SG6 records. The root gate stands ahead of both in the Kernel's checker, read rather
    than measured here too, so a root, fixed or starred, is refused without a class. -/
@@ -317,7 +317,7 @@ example :
 
 /- Every operand is read before the scalar slot's gate: a starred scalar beside a list operand that
    does not resolve draws the resolver's class. The measured row reads an index that cannot be read
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)), which this surface cannot
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-list-reads)), which this surface cannot
    spell; the resolver's miss stands in for it as a failure of the same read, an assumption SG6
    records. -/
 example :

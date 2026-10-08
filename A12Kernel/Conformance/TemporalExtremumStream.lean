@@ -285,7 +285,7 @@ A TIME beside a **DATE_TIME declared time-only** is the pair the measured compon
 kind test would refuse, and it reaches the fold because a temporal cell's admitted family is its
 declared component set's rather than its declared kind's — the Kernel reads the format at admission,
 at the store, and at value comparison alike
-([checkpoint](../../docs/SOURCES.md#src-temporal-value-family-is-the-formats-not-the-kinds)). These
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds)). These
 rows are the ones that would have gone silently wrong: before that correction the DATE_TIME cell was
 malformed, so the fold answered UNKNOWN for a list the Kernel folds. -/
 
@@ -494,7 +494,7 @@ example : addressedFoldOf
 /-! ### The over-limit row supplies nothing, and the two accounts genuinely differ here
 
 The declared-capacity extent is a property of the operand rather than of the consuming operator
-([checkpoint](../../docs/SOURCES.md#src-capacity-consumer-sweep)). The extremum is the first consumer
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-capacity-consumer-sweep)). The extremum is the first consumer
 for which that choice is not a formality: an over-limit cell is formally unavailable, and this fold
 **aborts** on an unavailable operand where the sweep's uniqueness carrier merely skips one. So the
 complete view would answer UNKNOWN for a document the Kernel folds, and the two rows below say which
@@ -527,7 +527,7 @@ example : (do
   native_decide
 
 /- The **filtered** star is admitted — the Kernel admits it
-   ([checkpoint](../../docs/SOURCES.md#src-filtered-star-temporal-carriers-and-binding-depth)) — and
+   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-filtered-star-temporal-carriers-and-binding-depth)) — and
    folded over its **selected** rows.
 
    The filter here excludes the row holding the maximum, so the filtered fold and the unfiltered
@@ -750,7 +750,7 @@ private def refusal? (names : List String) :
    fold, which is that entry point's own requirement rather than a gap: its element type is
    `FullDate` and it will not hold a value at a precision the declaration does not name. The
    reduced-precision entry points below fold the same list, and the Kernel's ordering of such values
-   is measured ([checkpoint](../../docs/SOURCES.md#src-extrema-component-omitting-fold)). -/
+   is measured ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-extrema-component-omitting-fold)). -/
 example : (admitted? ["Month", "Month2"]).isSome = true := by native_decide
 
 example : refusal? ["Month", "Month2"] =

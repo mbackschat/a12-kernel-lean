@@ -24,7 +24,7 @@ private def numberDeclaration : FlatFieldDecl :=
 /-- The eighth left kind. DATE_RANGE was the one kind the 22-case admission matrix did not carry,
     and it draws the same class as the other seven — so the gate is total over the left kinds rather
     than a set of measured ones
-    ([checkpoint](../../docs/SOURCES.md#src-pattern-comparison-left-kind-gate-is-total)). -/
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-pattern-comparison-left-kind-gate-is-total)). -/
 private def dateRangeDeclaration : FlatFieldDecl :=
   { id := 3
     groupPath := ["Claim"]

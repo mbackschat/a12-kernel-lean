@@ -116,7 +116,7 @@ def CheckedCell.WellFormed {α : Type} (cell : CheckedCell α) : Prop :=
     The two coincide for every ordinary declaration and part on a cross-kind one, where the Kernel
     reads the format throughout — admission, the store, and value comparison alike — so an
     `HH:mm:ss` DATE holds a clock and a `yyyy-MM-dd` TIME holds a date
-    ([checkpoint](../../docs/SOURCES.md#src-temporal-value-family-is-the-formats-not-the-kinds)).
+    ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds)).
     Comparing against the declared kind instead made such a cell malformed, which is a wrong *value*
     rather than a wrong diagnostic: every consumer then read UNKNOWN for a cell the Kernel stores and
     compares. A component set naming neither family admits no temporal value. -/

@@ -429,7 +429,7 @@ example :
 
 /- A raw target is read by the generated comparison before its operation, so a copy from an
 ordinary String draws the raw read's class alone
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)). Only this field-source row is
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26c-target-read)). Only this field-source row is
 measured; the literal-source refusal above keeps its local error and claims the class by the same
 target read, since the read does not depend on the operation. The last conjunct is that order rather
 than a row: an operation that fails on its own still meets the raw target's read first, because the

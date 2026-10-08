@@ -244,7 +244,7 @@ def WrittenFieldPlacement.of (declaringGroup writtenGroup : GroupPath) : Written
     String, Enumeration or Date one, an Enumeration beside a Boolean, a Boolean beside a Confirm, and
     a Date beside a date range
     ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope),
-    [inbound](../../../docs/SOURCES.md#inbound-2026-09-25b-index-type-table)).
+    [inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25b-index-type-table)).
 
     **Across kinds only the measured direction is claimed**: every other pair of differing kinds, the
     reverse of a measured one included, is `unmeasured`, although the rows fit a pairing by base type
@@ -330,7 +330,7 @@ def FlatModel.firstUnboundOperandLevel? (model : FlatModel) (declaringGroup writ
     the walk and placed by the written field, or `none` when `bound` covers every level of it. `bound` defaults to what the rule group binds; a
     caller with a narrower reading scope passes that. With the written field outside the rule group
     nothing binds a level, the rule group's own included, so every level draws containment
-    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24d-star-containment)). Inside it the
+    ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment)). Inside it the
     written field also binds the levels holding it: the Kernel admits those reads, and the walk passes
     them claiming no class, because an evaluation at `bound` cannot bind them
     ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)). -/
@@ -503,7 +503,7 @@ def FlatModel.requirednessScopeFor (model : FlatModel)
 This is the Kernel's own group-operand gate. Measured 2026-08-29, an operand naming a group whose
 subtree carries no field is refused `MVK_GROUP_IS_EMPTY` (and `MVK_ROOT_GROUP_IS_EMPTY` for a root),
 while a group populated only through a descendant subgroup is admitted, so the test is over the whole
-subtree rather than the direct children ([checkpoint](../../../docs/SOURCES.md#src-empty-declared-group)).
+subtree rather than the direct children ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group)).
 It is deliberately not the same question as `hasGroupPath`: a group with no fields may still be
 **present**, because a repeatable declaration names it. -/
 def FlatModel.groupContributesField (model : FlatModel) (path : GroupPath) : Bool :=
@@ -511,7 +511,7 @@ def FlatModel.groupContributesField (model : FlatModel) (path : GroupPath) : Boo
 
 /-- A group is present in the flattened namespace when it owns or contains a declared field, or has its own repeatable declaration.
 
-An empty **nonrepeatable** group is therefore outside this representation, and that is a limit of `FlatModel` rather than of the Kernel: measured 2026-08-29, the Kernel admits such a group and reports the model valid ([checkpoint](../../../docs/SOURCES.md#src-empty-declared-group)). One gate would diverge if that input could be built, since the message group position's root gate reports its undeclared-root class where the Kernel reports the ordinary group class; no `FlatModel` can build it, and giving groups their own declaration list is the change that would lift the limit, which [SG9](../../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) carries.
+An empty **nonrepeatable** group is therefore outside this representation, and that is a limit of `FlatModel` rather than of the Kernel: measured 2026-08-29, the Kernel admits such a group and reports the model valid ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group)). One gate would diverge if that input could be built, since the message group position's root gate reports its undeclared-root class where the Kernel reports the ordinary group class; no `FlatModel` can build it, and giving groups their own declaration list is the change that would lift the limit, which [SG9](../../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) carries.
 
 An empty **repeatable** group is a different matter and *is* expressible, because a repeatable declaration names its group directly. Presence is therefore not admission: `groupContributesField` is the gate a group **operand** must pass, and this query is not. -/
 def FlatModel.hasGroupPath (model : FlatModel) (path : GroupPath) : Bool :=
@@ -553,7 +553,7 @@ def FlatModel.declarationSlots? (model : FlatModel) (enclosing : Nat)
 
 /-- Sum declaration capacities below the already bound ancestry. Fixed-group count movement and
 starred field-fill predicates differ in where that ancestry stops, but count the same remaining
-row combinations per declaration ([group-fill checkpoint](../../../docs/SOURCES.md#src-group-field-fill-declared-slots)). -/
+row combinations per declaration ([group-fill checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-field-fill-declared-slots)). -/
 def FlatModel.declarationsSlotCapacity? (model : FlatModel) (enclosing : Nat)
     (declarations : List FlatFieldDecl) : Option Nat :=
   declarations.foldl (init := some 0)
@@ -569,7 +569,7 @@ This is deliberately not `(groupSubtreeFields path).length`. The two coincide ex
 subtree owns no repeatable descendant, so a movement rule keyed on the declaration count looks
 correct on every model without one — and kernel 30.8.1 keeps such a count grow-only until this
 capacity is reached, not until the declaration count is
-([checkpoint](../../../docs/SOURCES.md#src-filled-field-count-nested-capacity)). -/
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)). -/
 def FlatModel.groupSubtreeSlotCapacity? (model : FlatModel) (path : GroupPath) :
     Option Nat :=
   model.declarationsSlotCapacity? (model.repeatableScopeForGroupPath path).length
@@ -767,7 +767,7 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
       else if let some first := model.unresolvedFirstSegment? declaringGroup reference then
         -- The short-name fallback answers a relative path's first segment whatever follows it. A
         -- unique match binds a field and the segment below it misses, so only an ambiguous one
-        -- changes the class ([inbound](../../../docs/SOURCES.md#inbound-2026-09-24c-path-walk)).
+        -- changes the class ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-path-walk)).
         if model.fieldRefByShortNameAllowed &&
             (model.fields.filter (·.name == first)).length > 1 then
           throw (.shortNameNotUnique first)
@@ -799,7 +799,7 @@ def FlatModel.groupNamedBy? (model : FlatModel) (declaringGroup : GroupPath)
     group rather than a field, or `none` when it names none. The rule group binds and the written field places an
     unbound level, as for any read, and a level the walk passes leaves the root and kind gates to
     answer: a legal parallel iteration draws the kind class
-    ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25-parallel-index-gates)). -/
+    ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25-parallel-index-gates)). -/
 def FlatModel.groupFieldSlotRefusal? (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (reference : SurfaceFieldPath) : Option (GroupPath × GroupFieldSlotRefusal) := do
   let group ← model.groupNamedBy? declaringGroup reference

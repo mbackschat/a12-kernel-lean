@@ -10,12 +10,12 @@ model whose condition language is en_US they do not lex at all and the construct
 unexpected-token class — the same class a misspelling draws. On a de_DE model they lex, reach the
 checker, and draw the construct's own class. So the identical authored text produces two different
 diagnostics on two models differing only in that one setting, and only one of them says what is
-actually wrong ([checkpoint](../../docs/SOURCES.md#src-form-condition-constructs)).
+actually wrong ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-form-condition-constructs)).
 
 **The six are not the whole family.** The peer measures a seventh form-level construct, a count of
 the forms specified, drawing the same class on a German model, and two numbering functions that
 draw `MVK_UNEXPECTED_TOKEN` there; none of the three is modelled here
-([inbound](../../docs/SOURCES.md#inbound-2026-09-25b-condition-class-order)).
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25b-condition-class-order)).
 
 **The construct's own class shadows the two that follow it.** The checker that names the construct
 runs before the one that inspects its argument, so an A12 model never reaches the wildcard checks:
@@ -128,7 +128,7 @@ inside a grouping parenthesis at either place. There the German class is raised 
 itself, with no argument list or a broken one alike. Where no condition opens, as a field operand or
 after a completed condition, the German parser refuses the keyword as an unexpected token, and this
 function, taking no position, does not model that
-([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-form-keyword)). -/
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-form-keyword)). -/
 def a12FormConditionRefusal (language : ConditionLanguage) (_keyword : FormConditionKeyword)
     (_starred : Bool) : RootGroupConditionRefusal :=
   match language with

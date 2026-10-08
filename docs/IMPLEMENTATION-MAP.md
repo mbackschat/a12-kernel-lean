@@ -55,7 +55,7 @@ The eventual-completeness denominator is mined from the Kernel rather than infer
 
 <a id="upstream-kernel-locked-inventory-composition-triage-2026-07-25"></a>
 
-Capability records state the current `L` boundary. The reusable lock and deliberate-non-lock receipts are maintained in the [Kernel lock source index](SOURCES.md#src-kernel-lock-index); exact retained observations remain in [`EVIDENCE.md`](EVIDENCE.md).
+Capability records state the current `L` boundary. The reusable lock and deliberate-non-lock receipts are maintained in the [Kernel lock source index](sources/kernel-locks.md#src-kernel-lock-index); exact retained observations remain in [`EVIDENCE.md`](EVIDENCE.md).
 
 <a id="evidence-snapshot"></a>
 

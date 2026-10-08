@@ -75,7 +75,7 @@ theorem checkedSingleCorrelatedRule_modelWellFormed
 
 /-- Candidate and captured reads of the same declaration are distinct exact operands. This is the
     reusable identity law behind the reviewed `$P, P` authoring row
-    ([checkpoint](../../docs/SOURCES.md#src-pr2-correlated-operand-identity)); carrier kind gates
+    ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-correlated-operand-identity)); carrier kind gates
     remain separate. -/
 theorem havingDirectField_inner_outer_pair_unique
     (model : FlatModel) (declaration : FlatFieldDecl) (form : FieldEntityReadForm) :

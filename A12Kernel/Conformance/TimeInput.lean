@@ -84,7 +84,7 @@ example :
 it. This row read `none` for the two cross-kind declarations until the kind conjunct was removed, and
 that refusal was the divergence: the Kernel classifies such a cell's text exactly as it classifies a
 TIME field's, over the complete twelve-format vocabulary on all three date-bearing kinds
-([inbound](../../docs/SOURCES.md#inbound-2026-09-05b)). A conjunct here left the cell classified by
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05b)). A conjunct here left the cell classified by
 **no** classifier at all, so its text could not be classified rather than being classified wrongly. -/
 example :
     (certifyTimeInputField (declaration (kind := .date))).toOption.isSome = true ∧

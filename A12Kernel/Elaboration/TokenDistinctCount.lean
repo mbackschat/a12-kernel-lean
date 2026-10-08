@@ -29,7 +29,7 @@ inductive TokenDistinctCountElabError where
       whose Number-first half draws `MVK_NUMBER_AND_NON_NUMBER` at the Number consumer. -/
   | laterNonToken (path : List String) (actual : SurfaceScalarKind)
   /-- A leading operand outside the operator's kind domain; later nonmembers use the leading
-      family's homogeneity code ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). -/
+      family's homogeneity code ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). -/
   | kindOutsideDomain (path : List String) (actual : SurfaceScalarKind)
   deriving Repr, DecidableEq
 
@@ -39,7 +39,7 @@ def firstDuplicateDirectTokenDistinctField? :=
 /-- Whether this kind belongs to the string family for **this** operator. A Custom-declared field is
     an ordinary `.string` kind here and is admitted with the family, which is the opposite of the
     custom-type validity predicate's answer for the same declaration; one field kind, two operators,
-    two answers ([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)). -/
+    two answers ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-distinct-count-operand-domain)). -/
 private def isTokenFamilyKind : SurfaceScalarKind → Bool
   | .string | .enumeration => true
   | _ => false
@@ -56,7 +56,7 @@ private def isOutsideDistinctDomain : SurfaceScalarKind → Bool
     The domain gate is a first-operand class: a Boolean leading draws it whatever follows, while
     `(Number, Boolean)` draws the ordinary Number homogeneity code, because once an admissible
     operand leads a Boolean is merely a non-member of its family
-    ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). So a later slot is
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). So a later slot is
     only ever tested for membership in the leading family, never re-tested against the domain.
 
     Group slots contribute their recursive declaration stream at their authored position; the
@@ -106,7 +106,7 @@ def diagnostic? : TokenDistinctCountElabError → Option KernelStaticDiagnostic
   | .laterNonToken _ _ => some .stringEnumAndNonStringEnum
   | .kindOutsideDomain _ _ => some .onlyStringEnumNumberCmpDateAllowed
   -- The filter's class is the **filter's own**, measured identical across three structurally
-  -- different wrapping carriers ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)),
+  -- different wrapping carriers ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-having-filter-comparison-and-scope-classes)),
   -- so it delegates here rather than being dropped. Only the filter half delegates: the shared
   -- token checker's **kind** classes were measured against a String-literal value list and this is
   -- a different operator with its own message vocabulary.

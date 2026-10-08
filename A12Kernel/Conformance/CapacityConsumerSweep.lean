@@ -11,7 +11,7 @@ operand denotes, and this module locks the four consumers that had no measuremen
 uniqueness on the Number and token carriers, the token distinct count, and `FirstFilledValue`. Each
 is measured on the operand forms it admits — a starred field, a starred group, and a fixed group —
 against an in-capacity control differing only in the offending index
-([checkpoint](../../docs/SOURCES.md#src-capacity-consumer-sweep)).
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-capacity-consumer-sweep)).
 
 **Only two of the four are separable, and the module says which.** The distinct count and
 `FirstFilledValue` answer differently under the two accounts, because an excluded row contributes
@@ -36,7 +36,7 @@ private def amount : FlatFieldDecl :=
     repeatableScope := [20] }
 
 /-- Two same-kind shells, because a shell holding both kinds refuses the distinct count's fixed-group
-operand outright ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). -/
+operand outright ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). -/
 private def model : FlatModel :=
   { fields := [tag, amount]
     repeatableGroups := [

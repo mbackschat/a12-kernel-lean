@@ -11,8 +11,8 @@ same table: a `Having` filter, where nothing is a target, and a plain rule compa
 is a constant. Prose authored from one carrier inherits that carrier's words silently, and the
 inherited word only stops reading as neutral once a second carrier exists to test it against; a12-dmkits
 shipped a user-facing corrective with exactly that defect on the same day and had to withdraw it.
-The three carriers are recorded at the [filter checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes). Measured as a complete eight-literal by eleven-kind grid
-([checkpoint](../../docs/SOURCES.md#src-constant-assignment-diagnostic-ladder)), the three rungs
+The three carriers are recorded at the [filter checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-having-filter-comparison-and-scope-classes). Measured as a complete eight-literal by eleven-kind grid
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-constant-assignment-diagnostic-ladder)), the three rungs
 are:
 
 1. **A Boolean or Confirm field kind outranks every literal**, a temporal one included, and the two
@@ -37,14 +37,14 @@ pairs this returns `none` for are the ones no kind gate refuses.
 **The ladder is the Kernel's comparison vocabulary rather than an assignment-specific table**, and a
 second carrier measures it independently: inside a `Having` filter, a field compared against a String
 literal draws this function's `stringLike` row cell for cell, on every kind and on all three
-operators tested ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)).
+operators tested ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-having-filter-comparison-and-scope-classes)).
 A **plain rule comparison** carrying neither construct draws the same class, so the vocabulary is the
 comparison's and not either carrier's. An assignment reaches it through the comparison its
 generated validation ends in ([`spec/09`](../../spec/09-computations.md) §6): a tolerance band, which
 exists only as that comparison's operator, turns an admitted String copy into the tolerance
-operator's class ([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-joined-comparison)), and a
+operator's class ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26c-joined-comparison)), and a
 refused precondition's class withholds the comparison's
-([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)). **The ladder is still not
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26c-target-read)). **The ladder is still not
 a field-pair function**: a Boolean *field* copied into a String draws the Boolean class, where a
 Boolean literal at a String target draws the text class, and one copied into a Confirm draws the
 Confirm class, where `True` is admitted. An **ordering** comparison is a different pair of gates and gets its own
@@ -128,7 +128,7 @@ where the kind is admitted: the pair function above with a Number on the other s
 This is deliberately not the ladder above at a `number` family, and the measurement is what forces
 the separation: a numeric ordering comparison collapses String, Enumeration, Boolean, Confirm and DATE_RANGE
 into one class, where the same kinds against a String *literal* spread across four
-([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)). Only the
+([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-having-filter-comparison-and-scope-classes)). Only the
 temporal row agrees. The collapse is the ordering gate's, not the literal's family: under `==` the
 same kinds draw their own classes against a numeric literal too
 ([KF270](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf270)).

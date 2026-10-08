@@ -188,7 +188,7 @@ def elaborateTokenEntityValueCountSource (model : FlatModel)
 /-- Resolve one starred group, a repeatable terminal or a fixed group below a starred level, and
     retain the whole-group carrier used by validation and computation. The Kernel admits the
     below-star form on both arms and computes it on the expansion account
-    ([checkpoint](../../docs/SOURCES.md#src-below-star-group-computation)). -/
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-below-star-group-computation)). -/
 def elaborateTokenValueCountStarredGroupSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
     (authored : SurfaceTokenValueCountStarredGroupSource) :

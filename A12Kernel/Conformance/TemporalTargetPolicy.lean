@@ -54,7 +54,7 @@ example :
 /- **The opt-in pre-1900 check requires the declared format to carry a year.** The Kernel refuses a
    year-free Date declaration carrying it outright — `MVK_ADDITIONAL_CHECK_INVALID`, whose own message
    keys on the components rather than on the kind — so `MM-dd` and `HH:mm:ss` are illegal with the
-   guard set while `dd.MM.yyyy` is legal ([inbound](../../docs/SOURCES.md#inbound-2026-09-05c)).
+   guard set while `dd.MM.yyyy` is legal ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05c)).
 
    This arm had admitted every one of them. It is an **over**-admission, the opposite direction from
    the under-admissions the declared-kind sweep was finding, which is why that sweep could not have
@@ -283,7 +283,7 @@ rows hold the kind fixed and move the format and the zone.
 The DATETIME row is the one that had to be measured rather than assumed: its format *contains* the
 date pattern, so a "has date components" reading would admit it, and the Kernel refuses it because
 presence of **both** component sets makes a format a stamp format
-([checkpoint](../../docs/SOURCES.md#src-datetime-carrier-stores-by-its-format)). This row previously
+([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-datetime-carrier-stores-by-its-format)). This row previously
 asserted it as a **kind** refusal — with a fixture that varied the format too, so it was the witness
 against its own label. -/
 example :

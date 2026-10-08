@@ -18,7 +18,7 @@ group**.
 **Consequence, measured.** Over-instantiating a repeatable root group draws the serial class on the
 row *and on every node beneath it*, and no row or context class anywhere; over-instantiating any
 deeper group draws the row class on that group's own address and the context class on each descendant
-([checkpoint](../../docs/SOURCES.md#src-address-index-position-classes)). The same violated level thus
+([checkpoint](../../docs/sources/over-repetition-probes.md#src-address-index-position-classes)). The same violated level thus
 reports under two different codes depending on which address is reporting it, and
 [`OverRepetitionFindings`](OverRepetitionFindings.lean) consumes this rule rather than restating it.
 
@@ -32,7 +32,7 @@ sub-scope check, and a group-named entry is never sub-scope-checked at all — s
 draw a sub-scope class.
 
 **Evidence.** The three over-maximum classes and their positional split are measured on both codegen
-strategies with an accepted control ([checkpoint](../../docs/SOURCES.md#src-address-index-position-classes)).
+strategies with an accepted control ([checkpoint](../../docs/sources/over-repetition-probes.md#src-address-index-position-classes)).
 The under-minimum classes and the index-count class have no witness through the document carrier,
 whose coordinates are array positions and therefore never below one or miscounted; they are stated
 here as the total function the Kernel computes, with authorability recorded separately and unknown.

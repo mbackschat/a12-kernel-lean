@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.ComputationNormalForm
 
 The bridge theorem says the joiner's output always passes. These cases pin the two things that would make that theorem worthless: that the joiner emits what the Kernel's joiner emits, and that the checker rejects anything at all.
 
-The admitted structured computations are measured through `computation add --dry-run`; the shapes the checker rejects are hand-built, because the joiner cannot produce them ([checkpoint](../../docs/SOURCES.md#src-computation-normal-form-generation)).
+The admitted structured computations are measured through `computation add --dry-run`; the shapes the checker rejects are hand-built, because the joiner cannot produce them ([checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-normal-form-generation)).
 -/
 
 namespace A12Kernel.Conformance.ComputationNormalForm
@@ -65,8 +65,8 @@ example :
    grid, row for row: `RoundUp` and `RoundDown` against a band-less alternative are the refused cells,
    the same modes against a band are admitted, `Exact` is admitted against either, and on two
    alternatives one band-less alternative refuses the computation in either position
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-calculation-stages),
-   [`RoundDown`](../../docs/SOURCES.md#inbound-2026-09-25g-rounding-mode)). A mode derived from the
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-calculation-stages),
+   [`RoundDown`](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-rounding-mode)). A mode derived from the
    band would admit the second row. The peer's two-alternative rows condition each alternative, and
    the preconditions are dropped here because this check reads none. -/
 example :

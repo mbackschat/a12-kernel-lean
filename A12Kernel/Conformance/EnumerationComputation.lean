@@ -92,7 +92,7 @@ private def outcomeOf (source : SurfaceEnumerationComputationSource)
    Kernel identity it was measured with. This is the one constant family whose target constrains the
    literal's **value** statically rather than rendering it, which is why the admitted token stores
    verbatim while an undeclared one never reaches runtime
-   ([checkpoint](../../docs/SOURCES.md#src-constant-literal-family-gate)). -/
+   ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-constant-literal-family-gate)). -/
 example :
     outcomeOf (.literal "A") (rawAt 99 .empty) =
         some (.accepted { text := "A", nonempty := by decide }) ∧
@@ -128,7 +128,7 @@ example :
 
 /- A category whose projected tokens leave the target's domain draws the calculation's class, as the
    Kernel's local `[Banded -> Wide]` into an Enumeration does
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-25i-enum-source)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25i-enum-source)). -/
 example :
     errorOf (.field (.category (bare "Category") "Wide")) =
         some (.sourceOutsideTargetDomain category.path target.path) ∧
@@ -139,7 +139,7 @@ example :
 /- A category source is checked by its projected token domain and bypasses direct display remapping.
    A stored token outside the source's own domain has no category to project, and the read poisons
    rather than answering EMPTY, exactly like the direct read above
-   ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-category-read-poison)). -/
+   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-category-read-poison)). -/
 example :
     outcomeOf (.field (.category (bare "Category") "Target"))
         (rawAt category.id (.parsed (.enum "X"))) =

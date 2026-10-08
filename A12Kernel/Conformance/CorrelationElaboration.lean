@@ -198,7 +198,7 @@ private def havingDirectPairSnapshot
     (operand.origin, operand.declaration.id, operand.form))
 
 /- The reviewed Kernel separator retains different exact identities after both paths resolve to the
-   same declaration ([checkpoint](../../docs/SOURCES.md#src-pr2-correlated-operand-identity)). -/
+   same declaration ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-pr2-correlated-operand-identity)). -/
 example : havingDirectPairSnapshot
     (elaborateHavingDirectPair .outer .inner) =
       some [(.outer, countDecl.id, .stored), (.inner, countDecl.id, .stored)] := by

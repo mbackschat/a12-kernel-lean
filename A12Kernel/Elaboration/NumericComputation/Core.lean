@@ -586,7 +586,7 @@ def FlatModel.elaborateNumericComputationAtom
                     | .ok (.terminalRepeatable source) =>
                         pure (CheckedGroupCountOperand.starred source)
                     -- Admitted alone, beside a fixed group, and twice on this arm too
-                    -- ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)).
+                    -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-ancestor-starred-group-count-computation)).
                     | .ok (.terminalPresence source) =>
                         pure (CheckedGroupCountOperand.starredPresence source)
                   -- Judged where it resolves, as a fixed operand is, so the first per-row operand

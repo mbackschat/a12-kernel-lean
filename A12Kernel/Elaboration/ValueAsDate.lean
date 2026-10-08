@@ -265,7 +265,7 @@ end CheckedValueAsDateComparison
 /-- Resolve and certify the direct-comparison `ValueAsDate` slice for a rule iterating `scope`. The
 comparison adds no locus decision of its own: admission is exactly the source's, which is the measured
 account — the Kernel refuses the unbound operand at the operand, not at the comparison ([locus
-checkpoint](../../docs/SOURCES.md#src-value-as-date-locus)). -/
+checkpoint](../../docs/sources/temporal-and-message-probes.md#src-value-as-date-locus)). -/
 def elaborateValueAsDateComparisonIn
     (model : FlatModel) (scope : List RepeatableLevel) (sourceField : FieldId)
     (endpoint : ValueAsDateEndpoint)

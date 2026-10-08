@@ -350,7 +350,7 @@ example :
 
 /- The stale value is hidden even when it is malformed: the dependent reads the computed `7` and
    never formal-checks the stored bytes, which is what separates stripping from a presence-only hide
-   ([inbound](../../../docs/SOURCES.md#inbound-2026-09-23c-computation-cascade-reads)). -/
+   ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-23c-computation-cascade-reads)). -/
 example :
     runOutcomes? [
       table? sourceId (literal 7),

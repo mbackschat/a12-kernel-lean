@@ -396,7 +396,7 @@ def actualRowEnvironments (checked : CheckedDocument model)
 
 Decided over the whole environment rather than the target level's own coordinate: an over-limit
 **ancestor** excludes its descendants although their own coordinates are in range, measured over three
-repetition axes ([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). -/
+repetition axes ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)). -/
 def environmentOverLimit (checked : CheckedDocument model)
     (scope : List RepeatableLevel) (environment : Env) : Bool :=
   let _ := checked
@@ -424,7 +424,7 @@ computed value on exactly three rows whether the document instantiates three, fo
 the excess rows draw `zuGrosseZeile` and `zuGrosseKontextnummer`. The excess row is **not** skipped:
 a target cell holding a stored value there is reported cleared, in the same run where its in-capacity
 siblings compute from a source present for both
-([checkpoint](../../docs/SOURCES.md#src-over-limit-computation-target)). So `clearOnly` returns the
+([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-over-limit-computation-target)). So `clearOnly` returns the
 carrier's own no-value outcome, which every application projection already turns into a clear, and
 dropping the row instead would leave a stale value the Kernel removes.
 

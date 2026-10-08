@@ -55,7 +55,7 @@ private def NatPath.isPrefixOf : List Nat → List Nat → Bool
     group-count operand reaches the same decision through its own repeatable-descendant shape, and
     `groupCount_rowConstituent_eq_validationArm` states that agreement. Containment is by path
     prefix and carries no repetition-depth bound, which is what the Kernel was measured to do
-    ([checkpoint](../../docs/SOURCES.md#src-deep-repeatable-descendant-group-count)). Public because
+    ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-deep-repeatable-descendant-group-count)). Public because
     that cross-arm law needs it, not because callers outside this module should re-decide it. -/
 def rowWithinGroup (model : FlatModel) (groupPath : GroupPath)
     (addressPrefix : List Nat) (row : RowAddr) : Bool :=

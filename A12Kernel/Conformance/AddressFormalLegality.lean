@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.AddressFormalLegality
 
 The measured rows are the three over-maximum classes on one model, where the same violated level
 reports under two different codes depending on which address reports it, and a repeatable root group
-reports the serial class everywhere ([checkpoint](../../docs/SOURCES.md#src-address-index-position-classes)).
+reports the serial class everywhere ([checkpoint](../../docs/sources/over-repetition-probes.md#src-address-index-position-classes)).
 The under-minimum and index-count rows are the total function this project states rather than measured
 behaviour; the module documentation says which is which.
 -/

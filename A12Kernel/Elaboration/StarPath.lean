@@ -273,7 +273,7 @@ def coversAggregateExtent (scope : ValidationRelevanceScope) (model : FlatModel)
 
 /-- The counted group's own identifiers for `NumberOfFilledGroups`: the relevant identifiers at or
     above the group together with every relevant descendant cut back to the group's depth
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24b-kf464-partial-group-count)). -/
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf464-partial-group-count)). -/
 def groupCountPatterns (entities : List RelevantEntityPattern)
     (model : FlatModel) (groupPath : List String)
     (boundLevels : List RepeatableLevel) (outer : Env) :
@@ -391,7 +391,7 @@ def StarPathElabError.diagnostic? : StarPathElabError → Option KernelStaticDia
 error field. With the written field outside the declaring group, a level the star leaves unstarred
 below its first star meets the containment gate ahead of the missing-star class, measured on the
 validation carriers two checkpoints list and on the computation arm
-([inbound](../../docs/SOURCES.md#inbound-2026-09-24d-star-containment),
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24d-star-containment),
 [checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement),
 [kinds checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-below-star-placement-kinds)).
 A written field inside the declaring group, which a validation carrier entry assumes when its caller
@@ -724,7 +724,7 @@ theorem elaborateStarPathPlan_never_incoherentCore (model : FlatModel)
     earlier star landing on a nonrepeatable segment, which answers first
     ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)).
     A starred first segment the short-name fallback binds to a field is such a star too
-    ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-path-walk)). -/
+    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-path-walk)). -/
 private def starredMissError (model : FlatModel) (declaringGroup : GroupPath)
     (source : SurfaceStarFieldPath) (reference : SurfaceFieldPath) : StarPathElabError :=
   let base? := match source.base with

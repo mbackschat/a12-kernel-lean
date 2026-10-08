@@ -650,7 +650,7 @@ example :
 
 /- A plain starred String field counts only in-capacity cells. With capacity two, an over-limit-only
    match answers zero while moving the match into row one answers one
-   ([checkpoint](../../docs/SOURCES.md#src-token-starred-field-capacity)). -/
+   ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-token-starred-field-capacity)). -/
 example :
     evaluatedCheckedCapacityStar ["A", "A", "X"] =
         some (.value 0 .fixed) ∧
@@ -662,7 +662,7 @@ example :
 
 /- A plain starred Boolean field has the same measured capacity extent on its own carrier: a `True`
    match found only over limit contributes nothing, while the two in-capacity controls count normally
-   ([checkpoint](../../docs/SOURCES.md#src-boolean-starred-field-capacity)). -/
+   ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-boolean-starred-field-capacity)). -/
 example :
     evaluatedCheckedBooleanCapacityStar true [false, false, true] =
         some (.value 0 .fixed) ∧
@@ -680,7 +680,7 @@ example :
 
 /- A plain starred Confirm field uses the measured in-capacity extent on its distinct `True`-only
    carrier: an over-limit confirmation does not contribute, while in-capacity confirmations count
-   normally ([checkpoint](../../docs/SOURCES.md#src-confirm-starred-field-capacity)). -/
+   normally ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-confirm-starred-field-capacity)). -/
 example :
     evaluatedCheckedConfirmCapacityStar [false, false, true] =
         some (.value 0 .growOnly) ∧

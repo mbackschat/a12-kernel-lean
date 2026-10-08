@@ -317,7 +317,7 @@ example : evaluatedOf
 
 `NumberOfDifferentValues` reports homogeneity from the family of its **first** operand, so the same
 illegal pair draws two codes selected by operand order alone; the Number-first half belongs to the
-Number consumer and is locked there ([checkpoint](../../docs/SOURCES.md#src-distinct-count-operand-domain)). -/
+Number consumer and is locked there ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-distinct-count-operand-domain)). -/
 
 /- **A Custom-declared operand is admitted here, and with the string family.** Both measured pairings
    elaborate: Custom beside a String and Custom beside an Enumeration. This is the opposite answer
@@ -351,7 +351,7 @@ example :
 /- **The kind domain is a first-operand class, not a property of the kind.** A Boolean leading draws
    the domain code; the same Boolean in a later position draws the leading family's homogeneity code
    instead, because once an admissible operand leads, a Boolean is merely a non-member of its family
-   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). The three rows are
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). The three rows are
    the same two declarations in two orders plus a Confirm control, which is what makes the claim
    positional rather than a statement about Boolean. -/
 example :
@@ -371,7 +371,7 @@ example :
 
 /- **A temporal member after a string-family lead draws the string-family code**, completing the
    pair matrix on this side: the leading family fixes the code and the offender's own family does not
-   enter it ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). The
+   enter it ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). The
    date-**first** mirror is `none` and is the honest boundary — `MVK_DATE_AND_NONDATE` is measured,
    but no temporal overload of this operator exists to own it, so classing it here would borrow a
    code for a list the Kernel routes elsewhere. -/
@@ -417,7 +417,7 @@ private def groupedKindField (declaration : FlatFieldDecl) : FlatFieldDecl :=
 
 /- The first declaration inside a group fixes the family, as the retained swapped-order group
    pair measures. The other overload's leading family remains unclassified at this consumer
-   ([checkpoint](../../docs/SOURCES.md#src-distinct-count-first-operand-class)). -/
+   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-distinct-count-first-operand-class)). -/
 example :
     groupKindDiagnostic { fields := [groupedKindField directString,
         groupedKindField directNumber] } (source kindGroupOperand []) =

@@ -8,14 +8,14 @@ import A12Kernel.Elaboration.StaticDiagnostic
 
 The Kernel admits a bare Date constant into a repeatable target from the target's own group and from
 any ancestor of it, and writes it once per instantiated target row, exactly as the three sibling
-constant families do ([checkpoint](../../docs/SOURCES.md#src-cross-group-repeatable-constant-target)).
+constant families do ([checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)).
 
 **The target's exact format is a rendering rather than a spelling-equality gate, but the target is not
 unchecked.** Its temporal component family and Base-Year state participate in admission, while its
 measured opt-in pre-1900 policy runs after rendering. One literal is admitted into `dd.MM.yyyy`,
 `yyyy-MM-dd`, and `yyyy` targets alike; a guarded ISO target then retains an attempted pre-1900 value
 as errored while its otherwise identical unguarded sibling accepts it
-([checkpoints](../../docs/SOURCES.md#src-date-constant-pre-1900-target)).
+([checkpoints](../../docs/sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)).
 
 What decides admission is the **literal's own spelling**, upstream of this carrier: a token counts as
 a Date constant only when it is a double-quoted, zero-padded, calendar-*real* `DD.MM.YYYY`, so
@@ -31,7 +31,7 @@ components reported nowhere. That is one measured rule with the complete one, so
 both target shapes through a single dispatch rather than two carriers. The **yearless** `MM` and
 `MM-dd` targets require the model's Base Year for admission but render no year from it: the measured
 stores are `03` and `03-05` for the same March 5 constant
-([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)).
+([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-base-year-yearless-store)).
 -/
 
 namespace A12Kernel
@@ -50,7 +50,7 @@ namespace RepeatableDateConstantComputationElabError
 
 /-- Three refusals carry a measured Kernel identity: the shared placement one; a yearless target in
 a model declaring no Base Year, which the Kernel refuses with the same code and admits once a Base
-Year is declared ([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)); and a target
+Year is declared ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-base-year-yearless-store)); and a target
 whose declared kind is not temporal at all, which draws the shared literal-comparison ladder's `temporal`
 row and therefore the same class at every kind but Boolean and Confirm.
 
