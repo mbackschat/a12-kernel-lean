@@ -41,14 +41,6 @@ def printPath (language : Language) (path : Path) : String :=
         (if path.segments.isEmpty then "" else "/")
   (if path.correlated then "$" else "") ++ prefix_ ++ segments
 
-def printReference (language : Language) (reference : Reference) : String :=
-  let index := match reference.index with
-    | none => ""
-    | some (.literal text) => s!" {keywordSpelling language "For"} \"{text}\""
-    | some (.path key) => s!" {keywordSpelling language "For"} {printPath language key}"
-  let category := (reference.category.map fun name => s!" -> {printName language name}").getD ""
-  printPath language reference.path ++ index ++ category
-
 def CompareOp.spelling (language : Language) : CompareOp → String
   | .eq => "==" | .ne => "!=" | .lt => "<" | .le => "<=" | .gt => ">" | .ge => ">="
   | .patternMatched => keywordSpelling language "PatternMatched"
@@ -59,6 +51,21 @@ def ArithOp.spelling : ArithOp → String
   | .add => "+" | .sub => "-" | .mul => "*" | .div => "/" | .pow => "^"
 
 mutual
+def printReference (language : Language) : Reference → String
+  | ⟨path, index, category, filter⟩ =>
+      let category := (category.map fun name => s!" -> {printName language name}").getD ""
+      let index := match index with
+        | none => ""
+        | some key => s!" {keywordSpelling language "For"} {printIndexKey language key}"
+      let filter := match filter with
+        | none => ""
+        | some body => s!" {keywordSpelling language "Having"} {printExpr language body}"
+      printPath language path ++ category ++ index ++ filter
+
+def printIndexKey (language : Language) : IndexKey → String
+  | .literal text => "\"" ++ text ++ "\""
+  | .reference key => printReference language key
+
 def printExpr (language : Language) : Expr → String
   | .number text => text
   | .string text => "\"" ++ text ++ "\""
@@ -70,7 +77,7 @@ def printExpr (language : Language) : Expr → String
         | some items => s!" {keywordSpelling language "In"} {printArguments language items}"
         | none => ""
       let scope := match scope with
-        | some path => s!" {keywordSpelling language "@From"} {printPath language path}"
+        | some reference => s!" {keywordSpelling language "@From"} {printReference language reference}"
         | none => ""
       keywordSpelling language id ++ "(" ++ printArguments language arguments ++ listed ++ scope ++ ")"
   | .custom name quoted =>
@@ -90,13 +97,10 @@ def printParts (language : Language) : List Expr → List String
   | part :: rest => printExpr language part :: printParts language rest
 
 def printArgument (language : Language) : Argument → String
-  | .mk expr rangeEnd filter =>
+  | .mk expr rangeEnd =>
       printExpr language expr ++
         (match rangeEnd with
           | some finish => s!" {keywordSpelling language "To"} {printExpr language finish}"
-          | none => "") ++
-        (match filter with
-          | some body => s!" {keywordSpelling language "Having"} {printExpr language body}"
           | none => "")
 
 def printArguments (language : Language) : List Argument → String

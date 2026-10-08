@@ -38,16 +38,16 @@ private def scalarMembershipOp? : String → Option ValueListMembershipOp
   | _ => none
 
 private def scalarMembershipSubject? : Expr → Option SurfaceTextFieldOperand
-  | .entity { path, index := none, category } => do
+  | .entity { path, index := none, category, filter := none } => do
       let field ← path.toFieldPath?
       pure (match category with | none => .direct field | some name => .category field name)
   | _ => none
 
 private def lowerScalarMembership (operator : ValueListMembershipOp)
     (arguments : List Argument) : Lowering SurfaceComputationPredicate := do
-  let .mk subject none none :: members := arguments | refuse "Guard/Membership" "subject"
+  let .mk subject none :: members := arguments | refuse "Guard/Membership" "subject"
   let some subject := scalarMembershipSubject? subject | refuse "Guard/Membership" "bare subject"
-  let some members := members.mapM (fun | .mk expr none none => some expr | _ => none)
+  let some members := members.mapM (fun | .mk expr none => some expr | _ => none)
     | refuse "Guard/Membership" "members"
   let numbers := members.mapM fun
     | .number text => (decodeNumber? text).bind fun literal =>
@@ -64,7 +64,7 @@ private def lowerScalarMembership (operator : ValueListMembershipOp)
 private def lowerPatternGuard (model : FlatModel) (group : GroupPath)
     (op : StringPatternOp) (left right : Expr) :
     Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) := do
-  let .value { path, index, category := none } := left | refuse "Guard/Pattern" "field value"
+  let .value { path, index, category := none, filter := none } := left | refuse "Guard/Pattern" "field value"
   let some source := right.patternConstant? | refuse "Guard/Pattern" "constant source"
   match index with
   | some key => do
@@ -90,40 +90,40 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       let mut result ← lowerGuard model group suppress first targetGroup?
       for part in rest do result := join result (← lowerGuard model group suppress part targetGroup?)
       pure result
-  | .call "FieldFilled" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
+  | .call "FieldFilled" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>
       (.predicate ∘ .indexedFieldPresence .filled) <$> lowerIndexedSource model group path key
-  | .call "FieldNotFilled" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
+  | .call "FieldNotFilled" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>
       (.predicate ∘ .indexedFieldPresence .notFilled) <$> lowerIndexedSource model group path key
-  | .call "FieldFilled" [.mk field none none] none none => match field.fieldEntity? with
+  | .call "FieldFilled" [.mk field none] none none => match field.fieldEntity? with
       | some path => pure (.fieldFilled path)
       | none => refuse "Guard" "FieldFilled operand"
-  | .call "FieldNotFilled" [.mk field none none] none none => match field.fieldEntity? with
+  | .call "FieldNotFilled" [.mk field none] none none => match field.fieldEntity? with
       | some path => pure (.fieldNotFilled path)
       | none => refuse "Guard" "FieldNotFilled operand"
-  | .call "GroupFilled" [argument@(.mk (.entity { index := some _, .. }) none none)] none none => do
+  | .call "GroupFilled" [argument@(.mk (.entity { index := some _, filter := none, .. }) none)] none none => do
       let .keyed source ← lowerEntityOperand model group argument | refuse "Guard/GroupFilled" "group operand"
       pure (.predicate (.keyedGroupPresence .filled source))
-  | .call "GroupNotFilled" [argument@(.mk (.entity { index := some _, .. }) none none)] none none => do
+  | .call "GroupNotFilled" [argument@(.mk (.entity { index := some _, filter := none, .. }) none)] none none => do
       let .keyed source ← lowerEntityOperand model group argument | refuse "Guard/GroupNotFilled" "group operand"
       pure (.predicate (.keyedGroupPresence .notFilled source))
-  | .call "GroupFilled" [.mk group none none] none none => match group.groupReference? with
+  | .call "GroupFilled" [.mk group none] none none => match group.groupReference? with
       | some reference => pure (.groupPresence .filled reference)
       | none => refuse "Guard/GroupFilled" "group operand"
-  | .call "GroupNotFilled" [.mk group none none] none none => match group.groupReference? with
+  | .call "GroupNotFilled" [.mk group none] none none => match group.groupReference? with
       | some reference => pure (.groupPresence .notFilled reference)
       | none => refuse "Guard/GroupNotFilled" "group operand"
-  | .call "Valid" [.mk (.call "Date" arguments none none) none none] none none =>
+  | .call "Valid" [.mk (.call "Date" arguments none none) none] none none =>
       (.predicate ∘ .dateValidity .valid) <$> lowerScalarDateComponents model group arguments
-  | .call "Invalid" [.mk (.call "Date" arguments none none) none none] none none =>
+  | .call "Invalid" [.mk (.call "Date" arguments none none) none] none none =>
       (.predicate ∘ .dateValidity .invalid) <$> lowerScalarDateComponents model group arguments
-  | .call "Valid" [.mk (.entity { path, index := some key, category := none }) none none, .mk (.string name) none none] none none => do
+  | .call "Valid" [.mk (.entity { path, index := some key, category := none, filter := none }) none, .mk (.string name) none] none none => do
       pure (.predicate (.indexedTypeValidity .valid (← lowerIndexedSource model group path key) name))
-  | .call "Invalid" [.mk (.entity { path, index := some key, category := none }) none none, .mk (.string name) none none] none none => do
+  | .call "Invalid" [.mk (.entity { path, index := some key, category := none, filter := none }) none, .mk (.string name) none] none none => do
       pure (.predicate (.indexedTypeValidity .invalid (← lowerIndexedSource model group path key) name))
-  | .call "Valid" [.mk field none none, .mk (.string name) none none] none none => do
+  | .call "Valid" [.mk field none, .mk (.string name) none] none none => do
       let some path := field.fieldEntity? | refuse "ValidType" "field operand"
       pure (.predicate (.typeValidity .valid path name))
-  | .call "Invalid" [.mk field none none, .mk (.string name) none none] none none => do
+  | .call "Invalid" [.mk field none, .mk (.string name) none] none none => do
       let some path := field.fieldEntity? | refuse "InvalidType" "field operand"
       pure (.predicate (.typeValidity .invalid path name))
   | .call "FieldValuesNotUnique" arguments none none =>
@@ -137,7 +137,7 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
   | .call id arguments (some values) none => do
       let some quantifier := valueListQuantifier? id | refuse ("Guard/" ++ id)
       let fields ← lowerEntitySource model group arguments
-      match values.mapM (fun | .mk (.string value) none none => some value | _ => none) with
+      match values.mapM (fun | .mk (.string value) none => some value | _ => none) with
       | some literals => pure (.predicate (.tokenLiteralValueList { quantifier, fields, values := literals }))
       | none => pure (.predicate (.entityValueList {
           quantifier, fields, values := ← lowerEntitySource model group values }))

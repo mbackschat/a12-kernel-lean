@@ -69,10 +69,10 @@ def negate : Expr → Except NegationRefusal Expr
       -- both fire on a filled field (spec §5, value-type validity), and registration is no part of
       -- the condition.
       | none, "Valid", none, none => match arguments with
-          | [.mk (.call "Date" _ none none) none none] => pure (.call "Invalid" arguments none none)
+          | [.mk (.call "Date" _ none none) none] => pure (.call "Invalid" arguments none none)
           | _ => throw { construct := id }
       | none, "Invalid", none, none => match arguments with
-          | [.mk (.call "Date" _ none none) none none] => pure (.call "Valid" arguments none none)
+          | [.mk (.call "Date" _ none none) none] => pure (.call "Valid" arguments none none)
           | _ => throw { construct := id }
       | none, "FieldsNotCollectivelyFilled", none, none => pure (.parens (.logic .or
           [.call "AllFieldsFilled" arguments none none, .call "NoFieldFilled" arguments none none]))

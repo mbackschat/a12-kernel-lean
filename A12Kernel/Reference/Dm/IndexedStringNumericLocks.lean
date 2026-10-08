@@ -66,7 +66,7 @@ private def evaluate (expression : String) (computation : Bool)
 
 example : [("Length(Rows/Text For Key)", "2", 0), ("RangeAsNumber(Rows/Text For Key,2,2)", "2", 0),
     ("FieldValueAsNumber(Rows/Text For Key)", "12", 0), ("FieldValueAsNumber(Rows/Enum For Key)", "1.5", 1),
-    ("FieldValueAsNumber(Rows/Enum For Key->Numeric)", "-3.25", 2)].all (fun (expression, expected, scale) =>
+    ("FieldValueAsNumber(Rows/Enum ->Numeric For Key)", "-3.25", 2)].all (fun (expression, expected, scale) =>
       evaluate (expression ++ " == " ++ expected) false == some (.inl (.fired .value)) &&
       evaluate expression true { targetScale := scale } == some (.inr ["value " ++ expected]) &&
       evaluate "1" true {} (some (expression ++ " == " ++ expected)) == some (.inr ["value 1"])) = true := by native_decide
@@ -98,7 +98,7 @@ example : evaluate "FieldValueAsNumber(Rows/Text For Key)" true
 example : ["Length([Rows/Text For Key])", "RangeAsNumber([Rows/Text For Key],1,1)",
     "FieldValueAsNumber([Rows/Text For Key])", "RangeAsNumber(Rows/Text For Key,0,1)",
     "Length(Rows/Enum For Key)", "RangeAsNumber(Rows/Enum For Key,1,1)",
-    "FieldValueAsNumber(Rows/Enum For Key->Missing)", "Length(Rows/Text For 1)"].all
+    "FieldValueAsNumber(Rows/Enum ->Missing For Key)", "Length(Rows/Text For 1)"].all
     (fun expression => (evaluate (expression ++ " == 0") false).isNone && (evaluate expression true).isNone) = true ∧
     (evaluate "FieldValueAsNumber(Rows/Enum For Key)" true).isNone = true := by native_decide
 
@@ -142,7 +142,7 @@ example : [("Length(Rows/Text For Key)", "2"), ("RangeAsNumber(Rows/Text For Key
 
 example : partialVerdict "FieldValueAsNumber(Rows/Text For Key) == 34" .full { key := "missing" }
       [(1, some (checkAdmittedRawCell (.parsed (.str "R2"))))] = some (.fired .value) ∧
-    partialVerdict "FieldValueAsNumber(Rows/Enum For Key->Numeric) == -3.25" = some (.fired .value) ∧
+    partialVerdict "FieldValueAsNumber(Rows/Enum ->Numeric For Key) == -3.25" = some (.fired .value) ∧
     partialVerdict "FieldValueAsNumber(Rows/Text For \"R1\") + FieldValueAsNumber(Rows/Text For \"R2\") == 46" =
       some (.fired .value) := by native_decide
 
@@ -160,7 +160,7 @@ private def sourceSummary (expression : String) : Option (List FieldId × List F
   pure ((model.fields.filter fun field => source.referencesField field.id).map (·.id), source.boundFieldIds, source.projection.scale)
 
 example : sourceSummary "Length(Rows/Text For Key)" = some ([1, 3, 4], [1], 0) ∧
-    sourceSummary "FieldValueAsNumber(Rows/Enum For Key->Numeric)" = some ([1, 3, 5], [1], 2) ∧
+    sourceSummary "FieldValueAsNumber(Rows/Enum ->Numeric For Key)" = some ([1, 3, 5], [1], 2) ∧
     sourceSummary "FieldValueAsNumber(Rows/Enum For \"R1\")" = some ([3, 5], [], 1) := by native_decide
 
 end A12Kernel.Dm.IndexedStringNumericLocks

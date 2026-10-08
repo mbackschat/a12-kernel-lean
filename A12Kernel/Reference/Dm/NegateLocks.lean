@@ -137,4 +137,15 @@ example :
      (parseNonText .english "'NonFieldFilled'(A)").toOption.isNone].all id := by
   native_decide
 
+example : [
+    ("Sum(Rows*/N Having NonFieldFilled(Rows/Tag)) > 0",
+     "Sum(Rows*/N Having FieldNotFilled(Rows/Tag)) > 0"),
+    ("[Rows/N For Keys*/Id Having NonFieldFilled(Keys/Tag)] > 0",
+     "[Rows/N For Keys*/Id Having FieldNotFilled(Keys/Tag)] > 0"),
+    ("[Rows/N For Keys/Id For Gate*/Id Having NonFieldFilled(Gate/Tag)] > 0",
+     "[Rows/N For Keys/Id For Gate*/Id Having FieldNotFilled(Gate/Tag)] > 0"),
+    ("RepetitionNotUnique(Rows/N @From Rows* Having NonFieldFilled(Rows/Tag))",
+     "RepetitionNotUnique(Rows/N @From Rows* Having FieldNotFilled(Rows/Tag))")].all
+    (fun (authored, expected) => lowered .english authored == english expected) = true := by native_decide
+
 end A12Kernel.Dm.NegateLocks

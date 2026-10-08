@@ -7,21 +7,21 @@ namespace A12Kernel.Dm
 mutual
 private partial def lowerHavingDateComponent : Expr → Lowering (SurfaceHavingDateComponent SurfaceHavingTemporalExpression)
   | .string text => pure (.constant text)
-  | .entity { path, index := none, category := none } => do
+  | .entity { path, index := none, category := none, filter := none } => do
       let some (origin, field) := path.havingField? | refuse "Date" "component path"
       pure (.field { origin, field })
-  | .call name [.mk operand none none] none none => do
+  | .call name [.mk operand none] none none => do
       let some part := datePart? name | refuse "Date" "component extractor"
       match operand with
       | .constant "BaseYear" => pure (.baseYearExtractor .direct part)
       | .constant "Today" => pure (.clockExtractor .today part)
       | .constant "Now" => pure (.clockExtractor .now part)
-      | .call bound [.mk (.constant "BaseYear") none none] none none =>
+      | .call bound [.mk (.constant "BaseYear") none] none none =>
           match bound with
           | "StartOfDateRange" => pure (.baseYearExtractor (.range .start) part)
           | "EndOfDateRange" => pure (.baseYearExtractor (.range .finish) part)
           | _ => refuse "Date" "Base Year endpoint"
-      | .entity { path, index := none, category := none } => do
+      | .entity { path, index := none, category := none, filter := none } => do
           let some (origin, field) := path.havingField? | refuse "Date" "extractor path"
           pure (.extractor part { origin, field })
       | source => .expression part <$> lowerHavingTemporalExpression true source
@@ -29,7 +29,7 @@ private partial def lowerHavingDateComponent : Expr → Lowering (SurfaceHavingD
 
 partial def lowerHavingDateComponents (arguments : List Argument) : Lowering SurfaceHavingDateComponents := do
   let components ← arguments.mapM fun
-    | .mk expression none none => lowerHavingDateComponent expression
+    | .mk expression none => lowerHavingDateComponent expression
     | _ => refuse "Date" "component modifier"
   match components with
   | [day, month] => pure { day, month, year := .baseYear }
@@ -39,14 +39,14 @@ partial def lowerHavingDateComponents (arguments : List Argument) : Lowering Sur
 
 private partial def lowerHavingTimeComponent : Expr → Lowering (SurfaceHavingTimeComponent SurfaceHavingTemporalExpression)
   | .string text => pure (.constant text)
-  | .entity { path, index := none, category := none } => do
+  | .entity { path, index := none, category := none, filter := none } => do
       let some (origin, field) := path.havingField? | refuse "Time" "component path"
       pure (.field { origin, field })
-  | .call name [.mk operand none none] none none => do
+  | .call name [.mk operand none] none none => do
       let some part := timePart? name | refuse "Time" "component extractor"
       match operand with
       | .constant "Now" => pure (.nowExtractor part)
-      | .entity { path, index := none, category := none } => do
+      | .entity { path, index := none, category := none, filter := none } => do
           let some (origin, field) := path.havingField? | refuse "Time" "extractor path"
           pure (.extractor part { origin, field })
       | source => .expression part <$> lowerHavingTemporalExpression true source
@@ -54,7 +54,7 @@ private partial def lowerHavingTimeComponent : Expr → Lowering (SurfaceHavingT
 
 private partial def lowerHavingTimeComponents (arguments : List Argument) : Lowering SurfaceHavingTimeComponents := do
   let components ← arguments.mapM fun
-    | .mk expression none none => lowerHavingTimeComponent expression
+    | .mk expression none => lowerHavingTimeComponent expression
     | _ => refuse "Time" "component modifier"
   match components with
   | [] => pure .empty
@@ -66,18 +66,18 @@ private partial def lowerHavingTimeComponents (arguments : List Argument) : Lowe
 /-- Source slots use unbracketed entities and reject grouping, like ordinary temporal lowering
 (spec/12 §3). Every field keeps its own captured/candidate origin. -/
 partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowering SurfaceHavingTemporalExpression
-  | .call "ValueAsDate" [.mk (.entity { path, index := none, category := none }) none none, .mk (.constant endpoint) none none] none none => do
+  | .call "ValueAsDate" [.mk (.entity { path, index := none, category := none, filter := none }) none, .mk (.constant endpoint) none] none none => do
       let some (origin, field) := path.havingField? | refuse "ValueAsDate" "partial Date entity"
       let endpoint ← match endpoint with
         | "FirstDay" => pure ValueAsDateEndpoint.firstDay
         | "LastDay" => pure ValueAsDateEndpoint.lastDay
         | _ => refuse "ValueAsDate" "endpoint"
       pure (.partialDate { origin, field } endpoint)
-  | .entity { path, index := none, category := none } => do
+  | .entity { path, index := none, category := none, filter := none } => do
       if !sourceSlot then refuse "Having" "bare temporal value"
       let some (origin, field) := path.havingField? | refuse "Having" "temporal entity"
       pure (.field { origin, field })
-  | .value { path, index := none, category := none } => do
+  | .value { path, index := none, category := none, filter := none } => do
       if sourceSlot then refuse "Having" "bracketed temporal source"
       let some (origin, field) := path.havingField? | refuse "Having" "temporal value"
       pure (.field { origin, field })
@@ -87,7 +87,7 @@ partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowerin
   | expression@(.call "Min" arguments none none) | expression@(.call "Max" arguments none none) => do
       if sourceSlot then refuse "Having" "extremum in temporal source slot"
       let lower : Argument → Lowering SurfaceHavingTemporalExpression
-        | .mk operand none none => lowerHavingTemporalExpression false operand
+        | .mk operand none => lowerHavingTemporalExpression false operand
         | _ => refuse "Having" "temporal extremum modifier"
       let first :: rest ← arguments.mapM lower | refuse "Having" "empty temporal extremum"
       pure (.combine (if expression.construct == "Min" then .minimum else .maximum) first rest)
@@ -102,9 +102,9 @@ partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowerin
       .selection (.extremum .maximum) <$> lowerHavingEntitySource arguments
   | .call "Time" arguments none none => .timeConstruction <$> lowerHavingTimeComponents arguments
   | .call "Date" arguments none none => .dateConstruction <$> lowerHavingDateComponents arguments
-  | .call "DateTime" [.mk date none none, .mk time none none] none none => do
+  | .call "DateTime" [.mk date none, .mk time none] none none => do
       pure (.dateTime (← lowerHavingTemporalExpression true date) (← lowerHavingTemporalExpression true time))
-  | .call name [.mk source none none, .mk amount none none] none none => do
+  | .call name [.mk source none, .mk amount none] none none => do
       let unit ← match name with
         | "AddDays" => pure TemporalOperationUnit.days
         | "AddMonths" => pure TemporalOperationUnit.months
@@ -114,18 +114,18 @@ partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowerin
         | "AddSeconds" => pure TemporalOperationUnit.seconds
         | _ => refuse "Having" "temporal binary operator"
       pure (.shift unit (← lowerHavingTemporalExpression true source) (← lowerHavingTemporalAmount amount))
-  | .call "DateFromDateTime" [.mk source none none] none none =>
+  | .call "DateFromDateTime" [.mk source none] none none =>
       .dateFromDateTime <$> lowerHavingTemporalExpression true source
-  | .call "TimeFromDateTime" [.mk source none none] none none =>
+  | .call "TimeFromDateTime" [.mk source none] none none =>
       .timeFromDateTime <$> lowerHavingTemporalExpression true source
   | .constant "Now" => pure .now
   | .constant "Today" => pure .today
   | .constant "BaseYear" => do
       if !sourceSlot then refuse "Having" "polymorphic BaseYear value"
       pure (.baseYearBound .start)
-  | .call "StartOfDateRange" [.mk (.constant "BaseYear") none none] none none => pure (.baseYearBound .start)
-  | .call "EndOfDateRange" [.mk (.constant "BaseYear") none none] none none => pure (.baseYearBound .finish)
-  | .call name [.mk (.entity { path, index := none, category := none }) none none] none none => do
+  | .call "StartOfDateRange" [.mk (.constant "BaseYear") none] none none => pure (.baseYearBound .start)
+  | .call "EndOfDateRange" [.mk (.constant "BaseYear") none] none none => pure (.baseYearBound .finish)
+  | .call name [.mk (.entity { path, index := none, category := none, filter := none }) none] none none => do
       let bound ← match name with
         | "StartOfDateRange" => pure DateRangeBound.start
         | "EndOfDateRange" => pure DateRangeBound.finish

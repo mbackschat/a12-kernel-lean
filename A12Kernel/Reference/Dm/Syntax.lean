@@ -242,19 +242,7 @@ structure Path where
   ups : Nat := 0
   turningPoint : Option String := none
   segments : List Segment
-  deriving Repr, BEq, DecidableEq
-
-inductive IndexKey
-  | literal (text : String)
-  | path (key : Path)
-  deriving Repr, BEq, DecidableEq
-
-/-- A path with its optional semantic index (`For`) and enumeration category (`->`). -/
-structure Reference where
-  path : Path
-  index : Option IndexKey := none
-  category : Option String := none
-  deriving Repr, BEq, DecidableEq
+  deriving Repr, BEq, DecidableEq, Inhabited
 
 inductive CompareOp
   | eq | ne | lt | le | gt | ge
@@ -270,6 +258,21 @@ inductive LogicOp | and | or
   deriving Repr, BEq, DecidableEq
 
 mutual
+/-- A semantic index key is a literal or a complete entity reference (spec §7.3). -/
+inductive IndexKey
+  | literal (text : String)
+  | reference (key : Reference)
+  deriving Repr, BEq
+
+/-- An entity reference retains its category, recursive semantic index and filter as written.
+The grammar puts the category before `For`; an entity key owns the following `Having` (spec §7.3). -/
+structure Reference where
+  path : Path
+  index : Option IndexKey := none
+  category : Option String := none
+  filter : Option Expr := none
+  deriving Repr, BEq, Inhabited
+
 /-- A condition or an operation as written. -/
 inductive Expr
   /-- A number literal with its optional sign, as its digits spell it. -/
@@ -284,7 +287,7 @@ inductive Expr
   | constant (id : String)
   /-- An operator call. `listed` holds the arguments after an `In`, and `scope` an `@From` group. -/
   | call (id : String) (arguments : List Argument) (listed : Option (List Argument))
-      (scope : Option Path)
+      (scope : Option Reference)
   | custom (name : String) (quoted : Bool := false)
   | arith (op : ArithOp) (left right : Expr)
   | braces (body : Expr)
@@ -294,9 +297,9 @@ inductive Expr
   | parens (body : Expr)
   deriving Repr, BEq, Inhabited
 
-/-- One call argument, with an optional range end (`To`) and row filter (`Having`). -/
+/-- One call argument, with an optional range end (`To`); references own their filters. -/
 inductive Argument
-  | mk (expr : Expr) (rangeEnd : Option Expr) (filter : Option Expr)
+  | mk (expr : Expr) (rangeEnd : Option Expr)
   deriving Repr, BEq, Inhabited
 end
 

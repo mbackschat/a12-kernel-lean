@@ -47,6 +47,9 @@ mutual
 def lowerNon : Expr → Except NegationRefusal Expr
   | .call id arguments listed scope => do
       let arguments ← lowerNonArguments arguments
+      let scope ← match scope with
+        | some reference => some <$> lowerNonReference reference
+        | none => pure none
       let listed ← match listed with
         | some items => some <$> lowerNonArguments items
         | none => pure none
@@ -57,7 +60,23 @@ def lowerNon : Expr → Except NegationRefusal Expr
   | .logic op parts => do pure (.logic op (← lowerNonParts parts))
   | .compare op left right => do pure (.compare op (← lowerNon left) (← lowerNon right))
   | .arith op left right => do pure (.arith op (← lowerNon left) (← lowerNon right))
+  | .value reference => .value <$> lowerNonReference reference
+  | .entity reference => .entity <$> lowerNonReference reference
   | other => pure other
+
+def lowerNonReference : Reference → Except NegationRefusal Reference
+  | ⟨path, index, category, filter⟩ => do
+      let index ← match index with
+        | some key => some <$> lowerNonIndex key
+        | none => pure none
+      let filter ← match filter with
+        | some body => some <$> lowerNon body
+        | none => pure none
+      pure { path, index, category, filter }
+
+def lowerNonIndex : IndexKey → Except NegationRefusal IndexKey
+  | .literal text => pure (.literal text)
+  | .reference key => .reference <$> lowerNonReference key
 
 def lowerNonParts : List Expr → Except NegationRefusal (List Expr)
   | [] => pure []
@@ -70,14 +89,11 @@ def lowerNonParts : List Expr → Except NegationRefusal (List Expr)
 
 def lowerNonArguments : List Argument → Except NegationRefusal (List Argument)
   | [] => pure []
-  | .mk expr rangeEnd filter :: rest => do
+  | .mk expr rangeEnd :: rest => do
       let rangeEnd ← match rangeEnd with
         | some finish => some <$> lowerNon finish
         | none => pure none
-      let filter ← match filter with
-        | some body => some <$> lowerNon body
-        | none => pure none
-      pure (.mk (← lowerNon expr) rangeEnd filter :: (← lowerNonArguments rest))
+      pure (.mk (← lowerNon expr) rangeEnd :: (← lowerNonArguments rest))
 end
 
 end A12Kernel.Dm

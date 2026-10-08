@@ -140,7 +140,7 @@ example : states.all (fun state => variableGuards.all fun guard =>
     ruleMessages guard (scenarioFor state) == some (if holds guard state then ["VALUE_ERROR"] else [])) = true := by native_decide
 
 example : ["PatternMatched", "PatternViolated"].all (fun op =>
-    ["[Rows/Enum For Key]", "[Rows/Enum For Key->Kind]", "[Rows/Raw For Key]",
+    ["[Rows/Enum For Key]", "[Rows/Enum ->Kind For Key]", "[Rows/Raw For Key]",
       "[Rows/RowOut For Key]", "[Rows For Key]", "[Rows*/Text For Key]", "Rows/Text For Key",
       "{[Rows/Text For Key]}", "[Rows/Text For Key]+\"x\"", "[Rows/Text For Out]"].all (fun left =>
       (validate s!"{left} {op} \"[0-9]+\"").isNone && (run s!"{left} {op} \"[0-9]+\"").isNone) &&
@@ -324,7 +324,7 @@ example : guards.all (fun guard => [false, true].all fun custom =>
 example : variableGuards.all (fun guard =>
     generated guard false .emptyIndex == some (true, validationVerdict guard .emptyIndex) &&
     generated guard false .duplicate == some (true, .unknown) &&
-    (parseText .english ("[Rows/Enum For Key->Kind] " ++ (if isMatched guard then "PatternMatched" else "PatternViolated") ++
+    (parseText .english ("[Rows/Enum ->Kind For Key] " ++ (if isMatched guard then "PatternMatched" else "PatternViolated") ++
       " \"[0-9]+\"")).isOk) = true := by native_decide
 
 end A12Kernel.Dm.IndexedPatternLocks

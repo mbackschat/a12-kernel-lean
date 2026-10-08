@@ -98,21 +98,22 @@ private def path : P Path := do
     else if ← acceptSymbol "/" then segments else pure []
   return { correlated, absolute, ups, turningPoint, segments }
 
-private def reference : P Reference := do
+mutual
+private partial def reference : P Reference := do
   let target ← path
-  let index ← if ← acceptKeyword "For" then
-      match ← peek with
-      | some (.string text) => advance; pure (some (IndexKey.literal text))
-      | _ => pure (some (.path (← path)))
-    else pure none
   let category ← if ← acceptSymbol "->" then
       match ← peek with
       | some (.name name _) => advance; pure (some name)
       | _ => failHere .expectedTokenNotFound
     else pure none
-  return { path := target, index, category }
+  let index ← if ← acceptKeyword "For" then
+      match ← peek with
+      | some (.string text) => advance; pure (some (IndexKey.literal text))
+      | _ => pure (some (.reference (← reference)))
+    else pure none
+  let filter ← if ← acceptKeyword "Having" then pure (some (← condition false)) else pure none
+  return { path := target, index, category, filter }
 
-mutual
 /-- A condition: branches joined by one connective (spec §12.3). `comments` admits a comment at each
 branch boundary, which an argument list refuses. -/
 private partial def condition (comments : Bool) : P Expr := do
@@ -208,7 +209,7 @@ private partial def call (id : String) : P Expr := do
   if ← acceptSymbol ")" then return .call id [] none none
   let arguments ← argumentList
   let listed ← if ← acceptKeyword "In" then pure (some (← argumentList)) else pure none
-  let scope ← if ← acceptKeyword "@From" then pure (some (← path)) else pure none
+  let scope ← if ← acceptKeyword "@From" then pure (some (← reference)) else pure none
   expectSymbol ")"
   return .call id arguments listed scope
 
@@ -219,8 +220,7 @@ private partial def argumentList : P (List Argument) := do
 private partial def argument : P Argument := do
   let expr ← condition false
   let rangeEnd ← if ← acceptKeyword "To" then pure (some (← condition false)) else pure none
-  let filter ← if ← acceptKeyword "Having" then pure (some (← condition false)) else pure none
-  return .mk expr rangeEnd filter
+  return .mk expr rangeEnd
 end
 
 private def preamble : P (List String) := do
@@ -256,6 +256,7 @@ def parseModelPath (language : Language) (text : String) : Except SyntaxError Pa
     return result
   (grammar.run' 0).run lexemes
 
+mutual
 /-- Whether every parenthesis groups a condition in a condition position (spec §12.3): a whole
 condition, a connective's part, a parenthesised condition's body or a filter body. A parenthesised
 comparison side, operation, argument or whole computation operation is `MVK_UNEXPECTED_TOKEN`. The
@@ -267,11 +268,18 @@ partial def Expr.parensLegal (inCondition : Bool) : Expr → Bool
   | .compare _ left right => left.parensLegal false && right.parensLegal false
   | .arith _ left right => left.parensLegal false && right.parensLegal false
   | .braces body => body.parensLegal false
-  | .call _ arguments listed _ =>
-      (arguments ++ listed.getD []).all fun
-        | .mk expr rangeEnd filter =>
-            expr.parensLegal false && (rangeEnd.all (·.parensLegal false)) &&
-              (filter.all (·.parensLegal true))
+  | .value reference | .entity reference => reference.parensLegal
+  | .call _ arguments listed scope =>
+      (arguments ++ listed.getD []).all (fun
+        | .mk expr rangeEnd =>
+            expr.parensLegal false && rangeEnd.all (·.parensLegal false)) &&
+        scope.all (·.parensLegal)
   | _ => true
+
+partial def Reference.parensLegal (reference : Reference) : Bool :=
+  (match reference.index with
+    | some (.reference key) => key.parensLegal
+    | _ => true) && reference.filter.all (·.parensLegal true)
+end
 
 end A12Kernel.Dm

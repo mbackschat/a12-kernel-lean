@@ -22,7 +22,7 @@ private def refusal (language : Language) (text : String) : Option SyntaxErrorCl
 private def entity (names : List String) : Expr :=
   .entity { path := { segments := names.map ({ name := ·, star := false }) } }
 
-private def filled (name : String) : Expr := .call "FieldFilled" [.mk (entity [name]) none none] none none
+private def filled (name : String) : Expr := .call "FieldFilled" [.mk (entity [name]) none] none none
 
 /- One connective per bracket pair, any number of parts; mixing is refused and a parenthesised mixed
 part is admitted, so the check is per pair and not per depth. -/
@@ -74,21 +74,20 @@ example :
      refusal .english "#Zeil" == some .lexer].all id := by
   native_decide
 
-/- A call keeps its operator-specific attachments as written: a filter on a starred argument, the `In`
-separator and an `@From` scope. -/
+/- References own the filter independently of the call's `In` separator and `@From` scope. -/
 example :
     [english "Sum(Items*/Count Having [Items/Kind] == \"x\") > 0" == some (.compare .gt
-      (.call "Sum" [.mk (.entity { path := { segments := [{ name := "Items", star := true },
-          { name := "Count", star := false }] } }) none
-        (some (.compare .eq (.value { path := { segments := [{ name := "Items", star := false },
-          { name := "Kind", star := false }] } }) (.string "x")))] none none)
+      (.call "Sum" [.mk (.entity {
+        path := { segments := [{ name := "Items", star := true }, { name := "Count", star := false }] }
+        filter := some (.compare .eq (.value { path := { segments := [{ name := "Items", star := false },
+          { name := "Kind", star := false }] } }) (.string "x")) }) none] none none)
       (.number "0")),
      english "NumberOfValueInFields(0 In A, B) > 0" == some (.compare .gt
-      (.call "NumberOfValueInFields" [.mk (.number "0") none none]
-        (some [.mk (entity ["A"]) none none, .mk (entity ["B"]) none none]) none) (.number "0")),
+      (.call "NumberOfValueInFields" [.mk (.number "0") none]
+        (some [.mk (entity ["A"]) none, .mk (entity ["B"]) none]) none) (.number "0")),
      english "RepetitionNotUnique(Items/Sku @From Items)" == some (.call "RepetitionNotUnique"
-      [.mk (entity ["Items", "Sku"]) none none] none
-      (some { segments := [{ name := "Items", star := false }] }))].all id := by
+      [.mk (entity ["Items", "Sku"]) none] none
+      (some { path := { segments := [{ name := "Items", star := false }] } }))].all id := by
   native_decide
 
 /- The H-model constructs are keywords in a German model only: `[ZeilenLueckenlos]` is no field read

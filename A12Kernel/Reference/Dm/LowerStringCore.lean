@@ -11,12 +11,13 @@ partial def lowerStringExprWith (read : Reference → Lowering Atom)
       if isTemporalConstant text then refuse "StringOperation" "temporal constant"
       else pure (.literal text)
   | .value reference => do
+      if reference.filter.isSome then refuse "StringOperand" "filtered reference"
       let field ← read reference
       pure (match reference.category with | none => .field field | some name => .category field name)
-  | .call "FieldValueAsString" [.mk (.entity reference@{ category := none, .. }) none none] none none =>
+  | .call "FieldValueAsString" [.mk (.entity reference@{ category := none, filter := none, .. }) none] none none =>
       (.fieldValueAsString ·) <$> read reference
-  | .call "RangeAsString" [.mk (.entity reference@{ category := none, .. }) none none,
-      .mk (.number start) none none, .mk (.number finish) none none] none none =>
+  | .call "RangeAsString" [.mk (.entity reference@{ category := none, filter := none, .. }) none,
+      .mk (.number start) none, .mk (.number finish) none] none none =>
       match start.toNat?, finish.toNat? with
       | some start, some finish => do pure (.range (← read reference) start finish)
       | _, _ => refuse "RangeAsString" "operand"

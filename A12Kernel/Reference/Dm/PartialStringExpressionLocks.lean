@@ -103,11 +103,11 @@ private def selectedCoverage (row : Nat := 1) : ValidationRelevanceScope := cove
 
 private def equalities : List (String × String) := [
   ("[Rows/S For Key] + [S]", "ab!"), ("[Rows/E For Key] + [S]", "a!"),
-  ("[Rows/E For Key->Kind] + [S]", "group!"), ("RangeAsString(Rows/S For Key,1,1) + [S]", "a!"),
+  ("[Rows/E ->Kind For Key] + [S]", "group!"), ("RangeAsString(Rows/S For Key,1,1) + [S]", "a!"),
   ("FieldValueAsString(Rows/Amount For Key) + [S]", "01.50!"),
   ("[Rows/S For Key] + [Rows/E For Key] + FieldValueAsString(Rows/Amount For Key)", "aba01.50"),
   ("[Rows/S For \"R1\"] + [Rows/S For \"R2\"]", "abcd"),
-  ("[Rows/E For \"R1\"->Kind] + [Rows/E For \"R2\"->Kind]", "groupother"),
+  ("[Rows/E ->Kind For \"R1\"] + [Rows/E ->Kind For \"R2\"]", "groupother"),
   ("FieldValueAsString(Rows/Amount For \"R1\") + FieldValueAsString(Rows/Amount For \"R2\")", "01.5002.50")]
 
 example : equalities.all (fun (expression, expected) => ["==", "!="].all fun operator =>
@@ -131,7 +131,7 @@ example : absenceCases.all (fun (scenario, expected) =>
     let text := "[Rows/S For Key] + \"!\" == \"!\""
     verdict text false scenario == some expected && verdict text true scenario == some expected) = true := by native_decide
 
-example : (["[Rows/E For Key]", "[Rows/E For Key->Kind]", "FieldValueAsString(Rows/Amount For Key)"].all (fun source =>
+example : (["[Rows/E For Key]", "[Rows/E ->Kind For Key]", "FieldValueAsString(Rows/Amount For Key)"].all (fun source =>
     let text := source ++ " + \"!\" == \"!\""
     verdict text true { key := "missing" } == verdict text false { key := "missing" } &&
     verdict text true { key := "missing" } == some (.fired .omission)) &&
@@ -155,7 +155,7 @@ example : resultMatches (evaluate "[Rows/S For Key] + \"!\" == \"cd!\"" true {} 
       [{ field := 5, change := .value (.str "xy") }]) (.ok (.fired .value)) ∧
     resultMatches (evaluate "[Rows/E For Key] + \"!\" == \"b!\"" true {} .full
       [{ field := 6, change := .value (.enum "b") }]) (.ok (.fired .value)) ∧
-    resultMatches (evaluate "[Rows/E For Key->Kind] + \"!\" == \"other!\"" true {} .full
+    resultMatches (evaluate "[Rows/E ->Kind For Key] + \"!\" == \"other!\"" true {} .full
       [{ field := 6, change := .value (.enum "b") }]) (.ok (.fired .value)) := by native_decide
 
 example : [1,5].all (fun field =>

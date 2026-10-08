@@ -22,8 +22,8 @@ private def literal? (model : FlatModel) : Expr → Option SurfaceLiteral
   | _ => none
 
 private def textOperand? : Expr → Option SurfaceTextFieldOperand
-  | .entity { path, index := none, category := none } => (path.toFieldPath?).map .direct
-  | .entity { path, index := none, category := some name } =>
+  | .entity { path, index := none, category := none, filter := none } => (path.toFieldPath?).map .direct
+  | .entity { path, index := none, category := some name, filter := none } =>
       (path.toFieldPath?).map (.category · name)
   | _ => none
 
@@ -52,7 +52,7 @@ def valueListQuantifier? : String → Option ValueListQuantifier
   | _ => none
 
 private def plainExprs (arguments : List Argument) : Option (List Expr) :=
-  arguments.mapM fun | .mk expr none none => some expr | _ => none
+  arguments.mapM fun | .mk expr none => some expr | _ => none
 
 /-- `FieldValueIncludedInValueList(f, v1, v2)`: one field, then its values, each list by the field's
 kind. -/
@@ -105,7 +105,7 @@ private def fieldComparison (model : FlatModel) (op : SurfaceComparisonOp)
   let fieldOp := if mirrored then mirrorComparison op else op
   let position : SurfacePointInTimePosition := if mirrored then .left else .right
   let path ← field.path.toFieldPath?
-  if field.index.isSome then none
+  if field.index.isSome || field.filter.isSome then none
   match field.category, other with
   | some category, .string text => some (.compareEnumeration fieldOp path (.category category) text)
   | some _, _ => none
@@ -116,7 +116,7 @@ private def fieldComparison (model : FlatModel) (op : SurfaceComparisonOp)
       if mirrored then none
       else
         let rightPath ← right.path.toFieldPath?
-        if right.index.isSome then none
+        if right.index.isSome || right.filter.isSome then none
         match right.category with
         | none => some (.compareFields op path rightPath)
         | some name => some (.compareTextFields op (.direct path) (.category rightPath name))
@@ -131,8 +131,8 @@ partial def lowerFlat (model : FlatModel) (rowGroup : GroupPath) : Expr → Opti
       match parts with
       | head :: tail => some (tail.foldl join head)
       | [] => none
-  | .call "FieldFilled" [.mk field none none] none none => (field.fieldEntity?).map .fieldFilled
-  | .call "FieldNotFilled" [.mk field none none] none none => (field.fieldEntity?).map .fieldNotFilled
+  | .call "FieldFilled" [.mk field none] none none => (field.fieldEntity?).map .fieldFilled
+  | .call "FieldNotFilled" [.mk field none] none none => (field.fieldEntity?).map .fieldNotFilled
   | .call id arguments listed none =>
       match membershipOp? id, valueListQuantifier? id, listed with
       | some op, _, none => membership model rowGroup op arguments
@@ -143,10 +143,10 @@ partial def lowerFlat (model : FlatModel) (rowGroup : GroupPath) : Expr → Opti
       match left, right with
       | .value field, other => fieldComparison model op field other false
       | other, .value field => fieldComparison model op field other true
-      | .call "Length" [.mk field none none] none none, .number text => do
+      | .call "Length" [.mk field none] none none, .number text => do
           let literal ← decodeNumber? text
           pure (.lengthCompare op (← field.fieldEntity?) literal)
-      | .number text, .call "Length" [.mk field none none] none none => do
+      | .number text, .call "Length" [.mk field none] none none => do
           let literal ← decodeNumber? text
           pure (.literalCompareLength literal op (← field.fieldEntity?))
       | _, _ => none

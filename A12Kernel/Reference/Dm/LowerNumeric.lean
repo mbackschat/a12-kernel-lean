@@ -13,8 +13,8 @@ and `BaseYear`, mean the same on both arms and are lowered once.
 namespace A12Kernel.Dm
 
 def entityTextOperand? : Expr → Option SurfaceTextFieldOperand
-  | .entity { path, index := none, category := none } => (path.toFieldPath?).map .direct
-  | .entity { path, index := none, category := some name } => (path.toFieldPath?).map (.category · name)
+  | .entity { path, index := none, category := none, filter := none } => (path.toFieldPath?).map .direct
+  | .entity { path, index := none, category := some name, filter := none } => (path.toFieldPath?).map (.category · name)
   | _ => none
 
 private def dateDifferenceOperand? : Expr → Option SurfaceDateDifferenceOperand :=
@@ -26,34 +26,34 @@ def lowerNumericAtomWith
     (aggregate : NumericAggregateOp → List Argument → Lowering Aggregate)
     (groups : List Argument → Lowering (List SurfaceGroupCountOperand)) :
     Expr → Lowering (SurfaceNumericAtom Aggregate)
-  | .value { path, index := none, category := none } => match path.toFieldPath? with
+  | .value { path, index := none, category := none, filter := none } => match path.toFieldPath? with
       | some field => pure (.field field)
       | none => refuse "StarredValue"
   | .value _ => refuse "IndexedValue"
   | .constant "BaseYear" => pure .baseYear
-  | .call "CurrentRepetition" [.mk group none none] none none => match group.groupReference? with
+  | .call "CurrentRepetition" [.mk group none] none none => match group.groupReference? with
       | some (.path path) => pure (.currentRepetition path)
       | _ => refuse "CurrentRepetition"
   | .call "NumberOfFilledGroups" arguments none none => (.filledGroupCount ·) <$> groups arguments
-  | .call "RangeAsNumber" [.mk field none none, .mk (.number start) none none,
-      .mk (.number finish) none none] none none =>
+  | .call "RangeAsNumber" [.mk field none, .mk (.number start) none,
+      .mk (.number finish) none] none none =>
       match field.fieldEntity?, start.toNat?, finish.toNat? with
       | some path, some start, some finish => pure (.stringRange path start finish)
       | _, _, _ => refuse "RangeAsNumber" "operand"
-  | .call id [.mk left none none, .mk right none none] none none =>
+  | .call id [.mk left none, .mk right none] none none =>
       match id, calendarUnit? id, subdayUnit? id, dateDifferenceOperand? left,
           dateDifferenceOperand? right, aggregateOp? id with
       | "DifferenceInDays", _, _, some left, some right, _ => pure (.dayDifference left right)
       | _, some unit, _, some left, some right, _ => pure (.dateDifference unit left right)
       | _, _, some unit, some left, some right, _ => pure (.dateTimeDifference unit left right)
-      | _, _, _, _, _, some op => (.aggregate op ·) <$> aggregate op [.mk left none none, .mk right none none]
+      | _, _, _, _, _, some op => (.aggregate op ·) <$> aggregate op [.mk left none, .mk right none]
       | _, _, _, _, _, none => refuse id "operand"
-  | .call id [.mk operand none none] none none => do
+  | .call id [.mk operand none] none none => do
       if let some part := datePart? id then
         if let some source := baseYearDateSource? operand then
           return .baseYearDatePart source part
       match datePart? id, timePart? id, aggregateOp? id, operand with
-      | some part, _, _, .call bound [.mk range none none] none none =>
+      | some part, _, _, .call bound [.mk range none] none none =>
           match bound, range.fieldEntity? with
           | "StartOfDateRange", some path => pure (.dateRangeBoundPart path .start part)
           | "EndOfDateRange", some path => pure (.dateRangeBoundPart path .finish part)
@@ -64,7 +64,7 @@ def lowerNumericAtomWith
       | _, some part, _, _ => match operand.fieldEntity? with
           | some path => pure (.temporalFieldPart path (.time part))
           | none => refuse id "operand"
-      | _, _, some op, _ => (.aggregate op ·) <$> aggregate op [.mk operand none none]
+      | _, _, some op, _ => (.aggregate op ·) <$> aggregate op [.mk operand none]
       | none, none, none, _ =>
           match id, operand.fieldEntity?, entityTextOperand? operand with
           | "Length", some path, _ => pure (.stringLength path)
@@ -80,13 +80,13 @@ counts. Starred and filtered operands belong to the ordered carrier. -/
 def lowerValidationNumericAtom : Expr → Lowering SurfaceNumericAtom :=
   lowerNumericAtomWith
     (fun op arguments =>
-      match arguments.mapM fun | .mk expr none none => expr.fieldEntity? | _ => none with
+      match arguments.mapM fun | .mk expr none => expr.fieldEntity? | _ => none with
       | some (first :: rest) => pure { first, rest }
       | _ => refuse (match op with
           | .sum => "Sum" | .minimum => "MinValue" | .maximum => "MaxValue"
           | .distinctCount => "NumberOfDifferentValues") "entity operand")
     (fun arguments =>
-      match arguments.mapM fun | .mk expr none none => expr.groupReference? | _ => none with
+      match arguments.mapM fun | .mk expr none => expr.groupReference? | _ => none with
       | some groups => pure (groups.map .fixed)
       | none => refuse "NumberOfFilledGroups" "starred operand")
 
@@ -94,25 +94,25 @@ def lowerValidationNumericAtom : Expr → Lowering SurfaceNumericAtom :=
 entity lists. -/
 def lowerComputationNumericAtom (model : FlatModel) (group : GroupPath) :
     Expr → Lowering SurfaceNumericComputationAtom
-  | .call "Length" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
+  | .call "Length" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>
       (fun source => .indexedString source .length) <$> lowerIndexedSource model group path key
-  | .call "RangeAsNumber" [.mk (.entity { path, index := some key, category := none }) none none,
-      .mk (.number start) none none, .mk (.number finish) none none] none none => do
+  | .call "RangeAsNumber" [.mk (.entity { path, index := some key, category := none, filter := none }) none,
+      .mk (.number start) none, .mk (.number finish) none] none none => do
       let source ← lowerIndexedSource model group path key
       let some start := start.toNat? | refuse "RangeAsNumber" "start"
       let some finish := finish.toNat? | refuse "RangeAsNumber" "finish"
       pure (.indexedString source (.range start finish))
-  | .call "FieldValueAsNumber" [.mk (.entity { path, index := some key, category }) none none] none none =>
+  | .call "FieldValueAsNumber" [.mk (.entity { path, index := some key, category, filter := none }) none] none none =>
       (fun source => .indexedString source (.asNumber (category.map EnumerationProjectionRef.category |>.getD .stored))) <$>
         lowerIndexedSource model group path key
-  | .value { path, index := some key, category := none } =>
+  | .value { path, index := some key, category := none, filter := none } =>
       (.indexed ·) <$> lowerIndexedSource model group path key
   | .call "NumberOfFilledFields" arguments none none =>
       (.filledFieldCount ·) <$> lowerEntitySource model group arguments
   | .call "FirstFilledValue" arguments none none =>
       (.firstFilled ·) <$> lowerEntitySource model group arguments
   | .call "SumOfProducts" arguments none none => (.sumOfProducts ·) <$> lowerProductAggregate model group arguments
-  | .call "NumberOfValueInFields" [.mk expected none none] (some listed) none =>
+  | .call "NumberOfValueInFields" [.mk expected none] (some listed) none =>
       match expected with
       | .number text => match decodeNumber? text with
           | some literal => (.valueCount literal.value ·) <$> lowerEntitySource model group listed

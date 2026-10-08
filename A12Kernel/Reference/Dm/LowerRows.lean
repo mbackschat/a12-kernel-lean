@@ -72,14 +72,14 @@ def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : 
   match expression with
   | .constant "True" | .constant "False" => target.policy.kind == .boolean || target.policy.kind == .confirm
   | .string text => !isTemporalConstant text
-  | .value { index := none, .. } => target.policy.kind == .enumeration
+  | .value { index := none, filter := none, .. } => target.policy.kind == .enumeration
   | _ => false
 
 /-- Retain each admitted operation certificate before certifying row-local selection. -/
 def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (expression : Expr) : Lowering (CheckedRowComputationOperation model) := do
   if target.policy.kind == .dateRange then
-    let .call "DateRange" [.mk start none none, .mk finish none none] none none := expression
+    let .call "DateRange" [.mk start none, .mk finish none] none none := expression
       | refuse "DateRange" "constructor operands"
     let some start := start.fieldEntity? | refuse "DateRange" "start operand"
     let some finish := finish.fieldEntity? | refuse "DateRange" "finish operand"
@@ -110,7 +110,7 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
           (checkAddressedEnumerationComputation model group target.id (.literal text)))
       return .stringConstant (← elaborated "StringComputation"
         (checkRepeatableStringConstantComputation model group target.id text))
-  | .value { path, index := none, category } => do
+  | .value { path, index := none, category, filter := none } => do
       let some field := path.toFieldPath? | refuse "EnumerationComputation" "source path"
       let source := match category with
         | none => SurfaceTextFieldOperand.direct field
@@ -123,8 +123,8 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
 String field. -/
 private def timeComponent (model : FlatModel) (group : GroupPath) :
     Argument → Lowering SurfaceAddressedWorldTimeComponent
-  | .mk (.string text) none none => pure (.addressed (.constant text))
-  | .mk (.call id [.mk field none none] none none) none none => do
+  | .mk (.string text) none => pure (.addressed (.constant text))
+  | .mk (.call id [.mk field none] none none) none => do
       let part ← match id with
         | "HoursFromTime" => pure TimeNumericPart.hour
         | "MinutesFromTime" => pure .minute
@@ -132,7 +132,7 @@ private def timeComponent (model : FlatModel) (group : GroupPath) :
         | _ => refuse "Time" id
       let some path := field.fieldEntity? | refuse "Time" "extractor operand"
       pure (.addressed (.extractor part path))
-  | .mk expr none none => do
+  | .mk expr none => do
       let some path := expr.fieldEntity? | refuse "Time" "component"
       let declaration ← elaborated "Time" (model.resolveFieldDeclarationUnchecked group path)
       match declaration.policy.kind.surfaceKind with
@@ -193,12 +193,12 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
 /-- The row step one unguarded operation into a repeatable target names. -/
 def lowerRowStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) :
     Expr → Lowering (RowStep model)
-  | .call "FieldValueAsString" [.mk source none none] none none => do
+  | .call "FieldValueAsString" [.mk source none] none none => do
       let some path := source.fieldEntity? | refuse "FieldValueAsString" "operand"
       stepOf "FieldValueAsString" (CheckedRowComputationStep.ofAddressedFieldValueAsString?
         (← elaborated "FieldValueAsString" (checkAddressedFieldValueAsString model group target.id path)))
   | .call "FirstFilledValue" arguments none none => firstFilledRow model group target arguments
-  | .call "DateFromDateTime" [.mk source none none] none none => do
+  | .call "DateFromDateTime" [.mk source none] none none => do
       let some path := source.fieldEntity? | refuse "DateFromDateTime" "operand"
       stepOf "DateFromDateTime" (CheckedRowComputationStep.ofAddressedDateFromDateTime?
         (← elaborated "DateFromDateTime" (checkAddressedDateFromDateTime model group target.id path)))

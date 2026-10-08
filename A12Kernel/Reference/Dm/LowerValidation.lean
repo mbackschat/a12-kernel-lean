@@ -37,19 +37,19 @@ private def groupPresenceOp? : String → Option GroupPresenceOperator
 
 
 private def plain : Argument → Option Expr
-  | .mk expr none none => some expr
+  | .mk expr none => some expr
   | _ => none
 
 /-- A group-list operand: a field when the path resolves to one, otherwise a group, starred when any
 segment carries the star. -/
 private def groupListOperand? (model : FlatModel) (rowGroup : GroupPath) :
     Expr → Option SurfaceGroupListOperand
-  | expression@(.entity { index := some _, .. }) => do
-      match ← (lowerEntityOperand model rowGroup (.mk expression none none)).toOption with
+  | expression@(.entity { index := some _, filter := none, .. }) => do
+      match ← (lowerEntityOperand model rowGroup (.mk expression none)).toOption with
       | .indexed source => some (.indexed source)
       | .keyed source => some (.keyed source)
       | _ => none
-  | .entity { path, index := none, category := none } =>
+  | .entity { path, index := none, category := none, filter := none } =>
       if path.correlated then none
       else if path.segments.any (·.star) then
         some (.starredGroup { base := path.base, groups := path.starGroups })
@@ -150,7 +150,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | _, _, _ => []
     | _ => []
   let validity := match leaf with
-    | .call id [.mk (.call "Date" arguments none none) none none] none none =>
+    | .call id [.mk (.call "Date" arguments none none) none] none none =>
         let operation := match id with
           | "Valid" => some ConstructedDateValidityOp.valid
           | "Invalid" => some .invalid
@@ -161,13 +161,13 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             elaborated id (CheckedValidationCondition.fromConstructedDateValidity
               model rowGroup operation source bindingGroup)]
         | none => []
-    | .call id [.mk field none none, .mk (.string name) none none] none none =>
+    | .call id [.mk field none, .mk (.string name) none] none none =>
         let operation := match id with
           | "Valid" => some CustomFieldValidityOp.valid
           | "Invalid" => some .invalid
           | _ => none
         match operation, field with
-        | some operation, .entity { path, index := some key, category := none } => [do
+        | some operation, .entity { path, index := some key, category := none, filter := none } => [do
             let source ← lowerIndexedSource model rowGroup path key
             elaborated id (CheckedValidationCondition.fromIndexedCustomFieldValidity
               model rowGroup world source name operation)]
@@ -205,7 +205,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | some quantifier =>
             let fields := lowerEntitySource model rowGroup arguments
             let literals := values.mapM fun
-              | .mk (.string value) none none => some value
+              | .mk (.string value) none => some value
               | _ => none
             match literals with
             | some literals => [do
@@ -249,7 +249,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
     -- must reach the group-list carrier, which a separate one-argument arm would shadow.
     | .call id arguments none none =>
         let presence := match arguments with
-          | [.mk operand none none] =>
+          | [.mk operand none] =>
               match presenceOp? id, groupPresenceOp? id, operand.fieldEntity?, operand.groupReference? with
               | some op, _, some path, _ =>
                   [elaborated id (CheckedValidationCondition.fromRepeatableFieldPresence model rowGroup op path)]
@@ -309,7 +309,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | .error refusal => [.error refusal])
     | _ => []
   let pattern := match leaf with
-    | .compare op (.value { path, index, category := none }) right =>
+    | .compare op (.value { path, index, category := none, filter := none }) right =>
         let operation := match op with
           | .patternMatched => some StringPatternOp.matched
           | .patternViolated => some .violated
@@ -386,13 +386,13 @@ partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress 
       ((CheckedValidationCondition.fromFlat checked).bind (·.atBinding bindingGroup)).toOption
   match whole, condition with
   | some checked, _ => pure checked
-  | none, .call "FieldFilled" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
+  | none, .call "FieldFilled" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>
       lowerIndexedPresence model rowGroup bindingGroup .filled path key
-  | none, .call "FieldNotFilled" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
+  | none, .call "FieldNotFilled" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>
       lowerIndexedPresence model rowGroup bindingGroup .notFilled path key
-  | none, .call "GroupFilled" [argument@(.mk (.entity { index := some _, .. }) none none)] none none =>
+  | none, .call "GroupFilled" [argument@(.mk (.entity { index := some _, filter := none, .. }) none)] none none =>
       lowerKeyedGroupPresence model rowGroup bindingGroup .filled argument
-  | none, .call "GroupNotFilled" [argument@(.mk (.entity { index := some _, .. }) none none)] none none =>
+  | none, .call "GroupNotFilled" [argument@(.mk (.entity { index := some _, filter := none, .. }) none)] none none =>
       lowerKeyedGroupPresence model rowGroup bindingGroup .notFilled argument
   | none, .custom name quoted => do
       let spelling := if quoted then CustomConditionNameSpelling.quoted name else .unquoted name

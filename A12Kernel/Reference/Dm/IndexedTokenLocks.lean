@@ -630,7 +630,7 @@ example : [false, true].all (fun enumeration =>
 example : evaluate false "RangeAsString(Rows/Body/A For Key,1,1) + \"x\" == \"Ax\"" false == some (.inl (.fired .value)) ∧
     evaluate false "RangeAsString(Rows/Body/A For Key,1,1) + \"x\"" true none
       { tokenTarget := true, stringExpressionTarget := true, rowTarget := true } == some (.inr "value Ax,value Ax") ∧
-    evaluate true "[Rows/Body/A For Key->Kind] + \"!\" == \"alpha!\"" false none
+    evaluate true "[Rows/Body/A ->Kind For Key] + \"!\" == \"alpha!\"" false none
       { category := true } == some (.inl (.fired .value)) := by native_decide
 
 
@@ -646,7 +646,7 @@ example : [false, true].all (fun enumeration =>
 example : evaluate false "RangeAsString(Rows/Body/A For Key,1,2) + \"!\" == \"!\"" false == some (.inl (.fired .value)) ∧
     evaluate false "RangeAsString(Rows/Body/A For Key,1,2) + \"!\" == \"!\"" false none
       { firstA := "" } == some (.inl (.fired .omission)) ∧
-    evaluate true "[Rows/Body/B For Key->Kind] + \"!\" == \"beta!\"" false none
+    evaluate true "[Rows/Body/B ->Kind For Key] + \"!\" == \"beta!\"" false none
       { category := true, displaySecond := true } == some (.inl (.fired .value)) := by native_decide
 
 example : [false, true].all (fun repeated =>
@@ -673,17 +673,17 @@ example : ["RangeAsString([Rows/Body/A For Key],1,1) + \"!\"", "RangeAsString(Ro
       { tokenTarget := true, stringExpressionTarget := true, rowTarget := true }).isNone = true := by native_decide
 
 
-example : evaluate true "[Rows/Body/A For Key->Kind] == \"alpha\"" false none
+example : evaluate true "[Rows/Body/A ->Kind For Key] == \"alpha\"" false none
     { category := true } == some (.inl (.fired .value)) ∧
-    evaluate true "1" true (some "[Rows/Body/B For Key->Kind] == \"beta\"")
+    evaluate true "1" true (some "[Rows/Body/B ->Kind For Key] == \"beta\"")
       { category := true } == some (.inr "value 1") := by native_decide
 
-example : ["[Rows/Body/A For Key->Kind] == \"outside\"", "\"A\" != [Rows/Body/A For Key->Kind]"].all
+example : ["[Rows/Body/A ->Kind For Key] == \"outside\"", "\"A\" != [Rows/Body/A ->Kind For Key]"].all
     (fun condition => (evaluate true condition false none { category := true }).isNone &&
       (evaluate true "1" true (some condition) { category := true }).isNone) = true := by native_decide
 
-example : ["[Rows/Body/A For Key->Kind] == [Rows/Body/B For Key]",
-    "[Rows/Body/B For Key] == [Rows/Body/A For Key->Kind]"].all (fun condition =>
+example : ["[Rows/Body/A ->Kind For Key] == [Rows/Body/B For Key]",
+    "[Rows/Body/B For Key] == [Rows/Body/A ->Kind For Key]"].all (fun condition =>
       evaluate true condition false none { category := true, displaySecond := true } == some (.inl .notFired) &&
       evaluate true "1" true (some condition) { category := true, displaySecond := true } == some (.inr "cleared")) = true := by native_decide
 

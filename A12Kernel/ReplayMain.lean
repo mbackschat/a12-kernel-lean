@@ -40,6 +40,8 @@ import A12Kernel.Reference.Dm.RowAlternativeLocks
 import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.ParserLocks
+import A12Kernel.Reference.Dm.RecursiveReferenceSyntaxLocks
+import A12Kernel.Reference.Dm.RecursiveReferenceAdmissionLocks
 import A12Kernel.Reference.Dm.ReaderLocks
 import A12Kernel.Reference.Dm.NegateLocks
 import A12Kernel.Reference.Dm.LowerLocks

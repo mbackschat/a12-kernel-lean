@@ -87,17 +87,17 @@ def Path.toStarFieldPath? (path : Path) : Option SurfaceStarFieldPath := do
 
 /-- A plain entity in a field slot: a bare path with neither index nor category. -/
 def Expr.fieldEntity? : Expr → Option SurfaceFieldPath
-  | .entity { path, index := none, category := none } => path.toFieldPath?
+  | .entity { path, index := none, category := none, filter := none } => path.toFieldPath?
   | _ => none
 
 /-- A bracketed read of a plain field. -/
 def Expr.fieldValue? : Expr → Option SurfaceFieldPath
-  | .value { path, index := none, category := none } => path.toFieldPath?
+  | .value { path, index := none, category := none, filter := none } => path.toFieldPath?
   | _ => none
 
 /-- A bracketed stored or category field read, shared by validation and computation membership. -/
 def Expr.textFieldValue? : Expr → Option SurfaceTextFieldOperand
-  | .value { path, index := none, category } => do
+  | .value { path, index := none, category, filter := none } => do
       let field ← path.toFieldPath?
       pure (match category with | none => .direct field | some name => .category field name)
   | _ => none
@@ -105,7 +105,7 @@ def Expr.textFieldValue? : Expr → Option SurfaceTextFieldOperand
 /-- A group in a group slot: a bare path, or `RuleGroup`. -/
 def Expr.groupReference? : Expr → Option SurfaceGroupReference
   | .constant "RuleGroup" => some (.ruleGroup false)
-  | .entity { path, index := none, category := none } => (path.toGroupPath?).map .path
+  | .entity { path, index := none, category := none, filter := none } => (path.toGroupPath?).map .path
   | _ => none
 
 /-- A number literal as authored: its value and the scale its digits spell (spec §12.2). -/
@@ -170,7 +170,7 @@ def authoredDateLiteral? (text : String) : Option AuthoredDateLiteral :=
 
 def baseYearDateSource? : Expr → Option BaseYearDateSource
   | .constant "BaseYear" => some .direct
-  | .call bound [.mk (.constant "BaseYear") none none] none none =>
+  | .call bound [.mk (.constant "BaseYear") none] none none =>
       match bound with
       | "StartOfDateRange" => some (.range .start)
       | "EndOfDateRange" => some (.range .finish)
@@ -233,7 +233,7 @@ def CompareOp.toNumeric? : CompareOp → Option NumericValidationOp
 (spec §4). -/
 def roundingPlaces? : List Argument → Option RoundingPlaces
   | [] => some omittedRoundingPlaces
-  | [.mk (.number text) none none] => text.toNat?.bind RoundingPlaces.ofNat?
+  | [.mk (.number text) none] => text.toNat?.bind RoundingPlaces.ofNat?
   | _ => none
 
 def roundingMode? : String → Option DecimalRoundingMode
@@ -257,6 +257,7 @@ until KF393/KF395's group, star, category and kind gates have answered. -/
 def lowerNumericFieldAtom (model : FlatModel) (group : GroupPath)
     (atom : Expr → Lowering Atom) (source : Expr) : Lowering Atom := do
   let reference ← numericFieldFormReference source
+  if reference.filter.isSome then refuse "NumericFieldForm" "filtered reference"
   let unstarred : Path := { reference.path with segments := reference.path.segments.map fun (segment : Segment) => { segment with star := false } }
   let some field := unstarred.toFieldPath? | refuse "NumericFieldForm" "correlated source"
   if (model.groupNamedBy? group field).isSome then
@@ -286,7 +287,7 @@ Semantic precision bounds are checked separately, after the field (KF393/KF448).
 private def fieldRoundingArgument (arguments : List Argument) : Lowering (Option Nat) :=
   match arguments with
     | [] => pure none
-    | [.mk (.number text) none none] => match text.toNat? with
+    | [.mk (.number text) none] => match text.toNat? with
         | some value => pure (some value)
         | none => refuse "NumericFieldForm" KernelStaticDiagnostic.unexpectedToken.kernelCode
     | _ => refuse "NumericFieldForm" KernelStaticDiagnostic.unexpectedToken.kernelCode
@@ -305,8 +306,8 @@ partial def lowerNumericExpr (atom fieldAtom : Expr → Lowering Atom) : Expr �
       let op : NumericScaleBinaryOp := match op with
         | .add => .add | .sub => .subtract | .mul => .multiply | _ => .divide
       pure (.binary op (← lowerNumericExpr atom fieldAtom left) (← lowerNumericExpr atom fieldAtom right))
-  | .call "Abs" [.mk body none none] none none => (.abs ·) <$> lowerNumericExpr atom fieldAtom body
-  | .call id (.mk first none none :: rest) none none =>
+  | .call "Abs" [.mk body none] none none => (.abs ·) <$> lowerNumericExpr atom fieldAtom body
+  | .call id (.mk first none :: rest) none none =>
       if let some form := numericFieldForm? id then do
         match form with
         | .absolute =>
@@ -321,7 +322,7 @@ partial def lowerNumericExpr (atom fieldAtom : Expr → Lowering Atom) : Expr �
             pure (.round mode places (.atom source))
       else if id == "Min" || id == "Max" then do
         let op : NumericExtremumOp := if id == "Min" then .minimum else .maximum
-        let operands ← (first :: rest.filterMap fun | .mk e none none => some e | _ => none).mapM
+        let operands ← (first :: rest.filterMap fun | .mk e none => some e | _ => none).mapM
           (lowerNumericExpr atom fieldAtom)
         if operands.length != rest.length + 1 then refuse id "filtered operand"
         match operands with
@@ -331,7 +332,7 @@ partial def lowerNumericExpr (atom fieldAtom : Expr → Lowering Atom) : Expr �
         | some mode, some places => do
             pure (.round mode places (← lowerNumericExpr atom fieldAtom first))
         | some _, none => refuse id "decimal places"
-        | none, _ => (.atom ·) <$> atom (.call id (.mk first none none :: rest) none none)
+        | none, _ => (.atom ·) <$> atom (.call id (.mk first none :: rest) none none)
   | expression@(.call id [] none none) =>
       if (numericFieldForm? id).isSome then refuse id KernelStaticDiagnostic.unexpectedToken.kernelCode
       else (.atom ·) <$> atom expression
