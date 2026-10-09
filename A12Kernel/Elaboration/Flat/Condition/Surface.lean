@@ -28,7 +28,8 @@ def elaborateEnumerationCore (declaration : FlatFieldDecl)
   | kind, _ =>
       throw (.literalKindMismatch declaration.path .enumeration kind.surfaceKind)
 
-private def finishTextFieldComparison (op : SurfaceComparisonOp)
+/-- Preserve the shared direct-field profile gate for fixed and row-bound text comparisons. -/
+def finishTextFieldComparison (op : SurfaceComparisonOp)
     (leftPath rightPath : List String)
     (left right : FlatTextFieldOperand × DirectComparableField) :
     Except ElabError FlatCondition := do

@@ -73,6 +73,21 @@ def FlatModel.ruleGroupRead (model : FlatModel) (declaringGroup writtenGroup : G
     | (group, .unboundLevel unbound) => (group, some unbound)
     | (group, _) => (group, none)
 
+/-- Resolve an ordinary rule operand at its lexical origin under the separately supplied row binding, retaining bracket and category gates (spec/07 §1 and the field-value read grid). -/
+def FlatModel.resolveBoundRuleOperand (model : FlatModel) (declaringGroup bindingGroup : GroupPath)
+    (bracketed : Bool) (operand : SurfaceTextFieldOperand) : Except ResolveError FlatFieldDecl := do
+  let declaration ← displaceGroupRead (do
+    let declaration ← model.resolveFieldDeclarationUnchecked declaringGroup operand.reference
+    if let some unbound := model.unboundReadLevel? declaringGroup bindingGroup
+        declaration.repeatableScope (model.repeatableScopeForGroupPath bindingGroup) then
+      throw (.unboundOperandLevel declaration.path unbound)
+    pure declaration) (model.ruleGroupRead declaringGroup bindingGroup operand.reference)
+  let refusal := match operand.projectionRef with
+    | .stored => if bracketed then declaration.fieldValueReadRefusal? else none
+    | .category _ => declaration.categoryReadRefusal?
+  if let some error := refusal then throw error
+  pure declaration
+
 /-- A rule's nonrepeatable field-value read. -/
 def FlatModel.resolveFieldValueRead (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) (writtenGroup : GroupPath := declaringGroup) :

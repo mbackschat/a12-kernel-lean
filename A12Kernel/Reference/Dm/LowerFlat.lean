@@ -108,18 +108,22 @@ private def fieldComparison (model : FlatModel) (op : SurfaceComparisonOp)
   if field.index.isSome || field.filter.isSome then none
   match field.category, other with
   | some category, .string text => some (.compareEnumeration fieldOp path (.category category) text)
-  | some _, _ => none
   | none, .constant "Today" => some (.compareToday op position path)
   | none, .constant "Now" => some (.compareNow op position path)
   | none, .constant "BaseYear" => some (.compareBaseYear op position path)
-  | none, .value right =>
+  | _, .value right =>
       if mirrored then none
       else
         let rightPath ← right.path.toFieldPath?
         if right.index.isSome || right.filter.isSome then none
-        match right.category with
-        | none => some (.compareFields op path rightPath)
-        | some name => some (.compareTextFields op (.direct path) (.category rightPath name))
+        match field.category, right.category with
+        | none, none => some (.compareFields op path rightPath)
+        | leftCategory, rightCategory =>
+            let operand := fun field category => match category with
+              | none => SurfaceTextFieldOperand.direct field
+              | some name => .category field name
+            some (.compareTextFields op (operand path leftCategory) (operand rightPath rightCategory))
+  | some _, _ => none
   | none, other => (literal? model other).map (.compare fieldOp path ·)
 
 /-- The flat form of a whole condition, or `none` when any part has none. -/

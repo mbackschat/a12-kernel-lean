@@ -366,6 +366,10 @@ private def scalarMembershipGuardAt (model : FlatModel) (level : RepeatableLevel
 private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
+  | .flat (.compare comparison) =>
+      if comparison.fields.any (fun field => (model.fieldRepeatableScope field.id).contains level) then
+        .guarded
+      else .noReference
   | .flat condition => scalarMembershipGuardAt model level condition
   | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
   | .customCondition _ => .noReference

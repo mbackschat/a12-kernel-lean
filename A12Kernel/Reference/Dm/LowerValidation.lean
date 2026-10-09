@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.LowerString
 import A12Kernel.Reference.Dm.LowerFlat
 import A12Kernel.Elaboration.BoundScalarMembership
+import A12Kernel.Elaboration.BoundTextComparison
 import A12Kernel.Reference.Dm.LowerScalarTemporal
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.NumericValidation.EntityComparison
@@ -243,6 +244,14 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
           elaborated "FieldValuesNotUnique"
             (CheckedValidationCondition.fromValuesNotUnique bindingGroup (.temporal source) rowGroup)]
     | _ => []
+  let boundText := match leaf with
+    | .compare .. => [do
+        let some surface := lowerFlat model rowGroup leaf | refuse leaf.construct "direct text comparison"
+        let condition ← elaborated leaf.construct (BoundTextComparison.elaborate model rowGroup bindingGroup surface)
+        if hModel : model.validate.isOk = true then
+          elaborated leaf.construct (CheckedValidationCondition.checkCore model bindingGroup (.leaf (.flat condition)) hModel rowGroup)
+        else refuse leaf.construct "invalid model"]
+    | _ => []
   let scalarMembership := match leaf with
     | .call "FieldValueIncludedInValueList" _ none none
     | .call "FieldValueNotIncludedInValueList" _ none none => [do
@@ -411,7 +420,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             | none => []
         | _, _ => []
     | _ => []
-  flat ++ range ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ scalarMembership ++ valueLists ++ uniqueness ++ validity ++ overlap
+  flat ++ boundText ++ range ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ scalarMembership ++ valueLists ++ uniqueness ++ validity ++ overlap
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

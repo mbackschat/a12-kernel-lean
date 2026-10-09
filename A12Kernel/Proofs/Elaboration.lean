@@ -121,7 +121,8 @@ theorem flatConditionLeaf_wellFormedBool_iff_legal
     leaf.wellFormedBool model = true ↔ leaf.Legal model := by
   cases leaf with
   | compare comparison =>
-      simp only [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool]
+      simp only [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool,
+        FlatModel.admitsComparisonIn, List.isEmpty_nil, ↓reduceIte]
       exact ⟨FlatConditionLeaf.Legal.compare, fun legal => by cases legal; assumption⟩
   | tokenValueList quantifier operands values form =>
       cases shapeBool : form.admits quantifier operands.length with

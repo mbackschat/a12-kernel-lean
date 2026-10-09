@@ -207,10 +207,18 @@ def FlatModel.admitsNumberOperandListIn (model : FlatModel) (scope : List Repeat
         (FlatField.number operand).matchesDecl declaration
     | .error _ => false
 
+/-- Text comparisons retain their existing type/profile admission under an ordinary row binding; other comparison families keep their established admission. -/
+def FlatModel.admitsComparisonIn (model : FlatModel) (scope : List RepeatableLevel)
+    (comparison : FlatComparison) : Bool :=
+  if scope.isEmpty then model.admitsComparison comparison else
+    match comparison with
+    | .string .. | .textFields .. | .enumeration .. => model.admitsTextComparisonIn scope comparison
+    | _ => model.admitsComparison comparison
+
 def FlatConditionLeaf.wellFormedInBool (condition : FlatConditionLeaf) (model : FlatModel)
     (scope : List RepeatableLevel) : Bool :=
   match condition with
-  | .compare comparison => model.admitsComparison comparison
+  | .compare comparison => model.admitsComparisonIn scope comparison
   | .tokenValueList quantifier operands (.literals values) form =>
       form.admits quantifier operands.length && (
         !values.isEmpty && match model.tokenOperandListKindIn? scope operands with
