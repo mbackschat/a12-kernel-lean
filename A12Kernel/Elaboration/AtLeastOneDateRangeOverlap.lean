@@ -226,9 +226,10 @@ private def certifyDateRangeEntityGroup (model : FlatModel)
     throw (.groupExpansionNotDateRange source.groupPath)
 
 private def certifyAtLeastOneDateRangeOverlapsListOperand (model : FlatModel)
-    (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
+    (declaringGroup : GroupPath) (operand : ResolvedFieldEntityOperand model)
+    (bindingGroup : GroupPath := declaringGroup) :
       Except AtLeastOneDateRangeOverlapsElabError
-        (CheckedAtLeastOneDateRangeOverlapsListOperand model)
+        (CheckedAtLeastOneDateRangeOverlapsListOperand model) := match operand with
   | .group reference =>
       .group <$> certifyDateRangeEntityGroup model (.fixed reference)
   | .starredGroup source =>
@@ -237,7 +238,7 @@ private def certifyAtLeastOneDateRangeOverlapsListOperand (model : FlatModel)
       .group <$> certifyDateRangeEntityGroup model (.starredPresence source)
   | .field declaration .stored =>
       match certifyDateRangesOverlapOperand model declaringGroup
-          (.field declaration .stored) with
+          (.field declaration .stored) bindingGroup with
       | .ok canonical => pure (.field (.canonical canonical))
       | .error (.unsupportedPolicy _ _ _) =>
           ((fun fragment => .field (.fragmentField fragment)) <$>
@@ -246,14 +247,15 @@ private def certifyAtLeastOneDateRangeOverlapsListOperand (model : FlatModel)
       | .error canonicalError => throw (pluralOperandError .list canonicalError)
   | operand =>
       .field <$> ((.canonical <$>
-        certifyDateRangesOverlapOperand model declaringGroup operand)
+        certifyDateRangesOverlapOperand model declaringGroup operand bindingGroup)
         |>.mapError (pluralOperandError .list))
 
 private def certifyAtLeastOneDateRangeOverlapsListOperands (model : FlatModel)
-    (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
+    (declaringGroup : GroupPath) (operands : List (ResolvedFieldEntityOperand model))
+    (bindingGroup : GroupPath := declaringGroup) :
       Except AtLeastOneDateRangeOverlapsElabError
         (List (CheckedAtLeastOneDateRangeOverlapsListOperand model)) :=
-  List.mapM (certifyAtLeastOneDateRangeOverlapsListOperand model declaringGroup)
+  operands.mapM (fun operand => certifyAtLeastOneDateRangeOverlapsListOperand model declaringGroup operand bindingGroup)
 
 /-- A starred operand naming a root group. The Kernel's root test reads the group's full name and
     ignores the star, so the plural operator holds a starred root back wherever it holds a fixed one. -/
@@ -336,9 +338,9 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
             throw .dateWithAndWithoutYear
           let scalar ← certifyPluralScalar model scalarDeclaration
           let first ← certifyAtLeastOneDateRangeOverlapsListOperand model
-            declaringGroup listFirst
+            declaringGroup listFirst (fixedTargetGroup?.getD declaringGroup)
           let rest ← certifyAtLeastOneDateRangeOverlapsListOperands model
-            declaringGroup listRest
+            declaringGroup listRest (fixedTargetGroup?.getD declaringGroup)
           pure { shape, scalar, first, rest }
 
 /-- The scalar instance: a source read where the reading rule iterates no level. -/
@@ -418,9 +420,9 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
   | [] => throw (.source .incoherentCore)
   | listFirst :: listRest => do
       let first ← certifyYearlessDateRangeOverlapOperand model declaringGroup
-        listFirst
+        listFirst (fixedTargetGroup?.getD declaringGroup)
       let rest ← listRest.mapM
-        (certifyYearlessDateRangeOverlapOperand model declaringGroup)
+        (fun operand => certifyYearlessDateRangeOverlapOperand model declaringGroup operand (fixedTargetGroup?.getD declaringGroup))
       pure { shape, scalar, first, rest }
 
 /-! ## Checked plural-overlap assembly -/

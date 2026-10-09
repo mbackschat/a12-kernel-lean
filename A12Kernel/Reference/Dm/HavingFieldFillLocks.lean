@@ -151,7 +151,7 @@ private def declaredOuterRows (operand : String) : Option (List Bool) := do
   let document ← (checkDocument prepared "en_US" input.data).toOption
   let rule ← (checkRule dm .english {
     group := ["Form", "Rows"], name := "Declared", errorCode := "DECLARED", errorEntityRelPath := "../N",
-    condition := "Sum(/Form/Rows*/N Having AllFieldsFilled(" ++ operand ++ ") And FieldFilled(N)) > 0",
+    condition := "FieldFilled(N) And Sum(/Form/Rows*/N Having AllFieldsFilled(" ++ operand ++ ") And FieldFilled(N)) > 0",
     severity := "ERROR" } world).toOption
   let results ← (rule.evalOrdinaryRepeatableFull document (some world)).toOption
   pure (results.map fun result => result.2.verdict.keepsHaving)

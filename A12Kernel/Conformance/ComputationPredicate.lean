@@ -216,4 +216,19 @@ example : ((match patternProfile true false with
     | .error (.pattern (.field (.resolve (.rawFieldValueRead _)))) => true | _ => false) : Bool) = true ∧
     (patternProfile false true).toOption = some (some .holds) := by native_decide
 
+private def firstToken (left right : SurfaceTokenComparisonOperand) : SurfaceComputationPredicate :=
+  .tokenComparison .equal left right
+
+example : run .string false (firstToken (.firstFilled { first := .field (path "A"), rest := [.field (path "B")] }) (.literal "a"))
+      (context .string (.parsed (.str "a")) (.rejected .malformed)) = some .holds ∧
+    run .string false (firstToken (.firstFilled { first := .field (path "A"), rest := [.field (path "B")] }) (.literal ""))
+      (context .string (.rejected .malformed) (.parsed (.str "a"))) = some (.poison .malformed) ∧
+    run .string false (firstToken (.firstFilled { first := .field (path "A"), rest := [.field (path "B")] }) (.field (path "B")))
+      (context .string (.parsed (.str "a")) (.rejected .malformed)) = some (.poison .malformed) := by native_decide
+
+example : run .string true (firstToken (.firstFilled (star "A")) (.literal "other"))
+      (starredContext .string true) = some .holds ∧
+    run .string true (firstToken (.firstFilled (star "A")) (.firstFilled (star "B")))
+      (starredContext .string true) = some .notTrue := by native_decide
+
 end A12Kernel.Conformance.ComputationPredicate

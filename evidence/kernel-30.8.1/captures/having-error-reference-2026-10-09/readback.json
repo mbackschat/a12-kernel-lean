@@ -1,0 +1,146 @@
+[
+  {
+    "id": "modelCheck",
+    "ok": true,
+    "valid": true,
+    "verification": "KERNEL_CONFIRMED",
+    "engineRequested": "A12_KERNEL",
+    "engineExecuted": "A12_KERNEL",
+    "engineVersion": "30.8.1"
+  },
+  {
+    "id": "modelReadback",
+    "ok": true,
+    "verification": "KERNEL_CONFIRMED",
+    "data": {
+      "fields": [
+        {
+          "path": "/Probe/SkuText",
+          "name": "SkuText",
+          "kind": "STRING"
+        },
+        {
+          "path": "/Probe/Amount",
+          "name": "Amount",
+          "kind": "NUMBER",
+          "scale": 0
+        },
+        {
+          "path": "/Probe/Flag",
+          "name": "Flag",
+          "kind": "BOOLEAN"
+        },
+        {
+          "path": "/Probe/FiledOn",
+          "name": "FiledOn",
+          "kind": "DATE"
+        },
+        {
+          "path": "/Probe/ClosedOn",
+          "name": "ClosedOn",
+          "kind": "DATE"
+        },
+        {
+          "path": "/Probe/CoverFrom",
+          "name": "CoverFrom",
+          "kind": "DATE"
+        },
+        {
+          "path": "/Probe/Rows/Sub/Leaf",
+          "name": "Leaf",
+          "kind": "NUMBER",
+          "scale": 0
+        },
+        {
+          "path": "/Probe/Rows/RowVal",
+          "name": "RowVal",
+          "kind": "NUMBER",
+          "scale": 0
+        },
+        {
+          "path": "/Probe/Rows/RowDate",
+          "name": "RowDate",
+          "kind": "DATE"
+        },
+        {
+          "path": "/Probe/Rows/RowText",
+          "name": "RowText",
+          "kind": "STRING"
+        },
+        {
+          "path": "/Probe/Rows/RowScaled",
+          "name": "RowScaled",
+          "kind": "NUMBER",
+          "scale": 2
+        },
+        {
+          "path": "/Probe/Rows/RowFlag",
+          "name": "RowFlag",
+          "kind": "BOOLEAN"
+        },
+        {
+          "path": "/Probe/Rows/RowAgreed",
+          "name": "RowAgreed",
+          "kind": "CONFIRM"
+        },
+        {
+          "path": "/Probe/Rows/RowChoice",
+          "name": "RowChoice",
+          "kind": "ENUMERATION",
+          "values": [
+            "A",
+            "B"
+          ]
+        },
+        {
+          "path": "/Probe/Rows/RowClock",
+          "name": "RowClock",
+          "kind": "TIME"
+        },
+        {
+          "path": "/Probe/Rows/RowSpan",
+          "name": "RowSpan",
+          "kind": "DATE_RANGE"
+        },
+        {
+          "path": "/Probe/Rows/Ranges/R",
+          "name": "R",
+          "kind": "DATE_RANGE"
+        },
+        {
+          "path": "/Probe/Other/OtherVal",
+          "name": "OtherVal",
+          "kind": "NUMBER",
+          "scale": 0
+        }
+      ],
+      "groups": [
+        {
+          "path": "/Probe",
+          "repeatable": false
+        },
+        {
+          "path": "/Probe/Rows",
+          "repeatable": true,
+          "maxRepetitions": 3
+        },
+        {
+          "path": "/Probe/Rows/Sub",
+          "repeatable": false
+        },
+        {
+          "path": "/Probe/Rows/Ranges",
+          "repeatable": false
+        },
+        {
+          "path": "/Probe/Other",
+          "repeatable": true,
+          "maxRepetitions": 3
+        }
+      ],
+      "locales": [
+        "en_US"
+      ]
+    }
+  }
+]

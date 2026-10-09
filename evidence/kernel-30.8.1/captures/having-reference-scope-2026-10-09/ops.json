@@ -1,0 +1,782 @@
+[
+  {
+    "id": "vSumplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vSumplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cSumplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cSumplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vSumsibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vSumsibling",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And Sum(Rows*/RowVal) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cSumsibling",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cSumsibling.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vSumown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vSumown",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cSumown",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cSumown.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFilledplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFilledplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfFilledFields(Rows*/RowVal) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFilledplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFilledplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFilledsibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFilledsibling",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And NumberOfFilledFields(Rows*/RowVal) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFilledsibling",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFilledsibling.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFilledown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFilledown",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowVal) And NumberOfFilledFields(Rows*/RowVal) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFilledown",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFilledown.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDistinctplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDistinctplain",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfDifferentValues(Rows*/RowText) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDistinctplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDistinctplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDistinctsibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDistinctsibling",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And NumberOfDifferentValues(Rows*/RowText) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDistinctsibling",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDistinctsibling.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDistinctown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDistinctown",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowText) And NumberOfDifferentValues(Rows*/RowText) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDistinctown",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDistinctown.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirstplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirstplain",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirstplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirstplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirstsibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirstsibling",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And FirstFilledValue(Rows*/RowText) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirstsibling",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirstsibling.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirstown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirstown",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowText) And FirstFilledValue(Rows*/RowText) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirstown",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirstown.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDateplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDateplain",
+      "--field",
+      "/Probe/Rows/RowDate",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MinValue(Rows*/RowDate) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDateplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDateplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDatesibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDatesibling",
+      "--field",
+      "/Probe/Rows/RowDate",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And MinValue(Rows*/RowDate) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDatesibling",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDatesibling.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDateown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDateown",
+      "--field",
+      "/Probe/Rows/RowDate",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowDate) And MinValue(Rows*/RowDate) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDateown",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDateown.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFillplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFillplain",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowText)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFillplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFillplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFillsibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFillsibling",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And AtLeastOneFieldFilled(Rows*/RowText)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFillsibling",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFillsibling.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFillown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFillown",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowText) And AtLeastOneFieldFilled(Rows*/RowText)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFillown",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFillown.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vUniqueplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vUniqueplain",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowText)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cUniqueplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cUniqueplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vUniquesibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vUniquesibling",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And FieldValuesNotUnique(Rows*/RowText)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cUniquesibling",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cUniquesibling.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vUniqueown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vUniqueown",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowText) And FieldValuesNotUnique(Rows*/RowText)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cUniqueown",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cUniqueown.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangeplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangeplain",
+      "--field",
+      "/Probe/Rows/RowSpan",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/RowSpan)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangeplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangeplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangesibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangesibling",
+      "--field",
+      "/Probe/Rows/RowSpan",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And DateRangesOverlap(Rows*/RowSpan)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangesibling",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangesibling.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangeown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangeown",
+      "--field",
+      "/Probe/Rows/RowSpan",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowSpan) And DateRangesOverlap(Rows*/RowSpan)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangeown",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangeown.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupSumplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupSumplain",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/Sub) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupSumplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupSumplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupSumsibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupSumsibling",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And Sum(Rows*/Sub) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupSumsibling",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupSumsibling.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupSumown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupSumown",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And Sum(Rows*/Sub) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupSumown",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupSumown.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRangeplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupRangeplain",
+      "--field",
+      "/Probe/Rows/Ranges/R",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneDateRangeOverlaps(Rows/RowSpan In Rows*/Ranges)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupRangeplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRangeplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRangesibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupRangesibling",
+      "--field",
+      "/Probe/Rows/Ranges/R",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And AtLeastOneDateRangeOverlaps(Rows/RowSpan In Rows*/Ranges)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupRangesibling",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRangesibling.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRangeown",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupRangeown",
+      "--field",
+      "/Probe/Rows/Ranges/R",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Ranges/R) And AtLeastOneDateRangeOverlaps(Rows/RowSpan In Rows*/Ranges)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupRangeown",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRangeown.json",
+      "--dry-run"
+    ]
+  }
+]

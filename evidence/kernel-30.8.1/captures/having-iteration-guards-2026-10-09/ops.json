@@ -1,0 +1,1458 @@
+[
+  {
+    "id": "vAllFieldsFilledrowPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllFieldsFilledrowPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AllFieldsFilled(Rows/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllFieldsFilledrowPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllFieldsFilledrowPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAllFieldsFilledmixedPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllFieldsFilledmixedPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AllFieldsFilled(Rows/RowVal, Amount)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllFieldsFilledmixedPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllFieldsFilledmixedPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAllFieldsFilledstarAndRow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllFieldsFilledstarAndRow",
+      "--field",
+      "/Probe/Rows/RowScaled",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AllFieldsFilled(Rows*/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllFieldsFilledstarAndRow",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllFieldsFilledstarAndRow.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAllFieldsFilledmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllFieldsFilledmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllFieldsFilledmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllFieldsFilledmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAllFieldsFilledguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllFieldsFilledguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And AllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllFieldsFilledguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllFieldsFilledguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAllFieldsFilledcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllFieldsFilledcandidate",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AllFieldsFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllFieldsFilledcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllFieldsFilledcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAllFieldsFilledplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllFieldsFilledplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AllFieldsFilled(Rows*/RowVal)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllFieldsFilledplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllFieldsFilledplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNoFieldFilledrowPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNoFieldFilledrowPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NoFieldFilled(Rows/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNoFieldFilledrowPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNoFieldFilledrowPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNoFieldFilledmixedPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNoFieldFilledmixedPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NoFieldFilled(Rows/RowVal, Amount)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNoFieldFilledmixedPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNoFieldFilledmixedPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNoFieldFilledstarAndRow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNoFieldFilledstarAndRow",
+      "--field",
+      "/Probe/Rows/RowScaled",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NoFieldFilled(Rows*/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNoFieldFilledstarAndRow",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNoFieldFilledstarAndRow.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNoFieldFilledmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNoFieldFilledmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NoFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNoFieldFilledmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNoFieldFilledmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNoFieldFilledguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNoFieldFilledguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And NoFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNoFieldFilledguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNoFieldFilledguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNoFieldFilledcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNoFieldFilledcandidate",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NoFieldFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNoFieldFilledcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNoFieldFilledcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNoFieldFilledplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNoFieldFilledplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NoFieldFilled(Rows*/RowVal)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNoFieldFilledplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNoFieldFilledplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAtLeastOneFieldFilledrowPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAtLeastOneFieldFilledrowPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAtLeastOneFieldFilledrowPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAtLeastOneFieldFilledrowPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAtLeastOneFieldFilledmixedPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAtLeastOneFieldFilledmixedPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows/RowVal, Amount)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAtLeastOneFieldFilledmixedPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAtLeastOneFieldFilledmixedPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAtLeastOneFieldFilledstarAndRow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAtLeastOneFieldFilledstarAndRow",
+      "--field",
+      "/Probe/Rows/RowScaled",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAtLeastOneFieldFilledstarAndRow",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAtLeastOneFieldFilledstarAndRow.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAtLeastOneFieldFilledmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAtLeastOneFieldFilledmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAtLeastOneFieldFilledmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAtLeastOneFieldFilledmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAtLeastOneFieldFilledguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAtLeastOneFieldFilledguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And AtLeastOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAtLeastOneFieldFilledguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAtLeastOneFieldFilledguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAtLeastOneFieldFilledcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAtLeastOneFieldFilledcandidate",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAtLeastOneFieldFilledcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAtLeastOneFieldFilledcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAtLeastOneFieldFilledplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAtLeastOneFieldFilledplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowVal)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAtLeastOneFieldFilledplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAtLeastOneFieldFilledplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMoreThanOneFieldFilledrowPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMoreThanOneFieldFilledrowPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MoreThanOneFieldFilled(Rows/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMoreThanOneFieldFilledrowPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMoreThanOneFieldFilledrowPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMoreThanOneFieldFilledmixedPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMoreThanOneFieldFilledmixedPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MoreThanOneFieldFilled(Rows/RowVal, Amount)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMoreThanOneFieldFilledmixedPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMoreThanOneFieldFilledmixedPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMoreThanOneFieldFilledstarAndRow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMoreThanOneFieldFilledstarAndRow",
+      "--field",
+      "/Probe/Rows/RowScaled",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MoreThanOneFieldFilled(Rows*/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMoreThanOneFieldFilledstarAndRow",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMoreThanOneFieldFilledstarAndRow.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMoreThanOneFieldFilledmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMoreThanOneFieldFilledmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MoreThanOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMoreThanOneFieldFilledmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMoreThanOneFieldFilledmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMoreThanOneFieldFilledguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMoreThanOneFieldFilledguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And MoreThanOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMoreThanOneFieldFilledguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMoreThanOneFieldFilledguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMoreThanOneFieldFilledcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMoreThanOneFieldFilledcandidate",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MoreThanOneFieldFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMoreThanOneFieldFilledcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMoreThanOneFieldFilledcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMoreThanOneFieldFilledplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMoreThanOneFieldFilledplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MoreThanOneFieldFilled(Rows*/RowVal)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMoreThanOneFieldFilledplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMoreThanOneFieldFilledplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotAllFieldsFilledrowPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotAllFieldsFilledrowPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotAllFieldsFilled(Rows/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotAllFieldsFilledrowPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotAllFieldsFilledrowPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotAllFieldsFilledmixedPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotAllFieldsFilledmixedPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotAllFieldsFilled(Rows/RowVal, Amount)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotAllFieldsFilledmixedPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotAllFieldsFilledmixedPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotAllFieldsFilledstarAndRow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotAllFieldsFilledstarAndRow",
+      "--field",
+      "/Probe/Rows/RowScaled",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotAllFieldsFilled(Rows*/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotAllFieldsFilledstarAndRow",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotAllFieldsFilledstarAndRow.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotAllFieldsFilledmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotAllFieldsFilledmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotAllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotAllFieldsFilledmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotAllFieldsFilledmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotAllFieldsFilledguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotAllFieldsFilledguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And NotAllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotAllFieldsFilledguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotAllFieldsFilledguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotAllFieldsFilledcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotAllFieldsFilledcandidate",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotAllFieldsFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotAllFieldsFilledcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotAllFieldsFilledcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotAllFieldsFilledplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotAllFieldsFilledplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotAllFieldsFilled(Rows*/RowVal)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotAllFieldsFilledplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotAllFieldsFilledplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotExactlyOneFieldFilledrowPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotExactlyOneFieldFilledrowPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotExactlyOneFieldFilled(Rows/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotExactlyOneFieldFilledrowPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotExactlyOneFieldFilledrowPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotExactlyOneFieldFilledmixedPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotExactlyOneFieldFilledmixedPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotExactlyOneFieldFilled(Rows/RowVal, Amount)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotExactlyOneFieldFilledmixedPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotExactlyOneFieldFilledmixedPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotExactlyOneFieldFilledstarAndRow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotExactlyOneFieldFilledstarAndRow",
+      "--field",
+      "/Probe/Rows/RowScaled",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotExactlyOneFieldFilled(Rows*/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotExactlyOneFieldFilledstarAndRow",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotExactlyOneFieldFilledstarAndRow.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotExactlyOneFieldFilledmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotExactlyOneFieldFilledmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotExactlyOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotExactlyOneFieldFilledmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotExactlyOneFieldFilledmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotExactlyOneFieldFilledguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotExactlyOneFieldFilledguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And NotExactlyOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotExactlyOneFieldFilledguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotExactlyOneFieldFilledguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotExactlyOneFieldFilledcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotExactlyOneFieldFilledcandidate",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotExactlyOneFieldFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotExactlyOneFieldFilledcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotExactlyOneFieldFilledcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNotExactlyOneFieldFilledplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNotExactlyOneFieldFilledplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NotExactlyOneFieldFilled(Rows*/RowVal)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNotExactlyOneFieldFilledplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNotExactlyOneFieldFilledplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldsNotCollectivelyFilledrowPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldsNotCollectivelyFilledrowPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldsNotCollectivelyFilled(Rows/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldsNotCollectivelyFilledrowPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldsNotCollectivelyFilledrowPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldsNotCollectivelyFilledmixedPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldsNotCollectivelyFilledmixedPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldsNotCollectivelyFilled(Rows/RowVal, Amount)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldsNotCollectivelyFilledmixedPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldsNotCollectivelyFilledmixedPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldsNotCollectivelyFilledstarAndRow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldsNotCollectivelyFilledstarAndRow",
+      "--field",
+      "/Probe/Rows/RowScaled",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldsNotCollectivelyFilled(Rows*/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldsNotCollectivelyFilledstarAndRow",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldsNotCollectivelyFilledstarAndRow.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldsNotCollectivelyFilledmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldsNotCollectivelyFilledmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldsNotCollectivelyFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldsNotCollectivelyFilledmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldsNotCollectivelyFilledmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldsNotCollectivelyFilledguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldsNotCollectivelyFilledguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And FieldsNotCollectivelyFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldsNotCollectivelyFilledguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldsNotCollectivelyFilledguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldsNotCollectivelyFilledcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldsNotCollectivelyFilledcandidate",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldsNotCollectivelyFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldsNotCollectivelyFilledcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldsNotCollectivelyFilledcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldsNotCollectivelyFilledplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldsNotCollectivelyFilledplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldsNotCollectivelyFilled(Rows*/RowVal)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldsNotCollectivelyFilledplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldsNotCollectivelyFilledplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldValuesNotUniquerowPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldValuesNotUniquerowPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldValuesNotUniquerowPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldValuesNotUniquerowPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldValuesNotUniquemixedPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldValuesNotUniquemixedPair",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows/RowVal, Amount)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldValuesNotUniquemixedPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldValuesNotUniquemixedPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldValuesNotUniquestarAndRow",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldValuesNotUniquestarAndRow",
+      "--field",
+      "/Probe/Rows/RowScaled",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowVal, Rows/RowScaled)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldValuesNotUniquestarAndRow",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldValuesNotUniquestarAndRow.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldValuesNotUniquemarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldValuesNotUniquemarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldValuesNotUniquemarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldValuesNotUniquemarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldValuesNotUniqueguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldValuesNotUniqueguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And FieldValuesNotUnique(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldValuesNotUniqueguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldValuesNotUniqueguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldValuesNotUniquecandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldValuesNotUniquecandidate",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldValuesNotUniquecandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldValuesNotUniquecandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldValuesNotUniqueplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldValuesNotUniqueplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowVal)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldValuesNotUniqueplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldValuesNotUniqueplain.json",
+      "--dry-run"
+    ]
+  }
+]

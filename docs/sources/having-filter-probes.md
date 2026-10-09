@@ -495,3 +495,40 @@ The filter's leaf domain, connectives, correlation, scope gate, and two-arm beha
 - `limits`: One filtered level, `en_US`, UTC process, unindexed fields, explicit unregistered type names on String fields. No registered Custom callback, general pattern engine, nested-filter or complete H10 reference-set claim. Some ordinary row-bound validation twins remain unsupported by Lean admission and are not counted as conformance matches.
 - `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/having-predicate-family-2026-10-09/) retains model, structured operations, predicate inventory, request and sanitized artifact. [Manifest](../../evidence/kernel-30.8.1/captures/having-predicate-family-2026-10-09/MANIFEST.sha256) SHA-256 `2bdc76df8869df837cc262bbfd3234f231c070dd64de4c5d714a08c24dededba`.
 - `sync`: [SPEC-2026-10-09-04](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-09-04) carries the correction to the named-type and Having clauses. The other measured predicate families calibrate their existing account.
+
+
+<a id="src-having-error-reference"></a>
+#### Static error-field membership across fourteen Having callers, measured 2026-10-09
+
+- `revision`: Pinned a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, clean before and after; dmtool 0.13.0, built/runtime Kernel 30.8.1. The persisted model passes Kernel consistency and converted model-card readback.
+- `matrix`: Fourteen callers cross plain operands, selected payloads, candidate reads, marked reads, outside guards, unrelated error fields and all-marked bodies. Six additional cases cover plural group operands and outside-field predicates with CurrentRepetition, in both orders. Each of the 104 cases has validation and computation observations.
+- `membership`: Numeric, token, Boolean-count and Date-extremum callers exclude unmarked filter reads from error-field membership, admit marked reads and count selected starred fields. Singular DateRange overlap follows the same partition; starred groups are forbidden there.
+- `iteration`: Marked field-fill and uniqueness cases reach the negative-iteration gate in validation while their computation twins admit. A plural overlap referencing its error field only through a starred group draws the error-field/iteration incompatibility; an explicit filled-field conjunct admits it.
+- `controls`: An all-marked body lacks candidate iteration. CurrentRepetition supplies iteration beside an outside-field predicate in either conjunction order. Filtered numeric group operands draw the no-groups class; their plain twin admits.
+- `exploration`: Seven additional DayFromDate(MinValue(...)) guard expressions draw MVK_UNEXPECTED_TOKEN in both arms, including the plain control. These 14 observations establish no positive temporal-numeric reference-membership result.
+- `limits`: Static admission, one repeatable level, en_US. No runtime or message-reference-coordinate claim. The matrix does not establish runtime or complete Having correspondence.
+- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/having-error-reference-2026-10-09/) retains the model, operations, computation specifications, 222 message-free observations and sanitized readback. [Manifest](../../evidence/kernel-30.8.1/captures/having-error-reference-2026-10-09/MANIFEST.sha256) SHA-256 `197f6cf806191d01a0f813768767680806366119c0012cfa1c33f2364ad6cfb3`.
+
+
+<a id="src-having-iteration-guards"></a>
+#### Field-fill and uniqueness iteration gates depend on ordinary references and wildcard capacity, measured 2026-10-09
+
+- `revision`: Clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, dmtool 0.13.0, built/runtime Kernel 30.8.1; sibling state unchanged. Persisted model consistency and converted readback pass, including the independent scale-0 Number output field.
+- `matrix`: Seven field-fill quantifiers plus Number uniqueness cross row-only pairs, mixed row/root pairs, wildcard/row pairs, marked and unmarked filters, a guarded marked filter and plain wildcards. All 56 conditions have validation and computation observations; all computation twins admit.
+- `negative`: NoFieldFilled, NotAllFieldsFilled and NotExactlyOneFieldFilled reject lists with an ordinary row operand. Their marked-filter-only twins admit: the captured reference supplies the rule's iteration without making the wildcard list operand an ordinary row read.
+- `threshold`: AtLeastOneFieldFilled and FieldsNotCollectivelyFilled reject one independent slot; MoreThanOneFieldFilled and uniqueness need two. The row/root pair separates thresholds one and two; the capacity-three wildcard rejects both. A filled-field conjunct on the captured row admits every marked-filter case.
+- `all`: AllFieldsFilled admits the measured multiple-operand and wildcard shapes. These rows do not establish the singleton direct-field branch; that branch remains source-derived.
+- `source`: IterationNotValidVisitor classifies the entity-list operands and weights independent wildcards by declared repetition limits. Its reference traversal excludes candidate filter reads from the enclosing rule's iteration. Runtime selection cardinality is a different quantity.
+- `limits`: One finite repeated level, direct Number operands, no indexed or group list operands. Token marked/candidate uniqueness controls come from the preceding [reference matrix](#src-having-error-reference); temporal uniqueness and broader guard topology remain outside this calibration.
+- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/having-iteration-guards-2026-10-09/) retains 112 message-free observations, model, inputs and sanitized readback. [Manifest](../../evidence/kernel-30.8.1/captures/having-iteration-guards-2026-10-09/MANIFEST.sha256) SHA-256 `917438542b2a3f6f02046f2c8eed0bd78fff1f6671293a746c64bbb1a44cbeaf`.
+
+<a id="src-having-reference-scope"></a>
+#### Error-field membership and ordinary iteration binding, measured 2026-10-09
+
+- `revision`: Clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, dmtool 0.13.0, built/runtime Kernel 30.8.1. The model is byte-identical to the preceding iteration-guard capture; its consistency and converted readback controls are retained here too.
+- `matrix`: Sum, filled count, distinct count, token first-filled, Date extremum, field fill, uniqueness and singular/plural DateRange field/group callers each cross a plain condition, a sibling-field guard and an own-error-field guard. Thirty conditions have both-arm observations.
+- `claim`: All computation twins admit. Every sibling-field guard draws MVK_ERROR_FIELD_AND_ITERATION_INVALID in validation; every own-field guard admits. Plain conditions admit except the plural group case, whose scalar operand already introduces ordinary iteration without binding the group-only error reference.
+- `marked-group`: Eight additional validation outcomes cross Number/token/Date/DateRange callers with a captured root-group predicate. Sibling-field guards refuse while own-field guards admit: a marked containing group contributes its own scope, not every descendant field scope. The deeper non-root-group regression is source-derived, outside this capture.
+- `mechanism`: IterationChecker.checkIteration4NotOnlyVRefs requires each ordinary level in some reference naming the error field. EntityRefUtils separates direct fields and containing non-root groups from root-group references; membership alone is insufficient.
+- `limits`: One finite repeated level, en_US, static admission only. Root-group-only and parallel diagnostics remain separate; runtime values and emitted reference coordinates are outside this capture.
+- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/having-reference-scope-2026-10-09/) retains 68 message-free observations and exact inputs. [Manifest](../../evidence/kernel-30.8.1/captures/having-reference-scope-2026-10-09/MANIFEST.sha256) SHA-256 `c6c85e79c6fa5ccd0cef721ab1cc35441b483626203578be291ce2508ba492e0`.

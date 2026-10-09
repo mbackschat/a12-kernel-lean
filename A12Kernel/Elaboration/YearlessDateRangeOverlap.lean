@@ -243,10 +243,10 @@ def certifyYearlessDateRangeEntityGroup (model : FlatModel)
 
 /-- Certify one authored operand for the unconfigured yearless route. Non-stored read forms are refused here rather than guessed, and a group carrier is certified by its whole expansion. -/
 def certifyYearlessDateRangeOverlapOperand (model : FlatModel)
-    (declaringGroup : GroupPath) :
-    ResolvedFieldEntityOperand model →
+    (declaringGroup : GroupPath) (operand : ResolvedFieldEntityOperand model)
+    (bindingGroup : GroupPath := declaringGroup) :
       Except YearlessDateRangesOverlapElabError
-        (CheckedYearlessDateRangeOverlapOperand model)
+        (CheckedYearlessDateRangeOverlapOperand model) := match operand with
   | .indexed source => throw (.source (.shape (.unsupportedIndexedOperand source.targetDeclaration.path)))
   | .keyed source => throw (.source (.shape (.unsupportedIndexedOperand source.entityPath)))
   | .field declaration .stored =>
@@ -258,7 +258,7 @@ def certifyYearlessDateRangeOverlapOperand (model : FlatModel)
         (← certifyYearlessDateRangeOverlapField model path.declaration) none)
   | .starHaving path authored => do
       let source ← certifyYearlessDateRangeOverlapField model path.declaration
-      let filter ← elaborateStarHavingCore model declaringGroup path authored
+      let filter ← elaborateStarHavingCore model declaringGroup path authored bindingGroup
         |>.mapError fun error => .source (.having error)
       pure (.star path source (some filter.condition))
   | .group reference =>
@@ -306,9 +306,9 @@ def elaborateYearlessDateRangesOverlapSourceIn (model : FlatModel)
     throw (.groupsNotAllowed path)
   (walkDateRangeOverlapFields (shape.first :: shape.rest)).mapError .source
   let first ← certifyYearlessDateRangeOverlapOperand model declaringGroup
-    shape.first
+    shape.first (fixedTargetGroup?.getD declaringGroup)
   let rest ← shape.rest.mapM
-    (certifyYearlessDateRangeOverlapOperand model declaringGroup)
+    (fun operand => certifyYearlessDateRangeOverlapOperand model declaringGroup operand (fixedTargetGroup?.getD declaringGroup))
   pure { shape, first, rest }
 
 /-- The scalar instance: a source read where the reading rule iterates no level. -/

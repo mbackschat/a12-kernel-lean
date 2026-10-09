@@ -35,6 +35,24 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-09-06"></a>
+### SPEC-2026-10-09-06 — error-field membership does not bind rule iteration
+
+- `status`: pending
+- `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) distinguishes membership from a reference binding each ordinary iteration level.
+- `delta`: A selected field or non-root group can name the error field without binding the iteration supplied by another operand. Require a reference to that error field at every ordinary iteration level; candidate-only filters do not acquire iteration merely from an available outer environment.
+- `basis`: [Scoped-reference grid](sources/having-filter-probes.md#src-having-reference-scope), Kernel 30.8.1: ten callers, plain/sibling-guard/own-guard variants, both arms. Sibling guards refuse validation while all computation twins admit. Root-group-only and parallel cases retain their separate gates.
+- `acceptance`: Preserve the no-guard and own-field controls and distinguish selected payload membership from captured reads. Do not apply this validation error-field gate to computation targets. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
+<a id="spec-2026-10-09-05"></a>
+### SPEC-2026-10-09-05 — field-list iteration guards count independent wildcard capacity
+
+- `status`: pending
+- `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) records field-fill and uniqueness guards over direct and finite wildcard fields.
+- `delta`: Separate iteration supplied by captured filter reads from the list operand's own row binding. Count independent wildcard slots by declared capacity, preserving the one-slot versus two-slot thresholds and ordinary positive-conjunct rescue.
+- `basis`: [Static grid](sources/having-filter-probes.md#src-having-iteration-guards), Kernel 30.8.1, 112 retained outcomes at clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`. All seven field-fill operators and Number uniqueness are calibrated; the sole direct-field AllFieldsFilled branch remains source-derived.
+- `acceptance`: Reconcile the field/star rules and preserve the row/root, wildcard/row, marked/candidate and guarded twins. Do not substitute runtime selected counts for static capacity or carry the validation guard into computation. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
 <a id="spec-2026-10-09-04"></a>
 ### SPEC-2026-10-09-04 — missing named-type validators abort enclosing validation rules
 

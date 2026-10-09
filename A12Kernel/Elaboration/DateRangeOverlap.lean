@@ -253,9 +253,10 @@ def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
 
 /-- Certify one canonical direct, plain-star, or filter-bearing star DateRange operand. Shared with the plural operator, which applies the same canonical policy to its list side. -/
 def certifyDateRangesOverlapOperand (model : FlatModel)
-    (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
+    (declaringGroup : GroupPath) (operand : ResolvedFieldEntityOperand model)
+    (bindingGroup : GroupPath := declaringGroup) :
       Except DateRangesOverlapElabError
-        (CheckedDateRangesOverlapOperand model)
+        (CheckedDateRangesOverlapOperand model) := match operand with
   | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
   | .keyed source => throw (.shape (.unsupportedIndexedOperand source.entityPath))
   | .field declaration .stored =>
@@ -266,7 +267,7 @@ def certifyDateRangesOverlapOperand (model : FlatModel)
       pure (.star path (← certifyDateRangesOverlapField path.declaration) none)
   | .starHaving path authored => do
       let source ← certifyDateRangesOverlapField path.declaration
-      let filter ← elaborateStarHavingCore model declaringGroup path authored
+      let filter ← elaborateStarHavingCore model declaringGroup path authored bindingGroup
         |>.mapError .having
       pure (.star path source (some filter.condition))
   | .group reference => throw (.groupsNotAllowed reference.path)
@@ -274,9 +275,10 @@ def certifyDateRangesOverlapOperand (model : FlatModel)
   | .starredGroupPresence source => throw (.groupsNotAllowed source.groupPath)
 
 private def certifySingularDateRangesOverlapOperand (model : FlatModel)
-    (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
+    (declaringGroup : GroupPath) (operand : ResolvedFieldEntityOperand model)
+    (bindingGroup : GroupPath := declaringGroup) :
       Except DateRangesOverlapElabError
-        (CheckedSingularDateRangesOverlapOperand model)
+        (CheckedSingularDateRangesOverlapOperand model) := match operand with
   | .field declaration .stored =>
       match certifyDateRangesOverlapField declaration with
       | .ok source => pure (.canonical (.field source))
@@ -285,13 +287,14 @@ private def certifySingularDateRangesOverlapOperand (model : FlatModel)
             certifyDirectDateRangeOverlapFragmentField model declaration
       | .error error => throw error
   | operand =>
-      .canonical <$> certifyDateRangesOverlapOperand model declaringGroup operand
+      .canonical <$> certifyDateRangesOverlapOperand model declaringGroup operand bindingGroup
 
 private def certifySingularDateRangesOverlapOperands (model : FlatModel)
-    (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
+    (declaringGroup : GroupPath) (operands : List (ResolvedFieldEntityOperand model))
+    (bindingGroup : GroupPath := declaringGroup) :
       Except DateRangesOverlapElabError
         (List (CheckedSingularDateRangesOverlapOperand model)) :=
-  List.mapM (certifySingularDateRangesOverlapOperand model declaringGroup)
+  operands.mapM (fun operand => certifySingularDateRangesOverlapOperand model declaringGroup operand bindingGroup)
 
 /-- Whether one certified profile's compared value carries a year: either the declaration does, or
 the model's Base Year completes a yearless declaration into an exact range. This is the single rule
@@ -336,9 +339,9 @@ def elaborateDateRangesOverlapSourceIn (model : FlatModel)
   if mixesDateRangeYearInclusion model (shape.first :: shape.rest) then
     throw .dateWithAndWithoutYear
   let first ← certifySingularDateRangesOverlapOperand model declaringGroup
-    shape.first
+    shape.first (fixedTargetGroup?.getD declaringGroup)
   let rest ← certifySingularDateRangesOverlapOperands model declaringGroup
-    shape.rest
+    shape.rest (fixedTargetGroup?.getD declaringGroup)
   pure { shape, first, rest }
 
 /-- The scalar instance: a source read where the rule iterates no level. -/

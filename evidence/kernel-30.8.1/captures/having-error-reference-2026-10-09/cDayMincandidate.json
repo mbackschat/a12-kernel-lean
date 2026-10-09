@@ -1,0 +1,16 @@
+{
+  "computedField": "/Probe/Rows/RowScaled",
+  "group": "/Probe",
+  "commonPrecondition": "DayFromDate(MinValue(Rows*/RowDate Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))) > 0",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ]
+}

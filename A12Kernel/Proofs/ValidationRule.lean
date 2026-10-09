@@ -225,9 +225,8 @@ theorem checkedValidationRule_once_plan_exact
   simp [CheckedResolvedValidationRule.ordinaryIterationPlan,
     noScope, repeatable]
 
-/-- Checked rule assembly never admits a condition with an unguarded repeatable level: it refuses at
-    that level, or earlier with the walk's class when the error field lies outside the rule group or
-    does not bind a level the condition reads. -/
+/-- An unguarded repeatable condition is refused, possibly first by the error field's scope or
+reference-binding gate (spec/07 §1). -/
 theorem assembleResolvedValidationRule_rejects_negativeIteration
     (model : FlatModel) (condition : CheckedValidationCondition model)
     (errorField : FieldId) (errorCode : String)
@@ -238,17 +237,20 @@ theorem assembleResolvedValidationRule_rejects_negativeIteration
     ∃ error, assembleResolvedValidationRule model condition errorField errorCode
         severity messagePlan = .error error ∧
       (error = .negativeConditionInIteration level ∨
-        ∃ field unbound, error = .unboundOperandLevel field unbound) := by
+        (∃ field unbound, error = .unboundOperandLevel field unbound) ∨
+        ∃ field level, error = .errorFieldIterationInvalid field level) := by
   unfold assembleResolvedValidationRule
   simp only [invalid]
   split
   · rename_i error _
     cases hWalk : error.unboundLevel? model condition.declaringGroup with
-    | some refusal => exact ⟨_, rfl, Or.inr ⟨refusal.1, refusal.2, rfl⟩⟩
+    | some refusal => exact ⟨_, rfl, Or.inr (Or.inl ⟨refusal.1, refusal.2, rfl⟩)⟩
     | none => exact ⟨_, rfl, Or.inl rfl⟩
   · split
-    · exact ⟨_, rfl, Or.inr ⟨_, _, rfl⟩⟩
-    · exact ⟨_, rfl, Or.inl rfl⟩
+    · exact ⟨_, rfl, Or.inr (Or.inl ⟨_, _, rfl⟩)⟩
+    · split
+      · exact ⟨_, rfl, Or.inr (Or.inr ⟨_, _, rfl⟩)⟩
+      · exact ⟨_, rfl, Or.inl rfl⟩
 
 /-- The already-derived negative-iteration assembly error projects to the exact measured Kernel diagnostic class. -/
 theorem flatRuleAssemblyError_negativeIteration_diagnostic

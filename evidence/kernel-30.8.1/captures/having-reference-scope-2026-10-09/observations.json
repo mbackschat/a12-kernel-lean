@@ -1,0 +1,342 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state" : "CLEAN"
+  },
+  "model" : "f17b4a9129d0e9c0f0a963748ab6cb4ae0c4e3950fe1f9225da356d58ed152ad",
+  "observations" : [ {
+    "id" : "vSumplain",
+    "inputHash" : "03feb36f56cca74fa07234f062aee94cf6887f422d84aecc5101f2dc2ea357cb",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cSumplain",
+    "inputHash" : "ced28dbd7fe79e9d25508a4f236760866be86416859acbcc509e9a289834aa2f",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vSumsibling",
+    "inputHash" : "05f7eedeb27f35d27e70473ae946149527dc4a1b5c92a9af65f4348dc343e4a9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cSumsibling",
+    "inputHash" : "51d5d2277e6c4f197b9cffbb844c33654c943a64d90d51fd27f7f0bd55109f6e",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vSumown",
+    "inputHash" : "b5de7a5d86d47f968e0fe07e47127177f9ab46b1bf81b36885385b802c187e56",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cSumown",
+    "inputHash" : "067d15da17a2c414bac28ea84352678f32601243832a009540177f25015fb7ef",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vFilledplain",
+    "inputHash" : "71e7695dc599994256df8f7af48ec2976caf152a0d7515de8db59792d1828aef",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cFilledplain",
+    "inputHash" : "b3c949931b737815b5ffc2137672072144da86c8198a813c42242a6e01ce24fb",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vFilledsibling",
+    "inputHash" : "cde5b11cc5427cd4827ac4378e53a6150cffbfa0f783ddf1fce68510bac35ed3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cFilledsibling",
+    "inputHash" : "5e11a6d09a3cc48545a255dd5684c62183c381a2289750b464dba61fa28e6b0c",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vFilledown",
+    "inputHash" : "606eb72e115c1e60b0e6746f5aae561743b8b4faeb5c4ad5f2587fe087801336",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cFilledown",
+    "inputHash" : "ebe8a2cad7ea870f70d721cad436b9c9aac6ad846a8e489fb321b0ac0a00283d",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vDistinctplain",
+    "inputHash" : "b4a4396fd5d1067985b1dc972b81ca71c684738b9b9f1e1ea5caa990ae7efde1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cDistinctplain",
+    "inputHash" : "73647bb09018c89e0f950364618d152bd8e166c075421d6e3fa9351a3bb11a27",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vDistinctsibling",
+    "inputHash" : "3c9f3cbc6732727af925682d8510ba81c459dc31877c71d12f6e9bb9cde25103",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cDistinctsibling",
+    "inputHash" : "aaba3e876f1c01f9531b28a80c738112ce23242932df6403a0452f195036b430",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vDistinctown",
+    "inputHash" : "386069ae0ee5d59542cb803620ae5da9feffa193cbc45f46d46207dd5272c620",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cDistinctown",
+    "inputHash" : "9060d5eaac3baa1e10c5aeed46b6f904c4c82ddcb2722a9f52a6b1181d2bd040",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vFirstplain",
+    "inputHash" : "6f6013310d3b4ee8a069a52467c5bc764c29b3296f5eae079b65f32c987edab5",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cFirstplain",
+    "inputHash" : "e09fd2cca287d9e45a58e341a474be0399251ae17cbe5976e72d773eb6b47233",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vFirstsibling",
+    "inputHash" : "518a4d48f8d1f67c79d15f520f680b06d35b4835aba7e5d0efae9bae2e662a77",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cFirstsibling",
+    "inputHash" : "cd6acc06acd4b5263714f36ffcf192931e77e0d3d51193680905749c6aaf68c1",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vFirstown",
+    "inputHash" : "b343326ef7a9c2808b9944e398de8cf49382c672ad3baf3ef0f9e07caf734f0a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cFirstown",
+    "inputHash" : "3b060954600cec57761b81ee8f9c056d2061e1fa34a3e88b7a2a1ad85fddb63c",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vDateplain",
+    "inputHash" : "c596fec4b6c99c5ee01c3e76591c7da155272a8f68ff2c008e11d4ea2340b6dd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cDateplain",
+    "inputHash" : "8aff6dafa31a3951643652b87bbfaaa73b2231ee3cb537722ac465fb30e02061",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vDatesibling",
+    "inputHash" : "c3056c855b7ec5f1caaf3caf7529cbf4c2d1d89688496fd2fb49dddf98f69c0e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cDatesibling",
+    "inputHash" : "861df3b160037899ab838c9009d03f25cf2ed74b0ae28f4258dd25a0f1bdad8f",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vDateown",
+    "inputHash" : "2b30c9a95ff40958bb15d637f092413068bcdd56246efd2ea490f2f7a1993a9e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cDateown",
+    "inputHash" : "65c38fd28077b4b4f173ebdd454efe4a53d5fb78168d52648c6ec87a2e97f6d8",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vFillplain",
+    "inputHash" : "ac6cee59fd3d1543b10b5650392fa7cd5abf74ccf63ba9b16492e16a9bfca74b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cFillplain",
+    "inputHash" : "1f8fa1a268348aa44ff036c130bf9174a71df8f5603b748e7975bb4042c947ef",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vFillsibling",
+    "inputHash" : "2eb1fe6644b9bde57bcb61a3c4379240ade2c1088acaf0e84c8855f006b5ad74",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cFillsibling",
+    "inputHash" : "b7f9282c8dc02f4b1a38727b34119dd78c165eb59e1904d4d735605b4c33ac35",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vFillown",
+    "inputHash" : "7e0a79a65d537a17bc9e7150caf80df7d4330a4b2d37af3da7c17745a1ccbf69",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cFillown",
+    "inputHash" : "9abe95b8f1486f99052fab45290a5aea13b504c6d7dfa99b745eac06cf50f36d",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vUniqueplain",
+    "inputHash" : "9bece1d4c312bcd60c4ca86c088c725fd7f892c7d2a96e55162918eb684a6ad3",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cUniqueplain",
+    "inputHash" : "c5b7a9fbd3c6b850c89cd8ea544151ebe2b82ede3834427093a789ed0f96d483",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vUniquesibling",
+    "inputHash" : "9530642474c069e64dd43d23cbb95cd360132b786066b6de35ac97d352df985b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cUniquesibling",
+    "inputHash" : "06069fe89e369a6a5c20a72ae9b8c5b27b8a2604f54264f535edb47268b85120",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vUniqueown",
+    "inputHash" : "38a39c063c877f378dcf7adf4c3f4c9e56c9086650d1ee8f405c5b812a1e2166",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cUniqueown",
+    "inputHash" : "b471c8b6f847838eca12cb4f439598e6ae2c39961d0a3fb4121f35569e5d63cf",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vRangeplain",
+    "inputHash" : "b62643e9d73f1b4f7eeda14127126eca85560ceddb02612d5ec194afc5dfac78",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cRangeplain",
+    "inputHash" : "2a6c92307778499d3c80883d95d399432b36c6e64bb5c74b3beb020a74be2c01",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vRangesibling",
+    "inputHash" : "22cc1eab8f28a7844ff7e56820db70797bf4ca3a61b73b04881a62fe4aea4bd1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cRangesibling",
+    "inputHash" : "136574c64a8fd05fae63bedaef98f54a48e22ef67961536b20111d5ec82628aa",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vRangeown",
+    "inputHash" : "72d859a076b0de1e62ef02aeb685d7cfde61aec22581129b873941165f7b1bcd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cRangeown",
+    "inputHash" : "fd6f0b86df9c965dbae08e55d81208bf5815d3163aab090fa5c563c3956c987f",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vGroupSumplain",
+    "inputHash" : "f69c1378374db0ba7e55ba466a00697fa1c6bc8abe441ef15f34858324eb22f6",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cGroupSumplain",
+    "inputHash" : "c7dba991af4d89057e0020a400b926b2ee1e23c2b728dd922c46f5e8fdb6247b",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vGroupSumsibling",
+    "inputHash" : "1d70a673e98ae1c7a06c170fd28252506c6ca18b8ee6120e83fdcb61bab1ede4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cGroupSumsibling",
+    "inputHash" : "1cfa8b4fdb6ebb8c6f49217ba77f056c84f7383cdb033ab970e261ea4a16cb80",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vGroupSumown",
+    "inputHash" : "4ed6c97bca0664d2fb39ce609ed15f85077dab8bbb8c516f589ea7527730218b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cGroupSumown",
+    "inputHash" : "dbd9a4e11452cf1aa7a7fd9fd1efe134553e8ebced8150b116d3bc4c24638972",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vGroupRangeplain",
+    "inputHash" : "bbbe59d11f92f50742ae2fd403a3b97f22012ca9ae3add32a1043c55038b4acd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cGroupRangeplain",
+    "inputHash" : "bdeb4e1753eb20c8556c33a6b46df52f11f190daa2364b49fd7da43867e59d1a",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vGroupRangesibling",
+    "inputHash" : "407f7aa41bde14bbdb22977b279491b3ef92a44e3dbac4facf26e2738800f154",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "cGroupRangesibling",
+    "inputHash" : "29dd23617e05ce4cebe8629309161094d08a95ca2cdb16ad281f75c660b08d3f",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vGroupRangeown",
+    "inputHash" : "8657ef3611f9840d3d19ff27591aa32e143101e11cf101f6544821a88f5673d4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cGroupRangeown",
+    "inputHash" : "74051071b4621aa09a6c99871cb5d690ea166b82b8ff4a039e9c02f069e06701",
+    "ok" : true,
+    "codes" : [ ]
+  } ]
+}

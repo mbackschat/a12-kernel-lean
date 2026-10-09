@@ -296,8 +296,8 @@ def CheckedNumberEntitySource.bindingScopes (source : CheckedNumberEntitySource 
       | .inl selected => selected.bindingScopes
       | .inr selected => selected.bindingScopes
     | .star source => [source.source.bindingScope]
-    | .starHaving source => [source.source.source.bindingScope,
-        model.repeatableScopeForGroupPath source.bindingGroup]
+    | .starHaving source => source.source.source.bindingScope ::
+        (CorrelatedHaving.outerIterationScopes model source.having).filterMap id
     | .group source => [source.source.bindingScope]
 
 

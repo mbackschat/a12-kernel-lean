@@ -1,0 +1,16 @@
+{
+  "computedField": "/Probe/Rows/Output",
+  "commonPrecondition": "FieldFilled(Rows/RowScaled) And MinValue(Rows*/RowDate) == \"01.01.2024\"",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ],
+  "group": "/Probe"
+}

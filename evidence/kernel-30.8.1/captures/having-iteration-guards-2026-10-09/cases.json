@@ -1,0 +1,282 @@
+[
+  {
+    "id": "AllFieldsFilledrowPair",
+    "error": "Rows/RowVal",
+    "condition": "AllFieldsFilled(Rows/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "AllFieldsFilledmixedPair",
+    "error": "Rows/RowVal",
+    "condition": "AllFieldsFilled(Rows/RowVal, Amount)"
+  },
+  {
+    "id": "AllFieldsFilledstarAndRow",
+    "error": "Rows/RowScaled",
+    "condition": "AllFieldsFilled(Rows*/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "AllFieldsFilledmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "AllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "AllFieldsFilledguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And AllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "AllFieldsFilledcandidate",
+    "error": "Rows/RowVal",
+    "condition": "AllFieldsFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "AllFieldsFilledplain",
+    "error": "Rows/RowVal",
+    "condition": "AllFieldsFilled(Rows*/RowVal)"
+  },
+  {
+    "id": "NoFieldFilledrowPair",
+    "error": "Rows/RowVal",
+    "condition": "NoFieldFilled(Rows/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "NoFieldFilledmixedPair",
+    "error": "Rows/RowVal",
+    "condition": "NoFieldFilled(Rows/RowVal, Amount)"
+  },
+  {
+    "id": "NoFieldFilledstarAndRow",
+    "error": "Rows/RowScaled",
+    "condition": "NoFieldFilled(Rows*/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "NoFieldFilledmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NoFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "NoFieldFilledguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And NoFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "NoFieldFilledcandidate",
+    "error": "Rows/RowVal",
+    "condition": "NoFieldFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "NoFieldFilledplain",
+    "error": "Rows/RowVal",
+    "condition": "NoFieldFilled(Rows*/RowVal)"
+  },
+  {
+    "id": "AtLeastOneFieldFilledrowPair",
+    "error": "Rows/RowVal",
+    "condition": "AtLeastOneFieldFilled(Rows/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "AtLeastOneFieldFilledmixedPair",
+    "error": "Rows/RowVal",
+    "condition": "AtLeastOneFieldFilled(Rows/RowVal, Amount)"
+  },
+  {
+    "id": "AtLeastOneFieldFilledstarAndRow",
+    "error": "Rows/RowScaled",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "AtLeastOneFieldFilledmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "AtLeastOneFieldFilledguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And AtLeastOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "AtLeastOneFieldFilledcandidate",
+    "error": "Rows/RowVal",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "AtLeastOneFieldFilledplain",
+    "error": "Rows/RowVal",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowVal)"
+  },
+  {
+    "id": "MoreThanOneFieldFilledrowPair",
+    "error": "Rows/RowVal",
+    "condition": "MoreThanOneFieldFilled(Rows/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "MoreThanOneFieldFilledmixedPair",
+    "error": "Rows/RowVal",
+    "condition": "MoreThanOneFieldFilled(Rows/RowVal, Amount)"
+  },
+  {
+    "id": "MoreThanOneFieldFilledstarAndRow",
+    "error": "Rows/RowScaled",
+    "condition": "MoreThanOneFieldFilled(Rows*/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "MoreThanOneFieldFilledmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "MoreThanOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "MoreThanOneFieldFilledguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And MoreThanOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "MoreThanOneFieldFilledcandidate",
+    "error": "Rows/RowVal",
+    "condition": "MoreThanOneFieldFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "MoreThanOneFieldFilledplain",
+    "error": "Rows/RowVal",
+    "condition": "MoreThanOneFieldFilled(Rows*/RowVal)"
+  },
+  {
+    "id": "NotAllFieldsFilledrowPair",
+    "error": "Rows/RowVal",
+    "condition": "NotAllFieldsFilled(Rows/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "NotAllFieldsFilledmixedPair",
+    "error": "Rows/RowVal",
+    "condition": "NotAllFieldsFilled(Rows/RowVal, Amount)"
+  },
+  {
+    "id": "NotAllFieldsFilledstarAndRow",
+    "error": "Rows/RowScaled",
+    "condition": "NotAllFieldsFilled(Rows*/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "NotAllFieldsFilledmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NotAllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "NotAllFieldsFilledguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And NotAllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "NotAllFieldsFilledcandidate",
+    "error": "Rows/RowVal",
+    "condition": "NotAllFieldsFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "NotAllFieldsFilledplain",
+    "error": "Rows/RowVal",
+    "condition": "NotAllFieldsFilled(Rows*/RowVal)"
+  },
+  {
+    "id": "NotExactlyOneFieldFilledrowPair",
+    "error": "Rows/RowVal",
+    "condition": "NotExactlyOneFieldFilled(Rows/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "NotExactlyOneFieldFilledmixedPair",
+    "error": "Rows/RowVal",
+    "condition": "NotExactlyOneFieldFilled(Rows/RowVal, Amount)"
+  },
+  {
+    "id": "NotExactlyOneFieldFilledstarAndRow",
+    "error": "Rows/RowScaled",
+    "condition": "NotExactlyOneFieldFilled(Rows*/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "NotExactlyOneFieldFilledmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NotExactlyOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "NotExactlyOneFieldFilledguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And NotExactlyOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "NotExactlyOneFieldFilledcandidate",
+    "error": "Rows/RowVal",
+    "condition": "NotExactlyOneFieldFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "NotExactlyOneFieldFilledplain",
+    "error": "Rows/RowVal",
+    "condition": "NotExactlyOneFieldFilled(Rows*/RowVal)"
+  },
+  {
+    "id": "FieldsNotCollectivelyFilledrowPair",
+    "error": "Rows/RowVal",
+    "condition": "FieldsNotCollectivelyFilled(Rows/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "FieldsNotCollectivelyFilledmixedPair",
+    "error": "Rows/RowVal",
+    "condition": "FieldsNotCollectivelyFilled(Rows/RowVal, Amount)"
+  },
+  {
+    "id": "FieldsNotCollectivelyFilledstarAndRow",
+    "error": "Rows/RowScaled",
+    "condition": "FieldsNotCollectivelyFilled(Rows*/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "FieldsNotCollectivelyFilledmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldsNotCollectivelyFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "FieldsNotCollectivelyFilledguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And FieldsNotCollectivelyFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "FieldsNotCollectivelyFilledcandidate",
+    "error": "Rows/RowVal",
+    "condition": "FieldsNotCollectivelyFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "FieldsNotCollectivelyFilledplain",
+    "error": "Rows/RowVal",
+    "condition": "FieldsNotCollectivelyFilled(Rows*/RowVal)"
+  },
+  {
+    "id": "FieldValuesNotUniquerowPair",
+    "error": "Rows/RowVal",
+    "condition": "FieldValuesNotUnique(Rows/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "FieldValuesNotUniquemixedPair",
+    "error": "Rows/RowVal",
+    "condition": "FieldValuesNotUnique(Rows/RowVal, Amount)"
+  },
+  {
+    "id": "FieldValuesNotUniquestarAndRow",
+    "error": "Rows/RowScaled",
+    "condition": "FieldValuesNotUnique(Rows*/RowVal, Rows/RowScaled)"
+  },
+  {
+    "id": "FieldValuesNotUniquemarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldValuesNotUnique(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "FieldValuesNotUniqueguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And FieldValuesNotUnique(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "FieldValuesNotUniquecandidate",
+    "error": "Rows/RowVal",
+    "condition": "FieldValuesNotUnique(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "FieldValuesNotUniqueplain",
+    "error": "Rows/RowVal",
+    "condition": "FieldValuesNotUnique(Rows*/RowVal)"
+  }
+]

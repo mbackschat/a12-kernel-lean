@@ -716,6 +716,10 @@ private def filteredPluralCondition? (marked : Bool) :
   (CheckedValidationCondition.fromIteratedDateRangePluralOverlap filterModel ["Form"]
     { scalar := scalarExisting, list := { first := filtered, rest := [] } }).toOption
 
+example : [false, true].all (fun marked =>
+    [filteredOverlapCondition? marked, filteredPluralCondition? marked].all fun condition =>
+      condition.map (fun checked => checked.core.referencesErrorField rowRange.id) == some true) = true := by native_decide
+
 example :
     (filteredPluralCondition? true).map (·.hasHaving) = some true ∧
     ((filteredPluralCondition? true).map fun condition =>
@@ -725,5 +729,20 @@ example :
       (assembleResolvedValidationRule filterModel condition quantity.id "plural" .error
         { parts := [] }).isOk) = some false := by
   native_decide
+
+private def capturedRowSource : SurfaceFieldEntitySource := {
+  first := .starHaving
+    { base := .absolute, groups := [{ name := "Form" }, { name := "Rows", starred := true }], field := "RowRange" }
+    (.compareNumbers .equal
+      { origin := .inner, field := path ["Form", "Rows"] "Guard" }
+      { origin := .outer, field := path ["Form", "Rows"] "Guard" })
+  rest := [] }
+
+example : [none, some ["Form", "Rows"]].map (fun binding =>
+    ((elaborateDateRangesOverlapSourceIn filterModel ["Form"] [10] capturedRowSource
+        (fixedTargetGroup? := binding)).isOk,
+     (elaborateAtLeastOneDateRangeOverlapsSourceIn filterModel ["Form"] [10]
+        { scalar := scalarExisting, list := capturedRowSource }
+        (fixedTargetGroup? := binding)).isOk)) = [(false, false), (true, true)] := by native_decide
 
 end A12Kernel.Conformance.IteratedDateRangeCondition

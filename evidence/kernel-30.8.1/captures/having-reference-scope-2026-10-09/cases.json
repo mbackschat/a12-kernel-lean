@@ -1,0 +1,152 @@
+[
+  {
+    "id": "Sumplain",
+    "error": "Rows/RowVal",
+    "condition": "Sum(Rows*/RowVal) > 0"
+  },
+  {
+    "id": "Sumsibling",
+    "error": "Rows/RowVal",
+    "condition": "FieldFilled(Rows/RowScaled) And Sum(Rows*/RowVal) > 0"
+  },
+  {
+    "id": "Sumown",
+    "error": "Rows/RowVal",
+    "condition": "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal) > 0"
+  },
+  {
+    "id": "Filledplain",
+    "error": "Rows/RowVal",
+    "condition": "NumberOfFilledFields(Rows*/RowVal) > 0"
+  },
+  {
+    "id": "Filledsibling",
+    "error": "Rows/RowVal",
+    "condition": "FieldFilled(Rows/RowScaled) And NumberOfFilledFields(Rows*/RowVal) > 0"
+  },
+  {
+    "id": "Filledown",
+    "error": "Rows/RowVal",
+    "condition": "FieldFilled(Rows/RowVal) And NumberOfFilledFields(Rows*/RowVal) > 0"
+  },
+  {
+    "id": "Distinctplain",
+    "error": "Rows/RowText",
+    "condition": "NumberOfDifferentValues(Rows*/RowText) > 0"
+  },
+  {
+    "id": "Distinctsibling",
+    "error": "Rows/RowText",
+    "condition": "FieldFilled(Rows/RowScaled) And NumberOfDifferentValues(Rows*/RowText) > 0"
+  },
+  {
+    "id": "Distinctown",
+    "error": "Rows/RowText",
+    "condition": "FieldFilled(Rows/RowText) And NumberOfDifferentValues(Rows*/RowText) > 0"
+  },
+  {
+    "id": "Firstplain",
+    "error": "Rows/RowText",
+    "condition": "FirstFilledValue(Rows*/RowText) == \"a\""
+  },
+  {
+    "id": "Firstsibling",
+    "error": "Rows/RowText",
+    "condition": "FieldFilled(Rows/RowScaled) And FirstFilledValue(Rows*/RowText) == \"a\""
+  },
+  {
+    "id": "Firstown",
+    "error": "Rows/RowText",
+    "condition": "FieldFilled(Rows/RowText) And FirstFilledValue(Rows*/RowText) == \"a\""
+  },
+  {
+    "id": "Dateplain",
+    "error": "Rows/RowDate",
+    "condition": "MinValue(Rows*/RowDate) == \"01.01.2024\""
+  },
+  {
+    "id": "Datesibling",
+    "error": "Rows/RowDate",
+    "condition": "FieldFilled(Rows/RowScaled) And MinValue(Rows*/RowDate) == \"01.01.2024\""
+  },
+  {
+    "id": "Dateown",
+    "error": "Rows/RowDate",
+    "condition": "FieldFilled(Rows/RowDate) And MinValue(Rows*/RowDate) == \"01.01.2024\""
+  },
+  {
+    "id": "Fillplain",
+    "error": "Rows/RowText",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowText)"
+  },
+  {
+    "id": "Fillsibling",
+    "error": "Rows/RowText",
+    "condition": "FieldFilled(Rows/RowScaled) And AtLeastOneFieldFilled(Rows*/RowText)"
+  },
+  {
+    "id": "Fillown",
+    "error": "Rows/RowText",
+    "condition": "FieldFilled(Rows/RowText) And AtLeastOneFieldFilled(Rows*/RowText)"
+  },
+  {
+    "id": "Uniqueplain",
+    "error": "Rows/RowText",
+    "condition": "FieldValuesNotUnique(Rows*/RowText)"
+  },
+  {
+    "id": "Uniquesibling",
+    "error": "Rows/RowText",
+    "condition": "FieldFilled(Rows/RowScaled) And FieldValuesNotUnique(Rows*/RowText)"
+  },
+  {
+    "id": "Uniqueown",
+    "error": "Rows/RowText",
+    "condition": "FieldFilled(Rows/RowText) And FieldValuesNotUnique(Rows*/RowText)"
+  },
+  {
+    "id": "Rangeplain",
+    "error": "Rows/RowSpan",
+    "condition": "DateRangesOverlap(Rows*/RowSpan)"
+  },
+  {
+    "id": "Rangesibling",
+    "error": "Rows/RowSpan",
+    "condition": "FieldFilled(Rows/RowScaled) And DateRangesOverlap(Rows*/RowSpan)"
+  },
+  {
+    "id": "Rangeown",
+    "error": "Rows/RowSpan",
+    "condition": "FieldFilled(Rows/RowSpan) And DateRangesOverlap(Rows*/RowSpan)"
+  },
+  {
+    "id": "GroupSumplain",
+    "error": "Rows/Sub/Leaf",
+    "condition": "Sum(Rows*/Sub) > 0"
+  },
+  {
+    "id": "GroupSumsibling",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/RowScaled) And Sum(Rows*/Sub) > 0"
+  },
+  {
+    "id": "GroupSumown",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And Sum(Rows*/Sub) > 0"
+  },
+  {
+    "id": "GroupRangeplain",
+    "error": "Rows/Ranges/R",
+    "condition": "AtLeastOneDateRangeOverlaps(Rows/RowSpan In Rows*/Ranges)"
+  },
+  {
+    "id": "GroupRangesibling",
+    "error": "Rows/Ranges/R",
+    "condition": "FieldFilled(Rows/RowScaled) And AtLeastOneDateRangeOverlaps(Rows/RowSpan In Rows*/Ranges)"
+  },
+  {
+    "id": "GroupRangeown",
+    "error": "Rows/Ranges/R",
+    "condition": "FieldFilled(Rows/Ranges/R) And AtLeastOneDateRangeOverlaps(Rows/RowSpan In Rows*/Ranges)"
+  }
+]

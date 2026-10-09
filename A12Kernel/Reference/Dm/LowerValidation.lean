@@ -70,7 +70,7 @@ def lowerNumericComparison (model : FlatModel) (rowGroup : GroupPath) (op : Comp
          right := ← lowerNumericExpr lowerValidationNumericAtom (lowerNumericFieldAtom model rowGroup lowerValidationNumericAtom) right
          suppressExactScaleWarning := suppress }
 
-private def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
+def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
     (bindingGroup? : Option GroupPath) (expression : Expr) : Lowering SurfaceTokenComparisonOperand := do
   if let some bindingGroup := bindingGroup? then
     match expression with
@@ -205,19 +205,19 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         let operands := lowerEntitySource model rowGroup arguments filterBinding?
         [do
           let source ← elaborated "FieldValuesNotUnique"
-            (elaborateNumberValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some rowGroup))
+            (elaborateNumberValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some bindingGroup))
           elaborated "FieldValuesNotUnique"
-            (CheckedValidationCondition.fromValuesNotUnique rowGroup (.number source)),
+            (CheckedValidationCondition.fromValuesNotUnique bindingGroup (.number source) rowGroup),
          do
           let source ← elaborated "FieldValuesNotUnique"
-            (elaborateTokenValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some rowGroup))
+            (elaborateTokenValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some bindingGroup))
           elaborated "FieldValuesNotUnique"
-            (CheckedValidationCondition.fromValuesNotUnique rowGroup (.token source)),
+            (CheckedValidationCondition.fromValuesNotUnique bindingGroup (.token source) rowGroup),
          do
           let source ← elaborated "FieldValuesNotUnique"
-            (elaborateTemporalValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some rowGroup))
+            (elaborateTemporalValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some bindingGroup))
           elaborated "FieldValuesNotUnique"
-            (CheckedValidationCondition.fromValuesNotUnique rowGroup (.temporal source))]
+            (CheckedValidationCondition.fromValuesNotUnique bindingGroup (.temporal source) rowGroup)]
     | _ => []
   let valueLists := match leaf with
     | .call id arguments (some values) none =>
@@ -329,6 +329,24 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | .ok (some checked) => [pure checked]
         | .error refusal => [.error refusal])
     | _ => []
+  let lowerOverlap (construct : String)
+      (result : Except ValidationConditionAssemblyError (CheckedValidationCondition model)) :=
+    result.mapError fun error => {
+      construct
+      detail := (match error with
+        | .iteratedDateRange cause => cause.diagnostic?
+        | _ => none).map KernelStaticDiagnostic.kernelCode |>.getD (oneLine ((repr error).pretty 100000)) }
+  let overlap := match leaf with
+    | .call "DateRangesOverlap" arguments none none => [do
+        let source ← lowerEntitySource model rowGroup arguments filterBinding?
+        lowerOverlap "DateRangesOverlap"
+          (CheckedValidationCondition.fromIteratedDateRangeOverlap model rowGroup source rowGroup (some bindingGroup))]
+    | .call "AtLeastOneDateRangeOverlaps" [scalar] (some values) none => [do
+        let source := { scalar := ← lowerEntityOperand model rowGroup scalar
+                        list := ← lowerEntitySource model rowGroup values filterBinding? }
+        lowerOverlap "AtLeastOneDateRangeOverlaps"
+          (CheckedValidationCondition.fromIteratedDateRangePluralOverlap model rowGroup source rowGroup (some bindingGroup))]
+    | _ => []
   let pattern := match leaf with
     | .compare op (.value { path, index, category := none, filter := none }) right =>
         let operation := match op with
@@ -349,7 +367,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             | none => []
         | _, _ => []
     | _ => []
-  flat ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity
+  flat ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity ++ overlap
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

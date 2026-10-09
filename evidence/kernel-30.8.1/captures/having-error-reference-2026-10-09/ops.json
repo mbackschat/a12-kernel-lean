@@ -1,0 +1,2888 @@
+[
+  {
+    "id": "vSumplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vSumplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cSumplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cSumplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vSumpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vSumpayload",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cSumpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cSumpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vSumcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vSumcandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cSumcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cSumcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vSummarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vSummarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cSummarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cSummarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vSumguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vSumguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And Sum(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cSumguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cSumguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vSumunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vSumunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cSumunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cSumunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vSumallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vSumallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cSumallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cSumallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMaxplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMaxplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MaxValue(Rows*/RowVal) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMaxplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMaxplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMaxpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMaxpayload",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MaxValue(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMaxpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMaxpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMaxcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMaxcandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MaxValue(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMaxcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMaxcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMaxmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMaxmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MaxValue(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMaxmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMaxmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMaxguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMaxguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And MaxValue(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMaxguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMaxguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMaxunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMaxunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MaxValue(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMaxunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMaxunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMaxallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vMaxallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MaxValue(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cMaxallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMaxallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFilledplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFilledplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfFilledFields(Rows*/RowVal) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFilledplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFilledplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFilledpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFilledpayload",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfFilledFields(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFilledpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFilledpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFilledcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFilledcandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfFilledFields(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFilledcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFilledcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFilledmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFilledmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfFilledFields(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFilledmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFilledmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFilledguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFilledguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And NumberOfFilledFields(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFilledguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFilledguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFilledunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFilledunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfFilledFields(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFilledunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFilledunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFilledallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFilledallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfFilledFields(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFilledallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFilledallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDistinctplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDistinctplain",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfDifferentValues(Rows*/RowText) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDistinctplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDistinctplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDistinctpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDistinctpayload",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfDifferentValues(Rows*/RowText Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDistinctpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDistinctpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDistinctcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDistinctcandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfDifferentValues(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDistinctcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDistinctcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDistinctmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDistinctmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfDifferentValues(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDistinctmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDistinctmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDistinctguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDistinctguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And NumberOfDifferentValues(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDistinctguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDistinctguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDistinctunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDistinctunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfDifferentValues(Rows*/RowText Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDistinctunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDistinctunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDistinctallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDistinctallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfDifferentValues(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDistinctallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDistinctallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberCountplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberCountplain",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(1 In Rows*/RowVal) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberCountplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberCountplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberCountpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberCountpayload",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(1 In Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberCountpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberCountpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberCountcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberCountcandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(1 In Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberCountcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberCountcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberCountmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberCountmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(1 In Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberCountmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberCountmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberCountguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberCountguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And NumberOfValueInFields(1 In Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberCountguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberCountguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberCountunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberCountunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(1 In Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberCountunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberCountunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberCountallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberCountallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(1 In Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberCountallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberCountallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vTokenCountplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vTokenCountplain",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(\"a\" In Rows*/RowText) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cTokenCountplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cTokenCountplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vTokenCountpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vTokenCountpayload",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(\"a\" In Rows*/RowText Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cTokenCountpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cTokenCountpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vTokenCountcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vTokenCountcandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(\"a\" In Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cTokenCountcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cTokenCountcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vTokenCountmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vTokenCountmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(\"a\" In Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cTokenCountmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cTokenCountmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vTokenCountguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vTokenCountguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And NumberOfValueInFields(\"a\" In Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cTokenCountguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cTokenCountguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vTokenCountunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vTokenCountunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(\"a\" In Rows*/RowText Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cTokenCountunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cTokenCountunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vTokenCountallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vTokenCountallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(\"a\" In Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cTokenCountallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cTokenCountallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBoolCountplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBoolCountplain",
+      "--field",
+      "/Probe/Rows/RowFlag",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(True In Rows*/RowFlag) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBoolCountplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBoolCountplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBoolCountpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBoolCountpayload",
+      "--field",
+      "/Probe/Rows/RowFlag",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(True In Rows*/RowFlag Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBoolCountpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBoolCountpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBoolCountcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBoolCountcandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(True In Rows*/RowFlag Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBoolCountcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBoolCountcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBoolCountmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBoolCountmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(True In Rows*/RowFlag Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBoolCountmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBoolCountmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBoolCountguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBoolCountguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And NumberOfValueInFields(True In Rows*/RowFlag Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBoolCountguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBoolCountguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBoolCountunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBoolCountunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(True In Rows*/RowFlag Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBoolCountunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBoolCountunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBoolCountallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBoolCountallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "NumberOfValueInFields(True In Rows*/RowFlag Having (FieldFilled($Rows/Sub/Leaf))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBoolCountallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBoolCountallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirstplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirstplain",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirstplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirstplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirstpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirstpayload",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText Having (CurrentRepetition(Rows) > 0)) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirstpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirstpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirstcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirstcandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirstcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirstcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirstmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirstmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirstmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirstmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirstguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirstguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And FirstFilledValue(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirstguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirstguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirstunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirstunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText Having (CurrentRepetition(Rows) > 0)) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirstunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirstunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirstallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirstallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf))) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirstallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirstallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDateMinplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDateMinplain",
+      "--field",
+      "/Probe/Rows/RowDate",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MinValue(Rows*/RowDate) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDateMinplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDateMinplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDateMinpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDateMinpayload",
+      "--field",
+      "/Probe/Rows/RowDate",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MinValue(Rows*/RowDate Having (CurrentRepetition(Rows) > 0)) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDateMinpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDateMinpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDateMincandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDateMincandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MinValue(Rows*/RowDate Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDateMincandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDateMincandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDateMinmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDateMinmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MinValue(Rows*/RowDate Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDateMinmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDateMinmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDateMinguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDateMinguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And MinValue(Rows*/RowDate Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDateMinguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDateMinguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDateMinunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDateMinunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MinValue(Rows*/RowDate Having (CurrentRepetition(Rows) > 0)) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDateMinunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDateMinunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDateMinallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDateMinallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "MinValue(Rows*/RowDate Having (FieldFilled($Rows/Sub/Leaf))) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDateMinallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDateMinallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangeplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangeplain",
+      "--field",
+      "/Probe/Rows/RowSpan",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/RowSpan)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangeplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangeplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangepayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangepayload",
+      "--field",
+      "/Probe/Rows/RowSpan",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/RowSpan Having (CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangepayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangepayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangecandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangecandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/RowSpan Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangecandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangecandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangemarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangemarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/RowSpan Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangemarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangemarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangeguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangeguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And DateRangesOverlap(Rows*/RowSpan Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangeguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangeguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangeunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangeunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/RowSpan Having (CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangeunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangeunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangeallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangeallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/RowSpan Having (FieldFilled($Rows/Sub/Leaf)))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangeallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangeallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRangeplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupRangeplain",
+      "--field",
+      "/Probe/Rows/Ranges/R",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/Ranges)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupRangeplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRangeplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRangepayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupRangepayload",
+      "--field",
+      "/Probe/Rows/Ranges/R",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/Ranges Having (CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupRangepayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRangepayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRangecandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupRangecandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/Ranges Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupRangecandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRangecandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRangemarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupRangemarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/Ranges Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupRangemarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRangemarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRangeguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupRangeguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And DateRangesOverlap(Rows*/Ranges Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupRangeguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRangeguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRangeunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupRangeunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/Ranges Having (CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupRangeunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRangeunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRangeallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupRangeallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DateRangesOverlap(Rows*/Ranges Having (FieldFilled($Rows/Sub/Leaf)))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupRangeallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRangeallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupSumplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupSumplain",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/Sub) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupSumplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupSumplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupSumpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupSumpayload",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/Sub Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupSumpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupSumpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupSumcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupSumcandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/Sub Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupSumcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupSumcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupSummarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupSummarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/Sub Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupSummarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupSummarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupSumguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupSumguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And Sum(Rows*/Sub Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupSumguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupSumguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupSumunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupSumunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/Sub Having (CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupSumunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupSumunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupSumallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupSumallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/Sub Having (FieldFilled($Rows/Sub/Leaf))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupSumallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupSumallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFillplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFillplain",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowText)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFillplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFillplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFillpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFillpayload",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowText Having (CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFillpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFillpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFillcandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFillcandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFillcandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFillcandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFillmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFillmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFillmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFillmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFillguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFillguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And AtLeastOneFieldFilled(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFillguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFillguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFillunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFillunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowText Having (CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFillunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFillunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFillallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFillallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneFieldFilled(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf)))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFillallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFillallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vUniqueplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vUniqueplain",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowText)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cUniqueplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cUniqueplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vUniquepayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vUniquepayload",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowText Having (CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cUniquepayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cUniquepayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vUniquecandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vUniquecandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cUniquecandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cUniquecandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vUniquemarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vUniquemarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cUniquemarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cUniquemarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vUniqueguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vUniqueguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And FieldValuesNotUnique(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cUniqueguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cUniqueguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vUniqueunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vUniqueunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowText Having (CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cUniqueunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cUniqueunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vUniqueallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vUniqueallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldValuesNotUnique(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf)))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cUniqueallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cUniqueallmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vPluralGroup",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vPluralGroup",
+      "--field",
+      "/Probe/Rows/Ranges/R",
+      "--group",
+      "/Probe",
+      "--condition",
+      "AtLeastOneDateRangeOverlaps(Rows/RowSpan In Rows*/Ranges)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cPluralGroup",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cPluralGroup.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vPluralGroupGuard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vPluralGroupGuard",
+      "--field",
+      "/Probe/Rows/Ranges/R",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Ranges/R) And AtLeastOneDateRangeOverlaps(Rows/RowSpan In Rows*/Ranges)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cPluralGroupGuard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cPluralGroupGuard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vOutsideCandidate0",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vOutsideCandidate0",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal Having ([ Amount ] > 0 And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cOutsideCandidate0",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cOutsideCandidate0.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vOutsideCandidate1",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vOutsideCandidate1",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal Having (CurrentRepetition(Rows) > 0 And [ Amount ] > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cOutsideCandidate1",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cOutsideCandidate1.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vOutsideCaptured0",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vOutsideCaptured0",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal Having ([ $Amount ] > 0 And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cOutsideCaptured0",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cOutsideCaptured0.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vOutsideCaptured1",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vOutsideCaptured1",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "Sum(Rows*/RowVal Having (CurrentRepetition(Rows) > 0 And [ $Amount ] > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cOutsideCaptured1",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cOutsideCaptured1.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDayMinplain",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDayMinplain",
+      "--field",
+      "/Probe/Rows/RowDate",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DayFromDate(MinValue(Rows*/RowDate)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDayMinplain",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDayMinplain.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDayMinpayload",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDayMinpayload",
+      "--field",
+      "/Probe/Rows/RowDate",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DayFromDate(MinValue(Rows*/RowDate Having (CurrentRepetition(Rows) > 0))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDayMinpayload",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDayMinpayload.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDayMincandidate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDayMincandidate",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DayFromDate(MinValue(Rows*/RowDate Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDayMincandidate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDayMincandidate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDayMinmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDayMinmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DayFromDate(MinValue(Rows*/RowDate Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDayMinmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDayMinmarked.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDayMinguard",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDayMinguard",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/Sub/Leaf) And DayFromDate(MinValue(Rows*/RowDate Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDayMinguard",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDayMinguard.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDayMinunrelated",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDayMinunrelated",
+      "--field",
+      "/Probe/SkuText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DayFromDate(MinValue(Rows*/RowDate Having (CurrentRepetition(Rows) > 0))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDayMinunrelated",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDayMinunrelated.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDayMinallmarked",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDayMinallmarked",
+      "--field",
+      "/Probe/Rows/Sub/Leaf",
+      "--group",
+      "/Probe",
+      "--condition",
+      "DayFromDate(MinValue(Rows*/RowDate Having (FieldFilled($Rows/Sub/Leaf)))) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDayMinallmarked",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDayMinallmarked.json",
+      "--dry-run"
+    ]
+  }
+]

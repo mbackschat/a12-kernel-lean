@@ -111,6 +111,8 @@ inductive KernelStaticDiagnostic where
   | negativeConditionInIteration
   /-- The rule's error field is named nowhere in its condition. A whole-rule gate rather than an operand gate, so it is projected at rule assembly. -/
   | errorFieldNotReferenced
+  /-- The error field is referenced, but none of its references binds a level used elsewhere in the rule. -/
+  | errorFieldIterationInvalid
   /-- A literal in a **value list** is not a value of the enumeration the compared field declares. The whole-enumeration arm of the split below. -/
   | invalidStringConstantForEnumeration
   /-- The same list carrier with a category qualifier written: the literal is not a value of **that category**, which is a different set from the enumeration's own values. -/
@@ -512,6 +514,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .repeatableGroupMissing => "MVK_REPEATABLE_GROUP_MISSING"
   | .negativeConditionInIteration => "MVK_NEG_CONDITION_IN_ITERATION"
   | .errorFieldNotReferenced => "MVK_ERROR_FIELD_NOT_REFERENCED"
+  | .errorFieldIterationInvalid => "MVK_ERROR_FIELD_AND_ITERATION_INVALID"
   | .invalidStringConstantForEnumeration =>
       "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION"
   | .invalidStringConstantForEnumerationCategory =>
@@ -716,7 +719,7 @@ def all : List KernelStaticDiagnostic :=
     .invalidEntity, .rootGroupReferenced, .rootGroupWithOtherParameters,
     .groupIsEmpty, .rootGroupIsEmpty,
     .repeatableGroupMissing, .negativeConditionInIteration,
-    .errorFieldNotReferenced, .invalidStringConstantForEnumeration,
+    .errorFieldNotReferenced, .errorFieldIterationInvalid, .invalidStringConstantForEnumeration,
     .invalidStringConstantForEnumerationCategory, .invalidStringConstantForEnumerationOrCategory, .categoryUnknown, .noEnumeration,
     .categoryNotAllowed,
     .indexFieldUnresolved, .indexFieldAmbiguous, .indexFieldComposedIndex,

@@ -1,0 +1,138 @@
+[
+  {
+    "id": "SumSibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "SumSibling",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And Sum(Rows*/RowVal Having (GroupFilled($/Probe) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "SumOwn",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "SumOwn",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal Having (GroupFilled($/Probe) And CurrentRepetition(Rows) > 0)) > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "FirstSibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "FirstSibling",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And FirstFilledValue(Rows*/RowText Having (GroupFilled($/Probe) And CurrentRepetition(Rows) > 0)) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "FirstOwn",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "FirstOwn",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowText) And FirstFilledValue(Rows*/RowText Having (GroupFilled($/Probe) And CurrentRepetition(Rows) > 0)) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "DateSibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "DateSibling",
+      "--field",
+      "/Probe/Rows/RowDate",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And MinValue(Rows*/RowDate Having (GroupFilled($/Probe) And CurrentRepetition(Rows) > 0)) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "DateOwn",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "DateOwn",
+      "--field",
+      "/Probe/Rows/RowDate",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowDate) And MinValue(Rows*/RowDate Having (GroupFilled($/Probe) And CurrentRepetition(Rows) > 0)) == \"01.01.2024\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "RangeSibling",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "RangeSibling",
+      "--field",
+      "/Probe/Rows/RowSpan",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowScaled) And DateRangesOverlap(Rows*/RowSpan Having (GroupFilled($/Probe) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "RangeOwn",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "RangeOwn",
+      "--field",
+      "/Probe/Rows/RowSpan",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FieldFilled(Rows/RowSpan) And DateRangesOverlap(Rows*/RowSpan Having (GroupFilled($/Probe) And CurrentRepetition(Rows) > 0))",
+      "--message",
+      "en_US=Probe"
+    ]
+  }
+]

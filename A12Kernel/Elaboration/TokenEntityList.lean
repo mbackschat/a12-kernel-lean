@@ -198,7 +198,8 @@ def CheckedTokenEntitySource.bindingScopes (source : CheckedTokenEntitySource mo
       | .inl selected => selected.bindingScopes
       | .inr selected => selected.bindingScopes
     | .star source => source.source.bindingScope ::
-        (if source.filter.isSome then [model.repeatableScopeForGroupPath source.bindingGroup] else [])
+        (source.filter.toList.flatMap fun filter =>
+          (CorrelatedHaving.outerIterationScopes model filter.condition).filterMap id)
     | .group source => [source.source.bindingScope]
 
 

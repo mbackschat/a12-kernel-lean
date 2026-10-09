@@ -1,0 +1,19 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Probe/Rows",
+    "name": "Ranges"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows/Ranges",
+    "name": "R",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  }
+]

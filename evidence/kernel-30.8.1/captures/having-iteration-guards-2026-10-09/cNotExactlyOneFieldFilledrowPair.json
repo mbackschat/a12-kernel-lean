@@ -1,0 +1,16 @@
+{
+  "computedField": "/Probe/Rows/Output",
+  "commonPrecondition": "NotExactlyOneFieldFilled(Rows/RowVal, Rows/RowScaled)",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ],
+  "group": "/Probe"
+}

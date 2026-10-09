@@ -10,17 +10,19 @@ is admitted. Malformed seeds separate fresh computed overlays from immutable sou
 
 namespace A12Kernel.Dm.ComputationPredicateGuardLocks
 
-private def model (kind : FieldKind := .boolean) : FlatModel := {
+private def model (kind : FieldKind := .boolean)
+    (listKind : FieldKind := .number { scale := 0, signed := true }) : FlatModel := {
   fields := [
     { id := 1, name := "Flag", groupPath := ["Form"], policy := { kind } },
     { id := 2, name := "Out", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
-    { id := 3, name := "A", groupPath := ["Form", "Left"], policy := { kind := .number { scale := 0, signed := true } } },
-    { id := 4, name := "B", groupPath := ["Form", "Right"], policy := { kind := .number { scale := 0, signed := true } } }] }
+    { id := 3, name := "A", groupPath := ["Form", "Left"], policy := { kind := listKind } },
+    { id := 4, name := "B", groupPath := ["Form", "Right"], policy := { kind := listKind } }] }
 
 private def run (guard : String) (kind : FieldKind) (flag : RawCell)
     (left right : RawCell := .empty) (producer : Bool := false)
-    (producerOperation : String := "True") : Option (List String) := do
-  let model := model kind
+    (producerOperation : String := "True")
+    (listKind : FieldKind := .number { scale := 0, signed := true }) : Option (List String) := do
+  let model := model kind listKind
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let cell (id : FieldId) (raw : RawCell) : Option ClassifiedCellInput :=
@@ -325,5 +327,16 @@ example : patternRows "x" = some ["value 1", "cleared", "value 2", "value 1"] �
     patternRows "long" = some ["value 1", "cleared", "value 2", "cleared"] ∧
     patternRows "long" true = some ["value 123", "value 1", "value 1", "value 2", "value 2"] ∧
     patternRows "x" false true = some ["value 1", "value 2", "value 2", "value 3"] := by native_decide
+
+example : ["FirstFilledValue(Flag,Left/A) == \"a\"", "\"a\" == FirstFilledValue(Flag,Left/A)",
+    "FirstFilledValue(Flag,Left/A) == FirstFilledValue(Left/A,Flag)"].all (fun guard =>
+      run guard .string .empty (.parsed (.str "a")) (listKind := .string) == some ["value 2"]) = true := by native_decide
+
+example : run "FirstFilledValue(Flag,Left/A) != \"a\"" .string .empty .empty
+      (listKind := .string) = some ["cleared"] ∧
+    run "FirstFilledValue(Flag,Left/A) == \"a\"" .string (.parsed (.str "a")) (.rejected .malformed)
+      (listKind := .string) = some ["value 2"] ∧
+    run "FirstFilledValue(Flag,Left/A) == \"a\"" .string (.rejected .malformed) (.parsed (.str "a"))
+      .empty true "\"a\"" (listKind := .string) = some ["value a", "value 2"] := by native_decide
 
 end A12Kernel.Dm.ComputationPredicateGuardLocks

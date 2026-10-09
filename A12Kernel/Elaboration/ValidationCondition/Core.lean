@@ -625,15 +625,18 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | .valueList source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .orderedNumeric _ comparison, field => comparison.referencesErrorField field
   | .iteratedDateRange condition, field => condition.referencesErrorField field
+  | .scalarTemporal comparison, field =>
+      comparison.referencesWith field (·.referencesMarkedField field)
+  | .constructedDateValidity _ components, field =>
+      components.scalarCore.referencesWith field (·.referencesMarkedField field)
   | leaf@(.flat _), field | leaf@(.numeric _ _), field | leaf@(.groupPresence _ _), field
   | leaf@(.keyedGroupPresence _ _), field
   | leaf@(.indexedFieldPresence _ _), field
   | leaf@(.groupList _ _), field | leaf@(.repeatableFieldPresence _ _), field
   | leaf@(.repetitionNotUnique _), field | leaf@(.guardedRootCurrentRepetition _ _ _), field
   | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
-  | leaf@(.constructedDateValidity _ _), field
   | leaf@(.customFieldValidity _), field | leaf@(.indexedCustomFieldValidity _), field
-  | leaf@(.stringPattern _), field | leaf@(.indexedStringPattern _), field | leaf@(.scalarTemporal _), field | leaf@(.stringExpression _), field =>
+  | leaf@(.stringPattern _), field | leaf@(.indexedStringPattern _), field | leaf@(.stringExpression _), field =>
       leaf.referencesField field
 
 /-- Whether the checked source retains a `Having` filter, which makes whole-rule partial validation

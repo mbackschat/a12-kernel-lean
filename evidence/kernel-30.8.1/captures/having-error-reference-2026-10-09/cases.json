@@ -1,0 +1,557 @@
+[
+  {
+    "id": "Sumplain",
+    "error": "Rows/RowVal",
+    "condition": "Sum(Rows*/RowVal) > 0"
+  },
+  {
+    "id": "Sumpayload",
+    "error": "Rows/RowVal",
+    "condition": "Sum(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Sumcandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "Sum(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Summarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "Sum(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Sumguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And Sum(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Sumunrelated",
+    "error": "SkuText",
+    "condition": "Sum(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Sumallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "Sum(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf))) > 0"
+  },
+  {
+    "id": "Maxplain",
+    "error": "Rows/RowVal",
+    "condition": "MaxValue(Rows*/RowVal) > 0"
+  },
+  {
+    "id": "Maxpayload",
+    "error": "Rows/RowVal",
+    "condition": "MaxValue(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Maxcandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "MaxValue(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Maxmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "MaxValue(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Maxguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And MaxValue(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Maxunrelated",
+    "error": "SkuText",
+    "condition": "MaxValue(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Maxallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "MaxValue(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf))) > 0"
+  },
+  {
+    "id": "Filledplain",
+    "error": "Rows/RowVal",
+    "condition": "NumberOfFilledFields(Rows*/RowVal) > 0"
+  },
+  {
+    "id": "Filledpayload",
+    "error": "Rows/RowVal",
+    "condition": "NumberOfFilledFields(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Filledcandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfFilledFields(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Filledmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfFilledFields(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Filledguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And NumberOfFilledFields(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Filledunrelated",
+    "error": "SkuText",
+    "condition": "NumberOfFilledFields(Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Filledallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfFilledFields(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf))) > 0"
+  },
+  {
+    "id": "Distinctplain",
+    "error": "Rows/RowText",
+    "condition": "NumberOfDifferentValues(Rows*/RowText) > 0"
+  },
+  {
+    "id": "Distinctpayload",
+    "error": "Rows/RowText",
+    "condition": "NumberOfDifferentValues(Rows*/RowText Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Distinctcandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfDifferentValues(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Distinctmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfDifferentValues(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Distinctguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And NumberOfDifferentValues(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Distinctunrelated",
+    "error": "SkuText",
+    "condition": "NumberOfDifferentValues(Rows*/RowText Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "Distinctallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfDifferentValues(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf))) > 0"
+  },
+  {
+    "id": "NumberCountplain",
+    "error": "Rows/RowVal",
+    "condition": "NumberOfValueInFields(1 In Rows*/RowVal) > 0"
+  },
+  {
+    "id": "NumberCountpayload",
+    "error": "Rows/RowVal",
+    "condition": "NumberOfValueInFields(1 In Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "NumberCountcandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfValueInFields(1 In Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "NumberCountmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfValueInFields(1 In Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "NumberCountguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And NumberOfValueInFields(1 In Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "NumberCountunrelated",
+    "error": "SkuText",
+    "condition": "NumberOfValueInFields(1 In Rows*/RowVal Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "NumberCountallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfValueInFields(1 In Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf))) > 0"
+  },
+  {
+    "id": "TokenCountplain",
+    "error": "Rows/RowText",
+    "condition": "NumberOfValueInFields(\"a\" In Rows*/RowText) > 0"
+  },
+  {
+    "id": "TokenCountpayload",
+    "error": "Rows/RowText",
+    "condition": "NumberOfValueInFields(\"a\" In Rows*/RowText Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "TokenCountcandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfValueInFields(\"a\" In Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "TokenCountmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfValueInFields(\"a\" In Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "TokenCountguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And NumberOfValueInFields(\"a\" In Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "TokenCountunrelated",
+    "error": "SkuText",
+    "condition": "NumberOfValueInFields(\"a\" In Rows*/RowText Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "TokenCountallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfValueInFields(\"a\" In Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf))) > 0"
+  },
+  {
+    "id": "BoolCountplain",
+    "error": "Rows/RowFlag",
+    "condition": "NumberOfValueInFields(True In Rows*/RowFlag) > 0"
+  },
+  {
+    "id": "BoolCountpayload",
+    "error": "Rows/RowFlag",
+    "condition": "NumberOfValueInFields(True In Rows*/RowFlag Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "BoolCountcandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfValueInFields(True In Rows*/RowFlag Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "BoolCountmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfValueInFields(True In Rows*/RowFlag Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "BoolCountguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And NumberOfValueInFields(True In Rows*/RowFlag Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "BoolCountunrelated",
+    "error": "SkuText",
+    "condition": "NumberOfValueInFields(True In Rows*/RowFlag Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "BoolCountallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "NumberOfValueInFields(True In Rows*/RowFlag Having (FieldFilled($Rows/Sub/Leaf))) > 0"
+  },
+  {
+    "id": "Firstplain",
+    "error": "Rows/RowText",
+    "condition": "FirstFilledValue(Rows*/RowText) == \"a\""
+  },
+  {
+    "id": "Firstpayload",
+    "error": "Rows/RowText",
+    "condition": "FirstFilledValue(Rows*/RowText Having (CurrentRepetition(Rows) > 0)) == \"a\""
+  },
+  {
+    "id": "Firstcandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FirstFilledValue(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"a\""
+  },
+  {
+    "id": "Firstmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FirstFilledValue(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"a\""
+  },
+  {
+    "id": "Firstguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And FirstFilledValue(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"a\""
+  },
+  {
+    "id": "Firstunrelated",
+    "error": "SkuText",
+    "condition": "FirstFilledValue(Rows*/RowText Having (CurrentRepetition(Rows) > 0)) == \"a\""
+  },
+  {
+    "id": "Firstallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FirstFilledValue(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf))) == \"a\""
+  },
+  {
+    "id": "DateMinplain",
+    "error": "Rows/RowDate",
+    "condition": "MinValue(Rows*/RowDate) == \"01.01.2024\""
+  },
+  {
+    "id": "DateMinpayload",
+    "error": "Rows/RowDate",
+    "condition": "MinValue(Rows*/RowDate Having (CurrentRepetition(Rows) > 0)) == \"01.01.2024\""
+  },
+  {
+    "id": "DateMincandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "MinValue(Rows*/RowDate Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"01.01.2024\""
+  },
+  {
+    "id": "DateMinmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "MinValue(Rows*/RowDate Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"01.01.2024\""
+  },
+  {
+    "id": "DateMinguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And MinValue(Rows*/RowDate Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) == \"01.01.2024\""
+  },
+  {
+    "id": "DateMinunrelated",
+    "error": "SkuText",
+    "condition": "MinValue(Rows*/RowDate Having (CurrentRepetition(Rows) > 0)) == \"01.01.2024\""
+  },
+  {
+    "id": "DateMinallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "MinValue(Rows*/RowDate Having (FieldFilled($Rows/Sub/Leaf))) == \"01.01.2024\""
+  },
+  {
+    "id": "Rangeplain",
+    "error": "Rows/RowSpan",
+    "condition": "DateRangesOverlap(Rows*/RowSpan)"
+  },
+  {
+    "id": "Rangepayload",
+    "error": "Rows/RowSpan",
+    "condition": "DateRangesOverlap(Rows*/RowSpan Having (CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Rangecandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "DateRangesOverlap(Rows*/RowSpan Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Rangemarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "DateRangesOverlap(Rows*/RowSpan Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Rangeguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And DateRangesOverlap(Rows*/RowSpan Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Rangeunrelated",
+    "error": "SkuText",
+    "condition": "DateRangesOverlap(Rows*/RowSpan Having (CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Rangeallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "DateRangesOverlap(Rows*/RowSpan Having (FieldFilled($Rows/Sub/Leaf)))"
+  },
+  {
+    "id": "GroupRangeplain",
+    "error": "Rows/Ranges/R",
+    "condition": "DateRangesOverlap(Rows*/Ranges)"
+  },
+  {
+    "id": "GroupRangepayload",
+    "error": "Rows/Ranges/R",
+    "condition": "DateRangesOverlap(Rows*/Ranges Having (CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "GroupRangecandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "DateRangesOverlap(Rows*/Ranges Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "GroupRangemarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "DateRangesOverlap(Rows*/Ranges Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "GroupRangeguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And DateRangesOverlap(Rows*/Ranges Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "GroupRangeunrelated",
+    "error": "SkuText",
+    "condition": "DateRangesOverlap(Rows*/Ranges Having (CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "GroupRangeallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "DateRangesOverlap(Rows*/Ranges Having (FieldFilled($Rows/Sub/Leaf)))"
+  },
+  {
+    "id": "GroupSumplain",
+    "error": "Rows/Sub/Leaf",
+    "condition": "Sum(Rows*/Sub) > 0"
+  },
+  {
+    "id": "GroupSumpayload",
+    "error": "Rows/Sub/Leaf",
+    "condition": "Sum(Rows*/Sub Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "GroupSumcandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "Sum(Rows*/Sub Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "GroupSummarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "Sum(Rows*/Sub Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "GroupSumguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And Sum(Rows*/Sub Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "GroupSumunrelated",
+    "error": "SkuText",
+    "condition": "Sum(Rows*/Sub Having (CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "GroupSumallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "Sum(Rows*/Sub Having (FieldFilled($Rows/Sub/Leaf))) > 0"
+  },
+  {
+    "id": "Fillplain",
+    "error": "Rows/RowText",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowText)"
+  },
+  {
+    "id": "Fillpayload",
+    "error": "Rows/RowText",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowText Having (CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Fillcandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Fillmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Fillguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And AtLeastOneFieldFilled(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Fillunrelated",
+    "error": "SkuText",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowText Having (CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Fillallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "AtLeastOneFieldFilled(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf)))"
+  },
+  {
+    "id": "Uniqueplain",
+    "error": "Rows/RowText",
+    "condition": "FieldValuesNotUnique(Rows*/RowText)"
+  },
+  {
+    "id": "Uniquepayload",
+    "error": "Rows/RowText",
+    "condition": "FieldValuesNotUnique(Rows*/RowText Having (CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Uniquecandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldValuesNotUnique(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Uniquemarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldValuesNotUnique(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Uniqueguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And FieldValuesNotUnique(Rows*/RowText Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Uniqueunrelated",
+    "error": "SkuText",
+    "condition": "FieldValuesNotUnique(Rows*/RowText Having (CurrentRepetition(Rows) > 0))"
+  },
+  {
+    "id": "Uniqueallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldValuesNotUnique(Rows*/RowText Having (FieldFilled($Rows/Sub/Leaf)))"
+  },
+  {
+    "id": "PluralGroup",
+    "error": "Rows/Ranges/R",
+    "condition": "AtLeastOneDateRangeOverlaps(Rows/RowSpan In Rows*/Ranges)"
+  },
+  {
+    "id": "PluralGroupGuard",
+    "error": "Rows/Ranges/R",
+    "condition": "FieldFilled(Rows/Ranges/R) And AtLeastOneDateRangeOverlaps(Rows/RowSpan In Rows*/Ranges)"
+  },
+  {
+    "id": "OutsideCandidate0",
+    "error": "Rows/RowVal",
+    "condition": "Sum(Rows*/RowVal Having ([ Amount ] > 0 And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "OutsideCandidate1",
+    "error": "Rows/RowVal",
+    "condition": "Sum(Rows*/RowVal Having (CurrentRepetition(Rows) > 0 And [ Amount ] > 0)) > 0"
+  },
+  {
+    "id": "OutsideCaptured0",
+    "error": "Rows/RowVal",
+    "condition": "Sum(Rows*/RowVal Having ([ $Amount ] > 0 And CurrentRepetition(Rows) > 0)) > 0"
+  },
+  {
+    "id": "OutsideCaptured1",
+    "error": "Rows/RowVal",
+    "condition": "Sum(Rows*/RowVal Having (CurrentRepetition(Rows) > 0 And [ $Amount ] > 0)) > 0"
+  },
+  {
+    "id": "DayMinplain",
+    "error": "Rows/RowDate",
+    "condition": "DayFromDate(MinValue(Rows*/RowDate)) > 0"
+  },
+  {
+    "id": "DayMinpayload",
+    "error": "Rows/RowDate",
+    "condition": "DayFromDate(MinValue(Rows*/RowDate Having (CurrentRepetition(Rows) > 0))) > 0"
+  },
+  {
+    "id": "DayMincandidate",
+    "error": "Rows/Sub/Leaf",
+    "condition": "DayFromDate(MinValue(Rows*/RowDate Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))) > 0"
+  },
+  {
+    "id": "DayMinmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "DayFromDate(MinValue(Rows*/RowDate Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))) > 0"
+  },
+  {
+    "id": "DayMinguard",
+    "error": "Rows/Sub/Leaf",
+    "condition": "FieldFilled(Rows/Sub/Leaf) And DayFromDate(MinValue(Rows*/RowDate Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))) > 0"
+  },
+  {
+    "id": "DayMinunrelated",
+    "error": "SkuText",
+    "condition": "DayFromDate(MinValue(Rows*/RowDate Having (CurrentRepetition(Rows) > 0))) > 0"
+  },
+  {
+    "id": "DayMinallmarked",
+    "error": "Rows/Sub/Leaf",
+    "condition": "DayFromDate(MinValue(Rows*/RowDate Having (FieldFilled($Rows/Sub/Leaf)))) > 0"
+  }
+]

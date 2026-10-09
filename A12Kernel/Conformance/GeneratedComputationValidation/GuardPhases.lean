@@ -121,7 +121,8 @@ private def comparisonModel : FlatModel := { model with fields := model.fields +
   { id := 11, groupPath := ["Form"], name := "Z1", policy := { kind := .temporal .dateTime TemporalComponents.now },
     temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
   { id := 12, groupPath := ["Form"], name := "Z2", policy := { kind := .temporal .dateTime TemporalComponents.now },
-    temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }] }
+    temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+  { id := 13, groupPath := ["Form"], name := "Token", policy := { kind := .string } }] }
 
 private def comparisonPhases (predicate : SurfaceComputationPredicate) (bad : FieldId) (cause : BaseFormalCause)
     (standalone : Bool := false) (badRaw : RawCell := .rejected cause) (badStored : String := "bad")
@@ -149,6 +150,11 @@ private def comparisonPhases (predicate : SurfaceComputationPredicate) (bad : Fi
       groups := GroupPresenceContext.unavailable }
     outer := [], input := .checked document } true).toOption
   pure (selected, outcome)
+
+example : comparisonPhases (.tokenComparison .equal
+    (.firstFilled { first := .field (absolutePath ["Form"] "Token"), rest := [.field (absolutePath ["Form"] "TextGuard")] })
+    (.literal "A")) 13 .malformed =
+      some (.poison .malformed, .fired (expectedMessage .value)) := by native_decide
 
 example :
     comparisonPhases (.fieldComparison .equal

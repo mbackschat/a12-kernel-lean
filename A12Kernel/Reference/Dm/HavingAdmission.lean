@@ -525,7 +525,7 @@ private partial def admitTemporalOperand (model : FlatModel) (group bindingGroup
   | source@(.call id _ none none) => do
       let allowed := (rawTemporalExtractor? id).isSome || (rawTemporalConstructor? id).isSome || isRawRangeBound id ||
         (match rawTemporalArithmetic? id with | some (.shift _) => true | _ => false)
-      if !allowed then refuse "Having" "recursive temporal source"
+      if !allowed then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
       let (type, state) ← admitNumericAtom model group bindingGroup inFilter insideSemanticIndexKey admission source
       let .temporal .. := type | refuse "Having" KernelStaticDiagnostic.invalidDateForOp.kernelCode
       pure (type, none, state)

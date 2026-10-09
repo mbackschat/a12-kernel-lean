@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.ValidationCondition
+import A12Kernel.Elaboration.ValidationCondition.ErrorReferences
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Semantics.ValidationRule
@@ -18,6 +19,7 @@ inductive FlatRuleAssemblyError where
   | iterationScopeMismatch (field : FieldId)
       (expected actual : List RepeatableLevel)
   | errorFieldNotReferenced (field : FieldId)
+  | errorFieldIterationInvalid (field : FieldId) (level : RepeatableLevel)
   | negativeConditionInIteration (level : RepeatableLevel)
   /-- The condition reads a repeatable level the error field does not bind; `unbound` is the
       outermost such level with the facts its class depends on. -/
@@ -57,7 +59,7 @@ def unboundLevel? (model : FlatModel) (ruleGroup : GroupPath) :
             (field, model.unboundOperandLevel ruleGroup declaration.groupPath level)
       | .error _ => none
   | .errorField _ | .repeatableErrorField _ | .iterationScope _ | .errorFieldNotReferenced _
-  | .negativeConditionInIteration _ | .unboundOperandLevel _ _ => none
+  | .negativeConditionInIteration _ | .unboundOperandLevel _ _ | .errorFieldIterationInvalid _ _ => none
 
 /-- Project the measured whole-rule gates. The error field's presence in its own condition is a Kernel-checked rule property, and it is measured as its own class: an operand list that names a sibling key rather than the error field draws it, while naming the error field among the keys is admitted. An unguarded negative group-presence condition in a repeatable scope has its own measured class, while a direct positive group guard admits the same negative leaf. An unbound operand level takes the walk's class. Every other assembly refusal returns `none`. -/
 def diagnostic? : FlatRuleAssemblyError → Option KernelStaticDiagnostic
@@ -65,6 +67,7 @@ def diagnostic? : FlatRuleAssemblyError → Option KernelStaticDiagnostic
       some KernelStaticDiagnostic.errorFieldNotReferenced
   | .negativeConditionInIteration _ =>
       some KernelStaticDiagnostic.negativeConditionInIteration
+  | .errorFieldIterationInvalid _ _ => some .errorFieldIterationInvalid
   | .unboundOperandLevel _ unbound => unbound.diagnostic?
   -- Named rather than wildcarded: a new assembly refusal must be classified, not absorbed. A scope
   -- mismatch the walk explains arrives as `unboundOperandLevel`; what remains is unmeasured.
@@ -847,8 +850,12 @@ def assembleResolvedValidationRule (model : FlatModel)
           .error (.unboundOperandLevel errorField
             (model.unboundOperandLevel condition.declaringGroup errorGroup level))
       | _, _ =>
-          match condition.core.iterationLegality with
-          | .ok (.invalid level) => .error (.negativeConditionInIteration level)
-          | .ok .legal | .ok (.insufficient _) | .error _ => .ok rule
+          match (rule.iterationScope.getD []).find? (fun level =>
+              condition.core.errorReferenceAt? errorField level == some false) with
+          | some level => .error (.errorFieldIterationInvalid errorField level)
+          | none =>
+              match condition.core.iterationLegality with
+              | .ok (.invalid level) => .error (.negativeConditionInIteration level)
+              | .ok .legal | .ok (.insufficient _) | .error _ => .ok rule
 
 end A12Kernel

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "modelCheck",
+    "verb": "model",
+    "args": [
+      "check"
+    ]
+  },
+  {
+    "id": "modelReadback",
+    "verb": "model",
+    "args": [
+      "describe"
+    ]
+  }
+]

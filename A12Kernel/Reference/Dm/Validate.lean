@@ -87,7 +87,10 @@ def checkRule (model : DmModel) (language : Language) (rule : DmRule)
   | .error refusal =>
       match checkRuleWith true model language rule world with
       | .ok checked => .ok checked
-      | .error _ => .error refusal
+      | .error boundRefusal =>
+          -- A fully lowered row-bound tree reaches the rule gates; its refusal takes precedence
+          -- over the lexical attempt's unbound read (H10 iteration-guard matrix).
+          if boundRefusal.construct == "RuleAssembly" then .error boundRefusal else .error refusal
 
 /-- The Kernel's text for a message pointer: the field's group path with each repeatable group's
 index after it, written only when it is not `1`. -/

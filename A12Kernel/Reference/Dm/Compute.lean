@@ -191,6 +191,16 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
         if isStringExpressionComparisonOperand left || isStringExpressionComparisonOperand right then
           some (SurfaceComputationConditionOf.predicate (.selectedStringExpression operator left right))
         else none
+      let tokenSurface := do
+        let selected : Expr → Bool
+          | .call "FirstFilledValue" _ none none => true
+          | _ => false
+        if !selected left && !selected right then none else do
+          let operator ← match op with | .eq => some EqualityOp.equal | .ne => some .notEqual | _ => none
+          let left ← (lowerTokenComparisonOperand model group filterBinding? left).toOption
+          let right ← (lowerTokenComparisonOperand model group filterBinding? right).toOption
+          let _ ← (elaborateTokenComparison model group operator left right (targetGroup?.getD group)).toOption
+          some (SurfaceComputationConditionOf.predicate (.tokenComparison operator left right))
       let temporalSurface := do
         let operator ← op.toSurface?
         let left ← (lowerScalarTemporalExpression model group left).toOption
@@ -199,7 +209,7 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
         | .error (.nonTemporal _) | .error (.extremum (.firstNotTemporal _ _)) => none
         | _ => some (SurfaceComputationConditionOf.predicate
             (SurfaceComputationPredicate.temporal operator.toTemporal left right))
-      match (textSurface.orElse (fun _ => stringSurface)).orElse (fun _ => temporalSurface) with
+      match ((textSurface.orElse (fun _ => stringSurface)).orElse (fun _ => tokenSurface)).orElse (fun _ => temporalSurface) with
       | some surface => pure surface
       | none => do
           let some operator := op.toNumeric? | refuse "Comparison" "operator"
@@ -247,7 +257,12 @@ private def guards (language : Language) (model : FlatModel) (computation : DmCo
     let guard := (← parsed language text).body
     if !guard.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
     let surface ← lowerGuard model computation.group suppress guard (some target.groupPath)
-    match elaborated "Guard" (model.elaborateCheckedComputationCondition computation.group target.groupPath surface) with
+    let result := (model.elaborateCheckedComputationCondition computation.group target.groupPath surface).mapError fun error => {
+      construct := "Guard"
+      detail := (match error with
+        | .predicate (.overlap cause) => cause.diagnostic?
+        | _ => none).map KernelStaticDiagnostic.kernelCode |>.getD (oneLine ((repr error).pretty 100000)) }
+    match result with
     | .ok guard => pure guard
     | .error refusal =>
         if allowParallel && target.toNumberField?.isSome && !target.repeatableScope.isEmpty then

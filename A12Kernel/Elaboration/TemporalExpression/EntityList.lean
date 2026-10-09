@@ -30,7 +30,8 @@ def referencesWith (source : CheckedTemporalExtremumOperands model) (field : Fie
 
 def bindingScopes (source : CheckedTemporalExtremumOperands model) : List (List RepeatableLevel) :=
   source.shape.operands.flatMap (·.bindingScopes) ++
-    (if source.filters.any Option.isSome then [source.filterBindingScope] else [])
+    source.filters.flatMap (fun filter => filter.toList.flatMap fun having =>
+      (CorrelatedHaving.outerIterationScopes model having).filterMap id)
 
 /-- Index and star selection own their free row levels; another operand's binding must not
 turn their payload dependencies into ordinary current-row reads. Dynamic keys still read at the caller’s row (spec/08 §4). -/

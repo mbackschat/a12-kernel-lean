@@ -181,9 +181,14 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 - `forbidden`: do not give the filter a second account of empty, unavailable, or connective semantics, do not widen the legacy one-group route or the wire vocabulary to reach a newer leaf, and do not prove a theorem about the authored surface's shape when the Kernel's admitted surface is wider or unmeasured.
 - `entry-gate`: name the admitted form, cite the measurement or record the assumption, and show the shared tree and both arms already express it.
 - `completion-gate`: every measured admitted leaf and connective evaluates on both arms with retained evidence or an explicit free choice, and each refusing route refuses at its own arm with its own cause.
-- `route-state`: discovery-required
-
-
+- `route-state`: verified
+- `red-locus`: [Whole-rule Having admission locks](../../A12Kernel/Reference/Dm/HavingGlobalAdmissionLocks.lean) exercise the measured error-field reference matrix across carriers.
+- `green-locus`: [Iterated DateRange conditions](../../A12Kernel/Elaboration/IteratedDateRangeCondition.lean) separate selected operand references from row-bound reads.
+- `supporting-locus`: [Condition core](../../A12Kernel/Elaboration/ValidationCondition/Core.lean) delegates the rule reference gate to each carrier.
+- `route-limit`: Static error-field membership and adjacent admission only; message-reference coordinates are a separate output contract.
+- `reference-matrix`: The [static caller matrix](../sources/having-filter-probes.md#src-having-error-reference) supplies 208 required caller observations and 14 separately refused exploratory syntax cases. The finite static grids pass; runtime reference-set closure is not claimed.
+- `reference-open`: Extend the scoped-reference account to unresolved indexed/keyed, root-group-only and recursive numeric carriers only against admitted/refused controls. String first-filled comparisons with bracketed direct-field counterparts need a separately checked reader/admission boundary; literal and first-filled counterparts are covered.
+- `reference-runtime`: Calibrate the remaining token first-filled guard and filtered overlap compositions against Kernel outcomes. The [caller owner](../implementation/data-and-core.md#cap-having-caller-capabilities) distinguishes implemented routes and population replay from remaining external-evidence limits; static admission does not establish runtime correspondence.
 
 <a id="gap-sg17-closure-matrix"></a>
 #### Remaining Having closure matrix
@@ -202,7 +207,7 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 
 - `baseline-H08`: Ordered static admission is internally closed against the finite indexed/key/nested-filter, operation, whole-rule and generated-computation matrices. [Implemented partitions and assurance](../implementation/cross-clause.md#cap-iteration-and-semantic-index-legality) own the closed account and its external-evidence limits; H10 remains open.
 
-- `baseline-H09`: [Caller capabilities and outer uniqueness composition](../implementation/data-and-core.md#cap-having-caller-capabilities) retain reached failures, partial-Date reads, lexical/error binding and branch-independent validation duplicates. Computation refuses outer uniqueness. Remaining cross-carrier correspondence is H10.
+- `baseline-H09`: [Caller capabilities and outer uniqueness composition](../implementation/data-and-core.md#cap-having-caller-capabilities) retain reached failures, partial-Date reads, lexical/error binding and branch-independent validation duplicates. Computation refuses outer uniqueness. The caller owner also covers ordinary String FirstFilledValue guards and DateRange validation readers. Their wider runtime correspondence and unresolved reference carriers remain H10; see `reference-open` above.
 
 | ID | Remaining partitions in both arms | Shared owner / closure discriminator |
 |---|---|---|

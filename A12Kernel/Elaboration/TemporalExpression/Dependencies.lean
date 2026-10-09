@@ -106,9 +106,10 @@ namespace ScalarTemporalExpression
 /-- Reuse the complete recursive dependency traversal with consumer-owned projections of each retained source shape. -/
 def dependenciesWith (expression : ScalarTemporalExpression model)
     (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
-    (indexed : CheckedSemanticIndexSource model → List α) : List α :=
-  scalarTemporalDependencies false field entity indexed
-    (fun atom => (atom.fieldOriginsWith (fun _ => [])).flatMap (field ∘ Prod.snd)) expression
+    (indexed : CheckedSemanticIndexSource model → List α)
+    (numeric : HavingNumericAtomOf (ScalarTemporalExpression model) → List α :=
+      fun atom => (atom.fieldOriginsWith (fun _ => [])).flatMap (field ∘ Prod.snd)) : List α :=
+  scalarTemporalDependencies false field entity indexed numeric expression
 
 def hasHaving (expression : ScalarTemporalExpression model) : Bool :=
   !(scalarTemporalDependencies false (fun _ => ([] : List Unit))

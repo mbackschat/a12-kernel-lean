@@ -232,7 +232,9 @@ where
         match expression with
         | .call name [.mk source none] none none =>
             let some part := temporalNumericPart? name | throw original
-            pure (.temporalExpression (.projection part (← lowerScalarTemporalExpressionAt model rowGroup .source source)))
+            let source ← lowerScalarTemporalExpressionAt model rowGroup .source source
+            if !source.admittedSourceSlot .ordinary then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
+            pure (.temporalExpression (.projection part source))
         | .call name [.mk left none, .mk right none] none none =>
             let unit ← match name with
               | "DifferenceInDays" => pure TemporalOperationUnit.days

@@ -18,7 +18,7 @@ inductive TokenComparisonElabError where
   | source (error : FirstFilledTokenElabError)
   | unsupportedSource
   | noFieldSource
-  deriving Repr
+  deriving Repr, DecidableEq
 
 inductive CheckedTokenComparisonOperand (model : FlatModel) where
   | literal (value : String)

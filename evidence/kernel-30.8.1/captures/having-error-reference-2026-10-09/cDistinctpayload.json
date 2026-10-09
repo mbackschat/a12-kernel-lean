@@ -1,0 +1,16 @@
+{
+  "computedField": "/Probe/Rows/RowScaled",
+  "commonPrecondition": "NumberOfDifferentValues(Rows*/RowText Having (CurrentRepetition(Rows) > 0)) > 0",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ],
+  "group": "/Probe"
+}

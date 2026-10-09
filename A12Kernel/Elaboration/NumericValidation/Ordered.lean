@@ -227,7 +227,8 @@ def referencesErrorField (atom : OrderedNumericValidationAtom model)
   | .temporalDistinctCount run =>
       run.source.referencesField field CorrelatedHaving.referencesMarkedField
   | .filledFieldCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .indexed _ | .indexedString _ | .temporalExpression _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
+  | .temporalExpression source => source.referencesWith field (·.referencesMarkedField field)
+  | .indexed _ | .indexedString _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
       atom.referencesField field
 
 /-- Whether this exact checked atom retains any filtered entity-list slot. This is static source structure, not a statement about which runtime branch or candidate will be reached. -/

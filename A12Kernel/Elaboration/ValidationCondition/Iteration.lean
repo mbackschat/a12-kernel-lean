@@ -290,6 +290,63 @@ def ResolvedGroupListOperands.iterationGuardAt
     | .allGroupsFilled | .notAllGroupsFilled
     | .groupsNotCollectivelyFilled => .unclassified
 
+/-- Static wildcard multiplicity is declared capacity, independent of the filter's runtime selection
+(IterationNotValidVisitor's entity-list gate; the H10 iteration-guard matrix). Captured reads bind the
+rule's row but do not turn its selected wildcard operand into an ordinary row read. -/
+private def starIterationExtent? (source : CheckedStarFieldPath model) :
+    Option (List RepeatableLevel × Nat) :=
+  (model.declarationSlots? source.path.firstStar source.declaration).map (source.bindingScope, ·)
+
+private def fieldFillIterationExtents? (source : CheckedFieldFillList model) :
+    Option (List (List RepeatableLevel × Nat)) :=
+  source.operands.mapM fun
+    | .field declaration => some (declaration.repeatableScope, 1)
+    | .star source => starIterationExtent? source.source
+    | .indexed _ | .keyed _ | .group _ => none
+
+private def uniquenessIterationExtents? : CheckedValuesNotUniqueCondition model →
+    Option (List (List RepeatableLevel × Nat))
+  | .number source => source.operands.mapM fun
+      | .field source => some (source.declaration.repeatableScope, 1)
+      | .star source => starIterationExtent? source.source
+      | .starHaving source => starIterationExtent? source.source.source
+      | .selected _ | .group _ => none
+  | .token source => source.source.operands.mapM fun
+      | .field source => some (source.declaration.repeatableScope, 1)
+      | .star source => starIterationExtent? source.source
+      | .selected _ | .group _ => none
+  | .temporal _ => none
+
+private def independentIterationSlots (level : RepeatableLevel)
+    (extents : List (List RepeatableLevel × Nat)) : Nat :=
+  (extents.map fun (scope, capacity) => if scope.contains level then 0 else capacity).sum
+
+private def fieldFillIterationGuardAt (level : RepeatableLevel) (operator : FieldFillQuantifier)
+    (source : CheckedFieldFillList model) : IterationGuardStatus :=
+  if !source.bindingScope.contains level then .noReference
+  else match fieldFillIterationExtents? source with
+    | none => .unclassified
+    | some extents =>
+        let independent := independentIterationSlots level extents
+        let violatesGuard : Bool := match operator with
+          | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled =>
+              extents.any fun (scope, _) => scope.contains level
+          | .atLeastOneFieldFilled | .fieldsNotCollectivelyFilled => 0 < independent
+          | .moreThanOneFieldFilled => 1 < independent
+          | .allFieldsFilled =>
+              match source.operands with
+              | [.field _] => 0 < independent
+              | _ => false
+        if violatesGuard then .unguarded else .guarded
+
+private def uniquenessIterationGuardAt (level : RepeatableLevel)
+    (source : CheckedValuesNotUniqueCondition model) : IterationGuardStatus :=
+  if !((ordinaryIterationScope (.leaf (.valuesNotUnique source))).toOption.bind id).any (·.contains level) then .noReference
+  else match uniquenessIterationExtents? source with
+    | none => .unclassified
+    | some extents =>
+        if 1 < independentIterationSlots level extents then .unguarded else .guarded
+
 private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
@@ -313,9 +370,7 @@ private def ValidationConditionLeaf.iterationGuardAt
       if guard.repeatableScope.contains level then .guarded else .noReference
   | .groupList operator operands =>
       ResolvedGroupListOperands.iterationGuardAt operator operands level
-  -- No guard rule is measured for a field-fill operand at a level its binding scope reaches.
-  | .fieldFill _ source =>
-      if source.bindingScope.contains level then .unclassified else .noReference
+  | .fieldFill operator source => fieldFillIterationGuardAt level operator source
   | .stringExpression comparison =>
       if comparison.bindingScopes.any (·.contains level) then .unclassified else .noReference
   | .firstFilledComparison comparison =>
@@ -324,8 +379,7 @@ private def ValidationConditionLeaf.iterationGuardAt
       if comparison.bindingScopes.flatten.contains level then .unclassified else .noReference
   | .valueList source =>
       if source.bindingScopes.flatten.contains level then .unclassified else .noReference
-  | .valuesNotUnique source =>
-      if source.bindingScopes.flatten.contains level then .unclassified else .noReference
+  | .valuesNotUnique source => uniquenessIterationGuardAt level source
   | .orderedNumeric _ comparison =>
       match orderedNumericCompositeGuardAt level comparison with
       | some status => status

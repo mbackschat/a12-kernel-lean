@@ -1,0 +1,60 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state" : "CLEAN"
+  },
+  "model" : "f17b4a9129d0e9c0f0a963748ab6cb4ae0c4e3950fe1f9225da356d58ed152ad",
+  "observations" : [ {
+    "id" : "SumSibling",
+    "inputHash" : "3f2b0e86fe529ff1b778dd9b93779096c68eb1feb1b9ec1d489a4e3b36e535e4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "SumOwn",
+    "inputHash" : "62424ac027264297c87d901ebd40e2f03bef3024d25ff959e38d3ec7a64d7f49",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "FirstSibling",
+    "inputHash" : "1179aaf57b0652d8de19a0f5ee2cc89713611bf15297fe9acfea1af17a4e1035",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "FirstOwn",
+    "inputHash" : "867c747431537bbd22ab634c2c7dcc06a0d378a3f4b41560726e07d0034bb679",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "DateSibling",
+    "inputHash" : "cbf78c972f2983477592c8eed52e8d97fe260f0d4bc26d6c71b40e7158cb36f6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "DateOwn",
+    "inputHash" : "b22fe0c4af20af24f5bd7f94e112a93b2783a4d92d3caed169871921ced6f440",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "RangeSibling",
+    "inputHash" : "4413fc7eab74a38d9e603cb193d23c6e5bb430c27a1a16f9ecd70644ed67ae32",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "RangeOwn",
+    "inputHash" : "dae9e3c5538bdefc7276f7299768073b515cbc72e42e0a55581fc82b031e96b7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}
