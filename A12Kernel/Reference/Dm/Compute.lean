@@ -341,10 +341,10 @@ private def computationOutputModes (computation : DmComputation) :
     if !mode.admitted banded then refuse "RoundingMode" "MVK_ERROR_WRONG_ROUNDING_MODE"
     pure (if banded then some mode else none)
 
-/-- Filter-containing computations need the joined condition's complete parse-time admission
+/-- Constructor/filter-containing computations need the joined condition's complete parse-time admission
 before its global checks. Fragments remain error values until their authored turn, so a later parse or
 read failure cannot pre-empt an earlier operation/comparison (spec/09 §6). -/
-private def checkComputationFilterAdmission (language : Language) (model : FlatModel)
+private def checkComputationOrderedAdmission (language : Language) (model : FlatModel)
     (computation : DmComputation) (target : FlatFieldDecl) (suppress : Bool) : Lowering Unit := do
   let fragment (condition : Bool) (text : String) : Lowering Expr := do
     let body := (← parsed language text).body
@@ -353,8 +353,8 @@ private def checkComputationFilterAdmission (language : Language) (model : FlatM
   let common := computation.commonPrecondition.map (fragment true)
   let alternatives := computation.alternatives.map fun alternative =>
     (alternative.precondition.map (fragment true), fragment false alternative.operation, alternative.toleranceRangeOp)
-  let filtered := fun (source : Lowering Expr) => source.toOption.any Expr.hasHaving
-  if !common.any filtered && !alternatives.any (fun (guard, operation, _) => guard.any filtered || filtered operation) then return
+  let ordered := fun (source : Lowering Expr) => source.toOption.any Expr.needsOrderedAdmission
+  if !common.any ordered && !alternatives.any (fun (guard, operation, _) => guard.any ordered || ordered operation) then return
   let check := checkRawConditionBeforeGlobals model computation.group target.groupPath
   let mut facts : FilterRuleFacts := {}
   if let some common := common then facts := facts.merge (← check (← common) suppress)
@@ -400,7 +400,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
   -- The unfiltered route defers preamble failures until guards and operation syntax finish.
   let suppress ← if hasHaving then validatedSuppression else
     pure ((suppression.toOption.getD []).contains "MVK_INVALID_COMPARE_DEC_PLACES")
-  checkComputationFilterAdmission language model computation target suppress
+  checkComputationOrderedAdmission language model computation target suppress
   -- Calculation-mode compatibility follows the generated condition’s parser gates (spec/09 §6).
   let outputModes ← match earlyModes with | some modes => pure modes | none => readOutputModes
   let (common, guards) ← guards language model computation target suppress allowParallelGuards

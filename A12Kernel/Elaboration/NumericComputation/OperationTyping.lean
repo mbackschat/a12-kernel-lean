@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.NumericExpression
+import A12Kernel.Semantics.TemporalDistinctCount
 
 /-! # The post-order node check of a Number computation's operation
 
@@ -75,18 +76,19 @@ def isSortable : NumericOperandType → Bool
   | .number _ | .temporal _ _ => true
   | .stringLike | .enumeration .. | .dateRange _ | .other _ => false
 
-/-- Whether this type may follow an extrema call led by a sortable `leader`, or the class refusing
-it. -/
-def extremaFollower? (leader : NumericOperandType) :
-    NumericOperandType → Option KernelStaticDiagnostic
-  | follower =>
-      match leader, follower with
-      | .number _, .number _ => none
-      | .number _, _ => some .notSortable
-      | .temporal _ leading, .temporal _ components =>
-          if leading == components then none else some .dateFormatsNotCompatible
-      | .temporal _ _, _ => some .dateAndNonDate
-      | _, _ => some .notSortable
+/-- Whether this type may follow an extrema call led by a sortable `leader`, or the refusing class.
+Base Year supplements the compatibility test, not the returned type (CheckEntityListenUtils;
+retained date-components capture). -/
+def extremaFollower? (leader follower : NumericOperandType) (hasBaseYear : Bool := false) :
+    Option KernelStaticDiagnostic :=
+  match leader, follower with
+  | .number _, .number _ => none
+  | .number _, _ => some .notSortable
+  | .temporal _ leading, .temporal _ components =>
+      if leading.supplementedByBaseYear hasBaseYear == components.supplementedByBaseYear hasBaseYear then
+        none else some .dateFormatsNotCompatible
+  | .temporal _ _, _ => some .dateAndNonDate
+  | _, _ => some .notSortable
 
 /-- An extrema call's result once a follower has joined: Numbers take the union of their scales, as
 `AuthoredNumericExpr.summary?` does, and a temporal call keeps its leader. -/
@@ -104,14 +106,14 @@ inductive NumericOperationNodeFault (Error : Type) where
   deriving Repr, DecidableEq
 
 /-- Judge an extrema call's closed operands, a sortable first one and every later one against it. -/
-private def judgeExtrema {Error : Type} (operands : List NumericOperandType) :
+private def judgeExtrema {Error : Type} (hasBaseYear : Bool) (operands : List NumericOperandType) :
     Except (NumericOperationNodeFault Error) NumericOperandType :=
   match operands with
   | [] => throw (.node none)
   | leader :: followers =>
       if !leader.isSortable then throw (.node (some .notSortable))
       else
-        match followers.findSome? leader.extremaFollower? with
+        match followers.findSome? (fun follower => leader.extremaFollower? follower hasBaseYear) with
         | some diagnostic => throw (.node (some diagnostic))
         | none => pure (followers.foldl NumericOperandType.joinExtremum leader)
 
@@ -153,14 +155,15 @@ private def isStringAdditionOperand {Atom : Type} (expression : AuthoredNumericE
   | _ => false
 
 /-- Walk every node in post-order, each operand typed by `atomType`. -/
-private def walkNumericNode {Atom Error : Type} (atomType : Atom → Except Error NumericOperandType) :
+private def walkNumericNode {Atom Error : Type} (atomType : Atom → Except Error NumericOperandType)
+    (hasBaseYear : Bool) :
     AuthoredNumericExpr Atom → NumericNodeWalk Error
   | .atom atom => .ofResult ((atomType atom).mapError .operand)
   | .literal decoded => .ofResult (pure (.number (.constant decoded.authoredScale)))
-  | .group body => .ofResult (walkNumericNode atomType body).result
+  | .group body => .ofResult (walkNumericNode atomType hasBaseYear body).result
   | node@(.binary op left right) =>
-      let leftWalk := walkNumericNode atomType left
-      let rightWalk := walkNumericNode atomType right
+      let leftWalk := walkNumericNode atomType hasBaseYear left
+      let rightWalk := walkNumericNode atomType hasBaseYear right
       .ofResult do
         let leftType ← leftWalk.result
         let rightType ← rightWalk.result
@@ -175,8 +178,8 @@ private def walkNumericNode {Atom Error : Type} (atomType : Atom → Except Erro
         divisionGate node
         pure type
   | node@(.power base exponent) =>
-      let baseWalk := walkNumericNode atomType base
-      let exponentWalk := walkNumericNode atomType exponent
+      let baseWalk := walkNumericNode atomType hasBaseYear base
+      let exponentWalk := walkNumericNode atomType hasBaseYear exponent
       .ofResult do
         let baseType ← baseWalk.result
         let exponentType ← exponentWalk.result
@@ -193,31 +196,31 @@ private def walkNumericNode {Atom Error : Type} (atomType : Atom → Except Erro
         | _, _ => throw (.node (some .noNumberForCalc))
   | .abs body =>
       .ofResult do
-        match ← (walkNumericNode atomType body).result with
+        match ← (walkNumericNode atomType hasBaseYear body).result with
         | type@(.number _) => pure type
         | _ => throw (.node (some .noNumber))
   | .round _ places body =>
       .ofResult do
-        match ← (walkNumericNode atomType body).result with
+        match ← (walkNumericNode atomType hasBaseYear body).result with
         | .number _ => pure (.number (.rounded places.val))
         | _ => throw (.node none)
   | .extremum op left right =>
-      let leftWalk := walkNumericNode atomType left
-      let rightWalk := walkNumericNode atomType right
+      let leftWalk := walkNumericNode atomType hasBaseYear left
+      let rightWalk := walkNumericNode atomType hasBaseYear right
       let chain : Except (NumericOperationNodeFault Error) (List NumericOperandType) := do
         pure ((← leftWalk.operands op) ++ (← rightWalk.operands op))
-      let result := chain >>= judgeExtrema
+      let result := chain >>= judgeExtrema hasBaseYear
       match op with
       | .maximum => { result, maximumOperands := chain, minimumOperands := result.map ([·]) }
       | .minimum => { result, maximumOperands := result.map ([·]), minimumOperands := chain }
   | .extremumCall op body =>
-      .ofResult ((walkNumericNode atomType body).operands op >>= judgeExtrema)
+      .ofResult ((walkNumericNode atomType hasBaseYear body).operands op >>= judgeExtrema hasBaseYear)
 
 /-- Check one operation's nodes in post-order: the first failing node's class, or the result type. -/
 def checkNumericOperationNodes {Atom Error : Type} (atomType : Atom → Except Error NumericOperandType)
-    (expression : AuthoredNumericExpr Atom) :
+    (expression : AuthoredNumericExpr Atom) (hasBaseYear : Bool := false) :
     Except (NumericOperationNodeFault Error) NumericOperandType :=
-  (walkNumericNode atomType expression).result
+  (walkNumericNode atomType hasBaseYear expression).result
 
 /-- The class a well-typed operation's result draws against a Number target: the generated comparison's
 arm for a copied field of that kind, `none` for a Number. -/

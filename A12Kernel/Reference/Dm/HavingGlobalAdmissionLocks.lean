@@ -118,7 +118,7 @@ example : computationResult ("RepetitionNotUnique(Rows/N) And " ++ plain) "Repet
 private def staticAdmission (condition : String) : Bool :=
   match parseText .english condition with
   | .error _ => false
-  | .ok text => (checkLateFilterIndex model ["Form"] ["Form", "Rows"] text.body).isOk
+  | .ok text => (checkOrderedAdmission model ["Form"] ["Form", "Rows"] text.body).isOk
 
 example : staticAdmission ("RepetitionNotUnique(Rows/N) And " ++ plain) = true := by native_decide
 

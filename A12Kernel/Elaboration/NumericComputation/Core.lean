@@ -637,7 +637,7 @@ def FlatModel.checkNumericOperationNodes
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Except NumericComputationElabError Unit :=
   match A12Kernel.checkNumericOperationNodes (model.numericComputationAtomType declaringGroup targetGroup)
-      expression with
+      expression model.hasBaseYear with
   | .error (.operand error) => throw error
   | .error (.node diagnostic) => throw (.operationNode diagnostic)
   | .ok (.number _) => pure ()

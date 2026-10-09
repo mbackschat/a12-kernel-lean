@@ -10,23 +10,24 @@ open HavingListAdmission
 mutual
 /-- Traverse authored references, including keys, scopes and range endpoints, without resolving
 or lowering them. Admission activation must not itself reorder read failures (spec/07 §3). -/
-private partial def Expr.anyReference (test : Reference → Bool) : Expr → Bool
-  | .entity reference | .value reference => reference.anyReference test
-  | .arith _ left right | .compare _ left right => left.anyReference test || right.anyReference test
-  | .braces body | .parens body => body.anyReference test
-  | .logic _ parts => parts.any (Expr.anyReference test)
-  | .call _ arguments listed scope =>
-      arguments.any (Argument.anyReference test) || (listed.getD []).any (Argument.anyReference test) ||
-        scope.any (Reference.anyReference test)
+private partial def Expr.anyReference (test : Reference → Bool) (callTest : String → Bool := fun _ => false) : Expr → Bool
+  | .entity reference | .value reference => reference.anyReference test callTest
+  | .arith _ left right | .compare _ left right => left.anyReference test callTest || right.anyReference test callTest
+  | .braces body | .parens body => body.anyReference test callTest
+  | .logic _ parts => parts.any (Expr.anyReference test callTest)
+  | .call name arguments listed scope =>
+      callTest name ||
+      arguments.any (Argument.anyReference test callTest) || (listed.getD []).any (Argument.anyReference test callTest) ||
+        scope.any (Reference.anyReference test callTest)
   | _ => false
 
-private partial def Reference.anyReference (test : Reference → Bool) (reference : Reference) : Bool :=
-  test reference || reference.filter.any (Expr.anyReference test) || match reference.index with
-    | some (.reference key) => key.anyReference test
+private partial def Reference.anyReference (test : Reference → Bool) (callTest : String → Bool := fun _ => false) (reference : Reference) : Bool :=
+  test reference || reference.filter.any (Expr.anyReference test callTest) || match reference.index with
+    | some (.reference key) => key.anyReference test callTest
     | _ => false
 
-private partial def Argument.anyReference (test : Reference → Bool) : Argument → Bool
-  | .mk expression rangeEnd => expression.anyReference test || rangeEnd.any (Expr.anyReference test)
+private partial def Argument.anyReference (test : Reference → Bool) (callTest : String → Bool := fun _ => false) : Argument → Bool
+  | .mk expression rangeEnd => expression.anyReference test callTest || rangeEnd.any (Expr.anyReference test callTest)
 end
 
 /-- Activate ordered admission across an entire filter-containing expression, including its
@@ -34,6 +35,11 @@ preceding operands and separate lists (spec/07 §3). -/
 def Expr.hasHaving : Expr → Bool := Expr.anyReference (·.filter.isSome)
 def Reference.hasHaving : Reference → Bool := Reference.anyReference (·.filter.isSome)
 def Argument.hasHaving : Argument → Bool := Argument.anyReference (·.filter.isSome)
+
+/-- Constructor children need their parse/read diagnostics before lowering or position checks
+(KF532). The same ordered walk already handles filter-containing expressions. -/
+def Expr.needsOrderedAdmission (expression : Expr) : Bool :=
+  expression.hasHaving || expression.anyReference (fun _ => false) (fun name => name == "Date" || name == "Time")
 
 private def Expr.hasIndex : Expr → Bool := Expr.anyReference (·.index.isSome)
 
@@ -355,7 +361,7 @@ private partial def admitBody (model : FlatModel) (group bindingGroup : GroupPat
           (CorrelationElabError.stringPattern ∘ StringPatternConditionElabError.pattern))
         return (none, state)
       let scalarTrees := rawScalarTreeAvailable left && rawScalarTreeAvailable right
-      if expression.hasHaving || expression.hasIndex || !inFilter || scalarTrees then
+      if expression.needsOrderedAdmission || expression.hasIndex || !inFilter || scalarTrees then
         let leftSource := left
         let rightSource := right
         let (left, nextState) ← admitNumericExpression model group bindingGroup inFilter insideSemanticIndexKey admission left
@@ -424,7 +430,7 @@ private partial def admitPatternOperand (model : FlatModel) (group bindingGroup 
   | .constant "Now" => pure (.temporal .dateTime, inFilter)
   | expression => do
       let (tree, state) ← admitNumericExpression model group bindingGroup inFilter insideSemanticIndexKey admission expression
-      let type ← rawNumericType tree
+      let type ← rawNumericType model.hasBaseYear tree
       pure (type.surfaceKind, state)
 
 private partial def admitFieldValues (model : FlatModel) (group bindingGroup : GroupPath)
@@ -498,9 +504,9 @@ private partial def admitNumericExpression (model : FlatModel) (group bindingGro
       liftM <| refuse "Having" KernelStaticDiagnostic.noNumber.kernelCode
     pure (.number (.field info.scale))
   let beforeRounding (source : Expr) (tree : AuthoredNumericExpr NumericOperandType) : StateT Bool RawAdmissionM Unit :=
-    liftM <| checkRawNumericWrapper source tree
+    liftM <| checkRawNumericWrapper model.hasBaseYear source tree
   let complete (source : Expr) (tree : AuthoredNumericExpr NumericOperandType) : StateT Bool RawAdmissionM Unit :=
-    liftM <| checkRawNumericOperation source tree
+    liftM <| checkRawNumericOperation model.hasBaseYear source tree
   (lowerNumericExprWith atom fieldAtom beforeRounding complete expression).run inFilter
 
 private partial def admitTemporalOperand (model : FlatModel) (group bindingGroup : GroupPath)
@@ -546,10 +552,10 @@ private partial def admitConstructorComponents (model : FlatModel) (group bindin
           let [read] := reads | refuse "Having" "constructor field"
           pure (.field read.reference read.entity, afterRead)
       | .mk source@(.call name _ none none) none => do
-          let some operator := rawTemporalExtractor? name | refuse "Having" "constructor extractor"
+          let some operator := rawTemporalExtractor? name | refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
           let (_, afterRead) ← admitNumericAtom model group bindingGroup state insideSemanticIndexKey admission source
           pure (.extractor operator, afterRead)
-      | _ => do refuse "Having" "constructor component"
+      | _ => do refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
     components := components ++ [component]
     state := nextState
   pure (components, state)
@@ -605,7 +611,7 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
         match operator with
         | .shift unit =>
             let (tree, state) ← admitNumericExpression model group bindingGroup state insideSemanticIndexKey admission second
-            return (← rawTemporalShiftType model unit firstType firstDeclaration (← rawNumericType tree), state)
+            return (← rawTemporalShiftType model unit firstType firstDeclaration (← rawNumericType model.hasBaseYear tree), state)
         | .difference unit =>
             let (secondType, secondDeclaration, state) ← admitTemporalOperand model group bindingGroup state insideSemanticIndexKey admission true second
             return (← rawTemporalDifferenceType model unit (firstType, firstDeclaration) (secondType, secondDeclaration), state)
@@ -674,7 +680,7 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
           let operator := if op == .minimum then NumericExtremumOp.minimum else .maximum
           let tree := AuthoredNumericExpr.extremumCall operator
             (rest.foldl (fun tree type => .extremum operator tree (.atom type)) (.atom first))
-          pure (← rawNumericType tree, state)
+          pure (← rawNumericType model.hasBaseYear tree, state)
       | .distinctCount => do
           checkRawDistinctTypes model (reads.flatMap (·.declarations model))
           pure (.number (.field 0), state)
@@ -691,14 +697,15 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
 
 end
 
-/-- Admit the complete filter-containing condition before selecting a whole-rule refusal.
-Read/parse failures precede every global check (ParserService.checkNormalRule; spec/07 §3). -/
-def checkLateFilterIndex (model : FlatModel) (group bindingGroup : GroupPath)
+/-- Admit constructor/filter children before lowering and whole-rule gates. Their authored
+read order precedes enclosing checks (KF532; ParserService.checkNormalRule; spec/07 §3). -/
+def checkOrderedAdmission (model : FlatModel) (group bindingGroup : GroupPath)
     (expression : Expr) (suppressExactScaleWarning : Bool := false) : Lowering Unit := do
-  if !expression.hasHaving then return
+  if !expression.needsOrderedAdmission then return
   let (_, facts) ← (admitBody model group bindingGroup [] [] { suppressExactScaleWarning } false false expression).run {}
   -- Having requires a star while Length forbids stars, so this is not the standalone limiter exception (CheckFeldOpImpl; AnalyseService).
-  if let some diagnostic := facts.beforeIterationRefusal? then refuse "Having" diagnostic.kernelCode
+  if expression.hasHaving then
+    if let some diagnostic := facts.beforeIterationRefusal? then refuse "Having" diagnostic.kernelCode
 
 /-- Admit one fragment and retain its contribution to the generated rule's global checks. -/
 def checkRawConditionBeforeGlobals (model : FlatModel) (group bindingGroup : GroupPath)

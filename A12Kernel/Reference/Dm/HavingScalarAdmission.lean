@@ -13,8 +13,11 @@ def rawScalarComparisonOperand (type : NumericOperandType) : Expr → ScalarComp
   | .value _ => { type, directField := true }
   | _ => { type }
 
-def rawNumericType (expression : AuthoredNumericExpr NumericOperandType) : Lowering NumericOperandType :=
-  (checkNumericOperationNodes (fun type => (.ok type : Except Refusal NumericOperandType)) expression).mapError fun
+/-- Scalar temporal extrema compare component sets after model Base Year supplementation
+(CheckFeldListenOperOpImpl; retained date-components and date-validity captures). -/
+def rawNumericType (hasBaseYear : Bool) (expression : AuthoredNumericExpr NumericOperandType) : Lowering NumericOperandType :=
+  (checkNumericOperationNodes (fun type => (.ok type : Except Refusal NumericOperandType))
+    expression hasBaseYear).mapError fun
     | .operand refusal => refusal
     | .node diagnostic => { construct := "Having", detail := diagnostic.map (·.kernelCode) |>.getD "unsupported numeric node" }
 
@@ -45,8 +48,8 @@ The same gates judge authored comparisons and generated computation mismatches (
 def checkRawComparisonOperands (model : FlatModel) (op : CompareOp) (leftSource rightSource : Expr)
     (left right : AuthoredNumericExpr NumericOperandType) (suppressExactScaleWarning : Bool) : Lowering Unit := do
   let some numericOp := op.toNumeric? | refuse "Having" "nested comparison operator"
-  let leftType ← rawNumericType left
-  let rightType ← rawNumericType right
+  let leftType ← rawNumericType model.hasBaseYear left
+  let rightType ← rawNumericType model.hasBaseYear right
   let family := match op with
     | .eq | .ne => ComparisonEntryFamily.equality
     | .tolerance _ => .tolerance
@@ -97,16 +100,16 @@ private def Expr.isWrapperLiteral : Expr → Bool
 
 /-- Absolute-value and rounding operations reject constants before checking the operand kind;
 rounding precision follows both gates (CheckFeldOperOpImpl; CheckRundenOperOpImpl). -/
-def checkRawNumericWrapper (source : Expr) (body : AuthoredNumericExpr NumericOperandType) : Lowering Unit := do
+def checkRawNumericWrapper (hasBaseYear : Bool) (source : Expr) (body : AuthoredNumericExpr NumericOperandType) : Lowering Unit := do
   if source.isWrapperLiteral then refuse "Having" KernelStaticDiagnostic.noConst.kernelCode
-  if (← rawNumericType body).surfaceKind != .number then
+  if (← rawNumericType hasBaseYear body).surfaceKind != .number then
     refuse "Having" KernelStaticDiagnostic.noNumber.kernelCode
 
 /-- Authored constantness precedes result-kind checks at a completed operation. Extrema count
 all constant kinds only after every operand finishes (CheckFeldListenOperOpImpl). -/
-def checkRawNumericOperation (source : Expr) (tree : AuthoredNumericExpr NumericOperandType) : Lowering Unit := do
+def checkRawNumericOperation (hasBaseYear : Bool) (source : Expr) (tree : AuthoredNumericExpr NumericOperandType) : Lowering Unit := do
   match source, tree with
-  | .call "Abs" [.mk operand none] none none, .abs body => checkRawNumericWrapper operand body
+  | .call "Abs" [.mk operand none] none none, .abs body => checkRawNumericWrapper hasBaseYear operand body
   | .call name arguments none none, _ =>
       if name == "Min" || name == "Max" then
         let constants := arguments.filter fun
@@ -115,7 +118,7 @@ def checkRawNumericOperation (source : Expr) (tree : AuthoredNumericExpr Numeric
         if constants.length > 1 then
           refuse "Having" KernelStaticDiagnostic.tooManyConstantsInOperandList.kernelCode
   | _, _ => pure ()
-  discard <| rawNumericType tree
+  discard <| rawNumericType hasBaseYear tree
 
 
 inductive RawScalarOperator where

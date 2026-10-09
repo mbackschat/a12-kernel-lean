@@ -17,23 +17,23 @@ Resume the active family through its owner links. Update this file only when the
 <a id="active-unit"></a>
 ## Selected work
 
-- `milestone`: Reconcile remaining [SG6 constructor/endpoint obligations](gaps/numeric-and-temporal.md#gap-sg6) against the handback and code, then select one finite family batch.
+- `milestone`: Continue the [SG6 constructor/endpoint audit](gaps/numeric-and-temporal.md#gap-sg6) after closing the shared Date/Time component grammar and ordered-admission batch.
 - `oracle`: Start from the [temporal clause](../spec/05-dates-and-time.md) and [inbound constructor controls](sources/inbound-handbacks.md#inbound-2026-10-09-extensions). The accepted [shared-runtime matrix](sources/date-range-construction.md#src-date-range-shared-runtime) is the DateRange input/endpoint baseline.
-- `working-tree`: The shared-runtime DateRange batch is accepted at this commit. No unfinished implementation or live process is carried forward. The first Downloads handback reply is complete. The [follow-up receipt](sources/inbound-handbacks.md#src-inbound-2026-10-09a) adds target-subtree, stored-readback, message-index and wire-route audits in their gap owners; implementation remains paused by owner direction.
+- `working-tree`: The constructor-admission batch is accepted at this commit; no unfinished implementation or live process is carried forward. Both Downloads handback replies are complete. Work is active. The [follow-up receipt](sources/inbound-handbacks.md#src-inbound-2026-10-09a) retains target-subtree, stored-readback, message-index and wire-route audits in their gap owners.
 - `state`: Broad coverage remains 217/217. The [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns the refreshed population and its remaining whole-row/evidence limits.
-- `next`: Check keyed text/ValueAsDate constructor routes, grammar/parse-order controls and split-year slots against existing guards before selecting missing semantics. Do not assume a stale gap row still requires implementation.
+- `next`: Reconcile KF531 keyed ValueAsDate phase/index-defect cases and KF373/KF423 component-policy boundaries against existing guards before selecting missing semantics. Then audit the handback’s stored Date/DateRange dependent-read witnesses through the existing computation readback owner. Do not assume a stale gap row requires new implementation.
 - `consumer`: Execute needs selected-operand scope, completion and target checking to agree. Preserve declared versus runtime policy and external-calibration limits when composing the accepted range account.
 - `blocker`: No verified hard blocker.
 - `stop-condition`: An unresolved source distinction stops dependent implementation, not discovery. Settle a finite acceptance matrix before widening the next family.
-- `economy-carry-forward`: Before delegation, settle recursive carriers, dependencies/pointers and a decidable result helper. Before integration, inspect adapters, transition/failure relations, proofs, root imports and shared-module prose together. Keep broad builds at frozen boundaries and corrections focused. Reuse MEDIUM for settled propagation; HIGH takes tiny fixes.
+- `economy-carry-forward`: Before delegation, settle recursive carriers, dependencies/pointers and a decidable result helper. Before integration, inspect every changed signature’s callers and recursive branches, adapters, proofs, root imports and shared-module prose together. When activating an existing checker on more expressions, preserve model context and verify previously admitted compositions. Keep broad builds at frozen boundaries and corrections focused; HIGH takes tiny fixes.
 
 ## Verified baseline
 
-- `committed`: This commit closes SG6 R1–R4: declared conversion, shared runtime policy, interpreted endpoint admission and model-aware target checking across ordinary, keyed and Having routes. [DateRange capabilities](implementation/date-range.md#cap-date-range-checked-declaration) own assurance; [SG6](gaps/numeric-and-temporal.md#gap-sg6) retains broader compositions and calibration.
-- `focused`: Input/formal-completion, recursive keyed/Having and native source/target controls pass. Integrated build, compact evidence and final trust/hygiene pass.
-- `review-boundary`: Fresh HIGH review completed; both findings are closed. The mixed-document standard-range liveness control now executes beside empty and malformed interpreted sources, and separator-cause prose names the effective runtime policy.
+- `committed`: This commit closes the eight-slot Date/Time component grammar and ordered native-admission matrix across ordinary/Having validation and computation. [Constructor capabilities](implementation/temporal.md#cap-recursive-date-components) own assurance and exclusions; [SG6](gaps/numeric-and-temporal.md#gap-sg6) owns remaining compositions.
+- `focused`: Grammar, conflicting diagnostic orders, digit-named fields, split-year controls and selected String execution pass. Scalar Min/Max retain Base Year compatibility without changing their leader result type; with/without-BaseYear controls and prior clock controls pass. Integrated build, compact evidence and trust pass.
+- `review-boundary`: Fresh HIGH constructor review and its bounded Base Year correction review completed with no actionable findings. The correction follows a reproduced replay regression and preserves the original acceptance requirement that admitted compositions remain admitted.
 - `replay-boundary`: Full replay on the corrected reviewed slice preserves all admitted matches with no instance refusal, divergence, unattributed outcome or execution fault. The [report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns counts and unchanged whole-row/evidence limits. Replay interval resets to zero; prose/report requests do not trigger another run.
-- `remaining-gates`: None for the accepted range family. Resume bounded route discovery for the next SG6 obligation.
+- `remaining-gates`: None for the accepted constructor family. Resume bounded route discovery for the next SG6 obligation.
 - `commands`: The [command ladder](TESTING.md#command-ladder) and [review disposition rules](TESTING.md#review-convergence-and-landing-gate) own gates. Reuse the accepted boundary; final documentation updates trigger no extra replay or reviewer.
 
 ## Consumer and evidence triggers

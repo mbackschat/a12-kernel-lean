@@ -411,4 +411,92 @@ example : [false, true].all (fun row =>
     result "[Rows/Calendar For \"keep\"] == [Missing]" row partialRangeModel ==
       (KernelStaticDiagnostic.invalidDateType.kernelCode, KernelStaticDiagnostic.invalidDateType.kernelCode)) = true := by native_decide
 
+private def grammarModel : FlatModel := { model with fields := model.fields ++ [
+  { id := 15, name := "RootStamp", groupPath := ["Form"], policy := { kind := .temporal .dateTime .now },
+    temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }] }
+
+private def grammarResults (operation : String) (filtered : Bool) : String × String :=
+  HavingFixture.readerResults
+    (if filtered then "Sum(Rows*/N Having FieldFilled(Rows/N) And " ++ operation ++ " > 0)" else operation)
+    grammarModel false
+
+private def componentSlots : List (String × String × String) := [
+  ("YearFromDate(Date(", ",\"01\",\"2024\"))", "\"01\""),
+  ("YearFromDate(Date(\"01\",", ",\"2024\"))", "\"01\""),
+  ("YearFromDate(Date(\"01\",\"01\",", "))", "\"2024\""),
+  ("YearFromDate(Date(\"01\",\"01\",", ",\"24\"))", "\"20\""),
+  ("YearFromDate(Date(\"01\",\"01\",\"20\",", "))", "\"24\""),
+  ("HoursFromTime(Time(", "))", "\"01\""),
+  ("HoursFromTime(Time(\"01\",", "))", "\"01\""),
+  ("HoursFromTime(Time(\"01\",\"01\",", "))", "\"01\"")]
+
+private def nonComponents : List String := [
+  "Sum(Rows*/N)", "MaxValue(Rows*/N)", "RoundUp([Out],0)",
+  "Date(\"01\",\"01\",\"2024\")", "Time(\"01\")", "[Out]", "{[Out]}", "[Out]+1",
+  "1.5", "-1", "True", "Today"]
+
+-- KF532 separates datumParam grammar from numeric expression lowering across every component slot.
+example : [false, true].all (fun filtered => componentSlots.all (fun (beforeText, afterText, control) =>
+    grammarResults (beforeText ++ control ++ afterText) filtered == ("admitted", "admitted") &&
+    nonComponents.all (fun component => grammarResults (beforeText ++ component ++ afterText) filtered ==
+      ("MVK_UNEXPECTED_TOKEN", "MVK_UNEXPECTED_TOKEN")) &&
+    grammarResults (beforeText ++ "1" ++ afterText) filtered == ("MVK_INVALID_ENTITY", "MVK_INVALID_ENTITY"))) = true := by native_decide
+
+private def constructorPrecedence : List (String × String) := [
+  ("HoursFromTime(Time(1,Sum(Rows*/N)))", "MVK_INVALID_ENTITY"),
+  ("HoursFromTime(Time(Sum(Rows*/N),1))", "MVK_UNEXPECTED_TOKEN"),
+  ("HoursFromTime(Time(MinutesFromTime(RootStamp),Sum(Rows*/N)))", "MVK_UNEXPECTED_TOKEN"),
+  ("HoursFromTime(Time(Sum(Rows*/N),MinutesFromTime(RootStamp)))", "MVK_UNEXPECTED_TOKEN"),
+  ("YearFromDate(Date(DateFromDateTime(RootStamp),\"01\",Sum(Rows*/N)))", "MVK_UNEXPECTED_TOKEN"),
+  ("YearFromDate(Date(Sum(Rows*/N),\"01\",DateFromDateTime(RootStamp)))", "MVK_UNEXPECTED_TOKEN"),
+  ("HoursFromTime(Time(MinutesFromTime(RootStamp),Missing))", "MVK_INVALID_ENTITY"),
+  ("HoursFromTime(Time(HoursFromTime(Out),Missing))", "MVK_NO_DATE"),
+  ("YearFromDate(Date(\"01\",\"01\",DateFromDateTime(RootStamp),\"24\"))", "MVK_EXTRACT_OP_NOT_ALLOWED_4_DATE_CONSTRUCT_WITH_4_PARAMS"),
+  ("YearFromDate(Date(\"01\",\"01\",\"01\",\"24\"))", "MVK_WRONG_DATE_FORMAT_FOR_OP"),
+  ("YearFromDate(Date(\"01\",\"01\",\"20\",\"1\"))", "MVK_WRONG_DATE_FORMAT_FOR_OP")]
+
+
+example : [false, true].all (fun filtered => constructorPrecedence.all (fun (operation, expected) =>
+    grammarResults operation filtered == (expected, expected))) = true := by native_decide
+
+private def digitNameModel : FlatModel := { grammarModel with fields := grammarModel.fields ++ [
+  { id := 16, name := "1", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := false } },
+    numericTargetConstraints := { maxStoredLength := some 2 } }] }
+
+example : (digitNameModel.validate.isOk &&
+    HavingFixture.readerResults "HoursFromTime(Time(1))" digitNameModel false == ("admitted", "admitted") &&
+    HavingFixture.readerResults "YearFromDate(Date(1,\"01\",\"2024\"))" digitNameModel false == ("admitted", "admitted")) = true := by native_decide
+
+-- KF531's selected String components must survive the shared grammar gate and read the selected row.
+example : (["DayFromDate(Date(Rows/Digits For Expected,\"01\",\"2024\"))",
+    "HoursFromTime(Time(Rows/Digits For Expected))"].all fun operation =>
+    HavingFixture.runModel model "[Rows/N] > 0" false "keep" "drop" "keep"
+      (operationOverride := some operation) (ruleExpected := "7")
+      (rowsOverride := some #[
+        Lean.Json.mkObj [("Tag", .str "drop"), ("Digits", .str "03"), ("N", .str "1")],
+        Lean.Json.mkObj [("Tag", .str "keep"), ("Digits", .str "07"), ("N", .str "1")]]) ==
+      some (.fired .value, ["value 7"])) = true := by native_decide
+
+private def temporalExtremumResults (operator : String) (baseYear : Option Int) : String × String :=
+  let fixture : FlatModel := { model with baseYear, fields := model.fields ++ [
+    { id := 15, name := "DateOut", groupPath := ["Form"], policy := { kind := .temporal .date .fullDate },
+      temporalTargetPolicy := some { format := "yyyy-MM-dd" } }] }
+  let dm : DmModel := { flat := fixture, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let operation := operator ++ "(Date(Rows/Part For Expected,Rows/Part For Expected),\"15.02.2024\")"
+  let report {α : Type} : Lowering α → String
+    | .ok _ => "admitted"
+    | .error refusal => refusal.detail
+  (report (checkRule dm .english {
+    group := ["Form"], name := "Extremum", errorCode := "EXTREMUM",
+    errorEntityRelPath := "../Error", condition := "FieldFilled(Error) And " ++ operation ++ " == Today", severity := "ERROR" }),
+   report (lowerComputation fixture .english {
+    group := ["Form"], name := "Extremum", targetRelPath := "../DateOut",
+    commonPrecondition := none, alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }))
+
+-- The date-components/date-validity captures admit the omitted-year constructor under scalar Min;
+-- CheckFeldListenOperOpImpl uses the same model-aware temporal comparison for Max.
+example : (["Min", "Max"].all fun operator =>
+    temporalExtremumResults operator (some 2024) == ("admitted", "admitted") &&
+    temporalExtremumResults operator none == ("MVK_MISSING_YEAR", "MVK_MISSING_YEAR")) = true := by native_decide
+
 end A12Kernel.Dm.HavingTemporalAdmissionLocks

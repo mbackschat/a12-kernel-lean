@@ -74,7 +74,7 @@ private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language :
       let declaration ← elaborated "ErrorEntity" (model.flat.lookupUniqueId errorField)
       pure declaration.groupPath
     else pure rule.group
-  checkLateFilterIndex model.flat rule.group bindingGroup text.body suppress
+  checkOrderedAdmission model.flat rule.group bindingGroup text.body suppress
   let condition ← lowerCondition model.flat rule.group suppress text.body world bindingGroup
   let errorField ← errorFieldOf language model.flat rule
   let some severity := severity? rule.severity | refuse "Severity" rule.severity

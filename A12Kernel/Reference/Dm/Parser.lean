@@ -218,6 +218,14 @@ private partial def atom : P Expr := do
 private partial def call (id : String) : P Expr := do
   if ← acceptSymbol ")" then return .call id [] none none
   let arguments ← argumentList
+  -- datumParam uses entitySpec; digit-only names are identifiers here (KF532; grammar idName).
+  -- Keep invalid shapes for the ordered admission walk, where earlier entity failures still win.
+  let arguments := if id == "Date" || id == "Time" then arguments.map (fun
+      | .mk (.number digits) none =>
+          if !digits.isEmpty && digits.toList.all Char.isDigit then
+            .mk (.entity { path := { segments := [{ name := digits, star := false }] } }) none
+          else .mk (.number digits) none
+      | argument => argument) else arguments
   let listed ← if ← acceptKeyword "In" then pure (some (← argumentList)) else pure none
   let scope ← if ← acceptKeyword "@From" then pure (some (← reference)) else pure none
   expectSymbol ")"
