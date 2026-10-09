@@ -235,4 +235,32 @@ example : (do
       | .atom (.dateLiteral _ _ authoredYear) => !authoredYear
       | _ => false)) = some true := by native_decide
 
+private def storedYear (format source operation : String) : Option (List String) := do
+  let fixture := fragmentModel format (TemporalComponents.ofFormat format) (some 2024)
+  let fixture : FlatModel := { fixture with timeZoneId := "UTC", fields := fixture.fields ++ [
+    { id := 3, name := "InlineYear", groupPath := ["Form"],
+      policy := { kind := .number { scale := 0, signed := true } } }] }
+  let dm : DmModel := { flat := fixture, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Lean.Json.mkObj [("Form", Lean.Json.mkObj [
+    ("D", .str source), ("N", "9"), ("InlineYear", "9")])])).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler fixture).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let steps ← [("N", "YearFromDate(Result)"), ("InlineYear", "YearFromDate(" ++ operation ++ ")"),
+    ("Result", operation)].mapM fun (target, expression) =>
+      (lowerComputation fixture .english {
+        name := target ++ "Comp", group := ["Form"], targetRelPath := "../" ++ target,
+        commonPrecondition := none, alternatives := [{ precondition := none, operation := expression }],
+        errorCodesToSuppress := [] }).toOption
+  let results ← (runComputations world prepared document (steps.map (·.2))).toOption
+  pure ((results.map fun result => result.pointer ++ "=" ++ result.outcome).mergeSort (· ≤ ·))
+
+-- KF540's stored-Date witness makes producer inlining observably wrong at a yearless target.
+example : storedYear "dd.MM." "31.12." "AddDays(D,1)" =
+    some ["Form/InlineYear=value 2025", "Form/N=value 2024", "Form/Result=value 01.01."] ∧
+    storedYear "dd.MM." "01.01." "AddDays(D,-1)" =
+      some ["Form/InlineYear=value 2023", "Form/N=value 2024", "Form/Result=value 31.12."] ∧
+    storedYear "yyyy-MM-dd" "2024-12-31" "AddDays(D,1)" =
+      some ["Form/InlineYear=value 2025", "Form/N=value 2025", "Form/Result=value 2025-01-01"] := by native_decide
+
 end A12Kernel.Dm.CalendarExpressionLocks

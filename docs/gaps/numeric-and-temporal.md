@@ -66,7 +66,6 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 ### SG6 — temporal authoring, calendar, and target completion
 
 - `range-calibration`: the [shared-runtime matrix](../sources/date-range-construction.md#src-date-range-shared-runtime) covers dotted-first/month-first UTC models. Other effective first profiles, calendar-invalid input, required empties, partial validation and wider zones remain uncalibrated; [implemented range boundaries](../implementation/date-range.md#cap-date-range-checked-declaration) own internal support.
-- `stored-readback`: Audit computed Date/DateRange dependent reads against [KF540](../sources/inbound-handbacks.md#src-inbound-2026-10-09a): yearless rollover must read the target Base Year, and FROM-to-TO copies must re-anchor from stored text. Retain static component/list-profile refusals. The accepted shared-runtime batch does not itself discharge these new witnesses.
 - `constructor-calibration`: Number keys, partial validation and client-interface conversions remain outside the [inbound constructor evidence](../sources/inbound-handbacks.md#inbound-2026-10-09-extensions). [Constructor capabilities](../implementation/temporal.md#cap-recursive-date-components) and [indexed endpoints](../implementation/temporal.md#cap-indexed-temporal-scalar) own the implemented grammar, component-policy and selected-read boundaries.
 
 - `state`: open

@@ -310,6 +310,43 @@ example : targetRun false "03/10" = some (withStandard ["Form/After=value 2000",
     targetRun false "" = some (withStandard ["Form/After=value 0", "Form/Range2=cleared"]) ∧
     targetRun false "bad" = some (withStandard ["Form/After=cleared", "Form/Range2=cleared"]) := by native_decide
 
+private def storedRangeYears (direction : DateRangeYearInterpretation) (baseYear : Option Int) :
+    Option (List String) := do
+  let opposite := if direction == .anchorStart then .anchorFinish else .anchorStart
+  let ranges ← [direction, opposite, direction].zipIdx.mapM fun (interpretation, id) =>
+    nativeDeclaration id "dd.MM" "-" interpretation
+  let fixture : FlatModel := {
+    timeZoneId := "UTC", baseYear
+    fields := ranges ++ [(3, "StartYear"), (4, "EndYear"), (5, "OriginalEndYear")].map fun (id, name) =>
+      { id, name, groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } } }
+  let dm : DmModel := { flat := fixture, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Range0", "01.11-28.02"), ("Range1", "01.01-02.01"),
+    ("StartYear", "9"), ("EndYear", "9"), ("OriginalEndYear", "9")])])).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler fixture).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let steps ← [("StartYear", "YearFromDate(StartOfDateRange(Range1))"),
+    ("EndYear", "YearFromDate(EndOfDateRange(Range1))"),
+    ("OriginalEndYear", "YearFromDate(EndOfDateRange(Range0))"),
+    ("Range1", "FirstFilledValue(Range0,Range2)")].mapM fun (target, operation) =>
+      (lowerComputation fixture .english {
+        name := target ++ "Comp", group := ["Form"], targetRelPath := "../" ++ target,
+        commonPrecondition := none, alternatives := [{ precondition := none, operation }],
+        errorCodesToSuppress := [] }).toOption
+  let results ← (runComputations world prepared document (steps.map (·.2))).toOption
+  pure ((results.map fun result => result.pointer ++ "=" ++ result.outcome).mergeSort (· ≤ ·))
+
+-- KF540 distinguishes a copied interval's years from reclassification under its target direction.
+example : [none, some 2024].all (fun baseYear =>
+    let year := baseYear.getD 2000
+    storedRangeYears .anchorStart baseYear == some [
+      "Form/EndYear=value " ++ toString year, "Form/OriginalEndYear=value " ++ toString (year + 1),
+      "Form/Range1=value 01.11-28.02", "Form/StartYear=value " ++ toString (year - 1)] &&
+    storedRangeYears .anchorFinish baseYear == some [
+      "Form/EndYear=value " ++ toString (year + 1), "Form/OriginalEndYear=value " ++ toString year,
+      "Form/Range1=value 01.11-28.02", "Form/StartYear=value " ++ toString year]) = true := by native_decide
+
 private def keyedRun (operation expected text : String) : Option (Verdict × List String) :=
   run keyedModel operation expected text (some (Json.mkObj [("Form", Json.mkObj [
     ("Out", "99"), ("Rows", Json.arr #[Json.mkObj [("Code", "A"), ("Range1", Json.str text)],
