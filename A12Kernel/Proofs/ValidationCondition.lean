@@ -159,6 +159,30 @@ theorem validationCondition_flat_evalSelected
 
 
 
+/-- A flat leaf without repeated operands preserves the scalar evaluator even inside an addressed rule. -/
+theorem validationConditionLeaf_flat_evalAddressed_scalar
+    (condition : FlatConditionLeaf) (context : AddressedValidationEvaluationContext model)
+    (scalar : (ValidationConditionLeaf.flat (model := model) condition).requiresAddressedValidation = false) :
+    (ValidationConditionLeaf.flat condition).evalAddressed context =
+      .ok (condition.evalSelected context.scalar.fields context.directRelevant) := by
+  simp only [ValidationConditionLeaf.evalAddressed, scalar, Bool.not_false, ↓reduceIte]
+  rfl
+
+/-- Once row reads succeed, membership uses the established flat evaluator on exactly that row's cells. -/
+theorem validationConditionLeaf_flat_evalAddressed_resolved
+    (condition : FlatConditionLeaf) (context : AddressedValidationEvaluationContext model)
+    (cells : List (FieldId × CheckedCell))
+    (addressed : (ValidationConditionLeaf.flat (model := model) condition).requiresAddressedValidation = true)
+    (resolved : ((model.fields.filter fun field =>
+        condition.referencesField field.id && context.directRelevant field.id).mapM fun field => do
+          pure (field.id, ← context.readCell context.outer field.id)) = .ok cells) :
+    (ValidationConditionLeaf.flat condition).evalAddressed context =
+      .ok (condition.evalSelected { context.scalar.fields with
+        read := fun field => (cells.find? (·.1 == field)).map (·.2) |>.getD (context.scalar.fields.read field) }
+        context.directRelevant) := by
+  simp only [ValidationConditionLeaf.evalAddressed, addressed, Bool.not_true, ↓reduceIte, resolved]
+  rfl
+
 /-- The mixed tree's reference traversal preserves every reference in an embedded flat condition. -/
 @[simp]
 theorem validationCondition_flat_referencesField

@@ -165,18 +165,16 @@ private def evalFlatLeafAddressedPartial
   let rec resolve :
       List FlatFieldDecl →
         Except CheckedAddressingError
-          (Option (List (FieldId × CheckedCell)))
+          (Option (List (FieldId × Option CheckedCell)))
     | [] => pure (some [])
     | declaration :: remaining =>
         if leaf.referencesField declaration.id &&
             isRelevant declaration.id then do
-          match ← context.readPartialCell context.outer declaration.id with
+          let cell ← context.readPartialCell context.outer declaration.id
+          if cell.isNone && !leaf.isScalarMembership then return none
+          match ← resolve remaining with
           | none => pure none
-          | some cell => do
-              match ← resolve remaining with
-              | none => pure none
-              | some cells =>
-                  pure (some ((declaration.id, cell) :: cells))
+          | some cells => pure (some ((declaration.id, cell) :: cells))
         else
           resolve remaining
   match ← resolve model.fields with
@@ -185,10 +183,12 @@ private def evalFlatLeafAddressedPartial
       let fields : FlatContext := {
         context.scalar.fields with
         read := fun field =>
-          match cells.find? fun entry => entry.1 == field with
-          | some entry => entry.2
-          | none => context.scalar.fields.read field }
-      pure (leaf.evalSelected fields isRelevant)
+          ((cells.find? fun entry => entry.1 == field).bind (·.2)).getD
+            (context.scalar.fields.read field) }
+      -- Scalar membership consumes per-operand unavailability (spec/06 B.4, spec/10),
+      -- so a suppressed member cannot erase a different available match.
+      let available field := isRelevant field && !(cells.any fun entry => entry.1 == field && entry.2.isNone)
+      pure (leaf.evalSelected fields available)
 
 def evalTemporalPartialResult? (context : AddressedValidationEvaluationContext model)
     (scope : ValidationRelevanceScope) : ValidationConditionLeaf model →
@@ -371,6 +371,15 @@ def evalFirstFilledComparisonAddressedResult (context : AddressedValidationEvalu
 /-- Evaluate one addressed leaf through the same relevance rules. Ordered numeric and starred group-list sources preserve structural addressing failures; direct scalar/group leaves remain the exact pure evaluator lifted into that channel. -/
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except CheckedAddressingError Verdict
+  | .flat condition => do
+      if !(ValidationConditionLeaf.flat (model := model) condition).requiresAddressedValidation then
+        return condition.evalSelected context.scalar.fields context.directRelevant
+      let cells ← (model.fields.filter fun field =>
+        condition.referencesField field.id && context.directRelevant field.id).mapM fun field => do
+          pure (field.id, ← context.readCell context.outer field.id)
+      let fields : FlatContext := { context.scalar.fields with
+        read := fun field => (cells.find? (·.1 == field)).map (·.2) |>.getD (context.scalar.fields.read field) }
+      pure (condition.evalSelected fields context.directRelevant)
   | .customCondition name => (context.scalar.customResult name.value).mapError .customCondition
   | .indexedStringPattern leaf => do
       let document ← match context.input with

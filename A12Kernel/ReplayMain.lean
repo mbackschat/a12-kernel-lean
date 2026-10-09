@@ -33,6 +33,7 @@ import A12Kernel.Reference.Dm.HavingPatternLocks
 import A12Kernel.Reference.Dm.CustomConditionLocks
 import A12Kernel.Reference.Dm.RepetitionNotUniqueLocks
 import A12Kernel.Reference.Dm.ScalarMembershipLocks
+import A12Kernel.Reference.Dm.BoundScalarMembershipLocks
 import A12Kernel.Reference.Dm.HavingComparisonLocks
 import A12Kernel.Reference.Dm.HavingAdmissionLocks
 import A12Kernel.Reference.Dm.HavingCalendarLocks

@@ -172,35 +172,79 @@ def ValueListAuthoredForm.admits (form : ValueListAuthoredForm)
   | .membership => subjectCount == 1 && quantifier != .no
   | .quantifier => true
 
-def FlatConditionLeaf.wellFormedBool (condition : FlatConditionLeaf) (model : FlatModel) : Bool :=
+/-- Direct membership reuses the same kind and projection checks at its bound row. -/
+def FlatModel.tokenOperandListKindIn? (model : FlatModel) (scope : List RepeatableLevel)
+    (operands : List FlatTextFieldOperand) : Option FlatTokenOperandKind :=
+  if scope.isEmpty then model.tokenOperandListKind? operands else
+  let kindOf : FlatTextFieldOperand → Option FlatTokenOperandKind
+    | operand@(.string _) => match model.directComparableIn? scope operand with
+      | some .plainString => some .string
+      | _ => none
+    | .enumeration operand => if (model.checkedEnumerationOperandIn? scope operand).isSome then
+        some .enumeration else none
+  match operands with
+  | [] => none
+  | first :: rest => do
+      let kind ← kindOf first
+      if !tokenOperandListHasDuplicate operands && rest.all (fun operand => kindOf operand == some kind)
+        then some kind else none
+
+def FlatModel.enumerationLiteralAllowedIn (model : FlatModel) (scope : List RepeatableLevel)
+    (operands : List FlatTextFieldOperand) (value : String) : Bool :=
+  if scope.isEmpty then model.enumerationLiteralAllowedByAny operands value else
+  operands.any fun operand => match operand with
+    | .string _ => false
+    | .enumeration operand => match model.checkedEnumerationOperandIn? scope operand with
+      | some checked => checked.declaration.literalAllowed checked.projection value
+      | none => false
+
+def FlatModel.admitsNumberOperandListIn (model : FlatModel) (scope : List RepeatableLevel)
+    (operands : List FlatNumberField) : Bool :=
+  if scope.isEmpty then model.admitsNumberOperandList operands else
+  !operands.isEmpty && !numberOperandListHasDuplicate operands && operands.all fun operand =>
+    match model.lookupUniqueId operand.id with
+    | .ok declaration => declaration.repetitionBoundBy scope &&
+        (FlatField.number operand).matchesDecl declaration
+    | .error _ => false
+
+def FlatConditionLeaf.wellFormedInBool (condition : FlatConditionLeaf) (model : FlatModel)
+    (scope : List RepeatableLevel) : Bool :=
   match condition with
   | .compare comparison => model.admitsComparison comparison
   | .tokenValueList quantifier operands (.literals values) form =>
       form.admits quantifier operands.length && (
-        !values.isEmpty && match model.tokenOperandListKind? operands with
+        !values.isEmpty && match model.tokenOperandListKindIn? scope operands with
           | some .string => true
           | some .enumeration =>
-              values.all (model.enumerationLiteralAllowedByAny operands)
+              values.all (model.enumerationLiteralAllowedIn scope operands)
           | none => false)
   | .tokenValueList quantifier operands (.fields valueOperands) form =>
       form.admits quantifier operands.length && (
-        match model.tokenOperandListKind? operands,
-            model.tokenOperandListKind? valueOperands with
+        match model.tokenOperandListKindIn? scope operands,
+            model.tokenOperandListKindIn? scope valueOperands with
         | some fieldKind, some valueKind =>
             fieldKind == valueKind &&
               !tokenOperandListHasDuplicate (operands ++ valueOperands)
         | _, _ => false)
   | .numberValueList quantifier operands (.literals values) form =>
       form.admits quantifier operands.length && (
-        operands.length == 1 && model.admitsNumberOperandList operands && !values.isEmpty &&
+        operands.length == 1 && model.admitsNumberOperandListIn scope operands && !values.isEmpty &&
           values.all fun value => value.den == 1)
   | .numberValueList quantifier operands (.fields valueOperands) form =>
       form.admits quantifier operands.length && (
-        model.admitsNumberOperandList operands &&
-          model.admitsNumberOperandList valueOperands &&
+        model.admitsNumberOperandListIn scope operands &&
+          model.admitsNumberOperandListIn scope valueOperands &&
           !numberOperandListHasDuplicate (operands ++ valueOperands))
   | .fieldFilled field => model.admitsField field
   | .fieldNotFilled field => model.admitsField field
+
+def FlatConditionLeaf.wellFormedBool (condition : FlatConditionLeaf) (model : FlatModel) : Bool :=
+  condition.wellFormedInBool model []
+
+/-- Preserve the authored scalar form: plural membership has different classification eligibility. -/
+def FlatConditionLeaf.isScalarMembership : FlatConditionLeaf → Bool
+  | .numberValueList _ _ _ .membership | .tokenValueList _ _ _ .membership => true
+  | _ => false
 
 def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
   condition.allLeaves fun leaf => leaf.wellFormedBool model

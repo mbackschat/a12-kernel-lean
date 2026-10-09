@@ -121,14 +121,15 @@ theorem flatConditionLeaf_wellFormedBool_iff_legal
     leaf.wellFormedBool model = true ↔ leaf.Legal model := by
   cases leaf with
   | compare comparison =>
-      simp only [FlatConditionLeaf.wellFormedBool]
+      simp only [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool]
       exact ⟨FlatConditionLeaf.Legal.compare, fun legal => by cases legal; assumption⟩
   | tokenValueList quantifier operands values form =>
       cases shapeBool : form.admits quantifier operands.length with
       | false =>
           constructor
           · intro checked
-            cases values <;> simp [FlatConditionLeaf.wellFormedBool, shapeBool] at checked
+            cases values <;> simp [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool,
+              FlatModel.tokenOperandListKindIn?, List.isEmpty_nil, ↓reduceIte, shapeBool] at checked
           · intro legal
             have impossible : ¬ (form = .membership → operands.length = 1 ∧ quantifier ≠ .no) := by
               intro shape
@@ -139,7 +140,8 @@ theorem flatConditionLeaf_wellFormedBool_iff_legal
           have shape := (valueListAuthoredForm_admits_iff form quantifier operands.length).mp shapeBool
           cases values with
           | literals values =>
-              simp only [FlatConditionLeaf.wellFormedBool, shapeBool, Bool.true_and]
+              simp only [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool,
+                FlatModel.tokenOperandListKindIn?, List.isEmpty_nil, ↓reduceIte, shapeBool, Bool.true_and]
               cases kindEq : model.tokenOperandListKind? operands with
               | none =>
                   exact ⟨fun absurdity => by simp at absurdity,
@@ -179,7 +181,8 @@ theorem flatConditionLeaf_wellFormedBool_iff_legal
                             · simpa using nonempty
                             · exact List.all_eq_true.mpr fun value member => allowed value member
           | fields valueOperands =>
-              simp only [FlatConditionLeaf.wellFormedBool, shapeBool, Bool.true_and]
+              simp only [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool,
+                FlatModel.tokenOperandListKindIn?, List.isEmpty_nil, ↓reduceIte, shapeBool, Bool.true_and]
               cases kindEq : model.tokenOperandListKind? operands with
               | none => exact ⟨fun absurdity => by simp at absurdity,
                   fun legal => by cases legal; simp_all⟩
@@ -213,7 +216,8 @@ theorem flatConditionLeaf_wellFormedBool_iff_legal
       | false =>
           constructor
           · intro checked
-            cases values <;> simp [FlatConditionLeaf.wellFormedBool, shapeBool] at checked
+            cases values <;> simp [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool,
+              FlatModel.admitsNumberOperandListIn, List.isEmpty_nil, ↓reduceIte, shapeBool] at checked
           · intro legal
             have impossible : ¬ (form = .membership → operands.length = 1 ∧ quantifier ≠ .no) := by
               intro shape
@@ -224,7 +228,8 @@ theorem flatConditionLeaf_wellFormedBool_iff_legal
           have shape := (valueListAuthoredForm_admits_iff form quantifier operands.length).mp shapeBool
           cases values with
           | literals values =>
-              simp only [FlatConditionLeaf.wellFormedBool, shapeBool, Bool.true_and]
+              simp only [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool,
+                FlatModel.admitsNumberOperandListIn, List.isEmpty_nil, ↓reduceIte, shapeBool, Bool.true_and]
               constructor
               · intro checked
                 have parts := Bool.and_eq_true _ _ |>.mp checked
@@ -246,7 +251,8 @@ theorem flatConditionLeaf_wellFormedBool_iff_legal
                     · exact List.all_eq_true.mpr fun value member => by
                         simpa using integral value member
           | fields valueOperands =>
-              simp only [FlatConditionLeaf.wellFormedBool, shapeBool, Bool.true_and]
+              simp only [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool,
+                FlatModel.admitsNumberOperandListIn, List.isEmpty_nil, ↓reduceIte, shapeBool, Bool.true_and]
               constructor
               · intro checked
                 have parts := Bool.and_eq_true _ _ |>.mp checked
@@ -258,10 +264,10 @@ theorem flatConditionLeaf_wellFormedBool_iff_legal
                     simp [left, right, noDuplicate]
 
   | fieldFilled field =>
-      simp only [FlatConditionLeaf.wellFormedBool]
+      simp only [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool]
       exact ⟨FlatConditionLeaf.Legal.fieldFilled, fun legal => by cases legal; assumption⟩
   | fieldNotFilled field =>
-      simp only [FlatConditionLeaf.wellFormedBool]
+      simp only [FlatConditionLeaf.wellFormedBool, FlatConditionLeaf.wellFormedInBool]
       exact ⟨FlatConditionLeaf.Legal.fieldNotFilled, fun legal => by cases legal; assumption⟩
 
 /-- Connective shape neither strengthens nor weakens admission, so the leaf bridge lifts to the

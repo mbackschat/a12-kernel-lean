@@ -659,6 +659,8 @@ def hasHaving : ValidationConditionLeaf model → Bool
 
 /-- Whether this leaf needs an addressed context rather than the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
+  | .flat condition => model.fields.any fun field =>
+      condition.referencesField field.id && !field.repeatableScope.isEmpty
   | .customCondition _ | .indexedCustomFieldValidity _ | .indexedStringPattern _ => true
   | .customFieldValidity leaf => !leaf.operand.declaration.repeatableScope.isEmpty
   | .stringPattern leaf => !(model.fieldRepeatableScope leaf.condition.field.id).isEmpty
@@ -698,7 +700,13 @@ def wellFormedBool (rowGroup : GroupPath) (declaringGroup : GroupPath := rowGrou
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .valueList source => source.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains
-  | .flat condition => condition.wellFormedBool model
+  | .flat condition =>
+      if condition.isScalarMembership then
+        let scope := model.repeatableScopeForGroupPath rowGroup
+        condition.wellFormedInBool model scope && model.fields.all (fun field =>
+          !condition.referencesField field.id ||
+            (model.unboundReadLevel? declaringGroup rowGroup field.repeatableScope scope).isNone)
+      else condition.wellFormedBool model
   | .numeric scope comparison =>
       comparison.wellFormedInBool model rowGroup scope
   | .orderedNumeric scope comparison =>

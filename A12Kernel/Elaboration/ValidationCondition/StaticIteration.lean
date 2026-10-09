@@ -330,6 +330,9 @@ def orderedNumericComparisonIterationScope
 def ordinaryIterationScope :
     ValidationCondition model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | .leaf (.flat condition) =>
+      mergeIterationScopeList ((model.fields.filter fun field => condition.referencesField field.id).map
+        fun field => if field.repeatableScope.isEmpty then none else some field.repeatableScope)
   | .leaf (.keyedGroupPresence _ source) =>
       mergeIterationScopeList (source.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
   | .leaf (.indexedFieldPresence _ source) =>

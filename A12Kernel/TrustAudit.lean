@@ -1218,6 +1218,8 @@ run_cmd do
 #print axioms A12Kernel.conditionTree_evalKExcept_and_right_error
 #print axioms A12Kernel.conditionTree_evalComputationExcept_and_notTrue_hidesRight
 #print axioms A12Kernel.validationCondition_flat_evalSelected
+#print axioms A12Kernel.validationConditionLeaf_flat_evalAddressed_scalar
+#print axioms A12Kernel.validationConditionLeaf_flat_evalAddressed_resolved
 #print axioms A12Kernel.validationCondition_flat_referencesField
 #print axioms A12Kernel.validationCondition_flat_hasHaving
 #print axioms A12Kernel.validationCondition_hasHaving_and

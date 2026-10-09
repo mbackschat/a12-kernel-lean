@@ -347,10 +347,27 @@ private def uniquenessIterationGuardAt (level : RepeatableLevel)
     | some extents =>
         if 1 < independentIterationSlots level extents then .unguarded else .guarded
 
+/-- Scalar membership's subject guards either polarity; without it, Included needs every member
+to iterate and NotIncluded is unguarded (Kernel IterationNotValidVisitor.visit(IValueListCondition)). -/
+private def scalarMembershipGuardAt (model : FlatModel) (level : RepeatableLevel)
+    (condition : FlatConditionLeaf) : IterationGuardStatus :=
+  let classify (quantifier : ValueListQuantifier) (subjects members : List FieldId) :=
+    let iterates := fun field => (model.fieldRepeatableScope field).contains level
+    if !(subjects ++ members).any iterates then IterationGuardStatus.noReference
+    else if subjects.any iterates then .guarded
+    else if quantifier == .atLeastOne && members.all iterates then .guarded else .unguarded
+  match condition with
+  | .numberValueList quantifier subjects members .membership =>
+      classify quantifier (subjects.map (·.id)) (members.operands.map (·.id))
+  | .tokenValueList quantifier subjects members .membership =>
+      classify quantifier (subjects.map (·.field.id)) (members.operands.map (·.field.id))
+  | _ => .noReference
+
 private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
-  | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
+  | .flat condition => scalarMembershipGuardAt model level condition
+  | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
   | .customCondition _ => .noReference
   | .customFieldValidity leaf =>
       if leaf.operand.declaration.repeatableScope.contains level then .guarded else .noReference
@@ -478,6 +495,8 @@ private def authoredNumericRepeatableFields
 def ordinaryRepeatableFields (condition : ValidationCondition model) :
     List FlatFieldDecl :=
   match condition with
+  | .leaf (.flat condition) => model.fields.filter fun field =>
+      condition.referencesField field.id && !field.repeatableScope.isEmpty
   | .leaf (.repeatableFieldPresence _ declaration) => [declaration]
   | .leaf (.constructedDateValidity _ source) =>
       source.scalarBoundFieldIds.filterMap fun field =>
