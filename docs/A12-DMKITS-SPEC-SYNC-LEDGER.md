@@ -47,214 +47,236 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-09-08"></a>
 ### SPEC-2026-10-09-08 — deeper error fields preserve ancestor iteration
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) distinguishes condition-bound coordinates from a deeper error field's defaulted suffix.
 - `delta`: Ordinary full validation preserves the derived parent iteration and pins error-only levels to coordinate one. Emitting the error does not read or materialize that child row, and its capacity does not widen the rule's iteration domain. Keep error-field membership and per-level reference gates.
 - `basis`: Kernel 30.8.1 [iteration-domain checkpoint](sources/evaluation-and-application-routes.md#src-validation-iteration-domain), retained GroupSeen layouts and peer `iteration-groups` R_AG. `RuleIterationLimitCreator` and `CodeGenRuleDefinition.st` settle the bound/message distinction; partial-validation correspondence is not claimed.
-- `acceptance`: Reconcile parent-group and child-star aggregate messages with absent-child and multiple-parent controls, retaining exact-scope and incompatible/shorter-error controls. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Reconcile parent-group and child-star aggregate messages with absent-child and multiple-parent controls, retaining exact-scope and incompatible/shorter-error controls. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `31d74336c` (KF536) against this entry. Absent-child/multiple-parent/defaulted suffix and exact-scope controls corroborated. Existing local incompatible/shorter-error controls were not rerun upstream. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-09-07"></a>
 ### SPEC-2026-10-09-07 — a reached indexed no-match retains first-filled omission provenance
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/10 §4.1](../spec/10-validation-and-polarity.md#41-the-same-rule-fires-either-type) explicitly includes a clean semantic-index no-match among first-filled not-given prefixes.
 - `delta`: A later filled fallback can make the comparison fire as OMISSION; moving that fallback before the indexed operand bypasses the missing prefix. Do not collapse clean no-match into unknown or erase its prefix provenance.
 - `basis`: [Selected typed comparison checkpoint](sources/inbound-group-operand-batches.md#src-selected-typed-comparisons), Kernel 30.8.1, runtime `noMatch`: both strategies emit OMISSION for `FirstRule` and VALUE for `PrefixRule`. The existing reader-to-evaluator replay matches both.
-- `acceptance`: Reconcile the language-neutral first-filled polarity clause and any dependent interpreter guard; retain clean no-match/fallback and filled-prefix controls beside malformed-selection refusal. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Reconcile the language-neutral first-filled polarity clause and any dependent interpreter guard; retain clean no-match/fallback and filled-prefix controls beside malformed-selection refusal. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `31d74336c` (KF535) against this entry. No-match/empty selected prefixes and filled-prefix controls corroborated on both strategies and the interpreter. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-09-06"></a>
 ### SPEC-2026-10-09-06 — error-field membership does not bind rule iteration
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) distinguishes membership from a reference binding each ordinary iteration level.
 - `delta`: A selected field or non-root group can name the error field without binding the iteration supplied by another operand. Require a reference to that error field at every ordinary iteration level; candidate-only filters do not acquire iteration merely from an available outer environment.
 - `basis`: [Scoped-reference grid](sources/having-filter-probes.md#src-having-reference-scope), Kernel 30.8.1: ten callers, plain/sibling-guard/own-guard variants, both arms. Sibling guards refuse validation while all computation twins admit. Root-group-only and parallel cases retain their separate gates.
-- `acceptance`: Preserve the no-guard and own-field controls and distinguish selected payload membership from captured reads. Do not apply this validation error-field gate to computation targets. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Preserve the no-guard and own-field controls and distinguish selected payload membership from captured reads. Do not apply this validation error-field gate to computation targets. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `d132307f7` (KF417; KF348) against this entry. Membership versus per-level binding corroborated in both arms, with keyed and containing-group extensions. Parallel/capacity-one limits remain. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-09-05"></a>
 ### SPEC-2026-10-09-05 — field-list iteration guards count independent wildcard capacity
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) records field-fill and uniqueness guards over direct and finite wildcard fields.
 - `delta`: Separate iteration supplied by captured filter reads from the list operand's own row binding. Count independent wildcard slots by declared capacity, preserving the one-slot versus two-slot thresholds and ordinary positive-conjunct rescue.
 - `basis`: [Static grid](sources/having-filter-probes.md#src-having-iteration-guards), Kernel 30.8.1, 112 retained outcomes at clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`. All seven field-fill operators and Number uniqueness are calibrated; the sole direct-field AllFieldsFilled branch remains source-derived.
-- `acceptance`: Reconcile the field/star rules and preserve the row/root, wildcard/row, marked/candidate and guarded twins. Do not substitute runtime selected counts for static capacity or carry the validation guard into computation. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Reconcile the field/star rules and preserve the row/root, wildcard/row, marked/candidate and guarded twins. Do not substitute runtime selected counts for static capacity or carry the validation guard into computation. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `d132307f7` (KF533) against this entry. All 56 conditions and computation twins corroborated. Singleton direct AllFieldsFilled and capacity-one wildcard remain source-derived; peer checker delegates this guard. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-09-04"></a>
 ### SPEC-2026-10-09-04 — missing named-type validators abort enclosing validation rules
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/06 A.3](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation) and [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
 - `delta`: Replace the observable-only double-firing account with a reached lookup failure caught outside the rule condition. A missing named validator is not true inside Boolean composition or Having selection; preserve empty/unavailable and unreached-branch bypasses. Restrict validation operand-reordering claims to effect-preserving rewrites rather than unconditional commutativity.
 - `basis`: Kernel 30.8.1 [predicate-family capture and runtime source](sources/having-filter-probes.md#src-having-predicate-family), both strategies. The selected-target-malformed case still produces VALUE with empty reference sets.
-- `acceptance`: Reconcile ordinary and filtered named-type validation with the enclosing failure handler; retain both polarities, false trailing conditions, bypassed lookup and the distinct declared-Custom whole-call failure. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Reconcile ordinary and filtered named-type validation with the enclosing failure handler; retain both polarities, false trailing conditions, bypassed lookup and the distinct declared-Custom whole-call failure. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `d81792669` (KF51) against this entry. Reached lookup aborts the whole rule and iteration; bypass remains silent. Registered callbacks and partial validation are unmeasured; peer unsupported-name policy is unchanged. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-09-03"></a>
 ### SPEC-2026-10-09-03 — complete parsing precedes ordered whole-rule filter gates
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
 - `delta`: Order repetition/parallel, filtered-owner parallel, filter-body parallel, filter index, repeated uniqueness and raw-Length gates after complete parsing; generated computation conditions share that order before rounding compatibility. Preserve existing measured-shape limits.
 - `basis`: Kernel 30.8.1 `ParserService.checkNormalRule`, `AnalyseService` and `FindAllAst` at source revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`; [local matrix](../A12Kernel/Reference/Dm/HavingGlobalAdmissionLocks.lean). Combined precedence remains external evidence pending.
-- `acceptance`: Reconcile gate order and calibrate competing-defect conditions, captured parallel reads, cross-fragment computation facts, repeated uniqueness and raw-Length against admitted controls. Keep local filter-walk refusals distinct from global refusals and H-model row uniqueness separate. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Reconcile gate order and calibrate competing-defect conditions, captured parallel reads, cross-fragment computation facts, repeated uniqueness and raw-Length against admitted controls. Keep local filter-walk refusals distinct from global refusals and H-model row uniqueness separate. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `b455738d8` (KF375; KF353) against this entry. Parse-time versus whole-rule precedence corroborated, including captured parallel bodies. Unmarked indexes fail locally; marked ones reach the later whole-rule gate. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-09-02"></a>
 ### SPEC-2026-10-09-02 — scalar comparisons retain Enumeration policy and String operand shape
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/06 §B.1](../spec/06-strings-and-enumerations.md#b1-comparison-is-by-stored-value-and-direct-field-comparability-depends-on-effective-display-remapping).
 - `delta`: Grouping the String operand bypasses the immediate String-field display gate; grouping an Enumeration preserves domain/display policy, and grouping a literal preserves domain checking. Textual `FirstFilledValue` results have String type rather than an Enumeration literal domain.
 - `basis`: Kernel 30.8.1 `CheckVergleichsBedingungImpl.checkEnumVsStringType`, `isFeldWertOp`, `checkEnumVsEnum` and `CheckEntityListenUtils.treatEnumAsString`. [Reader matrix](../A12Kernel/Reference/Dm/HavingComparisonAdmissionLocks.lean) passes; external calibration remains pending.
-- `acceptance`: Calibrate direct/grouped String and Enumeration operands in both positions, grouped valid/invalid literals, effective identity/remapped/conflicting displays, categories and textual selectors. Preserve the distinction from Enumeration addition and from quantified membership diagnostics. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Calibrate direct/grouped String and Enumeration operands in both positions, grouped valid/invalid literals, effective identity/remapped/conflicting displays, categories and textual selectors. Preserve the distinction from Enumeration addition and from quantified membership diagnostics. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `323f53439` (KF407) against this entry. Both operand orders, grouping, domain and effective-display controls corroborated. Two-Enumeration first-filled also has String result type. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-09-01"></a>
 ### SPEC-2026-10-09-01 — list-condition admission preserves carrier-specific gate order
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [overlap admission](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and [uniqueness admission](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
 - `delta`: State uniqueness kind/format-before-base-before-raw order and distinguish the one-list overlap gates from scalar-versus-list overlap. Record the field-only singleton class and member-base-before-cross-duplicate precedence.
 - `basis`: Kernel 30.8.1 `CheckFeldListenBedingungImpl`, `CheckFeldListeUndWerteListenBedingungImpl` and `CheckEntityListenUtils`. [Local reader and typed checks](../A12Kernel/Reference/Dm/HavingListConditionAdmissionLocks.lean) pass. Combined precedence cases are source-derived; external calibration remains pending.
-- `acceptance`: Reconcile the canonical gate sequences and calibrate competing-defect cases alongside admitted controls; preserve authored index/category identity and separate per-reference format agreement from cross-reference year agreement. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Reconcile the canonical gate sequences and calibrate competing-defect cases alongside admitted controls; preserve authored index/category identity and separate per-reference format agreement from cross-reference year agreement. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `62a2b930a` (KF390; KF401) against this entry. Carrier-specific precedence corroborated with competing defects and admitted controls; peer checker and typed-list gates reconciled. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-08-04"></a>
 ### SPEC-2026-10-08-04 — Enumeration addition distinguishes effective display and operand shape
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/06 §7](../spec/06-strings-and-enumerations.md#part-a--7-strings-and-patterns).
 - `delta`: Replace the blanket labelled-Enumeration prohibition and category-only workaround with the direct-operand/effective-remapping distinction. The grouped-operand boundary is explicitly source-derived and externally unverified.
 - `basis`: Kernel 30.8.1 parser `CheckOperationImpl.checkWithoutDisplayValues`, grammar `SINGLE_OP`/`BRACKET_OP`, and `IEnumerationType.hasDisplayValues`; [checkpoint and calibration matrix](sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates). Local shared-node and indexed Having reader checks pass; they do not establish external correspondence.
-- `acceptance`: Calibrate identity/remapped direct operands, grouped operands in both positions, nested grouping and outer-group/direct-sibling negative controls; reconcile the canonical clause and preserve Enumeration type before concatenation. Broader String executable carriers must retain syntax until admission. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Calibrate identity/remapped direct operands, grouped operands in both positions, nested grouping and outer-group/direct-sibling negative controls; reconcile the canonical clause and preserve Enumeration type before concatenation. Broader String executable carriers must retain syntax until admission. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `62a2b930a` (KF396) against this entry. Identity labels, locale remapping, grouped/direct operand order and nested-group controls corroborated. Runtime extensions use their separately pinned revisions below. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-08-03"></a>
 ### SPEC-2026-10-08-03 — indirect entity-list overlap preserves category identity
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
 - `delta`: Strict ancestor/descendant overlap requires matching category and semantic-index identities. A stored group beside its projected Enumeration child is not an indirect duplicate; later carrier gates still apply.
 - `basis`: Kernel 30.8.1 `CheckEntityListenUtils.isEntityIndirectlyReferenced`; the existing root/category observation in spec/07 §3 already separates this from path-only overlap. Generalization to non-root ancestors is source-backed, externally unmeasured.
 - `separator`: `RepetitionNotUnique(Rows, Rows/Tag->Label)` and the reversed order reach category refusal, while stored `Rows, Rows/Tag` reaches the nested-duplicate gate. [Reader cases](../A12Kernel/Reference/Dm/HavingRepetitionAdmissionLocks.lean) lock both orders inside Having.
-- `acceptance`: Preserve category identity in the shared overlap relation without weakening same-projection or stored ancestor/descendant duplicate checks. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Preserve category identity in the shared overlap relation without weakening same-projection or stored ancestor/descendant duplicate checks. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `323f53439` (KF388) against this entry. Category identity retained through strict containment and same-projection controls; upstream mechanism wording corrected. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-08-02"></a>
 ### SPEC-2026-10-08-02 — temporal differences preserve phase-specific operand failure order
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/05 §2](../spec/05-dates-and-time.md#2-addition-and-difference-are-asymmetric-and-calendar-corrected).
 - `delta`: The first formally unavailable operand stops computation before the second temporal operand; validation still reaches the second. Cause-free absence does not stop evaluation. Preserve this distinction through recursive sources and Having filters.
 - `basis`: [Difference effect checkpoint](sources/temporal-runtime-fold-probes.md#src-recursive-difference-effects), Kernel 30.8.1, both strategies, clean a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`. Day-difference direct, shifted and constructed sources are runtime calibrated; the common generated template supports the ordering across units.
-- `acceptance`: Reconcile ordinary and filtered recursive differences without eagerly reaching a later computation failure or suppressing a later validation failure. Preserve first-formal, gap-first and empty-first controls. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Reconcile ordinary and filtered recursive differences without eagerly reaching a later computation failure or suppressing a later validation failure. Preserve first-formal, gap-first and empty-first controls. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `a1b2f45cb` (KF524) against this entry. First-formal computation stop and validation read-through corroborated across direct/shifted/rebuilt sources and ordinary/filter carriers. Measured unit is Days. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-08-01"></a>
 ### SPEC-2026-10-08-01 — year extraction retains constructed Time's anchor
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/05 §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity).
 - `delta`: A declared Base Year permits `YearFromDate(Time(...))` and `YearFromDate(TimeFromDateTime(...))`; a present result yields 1970, rather than the configured Base Year. Missing/unreal and formal effects retain the ordinary extractor rules.
 - `basis`: Kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`: `DateUtils.checkOperationConsistentToDateFormat` admits the year under Base Year, `DateUtil.createTime` fixes the hidden date anchor, and `RuntimeController.getJahrAusDatum` projects the retained calendar year through `BedingungsOperatorHelper.getDatumsTeil`. Source links are owned by the canonical clause.
 - `evidence`: Source-backed; external runtime calibration pending. [Recursive temporal reader guards](../A12Kernel/Reference/Dm/HavingRecursiveTemporalLocks.lean) separate both source forms, configured 2024 versus observed 1970, numeric and constructor consumers, both arms and the absent-Base-Year refusal.
-- `acceptance`: Reconcile the specification and recursive temporal evaluator without replacing the runtime anchor with the static Base Year or bypassing the source's missing/formal effects. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Reconcile the specification and recursive temporal evaluator without replacing the runtime anchor with the static Base Year or bypassing the source's missing/formal effects. Introducing revision is the first commit containing this ID.
+- `accepted`: Reviewed a12-dmkits `a1b2f45cb` (KF261) against this entry. Constructed-Time anchor corroborated and extended to clock fields. Separate extractor-precision and interpreted-range corrections are adopted from KF529. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-07-05"></a>
 ### SPEC-2026-10-07-05 — capture does not exempt strict group-list overlap
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
 - `delta`: Unindexed group-list filters reject strict ancestor overlap across candidate/captured origins; direct duplicates still distinguish those origins.
 - `basis`: Kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`: `CheckKontextListenBedingungImpl.check` uses `CheckEntityListenUtils.getRefList` and `checkParamsReferencedOnlyOnce`; indirect ancestry ignores `isOuter`, while `EntityRef.equals` includes it. These classes live under `kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/` in the [kernel checkout](../../a12-kernel/).
 - `evidence`: Source-backed, runtime calibration pending. [Reader and reconstructed-certificate guards](../A12Kernel/Reference/Dm/HavingGroupLocks.lean) distinguish group/field and group/group ancestry, reversed capture, same-origin duplicates and opposite-origin identical paths.
-- `acceptance`: Reconcile the distinct duplicate relations without generalizing to indexed/category-qualified operands. Introducing revision is the first commit containing this entry ID; no peer disposition yet.
+- `acceptance`: Reconcile the distinct duplicate relations without generalizing to indexed/category-qualified operands. Introducing revision is the first commit containing this entry ID.
+- `accepted`: Reviewed a12-dmkits `323f53439` (KF325) against this entry. Captured and starred exact identity versus strict containment corroborated; semantic indexes inside filters retain their independent refusal. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-07-04"></a>
 ### SPEC-2026-10-07-04 — reached temporal literal failures escape filter selection
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
 - `delta`: An unresolved DateTime literal inside a Sum filter preserves validation VALUE failure and computation clearing/residual failure; it is not UNKNOWN-as-drop. Earlier malformed computation operands suppress a later literal failure, while validation reaches both positions. Within one comparison validation reaches both operands; between filter leaves, the generated Boolean tree short-circuits on known truth, as recorded in the same source checkpoint.
 - `basis`: [Temporal filter checkpoint](sources/having-filter-probes.md#src-having-temporal-constant-effects), Kernel 30.8.1, both runtime strategies, UTC static profile and Berlin model. The existing static-host/runtime-model zone split remains unchanged.
-- `acceptance`: Reconcile the reached/unreached literal-failure channel and malformed operand-order separator without generalizing to unmeasured carriers or zones. Introducing revision is the first commit containing this entry ID; local shared-effect implementation is pending.
+- `acceptance`: Reconcile the reached/unreached literal-failure channel and malformed operand-order separator without generalizing to unmeasured carriers or zones. Introducing revision is the first commit containing this entry ID; local implementation status belongs to the gap owner.
+- `accepted`: Reviewed a12-dmkits `a1b2f45cb` (KF525) against this entry. Reached/bypassed gap-label failure and phase order corroborated. New missing-slot traversal evidence is separately tracked under H10-R6. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-07-03"></a>
 ### SPEC-2026-10-07-03 — selected entity guards retain parent and key iteration
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands).
 - `delta`: selected entities still reference their parent and dynamic-key iteration levels. Apply the existing per-level literal sensitivities; the extra mixed-reference rejection excludes `SumOfProducts`.
 - `basis`: [Selected-reference checkpoint](sources/message-and-pointer-probes.md#src-selected-message-reference-resolution), Kernel 30.8.1. Both strategies admit the retained group/lower-star Sum disjunctions; the cited static visitor establishes key traversal and the product exception. Broader carrier locks are internal, with external calibration pending.
 - `acceptance`: preserve the admitted `RefUnreachedGroup` and `RefUnreachedStar` rules; reconcile parent/key level classification and the separate mixed-reference gate against the cited source. Do not flatten multi-level legality into one Boolean reference flag or claim the whole wider matrix was measured. Introducing revision is the first commit containing this entry ID.
+- `accepted`: Reviewed a12-dmkits `dce1d1bc6` (KF64) against this entry. Parent/key level and Sum/MaxValue mixed-reference versus SumOfProducts controls corroborated. Count/first-filled mixed gates, Number keys and partial checks remain unmeasured. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-07-02"></a>
 ### SPEC-2026-10-07-02 — selected message references retain payload, index and dynamic key
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/08 §4.3](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
 - `delta`: retain payload/index/key membership on unreached branches; resolve selected coordinates through a parent-local index cache independently of duplicate-invalid value reads. Preserve lower-star wildcards and unknown no-match coordinates.
 - `basis`: [Selected-reference checkpoint](sources/message-and-pointer-probes.md#src-selected-message-reference-resolution), Kernel 30.8.1, eight retained documents on both strategies plus the cited cache source. Neither physical-first nor physical-last selection explains the duplicate controls.
 - `reconciliation`: inspect the interpreter's `AstRefs.messageReferences` semantic-index branch and coordinate resolution against the retained field, group and lower-star cases; reconcile the canonical account. No claim is made about an independently tested peer execution route.
 - `acceptance`: preserve payload/index/dynamic-key membership, parent scope and unknown/wildcard distinctions on the retained rows, including unreached invalid payloads. Keep duplicate pointer lookup distinct from value admission; leave exact document-to-cache order explicitly open unless evidence settles it. Introducing revision is the first commit containing this entry ID.
+- `accepted`: Reviewed a12-dmkits `dce1d1bc6` (KF522; IF376) against this entry. Payload/index/key membership and unknown/lower-star coordinates corroborated. Duplicate-key cache order stays unspecified; peer first-match behavior remains a characterized divergence. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-07-01"></a>
 ### SPEC-2026-10-07-01 — index-column poison is scoped to the enclosing parent
 
-- `status`: pending
+- `status`: accepted
 - `delta`: define the index column by the enclosing evaluation binding. Equal keys in sibling parents do not collide; compute-side column invalidity does not poison reads bound to another parent. This clarifies the scope of the existing per-column rule.
 - `basis`: [Nested-index checkpoint](sources/model-structure-and-declaration-probes.md#src-index-group-resolution), Kernel 30.8.1, clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`; both engines retain parent-local duplicate clearing. The [consumer readback](consumer-probes/EXECUTE.md#run-parent-scoped-selection-readback-01) exposed the missing canonical boundary.
 - `canonical`: [spec/08 §4.2](../spec/08-paths-and-references.md#42-per-lookup-validation-vs-per-column-compute) owns column scope; [spec/09 §5](../spec/09-computations.md#5-where-a-computation-runs--scope-and-the-parallel-join) refers to it.
 - `acceptance`: two parents may both contain key a; duplicate a within the first parent clears its indexed computations while the second parent's scalar remains 7. Preserve phase-specific lookup strictness and the enclosing binding. Lean already implements and guards this in `a688d21e`; introducing revision is the first commit containing this entry ID.
+- `accepted`: Reviewed a12-dmkits `dce1d1bc6` (KF20) against this entry. Parent-local duplicate poison corroborated on both strategies and the peer interpreter. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-06-05"></a>
 ### SPEC-2026-10-06-05 — constructed-Date validity requires an immediate entity and preserves non-relevance
 
-- `status`: pending
+- `status`: accepted
 - `delta`: both validity predicates require an immediate component entity; nested extractor dependencies do not qualify. Cause-free non-relevance makes both guards not true: alternatives fall through, common guards clear cleanly. Later formal poison remains decisive. The invalid all-constant illustration of the Gregorian floor is removed without changing the runtime reality test.
 - `basis`: [Validity checkpoint](sources/temporal-runtime-fold-probes.md#src-recursive-date-validity), Kernel 30.8.1, clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`; both static arms and both runtime engines agree on the retained discriminators.
 - `canonical`: [spec/05 §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity), predicate admission and guard projection; §4 separates runtime floor from static legality.
 - `acceptance`: reconcile `MVK_ONLY_CONSTANTS_USED` for all-constant/all-extractor predicates against an immediate-field positive control; preserve cause-free clearing/fallthrough versus later poison in the six retained source forms. Introducing revision is the first commit containing this entry ID.
+- `accepted`: Reviewed a12-dmkits `a1b2f45cb` (KF402; KF523) against this entry. Immediate selected entities versus extractors/constants and the non-relevance outcomes corroborated; the all-constant illustration is corrected upstream. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-06-04"></a>
 ### SPEC-2026-10-06-04 — Date components retain non-relevance without skipping later poison
 
-- `status`: pending
+- `status`: accepted
 - `delta`: a cause-free non-relevant recursive component does not short-circuit Date construction; later formal poison wins, otherwise the constructed result remains non-relevant and absorbs Min fallback.
 - `basis`: [Date component checkpoint](sources/temporal-runtime-fold-probes.md#src-recursive-date-components), Kernel 30.8.1, clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`; both engines agree on the retained computation/dependent-guard controls.
 - `canonical`: [spec/05 §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity), ordered component reads and result relevance.
 - `acceptance`: reconcile the clause and interpreter treatment against unknown-Year extraction inside an admitted shift, Min fallback, and a later malformed Month. Preserve the checkpoint's consumer and placement limits. Introducing revision is the first commit containing this entry ID.
+- `accepted`: Reviewed a12-dmkits `a1b2f45cb` (KF523) against this entry. Cause-free non-relevance, later poison, selected emptiness and Min fallback corroborated; String keys and full validation only. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-06-03"></a>
 ### SPEC-2026-10-06-03 — partial products require declared lower capacity
 
-- `status`: pending
+- `status`: accepted
 - `delta`: resolve the product extent uncertainty: finite partial `SumOfProducts` needs declared lower capacity, including absent slots, for both ordinary and independently keyed operands. A missing keyed parent needs wildcard coverage at that parent while concrete lower-capacity coverage suffices.
 - `basis`: [45-row capacity checkpoint](sources/group-and-iteration-probes.md#src-product-partial-capacity), Kernel 30.8.1, clean a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`; both engines agree, full and partial observations retained without catalog prose.
 - `canonical`: [spec/07](../spec/07-repetition-and-iteration.md), product extent; [spec/10](../spec/10-validation-and-polarity.md), operator-specific partial relevance.
 - `acceptance`: reconcile the canonical clauses and interpreter guards against present-only versus complete-capacity ordinary/keyed controls, absent-parent wildcard versus all-concrete coverage, and invalid unpaired tails. Preserve probe limits. Introducing revision is the first commit containing this entry ID.
+- `accepted`: Reviewed a12-dmkits `f641cc24f` (KF527) against this entry. Declared lower capacity, absent-parent wildcard and invalid unpaired-tail controls corroborated. Additional partial fill/first-filled observations retain their own consumer gates. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-06-02"></a>
 ### SPEC-2026-10-06-02 — Boolean/Confirm partial value-count loop
 
-- `status`: pending
+- `status`: accepted
 - `delta`: extend the source-derived shared partial count-loop account to admitted Boolean/Confirm constants; their static kind/label gates precede token-count execution.
 - `basis`: [Boolean/Confirm count source route](sources/group-and-iteration-probes.md#src-boolean-value-count-partial-loop), kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`; source-only, no new runtime calibration.
 - `canonical`: [spec/10](../spec/10-validation-and-polarity.md), partial starred-count relevance.
 - `acceptance`: reconcile Boolean/Confirm routing through the String count entry and shared iterator/per-cell partial relevance. Preserve separate admission and mark the nonnumeric partial runtime matrices unmeasured. Introducing revision is the first commit containing this entry ID.
+- `accepted`: Reviewed a12-dmkits `f641cc24f` (KF209) against this entry. Boolean and Confirm partial counts now measured; this does not calibrate String or Enumeration value counts. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-06-01"></a>
 ### SPEC-2026-10-06-01 — reached custom-condition registration
 
-- `status`: pending
+- `status`: answered
 - `delta`: resolve registration only when the callback leaf is reached, not during elaboration. A per-validation factory replaces the fallback chain even when it returns no match; without it, registered factories select the first match.
 - `basis`: source-only, kernel `cb66e51`: `ValidationCache.getCustomCondition`, `CustomConditionService.getCustomCondition`, `MainValidatorController.applikationsBedingung`, and `CodeGenRuleDefinition.st`; the [source map](SOURCES.md) owns the drill path. No new runtime calibration is claimed.
 - `canonical`: [spec/11 §14](../spec/11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch).
 - `acceptance`: preserve skipped missing registrations, per-call factory shadowing and first-match fallback. Reconcile the former non-normative elaboration-error wording; host exceptions and mutable callback effects remain outside the pure successful-callback model.
+- `answered`: Reviewed a12-dmkits `f641cc24f` (KF52) against this entry. Reached versus bypassed lookup corroborated. Factory shadowing and first-match fallback have no peer harness counterpart; interpreter preparation refusal remains declared policy. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-05-01"></a>
 ### SPEC-2026-10-05-01 — extensible String constructor conversion and phase effects
 
-- `status`: pending
+- `status`: answered
 - `delta`: distinguish the client-SPI extensible String capability from an Enumeration declaration; retain positional width while bypassing only the digit-pattern gate. Constructor field reads use decimal conversion and signed 32-bit truncation, with a reached nonnumeric token becoming runtime failure. Validation continues argument evaluation after formal unavailability; computation stops on poison. Fresh Date construction retains the separate nonzero-Century gate and requires an instant within the strict host calendar’s signed 64-bit millisecond range.
 - `basis`: [construction source follow-up](sources/temporal-and-message-probes.md#src-temporal-construction-route), kernel `cb66e51`, source-only; no DM-JSON flag or new runtime capture is claimed.
 - `canonical`: [spec/05 §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity).
 - `acceptance`: reconcile the client-interface boundary and conversion/effect account. A future client-SPI capture should separate signed, fractional, exponent, BMP-digit and nonnumeric text, including a formally unavailable first component followed by failed conversion. No new producer capability is requested or assumed here.
-
+- `answered`: Reviewed a12-dmkits `f641cc24f` (KF526; KF515) against this entry. Reachable constructor phase and zero-Century rows corroborated. Extensible-String conversion and host bounds were not exercised; those source-derived limits remain. [Handback provenance](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation); peer tests were inspected, not rerun here.
 
 <a id="spec-2026-10-04-08"></a>
 ### SPEC-2026-10-04-08 — missing named validators fail computation guards

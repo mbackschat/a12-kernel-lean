@@ -115,6 +115,8 @@ The selected-overlap implementation and assurance now live in the [shared overla
 <a id="gap-sg13"></a>
 ### SG13 — group-list and group-count completion
 
+- `inbound-partial`: [KF527](../sources/inbound-handbacks.md#inbound-2026-10-09-extensions) adds declared-missing-slot relevance for fill quantifiers and first-filled on starred/keyed fields and groups. Reconcile existing per-slot and extent gates against complete versus stored-only coverage and an absent selected parent; do not generalize the product gate to wildcard-only aggregates.
+
 - `api-audit`: The token partial-list reader in [TokenEntityList](../../A12Kernel/Elaboration/TokenEntityList.lean) uses the root environment for direct-operand relevance and cell reads, unlike its Number counterpart. Both subject and member paths in [TokenEntityValueList](../../A12Kernel/Elaboration/TokenEntityValueList.lean) call it. Reproduce a bound-row partial membership with disjoint row relevance before changing this separate route; filtered partial rules remain skipped.
 
 - `state`: open
@@ -219,6 +221,7 @@ The selected-overlap implementation and assurance now live in the [shared overla
 | H10-R3 | Wider profile and cross-carrier calibration | The family owners retain temporal/calendar, String-pattern, registered callback and broader composition limits. Select discriminators only where the represented alternatives remain unsettled; retain phase-specific failures and fresh producer state. |
 | H10-R4 | Additional combined-diagnostic and exact syntax projection | Preserve ordinary admission order when combining uncalibrated defects. Bare String counterparts of token first-filled comparisons refuse but still lack `MVK_UNEXPECTED_TOKEN` projection. |
 | H10-R5 | Effect-preserving rewrites and nested-scope transformations | Pure selector laws require effect-preservation hypotheses at the resolving runtime. Moving conditions across nested scope is a separate structural transformation. |
+| H10-R6 | Missing-coordinate filter traversal and phase-specific extent | [KF528](../sources/inbound-handbacks.md#inbound-2026-10-09-extensions): no rows, one row, longer sibling with/without a computation read, blank sibling rows, unequal child extents and cross-depth controls. Reconcile selection before widening callers; distinguish actual rows, capacity tail and per-depth maximum. No cache-causation claim without source settlement. |
 
 - `legacy-adapter`: The ordinary star reader admits outside-field plus CurrentRepetition filter bodies in both conjunct orders and marked/unmarked forms, as retained in the [reference capture](../sources/having-filter-probes.md#src-having-error-reference). The legacy one-group adapter still requires its direct group Number read; that narrower adapter is not an unmeasured Kernel admission question.
 - `acceptance`: Select one residual against code and existing evidence; preserve its finite positive/refusal matrix and consumer hypothesis. Batch shared mechanisms with the existing gate/review cadence. A newly discovered missing main form must reopen its cell honestly; narrower compositions do not silently replace the adopted broad-cell definition.

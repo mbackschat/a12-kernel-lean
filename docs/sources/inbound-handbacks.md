@@ -2,6 +2,57 @@
 
 [Source registry](../SOURCES.md) owns authority and drill routing. The retained handbacks and historical Git stubs below preserve their original receipts and claim limits.
 
+<a id="inbound-2026-10-09-reconciliation"></a>
+## 2026-10-09 ledger reconciliation
+
+- `source`: Owner-delivered `a12-kernel-lean-spec-corrections-2026-10-09.md`, SHA-256 `523c6de0964ca3b76fc358bfd4f6f5fa45a4da7f3b638a3b4f3f86b235cdec52`; peer baseline last read by its author was local `f0e75563`. The handback covers 23 entries through SPEC-2026-10-09-08, not the later SPEC-2026-10-09-09.
+- `route`: Kernel 30.8.1 through peer static `RuleValidator`/checkConsistency and runtime differentials. Dynamic Groovy is the runtime anchor; static Java and the peer interpreter are co-evidence. Exact committed findings and test assertions were inspected locally; no peer test or Kernel process was run here.
+- `disposition`: The [ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md) owns 21 accepted receipts and two answered receipts. Answered preserves the unexercised client-interface conversion and registration-chain limits. These receipts do not claim complete interpreter parity or a new Lean population replay.
+
+| Entry suffix (`SPEC-2026-`) | Reviewed peer revision | Finding / executable lock |
+|---|---|---|
+| 10-05-01 | `f641cc24f` | KF526; KF515; `ConstructionArgumentPhaseDiffTest` |
+| 10-06-01 | `f641cc24f` | KF52; `CustomConditionRegistrationReachLawsTest` |
+| 10-06-02 | `f641cc24f` | KF209; `PartialBooleanValueCountDiffTest` |
+| 10-06-03 | `f641cc24f` | KF527; `PartialProductCapacityDiffTest`, `PartialFillWalkRelevanceDiffTest` |
+| 10-06-04 | `a1b2f45cb` | KF523; `DateComponentRelevanceDiffTest` |
+| 10-06-05 | `a1b2f45cb` | KF402; KF523; `CheckerSelectedDateValidityAgreementTest`, `DateComponentRelevanceDiffTest` |
+| 10-07-01 | `dce1d1bc6` | KF20; `ParentScopedIndexColumnDiffTest` |
+| 10-07-02 | `dce1d1bc6` | KF522; IF376; `SelectedMessageReferenceDiffTest` |
+| 10-07-03 | `dce1d1bc6` | KF64; `SelectedIterationGuardLawsTest` |
+| 10-07-04 | `a1b2f45cb` | KF525; `FilterTemporalLiteralFailureDiffTest` |
+| 10-07-05 | `323f53439` | KF325; `CheckerOverlapIdentityAgreementTest`, `CapturedGroupListDuplicateTest` |
+| 10-08-01 | `a1b2f45cb` | KF261; `BaseYearExtractorAdmissionDiffTest`, `TemporalExtractorBaseYearGateLawsTest` |
+| 10-08-02 | `a1b2f45cb` | KF524; `DifferenceOperandFailureOrderDiffTest` |
+| 10-08-03 | `323f53439` | KF388; `CheckerOverlapIdentityAgreementTest` |
+| 10-08-04 | `62a2b930a` | KF396; `CheckerEnumerationAdditionAgreementTest` |
+| 10-09-01 | `62a2b930a` | KF390; KF401; `CheckerListAdmissionOrderAgreementTest`, `ValueListGateOrderTest` |
+| 10-09-02 | `323f53439` | KF407; `CheckerComparisonOperandShapeAgreementTest` |
+| 10-09-03 | `b455738d8` | KF375; KF353; `CheckerPostParseOrderAgreementTest` |
+| 10-09-04 | `d81792669` | KF51; `UnregisteredPredefinedTypeAbortDiffTest` |
+| 10-09-05 | `d132307f7` | KF533; `IterationBindingLawsTest`, `CheckerIterationBindingAgreementTest` |
+| 10-09-06 | `d132307f7` | KF417; KF348; `CheckerIterationBindingAgreementTest`, `IterationBindingLawsTest` |
+| 10-09-07 | `31d74336c` | KF535; `FirstFilledIndexNoMatchPolarityDiffTest` |
+| 10-09-08 | `31d74336c` | KF536; `DeeperErrorFieldIterationDiffTest` |
+
+- `drill`: Revisions resolve in the read-only [peer checkout](../../../a12-rulekit). Findings are in [KERNEL-FINDINGS](../../../a12-rulekit/docs/KERNEL-FINDINGS.md); test class names above locate the committed adapter, rulekit or DSL owners with `git ls-tree` at the named revision. The receipt's revision is authoritative if a current file changes.
+
+<a id="inbound-2026-10-09-extensions"></a>
+## 2026-10-09 additional observation boundaries
+
+| Family | Reviewed peer revisions and locks | Adopted result and limit |
+|---|---|---|
+| Enumeration concatenation, KF530/KF396 | `797f0855b`, `8701f31d5`, `cd1de7570`, `29b665a47`; `EnumConcatenationDiffTest`, `KeyedEnumerationConcatenationLawsTest` | Stored values, not labels, contribute to admitted direct/keyed/first-filled concatenations; empty contributes no text, wholly empty clears. Categories contribute their projected values. |
+| Temporal extraction, KF529/KF261 | `6ccb833b8`, `82943e3e8`, `a1b2f45cb`; `CheckerTemporalExtractorAgreementTest`, `BaseYearExtractorAdmissionDiffTest` | Partial precision precedes numeric component-format admission; projections have their separate format gate. Clock fields share the 1970 anchor. Yearless range interpretation FROM permits Year extraction without Base Year; TO was not measured. |
+| Filter traversal, KF528 | `40a510808`; `FilterMissingSlotDiffTest` | Small finite-capacity filters can evaluate unstored coordinates; extent follows per-depth maxima across stored parents/groups, with a minimum of one. Computation sibling influence depends on whether computations read that group. Cache causation remains a hypothesis; [H10-R6](../gaps/paths-and-groups.md#gap-sg17-closure-matrix) owns reconciliation. |
+| Partial field/group traversal, KF527 | `f641cc24f`; `PartialProductCapacityDiffTest`, `PartialFillWalkRelevanceDiffTest` | Declared missing slots retain coverage obligations. First-filled, fill quantifiers, wildcard-only aggregates and products keep distinct gates. No Having traversal claim follows from this matrix. |
+| Keyed temporal fields, KF531 | `daf2b8d4c`, `a57343dc7`; `KeyedTemporalOperandDiffTest`, `KeyedTemporalOperandLawsTest` | Selected partial-Date interpretation and text constructor components preserve selection, empty, poison and phase rules; Number keys and partial validation were not measured. |
+| Captured operand slots, KF534 | `d00e02415`, `3e8f5a366`, `24157369b`; `CorrelatedFieldOperandDiffTest`, `CorrelatedTypedRefSlotDiffTest` | Captures retain the rule row through coercions, range operations, presence, memberships, patterns, concatenation, arithmetic, groups and constructor components. Named Valid is admission-only; keyed filter reads remain forbidden. |
+| Constructor grammar, KF532/KF423 | `6979aa829`, `907c082b9`; `CheckerConstructorComponentAgreementTest`, `TemporalComponentGrammarTest` | Entity/quoted-constant/extractor grammar, parse-before-slot precedence, both conflicting orders and split-year widths/bounds are corroborated. No claim that an arbitrary numeric expression is a component. |
+| Peer model readback | `d00e02415`, `9b771e466`, `3e8f5a366`, `29b665a47`, `b8954e248`, `006172739`; aggregate-pair, comparison-left and selected-Boolean read tests | Previously Opaque author/readback shapes now convert upstream. Historical captures remain unchanged; no Kernel verdict or Lean conformance gain is implied. |
+
+- `implementation-boundary`: These are reviewed upstream observations, not newly retained Lean replay rows. Existing implementation owners keep their finite carriers. [Temporal residuals](../gaps/numeric-and-temporal.md#gap-sg6) and [Having residuals](../gaps/paths-and-groups.md#gap-sg17-closure-matrix) retain the newly actionable checks; outbound receipts do not close them implicitly.
+
 ### Reviewed inbound batches through 2026-09-08
 
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-REVIEWED-BATCHES-THROUGH-2026-09-08.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing citation resolving.
