@@ -13,6 +13,37 @@ This boundary joins the immutable checked input to the existing checked star pat
 
 namespace A12Kernel
 
+/-- Raw-document consumers retain filter failures in their existing addressing channel. Missing
+capabilities refuse at the reached leaf rather than turning a failed filter into UNKNOWN. -/
+def CorrelationContext.asStarResolving (context : CorrelationContext) :
+    ResolvingCorrelationContext StarAddressingError :=
+  let failure : CorrelationRuntimeFault → StarAddressingError
+    | .calendarUnavailable => .unsupportedDateCalendar
+    | .valueFailure => .temporalValueFailure
+    | .worldUnavailable => .worldUnavailable
+    | .typeValidityValueFailure => .typeValidityValueFailure
+    | .stringExpressionUnavailable => .stringExpressionUnavailable
+    | .storedTextUnavailable field => .storedTextUnavailable field
+    | .groupUnavailable path => .unsupportedGroupOperand path
+  { read := fun env field => pure (context.read env field)
+    storedText := context.storedText
+    numberText := context.numberText
+    world := context.world
+    bindingError := EnvBindingError.toStarAddressingError
+    stringExpressionUnavailable := .stringExpressionUnavailable
+    unsupportedDateCalendar := .unsupportedDateCalendar
+    temporalValueFailure := .temporalValueFailure
+    worldUnavailable := .worldUnavailable
+    typeValidityValueFailure := .typeValidityValueFailure
+    groupUnavailable := .unsupportedGroupOperand
+    storedTextUnavailable := .storedTextUnavailable
+    groups := context.groups.map fun groups => {
+      validation := fun env reference => (groups.validation env reference).mapError failure
+      computation := fun env source => (groups.computation env source).mapError failure
+      fieldExtent := fun path env depth field => (groups.fieldExtent path env depth field).mapError failure
+      groupExtent? := groups.groupExtent?.map fun extent path env selection =>
+        (extent path env selection).mapError failure } }
+
 inductive CheckedAddressingError where
   | temporalValueFailure
   | worldUnavailable
@@ -230,6 +261,16 @@ def storedTextWithRead (checked : CheckedDocument model)
   let address ← (checked.cellAddress environment field).toOption
   checked.storedTextForCell address (← (read address).toOption)
 
+/-- Formal Number text belongs to its checked placement (spec/09 §3). An unchanged read may
+reuse it; a changed parsed rational needs an overlay carrying its own text, never a stale spelling. -/
+def numberTextWithRead (checked : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) (field : FieldId) : Option String := do
+  let address ← (checked.cellAddress environment field).toOption
+  let cell ← (read address).toOption
+  if (checked.read address).toOption != some cell then none
+  else (← (checked.readNumberFormalText address).toOption).parsed
+
 /-- Keep generated index preparation while reading selected computation payloads from the current
 dependency view. An index field itself uses its prepared cell because computation targets cannot
 be index fields (`spec/09`). -/
@@ -400,6 +441,7 @@ def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
   read environment field :=
     checked.checkedCellWithRead read environment field
   storedText := checked.storedTextWithRead read
+  numberText := checked.numberTextWithRead read
   storedTextUnavailable := CheckedAddressingError.addressing ∘ StarAddressingError.storedTextUnavailable
   stringExpressionUnavailable := .addressing .stringExpressionUnavailable
   unsupportedDateCalendar := .temporalUnavailable

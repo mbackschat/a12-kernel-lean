@@ -20,6 +20,13 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `assurance`: E/P closed; selected C/X through flat evidence
 - `remains`: Wider ingestion: [SG5–SG8](../SEMANTICS-GAPS.md)
 
+<a id="cap-having-caller-capabilities"></a>
+#### Having caller capabilities
+
+- `filter-callers`: Raw validation value-list adapters, numeric aggregate views, and Number/token first-filled scans now use the existing failure-capable selector. Reached temporal conversion and missing-World failures stay outside UNKNOWN; unavailable stored/formal text or group capabilities refuse explicitly. Pure selection helpers remain semantic projections, not runtime adapters.
+- `filter-caller-checks`: [Caller locks](../../A12Kernel/Conformance/HavingCallerEffects.lean) cover four executable raw callers, admitted controls, missing World, missing formal Number text/group readers, temporal conversion failure, empty selections and connective reachability. The [runtime law](../../A12Kernel/Proofs/Correlation.lean) propagates a failed filter independently of target classification. These are internal transport checks, not new Kernel calibration.
+- `filter-checked-text`: A checked-document callback read now retains a Number placement’s formal text when its checked cell is unchanged. A changed parsed-only value still needs an overlay carrying its own text. Both phases are guarded against missing unchanged text and stale changed-value text; stored-text and group adapters keep their established contracts.
+
 <a id="cap-preliminary-index-findings"></a>
 #### Preliminary index findings
 

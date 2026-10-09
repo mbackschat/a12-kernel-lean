@@ -524,6 +524,7 @@ run_cmd do
 #print axioms A12Kernel.fixed_repetition_reference_value
 #print axioms A12Kernel.checkedStarFieldPath_havingValueListSide_hasHaving
 #print axioms A12Kernel.checkedStarFieldPath_havingBeforeClassification
+#print axioms A12Kernel.checkedStarFieldPath_havingFailureBeforeClassification
 #print axioms A12Kernel.selectCorrelatedRows_iff
 #print axioms A12Kernel.evalGuardedAnyFilledOn_filter_before_consumer
 #print axioms A12Kernel.currentRepetition_selfExclusion_false

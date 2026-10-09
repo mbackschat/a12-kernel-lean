@@ -174,10 +174,11 @@ private def scanCheckedFirstFilledTokenOperand
         pure (.inr .nonRelevant)
   | .star source => do
       let resolved ← source.source.path.resolveInCapacity document outer
-      let selected := match source.filter with
-        | none => resolved.environments
+      let selected ← match source.filter with
+        | none => pure resolved.environments
         | some filter =>
-            filter.condition.selectEnvironments { read := starRead, world } outer
+            filter.condition.selectEnvironmentsResolving
+              ({ read := starRead, world } : CorrelationContext).asStarResolving outer
               resolved.environments
       pure (source.scanPartialFirstFilledState scope starRead selected
         (state.enterSelection selected.isEmpty resolved.domain.hasOpenTail

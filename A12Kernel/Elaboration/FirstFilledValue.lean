@@ -132,8 +132,9 @@ private def scanCheckedFirstFilledNumberOperandWith
           resolved.domain.hasOpenTail false))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      let selected := source.having.selectEnvironments { read := filterRead, world := direct.world } outer
-        resolved.environments
+      let selected ← source.having.selectEnvironmentsResolving
+        ({ read := filterRead, world := direct.world } : CorrelationContext).asStarResolving
+        outer resolved.environments
       pure (source.source.scanPartialValidationFirstFilledStateWith scope
         (classifyStar source.source) selected
         (state.enterSelection selected.isEmpty resolved.domain.hasOpenTail true))

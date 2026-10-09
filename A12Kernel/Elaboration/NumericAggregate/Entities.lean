@@ -144,10 +144,9 @@ def resolvedValidationAggregateSideIn
       let resolved ← source.source.path.resolveInCapacity document outer
       pure (resolved.toResolvedSide
         (source.checkedValueListCellAt .validation read))
-  | .starHaving source => do
-      let resolved ← source.source.source.path.resolveInCapacity document outer
-      pure (source.source.source.selectedValidationHavingValueListSide resolved
-        source.having read outer (source.source.checkedValueListCellAt .validation read) direct.world)
+  | .starHaving source =>
+      source.source.source.resolvedValidationHavingValueListSide document outer
+        source.having read (source.source.checkedValueListCellAt .validation read) direct.world
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one aggregate slot at computation phase. Filtered stars use the runtime iterator's one-kept-successor lookahead and stop at the first reached filter or target poison; plain stars and direct fields preserve the same checked-cell classification without validation's unknown-as-drop projection. A plain or filtered star narrows to its declared-capacity extent, which the Kernel applies on the computation arm too, so an over-limit row neither contributes nor poisons ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm); filtered: [checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)). -/

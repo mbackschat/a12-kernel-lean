@@ -369,6 +369,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-simple-having-comparisons"></a>
 - [Simple comparisons inside Having](implementation/repetition-and-paths.md#cap-simple-having-comparisons)
 
+<a id="cap-having-caller-capabilities"></a>
+- [Having caller capabilities](implementation/data-and-core.md#cap-having-caller-capabilities)
 <a id="cap-star-selection-and-correlation"></a>
 - [Star selection and correlation](implementation/repetition-and-paths.md#cap-star-selection-and-correlation)
 <a id="cap-field-values-not-unique"></a>

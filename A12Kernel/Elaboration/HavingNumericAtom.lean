@@ -4,6 +4,7 @@ import A12Kernel.Elaboration.HavingNumericProduct
 import A12Kernel.Elaboration.HavingCollectionCount
 import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Elaboration.NumericSource
+import A12Kernel.Elaboration.ConstructedDateComponents
 
 namespace A12Kernel
 
@@ -45,7 +46,7 @@ structure HavingNumericResolvers where
   dayDifference : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError (HavingNumericAtomOf Empty) := fun _ _ => throw .numericExpressionUnsupported
   dateTimeDifference : DateTimeSubdayUnit → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError (HavingNumericAtomOf Empty) := fun _ _ _ => throw .numericExpressionUnsupported
   dateRangeBoundPart : HavingOrigin → SurfaceFieldPath → DateNumericPart → Except CorrelationElabError FlatDateRangeField := fun _ _ _ => throw .numericExpressionUnsupported
-  temporalPart : HavingOrigin → SurfaceFieldPath → TemporalNumericPart → Except CorrelationElabError FlatTemporalField := fun _ _ _ => throw .numericExpressionUnsupported
+  temporalPart : HavingOrigin → SurfaceFieldPath → TemporalNumericPart → Except CorrelationElabError (FlatTemporalField × Option FullDateTargetFormat) := fun _ _ _ => throw .numericExpressionUnsupported
   number : HavingOrigin → SurfaceFieldPath →
     Except CorrelationElabError ResolvedHavingNumberRef := fun _ _ => throw .numericExpressionUnsupported
   repetition : HavingOrigin → SurfaceGroupReference →
@@ -81,7 +82,7 @@ def HavingNumericResolvers.resolveWith [SizeOf Source] (resolvers : HavingNumeri
   | .temporalDifference unit left right => difference unit left right (by simp; omega) (by simp; omega)
   | .temporalExpressionPart part source => projection part source (by simp; omega)
   | .temporalPart origin reference part =>
-      (fun source => .temporalPart origin source part) <$> resolvers.temporalPart origin reference part
+      (fun (source, format) => .temporalPart origin source part format) <$> resolvers.temporalPart origin reference part
   | .field reference => do
       let resolved ← (resolvers.number reference.origin reference.field).mapError fun
         | .fieldNotNumber path actual => .numericOperandFieldNotNumber path actual
@@ -173,7 +174,8 @@ def HavingNumericAtomOf.wellFormedWith (model : FlatModel) (candidateLevels oute
         repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
   | .temporalDifference unit left right => difference unit left right
   | .temporalExpressionPart part source => projection part source
-  | .temporalPart origin fld part => part.admittedBy fld model.hasBaseYear &&
+  | .temporalPart origin fld part format => part.admittedBy fld model.hasBaseYear &&
+      format == model.constructedDateExtractorPartialFormat fld.id &&
       (model.lookupUniqueId fld.id).toOption.any fun declaration =>
         declaration.toTemporalField? == some fld && declaration.admitsHavingTemporalPartPrecision part &&
           repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)

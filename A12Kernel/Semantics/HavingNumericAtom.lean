@@ -4,6 +4,7 @@ import A12Kernel.Semantics.HavingNumericProduct
 import A12Kernel.Semantics.HavingCollectionCount
 import A12Kernel.Semantics.HavingNumberAggregate
 import A12Kernel.Semantics.ScalarTemporalDifference
+import A12Kernel.Semantics.ConstructedDateInputs
 
 namespace A12Kernel
 
@@ -28,6 +29,7 @@ inductive HavingNumericAtomOf (Temporal : Type) where
   | dateRangeBoundPart (origin : HavingOrigin) (source : FlatDateRangeField) (bound : DateRangeBound) (part : DateNumericPart)
   | temporalExpressionPart (part : TemporalNumericPart) (source : Temporal)
   | temporalPart (origin : HavingOrigin) (source : FlatTemporalField) (part : TemporalNumericPart)
+      (partialFormat : Option FullDateTargetFormat := none)
   | repetition (reference : HavingRepetitionRef)
   deriving Repr, DecidableEq
 
@@ -50,7 +52,7 @@ def HavingNumericAtomOf.mapTemporal (f : Temporal → Next) : HavingNumericAtomO
   | .stringRange a0 a1 a2 a3 => .stringRange a0 a1 a2 a3
   | .dateRangeBoundPart a0 a1 a2 a3 => .dateRangeBoundPart a0 a1 a2 a3
   | .temporalExpressionPart a0 a1 => .temporalExpressionPart a0 (f a1)
-  | .temporalPart a0 a1 a2 => .temporalPart a0 a1 a2
+  | .temporalPart a0 a1 a2 a3 => .temporalPart a0 a1 a2 a3
   | .repetition a0 => .repetition a0
 
 def HavingNumericAtomOf.originsWith (origins : Temporal → List HavingOrigin) : HavingNumericAtomOf Temporal → List HavingOrigin
@@ -65,7 +67,7 @@ def HavingNumericAtomOf.originsWith (origins : Temporal → List HavingOrigin) :
   | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => []
   | .field reference => [reference.origin]
   | .dateRangeBoundPart origin _ _ _ | .fieldValueAsNumber origin _ | .stringLength origin _
-      | .stringRange origin _ _ _ | .temporalPart origin _ _ => [origin]
+      | .stringRange origin _ _ _ | .temporalPart origin _ _ _ => [origin]
   | .repetition reference => [reference.origin]
 
 /-- Preserve each read's own origin inside a multi-source numeric atom (spec/07 §3). -/
@@ -83,7 +85,7 @@ def HavingNumericAtomOf.fieldOriginsWith (fields : Temporal → List (HavingOrig
   | .fieldValueAsNumber origin source => [(origin, source.fieldId)]
   | .field reference => [(reference.origin, reference.field.id)]
   | .stringLength origin source | .stringRange origin source _ _ => [(origin, source.id)]
-  | .temporalPart origin source _ => [(origin, source.id)]
+  | .temporalPart origin source _ _ => [(origin, source.id)]
 
 def HavingNumericAtomOf.summary : HavingNumericAtomOf Temporal → NumericScaleSummary
   | .temporalDifference _ _ _ => .field 0
@@ -95,7 +97,7 @@ def HavingNumericAtomOf.summary : HavingNumericAtomOf Temporal → NumericScaleS
   | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => .field 0
   | .fieldValueAsNumber _ source => .field source.scale
   | .field reference => .field reference.field.info.scale
-  | .dateRangeBoundPart _ _ _ _ | .repetition _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => .field 0
+  | .dateRangeBoundPart _ _ _ _ | .repetition _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ _ => .field 0
 
 /-- Resolve one repetition reference through the structural addressed channel. -/
 def CorrelationFrame.rowAtResolving (frame : CorrelationFrame)
@@ -205,9 +207,20 @@ def HavingNumericAtomOf.readArithmetic [SizeOf Temporal] (phase : Phase)
   | .stringRange origin source start finish => do
       let cell ← context.read (frame.envAt origin) source.id
       pure ((observeCell phase cell).asStringRangeOperand start finish |>.toValidationArithmetic)
-  | .temporalPart origin source part => do
+  | .temporalPart origin source part partialFormat => do
       let cell ← context.read (frame.envAt origin) source.id
-      pure ((observeCell phase cell).asTemporalNumericOperand source part.project? |>.toValidationArithmetic)
+      let observation := observeCell phase cell
+      let operand := match part with
+        | .date part =>
+            -- Direct extraction and constructed-Date components read the same declared spelling
+            -- (spec/05 §3); extraction does not complete an omitted component to an endpoint.
+            match classifyConstructedDateExtractor source part observation partialFormat with
+            | .ok (.value amount) => NumericOperand.value amount .fixed
+            | .ok .empty => .value 0 .both
+            | .ok (.unavailable cause) => .unknown cause
+            | .error _ => .unknown .malformed
+        | .time _ => observation.asTemporalNumericOperand source part.project?
+      pure operand.toValidationArithmetic
   | .field reference => do
       let cell ← context.read (frame.envAt reference.origin) reference.field.id
       pure ((observeCell phase cell).asDirectNumericComparisonOperand reference.field.info |>.toValidationArithmetic)
@@ -250,7 +263,7 @@ def formatWithSubterm [SizeOf Temporal] (atom : HavingNumericAtomOf Temporal)
   | .stringRange a0 a1 a2 a3 => "stringRange" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2) ++ " " ++ (repr a3)
   | .dateRangeBoundPart a0 a1 a2 a3 => "dateRangeBoundPart" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2) ++ " " ++ (repr a3)
   | .temporalExpressionPart a0 a1 => "temporalExpressionPart" ++ " " ++ (repr a0) ++ " " ++ (format a1 (by simp_all; omega))
-  | .temporalPart a0 a1 a2 => "temporalPart" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2)
+  | .temporalPart a0 a1 a2 a3 => "temporalPart" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2) ++ " " ++ (repr a3)
   | .repetition a0 => "repetition" ++ " " ++ (repr a0)
 
 def decideEqWithSubterm [SizeOf Temporal] (left right : HavingNumericAtomOf Temporal)
@@ -297,8 +310,8 @@ def decideEqWithSubterm [SizeOf Temporal] (left right : HavingNumericAtomOf Temp
   case temporalExpressionPart.temporalExpressionPart a0 a1 b0 b1 =>
     letI := equal a1 b1 (by simp; omega) (by simp; omega)
     exact decidable_of_iff (a0 = b0 ∧ a1 = b1) (by simp)
-  case temporalPart.temporalPart a0 a1 a2 b0 b1 b2 =>
-    exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2) (by simp)
+  case temporalPart.temporalPart a0 a1 a2 a3 b0 b1 b2 b3 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2 ∧ a3 = b3) (by simp)
   case repetition.repetition a0 b0 =>
     exact decidable_of_iff (a0 = b0) (by simp)
 

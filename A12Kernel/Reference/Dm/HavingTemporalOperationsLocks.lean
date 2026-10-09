@@ -61,6 +61,19 @@ private def partialDates : List String := [
   "AddDays(ValueAsDate(Rows/Tag,FirstDay),1) == \"02.02.2024\"",
   "DifferenceInDays(ValueAsDate(Rows/Tag,FirstDay),ValueAsDate(Rows/Tag,LastDay)) == 28"]
 
+example : ["MonthFromDate(Rows/Tag) == 2", "QuarterFromDate(Rows/Tag) == 1",
+    "YearFromDate(Rows/Tag) == 2024"].all (fun predicate =>
+      run (model) predicate "2024-02-28" "2025-05-01" ==
+        some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : ["MonthFromDate(Rows/Tag) == 2", "QuarterFromDate(Rows/Tag) == 1",
+    "YearFromDate(Rows/Tag) == 2024",
+    "MonthFromDate(Rows/Tag) == MonthFromDate($Expected)"].all (fun predicate =>
+      run (model "yyyy-MM-dd" .dayOptional) predicate "2024-02-00" "2025-05-00" ==
+        some (.fired .omission, ["value 9"])) = true ∧
+    run (model "yyyy-MM-dd" .monthOptional) "YearFromDate(Rows/Tag) == 2024"
+      "2024-00-00" "2025-00-00" == some (.fired .omission, ["value 9"]) := by native_decide
+
 example : dates.all (fun predicate => ordinary (model) predicate == (true, true)) = true ∧
     stamps.all (fun predicate => ordinary (model "yyyy-MM-dd'T'HH:mm:ss") predicate == (true, true)) = true ∧
     partialDates.all (fun predicate => ordinary (model "yyyy-MM-dd" .yearOptional) predicate == (true, true)) = true := by native_decide

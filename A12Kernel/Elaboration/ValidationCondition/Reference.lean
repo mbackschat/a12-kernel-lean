@@ -271,7 +271,7 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
             for reference in expression.references do
               if !reference.matchesModel model then throw (.incoherentHavingField reference.fieldId)
             havingEntityListReferencePointers source environment expression.presenceSlots
-        | .temporalPart origin field _ => do
+        | .temporalPart origin field _ _ => do
             let declaration ← match model.lookupUniqueId field.id with
               | .ok declaration =>
                   if declaration.toTemporalField? == some field then pure declaration

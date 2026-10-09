@@ -516,7 +516,7 @@ def CorrelatedHaving.outerIterationScopes
         | .dateRangeBoundPart origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
         | .temporalDifference _ left right => left.outerIterationScopes model ++ right.outerIterationScopes model
         | .temporalExpressionPart _ source => source.outerIterationScopes model
-        | .temporalPart origin field _ => [outerHavingFieldIterationScope model origin field.id]
+        | .temporalPart origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
         | .repetition reference => [outerHavingRepetitionIterationScope model reference]
   | .leaf (.stringExpression comparison) => comparison.presenceSlots.map (·.outerIterationScope? model)
   | .leaf (.selectedComparison comparison) => comparison.presenceSlots.map (·.outerIterationScope? model)
@@ -717,7 +717,7 @@ def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : Group
       if !declaration.admitsHavingTemporalPartPrecision part then
         throw (.temporalPartPrecision declaration.id part)
       if !part.admittedBy source model.hasBaseYear then throw .numericExpressionUnsupported
-      pure source
+      pure (source, model.constructedDateExtractorPartialFormat declaration.id)
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels }
 
@@ -835,7 +835,8 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
 
 namespace CheckedStarFieldPath
 
-/-- Apply one checked validation `Having` to topology-produced leaves before invoking the kind-specific cell classifier. Every filtered star consumer shares this order and the retained filter marker. -/
+/-- Pure truth projection for callers whose filter cannot raise. Runtime consumers use the
+resolving adapter below so failed evaluation cannot become a dropped candidate. -/
 def selectedValidationHavingValueListSide (_checked : CheckedStarFieldPath model)
     (resolved : ResolvedStarTopology) (having : CorrelatedHaving)
     (filterRead : Env → FieldId → CheckedCell) (outer : Env)
@@ -855,7 +856,12 @@ def resolvedValidationHavingValueListSide (checked : CheckedStarFieldPath model)
     (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide kind) := do
   let resolved ← checked.path.resolveInCapacity document outer
-  pure (checked.selectedValidationHavingValueListSide resolved having filterRead outer classify world)
+  let selected ← having.selectEnvironmentsResolving
+    ({ read := filterRead, world } : CorrelationContext).asStarResolving outer resolved.environments
+  pure {
+    cells := selected.map classify
+    hasUninstantiatedTail := resolved.domain.hasOpenTail
+    hasHaving := true }
 
 /-- Dispatch one optional checked validation filter without duplicating the filter-before-classification branch in each scalar-kind adapter. -/
 def resolvedOptionalValidationHavingValueListSide

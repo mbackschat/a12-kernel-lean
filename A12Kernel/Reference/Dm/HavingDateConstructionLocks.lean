@@ -191,8 +191,12 @@ example : precisionCases.all (fun (mode, expected) =>
     (extractors.zip expected).all fun ((_, part, _), admitted) =>
       let fixture := partialModel mode
       ((fixture.lookupUniqueId 14).toOption.bind (·.toTemporalField?)).any (fun source =>
-        let atom : HavingNumericAtomOf Empty := .temporalPart .inner source (.date part)
-        atom.wellFormedWith fixture [10] [] (fun _ _ _ => false) (fun _ _ => false) == admitted)) = true := by native_decide
+        let format := fixture.constructedDateExtractorPartialFormat source.id
+        let atom : HavingNumericAtomOf Empty := .temporalPart .inner source (.date part) format
+        let missingFormat : HavingNumericAtomOf Empty := .temporalPart .inner source (.date part)
+        atom.wellFormedWith fixture [10] [] (fun _ _ _ => false) (fun _ _ => false) == admitted &&
+          missingFormat.wellFormedWith fixture [10] [] (fun _ _ _ => false) (fun _ _ => false) ==
+            (admitted && format.isNone))) = true := by native_decide
 
 example : precisionCases.all (fun (mode, expected) =>
     (extractors.zip expected).all fun ((operator, _, amount), admitted) =>

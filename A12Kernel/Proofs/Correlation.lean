@@ -491,6 +491,20 @@ theorem checkedStarFieldPath_havingBeforeClassification
   intro environment selected
   exact agree environment selected
 
+/-- Runtime adapters propagate a reached filter failure before classifying any target. The pure
+truth projection's classifier law above does not account for this observable error channel. -/
+theorem checkedStarFieldPath_havingFailureBeforeClassification
+    (checked : CheckedStarFieldPath model) (document : Document) (outer : Env)
+    (having : CorrelatedHaving) (read : Env → FieldId → CheckedCell)
+    (world : Option World) (resolved : ResolvedStarTopology) (error : StarAddressingError)
+    (classify : Env → ValueListCell kind)
+    (topology : checked.path.resolveInCapacity document outer = .ok resolved)
+    (failure : having.selectEnvironmentsResolving
+      ({ read, world } : CorrelationContext).asStarResolving outer resolved.environments = .error error) :
+    checked.resolvedValidationHavingValueListSide document outer having read classify world = .error error := by
+  simp only [CheckedStarFieldPath.resolvedValidationHavingValueListSide, topology, bind, Except.bind]
+  rw [failure]
+
 private theorem correlatedKeeps_eq_true_iff (star : SingleCorrelatedStar)
     (context : CapturedSingleGroupContext) (row : RowIndex) :
     star.keeps context row = true ↔
