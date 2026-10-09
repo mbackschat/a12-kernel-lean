@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-09; HEAD was `6c6f1186`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-09; HEAD was `ba613ec3`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 1839 retained Kernel observation rows through Lean, 32915 of the 32915 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 217 broadly (100%), 0 partially and 0 not at all, as classified on 2026-10-09 at `d55cc5b5+working-tree` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 482 of 495 diagnostic identifiers occur in Lean source (97%); 13 do not.
+**Replaying 1839 retained Kernel observation rows through Lean, 33157 of the 33157 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 217 broadly (100%), 0 partially and 0 not at all, as classified on 2026-10-09 at `d55cc5b5+working-tree` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 482 of 495 diagnostic identifiers occur in Lean source (97%); 13 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -80,9 +80,9 @@ Each instance, one rule or computation on one document row, lands in one tier:
 
 | | rules | computations |
 |---|---|---|
-| match | 16305 | 16610 |
+| match | 16437 | 16720 |
 | tier 1 | 0 | 0 |
-| tier 2 | 481 | 110 |
+| tier 2 | 349 | 0 |
 | unattributed | 0 | 0 |
 | fault | 0 | 0 |
 
@@ -94,10 +94,7 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 
 | instances | members | arm | construct |
 |---|---|---|---|
-| 110 | 10 | validation | `Comparison/DateRange` |
-| 110 | 10 | computation | `DateRange` |
 | 57 | 8 | validation | `RuleAssembly` |
-| 31 | 4 | validation | `Comparison` |
 | 30 | 3 | validation | `PatternMatched` |
 | 30 | 3 | validation | `PatternViolated` |
 | 20 | 2 | validation | `FieldValueIncludedInValueList` |
@@ -120,6 +117,7 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 | 10 | 1 | validation | `NotAllGroupsFilled` |
 | 10 | 1 | validation | `NotExactlyOneFieldFilled` |
 | 10 | 1 | validation | `Valid` |
+| 9 | 2 | validation | `Comparison` |
 | 5 | 4 | row | `Document` |
 | 4 | 4 | row | `Prepare` |
 
@@ -161,14 +159,14 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 |---|---|---|
 | Capability records in [`implementation/`](implementation/) | 251 | 100% |
 | Citing a Kernel checkpoint or calibration | 122 | 48% |
-| Carrying an explicit evidence-pending note | 99 | 39% |
+| Carrying an explicit evidence-pending note | 100 | 39% |
 
 ## Axis 3 — open obligation load
 
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 24 |
-| `remaining` rows across those gaps | 321 |
+| `remaining` rows across those gaps | 320 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 22 |
 | Ledger entries `handed-off` | 0 |
@@ -181,8 +179,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 259083 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 36479 | 14% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 259180 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 37042 | 14% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.

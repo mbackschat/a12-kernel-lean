@@ -106,6 +106,21 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
     (suppress : Bool) (leaf : Expr) (bindingGroup : GroupPath) :
     List (Lowering (CheckedValidationCondition model)) :=
   let filterBinding? := if leaf.hasHaving then some bindingGroup else none
+  let range := match leaf with
+    | .compare operator left right =>
+        match lowerDateRangeComparison? model rowGroup operator left right with
+        | none => []
+        | some (operator, source) => [do
+            let checked ← elaborated "DateRangeComparison"
+              (elaborateDateRangePredicate model (model.repeatableScopeForGroupPath bindingGroup)
+                (model.resolveFieldDeclarationUnchecked rowGroup)
+                (fun path => checkFieldValueRead (model.resolveFieldDeclarationUnchecked rowGroup path)
+                  (model.ruleGroupRead rowGroup bindingGroup path)) operator source)
+            if h : model.validate.isOk = true then
+              elaborated "DateRangeComparison" (CheckedValidationCondition.checkCore model bindingGroup
+                (.leaf (.iteratedDateRange checked.toValidation)) h rowGroup)
+            else refuse "DateRangeComparison" "invalid model"]
+    | _ => []
   let flat := match lowerFlat model rowGroup leaf with
     | some surface => [do
         let checked ← elaborated "Flat" (elaborate model rowGroup surface)
@@ -382,7 +397,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             | none => []
         | _, _ => []
     | _ => []
-  flat ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity ++ overlap
+  flat ++ range ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity ++ overlap
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

@@ -93,6 +93,7 @@ import A12Kernel.Reference.Dm.SelectedFirstFilledLocks
 import A12Kernel.Reference.Dm.SelectedMessageLocks
 import A12Kernel.Reference.Dm.SelectedIterationLocks
 import A12Kernel.Reference.Dm.DateRangeConstructionLocks
+import A12Kernel.Reference.Dm.RangeComparisonLocks
 import A12Kernel.Reference.Dm.BandedComputationLocks
 import A12Kernel.Reference.Dm.DistinctCountLocks
 import A12Kernel.Reference.Dm.DateLiteralLocks

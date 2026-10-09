@@ -438,12 +438,12 @@ def elaborateIteratedBoundPair (model : FlatModel)
 /-- Resolve one constructed range compared with one stored range, all three operands read at the
 rule's row. Every gate is the scalar carriers' — endpoint kind and profile, the construction's own
 component pair, and the cross-operand component match — and only the operand locus widens. -/
-def elaborateIteratedConstructionStoredComparison (model : FlatModel)
+def elaborateConstructionStoredComparisonIn (model : FlatModel)
     (scope : List RepeatableLevel)
     (start finish stored : FieldId) (position : DateRangeConstructionPosition)
     (comparison : EqualityOp) :
     Except IteratedDateRangeConditionElabError
-      (IteratedDateRangeCondition model) := do
+      (CheckedIteratedConstructionStoredComparison model) := do
   let construction ←
     (elaborateDateRangeConstructionIn model scope start finish).mapError
       .construction
@@ -451,15 +451,21 @@ def elaborateIteratedConstructionStoredComparison (model : FlatModel)
     (elaborateDateRangeSourceIn model scope stored).mapError .storedOperand
   if hComponents :
       construction.start.format.matchesStoredInput storedSource.format then
-    pure (.constructionAgainstStored {
+    pure {
       construction
       stored := storedSource
       position
       comparison
-      componentsMatch := hComponents })
+      componentsMatch := hComponents }
   else
     throw (.constructionComponentMismatch construction.start.format
       storedSource.format)
+
+def elaborateIteratedConstructionStoredComparison (model : FlatModel)
+    (scope : List RepeatableLevel) (start finish stored : FieldId)
+    (position : DateRangeConstructionPosition) (comparison : EqualityOp) :
+    Except IteratedDateRangeConditionElabError (IteratedDateRangeCondition model) :=
+  .constructionAgainstStored <$> elaborateConstructionStoredComparisonIn model scope start finish stored position comparison
 
 /-- Resolve one constructed range compared with another, all four endpoints read at the rule's row.
 Every gate is the scalar carrier's: each construction's own component pair and the cross-construction

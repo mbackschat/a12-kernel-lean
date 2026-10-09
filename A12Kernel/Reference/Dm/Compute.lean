@@ -151,7 +151,9 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
           | none => match groupQuantifier? id with
               | some operator => .groupFill operator <$> lowerEntitySource model group arguments filterBinding?
               | none => refuse ("Guard/" ++ id)
-  | expression@(.compare op left right) =>
+  | expression@(.compare op left right) => do
+      if let some (operator, source) := lowerDateRangeComparison? model group op left right then
+        return .predicate (.dateRangeComparison operator source)
       let scalarPair : Option (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) := do
         let left ← left.fieldValue?
         let right ← right.fieldValue?

@@ -2,10 +2,33 @@ import A12Kernel.Reference.Dm.LowerNumeric
 import A12Kernel.Reference.Dm.LowerHavingNumeric
 import A12Kernel.Elaboration.TemporalNumericExpression
 import A12Kernel.Elaboration.NumericComputation.Core
+import A12Kernel.Elaboration.DateRangePredicate
 
 /-! # Scalar temporal source and numeric projection lowering -/
 
 namespace A12Kernel.Dm
+
+private def rangeConstruction? : Expr → Option (SurfaceFieldPath × SurfaceFieldPath)
+  | .braces source => rangeConstruction? source
+  | .call "DateRange" [.mk start none, .mk finish none] none none => do
+      pure (← start.fieldEntity?, ← finish.fieldEntity?)
+  | _ => none
+
+/-- Preserve source-slot versus stored-value grammar before choosing a range comparison carrier. -/
+def lowerDateRangeComparison? (model : FlatModel) (group : GroupPath)
+    (operator : CompareOp) (left right : Expr) : Option (EqualityOp × SurfaceDateRangeComparison) := do
+  let operator ← match operator with | .eq => some EqualityOp.equal | .ne => some .notEqual | _ => none
+  let source ← match rangeConstruction? left, rangeConstruction? right with
+    | some (start, finish), some (otherStart, otherFinish) =>
+        some (.constructed start finish otherStart otherFinish)
+    | some (start, finish), none => (.mixed start finish · .left) <$> right.fieldValue?
+    | none, some (start, finish) => (.mixed start finish · .right) <$> left.fieldValue?
+    | none, none => do
+        let left ← left.fieldValue?
+        let right ← right.fieldValue?
+        let declaration ← (model.resolveFieldDeclarationUnchecked group left).toOption
+        if declaration.policy.kind != .dateRange then none else some (.stored left right)
+  pure (operator, source)
 
 private def fieldOperand (model : FlatModel) (group : GroupPath) (construct : String) (expr : Expr) :
     Lowering FlatFieldDecl := do

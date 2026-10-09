@@ -6,6 +6,7 @@ import A12Kernel.Elaboration.ValueListCondition
 import A12Kernel.Elaboration.NumericAggregate.Entities
 import A12Kernel.Semantics.ComputationValueList
 import A12Kernel.Elaboration.ScalarFieldComparison
+import A12Kernel.Elaboration.DateRangePredicate
 import A12Kernel.Elaboration.TemporalExpression
 import A12Kernel.Elaboration.ComputationOverlap
 import A12Kernel.Elaboration.ComputationFieldFill
@@ -35,6 +36,7 @@ inductive SurfaceComputationPredicate where
   | selectedComparison (operator : EqualityOp) (left right : SurfaceFirstFilledComparisonOperand)
   | temporal (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression)
   | fieldComparison (operator : SurfaceComparisonOp) (left right : SurfaceFieldPath)
+  | dateRangeComparison (operator : EqualityOp) (source : SurfaceDateRangeComparison)
   | scalarMembership (operator : ValueListMembershipOp) (subject : SurfaceTextFieldOperand)
       (members : SurfaceScalarMembershipMembers)
   | entityValueList (source : SurfaceNumberEntityValueListSource)
@@ -57,6 +59,7 @@ inductive ComputationPredicateElabError where
   | selectedComparison (error : FirstFilledComparisonElabError)
   | temporal (error : ScalarTemporalExpressionError)
   | comparison (error : ScalarFieldComparisonElabError)
+  | dateRangeComparison (error : DateRangePredicateElabError)
   | read (error : ResolveError)
   | number (error : NumberEntityElabError)
   | uniqueness (number : NumberValuesNotUniqueElabError)
@@ -104,6 +107,7 @@ inductive CheckedComputationPredicate (model : FlatModel) where
   | selectedComparison (source : CheckedFirstFilledComparison model)
   | temporal (source : CheckedScalarTemporalComparison model)
   | fieldComparison (source : CheckedScalarFieldComparison model)
+  | dateRangeComparison (source : CheckedDateRangePredicate model)
   | valueList (source : CheckedValueListCondition model)
   | scalarValueList (operator : ValueListMembershipOp) (source : CheckedValueListCondition model)
   | scalarNumberLiterals (operator : ValueListMembershipOp)
@@ -127,6 +131,7 @@ def referencesWith (predicate : CheckedComputationPredicate model) (field : Fiel
   | .selectedComparison source => source.referencesField field (fun having _ => filterReads having)
   | .temporal source => source.referencesWith field filterReads
   | .fieldComparison source => source.referencesField field
+  | .dateRangeComparison source => source.referencesField field
   | .valueList source | .scalarValueList _ source => source.referencesField field (fun having _ => filterReads having)
   | .scalarNumberLiterals _ source _ => source.field.id == field
   | .keyedGroupPresence _ source _ => source.referencesField field
@@ -178,6 +183,7 @@ def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List R
   | .selectedComparison source => source.bindingScopes.all (·.isPrefixOf scope)
   | .temporal source => (source.left.bindingScopes ++ source.right.bindingScopes).all (·.isPrefixOf scope)
   | .fieldComparison source => source.rowBoundBool scope
+  | .dateRangeComparison source => source.rowBoundBool scope
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
   | .scalarNumberLiterals _ source _ => source.declaration.repeatableScope.isPrefixOf scope
   | .keyedGroupPresence _ source _ => source.isGroup && source.bindingScopes.all (·.isPrefixOf scope)
@@ -573,6 +579,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
       | .addressing error => if error.isFilterValueFailure then .valueFailure else .temporalUnavailable
       | .calendarUnavailable | .indexedOperandNotSupported => .temporalUnavailable)
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
+  | .dateRangeComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
   | .fieldFill operator source =>
       source.evalCheckedWith operator context filterRead .fieldFill
         (fun indexed => do
@@ -707,6 +714,10 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
       (elaborateScalarTemporalComparison model declaringGroup op left right (some targetGroup)).mapError .temporal
   | .fieldComparison op left right => .fieldComparison <$>
       (elaborateScalarFieldComparison model declaringGroup targetGroup op left right).mapError .comparison
+  | .dateRangeComparison operator source => .dateRangeComparison <$>
+      (elaborateDateRangePredicate model (model.repeatableScopeForGroupPath targetGroup)
+        (model.resolveComputationOperandUnchecked declaringGroup targetGroup)
+        (model.resolveComputationFieldValueRead declaringGroup targetGroup) operator source).mapError .dateRangeComparison
   | .entityValueList source => .valueList <$> elaborateEntityMembership model declaringGroup targetGroup source
   | .tokenLiteralValueList source =>
       (.valueList ∘ .literals) <$>
