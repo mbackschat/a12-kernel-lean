@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-09-09"></a>
+### SPEC-2026-10-09-09 — parallel guards retain connective structure
+
+- `status`: pending
+- `canonical`: [spec/07 §2](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key) replaces the ambiguous positive-sibling exception with recursive reference-and-guard admission.
+- `delta`: One referenced guarding conjunct suffices for `And`; every `Or` branch must reference and guard the parallel level. A positive leaf anywhere is insufficient. Classify leaves statically, check ordinary frame levels independently, and preserve earlier prohibited-combination precedence.
+- `basis`: Kernel 30.8.1 source `ParserService.checkNormalRule` and `IterationNotValidVisitor`, pinned in the [source checkpoint](sources/diagnostic-class-vocabulary-and-sweeps.md#src-iteration-and-semantic-index-legality). The positive/negative conjunction is measured; nested/disjunctive external calibration remains pending.
+- `acceptance`: Reconcile static admission and prose against `positive And negative` versus `positive Or negative`, a disjunction of guarded conjunctions versus one unguarded branch, and both earlier combination refusals. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
 <a id="spec-2026-10-09-08"></a>
 ### SPEC-2026-10-09-08 — deeper error fields preserve ancestor iteration
 

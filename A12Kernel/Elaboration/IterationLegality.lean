@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StaticDiagnostic
+import A12Kernel.Elaboration.IterationGuard
 
 /-! # Static legality of iteration, parallel iteration, and the semantic index
 
@@ -8,7 +9,7 @@ The gate has two layers, and both are first-match-wins.
 
 **Per reference, a left-to-right scan over the reference's index levels**, carrying one bit of state: whether some *outer* level was a wildcard. At each level the iteration test runs first, against the bit as it stood before this level; only then does the level update the bit or trip the semantic-index test. Two consequences a reimplementer misses. A wildcard poisons every level below it, so the same reference is legal above the wildcard and refused below. And the two arms of the iteration test report *different classes for the same defect*: a reference read inside a semantic index's key reports the semantic-index class, while any other reference, a keyed value included, reports the wildcard class. So the class identifies where the reference stands, not the defect ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25i-key-addressing)).
 
-**Per condition, an ordered sequence of whole-condition tests** run after parsing. Parallel iteration combined with `RepetitionNotUnique` is refused; so is a filter condition that itself iterates in parallel or reaches through a semantic index; and a parallel-iterated condition all of whose leaves are negative is refused last, because such a rule would fire for every repetition that has no values at all. A negative leaf beside a positive one is admitted, which is the distinction that makes the last test worth stating precisely.
+**Per condition, an ordered sequence of whole-condition tests** runs after parsing. Parallel iteration combined with `RepetitionNotUnique` or a forbidden filter shape refuses before guard checking. The final gate retains connective structure: one referenced guarding conjunct suffices for `And`, while every `Or` branch must reference and guard the parallel level. A positive leaf alone therefore cannot summarize the whole condition (`IterationNotValidVisitor.visit(ICompositeCondition)`).
 
 **The many-to-one to watch.** `parallelIterationNotAllowed` is raised at two sites with two different interpolated operand names — once for the `RepetitionNotUnique` combination and once for a filter condition that iterates in parallel — so the code alone does not say which. Measured witnesses exist for the first; the second is recorded as unmeasured below rather than assumed to behave like its twin.
 
@@ -37,8 +38,7 @@ inductive IterationRefusal where
   /-- Parallel iteration is combined with a construct that forbids it. Raised at two sites with
   different interpolated operand names, so the code does not identify which. -/
   | parallelIterationNotAllowed
-  /-- Every leaf of a parallel-iterated condition is negative, so the rule would fire for a
-  repetition that has no values at all. -/
+  /-- The parallel condition tree fails the structural reference-and-guard test. -/
   | parallelIterationInvalid
   deriving Repr, DecidableEq
 
@@ -161,7 +161,7 @@ def semanticIndexRefusal (use : SemanticIndexUse) : Option IterationRefusal :=
   else if use.keyReachesCategory then some .semanticIndexWithCategory
   else none
 
-/-- A whole condition, reduced to what the post-parse gate tests. -/
+/-- Whole-condition facts for the ordered construct-combination gates; connective guards remain a separate tree. -/
 structure ConditionShape where
   /-- Whether the condition iterates two repeatable groups neither of which contains the other. -/
   parallelIteration : Bool := false
@@ -169,21 +169,17 @@ structure ConditionShape where
   repetitionNotUnique : Bool := false
   /-- Whether a filter condition itself iterates in parallel or reaches through a semantic index. -/
   filterIteratesOrIndexes : Bool := false
-  /-- Whether every leaf of the condition is negative. A single positive leaf clears it. -/
-  allLeavesNegative : Bool := false
   deriving Repr, DecidableEq
 
-/-- The whole-condition gate, first-match-wins in the order the parser runs it.
+/-- Apply the ordered whole-condition gates to a tree of settled leaf classifications.
 
-`parallelIterationInvalid` is last for a reason a consumer can act on: it is the only test whose
-answer changes when a positive leaf is added, so it is the one a repair tool can clear without
-restructuring the reference graph. -/
-def conditionRefusal (shape : ConditionShape) : Option IterationRefusal :=
+A leaf is true only when it references and guards the parallel level; this is a static operator classification, not its runtime verdict or polarity. `ParserService.checkNormalRule` checks prohibited combinations before `IterationNotValidVisitor.testParallelIteration`. -/
+def conditionRefusal (shape : ConditionShape) (guards : ConditionTree Bool) : Option IterationRefusal :=
   if shape.parallelIteration && shape.repetitionNotUnique then
     some .parallelIterationNotAllowed
   else if shape.parallelIteration && shape.filterIteratesOrIndexes then
     some .parallelIterationNotAllowed
-  else if shape.parallelIteration && shape.allLeavesNegative then
+  else if shape.parallelIteration && !guards.iterationGuarded id then
     some .parallelIterationInvalid
   else
     none

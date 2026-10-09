@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.ParallelFieldPair
 import A12Kernel.Semantics.NumericExpression
 import A12Kernel.Semantics.ValidationFillQuantifier
-import A12Kernel.Elaboration.ValidationCondition.Core
+import A12Kernel.Elaboration.IterationGuard
 
 /-! # Parallel validation over one checked field pair
 
@@ -97,8 +97,7 @@ namespace ParallelFieldCondition
 
 /-- A conjunction needs a guarding member; every disjunction branch needs one (`IterationNotValidVisitor.visit(ICompositeCondition)`). -/
 def guarded (condition : ParallelFieldCondition) : Bool :=
-  decide (condition.iterationGuardStatus
-    (fun value => if value.guards then .guarded else .unguarded) = .guarded)
+  condition.iterationGuarded ParallelFieldLeaf.guards
 
 /-- Common outer coordinates are caller-bound; each extra frame level needs a guard from its own side. -/
 def framesGuarded (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition) : Bool :=

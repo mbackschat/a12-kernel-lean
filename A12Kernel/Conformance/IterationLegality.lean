@@ -140,34 +140,40 @@ example :
       semanticIndexRefusal {} = none := by
   native_decide
 
-/- The whole-condition gate's content is the combination, not either construct. `RepetitionNotUnique`
-   alone is measured legal; parallel iteration alone is measured legal; together they refuse. -/
 example :
-    conditionRefusal { repetitionNotUnique := true } = none ∧
-      conditionRefusal { parallelIteration := true } = none ∧
-      conditionRefusal { parallelIteration := true, repetitionNotUnique := true } =
-        some .parallelIterationNotAllowed := by
-  native_decide
+    conditionRefusal { repetitionNotUnique := true } (.leaf false) = none ∧
+      conditionRefusal { parallelIteration := true } (.leaf true) = none ∧
+      conditionRefusal { parallelIteration := true, repetitionNotUnique := true } (.leaf true) =
+        some .parallelIterationNotAllowed := by native_decide
 
-/- A parallel-iterated condition whose leaves are all negative refuses; one positive leaf clears it.
-   Both are measured, and the pair is what shows the test is about leaf polarity rather than about
-   the presence of a negative leaf. -/
 example :
-    conditionRefusal { parallelIteration := true, allLeavesNegative := true } =
-        some .parallelIterationInvalid ∧
-      conditionRefusal { parallelIteration := true, allLeavesNegative := false } = none := by
-  native_decide
+    conditionRefusal { parallelIteration := true } (.leaf false) = some .parallelIterationInvalid ∧
+      conditionRefusal { parallelIteration := true } (.leaf true) = none := by native_decide
 
-/- The gate is ordered: a condition breaking two of its tests reports the first, and the
-   all-negative test is last, so it is masked by either earlier one. -/
 example :
     conditionRefusal { parallelIteration := true, repetitionNotUnique := true,
-                       filterIteratesOrIndexes := true, allLeavesNegative := true } =
+                       filterIteratesOrIndexes := true } (.leaf false) =
         some .parallelIterationNotAllowed ∧
-      conditionRefusal { parallelIteration := true, filterIteratesOrIndexes := true,
-                         allLeavesNegative := true } =
-        some .parallelIterationNotAllowed := by
-  native_decide
+      conditionRefusal { parallelIteration := true, filterIteratesOrIndexes := true }
+        (.or (.leaf true) (.leaf false)) = some .parallelIterationNotAllowed := by native_decide
+
+private def guarded : ConditionTree Bool := .leaf true
+private def unguarded : ConditionTree Bool := .leaf false
+
+example : conditionRefusal { parallelIteration := true } (.and guarded unguarded) = none ∧
+    conditionRefusal { parallelIteration := true } (.or guarded unguarded) =
+      some .parallelIterationInvalid ∧
+    conditionRefusal { parallelIteration := true } (.and unguarded guarded) = none ∧
+    conditionRefusal { parallelIteration := true } (.or unguarded guarded) =
+      some .parallelIterationInvalid := by native_decide
+
+example : conditionRefusal { parallelIteration := true }
+      (.or (.and guarded unguarded) (.and unguarded guarded)) = none ∧
+    conditionRefusal { parallelIteration := true }
+      (.or (.and guarded unguarded) unguarded) = some .parallelIterationInvalid ∧
+    conditionRefusal { parallelIteration := true }
+      (.and (.or guarded unguarded) guarded) = none ∧
+    conditionRefusal {} (.or guarded unguarded) = none := by native_decide
 
 /- Every catalog key is distinct, and the two that break the family's shared prefixes are the ones a
    consumer building a key by concatenation gets wrong: the iteration class carries no
