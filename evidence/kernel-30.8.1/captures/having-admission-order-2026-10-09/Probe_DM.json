@@ -1,0 +1,258 @@
+{
+  "header" : {
+    "id" : "Probe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Probe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Probe/SkuText",
+            "name" : "SkuText",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Amount",
+            "name" : "Amount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Flag",
+            "name" : "Flag",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FiledOn",
+            "name" : "FiledOn",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/ClosedOn",
+            "name" : "ClosedOn",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/CoverFrom",
+            "name" : "CoverFrom",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Sub",
+                "name" : "Sub",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Sub/Leaf",
+                    "name" : "Leaf",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowVal",
+                "name" : "RowVal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowDate",
+                "name" : "RowDate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowText",
+                "name" : "RowText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowScaled",
+                "name" : "RowScaled",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowFlag",
+                "name" : "RowFlag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowAgreed",
+                "name" : "RowAgreed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowChoice",
+                "name" : "RowChoice",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowClock",
+                "name" : "RowClock",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowSpan",
+                "name" : "RowSpan",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Other/OtherVal",
+                "name" : "OtherVal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

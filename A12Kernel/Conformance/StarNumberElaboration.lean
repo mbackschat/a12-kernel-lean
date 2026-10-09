@@ -516,10 +516,9 @@ example :
         some (.having (.equalityFieldNotNumber otherName.path .string)) := by
   native_decide
 
-/- **The whole body is read before the iteration class is asked**, an assumption this locks rather
-   than a measurement. The earlier leaf reads the sibling level and the later comparison is refused
-   by scale. Checking the environment leaf by leaf would name the iteration class; no row places the
-   two ([gap](../../docs/gaps/paths-and-groups.md#sg17--having-filter-leaf-and-connective-completion)). -/
+/- The body comparison precedes the filter-wide iteration check. The H10 both-arm grid
+   ([checkpoint](../../docs/sources/having-filter-probes.md#src-having-admission-order)) separates an
+   earlier off-path leaf from a later scale defect, in both connective orders. -/
 example :
     bodyDiagnostic? (.and
         (.presence .filled { origin := .inner, field := absoluteField otherAmount.groupPath "Amount" })
@@ -547,8 +546,8 @@ example :
    refuses them without a class. A Date against a Number field draws the date class in either order,
    as it does outside a filter
    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-ordering-date-class-reads-the-pair)),
-   on the account that a body's comparison draws its outside class
-   ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-filter-body)), which measures no Date there. -/
+   also measured inside filters on both arms at the
+   [H10 checkpoint](../../docs/sources/having-filter-probes.md#src-having-admission-order). -/
 example :
     let date := surfaceNumber .inner amount.groupPath "Due"
     let text := surfaceNumber .inner amount.groupPath "Note"

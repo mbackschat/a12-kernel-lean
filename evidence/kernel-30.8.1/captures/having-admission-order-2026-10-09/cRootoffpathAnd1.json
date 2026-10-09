@@ -1,0 +1,6 @@
+{
+ "computedField": "/Probe/Amount",
+ "alternatives": [{"operation": "Sum(Rows*/RowVal Having [Rows/RowVal] == 1.5 And [Other/OtherVal] > 0)"}],
+ "messages": [{"locale": "en_US", "text": "m"}],
+ "group": "/Probe"
+}

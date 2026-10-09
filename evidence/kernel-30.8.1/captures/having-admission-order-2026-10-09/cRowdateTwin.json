@@ -1,0 +1,6 @@
+{
+ "computedField": "/Probe/Rows/Sub/Leaf",
+ "alternatives": [{"operation": "Sum(Rows*/RowVal Having [Rows/RowDate] < [Rows/RowDate])"}],
+ "messages": [{"locale": "en_US", "text": "m"}],
+ "group": "/Probe"
+}

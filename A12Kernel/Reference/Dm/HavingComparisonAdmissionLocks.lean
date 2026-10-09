@@ -95,4 +95,42 @@ example : HavingFixture.run "{[Rows/Tag]} == {\"keep\"}" false .enumeration "kee
     HavingFixture.run "{[Rows/Tag]} == {\"missing\"}" false .enumeration "keep" "keep" "drop"
     (some { storedTokens := ["keep", "drop"] }) = none := by native_decide
 
+
+private def scopeModel : FlatModel := { model with
+  fields := model.fields ++ [
+    { id := 15, name := "N", groupPath := ["Form", "Other"], repeatableScope := [20], policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 16, name := "Scaled", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .number { scale := 2, signed := true } } },
+    { id := 17, name := "Due", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .temporal .date .fullDate }, temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+    { id := 18, name := "RootFlag", groupPath := ["Form"], policy := { kind := .boolean } }]
+  repeatableGroups := model.repeatableGroups ++ [{ level := 20, path := ["Form", "Other"], repeatability := some 3 }] }
+
+private def scopeCases : List (String × String × String) := [
+  ("[Rows/N] < 1", "admitted", "admitted"),
+  ("[Rows/Due] < [Rows/N]", "MVK_INVALID_COMPARE_TO_DATE", "MVK_INVALID_COMPARE_TO_DATE"),
+  ("[Rows/N] < [Rows/Due]", "MVK_INVALID_COMPARE_TO_DATE", "MVK_INVALID_COMPARE_TO_DATE"),
+  ("[Rows/Due] < [Rows/Due]", "admitted", "admitted"),
+  ("[Rows/N] == [Rows/Scaled]", "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES"),
+  ("[Rows/N] < [Rows/Scaled]", "admitted", "admitted"),
+  ("[Other/N] > 0", "MVK_INVALID_ITERATION_IN_FILTER_CONDITION", "MVK_INVALID_ITERATION_IN_FILTER_CONDITION"),
+  ("[$Other/N] > 0", "MVK_NO_WILDCARD", "MVK_NO_WILDCARD"),
+  ("[$Rows/N] > 0", "MVK_NO_WILDCARD", "MVK_NO_ITERATION_FOR_WILDCARD"),
+  ("[$Rows/N] == [Rows/Scaled]", "MVK_NO_WILDCARD", "MVK_INVALID_COMPARE_DEC_PLACES"),
+  ("[$Other/N] == \"x\"", "MVK_NO_WILDCARD", "MVK_NO_WILDCARD"),
+  ("[$Other/N] < [Rows/Due]", "MVK_NO_WILDCARD", "MVK_NO_WILDCARD"),
+  ("[RootFlag] == True", "MVK_NO_ITERATION_FOR_WILDCARD", "MVK_NO_ITERATION_FOR_WILDCARD"),
+  ("[RootFlag] == True And CurrentRepetition(Rows) > 0", "admitted", "admitted"),
+  ("[Other/N] > 0 And [Rows/N] == 1.5", "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES"),
+  ("[Rows/N] == 1.5 And [Other/N] > 0", "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES"),
+  ("[$Other/N] > 0 And [Rows/N] == 1.5", "MVK_NO_WILDCARD", "MVK_NO_WILDCARD"),
+  ("[Rows/N] == 1.5 And [$Other/N] > 0", "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES"),
+  ("[Other/N] > 0 Or [Rows/N] == 1.5", "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES"),
+  ("[Rows/N] == 1.5 Or [Other/N] > 0", "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES"),
+  ("[$Other/N] > 0 Or [Rows/N] == 1.5", "MVK_NO_WILDCARD", "MVK_NO_WILDCARD"),
+  ("[Rows/N] == 1.5 Or [$Other/N] > 0", "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES")]
+
+-- Read failures and comparison gates precede filter iteration; the 2026-10-09 H10 admission checkpoint separates both orders.
+example : scopeCases.all (fun (body, root, row) =>
+    HavingFixture.readerResults ("Sum(Rows*/N Having " ++ body ++ ")") scopeModel false == (root, root) &&
+    HavingFixture.readerResults ("Sum(Rows*/N Having " ++ body ++ ")") scopeModel true == (row, row)) = true := by native_decide
+
 end A12Kernel.Dm.HavingComparisonAdmissionLocks

@@ -1,0 +1,442 @@
+[
+ {
+  "id": "vRootplain",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootplain", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Rows/RowVal] < 1) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowplain",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowplain", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Rows/RowVal] < 1) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootplain",
+  "verb": "computation",
+  "args": ["add", "cRootplain.json", "--dry-run"]
+ },
+ {
+  "id": "cRowplain",
+  "verb": "computation",
+  "args": ["add", "cRowplain.json", "--dry-run"]
+ },
+ {
+  "id": "vRootdateLeft",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootdateLeft", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Rows/RowDate] < [Rows/RowVal]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowdateLeft",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowdateLeft", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Rows/RowDate] < [Rows/RowVal]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootdateLeft",
+  "verb": "computation",
+  "args": ["add", "cRootdateLeft.json", "--dry-run"]
+ },
+ {
+  "id": "cRowdateLeft",
+  "verb": "computation",
+  "args": ["add", "cRowdateLeft.json", "--dry-run"]
+ },
+ {
+  "id": "vRootdateRight",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootdateRight", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Rows/RowVal] < [Rows/RowDate]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowdateRight",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowdateRight", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Rows/RowVal] < [Rows/RowDate]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootdateRight",
+  "verb": "computation",
+  "args": ["add", "cRootdateRight.json", "--dry-run"]
+ },
+ {
+  "id": "cRowdateRight",
+  "verb": "computation",
+  "args": ["add", "cRowdateRight.json", "--dry-run"]
+ },
+ {
+  "id": "vRootdateTwin",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootdateTwin", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Rows/RowDate] < [Rows/RowDate]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowdateTwin",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowdateTwin", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Rows/RowDate] < [Rows/RowDate]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootdateTwin",
+  "verb": "computation",
+  "args": ["add", "cRootdateTwin.json", "--dry-run"]
+ },
+ {
+  "id": "cRowdateTwin",
+  "verb": "computation",
+  "args": ["add", "cRowdateTwin.json", "--dry-run"]
+ },
+ {
+  "id": "vRootscale",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootscale", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Rows/RowVal] == [Rows/RowScaled]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowscale",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowscale", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Rows/RowVal] == [Rows/RowScaled]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootscale",
+  "verb": "computation",
+  "args": ["add", "cRootscale.json", "--dry-run"]
+ },
+ {
+  "id": "cRowscale",
+  "verb": "computation",
+  "args": ["add", "cRowscale.json", "--dry-run"]
+ },
+ {
+  "id": "vRootscaleTwin",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootscaleTwin", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Rows/RowVal] < [Rows/RowScaled]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowscaleTwin",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowscaleTwin", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Rows/RowVal] < [Rows/RowScaled]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootscaleTwin",
+  "verb": "computation",
+  "args": ["add", "cRootscaleTwin.json", "--dry-run"]
+ },
+ {
+  "id": "cRowscaleTwin",
+  "verb": "computation",
+  "args": ["add", "cRowscaleTwin.json", "--dry-run"]
+ },
+ {
+  "id": "vRootother",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootother", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowother",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowother", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootother",
+  "verb": "computation",
+  "args": ["add", "cRootother.json", "--dry-run"]
+ },
+ {
+  "id": "cRowother",
+  "verb": "computation",
+  "args": ["add", "cRowother.json", "--dry-run"]
+ },
+ {
+  "id": "vRootcaptureOther",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootcaptureOther", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [$Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowcaptureOther",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowcaptureOther", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [$Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootcaptureOther",
+  "verb": "computation",
+  "args": ["add", "cRootcaptureOther.json", "--dry-run"]
+ },
+ {
+  "id": "cRowcaptureOther",
+  "verb": "computation",
+  "args": ["add", "cRowcaptureOther.json", "--dry-run"]
+ },
+ {
+  "id": "vRootcaptureRow",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootcaptureRow", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [$Rows/RowVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowcaptureRow",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowcaptureRow", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [$Rows/RowVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootcaptureRow",
+  "verb": "computation",
+  "args": ["add", "cRootcaptureRow.json", "--dry-run"]
+ },
+ {
+  "id": "cRowcaptureRow",
+  "verb": "computation",
+  "args": ["add", "cRowcaptureRow.json", "--dry-run"]
+ },
+ {
+  "id": "vRootcaptureScale",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootcaptureScale", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [$Rows/RowVal] == [Rows/RowScaled]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowcaptureScale",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowcaptureScale", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [$Rows/RowVal] == [Rows/RowScaled]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootcaptureScale",
+  "verb": "computation",
+  "args": ["add", "cRootcaptureScale.json", "--dry-run"]
+ },
+ {
+  "id": "cRowcaptureScale",
+  "verb": "computation",
+  "args": ["add", "cRowcaptureScale.json", "--dry-run"]
+ },
+ {
+  "id": "vRootcaptureKind",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootcaptureKind", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [$Other/OtherVal] == \"x\") == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowcaptureKind",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowcaptureKind", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [$Other/OtherVal] == \"x\") == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootcaptureKind",
+  "verb": "computation",
+  "args": ["add", "cRootcaptureKind.json", "--dry-run"]
+ },
+ {
+  "id": "cRowcaptureKind",
+  "verb": "computation",
+  "args": ["add", "cRowcaptureKind.json", "--dry-run"]
+ },
+ {
+  "id": "vRootcaptureDate",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootcaptureDate", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [$Other/OtherVal] < [Rows/RowDate]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowcaptureDate",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowcaptureDate", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [$Other/OtherVal] < [Rows/RowDate]) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootcaptureDate",
+  "verb": "computation",
+  "args": ["add", "cRootcaptureDate.json", "--dry-run"]
+ },
+ {
+  "id": "cRowcaptureDate",
+  "verb": "computation",
+  "args": ["add", "cRowcaptureDate.json", "--dry-run"]
+ },
+ {
+  "id": "vRootrootOnly",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootrootOnly", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Flag] == True) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowrootOnly",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowrootOnly", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Flag] == True) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootrootOnly",
+  "verb": "computation",
+  "args": ["add", "cRootrootOnly.json", "--dry-run"]
+ },
+ {
+  "id": "cRowrootOnly",
+  "verb": "computation",
+  "args": ["add", "cRowrootOnly.json", "--dry-run"]
+ },
+ {
+  "id": "vRootrootRepetition",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootrootRepetition", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Flag] == True And CurrentRepetition(Rows) > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowrootRepetition",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowrootRepetition", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Flag] == True And CurrentRepetition(Rows) > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootrootRepetition",
+  "verb": "computation",
+  "args": ["add", "cRootrootRepetition.json", "--dry-run"]
+ },
+ {
+  "id": "cRowrootRepetition",
+  "verb": "computation",
+  "args": ["add", "cRowrootRepetition.json", "--dry-run"]
+ },
+ {
+  "id": "vRootoffpathAnd0",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootoffpathAnd0", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Other/OtherVal] > 0 And [Rows/RowVal] == 1.5) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowoffpathAnd0",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowoffpathAnd0", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Other/OtherVal] > 0 And [Rows/RowVal] == 1.5) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootoffpathAnd0",
+  "verb": "computation",
+  "args": ["add", "cRootoffpathAnd0.json", "--dry-run"]
+ },
+ {
+  "id": "cRowoffpathAnd0",
+  "verb": "computation",
+  "args": ["add", "cRowoffpathAnd0.json", "--dry-run"]
+ },
+ {
+  "id": "vRootoffpathAnd1",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootoffpathAnd1", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Rows/RowVal] == 1.5 And [Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowoffpathAnd1",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowoffpathAnd1", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Rows/RowVal] == 1.5 And [Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootoffpathAnd1",
+  "verb": "computation",
+  "args": ["add", "cRootoffpathAnd1.json", "--dry-run"]
+ },
+ {
+  "id": "cRowoffpathAnd1",
+  "verb": "computation",
+  "args": ["add", "cRowoffpathAnd1.json", "--dry-run"]
+ },
+ {
+  "id": "vRootcaptureAnd0",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootcaptureAnd0", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [$Other/OtherVal] > 0 And [Rows/RowVal] == 1.5) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowcaptureAnd0",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowcaptureAnd0", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [$Other/OtherVal] > 0 And [Rows/RowVal] == 1.5) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootcaptureAnd0",
+  "verb": "computation",
+  "args": ["add", "cRootcaptureAnd0.json", "--dry-run"]
+ },
+ {
+  "id": "cRowcaptureAnd0",
+  "verb": "computation",
+  "args": ["add", "cRowcaptureAnd0.json", "--dry-run"]
+ },
+ {
+  "id": "vRootcaptureAnd1",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootcaptureAnd1", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Rows/RowVal] == 1.5 And [$Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowcaptureAnd1",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowcaptureAnd1", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Rows/RowVal] == 1.5 And [$Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootcaptureAnd1",
+  "verb": "computation",
+  "args": ["add", "cRootcaptureAnd1.json", "--dry-run"]
+ },
+ {
+  "id": "cRowcaptureAnd1",
+  "verb": "computation",
+  "args": ["add", "cRowcaptureAnd1.json", "--dry-run"]
+ },
+ {
+  "id": "vRootoffpathOr0",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootoffpathOr0", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Other/OtherVal] > 0 Or [Rows/RowVal] == 1.5) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowoffpathOr0",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowoffpathOr0", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Other/OtherVal] > 0 Or [Rows/RowVal] == 1.5) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootoffpathOr0",
+  "verb": "computation",
+  "args": ["add", "cRootoffpathOr0.json", "--dry-run"]
+ },
+ {
+  "id": "cRowoffpathOr0",
+  "verb": "computation",
+  "args": ["add", "cRowoffpathOr0.json", "--dry-run"]
+ },
+ {
+  "id": "vRootoffpathOr1",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootoffpathOr1", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Rows/RowVal] == 1.5 Or [Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowoffpathOr1",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowoffpathOr1", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Rows/RowVal] == 1.5 Or [Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootoffpathOr1",
+  "verb": "computation",
+  "args": ["add", "cRootoffpathOr1.json", "--dry-run"]
+ },
+ {
+  "id": "cRowoffpathOr1",
+  "verb": "computation",
+  "args": ["add", "cRowoffpathOr1.json", "--dry-run"]
+ },
+ {
+  "id": "vRootcaptureOr0",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootcaptureOr0", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [$Other/OtherVal] > 0 Or [Rows/RowVal] == 1.5) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowcaptureOr0",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowcaptureOr0", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [$Other/OtherVal] > 0 Or [Rows/RowVal] == 1.5) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootcaptureOr0",
+  "verb": "computation",
+  "args": ["add", "cRootcaptureOr0.json", "--dry-run"]
+ },
+ {
+  "id": "cRowcaptureOr0",
+  "verb": "computation",
+  "args": ["add", "cRowcaptureOr0.json", "--dry-run"]
+ },
+ {
+  "id": "vRootcaptureOr1",
+  "verb": "rule",
+  "args": ["check", "--code", "vRootcaptureOr1", "--field", "/Probe/SkuText", "--group", "/Probe", "--condition", "FieldFilled(SkuText) And Sum(Rows*/RowVal Having [Rows/RowVal] == 1.5 Or [$Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "vRowcaptureOr1",
+  "verb": "rule",
+  "args": ["check", "--code", "vRowcaptureOr1", "--field", "/Probe/Rows/RowText", "--group", "/Probe", "--condition", "FieldFilled(Rows/RowText) And Sum(Rows*/RowVal Having [Rows/RowVal] == 1.5 Or [$Other/OtherVal] > 0) == 0", "--message", "en_US=Probe"]
+ },
+ {
+  "id": "cRootcaptureOr1",
+  "verb": "computation",
+  "args": ["add", "cRootcaptureOr1.json", "--dry-run"]
+ },
+ {
+  "id": "cRowcaptureOr1",
+  "verb": "computation",
+  "args": ["add", "cRowcaptureOr1.json", "--dry-run"]
+ }
+]
