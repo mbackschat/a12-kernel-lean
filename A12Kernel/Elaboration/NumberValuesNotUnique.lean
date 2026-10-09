@@ -34,6 +34,7 @@ def elaborateNumberValuesNotUniqueSource (model : FlatModel)
       (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])
       authored (fixedTargetGroup? := targetGroup?) (writtenGroup := writtenGroup)
       (categoryGate := .behindRootGate)
+      (groupReadScope := if bindingGroup?.isSome && targetGroup?.isNone then .ruleBound else .scalar)
     |>.mapError .shape
   match firstFieldListKindRefusal? shape.operands with
   | some refusal => throw (.inadmissibleKind refusal.path refusal.actual)

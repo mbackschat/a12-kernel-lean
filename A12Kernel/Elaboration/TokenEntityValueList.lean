@@ -270,6 +270,7 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
   let shape ← elaborateFieldEntityShapeIn model declaringGroup
       ((bindingGroup?.or targetGroup?).map model.repeatableScopeForGroupPath |>.getD []) authored.fields
       .soleAllowed targetGroup? (writtenGroup := targetGroup?.getD writtenGroup)
+      (groupReadScope := if bindingGroup?.isSome && targetGroup?.isNone then .ruleBound else .scalar)
     |>.mapError .shape
   let (firstValue, restValues) ←
     match authored.values with
@@ -396,15 +397,6 @@ private def FieldEntityShapeElabError.isOperandRead : FieldEntityShapeElabError 
   | .resolve _ | .starPath _ | .groupReference _ | .starredGroup _ => true
   | _ => false
 
-/-- The repeat asked across a value list's two lists, as the shared shape asks it within one list. -/
-private def crossListRepeat? (operands : List (ResolvedFieldEntityOperand model)) :
-    Option FieldEntityShapeElabError :=
-  match firstDuplicateResolvedEntityOperand? operands with
-  | some (.field (field, _)) | some (.indexed (field, _)) => some (.duplicateOperand field)
-  | some (.fixedGroup path) | some (.keyedGroup path _) => some (.duplicateGroupOperand path)
-  | none => (firstResolvedOperandOverlap? operands).map fun (ancestor, descendant) =>
-      .overlappingOperands ancestor descendant
-
 /-- Check both stored-projection entity-list sides in operator order, then apply the operation-wide
     family and exact-reference gates. The field list meets the base-type and kind-set gates and its
     value validation, and the value list the first field's base type. A repeat across the lists comes
@@ -427,9 +419,11 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
   let fieldsShape? := elaborateFieldEntityShapeIn model declaringGroup
     ((bindingGroup?.or targetGroup?).map model.repeatableScopeForGroupPath |>.getD []) authored.fields .soleAllowed targetGroup?
     (writtenGroup := targetGroup?.getD writtenGroup)
+    (groupReadScope := if bindingGroup?.isSome && targetGroup?.isNone then .ruleBound else .scalar)
   let valuesShape? := elaborateFieldEntityShapeIn model declaringGroup
     ((bindingGroup?.or targetGroup?).map model.repeatableScopeForGroupPath |>.getD []) authored.values .soleAllowed targetGroup?
     (writtenGroup := targetGroup?.getD writtenGroup)
+    (groupReadScope := if bindingGroup?.isSome && targetGroup?.isNone then .ruleBound else .scalar)
   if let .error error := fieldsShape? then
     if error.isOperandRead then throw (.fields (.shape error))
   if let .error error := valuesShape? then
@@ -455,7 +449,7 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
         (expandedDeclarations valuesShape.operands) with
     | some path => throw (.valuesVaryingBaseType path)
     | none => pure ()
-  if let some error := crossListRepeat? (fieldsShape.operands ++ valuesShape.operands) then
+  if let some error := crossFieldEntityListRepeat? (fieldsShape.operands ++ valuesShape.operands) then
     throw (.crossListRepeat error)
   let fields ← fields.mapError .fields
   let values ← certifyTokenEntityShape model declaringGroup valuesShape

@@ -116,8 +116,8 @@ def referencesField (reference : ResolvedGroupReference)
 def isRoot (reference : ResolvedGroupReference) : Bool :=
   reference.path.length == 1
 
-/-- Ordinary paths are fixed either outside every repeatable scope or beneath the exact scope already
-bound by their declaring rule. The terminal group itself must remain nonrepeatable. `RuleGroup` binds
+/-- Ordinary paths are fixed either outside every repeatable scope or beneath the exact scope supplied
+by the validation binding. The terminal group itself must remain nonrepeatable. `RuleGroup` binds
 the already-selected rule instance even when that instance belongs to a repeatable group. -/
 def fixedWellFormedBool (reference : ResolvedGroupReference)
     (model : FlatModel) (declaringGroup : GroupPath) : Bool :=
@@ -273,8 +273,8 @@ def FixedGroupReferenceError.diagnostic? :
 private inductive FixedGroupScopePolicy where
   /-- Refused as a missing address: the established scalar boundary. -/
   | scalar
-  /-- Admitted from the declaring rule's exact repeatable scope, for carriers measured to bind an
-  ordinary fixed child from the rule's enclosing row. -/
+  /-- Admitted from the validation's explicit binding group's exact repeatable scope, for carriers
+  measured to read an ordinary fixed child from the error field's row (spec/07 §1). -/
   | ruleBound
   /-- As `ruleBound`, and a repeatable **root** the rule sits in is admitted too, so its carriers
   reach the root classes the walk leaves them. A non-root repeatable group stays refused here: its
@@ -288,8 +288,8 @@ private inductive FixedGroupScopePolicy where
   | fixedTargetList
 
 /-- Resolve one fixed group operand without applying an operator-specific root, arity, duplicate,
-or overlap rule. A validation carrier passes its error field's group as `writtenGroup?`, which
-places a level the rule group leaves unbound; without one the refusal keeps no placement. -/
+or overlap rule. A validation carrier passes its error field's group as `writtenGroup?` for read placement and
+explicit row binding; lexical paths still resolve at the declaring group. Without it, the refusal keeps no placement. -/
 private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
     (policy : FixedGroupScopePolicy) (declaringGroup : GroupPath)
     (surface : SurfaceGroupReference) (writtenGroup? : Option GroupPath := none) :
@@ -309,9 +309,13 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           | some unbound => throw (.unboundOperandLevel resolved.path unbound)
       | .fixedTargetList => pure { resolved with boundRepeatableScope := operandScope }
       | .scalar | .ruleBound | .validationBound =>
+          let bindingGroup := if policy matches .scalar then declaringGroup
+            else writtenGroup?.getD declaringGroup
+          let bindingScope := model.repeatableScopeForGroupPath bindingGroup
           -- The walk answers ahead of every admission below: with the error field outside the rule
           -- group it refuses a level the rule group binds.
-          if let some unbound := writtenGroup?.bind (model.unboundReadLevel? declaringGroup · operandScope) then
+          if let some unbound := writtenGroup?.bind
+              (fun written => model.unboundReadLevel? declaringGroup written operandScope bindingScope) then
             throw (.unboundOperandLevel resolved.path unbound)
           let refuse : Except FixedGroupReferenceError ResolvedGroupReference :=
             throw (if writtenGroup?.isSome then .walkedRepeatableGroupUnsupported resolved.path
@@ -325,9 +329,9 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           else if operandScope.isEmpty then
             pure resolved
           else if !(policy matches .scalar) &&
-              operandScope == model.repeatableScopeForGroupPath declaringGroup then
-            -- Kernel 30.8.1 binds this fixed child from the rule's enclosing row on every measured
-            -- carrier; the retained scope prevents later consumers from treating it as scalar.
+              operandScope == bindingScope then
+            -- Kernel 30.8.1 binds this fixed child from the error field's row on the measured
+            -- carriers; the retained scope prevents later consumers from treating it as scalar.
             -- See `src-fixed-group-repeatable-ancestor-carriers` in docs/SOURCES.md.
             pure { resolved with boundRepeatableScope := operandScope }
           else
@@ -342,8 +346,8 @@ def FlatModel.resolveFixedGroupReference (model : FlatModel)
     Except FixedGroupReferenceError ResolvedGroupReference :=
   model.resolveFixedGroupReferenceWith .scalar declaringGroup surface writtenGroup?
 
-/-- Resolve a fixed child for a carrier measured to consume the declaring rule's exact repeatable
-scope. The retained scope is the certificate those addressed consumers must preserve. -/
+/-- Resolve a fixed child for a carrier measured to consume the error field's exact repeatable
+scope. Name resolution remains at the declaring group; addressed consumers preserve the scope. -/
 def FlatModel.resolveRuleBoundFixedGroupReference (model : FlatModel)
     (declaringGroup : GroupPath) (surface : SurfaceGroupReference)
     (writtenGroup? : Option GroupPath := none) :

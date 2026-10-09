@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-09; HEAD was `ba613ec3`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-09; HEAD was `1d6b8fb8`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 1839 retained Kernel observation rows through Lean, 33157 of the 33157 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 217 broadly (100%), 0 partially and 0 not at all, as classified on 2026-10-09 at `d55cc5b5+working-tree` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 482 of 495 diagnostic identifiers occur in Lean source (97%); 13 do not.
+**Replaying 1839 retained Kernel observation rows through Lean, 33317 of the 33317 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 217 broadly (100%), 0 partially and 0 not at all, as classified on 2026-10-09 at `d55cc5b5+working-tree` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 482 of 495 diagnostic identifiers occur in Lean source (97%); 13 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -80,9 +80,9 @@ Each instance, one rule or computation on one document row, lands in one tier:
 
 | | rules | computations |
 |---|---|---|
-| match | 16437 | 16720 |
+| match | 16597 | 16720 |
 | tier 1 | 0 | 0 |
-| tier 2 | 349 | 0 |
+| tier 2 | 189 | 0 |
 | unattributed | 0 | 0 |
 | fault | 0 | 0 |
 
@@ -99,27 +99,12 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 | 30 | 3 | validation | `PatternViolated` |
 | 20 | 2 | validation | `FieldValueIncludedInValueList` |
 | 20 | 2 | validation | `FieldValueNotIncludedInValueList` |
-| 13 | 2 | validation | `FieldsNotCollectivelyFilled` |
-| 10 | 1 | validation | `AllFieldsFilled` |
-| 10 | 1 | validation | `AllGroupsFilled` |
-| 10 | 1 | validation | `AtLeastOneFieldFilled` |
-| 10 | 1 | validation | `AtLeastOneFieldValueIncludedInValueList` |
-| 10 | 1 | validation | `AtLeastOneGroupFilled` |
-| 10 | 1 | validation | `FieldValuesNotUnique` |
-| 10 | 1 | validation | `GroupsNotCollectivelyFilled` |
 | 10 | 1 | validation | `Invalid` |
-| 10 | 1 | validation | `MoreThanOneFieldFilled` |
-| 10 | 1 | validation | `NoFieldFilled` |
-| 10 | 1 | validation | `NoFieldValueIncludedInValueList` |
-| 10 | 1 | validation | `NoGroupFilled` |
-| 10 | 1 | validation | `NotAllFieldValuesIncludedInValueList` |
-| 10 | 1 | validation | `NotAllFieldsFilled` |
-| 10 | 1 | validation | `NotAllGroupsFilled` |
-| 10 | 1 | validation | `NotExactlyOneFieldFilled` |
 | 10 | 1 | validation | `Valid` |
 | 9 | 2 | validation | `Comparison` |
 | 5 | 4 | row | `Document` |
 | 4 | 4 | row | `Prepare` |
+| 3 | 1 | validation | `FieldsNotCollectivelyFilled` |
 
 ### Tier-1 divergences
 
@@ -158,15 +143,15 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | records | share |
 |---|---|---|
 | Capability records in [`implementation/`](implementation/) | 251 | 100% |
-| Citing a Kernel checkpoint or calibration | 122 | 48% |
-| Carrying an explicit evidence-pending note | 100 | 39% |
+| Citing a Kernel checkpoint or calibration | 121 | 48% |
+| Carrying an explicit evidence-pending note | 102 | 40% |
 
 ## Axis 3 — open obligation load
 
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 24 |
-| `remaining` rows across those gaps | 320 |
+| `remaining` rows across those gaps | 319 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 22 |
 | Ledger entries `handed-off` | 0 |
@@ -179,8 +164,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 259180 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 37042 | 14% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 259172 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 37267 | 14% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.
@@ -299,4 +284,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-10-08T20:58:59+02:00 | `13593f89` | 489 | 481 | 6 | 121 | 24 |
 | 2026-10-09T04:41:58+02:00 | `be100e6b` | 489 | 482 | 6 | 121 | 24 |
 | 2026-10-09T07:01:39+02:00 | `d55cc5b5` | 489 | 482 | 6 | 122 | 24 |
+| 2026-10-09T09:59:41+02:00 | `1d6b8fb8` | 489 | 482 | 6 | 121 | 24 |
 <!-- velocity-history:end -->

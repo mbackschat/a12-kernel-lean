@@ -27,31 +27,44 @@ inductive NumberEntityValueListElabError where
   | fields (error : NumberEntityElabError)
   | values (error : NumberEntityElabError)
   | duplicateOperand (field : FieldId)
+  | crossListRepeat (error : FieldEntityShapeElabError)
   deriving Repr, DecidableEq
 
-/-- Check both nonempty, sole-allowed entity-list sides, then apply the parser's combined direct-reference uniqueness gate. -/
+/-- Check both nonempty, sole-allowed entity-list sides before the combined duplicate/ancestor
+gate. Each side keeps its original shape and Number-certification order. -/
 def elaborateNumberEntityValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceNumberEntityValueListSource) (targetGroup? : Option GroupPath := none)
     (writtenGroup : GroupPath := declaringGroup) (bindingGroup? : Option GroupPath := none) :
     Except NumberEntityValueListElabError
       (CheckedNumberEntityValueListSource model) := do
-  let fields ← elaborateNumberEntitySource model declaringGroup authored.fields
-      (fixedTargetGroup? := targetGroup?) (writtenGroup := targetGroup?.getD writtenGroup)
-      (arity := .soleAllowed) (bindingGroup? := bindingGroup?.or targetGroup?)
-    |>.mapError .fields
-  let values ← elaborateNumberEntitySource model declaringGroup authored.values
-      (fixedTargetGroup? := targetGroup?) (writtenGroup := targetGroup?.getD writtenGroup)
-      (arity := .soleAllowed) (bindingGroup? := bindingGroup?.or targetGroup?)
-    |>.mapError .values
+  let bindingGroup? := bindingGroup?.or targetGroup?
+  let scope := bindingGroup?.map model.repeatableScopeForGroupPath |>.getD []
+  let groupReadScope : FixedGroupReadScope :=
+    if bindingGroup?.isSome && targetGroup?.isNone then .ruleBound else .scalar
+  let fieldsShape ← elaborateFieldEntityShapeIn model declaringGroup scope authored.fields
+      .soleAllowed targetGroup? (writtenGroup := targetGroup?.getD writtenGroup)
+      (groupReadScope := groupReadScope)
+    |>.mapError (.fields ∘ .shape)
+  let fields ← certifyNumberEntityShape model declaringGroup fieldsShape
+      (bindingGroup?.getD declaringGroup) |>.mapError .fields
+  let valuesShape ← elaborateFieldEntityShapeIn model declaringGroup scope authored.values
+      .soleAllowed targetGroup? (writtenGroup := targetGroup?.getD writtenGroup)
+      (groupReadScope := groupReadScope)
+    |>.mapError (.values ∘ .shape)
+  let values ← certifyNumberEntityShape model declaringGroup valuesShape
+      (bindingGroup?.getD declaringGroup) |>.mapError .values
   match hUnique : firstDuplicateDirectNumberEntityField?
       (fields.operands ++ values.operands) with
   | some field => throw (.duplicateOperand field)
-  | none => pure {
-      quantifier := authored.quantifier
-      fields
-      values
-      uniqueDirectOperands := hUnique }
+  | none =>
+      if let some error := crossFieldEntityListRepeat? (fieldsShape.operands ++ valuesShape.operands) then
+        throw (.crossListRepeat error)
+      else pure {
+        quantifier := authored.quantifier
+        fields
+        values
+        uniqueDirectOperands := hUnique }
 
 /-- The rich two-sided addressed stream consumed by Execute/Transform/Explain clients. -/
 structure ResolvedCheckedNumberEntityValueList (model : FlatModel) where

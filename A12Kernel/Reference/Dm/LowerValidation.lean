@@ -225,17 +225,20 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         let operands := lowerEntitySource model rowGroup arguments filterBinding?
         [do
           let source ← elaborated "FieldValuesNotUnique"
-            (elaborateNumberValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some bindingGroup))
+            (elaborateNumberValuesNotUniqueSource model rowGroup (← operands)
+              (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
           elaborated "FieldValuesNotUnique"
             (CheckedValidationCondition.fromValuesNotUnique bindingGroup (.number source) rowGroup),
          do
           let source ← elaborated "FieldValuesNotUnique"
-            (elaborateTokenValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some bindingGroup))
+            (elaborateTokenValuesNotUniqueSource model rowGroup (← operands)
+              (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
           elaborated "FieldValuesNotUnique"
             (CheckedValidationCondition.fromValuesNotUnique bindingGroup (.token source) rowGroup),
          do
           let source ← elaborated "FieldValuesNotUnique"
-            (elaborateTemporalValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some bindingGroup))
+            (elaborateTemporalValuesNotUniqueSource model rowGroup (← operands)
+              (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
           elaborated "FieldValuesNotUnique"
             (CheckedValidationCondition.fromValuesNotUnique bindingGroup (.temporal source) rowGroup)]
     | _ => []
@@ -301,7 +304,8 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         presence ++ match groupQuantifier? id,
             (arguments.mapM plain).bind (·.mapM (groupListOperand? model rowGroup)) with
         | some quantifier, some operands =>
-            [elaborated id (CheckedValidationCondition.fromGroupList model rowGroup quantifier operands)]
+            [elaborated id (CheckedValidationCondition.fromGroupList model rowGroup quantifier operands
+              (writtenGroup := bindingGroup) (bindingGroup := bindingGroup))]
         | _, _ => []
     | .compare op left right =>
         -- Parenthesized so the entity-list attempt follows either outcome of scalar lowering: a

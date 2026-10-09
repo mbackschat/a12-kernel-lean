@@ -313,6 +313,16 @@ def firstResolvedOperandOverlap? :
       | some overlapping => some (operand.entityPath, overlapping.entityPath)
       | none => firstResolvedOperandOverlap? remaining
 
+/-- The duplicate and ancestor gates asked across a value list's two resolved sides, after each
+side's own admission gates ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-value-list-order)). -/
+def crossFieldEntityListRepeat? (operands : List (ResolvedFieldEntityOperand model)) :
+    Option FieldEntityShapeElabError :=
+  match firstDuplicateResolvedEntityOperand? operands with
+  | some (.field (field, _)) | some (.indexed (field, _)) => some (.duplicateOperand field)
+  | some (.fixedGroup path) | some (.keyedGroup path _) => some (.duplicateGroupOperand path)
+  | none => (firstResolvedOperandOverlap? operands).map fun (ancestor, descendant) =>
+      .overlappingOperands ancestor descendant
+
 /-- Whether a carrier's operand list may consist of one unstarred field.
 
 **This is measured to be per carrier, and the two sides have a reason.** All three value-list

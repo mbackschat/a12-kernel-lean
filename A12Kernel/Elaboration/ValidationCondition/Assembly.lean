@@ -558,7 +558,8 @@ private def singletonGroupListCondition? (operator : GroupFillQuantifier) :
 /-- Resolve one field/group entity list and enforce the kernel's shared duplicate/overlap checks plus its operator-specific arity, root-group, and wildcard gates. The two count-zero/count-positive members retain checked starred-group topology beside plain operands. -/
 def fromGroupList (model : FlatModel) (rowGroup : GroupPath)
     (operator : GroupFillQuantifier)
-    (operands : List SurfaceGroupListOperand) (writtenGroup : GroupPath := rowGroup) :
+    (operands : List SurfaceGroupListOperand) (writtenGroup : GroupPath := rowGroup)
+    (bindingGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
@@ -586,17 +587,17 @@ def fromGroupList (model : FlatModel) (rowGroup : GroupPath)
       match resolved with
       | [operand] =>
           if operand.isStarred then
-            checkCore model rowGroup
+            checkCore model bindingGroup
               (ValidationCondition.groupList operator resolved)
-              (by rw [hModel]; rfl)
+              (by rw [hModel]; rfl) rowGroup
           else
             match singletonGroupListCondition? operator operand with
             | some condition =>
-                checkCore model rowGroup condition (by rw [hModel]; rfl)
+                checkCore model bindingGroup condition (by rw [hModel]; rfl) rowGroup
             | none => throw .groupListNeedsMultipleOperands
       | _ =>
-          checkCore model rowGroup (ValidationCondition.groupList operator resolved)
-            (by rw [hModel]; rfl)
+          checkCore model bindingGroup (ValidationCondition.groupList operator resolved)
+            (by rw [hModel]; rfl) rowGroup
 
 private def combine (constructor : ValidationCondition model →
     ValidationCondition model → ValidationCondition model)

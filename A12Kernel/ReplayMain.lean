@@ -46,6 +46,7 @@ import A12Kernel.Reference.Dm.StampConstructionLocks
 import A12Kernel.Reference.Dm.ParallelComputationLocks
 import A12Kernel.Reference.Dm.CrossRootValidationLocks
 import A12Kernel.Reference.Dm.ValidationBindingLocks
+import A12Kernel.Reference.Dm.BoundEntityListLocks
 import A12Kernel.Reference.Dm.RowAlternativeLocks
 import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.Compute
