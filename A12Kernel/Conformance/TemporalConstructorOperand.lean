@@ -86,11 +86,12 @@ example :
         (constructor == .dateTime)) = [] := by
   native_decide
 
-/- Operand counts: `Time` admits any nonempty prefix and the other two admit only their full list.
-   The `Date`-at-two row is the measured one; the rest is the slot table's own consequence. -/
+/- The grammar admits Time's empty prefix and Date's split-year form (spec/05 §3).
+   Omitted Date years additionally require the model's Base Year. -/
 example :
-    (List.range 5).map (operandCountAdmitted .time ·) = [false, true, true, true, false] ∧
-      (List.range 5).map (operandCountAdmitted .date ·) = [false, false, false, true, false] ∧
+    (List.range 5).map (operandCountAdmitted .time ·) = [true, true, true, true, false] ∧
+      (List.range 6).map (operandCountAdmitted .date ·) = [false, false, false, true, true, false] ∧
+      (List.range 6).map (fun count => operandCountAdmitted .date count true) = [false, false, true, true, true, false] ∧
       (List.range 4).map (operandCountAdmitted .dateTime ·) = [false, false, true, false] := by
   native_decide
 

@@ -1,14 +1,10 @@
 /-! # A temporal constructor's operand gate is per position, and its two refusal classes say *why*
 
-`Date`, `Time`, and `DateTime` each take a fixed operand list, and the Kernel checks every position
+`Date`, `Time`, and `DateTime` each have ordered operands, and the Kernel checks every position
 separately. This module owns the gate for the operand shape that has no other owner — an **extraction
 operator call** such as `DayFromDate(D)` — together with the slot table the gate reads.
 
-**The slots.** `Date` takes day, month, year and requires all three; `Time` takes hours, minutes,
-seconds and admits any nonempty prefix; `DateTime` takes a date and a time and requires both. The
-three-of-three requirement is the Kernel's own, measured: dropping `Date`'s year draws its own class
-while `Time("10")` and `Time("10","30")` are admitted
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-constructor-operand-positions)).
+**The slots.** The canonical `Date` component positions are day, month and year. Its year can instead be omitted under a declared Base Year or split into century and short year. `Time` admits zero to three components; `DateTime` takes two whole values ([spec/05 §3](../../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity)). The component-slot table governs extractor placement; the separate count gate governs these authored forms.
 
 **A component slot admits exactly the extractor whose component it is**, and the two ways of being
 wrong are *different classes*:
@@ -80,9 +76,9 @@ end TemporalComponent
 
 /-- The three temporal constructors, by the operand list they take. -/
 inductive TemporalConstructor where
-  /-- Day, month, year — all three required. -/
+  /-- Canonical day, month and year slots, with omitted-year and split-year alternatives. -/
   | date
-  /-- Hours, minutes, seconds — any nonempty prefix. -/
+  /-- Hours, minutes, seconds — any prefix, including the empty one. -/
   | time
   /-- A date value and a time value, both required. Not a component constructor. -/
   | dateTime
@@ -97,12 +93,12 @@ def componentSlots : TemporalConstructor → List TemporalComponent
   | .time => [.hours, .minutes, .seconds]
   | .dateTime => []
 
-/-- Whether a shorter operand list is admitted. `Time` takes a prefix; the other two do not. -/
+/-- Whether the canonical component list admits every prefix. Date has separate year forms. -/
 def admitsPrefix : TemporalConstructor → Bool
   | .time => true
   | .date | .dateTime => false
 
-/-- How many operands the constructor takes when every position is supplied. -/
+/-- Number of canonical slots; the split-year Date form has one additional position. -/
 def arity : TemporalConstructor → Nat
   | .date => 3
   | .time => 3
@@ -157,14 +153,13 @@ def constructorOperandRefusal (constructor : TemporalConstructor) (position : Na
       else if operand.isDateFamily == expected.isDateFamily then some .extractOpWrongPosition
       else some .extractOpNotAllowed
 
-/-- Whether an operand count is admitted by the slot table alone.
-
-Measured points: `Date` with two operands is refused with its own missing-component class, and `Time`
-with one and with two is admitted ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-constructor-operand-positions)).
-`Time` with none and `DateTime` short of two are unmeasured; the predicate states the function the slot
-table implies for them rather than leaving it undefined. -/
-def operandCountAdmitted (constructor : TemporalConstructor) (supplied : Nat) : Bool :=
-  if constructor.admitsPrefix then 0 < supplied && supplied ≤ constructor.arity
-  else supplied == constructor.arity
+/-- Authored constructor arity. The omitted Date year requires a model Base Year;
+Time's omitted suffix, including every component, is filled with zero (spec/05 §3). -/
+def operandCountAdmitted (constructor : TemporalConstructor) (supplied : Nat)
+    (hasBaseYear : Bool := false) : Bool :=
+  match constructor with
+  | .date => supplied == 3 || supplied == 4 || (supplied == 2 && hasBaseYear)
+  | .time => supplied ≤ 3
+  | .dateTime => supplied == 2
 
 end A12Kernel

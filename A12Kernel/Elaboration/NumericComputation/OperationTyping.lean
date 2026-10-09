@@ -12,7 +12,8 @@ class while `[S] - [Nope]` draws the unknown name's
 
 A node first types its operands' results, as [`spec/06`](../../../spec/06-strings-and-enumerations.md)
 states for `+`. Addition admits two Numbers or two string-like sides, a concatenation that types as a
-String, and refuses a mixed pair; subtraction, multiplication, division and power demand two Numbers;
+String, and refuses a mixed pair; a grouped Enumeration bypasses the direct display-remapping gate
+([source-derived boundary](../../../spec/06-strings-and-enumerations.md#part-a--7-strings-and-patterns), externally unverified); subtraction, multiplication, division and power demand two Numbers;
 `Abs` demands a Number; and an extrema call's first operand must be sortable and fixes the family
 every later operand must join ([`kf263`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf263)). A
 well-typed operator or power then asks its own authoring gates, measured in this order
@@ -28,13 +29,16 @@ claim no class.
 namespace A12Kernel
 
 /-- The result type one operand or operation contributes to the walk. A Number carries its derived
-scale, which a power's exponent gate reads. String-like is a String, including a custom declaration,
-or an Enumeration without display labels ([`spec/06`](../../../spec/06-strings-and-enumerations.md));
-a temporal side keeps its components, which the extrema compare. -/
+scale, which a power's exponent gate reads. Enumeration retains its selected domain and display
+profile until a String-producing operation consumes it ([`spec/06`](../../../spec/06-strings-and-enumerations.md));
+a temporal side keeps its components, which the extrema compare. DateRange retains its exact
+component set for comparison without BaseYear supplementation (spec/05 §8). -/
 inductive NumericOperandType where
   | number (scale : NumericScaleSummary)
   | stringLike
+  | enumeration (profile : DirectComparableField) (tokens : List String)
   | temporal (kind : TemporalKind) (components : TemporalComponents)
+  | dateRange (components : TemporalComponents)
   | other (kind : SurfaceScalarKind)
   deriving Repr, DecidableEq
 
@@ -46,18 +50,22 @@ def ofDeclaration (declaration : FlatFieldDecl) : NumericOperandType :=
   | .number info => .number (.field info.scale)
   | .string => .stringLike
   | .enumeration =>
-      if (declaration.enumeration.map (·.displayFacts.isEmpty)).getD true then .stringLike
-      else .other .enumeration
+      match declaration.enumeration with
+      | some source => .enumeration (.enumeration { facts := source.displayFacts }) source.storedTokens
+      | none => .other .enumeration
   | .temporal kind components => .temporal kind components
   | .boolean => .other .boolean
   | .confirm => .other .confirm
-  | .dateRange => .other .dateRange
+  | .dateRange => declaration.toDateRangeDeclarationPolicy?.map
+      (fun policy => .dateRange (TemporalComponents.ofFormat policy.format)) |>.getD (.other .dateRange)
 
 /-- The surface kind the generated comparison sees for a result of this type. -/
 def surfaceKind : NumericOperandType → SurfaceScalarKind
   | .number _ => .number
   | .stringLike => .string
+  | .enumeration .. => .enumeration
   | .temporal kind _ => .temporal kind
+  | .dateRange _ => .dateRange
   | .other kind => kind
 
 /-- Whether this type may lead an extrema call: a lone String leader is refused as unsortable just as
@@ -65,7 +73,7 @@ one followed by any operand is (rows `Y03`, `Y09` and `Y12` of the
 [checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates)). -/
 def isSortable : NumericOperandType → Bool
   | .number _ | .temporal _ _ => true
-  | .stringLike | .other _ => false
+  | .stringLike | .enumeration .. | .dateRange _ | .other _ => false
 
 /-- Whether this type may follow an extrema call led by a sortable `leader`, or the class refusing
 it. -/
@@ -129,6 +137,21 @@ private def divisionGate {Atom Error : Type} (node : AuthoredNumericExpr Atom) :
     Except (NumericOperationNodeFault Error) Unit :=
   if node.divisionGateRefuses then throw (.node (some .tooManyDivisionsInRegion)) else pure ()
 
+private def isStringAdditionOperand {Atom : Type} (expression : AuthoredNumericExpr Atom) :
+    NumericOperandType → Bool
+  | .stringLike => true
+  | .enumeration profile _ =>
+      match profile with
+      | .category | .plainString => true
+      | .enumeration display => !display.hasEffectiveDisplay || (match expression with | .group _ => true | _ => false)
+  | .other .enumeration =>
+      -- CheckOperationImpl.checkWithoutDisplayValues inspects only an immediate field read;
+      -- grouping exempts this addition gate while retaining the operand's Enumeration type.
+      match expression with
+      | .group _ => true
+      | _ => false
+  | _ => false
+
 /-- Walk every node in post-order, each operand typed by `atomType`. -/
 private def walkNumericNode {Atom Error : Type} (atomType : Atom → Except Error NumericOperandType) :
     AuthoredNumericExpr Atom → NumericNodeWalk Error
@@ -144,8 +167,10 @@ private def walkNumericNode {Atom Error : Type} (atomType : Atom → Except Erro
         let type ← match op, leftType, rightType with
           | _, .number leftScale, .number rightScale =>
               pure (.number (NumericScaleSummary.binary op leftScale rightScale))
-          | .add, .stringLike, .stringLike => pure .stringLike
-          | .add, _, _ => throw (.node (some .noStringOrNumberForAdd))
+          | .add, _, _ =>
+              if isStringAdditionOperand left leftType && isStringAdditionOperand right rightType then
+                pure .stringLike
+              else throw (.node (some .noStringOrNumberForAdd))
           | _, _, _ => throw (.node (some .noNumberForCalc))
         divisionGate node
         pure type

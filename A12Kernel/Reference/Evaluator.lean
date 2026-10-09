@@ -342,6 +342,7 @@ private def correlationElaborationResult : CorrelationElabError →
   -- core and the wire vocabulary disagree, which is what `incoherentCore` reports; the public
   -- diagnostic vocabulary is deliberately left unchanged rather than widened for unreachable arms.
   | .dateRange _ | .dateComponents _ | .uniquenessKind _ | .uniquenessFormat _ | .membershipKind _ | .membershipBaseType _ | .membershipStringLiteralKind _ | .fieldFill _ | .groupFill _ | .groupPresence _ | .groupListStarNotAllowed | .stringPattern _ | .typeValidityOperand _ | .typeValidityName _ | .text _ | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
+  | .membershipLiteralOutsideDomain _
   | .disjunctionOutsideStarRoute | .literalScaleMismatch _ _ _
   | .constantNumericComparison | .numericExpressionUnsupported
   | .comparisonEntry _

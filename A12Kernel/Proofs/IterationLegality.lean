@@ -7,6 +7,19 @@ Three properties carry the clause. A wildcard is *absorbing*: once one has been 
 
 namespace A12Kernel
 
+namespace FilterRuleFacts
+
+/-- Regrouping already admitted fragments preserves the complete global admission summary.
+This permits common and alternative guards to share the generated rule's final gate (spec/09 §6). -/
+theorem merge_assoc (first second third : FilterRuleFacts) :
+    (first.merge second).merge third = first.merge (second.merge third) := by
+  cases first
+  cases second
+  cases third
+  simp [FilterRuleFacts.merge, Bool.or_assoc, Nat.add_assoc]
+
+end FilterRuleFacts
+
 /-- A wildcard absorbs: with the bit already set, any later level that iterates or carries a
 semantic index refuses. This is the law behind "a wildcard poisons every level below it", and it is
 what makes the same reference legal above a wildcard and illegal below it. -/

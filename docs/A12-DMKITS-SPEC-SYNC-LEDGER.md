@@ -35,6 +35,42 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-09-03"></a>
+### SPEC-2026-10-09-03 — complete parsing precedes ordered whole-rule filter gates
+
+- `status`: pending
+- `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
+- `delta`: Order repetition/parallel, filtered-owner parallel, filter-body parallel, filter index, repeated uniqueness and raw-Length gates after complete parsing; generated computation conditions share that order before rounding compatibility. Preserve existing measured-shape limits.
+- `basis`: Kernel 30.8.1 `ParserService.checkNormalRule`, `AnalyseService` and `FindAllAst` at source revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`; [local matrix](../A12Kernel/Reference/Dm/HavingGlobalAdmissionLocks.lean). Combined precedence remains external evidence pending.
+- `acceptance`: Reconcile gate order and calibrate competing-defect conditions, captured parallel reads, cross-fragment computation facts, repeated uniqueness and raw-Length against admitted controls. Keep local filter-walk refusals distinct from global refusals and H-model row uniqueness separate. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
+<a id="spec-2026-10-09-02"></a>
+### SPEC-2026-10-09-02 — scalar comparisons retain Enumeration policy and String operand shape
+
+- `status`: pending
+- `canonical`: [spec/06 §B.1](../spec/06-strings-and-enumerations.md#b1-comparison-is-by-stored-value-and-direct-field-comparability-depends-on-effective-display-remapping).
+- `delta`: Grouping the String operand bypasses the immediate String-field display gate; grouping an Enumeration preserves domain/display policy, and grouping a literal preserves domain checking. Textual `FirstFilledValue` results have String type rather than an Enumeration literal domain.
+- `basis`: Kernel 30.8.1 `CheckVergleichsBedingungImpl.checkEnumVsStringType`, `isFeldWertOp`, `checkEnumVsEnum` and `CheckEntityListenUtils.treatEnumAsString`. [Reader matrix](../A12Kernel/Reference/Dm/HavingComparisonAdmissionLocks.lean) passes; external calibration remains pending.
+- `acceptance`: Calibrate direct/grouped String and Enumeration operands in both positions, grouped valid/invalid literals, effective identity/remapped/conflicting displays, categories and textual selectors. Preserve the distinction from Enumeration addition and from quantified membership diagnostics. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
+<a id="spec-2026-10-09-01"></a>
+### SPEC-2026-10-09-01 — list-condition admission preserves carrier-specific gate order
+
+- `status`: pending
+- `canonical`: [overlap admission](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) and [uniqueness admission](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
+- `delta`: State uniqueness kind/format-before-base-before-raw order and distinguish the one-list overlap gates from scalar-versus-list overlap. Record the field-only singleton class and member-base-before-cross-duplicate precedence.
+- `basis`: Kernel 30.8.1 `CheckFeldListenBedingungImpl`, `CheckFeldListeUndWerteListenBedingungImpl` and `CheckEntityListenUtils`. [Local reader and typed checks](../A12Kernel/Reference/Dm/HavingListConditionAdmissionLocks.lean) pass. Combined precedence cases are source-derived; external calibration remains pending.
+- `acceptance`: Reconcile the canonical gate sequences and calibrate competing-defect cases alongside admitted controls; preserve authored index/category identity and separate per-reference format agreement from cross-reference year agreement. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
+<a id="spec-2026-10-08-04"></a>
+### SPEC-2026-10-08-04 — Enumeration addition distinguishes effective display and operand shape
+
+- `status`: pending
+- `canonical`: [spec/06 §7](../spec/06-strings-and-enumerations.md#part-a--7-strings-and-patterns).
+- `delta`: Replace the blanket labelled-Enumeration prohibition and category-only workaround with the direct-operand/effective-remapping distinction. The grouped-operand boundary is explicitly source-derived and externally unverified.
+- `basis`: Kernel 30.8.1 parser `CheckOperationImpl.checkWithoutDisplayValues`, grammar `SINGLE_OP`/`BRACKET_OP`, and `IEnumerationType.hasDisplayValues`; [checkpoint and calibration matrix](sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates). Local shared-node and indexed Having reader checks pass; they do not establish external correspondence.
+- `acceptance`: Calibrate identity/remapped direct operands, grouped operands in both positions, nested grouping and outer-group/direct-sibling negative controls; reconcile the canonical clause and preserve Enumeration type before concatenation. Broader String executable carriers must retain syntax until admission. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
 <a id="spec-2026-10-08-03"></a>
 ### SPEC-2026-10-08-03 — indirect entity-list overlap preserves category identity
 

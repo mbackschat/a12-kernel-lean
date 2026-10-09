@@ -21,6 +21,7 @@ inductive CorrelationElabError where
   | membershipKind (path : List String)
   | membershipBaseType (path : List String)
   | membershipStringLiteralKind (path : List String)
+  | membershipLiteralOutsideDomain (literal : String)
   | fieldFill (error : FieldEntityShapeElabError)
   | groupFill (error : FieldEntityShapeElabError)
   | groupPresence (error : FixedGroupReferenceError)
@@ -137,6 +138,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .membershipKind _ => some .onlyStringEnumNumberAllowed
   | .membershipBaseType _ => some .varyingTypesNotAllowed
   | .membershipStringLiteralKind _ => some .invalidTypesForComparison
+  | .membershipLiteralOutsideDomain _ => some .invalidStringConstantForEnumerationOrCategory
   | .fieldFill error | .groupFill error => error.diagnostic?
   | .groupPresence error => error.diagnostic?
   | .groupListStarNotAllowed => some .noWildcardsGAllowed

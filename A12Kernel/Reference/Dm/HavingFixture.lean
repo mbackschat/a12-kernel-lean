@@ -14,6 +14,21 @@ def model : FlatModel := {
     { id := 5, groupPath := ["Form"], name := "Out", policy := { kind := .number { scale := 0, signed := true } } }]
   repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
 
+/-- Compare static admission at root and row bindings across the two consumers. Shared Having
+matrices must preserve each reader's actual error/target context (spec/07 §3). -/
+def readerResults (operation : String) (fixture : FlatModel) (rowBound : Bool) : String × String :=
+  let dm : DmModel := { flat := fixture, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let report {α : Type} : Lowering α → String
+    | .ok _ => "admitted"
+    | .error refusal => refusal.detail
+  (report (checkRule dm .english {
+    group := ["Form"], name := "Selected", errorCode := "SELECTED", errorEntityRelPath := if rowBound then "../Rows/RowOut" else "../Error"
+    condition := (if rowBound then "FieldFilled(Rows/RowOut) And " else "FieldFilled(Error) And ") ++ operation ++ " == 9", severity := "ERROR" }),
+   report (lowerComputation fixture .english {
+    group := ["Form"], name := "Selected", targetRelPath := if rowBound then "../Rows/RowOut" else "../Out", commonPrecondition := none
+    alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }))
+
+
 def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     (expected first second : String) (producerOperation : String := "\"drop\"")
     (extra : List (String × Json) := []) (operationOverride : Option String := none)

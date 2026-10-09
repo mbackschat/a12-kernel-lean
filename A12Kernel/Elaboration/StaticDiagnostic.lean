@@ -57,8 +57,12 @@ inductive KernelStaticDiagnostic where
   | errorFieldInvalidIndexType
   /-- An operand list below the operator's required arity. -/
   | paramSizeInvalidN
+  /-- The field-only overlap list has one unstarred field (CheckFeldListenBedingungImpl). -/
+  | paramSizeInvalidFN
   /-- A filled-group count carries one fixed unstarred operand, including a repeatable operand whose level is bound by the error-field row. The same repeatable operand outside that row draws `noWildcard`; a single starred operand is admitted, so this is not simply an operand-count gate. -/
   | paramSizeInvalidGN
+  /-- Singular group presence received more than one operand (CheckKontextListenBedingungImpl). -/
+  | paramSizeInvalid1
   /-- A group-list quantifier that requires at least two operands received one. Shared by `AllGroupsFilled`, `NotAllGroupsFilled`, and `GroupsNotCollectivelyFilled`; the two singleton-admitting quantifiers never reach it. -/
   | paramSizeInvalid2
   /-- The **direct**-duplicate arm: the exact same non-wildcarded operand occurs more than once, whether that is a repeated group under the quantifiers or a repeated field in an entity list. A wildcarded reference is skipped, so a repeated star is two independent occurrences. -/
@@ -111,6 +115,8 @@ inductive KernelStaticDiagnostic where
   | invalidStringConstantForEnumeration
   /-- The same list carrier with a category qualifier written: the literal is not a value of **that category**, which is a different set from the enumeration's own values. -/
   | invalidStringConstantForEnumerationCategory
+  /-- A quantified literal list lies outside the union of selected enumeration/category domains. -/
+  | invalidStringConstantForEnumerationOrCategory
   /-- The named category is not declared on the field's enumeration. The Kernel's own constant carries the misspelling. -/
   | categoryUnknown
   /-- A category read `[F -> C]` of a field that declares no Enumeration, asked after the read's group
@@ -332,6 +338,8 @@ inductive KernelStaticDiagnostic where
   | noDate
   /-- A date-component extractor was applied to a source whose declared format does not expose that component. Quarter counts as the month, so the four extractors gate on three components. -/
   | wrongDateFormatForOp
+  | invalidDateForOp
+  | invalidTime
   /-- Two stored DateRange operands of an equality expose different date-component sets. Lexical spelling does not enter it, so both spellings of one component set cross freely and the refusal is symmetric in the authored order and identical for `==` and `!=`. -/
   | invalidCompareToDateRange
   /-- An overlap operand's DateRange declaration carries an `interpretationOfYear`. Both operators key their format allowlist on the whole declaration including that reading, so the composite format is refused on either side, under every profile, and with or without a Base Year. -/
@@ -352,8 +360,9 @@ inductive KernelStaticDiagnostic where
   | indexForErrorTextInvalid
   /-- A computation assigns an Enumeration target a literal naming no value in its selected domain. This is the one constant family whose target constrains the literal's **value** statically: every other measured kind either renders the constant into the declared format or checks nothing until runtime, while an undeclared token here never reaches runtime at all. The code names a *comparison* because the check is the generated equality's, not the assignment's. -/
   | invalidStringConstantForEnumComparison
-  /-- A `Date(...)` construction supplied a day and a month but no year. The Kernel treats the year as mandatory in the three-argument form rather than defaulting it from the model's Base Year. -/
+  /-- A `Date(...)` construction supplied a day and a month but no year. The omitted year is refused when the model declares no Base Year. -/
   | missingYear
+  | noDigitPattern
   /-- A validity wrapper applied to a date construction whose every argument is a literal. Refused because an all-constant date's validity is already settled at construction, so the wrapper could only ever be constant-true or constant-false. -/
   | onlyConstantsUsed
   /-- The four-argument `Date(...)` form, whose fourth argument is the split-century year, admits no extraction operator at its third or fourth position. Distinct from the wrong-family class: here the operator's family is irrelevant and only the arity is decisive. -/
@@ -364,8 +373,12 @@ inductive KernelStaticDiagnostic where
   | noDateConstant
   /-- A `True`/`False` constant paired with a field list containing a field that is neither Boolean nor Confirm. -/
   | noTypeYesOrYesNo
+  /-- Counting False requires Boolean rather than Confirm declarations (CheckAnzahlWertOpImpl). -/
+  | noTypeYesNo
   /-- A range-as-string source that is not string-like. -/
   | invalidType
+  /-- A range operation requires one-based, ascending inclusive bounds. -/
+  | invalidInterval
   /-- Subtraction, multiplication, division, or power applied to an operand that is not a Number. -/
   | noNumberForCalc
   /-- Addition of a mixed pair: neither two Numbers nor two string-like sides
@@ -395,6 +408,11 @@ inductive KernelStaticDiagnostic where
   | notInSamePath
   /-- Keys of `RepetitionNotUnique` in two parallel repeatable groups the rule iterates jointly, once an `@From` scope's gates pass. The construct forbids parallel iteration beside it after the parse ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-paired-gates)). -/
   | parallelIterationNotAllowed
+  /-- A filtered reference itself joins a parallel group, before the body/index global gates
+  (ParserService.checkNormalRule). -/
+  | parallelIterationForFilteredEntityNotAllowed
+  /-- More than one repetition-uniqueness leaf in a complete rule (spec/07 §6). -/
+  | invalidCombinationOfRepetitionNotUnique
   /-- Two groups related by parallel iteration whose declared index fields differ in base type. Distinct from the missing-index class: both groups **have** an index here, and only their types disagree. -/
   | indexTypeInconsistent
   /-- A message parameter naming a form-pointer target that resolves to a group rather than to a field. The parameter grammar admits the shape, so the refusal is the resolution's and not the parser's. -/
@@ -464,7 +482,9 @@ def kernelCode : KernelStaticDiagnostic → String
   | .errorFieldInvalidIndex => "MVK_ERROR_FIELD_INVALID_INDEX"
   | .errorFieldInvalidIndexType => "MVK_ERROR_FIELD_INVALID_INDEX_TYPE"
   | .paramSizeInvalidN => "MVK_PARAMSIZE_INVALIDN"
+  | .paramSizeInvalidFN => "MVK_PARAMSIZE_INVALIDFN"
   | .paramSizeInvalidGN => "MVK_PARAMSIZE_INVALIDGN"
+  | .paramSizeInvalid1 => "MVK_PARAMSIZE_INVALID1"
   | .duplicateParam1 => "MVK_DUPLICATE_PARAM1"
   | .duplicateParam2 => "MVK_DUPLICATE_PARAM2"
   | .differentGroups => "MVK_DIFFERENT_GROUPS"
@@ -496,6 +516,7 @@ def kernelCode : KernelStaticDiagnostic → String
       "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION"
   | .invalidStringConstantForEnumerationCategory =>
       "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_CATEGORY"
+  | .invalidStringConstantForEnumerationOrCategory => "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_OR_CATEGORY"
   | .categoryUnknown => "MVK_CATEGORY_UNKOWN"
   | .noEnumeration => "MVK_NO_ENUMERATION"
   | .categoryNotAllowed => "MVK_CATEGORY_NOT_ALLOWED"
@@ -614,6 +635,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidCompareToDate => "MVK_INVALID_COMPARE_TO_DATE"
   | .noDate => "MVK_NO_DATE"
   | .wrongDateFormatForOp => "MVK_WRONG_DATE_FORMAT_FOR_OP"
+  | .invalidDateForOp => "MVK_INVALID_DATE_FOR_OP"
+  | .invalidTime => "MVK_INVALID_TIME"
   | .invalidCompareToDateRange => "MVK_INVALID_COMPARE_TO_DATE_RANGE"
   | .invalidDateRangeFormat => "MVK_INVALID_DATE_RANGE_FORMAT"
   | .semanticIndexContainedInIndex => "MVK_SEMANTIC_INDEX_CONTAINED_IN_INDEX"
@@ -622,13 +645,16 @@ def kernelCode : KernelStaticDiagnostic → String
   | .semanticIndexAndWildcard => "MVK_SEMANTIC_INDEX_AND_WILDCARD"
   | .indexForErrorTextInvalid => "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
   | .missingYear => "MVK_MISSING_YEAR"
+  | .noDigitPattern => "MVK_NO_DIGIT_PATTERN"
   | .onlyConstantsUsed => "MVK_ONLY_CONSTANTS_USED"
   | .extractOpNotAllowedForFourParamDateConstruct =>
       "MVK_EXTRACT_OP_NOT_ALLOWED_4_DATE_CONSTRUCT_WITH_4_PARAMS"
   | .nonNumeric => "MVK_NON_NUMERIC"
   | .noDateConstant => "MVK_NO_DATE_CONSTANT"
   | .noTypeYesOrYesNo => "MVK_NO_TYPE_YES_OR_YESNO"
+  | .noTypeYesNo => "MVK_NO_TYPEYESNO"
   | .invalidType => "MVK_INVALID_TYPE"
+  | .invalidInterval => "MVK_INVALID_INTERVAL"
   | .noNumberForCalc => "MVK_NO_NUMBER_FOR_CALC"
   | .noStringOrNumberForAdd => "MVK_NO_STRING_OR_NUMBER_FOR_ADD"
   | .invalidConst => "MVK_INVALID_CONST"
@@ -643,6 +669,8 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noFieldsAllowed => "MVK_NO_FIELDS_ALLOWED"
   | .notInSamePath => "MVK_NOT_IN_SAME_PATH"
   | .parallelIterationNotAllowed => "MVK_PARALLEL_ITERATION_NOT_ALLOWED"
+  | .parallelIterationForFilteredEntityNotAllowed => "MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED"
+  | .invalidCombinationOfRepetitionNotUnique => "MVK_INVALID_COMBINATION_OF_REPETITON_NOT_UNIQUE"
   | .indexTypeInconsistent => "MVK_INDEX_TYPE_INCONSISTENT"
   | .invalidFieldInParameter => "INVALID_FIELD_IN_PARAMETER"
   | .errorEmptyPrecondition => "MVK_ERROR_EMPTY_PRECONDITION"
@@ -678,8 +706,8 @@ def all : List KernelStaticDiagnostic :=
     .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
     .invalidCompareToYesNo,
     .fieldNotInRuleGroup, .errorFieldNoIndex, .errorFieldInvalidIndex, .errorFieldInvalidIndexType,
-    .paramSizeInvalidN,
-    .paramSizeInvalidGN, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
+    .paramSizeInvalidN, .paramSizeInvalidFN,
+    .paramSizeInvalidGN, .paramSizeInvalid1, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
     .differentGroups, .noWildcard, .wildcardOnlyAtLowestLevelAllowed,
     .wildcardAtLowestLevelRequired, .repeatableLevelRequired,
     .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
@@ -689,7 +717,7 @@ def all : List KernelStaticDiagnostic :=
     .groupIsEmpty, .rootGroupIsEmpty,
     .repeatableGroupMissing, .negativeConditionInIteration,
     .errorFieldNotReferenced, .invalidStringConstantForEnumeration,
-    .invalidStringConstantForEnumerationCategory, .categoryUnknown, .noEnumeration,
+    .invalidStringConstantForEnumerationCategory, .invalidStringConstantForEnumerationOrCategory, .categoryUnknown, .noEnumeration,
     .categoryNotAllowed,
     .indexFieldUnresolved, .indexFieldAmbiguous, .indexFieldComposedIndex,
     .indexFieldRepeatabilityMismatch, .indexFieldNotIterating, .indexFieldNonRepeatableEnum,
@@ -731,15 +759,16 @@ def all : List KernelStaticDiagnostic :=
     .invalidParameterForDateRangeComparison, .fractDigitsInvalid,
     .dateWithAndWithoutYear,
     .invalidCompareToEnumOrString, .inconsistentTypesCompared,
-    .invalidDateRangeFormat, .invalidCompareToDateRange, .wrongDateFormatForOp,
+    .invalidDateRangeFormat, .invalidCompareToDateRange, .wrongDateFormatForOp, .invalidDateForOp, .invalidTime,
     .invalidCompareToDate, .noDate, .semanticIndexContainedInIndex,
     .noIndexField, .semanticIndexNotAllowed, .semanticIndexAndWildcard,
     .indexForErrorTextInvalid,
-    .missingYear, .onlyConstantsUsed, .extractOpNotAllowedForFourParamDateConstruct,
-    .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .invalidType, .noNumberForCalc, .noStringOrNumberForAdd,
+    .missingYear, .noDigitPattern, .onlyConstantsUsed, .extractOpNotAllowedForFourParamDateConstruct,
+    .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .noTypeYesNo, .invalidType, .invalidInterval, .noNumberForCalc, .noStringOrNumberForAdd,
     .invalidCompareEnumToString, .invalidCompareEnumToEnum, .invalidDateString, .noConst,
     .paramSizeInvalidTwo, .pointInA12Model,
-    .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .parallelIterationNotAllowed,
+    .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .parallelIterationNotAllowed, .parallelIterationForFilteredEntityNotAllowed,
+    .invalidCombinationOfRepetitionNotUnique,
     .indexTypeInconsistent,
     .invalidFieldInParameter, .illegalSemanticIndex, .conditionNoBaseYear, .noString,
     .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter,

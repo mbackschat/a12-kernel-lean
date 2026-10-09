@@ -120,8 +120,8 @@ private def elaborateHavingScalarFieldValueList (model : FlatModel)
   checkMembershipKinds kind subjectDecls
   if kind != .number && kind != .string && kind != .enumeration then throw (.membershipKind first.path)
   checkMembershipValues fields
+  checkMembershipDuplicates (values ++ fields)
   checkMembershipKinds kind memberDecls
-  checkMembershipDuplicates (fields ++ values)
   checkMembershipValues values
   if kind == .number then
     let number (operand : ResolvedHavingDirectFieldOperand model) := do
@@ -197,7 +197,7 @@ def elaborateHavingTokenLiteralList (model : FlatModel) (declaringGroup : GroupP
   checkMembershipValues fields
   let operands ← slots.mapM fun slot => slot.mapM membershipText
   if let some value := values.find? fun value => !tokenLiteralAllowed model (operands.flatMap (·.references)) value then
-    throw (.text (.enumerationOperand first.declaration.path (.invalidLiteral value)))
+    throw (.membershipLiteralOutsideDomain value)
   pure (.tokenLiterals operands values)
 
 end A12Kernel

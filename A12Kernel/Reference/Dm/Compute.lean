@@ -312,30 +312,75 @@ private def computationOutputModes (computation : DmComputation) :
     if !mode.admitted banded then refuse "RoundingMode" "MVK_ERROR_WRONG_ROUNDING_MODE"
     pure (if banded then some mode else none)
 
+/-- Filter-containing computations need the joined condition's complete parse-time admission
+before its global checks. Fragments remain error values until their authored turn, so a later parse or
+read failure cannot pre-empt an earlier operation/comparison (spec/09 §6). -/
+private def checkComputationFilterAdmission (language : Language) (model : FlatModel)
+    (computation : DmComputation) (target : FlatFieldDecl) (suppress : Bool) : Lowering Unit := do
+  let fragment (condition : Bool) (text : String) : Lowering Expr := do
+    let body := (← parsed language text).body
+    if !body.parensLegal condition then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
+    pure body
+  let common := computation.commonPrecondition.map (fragment true)
+  let alternatives := computation.alternatives.map fun alternative =>
+    (alternative.precondition.map (fragment true), fragment false alternative.operation, alternative.toleranceRangeOp)
+  let filtered := fun (source : Lowering Expr) => source.toOption.any Expr.hasHaving
+  if !common.any filtered && !alternatives.any (fun (guard, operation, _) => guard.any filtered || filtered operation) then return
+  let check := checkRawConditionBeforeGlobals model computation.group target.groupPath
+  let mut facts : FilterRuleFacts := {}
+  if let some common := common then facts := facts.merge (← check (← common) suppress)
+  for (guard, operation, tolerance) in alternatives do
+    if let some guard := guard then facts := facts.merge (← check (← guard) suppress)
+    checkRawComputationTargetRead model computation.group target
+    let operation ← operation
+    let comparison ← match tolerance with
+      | none => pure CompareOp.ne
+      | some "DiffersWithToleranceRange1" => pure (.tolerance 1)
+      | some "DiffersWithToleranceRange2" => pure (.tolerance 2)
+      | some "DiffersWithToleranceRange5" => pure (.tolerance 5)
+      | some "DiffersWithToleranceRange10" => pure (.tolerance 10)
+      | some _ => refuse "ToleranceRange" "unknown range"
+    facts := facts.merge (← check (.compare comparison (rawComputationTarget target) operation) suppress)
+  if let some diagnostic := facts.refusal? then refuse "Having" diagnostic.kernelCode
+  -- The generated filled-target conjunction is not a standalone raw-Length limiter (spec/09 §6).
+  if facts.rawLength then refuse "Having" KernelStaticDiagnostic.invalidLengthOfRawType.kernelCode
+
 private def lowerComputationWith (allowParallelGuards : Bool)
     (model : FlatModel) (language : Language) (computation : DmComputation) :
     Lowering (FlatFieldDecl × LoweredComputation model) := do
   let target ← targetOf language model computation
-  let outputModes ← computationOutputModes computation
-  if target.policy.kind.surfaceKind != .number && outputModes.any Option.isSome then
-    refuse "ToleranceRange" "non-Number target"
-  -- Decode once for guard scale admission, but retain the reader's guard/operation/refusal order.
-  let suppression : Lowering (List String) :=
-    if computation.errorCodesToSuppress.isEmpty then pure [] else
-      (·.suppressed) <$> parsed language
-        s!"@SuppressWarning({",".intercalate computation.errorCodesToSuppress}) 0"
-  let guardSuppress := (suppression.toOption.getD []).contains "MVK_INVALID_COMPARE_DEC_PLACES"
-  let (common, guards) ← guards language model computation target guardSuppress allowParallelGuards
+  let texts := computation.commonPrecondition.toList ++ computation.alternatives.flatMap
+    (fun alternative => alternative.precondition.toList ++ [alternative.operation])
+  let hasHaving := texts.any fun text => (parseText language text).toOption.any (·.body.hasHaving)
+  let readOutputModes := do
+    let modes ← computationOutputModes computation
+    if target.policy.kind.surfaceKind != .number && modes.any Option.isSome then
+      refuse "ToleranceRange" "non-Number target"
+    pure modes
+  -- Delay caller compatibility only for the complete filter preflight; unfiltered callers
+  -- retain their existing admission boundary (H08's scope in docs/gaps/paths-and-groups.md).
+  let earlyModes ← if hasHaving then pure none else some <$> readOutputModes
+  let suppression : Lowering (List String) := if computation.errorCodesToSuppress.isEmpty then pure [] else
+    (·.suppressed) <$> parsed language
+      s!"@SuppressWarning({",".intercalate computation.errorCodesToSuppress}) 0"
+  let validatedSuppression : Lowering Bool := do
+    let suppressed ← suppression
+    if let some other := suppressed.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
+      refuse "SuppressWarning" other
+    pure (suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES")
+  -- Filter preflight starts at the generated preamble (spec/09 §6; spec/12 §4).
+  -- The unfiltered route defers preamble failures until guards and operation syntax finish.
+  let suppress ← if hasHaving then validatedSuppression else
+    pure ((suppression.toOption.getD []).contains "MVK_INVALID_COMPARE_DEC_PLACES")
+  checkComputationFilterAdmission language model computation target suppress
+  -- Calculation-mode compatibility follows the generated condition’s parser gates (spec/09 §6).
+  let outputModes ← match earlyModes with | some modes => pure modes | none => readOutputModes
+  let (common, guards) ← guards language model computation target suppress allowParallelGuards
   let operations ← computation.alternatives.mapM fun alternative => do
     let body := (← parsed language alternative.operation).body
     if !body.parensLegal false then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
     pure body
-  -- The entries reach the parser joined into one preamble (spec §12.4), so padding is admitted
-  -- and a second name is a parse failure, as in a rule's own text.
-  let suppressed ← suppression
-  if let some other := suppressed.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
-    refuse "SuppressWarning" other
-  let suppress := suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
+  let suppress ← if hasHaving then pure suppress else validatedSuppression
   let row := !target.repeatableScope.isEmpty
   -- The checked step already owns guard evaluation; the reader preserves its single-operation boundary.
   let document : Lowering (FlatFieldDecl × LoweredComputation model) := do

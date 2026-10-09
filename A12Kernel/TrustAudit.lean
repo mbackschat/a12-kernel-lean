@@ -2125,6 +2125,7 @@ run_cmd do
 #print axioms A12Kernel.elaborateStringExprCore_fieldValueAsString
 #print axioms A12Kernel.elaborateStringExprCore_range
 #print axioms A12Kernel.elaborateStringExprCore_concat
+#print axioms A12Kernel.stringExpr_group_eval
 #print axioms A12Kernel.checkedStringExpr_evaluate
 #print axioms A12Kernel.checkedStringComputation_target_admitted
 #print axioms A12Kernel.checkedStringComputation_declaringGroup_valid
@@ -2795,6 +2796,7 @@ run_cmd do
 #print axioms A12Kernel.filterReferenceWalk_prefix_determines
 #print axioms A12Kernel.indexScan_prefix_determines
 #print axioms A12Kernel.indexScan_class_follows_reference
+#print axioms A12Kernel.FilterRuleFacts.merge_assoc
 #print axioms A12Kernel.conditionRefusal_needs_parallelIteration
 #print axioms A12Kernel.conditionRefusal_invalid_implies_earlier_clear
 #print axioms A12Kernel.a12TableView_not_table
@@ -2837,6 +2839,7 @@ run_cmd do
 #print axioms A12Kernel.constructorOperandRefusal_slotless
 #print axioms A12Kernel.constructorOperandRefusal_family
 #print axioms A12Kernel.operandCountAdmitted_prefix
+#print axioms A12Kernel.operandCountAdmitted_date
 #print axioms A12Kernel.operandCountAdmitted_full
 #print axioms A12Kernel.componentSlots_length
 #print axioms A12Kernel.tableEnumCheckRuns_a12

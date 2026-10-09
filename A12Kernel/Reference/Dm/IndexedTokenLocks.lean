@@ -687,6 +687,13 @@ example : ["[Rows/Body/A ->Kind For Key] == [Rows/Body/B For Key]",
       evaluate true condition false none { category := true, displaySecond := true } == some (.inl .notFired) &&
       evaluate true "1" true (some condition) { category := true, displaySecond := true } == some (.inr "cleared")) = true := by native_decide
 
+example : evaluate true "{[Rows/Body/B For Key]} + \"!\" == \"B!\"" false none
+      { displaySecond := true } = some (.inl (.fired .value)) ∧
+    evaluate true "\"!\" + {{[Rows/Body/B For Key]}}" true none
+      { displaySecond := true, tokenTarget := true, stringExpressionTarget := true } = some (.inr "value !B") ∧
+    (evaluate true "{[Rows/Body/B For Key] + \"!\"} == \"B!\"" false none
+      { displaySecond := true }).isNone = true := by native_decide
+
 private def selectedStringBindings (expression : String) : Option (List FieldId × List FieldId) := do
   let m := model false
   let parsed ← (parseText .english expression).toOption

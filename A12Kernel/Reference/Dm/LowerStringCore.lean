@@ -22,7 +22,7 @@ partial def lowerStringExprWith (read : Reference → Lowering Atom)
       | some start, some finish => do pure (.range (← read reference) start finish)
       | _, _ => refuse "RangeAsString" "operand"
   | .arith .add left right => do pure (.concat (← lowerStringExprWith read selected left) (← lowerStringExprWith read selected right))
-  | .braces body => lowerStringExprWith read selected body
+  | .braces body => .group <$> lowerStringExprWith read selected body
   | source@(.call "FirstFilledValue" _ none none) => (.field ·) <$> selected source
   | other => refuse ("StringOperation/" ++ other.construct)
 
@@ -30,6 +30,7 @@ partial def lowerStringExprWith (read : Reference → Lowering Atom)
 this shared route on both validation and computation arms. -/
 def isCompoundStringExpression : StringExpr Atom Category → Bool
   | .field _ | .category _ _ | .literal _ => false
+  | .group body => isCompoundStringExpression body
   | _ => true
 
 end A12Kernel.Dm

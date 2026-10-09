@@ -20,7 +20,7 @@ exponent's derived scale answers before a power on its left (`c15`, `Y25`). A ca
 a wrapper asks no division gate of its own (`c10`, `e2`), while each operand is checked at its own nodes
 (`c01`, `c11`) and a division above the call counts any operand's division (`g1`, `g2`); the
 `walkRows` below separate the call's walk itself. A lone unsortable leader is refused (`Y03` to `Y12`). The
-kind rows lock what the typing walk reads off a declaration: a labelled Enumeration is not string-like
+kind rows lock what the typing walk reads off a declaration: the remapped Enumeration is refused as a direct addition operand
 (`B02`, `B03`, `B07`), an extrema call compares component sets rather than kinds (`X10` to `X14`), the
 first offending follower decides a chain (`X26`, `X27`), a declaration refused as an operand answers
 at its position in the walk (`B21`, `B25`), and a Custom declaration is string-like (`K02`, `K08`).
@@ -347,5 +347,37 @@ private def alternativeRows : List (String × List (Option SurfaceComputationCon
 example : (alternativeRows.filter fun (_, alternatives, expected) =>
     codeOfAlternatives alternatives != expected).map (·.1) = [] := by
   native_decide
+
+private def enumAddition (label : String) : Option NumericOperandType × Option KernelStaticDiagnostic :=
+  let source : FlatFieldDecl := { declaration 20 "Identity" .enumeration with enumeration := some {
+    storedTokens := ["1"], displayFacts := [{ locale := "en_US", stored := "1", display := label }] } }
+  match checkNumericOperationNodes (fun type => (.ok type : Except Unit NumericOperandType))
+      (.binary .add (.atom (NumericOperandType.ofDeclaration source)) (.atom .stringLike)) with
+  | .ok type => (some type, none)
+  | .error (.node diagnostic) => (none, diagnostic)
+  | .error (.operand _) => (none, none)
+
+example : enumAddition "1" = (some .stringLike, none) ∧
+    enumAddition "One" = (none, some .noStringOrNumberForAdd) := by native_decide
+
+private def groupedEnumerationRows : List (AuthoredNumericExpr NumericOperandType ×
+    Option NumericOperandType × Option KernelStaticDiagnostic) :=
+  let enumeration := AuthoredNumericExpr.atom (.other .enumeration)
+  let string := AuthoredNumericExpr.atom .stringLike
+  let boolean := AuthoredNumericExpr.atom (.other .boolean)
+  [(.binary .add (.group enumeration) string, some .stringLike, none),
+   (.binary .add string (.group (.group enumeration)), some .stringLike, none),
+   (.binary .add (.group enumeration) (.group enumeration), some .stringLike, none),
+   (.group enumeration, some (.other .enumeration), none),
+   (.group (.binary .add enumeration string), none, some .noStringOrNumberForAdd),
+   (.binary .add (.group enumeration) enumeration, none, some .noStringOrNumberForAdd),
+   (.binary .add (.group boolean) string, none, some .noStringOrNumberForAdd),
+   (.binary .subtract (.group enumeration) string, none, some .noNumberForCalc)]
+
+example : groupedEnumerationRows.all (fun (tree, expected, diagnostic) =>
+    match checkNumericOperationNodes (fun type => (.ok type : Except Unit NumericOperandType)) tree with
+    | .ok type => expected == some type && diagnostic.isNone
+    | .error (.node actual) => expected.isNone && actual == diagnostic
+    | .error (.operand _) => false) = true := by native_decide
 
 end A12Kernel.Conformance.NumericComputation.OperationNodeGates

@@ -279,14 +279,14 @@ private def enumAdmission (values : List String) : Admission :=
 example : (enumAdmission ["A", "B"], enumAdmission ["A"], enumAdmission ["x", "y"],
     enumAdmission ["A", "x"]) =
     (.admitted, .admitted,
-      .refused (some .invalidStringConstantForEnumComparison),
-      .refused (some .invalidStringConstantForEnumComparison)) := by
+      .refused (some .invalidStringConstantForEnumerationOrCategory),
+      .refused (some .invalidStringConstantForEnumerationOrCategory)) := by
   native_decide
 
 /- One undeclared literal beside a declared one is enough, which is the row that keeps the gate from
    reading as "at least one literal must be a token". -/
 example : pairAdmission "Choice" "Choice2" =
-    .refused (some .invalidStringConstantForEnumComparison) := by native_decide
+    .refused (some .invalidStringConstantForEnumerationOrCategory) := by native_decide
 
 private def disjointAdmission (values : List String) : Admission :=
   match values with
@@ -308,7 +308,7 @@ private def disjointAdmission (values : List String) : Admission :=
 example : (disjointAdmission ["A"], disjointAdmission ["C"], disjointAdmission ["A", "C"],
     disjointAdmission ["Z"]) =
     (.admitted, .admitted, .admitted,
-      .refused (some .invalidStringConstantForEnumComparison)) := by
+      .refused (some .invalidStringConstantForEnumerationOrCategory)) := by
   native_decide
 
 private def repeatedRefAdmission : Admission :=

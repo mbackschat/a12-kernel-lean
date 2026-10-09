@@ -22,6 +22,7 @@ def lowerSelectedStringExpr (model : FlatModel) (group : GroupPath) : Expr → L
 def isStringExpressionComparisonOperand (expression : SurfaceSelectedStringExpression) : Bool :=
   match expression with
   | .category (.inr _) _ => true
+  | .group body => isStringExpressionComparisonOperand body
   | _ => isCompoundStringExpression expression
 
 end A12Kernel.Dm

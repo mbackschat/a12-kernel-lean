@@ -193,7 +193,7 @@ example : literalListFilters.map (fun operator =>
 
 example : membershipDiagnostic disjointLiteralDomains
     "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, $Expected In \"absent\")" =
-      some (some .invalidStringConstantForEnumComparison) ∧
+      some (some .invalidStringConstantForEnumerationOrCategory) ∧
     membershipDiagnostic categoryModel "NoFieldValueIncludedInValueList(Rows/Tag -> Missing, Rows/N In \"keep\")" =
       some (some .categoryUnknown) ∧
     membershipDiagnostic model "NotAllFieldValuesIncludedInValueList(Rows/N In \"1\")" =
@@ -218,7 +218,7 @@ example : literalListFilters.map (fun operator =>
     [some ["value 9"], some ["value 5"], some ["value 5"]] ∧
     literalListFilters.map (fun operator => membershipDiagnostic categoryLiteralDomains
       (operator ++ "(Rows/Tag -> Label In \"keep\")")) =
-      List.replicate 3 (some (some .invalidStringConstantForEnumComparison)) ∧
+      List.replicate 3 (some (some .invalidStringConstantForEnumerationOrCategory)) ∧
     literalListFilters.map (fun operator =>
       (runModel categoryLiteralDomains (operator ++ "(Rows/Tag, Rows/Tag -> Label In \"keep\", \"yes\")")
         false "keep" "keep" "drop").map (·.2)) =

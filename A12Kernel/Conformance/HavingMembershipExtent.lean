@@ -188,4 +188,34 @@ example : [0, 1, 2].all (fun shape => [false, true].all (fun literals => decide 
     certificate shape false literals = some true ∧ certificate shape true literals = some (shape == 1)))) = true ∧
     certificate 3 true true = some true ∧ certificate 3 true false = some true := by native_decide
 
+private def literalSource : SurfaceHavingEntitySource := {
+  first := .entity { origin := .inner, field := { base := .absolute, groups := ["Form"], field := "Outside" } }, rest := [] }
+
+private def literalAdmission (value : String) : Option KernelStaticDiagnostic :=
+  match elaborateHavingTokenLiteralList certificateModel ["Form"] [] [] literalSource [value] with
+  | .ok _ => none
+  | .error error => error.diagnostic?
+
+example : literalAdmission "x" = none ∧
+    literalAdmission "missing" = some .invalidStringConstantForEnumerationOrCategory := by native_decide
+
+private def membershipModel : FlatModel := { certificateModel with fields := certificateModel.fields ++ [
+  { id := 4, groupPath := ["Form"], name := "Text", policy := { kind := .string } },
+  { id := 5, groupPath := ["Form"], name := "Twin", policy := { kind := .enumeration },
+    enumeration := some { storedTokens := ["x"] } }] }
+private def member (name : String) : SurfaceHavingDirectFieldOperand := {
+  origin := .inner, field := { base := .absolute, groups := ["Form"], field := name } }
+private def scalarAdmission (names : List String) : Option KernelStaticDiagnostic :=
+  let members : SurfaceHavingEntitySource := {
+    first := .entity (member (names.headD "Outside")), rest := names.drop 1 |>.map fun name => .entity (member name) }
+  let read := fun (source : SurfaceHavingDirectFieldOperand) =>
+    (membershipModel.resolveNonrepeatableFieldUnchecked ["Form"] source.field).mapError CorrelationElabError.resolve
+  match elaborateHavingFieldValueList membershipModel ["Form"] [] [] (.scalar .included) literalSource members read read with
+  | .ok _ => none
+  | .error error => error.diagnostic?
+
+example : membershipModel.validate.isOk = true ∧ scalarAdmission ["Twin"] = none ∧
+    scalarAdmission ["Text"] = some .varyingTypesNotAllowed ∧
+    scalarAdmission ["Text", "Outside"] = some .duplicateParam1 := by native_decide
+
 end A12Kernel.Conformance.HavingMembershipExtent

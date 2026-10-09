@@ -17,6 +17,15 @@ import A12Kernel.Reference.Dm.HavingDateConstructionLocks
 import A12Kernel.Reference.Dm.HavingUniquenessLocks
 import A12Kernel.Reference.Dm.HavingFieldFillLocks
 import A12Kernel.Reference.Dm.HavingMembershipExtentLocks
+import A12Kernel.Reference.Dm.HavingMembershipAdmissionLocks
+import A12Kernel.Reference.Dm.HavingListConditionAdmissionLocks
+import A12Kernel.Reference.Dm.HavingComparisonAdmissionLocks
+import A12Kernel.Reference.Dm.HavingComputationAdmissionLocks
+import A12Kernel.Reference.Dm.HavingGlobalAdmissionLocks
+import A12Kernel.Reference.Dm.HavingValueCountAdmissionLocks
+import A12Kernel.Reference.Dm.HavingPredicateAdmissionLocks
+import A12Kernel.Reference.Dm.HavingScalarOperationLocks
+import A12Kernel.Reference.Dm.HavingTemporalAdmissionLocks
 import A12Kernel.Reference.Dm.HavingAggregateExtentLocks
 import A12Kernel.Reference.Dm.HavingTemporalExpressionLocks
 import A12Kernel.Reference.Dm.HavingRangeEndpointLocks
@@ -43,6 +52,7 @@ import A12Kernel.Reference.Dm.ParserLocks
 import A12Kernel.Reference.Dm.RecursiveReferenceSyntaxLocks
 import A12Kernel.Reference.Dm.RecursiveReferenceAdmissionLocks
 import A12Kernel.Reference.Dm.FilterReferenceInventoryLocks
+import A12Kernel.Reference.Dm.HavingGroupAdmissionLocks
 import A12Kernel.Reference.Dm.ReaderLocks
 import A12Kernel.Reference.Dm.NegateLocks
 import A12Kernel.Reference.Dm.LowerLocks

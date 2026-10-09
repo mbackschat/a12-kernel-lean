@@ -188,6 +188,38 @@ def conditionRefusal (shape : ConditionShape) : Option IterationRefusal :=
   else
     none
 
+/-- Whole-rule facts accumulated only after each authored read has passed. Filter containment
+is syntactic: exiting a nested filter changes parser read mode, not AST membership
+(ParserService.checkNormalRule; AnalyseService.isParallelIteration). -/
+structure FilterRuleFacts where
+  repetitionNotUniqueCount : Nat := 0
+  parallelIteration : Bool := false
+  parallelFilteredEntity : Bool := false
+  parallelFilterBody : Bool := false
+  filterUsesIndex : Bool := false
+  rawLength : Bool := false
+  deriving Repr, BEq, DecidableEq
+
+/-- Computation fragments contribute to one generated rule's global checks (spec/09 §6). -/
+def FilterRuleFacts.merge (left right : FilterRuleFacts) : FilterRuleFacts := {
+  repetitionNotUniqueCount := left.repetitionNotUniqueCount + right.repetitionNotUniqueCount
+  parallelIteration := left.parallelIteration || right.parallelIteration
+  parallelFilteredEntity := left.parallelFilteredEntity || right.parallelFilteredEntity
+  parallelFilterBody := left.parallelFilterBody || right.parallelFilterBody
+  filterUsesIndex := left.filterUsesIndex || right.filterUsesIndex
+  rawLength := left.rawLength || right.rawLength }
+
+/-- These whole-rule refusals follow successful parsing and precede raw-Length/final iteration
+checks. The filtered owner's parallelism is distinct from parallelism in its body
+(ParserService.checkNormalRule; spec/07 §3). -/
+def FilterRuleFacts.refusal? (facts : FilterRuleFacts) : Option KernelStaticDiagnostic :=
+  if facts.repetitionNotUniqueCount > 0 && facts.parallelIteration then some .parallelIterationNotAllowed
+  else if facts.parallelFilteredEntity then some .parallelIterationForFilteredEntityNotAllowed
+  else if facts.parallelFilterBody then some .parallelIterationNotAllowed
+  else if facts.filterUsesIndex then some .semanticIndexNotAllowed
+  else if facts.repetitionNotUniqueCount > 1 then some .invalidCombinationOfRepetitionNotUnique
+  else none
+
 /-- One resolved level in a filter body's reference walk. The two geometric facts are
 independent: an iteration can lie on the filtered path without binding a level reopened by it
 (spec/07 §3, CheckEntitySpecImpl.checkIndicesInFilterCondition). -/

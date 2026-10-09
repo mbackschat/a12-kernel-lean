@@ -5,6 +5,14 @@ import A12Kernel.Proofs.StringFieldPolicy
 
 namespace A12Kernel
 
+/-- Authored grouping changes admission shape, while preserving the entire read/evaluation effect. -/
+theorem stringExpr_group_eval [Monad m] [MonadExceptOf StringComputationFault m]
+    (address : Atom → FieldId) (phase : Phase)
+    (read : Atom → m (SimpleComparisonOperand String)) (body : StringExpr Atom) :
+    (StringExpr.group body).evalOperandWithSource address phase read =
+      body.evalOperandWithSource address phase read := rfl
+
+
 /-- Category projection preserves the selected operand's provenance and exact positional token. -/
 theorem stringCategory_preserves_projection {Atom : Type} (address : Atom → FieldId) (phase : Phase)
     (read : Atom → Except StringComputationFault (SimpleComparisonOperand String))

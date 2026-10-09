@@ -271,7 +271,8 @@ private def FlatModel.resolveHavingTypeValidity (model : FlatModel)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) (name : String) :
     Except CorrelationElabError HavingPresenceRef := do
   let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels
-    { origin, field := reference } (valueRead := true)
+    { origin, field := reference }
+  if declaration.isRawString then throw (.resolve (.rawFieldValueRead declaration.path))
   let _ ← (elaborateCustomFieldValidityOperand model declaration.id).mapError .typeValidityOperand
   if name.isEmpty then throw (.typeValidityName .emptyTypeName)
   pure { origin, field := declaration.id }

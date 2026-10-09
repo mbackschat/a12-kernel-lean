@@ -271,6 +271,18 @@ example : admission "Valid(Rows/Tag, \"Code\")" { (model {}) with fields := (mod
       if field.id == 3 then { field with customType := some { name := "Other" }, stringPolicy := {} } else field } =
       .refused (some .noStringOrEnumOrExtEnum) := by native_decide
 
+private def partialDateModel : FlatModel := { (model {}) with fields := (model {}).fields.map fun field =>
+  if field.id == 3 then
+    { field with
+      policy := { kind := .temporal .date (TemporalComponents.ofFormat "yyyy-MM-dd") }
+      stringPolicy := {}
+      temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .dayOptional } }
+  else field }
+
+example : partialDateModel.validate.isOk = true ∧ ["Valid", "Invalid"].all (fun op =>
+    admission (op ++ "(Rows/Tag, \"Code\")") partialDateModel ==
+      .refused (some .noStringOrEnumOrExtEnum)) = true := by native_decide
+
 private def noWorld (filter : String) (scenario : Scenario := {}) : Option (Sum CheckedAddressingError Verdict) := do
   let prepared ← (fixture scenario).toOption
   let parsed ← (parseText .english (sum filter ++ " > 0")).toOption

@@ -123,4 +123,62 @@ example : projectedRun "NoFieldValueIncludedInValueList(Rows/Labels In Rows/Labe
 example : diagnostic "RepetitionNotUnique(Rows, Rows, Missing)" = some .invalidEntity ∧
     diagnostic "RepetitionNotUnique(Rows/N, Rows/N @From Missing)" = some .invalidEntity := by native_decide
 
+
+private def indexedModel : FlatModel := { HavingFixture.model with
+  fields := HavingFixture.model.fields ++ [
+    { id := 6, name := "RowOut", groupPath := ["Form", "Rows"], repeatableScope := [10],
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 7, name := "Raw", groupPath := ["Form", "Rows"], repeatableScope := [10],
+      policy := { kind := .string }, stringValueMode := .raw, stringPolicy := { lineBreaksPermitted := true } },
+    { id := 8, name := "Choice", groupPath := ["Form", "Rows"], repeatableScope := [10],
+      policy := { kind := .enumeration }, enumeration := some domain }]
+  repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3, indexField := some 3 }] }
+
+private def indexedResult (body : String) (row : Bool) :=
+  HavingFixture.readerResults ("Sum(Rows*/N Having " ++ body ++ ")") indexedModel row
+
+example : indexedModel.validate.isOk = true := by native_decide
+
+private def orderedCases : List (String × String) := [
+  ("RepetitionNotUnique($Rows/N For \"keep\") And FieldFilled(Missing)", "MVK_SEMANTIC_INDEX_NOT_ALLOWED"),
+  ("RepetitionNotUnique(Rows/N @From $Rows For \"keep\") And FieldFilled(Missing)", "MVK_SEMANTIC_INDEX_NOT_ALLOWED"),
+  ("RepetitionNotUnique(Rows/N, Rows/N @From Rows*/N Having FieldFilled(Rows/N))", "MVK_DUPLICATE_PARAM1"),
+  ("RepetitionNotUnique(Rows/Raw @From Rows*/N Having FieldFilled(Rows/N))", "MVK_INVALID_RAW_TYPE"),
+  ("RepetitionNotUnique(Rows/N @From Rows*/N Having FieldFilled(Rows/N))", "MVK_NO_FIELDS_ALLOWED"),
+  ("RepetitionNotUnique(Rows/N, Rows/N @From Rows*/N Having [Rows/N] > [Rows/Tag])", "MVK_INVALID_TYPE_FOR_COMPARISON"),
+  ("RepetitionNotUnique(Rows/N)", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION"),
+  ("RepetitionNotUnique(Rows/N @From Rows)", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION"),
+  ("RepetitionNotUnique(Rows/N For \"keep\")", "MVK_SEMANTIC_INDEX_NOT_ALLOWED"),
+  ("RepetitionNotUnique(Rows/N @From Rows For \"keep\")", "MVK_SEMANTIC_INDEX_NOT_ALLOWED"),
+  ("RepetitionNotUnique(Rows/N For \"keep\", Missing)", "MVK_INVALID_ENTITY"),
+  ("RepetitionNotUnique(Rows/N For \"keep\" @From Missing)", "MVK_INVALID_ENTITY"),
+  ("RepetitionNotUnique(Rows/N For \"keep\" @From Rows For Missing)", "MVK_INVALID_ENTITY"),
+  ("RepetitionNotUnique(Rows/N For \"keep\", Rows/N For \"keep\")", "MVK_DUPLICATE_PARAM1"),
+  ("RepetitionNotUnique(Rows/N For \"keep\", /Form/Rows/N For \"keep\")", "MVK_DUPLICATE_PARAM1"),
+  ("RepetitionNotUnique(Rows/N For \"keep\", Rows/N For \"drop\")", "MVK_SEMANTIC_INDEX_NOT_ALLOWED"),
+  ("RepetitionNotUnique(Rows For \"keep\", Rows/N For \"keep\")", "MVK_DUPLICATE_PARAM2"),
+  ("RepetitionNotUnique(Rows For \"keep\", Rows/N For \"drop\")", "MVK_NO_GROUPS_ALLOWED"),
+  ("RepetitionNotUnique(Rows/N For \"keep\", Rows/Choice->Label)", "MVK_CATEGORY_NOT_ALLOWED"),
+  ("RepetitionNotUnique(Rows/Raw, Rows/N For \"keep\")", "MVK_SEMANTIC_INDEX_NOT_ALLOWED"),
+  ("RepetitionNotUnique(Rows/N For \"keep\", Rows*/Raw)", "MVK_NO_WILDCARDS_ALLOWED"),
+  ("RepetitionNotUnique(Rows/N For \"keep\" @From Rows/N)", "MVK_SEMANTIC_INDEX_NOT_ALLOWED"),
+  ("RepetitionNotUnique(Rows/Raw @From Rows For \"keep\")", "MVK_INVALID_RAW_TYPE"),
+  ("RepetitionNotUnique(Rows/N @From Rows/N For \"keep\")", "MVK_NO_FIELDS_ALLOWED"),
+  ("RepetitionNotUnique(Rows/N @From Rows For \"keep\") And FieldFilled(Missing)", "MVK_SEMANTIC_INDEX_NOT_ALLOWED"),
+  ("RepetitionNotUnique(Rows/N) And FieldFilled(Missing)", "MVK_INVALID_ENTITY"),
+  ("RepetitionNotUnique(Rows/N For \"keep\" Having FieldFilled(Rows/N))", "MVK_WILDCARDS_REQUIRED"),
+  ("RepetitionNotUnique(Rows*/N Having FieldFilled(Rows/N))", "MVK_NO_WILDCARDS_ALLOWED")]
+
+example : [false, true].all (fun row => orderedCases.all (fun (body, expected) =>
+    indexedResult body row == (expected, expected))) = true := by native_decide
+
+example : [false, true].all (fun row =>
+    let preceding := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "
+    let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION" else "MVK_NO_WILDCARD"
+    indexedResult (preceding ++ "RepetitionNotUnique(Rows/N @From Rows)") row == (expected, expected) &&
+    indexedResult "RepetitionNotUnique(Rows*/N Having FieldFilled(Rows/N), Rows/N)" row ==
+      (if row then ("MVK_NO_WILDCARDS_ALLOWED", "MVK_NO_WILDCARDS_ALLOWED") else ("MVK_NO_WILDCARD", "MVK_NO_WILDCARD")) &&
+    indexedResult (preceding ++ "RepetitionNotUnique($Rows/N @From Rows)") row ==
+      ("MVK_INVALID_OUTER_ITERATION", "MVK_INVALID_OUTER_ITERATION")) = true := by native_decide
+
 end A12Kernel.Dm.HavingRepetitionAdmissionLocks

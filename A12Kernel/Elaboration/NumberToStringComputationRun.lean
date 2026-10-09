@@ -16,6 +16,7 @@ namespace StringExpr
 def referencesFieldValueAsString (field : FieldId) :
     StringExpr FieldId → Bool
   | .fieldValueAsString candidate => candidate == field
+  | .group body => body.referencesFieldValueAsString field
   | .concat left right =>
       left.referencesFieldValueAsString field ||
         right.referencesFieldValueAsString field

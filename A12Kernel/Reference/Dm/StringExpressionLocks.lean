@@ -110,6 +110,15 @@ example : [false, true].all (fun repeated =>
       some (List.replicate (if repeated then 2 else 1) "value aother")) := by native_decide
 example : messages "[S] + [L->Kind] + [E] == \"abothera\"" true = some 2 := by native_decide
 
+example : [false, true].all (fun repeated =>
+    execute "{[L]} + [S]" "ab" "01.50" repeated ==
+      some (List.replicate (if repeated then 2 else 1) "value bab") &&
+    execute "{FieldValueAsString(N)} + [S]" "ab" "01.50" repeated ==
+      some (List.replicate (if repeated then 2 else 1) "value 1.5ab") &&
+    messages "[S] + {{[L]}} == \"abb\"" repeated == some (if repeated then 2 else 1)) = true := by native_decide
+
+example : admitted "{[L] + [S]} == \"bab\"" = false := by native_decide
+
 private def partialVerdicts (condition : String) (repeated : Bool)
     (scope : ValidationRelevanceScope) : Option (List Verdict) := do
   let group := if repeated then ["Form", "Rows"] else ["Form"]

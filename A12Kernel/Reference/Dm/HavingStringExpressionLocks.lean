@@ -42,6 +42,11 @@ private def enumeration (display : Bool) : EnumerationDeclaration := {
 private def enumerationModel (display : Bool) : FlatModel := { HavingFixture.model with
   fields := HavingFixture.model.fields.map fun field => if field.id == 2 || field.id == 3 then
     { field with policy := { kind := .enumeration }, enumeration := some (enumeration display) } else field }
+example : ["{[Rows/Tag]} + \"!\" == \"keep!\"", "\"!\" + {{[Rows/Tag]}} == \"!keep\"",
+    "FirstFilledValue(Rows/Tag,$Expected) + \"!\" == \"keep!\""].all (fun filter =>
+      run filter "9" "keep" "keep" "drop" (enumerationModel true) ==
+        some (.fired .omission, ["value 9"])) = true := by native_decide
+
 private def customModel : FlatModel := { HavingFixture.model with
   fields := HavingFixture.model.fields.map fun field => if field.id == 3 then
     { field with customType := some { name := "SelectorToken" } } else field }

@@ -82,18 +82,21 @@ theorem constructorOperandRefusal_family (constructor : TemporalConstructor) (po
   simp only [hslot, hne, beq_iff_eq, hslotless, Bool.false_eq_true, if_false]
   cases hfamily : operand.isDateFamily == expected.isDateFamily <;> simp_all
 
-/-- Only `Time` admits a shortened operand list, and it admits every nonempty prefix. Stated over both
-directions so a consumer cannot read the prefix rule as "at least one operand" for the others. -/
-theorem operandCountAdmitted_prefix (constructor : TemporalConstructor) (supplied : Nat)
-    (h : constructor.admitsPrefix = false) :
-    operandCountAdmitted constructor supplied = true ↔ supplied = constructor.arity := by
-  simp [operandCountAdmitted, h]
+/-- Time admits exactly its canonical prefixes, including the empty prefix. -/
+theorem operandCountAdmitted_prefix (supplied : Nat) :
+    operandCountAdmitted .time supplied = true ↔ supplied ≤ 3 := by
+  simp [operandCountAdmitted]
+
+/-- Date's year is full, split, or supplied by an existing Base Year. -/
+theorem operandCountAdmitted_date (supplied : Nat) (hasBaseYear : Bool) :
+    operandCountAdmitted .date supplied hasBaseYear = true ↔
+      supplied = 3 ∨ supplied = 4 ∨ (supplied = 2 ∧ hasBaseYear = true) := by
+  simp [operandCountAdmitted, or_assoc]
 
 /-- The full operand list is always admitted, whichever constructor it is. -/
 @[simp] theorem operandCountAdmitted_full (constructor : TemporalConstructor) :
     operandCountAdmitted constructor constructor.arity = true := by
-  cases constructor <;> simp [operandCountAdmitted, TemporalConstructor.admitsPrefix,
-    TemporalConstructor.arity]
+  cases constructor <;> simp [operandCountAdmitted, TemporalConstructor.arity]
 
 /-- Every component constructor's slot list is as long as its arity, so `arity` and the slot table
 cannot drift apart. `DateTime` is excluded because its positions are not components. -/

@@ -267,7 +267,8 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
         havingOperandClass? typing right == some .text
       match lowerHavingStringExpression left, lowerHavingStringExpression right with
       | .ok left, .ok right =>
-          if stringComparison && (isCompoundStringExpression left || isCompoundStringExpression right) then
+          let grouped := match left, right with | .group _, _ | _, .group _ => true | _, _ => false
+          if stringComparison && (grouped || isCompoundStringExpression left || isCompoundStringExpression right) then
             return .compareStringExpression surfaceOp left right
       | _, _ => pure ()
       if selectedNonNumeric typing left || selectedNonNumeric typing right then
@@ -285,10 +286,15 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
                 | _, _ => .constant <$> dateDifferenceOperandWith? (fun _ => (none : Option Empty)) expression
             | _ => .constant <$> dateDifferenceOperandWith? (fun _ => (none : Option Empty)) expression
       if let (some l, some r) := (temporal left, temporal right) then
-        match l, r with
-        | .field _, .field _ => pure ()
-        | _, _ => return .compareTemporal surfaceOp l r
-      match left, right with
+        let rec isField : SurfaceHavingTemporalOperand → Bool
+          | .field _ => true
+          | .grouped source => isField source
+          | _ => false
+        if !(isField l && isField r) then return .compareTemporal surfaceOp l r
+      let rec ungroup : Expr → Expr
+        | .braces source => ungroup source
+        | source => source
+      match ungroup left, ungroup right with
       | .value { path, index := none, category, filter := none }, .constant literal
       | .constant literal, .value { path, index := none, category, filter := none } =>
           match path.havingField?, literal with

@@ -323,7 +323,7 @@ def diagnostic? : TokenEntityStringLiteralValueListElabError →
   -- partition this carrier's message vocabulary draws.
   | .fields error => error.diagnostic?
   | .literalOutsideSelectedDomain _ =>
-      some .invalidStringConstantForEnumComparison
+      some .invalidStringConstantForEnumerationOrCategory
   -- A String beside an Enumeration differs in base type, so the gate above answers first and the
   -- elaborator never reaches this arm. `emptyValues` is a surface impossibility rather than a gate.
   | .unsupportedFieldsFamily _ | .emptyValues => none

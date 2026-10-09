@@ -51,14 +51,14 @@ private def certifyBoundStringExpression (model : FlatModel) (rowGroup : GroupPa
       pure checked
 
 private def elaborateSelectedStringCore (model : FlatModel) (declaringGroup rowGroup : GroupPath)
-    (expression : SurfaceSelectedStringExpression) (categoryComparison : Bool := false) :
+    (expression : SurfaceSelectedStringExpression) (allowStoredEnumeration : Bool := false) :
     Except StringComputationElabError (StringExpr (ResolvedStringSource model)) := do
   let direct (source : StringExpr SurfaceFieldPath String) :=
     (·.mapSources Sum.inl) <$> elaborateStringExprCore model declaringGroup rowGroup source
   let selected source := (elaborateSemanticIndexSource model declaringGroup source
     (some (model.repeatableScopeForGroupPath rowGroup))).mapError StringComputationElabError.indexed
   let admitField (declaration : FlatFieldDecl) :=
-    if categoryComparison && (declaration.toEnumerationTextFieldComparison? .stored).isSome then
+    if allowStoredEnumeration && (declaration.toEnumerationTextFieldComparison? .stored).isSome then
       pure declaration.id
     else admitStringExpressionField declaration
   match expression with
@@ -87,6 +87,7 @@ private def elaborateSelectedStringCore (model : FlatModel) (declaringGroup rowG
       let source ← selected authored
       discard <| admitNumberAsStringField source.targetDeclaration
       pure (.fieldValueAsString (.inr source))
+  | .group body => .group <$> elaborateSelectedStringCore model declaringGroup rowGroup body true
   | .concat left right => pure (.concat
       (← elaborateSelectedStringCore model declaringGroup rowGroup left)
       (← elaborateSelectedStringCore model declaringGroup rowGroup right))
@@ -177,13 +178,13 @@ def elaborateSelectedStringExpressionComparison (model : FlatModel) (declaringGr
     | _ => false
   -- spec/06 §B.1 gives direct category comparisons a separate domain/display gate;
   -- the bypass does not propagate into concatenation or other expression nodes.
-  let resolvedLeft ← elaborateSelectedStringCore model declaringGroup rowGroup left (isCategory right)
-  let resolvedRight ← elaborateSelectedStringCore model declaringGroup rowGroup right (isCategory left)
+  let resolvedLeft ← elaborateSelectedStringCore model declaringGroup rowGroup left (isCategory right.ungroup)
+  let resolvedRight ← elaborateSelectedStringCore model declaringGroup rowGroup right (isCategory left.ungroup)
   let validLiteral : StringExpr (ResolvedStringSource model) → StringExpr (ResolvedStringSource model) → Bool
     | .category _ projection, .literal text | .literal text, .category _ projection =>
         projection.categoryTokens.contains text
     | _, _ => true
-  if !validLiteral resolvedLeft resolvedRight then throw .incoherentCore
+  if !validLiteral resolvedLeft.ungroup resolvedRight.ungroup then throw .incoherentCore
   pure { left := ← certifyBoundStringExpression model rowGroup resolvedLeft
          right := ← certifyBoundStringExpression model rowGroup resolvedRight, operator }
 

@@ -73,6 +73,7 @@ inductive StringExpr (Atom : Type := FieldId) (Category : Type := ResolvedEnumer
   | literal (value : String)
   | range (field : Atom) (start finish : Nat)
   | concat (left right : StringExpr Atom Category)
+  | group (body : StringExpr Atom Category)
   deriving Repr, DecidableEq
 
 /-- Storage forgets comparison provenance while preserving formal poison, for fixed and row targets. -/
@@ -83,10 +84,16 @@ def StringTerm.ofOperand : SimpleComparisonOperand String → StringTerm
 
 namespace StringExpr
 
+/-- Remove only outer braces for comparison classification; inner operation shape stays intact. -/
+def ungroup : StringExpr Atom Category → StringExpr Atom Category
+  | .group body => body.ungroup
+  | expression => expression
+
 def fields : StringExpr Atom Category → List Atom
   | .field fieldId | .category fieldId _ | .fieldValueAsString fieldId | .range fieldId _ _ => [fieldId]
   | .literal _ => []
   | .concat left right => left.fields ++ right.fields
+  | .group body => body.fields
 
 
 /-- A String read keeps omission provenance independently of its text. Validation and computation
@@ -139,6 +146,7 @@ def evalOperandWithSource [Monad m] [MonadExceptOf StringComputationFault m]
           else match utf16CodeUnitSlice? value (start - 1) finish with
             | some selected => pure (.value selected given)
             | none => throw (.unalignedUtf16Range (fieldId source) start finish)
+  | .group body => body.evalOperandWithSource fieldId phase read
   | .concat left right => do
       let left ← left.evalOperandWithSource fieldId phase read
       match phase, left with
@@ -158,6 +166,7 @@ def mapSources (replace : Atom → Source) : StringExpr Atom Category → String
   | .range source start finish => .range (replace source) start finish
   | .literal text => .literal text
   | .concat left right => .concat (left.mapSources replace) (right.mapSources replace)
+  | .group body => .group (body.mapSources replace)
 
 /-- Root storage consumes the same expression result without needing validation's omission flag. -/
 def eval (context : StringComputationContext) (expression : StringExpr FieldId) :
