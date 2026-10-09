@@ -472,9 +472,9 @@ def requiresAddressedValidation
   condition.anyLeaf ValidationConditionLeaf.requiresAddressedValidation
 
 def wellFormedBool (condition : ValidationCondition model)
-    (rowGroup : GroupPath) : Bool :=
+    (rowGroup : GroupPath) (declaringGroup : GroupPath := rowGroup) : Bool :=
   condition.repetitionNotUniqueSources.length < 2 &&
-    condition.allLeaves fun leaf => leaf.wellFormedBool rowGroup
+    condition.allLeaves fun leaf => leaf.wellFormedBool rowGroup declaringGroup
 
 /-- Reached temporal runtime failure aborts the enclosing rule, rather than entering the
 truth algebra as an ordinary fired leaf (temporal review grid, 2026-10-03). Structural failures

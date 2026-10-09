@@ -680,7 +680,7 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | _ => false
 
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
-def wellFormedBool (rowGroup : GroupPath) :
+def wellFormedBool (rowGroup : GroupPath) (declaringGroup : GroupPath := rowGroup) :
     ValidationConditionLeaf model → Bool
   | .customCondition _ => true
   | .constructedDateValidity _ source => source.scalarBindingScopes.all
@@ -714,7 +714,7 @@ def wellFormedBool (rowGroup : GroupPath) :
           checked == declaration && !declaration.repeatableScope.isEmpty
       | .error _ => false
   | .repetitionNotUnique source =>
-      source.wellFormedBool rowGroup
+      source.wellFormedBool declaringGroup
   | .guardedRootCurrentRepetition guard group _ =>
       group == rowGroup && group.length == 1 &&
         model.hasGroupPath group &&

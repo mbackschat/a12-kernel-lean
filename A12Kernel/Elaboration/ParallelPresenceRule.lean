@@ -75,7 +75,7 @@ namespace CheckedParallelPresenceRule
 def WellFormed (rule : CheckedParallelPresenceRule model) : Prop :=
   rule.groups.WellFormed ∧
     model.validate.isOk = true ∧
-    rule.condition.core.wellFormedBool rule.condition.rowGroup = true ∧
+    rule.condition.core.wellFormedBool rule.condition.rowGroup rule.condition.declaringGroup = true ∧
     rule.groups.leftGroup.path.isPrefixOf
       rule.leftDeclaration.groupPath = true ∧
     rule.groups.rightGroup.path.isPrefixOf

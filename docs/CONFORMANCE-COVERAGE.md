@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-09; HEAD was `f28b237c`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-09; HEAD was `c397bdc0`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 1793 retained Kernel observation rows through Lean, 30317 of the 30317 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 213 broadly (98%), 4 partially and 0 not at all, as classified on 2026-10-06 at `19e166c5+working-tree` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 481 of 495 diagnostic identifiers occur in Lean source (97%); 14 do not.
+**Replaying 1793 retained Kernel observation rows through Lean, 30349 of the 30349 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 213 broadly (98%), 4 partially and 0 not at all, as classified on 2026-10-06 at `19e166c5+working-tree` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 481 of 495 diagnostic identifiers occur in Lean source (97%); 14 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -80,9 +80,9 @@ Each instance, one rule or computation on one document row, lands in one tier:
 
 | | rules | computations |
 |---|---|---|
-| match | 15100 | 15217 |
+| match | 15132 | 15217 |
 | tier 1 | 0 | 0 |
-| tier 2 | 447 | 110 |
+| tier 2 | 415 | 110 |
 | unattributed | 0 | 0 |
 | fault | 0 | 0 |
 
@@ -99,7 +99,6 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 | 88 | 8 | validation | `DateRangesOverlap` |
 | 66 | 6 | validation | `AtLeastOneDateRangeOverlaps` |
 | 57 | 8 | validation | `RuleAssembly` |
-| 32 | 3 | validation | `RepetitionNotUnique` |
 | 31 | 4 | validation | `Comparison` |
 | 30 | 3 | validation | `PatternMatched` |
 | 30 | 3 | validation | `PatternViolated` |
@@ -145,7 +144,7 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 |---|---|---|
 | Capability records in [`implementation/`](implementation/) | 250 | 100% |
 | Citing a Kernel checkpoint or calibration | 121 | 48% |
-| Carrying an explicit evidence-pending note | 100 | 40% |
+| Carrying an explicit evidence-pending note | 99 | 39% |
 
 ## Axis 3 — open obligation load
 
@@ -165,8 +164,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 258340 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 35598 | 13% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 258432 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 35694 | 13% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.

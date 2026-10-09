@@ -516,11 +516,11 @@ theorem validationCondition_repeatablePresence_supported
       operator declaration).supportsOrdinaryIteration = true := by
   rfl
 
-/-- The checked mixed wrapper carries one model and exact row-group certificate for its complete resolved core. -/
+/-- The checked mixed wrapper certifies its complete core against both execution binding and lexical origin. -/
 theorem checkedValidationCondition_coherent
     (condition : CheckedValidationCondition model) :
     model.validate.isOk = true ∧
-      condition.core.wellFormedBool condition.rowGroup = true :=
+      condition.core.wellFormedBool condition.rowGroup condition.declaringGroup = true :=
   ⟨condition.modelWellFormed, condition.wellFormed⟩
 
 /-- Rebinding supplies an execution scope without changing the resolved expression or its lexical

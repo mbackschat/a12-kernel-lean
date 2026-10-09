@@ -80,7 +80,9 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
     Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) :=
   let filterBinding? := if expression.hasHaving then some (targetGroup?.getD group) else none
   match expression with
-  | .custom _ _ => refuse "CustomCondition" "not admitted in computation guards"
+  | .custom _ _ => refuse "CustomCondition" CalculationRefusal.invalidLanguageFeature.catalogKey
+  | .call "RepetitionNotUnique" _ none _ =>
+      refuse "RepetitionNotUnique" CalculationRefusal.invalidLanguageFeature.catalogKey
   | .compare .patternMatched left right => lowerPatternGuard model group .matched left right
   | .compare .patternViolated left right => lowerPatternGuard model group .violated left right
   | .parens body => lowerGuard model group suppress body targetGroup?

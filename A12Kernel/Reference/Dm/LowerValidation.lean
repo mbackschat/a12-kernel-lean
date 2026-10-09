@@ -407,6 +407,22 @@ partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress 
       ((CheckedValidationCondition.fromFlat checked).bind (·.atBinding bindingGroup)).toOption
   match whole, condition with
   | some checked, _ => pure checked
+  | none, .call "RepetitionNotUnique" arguments none scope => do
+      let keys ← arguments.mapM fun
+        | .mk expression none => match expression.fieldEntity? with
+          | some field => pure field
+          | none => refuse "RepetitionNotUnique" "direct key required"
+        | _ => refuse "RepetitionNotUnique" "key argument"
+      let first :: rest := keys | refuse "RepetitionNotUnique" "empty key list"
+      let reference ← scope.mapM fun entity =>
+        match (Expr.entity entity).groupReference? with
+        | some group => pure group
+        | none => refuse "RepetitionNotUnique" "scope reference"
+      elaborated "RepetitionNotUnique"
+        (CheckedValidationCondition.fromRepetitionNotUnique model rowGroup {
+          firstKey := first, restKeys := rest
+          scope := reference.map SurfaceRepetitionNotUniqueScope.from |>.getD .default }
+          bindingGroup (bindingGroup := bindingGroup))
   | none, .call "FieldFilled" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>
       lowerIndexedPresence model rowGroup bindingGroup .filled path key
   | none, .call "FieldNotFilled" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>

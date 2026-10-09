@@ -31,6 +31,7 @@ import A12Kernel.Reference.Dm.HavingTemporalExpressionLocks
 import A12Kernel.Reference.Dm.HavingRangeEndpointLocks
 import A12Kernel.Reference.Dm.HavingPatternLocks
 import A12Kernel.Reference.Dm.CustomConditionLocks
+import A12Kernel.Reference.Dm.RepetitionNotUniqueLocks
 import A12Kernel.Reference.Dm.ScalarMembershipLocks
 import A12Kernel.Reference.Dm.HavingComparisonLocks
 import A12Kernel.Reference.Dm.HavingAdmissionLocks

@@ -37,7 +37,7 @@ structure CheckedValidationCondition (model : FlatModel) where
   declaringGroup : GroupPath := rowGroup
   core : ValidationCondition model
   modelWellFormed : model.validate.isOk = true
-  wellFormed : core.wellFormedBool rowGroup = true
+  wellFormed : core.wellFormedBool rowGroup declaringGroup = true
 
 private def ValidationConditionAssemblyError.ofCurrentRepetitionSourceError :
     CurrentRepetitionSourceElabError → ValidationConditionAssemblyError
@@ -92,7 +92,7 @@ def checkCore (model : FlatModel) (rowGroup : GroupPath)
     (core : ValidationCondition model) (modelWellFormed : model.validate.isOk = true)
     (declaringGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
-  if hCore : core.wellFormedBool rowGroup = true then
+  if hCore : core.wellFormedBool rowGroup declaringGroup = true then
     .ok { rowGroup, declaringGroup, core, modelWellFormed, wellFormed := hCore }
   else
     .error .incoherentCore
@@ -420,15 +420,16 @@ def fromIteratedDateRangeOverlap (model : FlatModel) (rowGroup : GroupPath)
 
 /-- Resolve one checked RNU source and retain it as an ordinary leaf in the shared condition tree. -/
 def fromRepetitionNotUnique (model : FlatModel) (rowGroup : GroupPath)
-    (authored : SurfaceRepetitionNotUniqueSource) (writtenGroup : GroupPath) :
+    (authored : SurfaceRepetitionNotUniqueSource) (writtenGroup : GroupPath)
+    (bindingGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError
       (CheckedValidationCondition model) := do
   let source ←
     (elaborateRepetitionNotUniqueSource model rowGroup authored writtenGroup)
       |>.mapError .repetitionNotUnique
-  checkCore model rowGroup
+  checkCore model bindingGroup
     (ValidationCondition.repetitionNotUnique source)
-    source.modelWellFormed
+    source.modelWellFormed rowGroup
 
 /-- Resolve the exact measured nonrepeatable-root `CurrentRepetition` condition. The surface accepts an ordinary group path only; the checked leaf keeps its direct filled guard and equality tag indivisible. -/
 def fromGuardedRootCurrentRepetition
