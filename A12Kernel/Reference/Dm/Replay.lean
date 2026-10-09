@@ -1,5 +1,5 @@
 import A12Kernel.Reference.Dm.Document
-import A12Kernel.Reference.Dm.Validate
+import A12Kernel.Reference.Dm.ParallelValidation
 
 /-! # Replaying one retained observation row through Lean
 
@@ -45,10 +45,10 @@ def replayRules (model : DmModel) (language : Language) (world : World)
     -- Messages are attributed by code, so a code two rules share cannot be told apart.
     let shared := (model.rules.filter (·.errorCode == rule.errorCode)).length > 1
     let status := if shared then .refused { construct := "ErrorCode", detail := s!"{rule.errorCode} is shared" }
-      else match checkRule model language rule world with
+      else match checkValidationRule model language rule world with
       | .error refusal => .refused refusal
       | .ok checked' =>
-          match runRule world checked checked' with
+          match runValidationRule world checked checked' with
           | .error detail => .runFault detail
           | .ok messages =>
               let actual := (messages.map (observe model.flat)).mergeSort (compare · · != .gt)

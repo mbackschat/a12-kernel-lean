@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ParallelPresenceRule
+import A12Kernel.Elaboration.ParallelFieldRule
 import A12Kernel.Proofs.CheckedIndexColumn
 
 /-! # Bounded checked parallel presence-rule laws -/
@@ -47,5 +48,17 @@ remains the only possible reason to lift the gate (spec/03 A.4). -/
     have operand := rule.errorFieldIsOperand
     simp [notLeft] at operand
     exact operand.symm
+
+/-- The executable parallel certificate retains both joined sides, typed leaves and a structurally valid guard. -/
+theorem checkedParallelFieldRule_wellFormed (rule : CheckedParallelFieldRule model) :
+    rule.pair.groups.WellFormed ∧ model.validate.isOk = true ∧
+    rule.condition.allLeaves (ParallelFieldLeaf.admitted rule.pair rule.suppressExactScaleWarning) = true ∧
+    rule.condition.anyLeaf (ParallelFieldLeaf.uses .left) = true ∧
+    rule.condition.anyLeaf (ParallelFieldLeaf.uses .right) = true ∧
+    rule.condition.guarded = true ∧
+    ParallelFieldCondition.framesGuarded rule.pair rule.condition = true := by
+  refine ⟨checkedParallelIndexGroups_wellFormed rule.pair.groups,
+    rule.pair.groups.modelWellFormed, ?_⟩
+  simpa only [ParallelFieldCondition.admitted, Bool.and_eq_true, and_assoc] using rule.admitted
 
 end A12Kernel

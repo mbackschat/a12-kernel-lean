@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CheckedIndexColumn
+import A12Kernel.Elaboration.ParallelFieldPair
 import A12Kernel.Elaboration.ValidationRule
 
 /-! # Bounded checked parallel presence rules
@@ -8,66 +8,16 @@ This capsule places one existing positive presence conjunction into the checked 
 
 namespace A12Kernel
 
-inductive ParallelPresenceRuleAssemblyError where
-  | model (error : ResolveError)
-  | join (error : CheckedIndexColumnError)
-  | incoherentCondition
-  | incoherentOperandGroup (field : FieldId) (group : GroupPath)
-  | missingIndexedOperandGroup (field : FieldId)
-  | multipleIndexedOperandGroups (field : FieldId)
-      (groups : List GroupPath)
-  | errorFieldNotOperand (field left right : FieldId)
-  | errorFieldNotOnFramedSide (field : FieldId)
-  deriving Repr, DecidableEq
-
-inductive ParallelPresenceRuleEvaluationError where
-  | join (error : CheckedIndexColumnError)
-  | unsupportedCondition
-  deriving Repr, DecidableEq
-
-/-- One key-preserving whole-rule result. The complete outer evaluation environment distinguishes equal join keys in different frame rows; silent outcomes still require no physical error address. -/
-structure ParallelRuleRowOutcome where
-  outerEnvironment : Env
-  key : SemanticIndexKey
-  outcome : FlatRuleOutcome
-  deriving Repr, DecidableEq
-
-/-- A checked full-validation rule for the exact positive conjunction `FieldFilled(left) And FieldFilled(right)` over two compatible index groups. A one-sided frame must be on the emitted error side so every firing address has its complete physical coordinates. -/
-structure CheckedParallelPresenceRule (model : FlatModel) where
+/-- The positive-presence specialization of a shared checked parallel field pair. -/
+structure CheckedParallelPresenceRule (model : FlatModel) extends CheckedParallelFieldPair model where
   private mk ::
   condition : CheckedValidationCondition model
-  groups : CheckedParallelIndexGroups model
-  leftDeclaration : FlatFieldDecl
-  rightDeclaration : FlatFieldDecl
-  errorField : FieldId
-  errorCode : String
-  severity : ValidationSeverity
-  messagePlan : MessageRenderPlan
-  leftOperandGroup :
-    groups.leftGroup.path.isPrefixOf leftDeclaration.groupPath = true
-  rightOperandGroup :
-    groups.rightGroup.path.isPrefixOf rightDeclaration.groupPath = true
-  leftOperandScope :
-    (leftDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath groups.leftGroup.path) = true
-  rightOperandScope :
-    (rightDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath groups.rightGroup.path) = true
-  rowGroupOwned :
-    condition.rowGroup = groups.commonParent
+  rowGroupOwned : condition.rowGroup = groups.commonParent
   conditionShape :
     condition.core =
       .and
-        (ValidationCondition.repeatableFieldPresence
-          .filled leftDeclaration)
-        (ValidationCondition.repeatableFieldPresence
-          .filled rightDeclaration)
-  errorFieldIsOperand :
-    (errorField == leftDeclaration.id ||
-      errorField == rightDeclaration.id) = true
-  errorFieldOnFramedSide :
-    groups.outerScopePlan.admitsErrorOnLeft
-      (errorField == leftDeclaration.id) = true
+        (ValidationCondition.repeatableFieldPresence .filled leftDeclaration)
+        (ValidationCondition.repeatableFieldPresence .filled rightDeclaration)
 
 namespace CheckedParallelPresenceRule
 
@@ -124,179 +74,32 @@ private def evalLeaf (row : ResolvedParallelIndexRow)
         |>.map CellObservation.evalValidationFilled
   | _ => .error .unsupportedCondition
 
-private def errorSide (rule : CheckedParallelPresenceRule model)
-    (row : ResolvedParallelIndexRow) : ResolvedParallelIndexSide :=
-  if rule.errorField == rule.leftDeclaration.id then
-    row.left
-  else
-    row.right
-
-private def evalRow (rule : CheckedParallelPresenceRule model)
-    (preliminary : CheckedIndexPreliminary model)
-    (outerEnvironment : Env) (row : ResolvedParallelIndexRow) :
-    Except ParallelPresenceRuleEvaluationError ParallelRuleRowOutcome := do
-  let verdict ← rule.condition.core.evalVerdictExcept
-    (evalLeaf row preliminary)
-  let outcome ← match verdict with
-    | .fired _ => do
-        let pointer ← (rule.errorSide row).messagePointer model outerEnvironment rule.errorField
-          |>.mapError .join
-        pure (rule.core.emitAtCoordinates pointer.coordinates verdict)
-    | .notFired | .unknown =>
-        -- `emitAt` does not inspect the address for a silent verdict, so no
-        -- nonphysical placeholder enters `CellAddr`.
-        pure (rule.core.emitAt [] verdict)
-  pure { outerEnvironment, key := row.key, outcome }
-
-private def evalJoinRows (rule : CheckedParallelPresenceRule model)
-    (preliminary : CheckedIndexPreliminary model)
-    (outerEnvironment : Env) (join : ResolvedParallelIndexJoin) :
-    Except ParallelPresenceRuleEvaluationError
-      (List ParallelRuleRowOutcome) :=
-  join.rows.mapM (rule.evalRow preliminary outerEnvironment)
-
-private def evalCommonAt (rule : CheckedParallelPresenceRule model)
-    (preliminary : CheckedIndexPreliminary model) (outer : Env) :
-    Except ParallelPresenceRuleEvaluationError
-      (List ParallelRuleRowOutcome) := do
-  let join ←
-    preliminary.resolveCheckedParallelIndexJoin rule.groups outer
-      |>.mapError .join
-  rule.evalJoinRows preliminary outer join
-
-private def evalFrameAt (rule : CheckedParallelPresenceRule model)
-    (preliminary : CheckedIndexPreliminary model)
-    (frameOuter commonOuter : Env) :
-    Except ParallelPresenceRuleEvaluationError
-      (List ParallelRuleRowOutcome) := do
-  let join ← preliminary.resolveCheckedParallelIndexJoinInFrame
-    rule.groups frameOuter commonOuter |>.mapError .join
-  rule.evalJoinRows preliminary frameOuter join
-
-private def evalFrames (rule : CheckedParallelPresenceRule model)
-    (preliminary : CheckedIndexPreliminary model)
-    (commonOuter : Env) :
-    List Env → Except ParallelPresenceRuleEvaluationError
-      (List ParallelRuleRowOutcome)
-  | [] => pure []
-  | frameOuter :: remaining => do
-      let current ←
-        rule.evalFrameAt preliminary frameOuter commonOuter
-      let later ←
-        rule.evalFrames preliminary commonOuter remaining
-      pure (current ++ later)
-
-/-- Evaluate once per lexical key at a common scope, or recalculate that same keyed join inside each actual one-sided frame row. Frame order is document order; key order remains lexical within each frame. -/
+/-- Positive presence reuses the same checked join traversal as other pair-condition families. -/
 def evalFull (rule : CheckedParallelPresenceRule model)
     (preliminary : CheckedIndexPreliminary model) (outer : Env := []) :
-    Except ParallelPresenceRuleEvaluationError
-      (List ParallelRuleRowOutcome) :=
-  match rule.groups.outerScopePlan with
-  | .common _ => rule.evalCommonAt preliminary outer
-  | .framed _ _ _ => do
-      let frames ←
-        preliminary.resolveCheckedParallelFrameEnvironments
-          rule.groups outer |>.mapError .join
-      rule.evalFrames preliminary outer frames
+    Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) :=
+  rule.toCheckedParallelFieldPair.evalFullWith rule.condition.core
+    (fun row view => rule.condition.core.evalVerdictExcept (evalLeaf row view)) preliminary outer
 
 end CheckedParallelPresenceRule
 
-/-- Resolve the sole indexed repeatable ancestor that owns one parallel operand. Nonrepeatable path segments do not appear in this candidate set. -/
-private def indexedOperandGroup (model : FlatModel)
-    (declaration : FlatFieldDecl) :
-    Except ParallelPresenceRuleAssemblyError RepeatableGroupDecl :=
-  match model.indexedAncestorGroups declaration with
-  | [] => .error (.missingIndexedOperandGroup declaration.id)
-  | [group] => .ok group
-  | groups =>
-      .error (.multipleIndexedOperandGroups declaration.id
-        (groups.map (·.path)))
-
-/-- Check the narrow parallel rule plan without passing caller-selected groups or iteration rows. Each operand declaration determines its sole keyed repeatable ancestor, and its complete repeatable scope must end at that group. -/
+/-- Preserve the established presence API while deriving its layout from the shared pair certificate. -/
 def checkParallelPresenceRule (model : FlatModel)
     (leftField rightField errorField : FieldId)
-    (errorCode : String) (severity : ValidationSeverity)
-    (messagePlan : MessageRenderPlan) :
-    Except ParallelPresenceRuleAssemblyError
-      (CheckedParallelPresenceRule model) := do
-  let leftDeclaration ←
-    model.lookupUniqueId leftField |>.mapError .model
-  let rightDeclaration ←
-    model.lookupUniqueId rightField |>.mapError .model
-  let leftGroup ← indexedOperandGroup model leftDeclaration
-  let rightGroup ← indexedOperandGroup model rightDeclaration
-  let groups ←
-    checkParallelIndexGroups model leftGroup rightGroup
-      |>.mapError .join
-  if hLeftGroup :
-      groups.leftGroup.path.isPrefixOf leftDeclaration.groupPath = true then
-    if hRightGroup :
-        groups.rightGroup.path.isPrefixOf
-          rightDeclaration.groupPath = true then
-      if hLeftScope :
-          (leftDeclaration.repeatableScope ==
-            model.repeatableScopeForGroupPath groups.leftGroup.path) =
-              true then
-        if hRightScope :
-            (rightDeclaration.repeatableScope ==
-              model.repeatableScopeForGroupPath groups.rightGroup.path) =
-                true then
-          if hError :
-              (errorField == leftDeclaration.id ||
-                errorField == rightDeclaration.id) = true then
-            if hFrameError :
-                groups.outerScopePlan.admitsErrorOnLeft
-                  (errorField == leftDeclaration.id) = true then
-              let core : ValidationCondition model :=
-                .and
-                  (ValidationCondition.repeatableFieldPresence
-                    .filled leftDeclaration)
-                  (ValidationCondition.repeatableFieldPresence
-                    .filled rightDeclaration)
-              let rowGroup := groups.commonParent
-              if hCore : core.wellFormedBool rowGroup = true then
-                let condition : CheckedValidationCondition model := {
-                  rowGroup
-                  core
-                  modelWellFormed := groups.modelWellFormed
-                  wellFormed := hCore
-                }
-                pure {
-                  condition
-                  groups
-                  leftDeclaration
-                  rightDeclaration
-                  errorField
-                  errorCode
-                  severity
-                  messagePlan
-                  leftOperandGroup := hLeftGroup
-                  rightOperandGroup := hRightGroup
-                  leftOperandScope := hLeftScope
-                  rightOperandScope := hRightScope
-                  rowGroupOwned := rfl
-                  conditionShape := rfl
-                  errorFieldIsOperand := hError
-                  errorFieldOnFramedSide := hFrameError
-                }
-              else
-                throw .incoherentCondition
-            else
-              throw (.errorFieldNotOnFramedSide errorField)
-          else
-            throw (.errorFieldNotOperand errorField
-              leftDeclaration.id rightDeclaration.id)
-        else
-          throw (.incoherentOperandGroup
-            rightDeclaration.id groups.rightGroup.path)
-      else
-        throw (.incoherentOperandGroup
-          leftDeclaration.id groups.leftGroup.path)
-    else
-      throw (.incoherentOperandGroup
-        rightDeclaration.id groups.rightGroup.path)
-  else
-    throw (.incoherentOperandGroup
-      leftDeclaration.id groups.leftGroup.path)
+    (errorCode : String) (severity : ValidationSeverity) (messagePlan : MessageRenderPlan) :
+    Except ParallelPresenceRuleAssemblyError (CheckedParallelPresenceRule model) := do
+  let pair ← checkParallelFieldPair model leftField rightField errorField errorCode severity messagePlan
+  let core : ValidationCondition model := .and
+    (ValidationCondition.repeatableFieldPresence .filled pair.leftDeclaration)
+    (ValidationCondition.repeatableFieldPresence .filled pair.rightDeclaration)
+  let rowGroup := pair.groups.commonParent
+  if hCore : core.wellFormedBool rowGroup = true then
+    pure {
+      toCheckedParallelFieldPair := pair
+      condition := { rowGroup, core, modelWellFormed := pair.groups.modelWellFormed, wellFormed := hCore }
+      rowGroupOwned := rfl
+      conditionShape := rfl
+    }
+  else throw .incoherentCondition
 
 end A12Kernel

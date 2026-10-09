@@ -29,7 +29,7 @@ structure ObservedMessage where
 instance : ToString ObservedMessage where
   toString message := s!"{message.code}@{message.pointer}:{message.messageType}/{message.severity}"
 
-private def severity? : String → Option ValidationSeverity
+def severity? : String → Option ValidationSeverity
   | "ERROR" => some .error
   | "WARNING" => some .warning
   | "INFO" => some .info
@@ -49,18 +49,23 @@ def errorFieldOf (language : Language) (model : FlatModel) (rule : DmRule) : Low
   let declaration ← elaborated "ErrorEntity" (model.resolveFieldDeclarationUnchecked rule.group field)
   pure declaration.id
 
-/-- Parse, lower and assemble one rule, retaining named-type validity resolution from the supplied
-world. Replay supplies the same registry used to prepare and evaluate the document. -/
-private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language : Language) (rule : DmRule)
-    (world : World := { now := { epochMillis := 0 } }) :
-    Lowering (CheckedResolvedValidationRule model.flat) := do
-  let text ← match parseText language rule.condition with
+/-- Apply the shared syntax and warning-suppression gates before choosing an execution carrier. -/
+def parseValidationText (language : Language) (condition : String) : Lowering Text := do
+  let text ← match parseText language condition with
     | .ok text => pure text
     | .error error => refuse "Syntax" error.errorClass.code
   if !text.body.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
   -- The scale warning is the only suppressible one (spec §12.4); any other name is a static error.
   if let some other := text.suppressed.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
     refuse "SuppressWarning" other
+  pure text
+
+/-- Parse, lower and assemble one rule, retaining named-type validity resolution from the supplied
+world. Replay supplies the same registry used to prepare and evaluate the document. -/
+private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language : Language) (rule : DmRule)
+    (world : World := { now := { epochMillis := 0 } }) :
+    Lowering (CheckedResolvedValidationRule model.flat) := do
+  let text ← parseValidationText language rule.condition
   let suppress := text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
   -- A filter captures the error field's iteration, including for refusals; a failed retry cannot
   -- justify reporting a diagnostic from the declaring group's different scope (spec/07 §3).
@@ -92,12 +97,14 @@ def checkRule (model : DmModel) (language : Language) (rule : DmRule)
           -- over the lexical attempt's unbound read (H10 iteration-guard matrix).
           if boundRefusal.construct == "RuleAssembly" then .error boundRefusal else .error refusal
 
-/-- The Kernel's text for a message pointer: the field's group path with each repeatable group's
-index after it, written only when it is not `1`. -/
+/-- The retained probe's message-address contract uses canonical text for exact pointers and its tool-owned fallback for partially known pointers (`KernelRuntimeProbe.address`, `A12Pointers.canonical`). -/
 def renderPointer (model : FlatModel) (pointer : MessagePointer) : String :=
   match model.fields.find? (·.id == pointer.field) with
   | none => s!"#{pointer.field}"
   | some declaration =>
+      let isPartial := pointer.coordinates.any fun coordinate => match coordinate with
+        | .concrete _ => false
+        | .wildcard | .unknown => true
       let rec walk (prefix_ : GroupPath) (remaining : List String)
           (coordinates : List MessageRepetitionCoordinate) : List String :=
         match remaining with
@@ -106,12 +113,14 @@ def renderPointer (model : FlatModel) (pointer : MessagePointer) : String :=
             let path := prefix_ ++ [name]
             if model.repeatableGroups.any (·.path == path) then
               let label := match coordinates.head? with
-                | some (.concrete index) => if index == 1 then name else s!"{name}[{index}]"
-                | some .wildcard => s!"{name}[*]"
-                | _ => s!"{name}[?]"
+                | some (.concrete index) => if index == 1 && !isPartial then name else s!"{name}[{index}]"
+                | some .wildcard => s!"{name}[0]"
+                | some .unknown => s!"{name}[-5]"
+                | none => s!"{name}[?]"
               label :: walk path rest coordinates.tail
-            else name :: walk path rest coordinates
-      "/".intercalate (walk [] declaration.groupPath pointer.coordinates ++ [declaration.name])
+            else (if isPartial then s!"{name}[1]" else name) :: walk path rest coordinates
+      (if isPartial then "/" else "") ++
+        "/".intercalate (walk [] declaration.groupPath pointer.coordinates ++ [declaration.name])
 
 def observe (model : FlatModel) (message : FlatRuleMessage) : ObservedMessage :=
   { code := message.errorCode, pointer := renderPointer model message.errorAddress

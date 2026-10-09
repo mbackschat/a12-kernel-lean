@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ParallelPresenceRule
+import A12Kernel.Elaboration.ParallelFieldRule
 
 /-! # Bounded parallel presence-rule locks -/
 
@@ -691,5 +692,102 @@ example : (match (ResolvedParallelIndexSide.messagePointer
     { group := demand, environment := none, unavailableKey := none } model [] 5) with
     | .error error => some error
     | .ok _ => none) = some (.fieldOutsideGroup 5 demand.path) := by native_decide
+
+private def pairNumeric (op : NumericComparisonOp) : ParallelFieldCondition :=
+  .leaf (.numeric op .left .right)
+
+private def pairFill (op : FieldFillQuantifier) : ParallelFieldCondition :=
+  .leaf (.fill op .left .right)
+
+private def pairPositive : ParallelFieldCondition :=
+  .or (.leaf (.presence .left .filled)) (.leaf (.presence .right .filled))
+
+private def pairRun (condition : ParallelFieldCondition) (source : DocumentData := data)
+    (errorField : FieldId := 2) : Option (List ParallelRuleRowOutcome) := do
+  let preliminary ← preliminaryFor source
+  let rule ← (checkParallelFieldRule model 2 4 errorField condition "PI" .error messagePlan).toOption
+  (rule.evalFull preliminary).toOption
+
+private def pairVerdicts (condition : ParallelFieldCondition) (source : DocumentData := data) :
+    Option (List Verdict) :=
+  (pairRun condition source).map (·.map fun row => match row.outcome with
+    | .fired message => .fired message.messageType
+    | .notFired => .notFired
+    | .unknown => .unknown)
+
+example : [
+    (NumericComparisonOp.equal, [Verdict.notFired, .notFired, .notFired]),
+    (.notEqual, [.fired .value, .fired .omission, .fired .omission]),
+    (.less, [.fired .value, .fired .omission, .notFired]),
+    (.lessEqual, [.fired .value, .fired .omission, .notFired]),
+    (.greater, [.notFired, .notFired, .fired .omission]),
+    (.greaterEqual, [.notFired, .notFired, .fired .omission])].all
+    (fun (op, expected) => pairVerdicts (pairNumeric op) == some expected) = true := by
+  native_decide
+
+example : [
+    (FieldFillQuantifier.allFieldsFilled, [Verdict.fired .value, .unknown, .unknown]),
+    (.noFieldFilled, [.unknown, .unknown, .unknown]),
+    (.atLeastOneFieldFilled, [.fired .value, .fired .value, .fired .value]),
+    (.moreThanOneFieldFilled, [.fired .value, .unknown, .unknown]),
+    (.notAllFieldsFilled, [.unknown, .fired .omission, .fired .omission]),
+    (.notExactlyOneFieldFilled, [.fired .value, .unknown, .unknown]),
+    (.fieldsNotCollectivelyFilled, [.unknown, .fired .omission, .fired .omission])].all
+    (fun (op, expected) => pairVerdicts (.and pairPositive (pairFill op)) == some expected) = true := by
+  native_decide
+
+example : [FieldFillQuantifier.noFieldFilled, .notAllFieldsFilled, .notExactlyOneFieldFilled].all
+    (fun op =>
+      !(checkParallelFieldRule model 2 4 2 (pairFill op) "PI" .error messagePlan).isOk &&
+      (checkParallelFieldRule model 2 4 2 (.and pairPositive (pairFill op)) "PI" .error messagePlan).isOk &&
+      !(checkParallelFieldRule model 2 4 2 (.or pairPositive (pairFill op)) "PI" .error messagePlan).isOk) = true := by
+  native_decide
+
+example : pairVerdicts (pairNumeric .greater) invalidSupplyData =
+    some [.notFired, .notFired, .unknown] ∧
+    pairVerdicts (pairFill .fieldsNotCollectivelyFilled) invalidDemandData =
+    some [.unknown, .unknown, .fired .omission] := by native_decide
+
+example : pairVerdicts (pairNumeric .equal)
+    { data with cells := data.cells.filter fun entry => entry.address.field == 1 || entry.address.field == 3 } =
+    some [.fired .omission, .fired .omission, .fired .omission] := by native_decide
+
+example : [FieldFillQuantifier.noFieldFilled, .notExactlyOneFieldFilled].all
+    (fun op => pairVerdicts (.and (pairNumeric .equal) (pairFill op))
+      { data with cells := data.cells.filter fun entry => entry.address.field == 1 || entry.address.field == 3 } ==
+      some [.fired .omission, .fired .omission, .fired .omission]) = true := by native_decide
+
+example : (pairRun (pairFill .fieldsNotCollectivelyFilled)).map
+    (·.filterMap fun row => row.outcome.message?.map (·.errorAddress.coordinates)) =
+    some [[.unknown], [.concrete 1]] ∧
+    (pairRun (pairFill .fieldsNotCollectivelyFilled) data 4).map
+      (·.filterMap fun row => row.outcome.message?.map (·.errorAddress.coordinates)) =
+    some [[.concrete 2], [.unknown]] := by native_decide
+
+example : (pairRun (.and (.leaf (.presence .left .filled))
+    (.leaf (.presence .right .filled)))).map (·.map (·.outcome)) =
+    (evaluated? 2 data).map (·.map (·.outcome)) := by native_decide
+
+private def framedPairPresence : Option (List ParallelRuleRowOutcome) := do
+  let preliminary ← framedPreliminaryFor framedData
+  let condition : ParallelFieldCondition := .and
+    (.leaf (.presence .left .filled)) (.leaf (.presence .right .filled))
+  let rule ← (checkParallelFieldRule framedModel 22 24 22 condition "FPI" .error messagePlan).toOption
+  (rule.evalFull preliminary).toOption
+
+example : framedPairPresence = framedEvaluated? framedData := by native_decide
+
+private def frameAdmitted (body : ParallelFieldCondition) : Bool :=
+  (checkParallelFieldRule framedModel 22 24 22 body "FPI" .error messagePlan).isOk
+
+example : !frameAdmitted (pairFill .fieldsNotCollectivelyFilled) &&
+    frameAdmitted (.and (.leaf (.presence .left .filled)) (pairFill .fieldsNotCollectivelyFilled)) &&
+    !frameAdmitted (.and (.leaf (.presence .right .filled)) (pairFill .fieldsNotCollectivelyFilled)) &&
+    frameAdmitted (pairFill .allFieldsFilled) && frameAdmitted (pairNumeric .greater) = true := by native_decide
+
+example : (checkParallelFieldRule framedModel 24 22 22
+    (.and (.leaf (.presence .right .filled)) (pairFill .fieldsNotCollectivelyFilled)) "FPI" .error messagePlan).isOk &&
+    !(checkParallelFieldRule framedModel 24 22 22
+      (.and (.leaf (.presence .left .filled)) (pairFill .fieldsNotCollectivelyFilled)) "FPI" .error messagePlan).isOk = true := by native_decide
 
 end A12Kernel.Conformance.ParallelPresenceRule
