@@ -59,7 +59,7 @@ structure ParallelNumericTargetCoverage where
   /-- The row lies beyond its own group's declared repeatability. It stays in this inventory rather
   than being dropped from it, because the Kernel writes a clear there: measured on this carrier with
   a **resolvable** join at the excess row, which separates capacity exclusion from an empty
-  execution domain ([`SPEC-2026-08-31-08`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md)). -/
+  execution domain ([`SPEC-2026-08-31-08`](https://github.com/mbackschat/a12-kernel-lean/blob/a050f1506bedaab7078d4121ad2b3378c2a43052/docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-08-31-08)). -/
   overLimit : Bool
   deriving Repr, DecidableEq
 

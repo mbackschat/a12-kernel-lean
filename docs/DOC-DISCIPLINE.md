@@ -77,7 +77,7 @@ This table is a trigger contract, not a document-count quota. A unit that genuin
 
 ## Intentional historical records
 
-[`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) and [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) are the only append-preserving live records. Findings retain stable IDs and visible corrections. The live ledger retains entries created after its archive boundary, including their eventual terminal dispositions, while the historical ledger (`docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-THROUGH-2026-08-28.md` at `a050f150`) immutably owns the earlier terminal receipts. Neither live record may absorb routine status, source-review narrative, or a second copy of the spec.
+[`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) retains stable IDs and visible corrections. [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) retains open reconciliation entries and their stable IDs; terminal receipts may be retired after unique live facts reach their canonical owners and every incoming citation reaches its exact Git receipt or a current provenance owner. The ledger names the Git revisions holding retired receipts, including the earlier deleted archives. Neither record may absorb routine status, source-review narrative, or a second copy of the spec.
 
 Capability implementation kits may repeat the minimum semantics and procedure required to remain self-contained for their external audience. That exception does not authorize copied live counts, roadmaps, or provenance histories. A deleted record is read at its Git revision and never restored; correct its live owner instead.
 

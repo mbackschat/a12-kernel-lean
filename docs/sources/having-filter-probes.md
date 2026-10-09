@@ -451,7 +451,7 @@ The filter's leaf domain, connectives, correlation, scope gate, and two-arm beha
 - `baseline`: At Lean `82426597`, focused replay has 144 declaration/document entries: 12 matches and 132 unsupported, with no divergence or fault. The replay does not compare partial messages or exact residual computation findings; those claims use the retained kernel artifact directly. No new coverage-cell promotion or correspondence claim follows from this baseline.
 - `limits`: One repeatable level, Sum, Number payload, complete Date/Time/DateTime fields, UTC static profile and Berlin runtime model. No general host-zone support, arbitrary filter carriers, temporal constructors or complete diagnostic-order account is claimed. Shared-effect implementation and the final family review remain pending.
 - `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/having-temporal-constants-2026-10-07/), with exact model, relative request, message-redacted runtime artifact, model check and static refusal inputs/results pinned in [MANIFEST.sha256](../../evidence/kernel-30.8.1/captures/having-temporal-constants-2026-10-07/MANIFEST.sha256), SHA-256 `ec542c8809f0fef79093661a0a79fcb8c420fdf851ff73075ea54af85839dad4`. Normalization blanks `message`/`summary` strings and removes the scratch directory prefix; the other JSON data is preserved. Model bytes are unchanged and retain the static artifact's model hash.
-- `sync`: [SPEC-2026-10-07-04](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-07-04) records the filter literal-failure composition.
+- `sync`: [SPEC-2026-10-07-04](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-07-04) records the filter literal-failure composition.
 
 
 <a id="src-having-range-family"></a>
@@ -494,7 +494,7 @@ The filter's leaf domain, connectives, correlation, scope gate, and two-arm beha
 - `replay`: Focused replay admits 1,330 matching rule/computation instances with zero divergence or faults; 230 ordinary validation instances remain explicit admission refusals. Rule replay compares code, pointer and type, not reference sets. The retained reference sets support later dedicated projection calibration.
 - `limits`: One filtered level, `en_US`, UTC process, unindexed fields, explicit unregistered type names on String fields. No registered Custom callback, general pattern engine, nested-filter or complete H10 reference-set claim. Some ordinary row-bound validation twins remain unsupported by Lean admission and are not counted as conformance matches.
 - `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/having-predicate-family-2026-10-09/) retains model, structured operations, predicate inventory, request and sanitized artifact. [Manifest](../../evidence/kernel-30.8.1/captures/having-predicate-family-2026-10-09/MANIFEST.sha256) SHA-256 `2bdc76df8869df837cc262bbfd3234f231c070dd64de4c5d714a08c24dededba`.
-- `sync`: [SPEC-2026-10-09-04](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-09-04) carries the correction to the named-type and Having clauses. The other measured predicate families calibrate their existing account.
+- `sync`: [SPEC-2026-10-09-04](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-09-04) carries the correction to the named-type and Having clauses. The other measured predicate families calibrate their existing account.
 
 
 <a id="src-having-error-reference"></a>

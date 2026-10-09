@@ -217,7 +217,7 @@
 - `local-consequence`: the reader validation route and both computation routes resolve a filtered Number star in capacity, and one lock replays all seven sums on all four routes. The measured filters compare `V` with the constant `6`, which Lean's `Having` fragment cannot write; the lock reads a same-row field holding `6` instead.
 - `prior`: the validation arm under the reflexive filter was already the peer's, reproduced at a12-dmkits `989f33bae` for filtered Number `Sum`, both extrema, `NumberOfDifferentValues` and the value count ([`kf230`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf230); the [filtered value-count checkpoint](#src-filtered-starred-field-capacity)'s inbound line). What these rows add is the computation arm and the two filters that read a value.
 - `limit`: Number `Sum` on the computation arm and under value-reading filters, one repetition level, `en_US`. A filtered star's other operators are measured on the validation arm only.
-- `sync`: behavioral and locally originated, replacing [`spec/07`](../../spec/07-repetition-and-iteration.md)'s unobserved filtered-star sentence, outbound as [`SPEC-2026-10-01-04`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-04).
+- `sync`: behavioral and locally originated, replacing [`spec/07`](../../spec/07-repetition-and-iteration.md)'s unobserved filtered-star sentence, outbound as [`SPEC-2026-10-01-04`](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-04).
 
 <a id="src-group-operand-over-limit-extent"></a>
 #### A fixed group operand's extent excludes an over-limit row, and the count is zero rather than unknown, measured locally 2026-08-31
@@ -574,7 +574,7 @@ The measured model is **nonrepeatable throughout**, so a subtree field below a r
 - `runtime-route`: `RuntimeMethodNameFactory.getRuntimeMethodNameFromParseTreeObject(IEntityListOperationWithValue)` chooses the String count entry. `RuntimeController.anzahlWertInFeldlisteStringIntern` and the Number entry delegate to the same `anzahlWertInFeldlisteIntern`; its family flag changes value reading, not the iterator relevance gate or reached-cell availability check.
 - `claim`: admitted Boolean/Confirm value counts inherit the token count's partial extent relevance and per-cell availability. Their Boolean constant/kind/label authoring gates remain separate; empty Confirm is still empty rather than a false comparison value.
 - `limit`: source-derived transfer of the partial loop only. No Boolean/Confirm partial runtime matrix, general selected-topology calibration or new label-admission claim is supplied.
-- `canonical`: [spec/10 §5](../../spec/10-validation-and-polarity.md#5-full-vs-partial-validation); outbound reconciliation is [SPEC-2026-10-06-02](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-06-02).
+- `canonical`: [spec/10 §5](../../spec/10-validation-and-polarity.md#5-full-vs-partial-validation); outbound reconciliation is [SPEC-2026-10-06-02](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-06-02).
 
 <a id="src-product-partial-capacity"></a>
 #### Partial products cover declared lower capacity, including below independent semantic indices, measured locally 2026-10-06
@@ -592,4 +592,4 @@ The measured model is **nonrepeatable throughout**, so a subtree field below a r
 - `sha256`: `rows.tsv` `109a35078cfdbadd7c0bdcc951820d8582047d9b42b93049f23927ea21504c5b`.
 - `raw-artifacts`: unretained artifacts `6f25ffa3fd1e21e65574f1c6aaef58a9b55484a50e017e7a6cacd84c00bf80ae` and `ecb6c6383017a58619ef5b757fc75014f4aba8b6d9da14cb2d16bb9a566ce82e`; their rendered catalog messages are deliberately excluded from the retained projection.
 - `limit`: finite maximum 3, one keyed parent and one lower starred level, Number fields, English DSL; no runtime claim for unbounded capacity, additional keyed ancestors or consumer-specific read overrides. `rows.tsv` is a retained observation projection, not an automated differential replay suite.
-- `sync`: canonical [spec/07](../../spec/07-repetition-and-iteration.md) and [spec/10](../../spec/10-validation-and-polarity.md); outbound [SPEC-2026-10-06-03](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-06-03).
+- `sync`: canonical [spec/07](../../spec/07-repetition-and-iteration.md) and [spec/10](../../spec/10-validation-and-polarity.md); outbound [SPEC-2026-10-06-03](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-06-03).

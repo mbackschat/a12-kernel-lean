@@ -418,7 +418,7 @@ theorem parallelNumericInvalidIndexMarks_noTargets
 /-- Clean index columns clear nothing **on an in-capacity target inventory**. The capacity
 condition is not decoration: an over-limit row is cleared in a document whose every index column is
 clean, so the earlier unconditional reading of this law was false and is corrected here rather than
-narrowed by a hypothesis that happens to hold ([`SPEC-2026-08-31-08`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md)). -/
+narrowed by a hypothesis that happens to hold ([`SPEC-2026-08-31-08`](https://github.com/mbackschat/a12-kernel-lean/blob/a050f1506bedaab7078d4121ad2b3378c2a43052/docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-08-31-08)). -/
 theorem parallelNumericTargetRouteClearing_noMarks
     (route : CheckedParallelNumericTargetRoute model)
     (preliminary : CheckedIndexPreliminary model)

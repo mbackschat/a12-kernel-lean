@@ -650,7 +650,7 @@ that iterates the outer level over an operand starring only the inner one gives 
 environment of both levels — the inner reopened, the outer inherited — against a captured
 environment of the outer alone. So on the **inner** level the marker decides admission, while on the
 **outer** level *both* spellings are admitted, which is the redundant-marker rule
-[`SPEC-2026-09-03-07`](../../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md) established for field references
+[`SPEC-2026-09-03-07`](https://github.com/mbackschat/a12-kernel-lean/blob/a050f1506bedaab7078d4121ad2b3378c2a43052/docs/archived/A12-DMKITS-SPEC-SYNC-LEDGER-ACCEPTED-THROUGH-2026-09-24.md#spec-2026-09-03-07) established for field references
 now holding for a repetition one. Measured as a full 2x2 against the Kernel at a12-dmkits `eded8263`,
 every row carrying the in-scope conjunct the filter's scope gate demands — without it the outer rows
 collapse to `MVK_NO_ITERATION_FOR_WILDCARD` and establish nothing about binding. -/

@@ -7,7 +7,8 @@
 
 - `source`: Owner-delivered `a12-kernel-lean-spec-corrections-2026-10-09.md`, SHA-256 `523c6de0964ca3b76fc358bfd4f6f5fa45a4da7f3b638a3b4f3f86b235cdec52`; peer baseline last read by its author was local `f0e75563`. The handback covers 23 entries through SPEC-2026-10-09-08, not the later SPEC-2026-10-09-09.
 - `route`: Kernel 30.8.1 through peer static `RuleValidator`/checkConsistency and runtime differentials. Dynamic Groovy is the runtime anchor; static Java and the peer interpreter are co-evidence. Exact committed findings and test assertions were inspected locally; no peer test or Kernel process was run here.
-- `disposition`: The [ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md) owns 21 accepted receipts and two answered receipts. Answered preserves the unexercised client-interface conversion and registration-chain limits. These receipts do not claim complete interpreter parity or a new Lean population replay.
+- `disposition`: The [ledger at `e2bc04e5`](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md) retains 21 accepted receipts and two answered receipts from this handback. These receipts do not claim complete interpreter parity or a new Lean population replay.
+- `limit`: Client-SPI extensible-String constructor conversion and host bounds remain source-derived. Custom-condition factory shadowing and first-match fallback have no peer harness counterpart; interpreter preparation refusal remains declared policy.
 
 | Entry suffix (`SPEC-2026-`) | Reviewed peer revision | Finding / executable lock |
 |---|---|---|
@@ -172,7 +173,7 @@ Deleted from this hub; the records' full text is `docs/SOURCES.md` at `cdb479d93
 <a id="inbound-2026-10-01a-provenance"></a>
 - Inbound 2026 10 01a provenance
 <a id="inbound-2026-10-01a-event-order"></a>
-- Inbound 2026 10 01a event order — [`SPEC-2026-10-01-01`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-01)
+- Inbound 2026 10 01a event order — [`SPEC-2026-10-01-01`](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-01-01)
 <a id="inbound-2026-10-01a-parent-walk-and-dotted-names"></a>
 - Inbound 2026 10 01a parent walk and dotted names
 
@@ -183,7 +184,7 @@ Deleted from this hub; the records' full text is `docs/SOURCES.md` at `cdb479d93
 <a id="inbound-2026-10-01-provenance"></a>
 - Inbound 2026 10 01 provenance
 <a id="inbound-2026-10-01-group-arguments"></a>
-- Inbound 2026 10 01 group arguments — [`SPEC-2026-09-30-01`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-30-01)
+- Inbound 2026 10 01 group arguments — [`SPEC-2026-09-30-01`](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-30-01)
 <a id="inbound-2026-10-01-mixed-absent-product"></a>
 - Inbound 2026 10 01 mixed absent product
 
@@ -522,6 +523,9 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 <a id="inbound-2026-09-07-dispositions"></a>
 - Inbound 2026 09 07 dispositions
 
+- `stored-gap`: Reviewed a12-dmkits `a56a825941c1ce393ae2deaf8b604f5023f39f44`: a stored `2024-03-31T02:30:00` on Europe/Berlin suppresses its referencing rule rather than normalizing forward. `DstTimeZoneDiffTest.gapWallTimeIsAFormalError` and KF6 supply the retained corroboration.
+- `limit`: The differential's code assertion is on the peer interpreter; the every-era generalization rests on a `SimpleDateFormat` parser probe, not a Kernel differential. [Terminal disposition](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-07-08).
+
 <a id="src-inbound-2026-10-09a"></a>
 ## October 9 follow-up: guards, programme scope and stored reads
 
@@ -536,4 +540,4 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `ranges`: KF540: `DateRangeSharedRuntimeDiffTest` and `DateRangeSharedFormatOrderDiffTest` corroborate all eight source profiles, both interpretations, default/configured year and the additional-check partition. Measured first profiles remain dotted and month-only, in UTC on direct nonrepeatable sources, without pre-1900 values.
 - `readback`: `ComputedDateStoredReadDiffTest` pins yearless Date rollover back to Base Year on dependent read. The range matrix compares dependent reads of cross-interpretation targets. Readback consumes target storage rather than preserving discarded expression components; [SG6](../gaps/numeric-and-temporal.md#gap-sg6) owns the executable audit.
 - `earlier-receipts`: No new executable receipt is issued for KF184 fill-to-fix scope, KF410 root spellings, KF522 fill-to-fix, KF416, KF109, KF527 or KF529. The earlier letter's acceptance of outbound entries does not establish these distinct obligations; keep the peer's reopened rows open pending exact guards.
-- `sync`: The [ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md) owns dispositions for SPEC-2026-10-09-09 through -12. These inbound additions create no outbound request. Canonical corrections are in [iteration](../../spec/07-repetition-and-iteration.md) and [computation](../../spec/09-computations.md).
+- `sync`: The [ledger at `e2bc04e5`](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md) retains dispositions for SPEC-2026-10-09-09 through -12. These inbound additions create no outbound request. Canonical corrections are in [iteration](../../spec/07-repetition-and-iteration.md) and [computation](../../spec/09-computations.md).
