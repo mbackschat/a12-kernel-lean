@@ -35,6 +35,14 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-09-11"></a>
+### SPEC-2026-10-09-11 — native decimal ingestion preserves signed scale
+
+- `status`: pending
+- `canonical`: [Number input conversion](../spec/04-numbers-and-decimals.md#stored-decimal-identity-and-runtime-read-text-depend-on-the-storage-regime) now states scale-preserving decimal-node text before field conversion, including negative scale and the plain/scientific threshold.
+- `basis`: the [typed mapper and converter route](sources/cross-layer-routes.md#src-number-wire-ingestion) is source-derived. Existing peer fidelity assertions establish positive-scale preservation; they do not calibrate negative-scale route equivalence.
+- `acceptance`: reconcile native/quoted inputs and Number/String destinations. Preserve the probe distinction: a file's native `1e3` reaches conversion with scale −3; inline plain reserialization produces scale 0. A quoted `"1e3"` retains scale −3 through either route. Include scientific-threshold and signed-zero controls; no new Kernel measurement is claimed.
+
 <a id="spec-2026-10-09-10"></a>
 ### SPEC-2026-10-09-10 — filter extents retain whole-program cache scope
 

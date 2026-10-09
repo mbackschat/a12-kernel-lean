@@ -62,15 +62,6 @@ example :
         (·.data.cells.length)) == some 0].all id := by
   native_decide
 
-/- A JSON number keeps its text unless its written fraction ends in zeros, whose scale the rendering
-would drop. -/
-example :
-    [(Json.parse "10.5").toOption.bind storedText? == some "10.5",
-     (Json.parse "7").toOption.bind storedText? == some "7",
-     (Json.parse "10.50").toOption.bind storedText? == none,
-     (Json.parse "2.0").toOption.bind storedText? == none].all id := by
-  native_decide
-
 /- An object member the model declares no field below is refused, not read as an empty group. -/
 example :
     let dm : DmModel := { flat := model flag, rules := [], computations := [], conditionLanguage := "en_US",

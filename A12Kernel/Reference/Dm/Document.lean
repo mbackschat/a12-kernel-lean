@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.Model
+import A12Kernel.Semantics.NumericWire
 import A12Kernel.Elaboration.CheckedDocument
 
 /-! # Reading a Kernel document against a DM model
@@ -7,12 +8,12 @@ A Kernel document in a `kernelProbe` request is nested JSON: an object per group
 name, a repeatable group as an array of its rows in index order, and a field as its stored scalar. This
 reader turns one into `DocumentData` for `checkDocument`, deriving every cell's parsed value from its
 stored text through the model's own classifiers. A JSON boolean stores the Kernel's `true` or `false`
-token and a JSON number its decimal spelling, unless that spelling ends its fraction in zeros. A JSON `null` is a field present without a value, as
+token and a JSON number its scale-preserving decimal-node text. A JSON `null` is a field present without a value, as
 a12-dmkits' `document-instance.schema.json` reads the Kernel's document format, and a missing key is an
 absent field.
 
-A field the model reader refused, a key or object the model declares nothing for, a JSON number whose
-written scale its rendering would drop, or a temporal text no classifier owns is reported in `DmDocument.refusals` rather than placed, so a replay row depending on it is refused
+A field the model reader refused, a key or object the model declares nothing for, an out-of-profile
+numeric scale, or a temporal text no classifier owns is reported in `DmDocument.refusals` rather than placed, so a replay row depending on it is refused
 as unrepresented instead of evaluated against a guess.
 -/
 
@@ -25,21 +26,23 @@ structure DmDocument where
   refusals : List (List String × String)
   deriving Repr
 
-/-- The text the Kernel stores for one scalar JSON value. A JSON number whose written fraction ends
-in zeros, such as `10.50`, has no text here: rendering drops the zeros, and whether the Kernel's
-reading keeps that scale is unmeasured, since a fraction-digit limit accepts both spellings alike. -/
+/-- Scalar node text before field conversion. Parsed numbers represent the probe's plain-serialized
+inline route; raw document bytes must use `parseDocumentJson` to retain negative decimal scale. -/
 def storedText? : Json → Option String
   | .str text => some text
   | .bool true => some "true"
   | .bool false => some "false"
   | .num number =>
-      if number.exponent > 0 && number.mantissa % 10 == 0 then none else some number.toString
+      if number.exponent > 1000 then none
+      else some (NumericInputDecimal.wireText { unscaled := number.mantissa, scale := number.exponent })
   | .null => some ""
   | _ => none
 
 /-- The decimal the Kernel's document conversion makes of a Number text: Java `BigDecimal`'s string
 grammar, an optional sign, digits around an optional point and an optional exponent, with at least
-one digit. An exponent too large to expand is left as text, as an unparseable value is. -/
+one digit. A decimal scale outside the bounded conversion profile is left as text, as an
+unparseable value is. The bound follows scale rather than exponent spelling because canonical
+scientific text moves the point without changing decimal identity. -/
 def convertedDecimal? (text : String) : Option NumericInputDecimal := do
   let chars := text.toList
   let (negative, chars) := match chars with
@@ -52,17 +55,64 @@ def convertedDecimal? (text : String) : Option NumericInputDecimal := do
     | _, _ => (chars, none)
   let exponent ← match exponent with
     | none => pure (0 : Int)
+    | some ('+' :: digits) => (String.ofList digits).toNat? |>.map Int.ofNat
     | some digits => (String.ofList digits).toInt?
-  if exponent.natAbs > 1000 then none
   let (integer, fraction) ← match mantissa.splitOn '.' with
     | [integer] => pure (integer, [])
     | [integer, fraction] => pure (integer, fraction)
     | _ => none
+  let scale : Int := fraction.length - exponent
+  if scale.natAbs > 1000 then none
   let digits := integer ++ fraction
   if digits.isEmpty || !digits.all Char.isDigit then none
   let magnitude ← (String.ofList digits).toNat?
   pure { unscaled := if negative then -(magnitude : Int) else magnitude
-         scale := fraction.length - exponent }
+         scale }
+
+private inductive DocumentLexState where
+  | plain | quoted | escaped | number
+
+private def numberTokenText (token : String) : Except String String := do
+  let some value := convertedDecimal? token
+    | throw "native JSON number exceeds the represented decimal conversion profile"
+  pure ("\"" ++ value.wireText ++ "\"")
+
+/-- Parse raw document bytes without erasing native negative decimal scale. Validate JSON before
+replacing numeric value tokens by their node text, so quoting cannot admit malformed JSON or numeric
+object keys. The existing field converter consumes the same text as Kernel `ValueNode.asText`. -/
+def parseDocumentJson (text : String) : Except String Json := do
+  let _ ← Json.parse text
+  let mut state := DocumentLexState.plain
+  let mut token := ""
+  let mut output := ""
+  for char in text.toList do
+    match state with
+    | .quoted =>
+        output := output.push char
+        if char == '\\' then state := .escaped
+        else if char == '"' then state := .plain
+    | .escaped =>
+        output := output.push char
+        state := .quoted
+    | .plain =>
+        if char.isDigit || char == '-' then
+          token := String.singleton char
+          state := .number
+        else
+          output := output.push char
+          if char == '"' then state := .quoted
+    | .number =>
+        if char.isDigit || char == '.' || char == 'e' || char == 'E' ||
+            char == '+' || char == '-' then
+          token := token.push char
+        else
+          output := output ++ (← numberTokenText token)
+          output := output.push char
+          state := if char == '"' then .quoted else .plain
+  match state with
+  | .number => output := output ++ (← numberTokenText token)
+  | _ => pure ()
+  Json.parse output
 
 private def hasLeadingZeros (text : String) : Bool :=
   match (text.toList.dropWhile (fun c => c == '+' || c == '-')) with
@@ -126,7 +176,7 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
     match model.flat.fields.find? fun field => field.groupPath == group && field.name == name with
     | some declaration =>
         match storedText? value with
-        | none => refuse childPath "field value is no scalar, or a number whose written scale is unmeasured"
+        | none => refuse childPath "field value is no scalar, or its numeric scale exceeds the represented profile"
         | some stored =>
             match classifyStored model.flat declaration { field := declaration.id, path } stored with
             | .ok cell => modify fun state => { state with cells := state.cells.push cell }

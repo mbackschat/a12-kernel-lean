@@ -17,23 +17,23 @@ Resume the active family through its owner links. Update this file only when the
 <a id="active-unit"></a>
 ## Selected work
 
-- `milestone`: Resume the queued Number wire-ingestion work under [SG5](gaps/numeric-and-temporal.md#gap-sg5). Route discovery is required before implementation.
-- `oracle`: Reconcile [Number storage semantics](../spec/04-numbers-and-decimals.md) and the source index with current reader behavior and retained evidence. Settle native JSON numbers versus stored text before choosing a shared ingestion mechanism; do not infer a conversion rule from one failing value.
-- `working-tree`: The bounded H10-R6 traversal/cache-view batch is accepted at this commit. No unfinished implementation or live process is carried forward. The Downloads handback reply is complete.
+- `milestone`: Reconcile the inbound temporal extractor gates under [SG6](gaps/numeric-and-temporal.md#gap-sg6). Inventory current carriers and settle the finite precision/format matrix before implementation.
+- `oracle`: Use the [temporal clause](../spec/05-dates-and-time.md) and [KF529/KF261 handback](sources/inbound-handbacks.md#inbound-2026-10-09-extensions). Distinguish direct/keyed partial precision, numeric extractors, DateTime projections, clock-year anchoring and interpreted range endpoints.
+- `working-tree`: The bounded Number wire-ingestion batch is accepted at this commit. No unfinished implementation or live process is carried forward. The Downloads handback reply is complete.
 - `state`: Broad coverage remains 217/217. The [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns the refreshed population and its remaining whole-row/evidence limits.
-- `next`: Verify SG5's Number-ingestion source and implementation route, inventory existing parsing/representation owners, and define the finite separating matrix. Implement one settled mechanism across its ready input forms, then use the ordinary family gates.
-- `consumer`: Execute needs exact distinctions between wire representation, stored text, formal findings and evaluated Number values. Keep those distinctions through reader-to-evaluator controls; no independent-consumer qualification is implied.
+- `next`: Audit native, ordinary and Having admission together, then select a shared gate and all ready carriers. Preserve starred-reference precedence and the DateTime projection distinction. FROM-interpreted endpoint Year is measured; TO is not. SG6 owns the verified implementation loci and unresolved route boundaries.
+- `consumer`: Execute needs admission to preserve declared partial precision separately from completed runtime values; Base Year must not erase a static precision refusal. Keep reader-to-evaluator controls alongside the gate matrix.
 - `blocker`: No verified hard blocker.
-- `stop-condition`: An unresolved source distinction stops dependent implementation, not source discovery. Keep H10-R6's large-domain sparse traversal, checked token first-filled routing, partial validation and external-calibration limits in their [owning matrix](gaps/paths-and-groups.md#gap-sg17-closure-matrix).
-- `economy-carry-forward`: Before integrating an evaluation-view change, audit executable adapters, transition/failure relations, their proofs and theorem-call fixtures together. Late relation propagation caused avoidable integration retries in H10-R6. Keep broad builds for the frozen batch; use focused targets for corrections. Warm MEDIUM is appropriate only for settled propagation with exact contracts and admitted controls.
+- `stop-condition`: An unresolved source distinction stops dependent implementation, not source discovery. Keep broader temporal profiles, partial validation and external-calibration limits explicit in SG6.
+- `economy-carry-forward`: Before integrating a shared change, audit executable adapters, transition/failure relations, proofs and theorem-call fixtures together. Keep broad builds for the frozen batch; use focused targets for corrections. Warm MEDIUM is appropriate only for settled propagation with exact contracts and admitted controls.
 
 ## Verified baseline
 
-- `committed`: This commit closes the bounded H10-R6 shared traversal and whole-programme cache-view batch. [Implemented scope and assurance](implementation/repetition-and-paths.md#cap-named-environments-and-addresses) and [remaining obligations](gaps/paths-and-groups.md#gap-sg17-closure-matrix) own its limits.
-- `focused`: Post-review focused checks, integrated build and compact evidence pass. Trust/hygiene passes with the running transition and failure relations using the programme cache.
-- `review-boundary`: Fresh HIGH review completed. Both in-slice findings—declared-tail rejection of virtual outer coordinates and generated execution dropping its inherited cache—were reproduced with paired controls and fixed. The large-domain token first-filled limitation remains explicit in H10-R6.
-- `replay-boundary`: Full replay on the corrected reviewed slice preserves all matching instances, with zero instance refusal, divergence, unattributed outcome or execution fault. The [report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns the counts and excluded rows. Replay interval resets to zero; prose or report requests do not trigger another run.
-- `remaining-gates`: None for the accepted bounded H10-R6 batch. The next semantic batch starts with source/route discovery.
+- `committed`: This commit closes bounded native Number wire ingestion through raw-file and plain-serialized inline routes. [Stored Number input](implementation/numeric.md#cap-stored-number-formal-read) owns implementation and assurance; [SG5](gaps/numeric-and-temporal.md#gap-sg5) retains host bounds and broader calibration.
+- `focused`: Focused red/green checks, integrated build, compact evidence and trust/hygiene pass. Exact input regime and signed scale survive independently of both-phase formal-read text.
+- `review-boundary`: Fresh HIGH review completed. Both findings were reproduced and corrected: canonical exponent notation crossed a spelling-based bound, and the checked negative-scale assertions used too coarse an identity. The bound now follows retained scale, and controls inspect exact decimal storage separately from the computed-target quotient.
+- `replay-boundary`: Full replay on the corrected reviewed slice admits the previously refused Number document rows and preserves all prior matching instances, with zero instance refusal, divergence, unattributed outcome or execution fault. The [report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns counts and excluded rows. Replay interval resets to zero; prose/report requests do not trigger another run.
+- `remaining-gates`: None for the accepted bounded Number-ingestion batch. The next semantic batch starts with the SG6 source/carrier matrix.
 - `commands`: The [command ladder](TESTING.md#command-ladder) and [review disposition rules](TESTING.md#review-convergence-and-landing-gate) own gates. Reuse the reviewed boundary; final documentation updates trigger no extra replay or reviewer.
 
 ## Consumer and evidence triggers

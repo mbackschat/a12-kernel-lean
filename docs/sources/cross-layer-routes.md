@@ -14,6 +14,16 @@ For Number, `ValidationData.getValue` returns a stored `String` unchanged but se
 
 Stored temporal conversion is non-lenient. `FieldValueConverter` delegates Date, Time, DateTime, and DateRange conversion through the declared formats; `ValidationDateParser` disables leniency. `DocumentJsonAndXmlDeserializationInfoImpl` retains a nonempty value that fails conversion as its exact stored text rather than dropping the placement. These are in-memory input semantics; JSON mapper syntax and permissiveness remain outside the evaluation account.
 
+<a id="src-number-wire-ingestion"></a>
+### Native Number document conversion
+
+- `kernel-route`: Kernel revision from [SOURCES](../SOURCES.md): `ObjectMapperProvider.createObjectMapperForDocSerializer` enables exact decimal nodes and preserves trailing zeros; `DocumentJsonAndXmlDeserializationInfoImpl.parseFieldValue` takes `ValueNode.asText` before `FieldValueConverter.parseNumber`.
+- `meaning`: native fractional/exponent tokens retain coefficient and signed decimal scale. Decimal-node text uses canonical BigDecimal notation; integer nodes use integer text. Conversion into a Number then feeds the existing [storage regimes](../../spec/04-numbers-and-decimals.md#stored-decimal-identity-and-runtime-read-text-depend-on-the-storage-regime).
+- `probe-route`: `KernelRuntimeProbe.document` sends file bytes unchanged but reserializes inline nodes with `WRITE_BIGDECIMAL_AS_PLAIN`. A native `1e3` therefore reaches the Kernel as `1e3` from a file and `1000` inline; a quoted exponent survives either route.
+- `peer-basis`: the mapper and fidelity test were introduced at `526778fa7c2fb32de15bc6d6b28b3f5ead4f82b2`; current route inspected at `2cb63ca665766ab2f9a84b28cbfdb46026aea5b9`. `KernelProbeDocumentFidelityTest` checks retained positive scale through unchanged computation output for `5.00 * 2 = 10.00`.
+- `limit`: that test does not establish exponent-route equivalence. Negative-scale and canonical scientific rendering claims here are source-derived; no Kernel invocation was made. Mapper comments about formal length do not supersede the canonical strip/minimum-scale clause.
+- `lean-seam`: Lean 4.34.1 `JsonNumber` has a natural scale; parsing a positive exponent can expand the coefficient and erase negative scale. Its ordinary rendering also removes fractional zeros. Raw document numbers must retain their identity before this parse boundary.
+
 ### Ordered validation and partial rule execution
 
 `rulesDir/CodeGenRuleDefinition.st` in Java, Groovy, and JavaScript-VK owns the filter-bearing partial-rule early return before iteration and condition evaluation. The enclosing `CodeGenRules.st` mainly orders preliminary checking and delegates rule bodies; it is not the source for that skip.

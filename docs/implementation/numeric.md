@@ -88,7 +88,9 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `owner`: [`NumericInput.lean`](../../A12Kernel/Semantics/NumericInput.lean), [`CheckedDocument.lean`](../../A12Kernel/Elaboration/CheckedDocument.lean), [`StringComputation.lean`](../../A12Kernel/Elaboration/StringComputation.lean), [`AddressedFieldValueAsString.lean`](../../A12Kernel/Elaboration/AddressedFieldValueAsString.lean)
 - `assurance`: E/P closed through the stated computation/result/application paths; upstream L at [source registry](../SOURCES.md), [source registry](../SOURCES.md), [source registry](../SOURCES.md), plus source-owned addressed authorability and three-engine route preflight at [source registry](../SOURCES.md); the exact addressed scale/empty/poison matrix is internally locked but not separately Kernel-calibrated; C none
 - `consumer`: the bounded [selected conversion readback](../consumer-probes/EXECUTE.md#run-selected-conversion-readback-01) recovered regime/text, scale, selection and current-producer distinctions from canonical clauses; exact computed-target padding and wider consumer qualification remain outside that probe.
-- `remains`: Host ingestion and remaining addressed expression placements: [SG5](../SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion)
+- `wire`: [`NumericWire`](../../A12Kernel/Semantics/NumericWire.lean) renders scale-preserving node text; the [DM document reader](../../A12Kernel/Reference/Dm/Document.lean) preserves raw-file negative scale before JSON normalization and models plain-serialized inline numbers separately. Both reuse exact input identity and formal-read classification.
+- `wire-assurance`: [Reader controls](../../A12Kernel/Reference/Dm/DocumentNumberLocks.lean) separate trailing zeros, signed zero, exponents, quoted twins, String destinations, checked identity and both-phase text. [Provenance](../sources/cross-layer-routes.md#src-number-wire-ingestion) separates retained positive-scale evidence from source-derived extensions. The profile retains absolute signed scale ≤1000; broader host bounds and permissive syntax remain open.
+- `remains`: Host ingestion bounds/calibration and remaining addressed expression placements: [SG5](../SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion)
 
 <a id="cap-stored-decimal-identity"></a>
 #### Stored decimal identity
@@ -96,7 +98,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `boundary`: Exact coefficient/scale identity kept separate from expression `Rat`; scale-19 canonical amount and bounded computed rendering
 - `owner`: [`NumericStoredNumber.lean`](../../A12Kernel/Semantics/NumericStoredNumber.lean)
 - `assurance`: E/P closed; peer-triangulated; C none
-- `remains`: Concrete host decimal ingestion: [SG5](../SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion)
+- `remains`: Host decimal bounds and broader calibration: [SG5](../SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion)
 
 <a id="cap-number-target-and-delta"></a>
 #### Number target and delta

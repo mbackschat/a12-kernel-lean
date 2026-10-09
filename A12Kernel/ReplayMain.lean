@@ -62,6 +62,7 @@ import A12Kernel.Reference.Dm.RecursiveReferenceAdmissionLocks
 import A12Kernel.Reference.Dm.FilterReferenceInventoryLocks
 import A12Kernel.Reference.Dm.HavingGroupAdmissionLocks
 import A12Kernel.Reference.Dm.ReaderLocks
+import A12Kernel.Reference.Dm.DocumentNumberLocks
 import A12Kernel.Reference.Dm.NegateLocks
 import A12Kernel.Reference.Dm.LowerLocks
 import A12Kernel.Reference.Dm.NumericFieldFormLocks
@@ -319,7 +320,10 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
     if !agree then line name "-" "-" "absent" "Engines\tthe Kernel's engines disagree"; continue
     let document ← match row.getObjVal? "documentInline", row.getObjValAs? String "document" with
       | .ok inline, _ => pure inline
-      | _, .ok file => readJson (directory / file)
+      | _, .ok file =>
+          match parseDocumentJson (← IO.FS.readFile (directory / file)) with
+          | .ok json => pure json
+          | .error reason => do line name "-" "-" "tier2" s!"Document\t{reason}"; continue
       | _, _ => do line name "-" "-" "tier2" "Request\tno document"; continue
     match readDocument model document with
     | .error reason => line name "-" "-" "tier2" s!"Document\t{reason}"

@@ -9,6 +9,8 @@ Empty-number behaviour (`0` substitution, its exceptions in aggregates) is in [Â
 
 ## Stored decimal identity and runtime read text depend on the storage regime
 
+The typed JSON document reader preserves the coefficient and signed decimal scale of native decimal numbers, including trailing fractional zeros. Before field conversion it derives canonical decimal-node text: plain notation when scale is nonnegative and the adjusted exponent (coefficient digit count minus one minus scale, counting zero as one digit) is at least âˆ’6; scientific notation otherwise. Thus native `10.50` supplies `10.50`, `1e3` supplies `1E+3`, and `0.0000001` supplies `1E-7`. A Number destination converts that text to its exact decimal identity; a String destination retains the node text. Quoted scalar text bypasses numeric-node formatting. Re-serializing a native negative-scale number in plain notation before ingestion changes its source identity even when its amount is unchanged ([source route](../docs/sources/cross-layer-routes.md#src-number-wire-ingestion)).
+
 An in-memory Number cell has one of two storage regimes, selected by the actual stored value representation rather than by the field declaration or the consumer. A **decimal-valued** placement retains its exact coefficient and scale, so `250.00` and `250` have the same amount but different source identities. Before evaluation, that regime derives one formal-read text by stripping fractional trailing zeros, flooring the resulting scale at the declaration's `minFractionalDigits`, rescaling exactly, and rendering in plain notation:
 
 ```
