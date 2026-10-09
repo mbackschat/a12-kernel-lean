@@ -3,7 +3,7 @@ import A12Kernel.Semantics.DateNumeric
 
 /-! # Unconfigured yearless DateRange bound extraction
 
-A model with no Base Year cannot complete a yearless DATE_RANGE declaration, and the Kernel
+A model with no Base Year cannot complete an uninterpreted yearless DATE_RANGE declaration, and the Kernel
 still admits `StartOfDateRange` and `EndOfDateRange` on one: the extraction is legal and the
 *consumers* are gated instead. This capsule owns that route separately from the exact-valued
 one, because the two retain different domains — the completed route yields a resolved Date and
@@ -54,11 +54,12 @@ structure CheckedYearlessDateRangeBound (model : FlatModel)
     extends CheckedDateRangeSource model where
   private mk ::
   bound : DateRangeBound
+  sourceUninterpreted : toCheckedDateRangeSource.policy.interpretationOfYear = none
   sourceYearless : toCheckedDateRangeSource.format.includesYear = false
   modelUnconfigured : model.baseYear = none
 
 /-- Certify one endpoint at a reading scope: the declaration must be yearless and the model must
-supply no Base Year, because a configured model completes the value and belongs to the exact owner. -/
+supply no Base Year. Interpretation and a configured Base Year each belong to the exact owner. -/
 def elaborateYearlessDateRangeBoundIn (model : FlatModel)
     (scope : List RepeatableLevel) (sourceField : FieldId)
     (bound : DateRangeBound) :
@@ -66,15 +67,19 @@ def elaborateYearlessDateRangeBoundIn (model : FlatModel)
       (CheckedYearlessDateRangeBound model) := do
   let source ← elaborateDateRangeSourceIn model scope sourceField
     |>.mapError .source
-  if hYearless : source.format.includesYear = false then
-    if hModel : model.baseYear = none then
-      pure {
-        toCheckedDateRangeSource := source
-        bound
-        sourceYearless := hYearless
-        modelUnconfigured := hModel }
+  if hInterpreted : source.policy.interpretationOfYear = none then
+    if hYearless : source.format.includesYear = false then
+      if hModel : model.baseYear = none then
+        pure {
+          toCheckedDateRangeSource := source
+          bound
+          sourceUninterpreted := hInterpreted
+          sourceYearless := hYearless
+          modelUnconfigured := hModel }
+      else
+        throw (.baseYearConfigured sourceField)
     else
-      throw (.baseYearConfigured sourceField)
+      throw (.notYearless sourceField source.policy.format source.policy.separator)
   else
     throw (.notYearless sourceField source.policy.format source.policy.separator)
 

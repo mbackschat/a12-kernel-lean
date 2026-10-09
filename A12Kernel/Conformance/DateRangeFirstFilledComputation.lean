@@ -331,13 +331,15 @@ example :
         some "CLEARED" := by
   native_decide
 
-/- This evaluator does not encode the Kernel's derived shared-format equivalence state. Its excluded unconfigured interpretation branch therefore stays target-local rather than encoding the order-confounded dotted-first observation as a field-local rule. -/
+/- The source's declared month input first becomes its shared TO spelling; the target then
+uses the independently shared FROM spelling (spec/05 §8). -/
 example :
-    signatureForModel? model interpretedMonthTarget interpretedMonthSource [{
-      row := 1
-      stored := "03/10"
-      raw := .parsed (.dateRange (.yearlessMonth 3 10))
-    }] = some "VALUE|03/10" := by
+    (do
+      let policy ← interpretedMonthSource.toDateRangeDeclarationPolicy?
+      let stored ← (model.dateRangeRuntimeText policy "03/10").toOption
+      let raw ← (model.classifyRuntimeDateRange policy stored).toOption
+      signatureForModel? model interpretedMonthTarget interpretedMonthSource [{ row := 1, stored, raw }]) =
+      some "VALUE|01.03-01.10" := by
   native_decide
 
 /- The fifth temporal carrier shares the star family's placement account: declaring at the source's own repeatable group puts the fixed target above the declaring group and is admitted, because a star aggregate derives no iteration, while an unrepresentable declaring group is refused. Measured at the [fixed-target star placement checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-fixed-target-star-placement). -/

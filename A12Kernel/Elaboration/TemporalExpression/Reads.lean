@@ -191,6 +191,16 @@ def readPartialScalarTemporalAtom (context : ScalarComputationContext)
       | some .empty => pure .notEvaluated
       | some (.unknown cause) | some (.poison cause) => pure (.unknown cause)
       | some (.value (cell, stored)) => readScalarValueAsDate .validation source.source cell stored
+  | .indexedRangeBound profile source bound => some do
+      match ← partialRead.selectedCell source.toCheckedSemanticIndexSource context.row with
+      | none => pure (.value .nonRelevant true)
+      | some observation =>
+          let cell : CellObservation := match observation with
+            | .empty => CellObservation.empty
+            | .unknown cause | .poison cause => .unknown cause
+            | .value (cell, _) => observeCell .validation cell
+          (projectScalarRangeBoundObservation profile (!source.exactDomain) bound cell).mapError
+            ScalarTemporalPrimitiveFault.toEvaluation
   | .rangeBound profile source => some do
       let field := match source with | .exact source => source.source.id | .yearless source => source.source.id
       let some cell ← partialRead.readCell context.row field | return .value .nonRelevant true

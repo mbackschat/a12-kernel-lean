@@ -111,25 +111,15 @@ def elaborateDateRangeSourceIn (model : FlatModel)
   else
     throw .incoherentCore
 
-/-- Whether one checked input profile supplies exact full-Date endpoints under the model's optional Base Year. -/
-def DateRangeInputFormat.supportsDirectBound
-    (format : DateRangeInputFormat) (baseYear : Option Int) : Bool :=
-  match format with
-  | .exact _ | .yearFragment | .yearMonthFragment => true
-  -- Every yearless presentation needs the model's Base Year to supply the missing
-  -- year, and the declared spelling does not change that.
-  | .yearlessMonth | .yearlessMonthDay | .yearlessMonthConcatenated
-  | .yearlessDayMonthDotted => baseYear.isSome
-
 /-- One selected endpoint of a DateRange field read at a rule's iterating row. The exact-value gate
-excludes unconfigured yearless profiles; `CheckedYearlessDateRangeBound` in
-`YearlessDateRangeBound.lean` owns their separate endpoint contract without synthesizing an exact year. -/
+excludes uninterpreted, unconfigured yearless profiles. Interpreted declarations resolve exact
+endpoints under the runtime anchor (spec/05 §8); the yearless owner carries only bare labels. -/
 structure CheckedDateRangeSourceBound (model : FlatModel)
     extends CheckedDateRangeSource model where
   private mk ::
   bound : DateRangeBound
   sourceSupportsBound :
-    toCheckedDateRangeSource.format.supportsDirectBound model.baseYear = true
+    toCheckedDateRangeSource.policy.supportsExactBound toCheckedDateRangeSource.format model.baseYear = true
 
 /-- Resolve one endpoint for a rule iterating `scope`, refusing the same profiles the scalar
 endpoint owner refuses. -/
@@ -138,7 +128,7 @@ def elaborateDateRangeBoundIn (model : FlatModel)
     (bound : DateRangeBound) :
     Except DateRangeBoundElabError (CheckedDateRangeSourceBound model) := do
   let source ← elaborateDateRangeSourceIn model scope sourceField
-  if hSupported : source.format.supportsDirectBound model.baseYear then
+  if hSupported : source.policy.supportsExactBound source.format model.baseYear then
     pure {
       toCheckedDateRangeSource := source
       bound

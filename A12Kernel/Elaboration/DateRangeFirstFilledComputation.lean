@@ -271,6 +271,7 @@ inductive DateRangeFirstFilledComputationFault where
   | site (cause : FirstFilledSiteFault)
   | directSource (cause : DirectDateRangeFault)
   | unresolvedEndpoint (range : DateRangeValue)
+  | target (cause : DateRangeTargetEvaluationFault)
   deriving Repr, DecidableEq
 
 /-- One instance's DateRange selection retained under its exact target address. -/
@@ -313,9 +314,10 @@ def evaluateAt (operation : CheckedDateRangeFirstFilledComputation model)
     Except DateRangeFirstFilledComputationFault DateRangeFirstFilledComputationOutcome := do
   let resolved ← (operation.shape.site.source.resolveAt input read environment world).mapError
     (.site ∘ .source)
-  let outcome ← (operation.format.evaluateComputationResult
+  let outcome ← (model.evaluateDateRangeTarget operation.targetField
       (evaluateFirstFilledSource resolved .poison (fun resolved => evalDateRangeFirstFilledCells resolved.cells))).mapError fun
     | .unresolvedEndpoint value => .unresolvedEndpoint value
+    | fault => .target fault
   pure { targetField := target, outcome }
 
 /-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
@@ -395,10 +397,10 @@ def execute (operation : CheckedDateRangeFirstFilledDirectComputation model)
   let result ← scanDirectDateRangeFirstFilled
     (operation.sources.map fun source _ =>
       source.direct.evaluate .computation input |>.mapError .directSource)
-  -- The target's own declared spelling renders the selected value, which is what makes an
-  -- admitted lexical cross observable: the source profile decides nothing about the output.
-  operation.target.format.evaluateComputationResult result |>.mapError fun
+  -- Static declaration agreement does not choose the shared runtime target format (spec/05 §8).
+  model.evaluateDateRangeTarget operation.target.source.id result |>.mapError fun
     | .unresolvedEndpoint value => .unresolvedEndpoint value
+    | fault => .target fault
 
 /-- Execute and classify the one checked direct-list outcome against the same immutable source document. Residual messages remain already-classified opaque input. -/
 def executeResult

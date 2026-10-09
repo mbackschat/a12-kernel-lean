@@ -125,6 +125,8 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
     match source with
     | .constant "BaseYear" =>
         pure (.baseYearBound (if bound == .start then .start else .finish))
+    | .entity { path, index := some key, category := none, filter := none } =>
+        pure (.indexedRangeBound (← lowerIndexedSource model rowGroup path key) bound)
     | _ =>
         let some path := source.fieldEntity? | refuse "TemporalExpression" "range entity"
         pure (.rangeBound path bound)

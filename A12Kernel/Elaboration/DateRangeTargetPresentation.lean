@@ -39,39 +39,50 @@ def renderYearlessDayMonthDotted (start finish : MonthDayValue) : StoredDateRang
   nonempty := by simp
 }
 
-/-- Render one resolved range through the declaration profile retained by a checked DateRange target. -/
-def renderResolved : DateRangeInputFormat → ResolvedDateRange → StoredDateRange
-  | .exact format, range => format.render range
-  | .yearFragment, range => {
-      text := toString range.start.civil.parts.year ++ "/" ++
-        toString range.finish.civil.parts.year
+/-- Render decoded endpoint components through a range profile. Input conversion and computed targets share this presentation (spec/05 §8). -/
+def renderParts : DateRangeInputFormat → DateParts → DateParts → StoredDateRange
+  | .exact .isoSlash, start, finish => {
+      text := FullDateTargetFormat.yearMonthDayDashes.renderPartsText start ++ "/" ++
+        FullDateTargetFormat.yearMonthDayDashes.renderPartsText finish
+      nonempty := by simp }
+  | .exact .dayMonthYearDash, start, finish => {
+      text := FullDateTargetFormat.dayMonthYearDots.renderPartsText start ++ "-" ++
+        FullDateTargetFormat.dayMonthYearDots.renderPartsText finish
+      nonempty := by simp }
+  | .yearFragment, start, finish => {
+      text := toString start.year ++ "/" ++
+        toString finish.year
       nonempty := by simp
     }
-  | .yearMonthFragment, range => {
-      text := toString range.start.civil.parts.year ++ "-" ++
-        TemporalTargetText.twoDigits range.start.civil.parts.month ++ "/" ++
-        toString range.finish.civil.parts.year ++ "-" ++
-        TemporalTargetText.twoDigits range.finish.civil.parts.month
+  | .yearMonthFragment, start, finish => {
+      text := toString start.year ++ "-" ++
+        TemporalTargetText.twoDigits start.month ++ "/" ++
+        toString finish.year ++ "-" ++
+        TemporalTargetText.twoDigits finish.month
       nonempty := by simp
     }
-  | .yearlessMonth, range =>
-      renderYearlessMonth range.start.civil.parts.month
-        range.finish.civil.parts.month
-  | .yearlessMonthDay, range =>
+  | .yearlessMonth, start, finish =>
+      renderYearlessMonth start.month
+        finish.month
+  | .yearlessMonthDay, start, finish =>
       renderYearlessMonthDay
-        { month := range.start.civil.parts.month
-          day := range.start.civil.parts.day }
-        { month := range.finish.civil.parts.month
-          day := range.finish.civil.parts.day }
-  | .yearlessMonthConcatenated, range =>
-      renderYearlessMonthConcatenated range.start.civil.parts.month
-        range.finish.civil.parts.month
-  | .yearlessDayMonthDotted, range =>
+        { month := start.month
+          day := start.day }
+        { month := finish.month
+          day := finish.day }
+  | .yearlessMonthConcatenated, start, finish =>
+      renderYearlessMonthConcatenated start.month
+        finish.month
+  | .yearlessDayMonthDotted, start, finish =>
       renderYearlessDayMonthDotted
-        { month := range.start.civil.parts.month
-          day := range.start.civil.parts.day }
-        { month := range.finish.civil.parts.month
-          day := range.finish.civil.parts.day }
+        { month := start.month
+          day := start.day }
+        { month := finish.month
+          day := finish.day }
+
+/-- Render a resolved computation result through the same stored presentation as input conversion. -/
+def renderResolved (format : DateRangeInputFormat) (range : ResolvedDateRange) : StoredDateRange :=
+  format.renderParts range.start.civil.parts range.finish.civil.parts
 
 /-- Render one exact typed range through a checked DateRange declaration profile. -/
 def evaluateExactValue (format : DateRangeInputFormat) (range : DateRangeValue) :

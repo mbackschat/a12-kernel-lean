@@ -17,24 +17,24 @@ Resume the active family through its owner links. Update this file only when the
 <a id="active-unit"></a>
 ## Selected work
 
-- `milestone`: Settle interpreted yearless DateRange anchoring under [SG6](gaps/numeric-and-temporal.md#gap-sg6), then close its ready numeric endpoint routes as one family.
-- `oracle`: Use the [temporal clause](../spec/05-dates-and-time.md) and [KF529/KF261 handback](sources/inbound-handbacks.md#inbound-2026-10-09-extensions). Distinguish direct/keyed partial precision, numeric extractors, DateTime projections, clock-year anchoring and interpreted range endpoints.
-- `working-tree`: The bounded numeric-extractor batch is accepted at this commit. No unfinished implementation or live process is carried forward. The Downloads handback reply is complete.
+- `milestone`: Reconcile remaining [SG6 constructor/endpoint obligations](gaps/numeric-and-temporal.md#gap-sg6) against the handback and code, then select one finite family batch.
+- `oracle`: Start from the [temporal clause](../spec/05-dates-and-time.md) and [inbound constructor controls](sources/inbound-handbacks.md#inbound-2026-10-09-extensions). The accepted [shared-runtime matrix](sources/date-range-construction.md#src-date-range-shared-runtime) is the DateRange input/endpoint baseline.
+- `working-tree`: The shared-runtime DateRange batch is accepted at this commit. No unfinished implementation or live process is carried forward. The Downloads handback reply is complete.
 - `state`: Broad coverage remains 217/217. The [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns the refreshed population and its remaining whole-row/evidence limits.
-- `next`: Audit endpoint interpretation, shared-format construction/declaration order and `DateRangeInput.resolveYearlessForModel` together. Settle a finite anchoring matrix before changing endpoint certification; static widening alone cannot supply an executable Year.
-- `consumer`: Execute needs interpreted endpoint admission and actual year completion to agree without guessing a year. Preserve source-derived versus measured distinctions, declaration order, Base Year presence and FROM/TO interpretation in the next matrix.
+- `next`: Check keyed text/ValueAsDate constructor routes, grammar/parse-order controls and split-year slots against existing guards before selecting missing semantics. Do not assume a stale gap row still requires implementation.
+- `consumer`: Execute needs selected-operand scope, completion and target checking to agree. Preserve declared versus runtime policy and external-calibration limits when composing the accepted range account.
 - `blocker`: No verified hard blocker.
-- `stop-condition`: An unresolved source distinction stops dependent implementation, not source discovery. Keep broader temporal profiles, partial validation and external-calibration limits explicit in SG6.
-- `economy-carry-forward`: Before delegation, settle top-level and recursive checked carriers, dependencies/pointers and a decidable result helper. Before integration, inspect adapters, transition/failure relations, proofs and root imports together. Keep broad builds at frozen boundaries and corrections focused. Reuse MEDIUM for settled propagation; HIGH takes tiny fixes.
+- `stop-condition`: An unresolved source distinction stops dependent implementation, not discovery. Settle a finite acceptance matrix before widening the next family.
+- `economy-carry-forward`: Before delegation, settle recursive carriers, dependencies/pointers and a decidable result helper. Before integration, inspect adapters, transition/failure relations, proofs, root imports and shared-module prose together. Keep broad builds at frozen boundaries and corrections focused. Reuse MEDIUM for settled propagation; HIGH takes tiny fixes.
 
 ## Verified baseline
 
-- `committed`: This commit closes bounded partial-Date extractor precision and stored-component execution across ordinary, keyed, Having and nested numeric routes, including clock Year1970. The [Number source capability](implementation/numeric.md#cap-number-source-conversions) owns assurance and limits; [SG6](gaps/numeric-and-temporal.md#gap-sg6) retains range anchoring and wider qualification.
-- `focused`: E1–E4, affected proofs, reviewed integration, compact evidence and trust/hygiene pass. The reader matrix distinguishes seven extractors, four precision modes, Base Year presence, selected-cell relevance, required-empty phase behavior, nested construction/shift and pointers/dependencies.
-- `review-boundary`: Fresh HIGH review completed. Its two findings are closed: indexed stored-projection certification now rechecks parent/key host bindings, with both defects reproduced; required-empty partial-Date controls distinguish validation UNKNOWN from computation zero and retain a clean selected-row twin.
-- `replay-boundary`: Full replay on the corrected reviewed slice preserves the preceding matching population with zero instance refusal, divergence, unattributed outcome or execution fault. The [report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns counts and unchanged whole-row/evidence limits. Replay interval resets to zero; prose/report requests do not trigger another run.
-- `remaining-gates`: None for the accepted bounded extractor batch. The next semantic batch begins with the SG6 range-anchoring source matrix.
-- `commands`: The [command ladder](TESTING.md#command-ladder) and [review disposition rules](TESTING.md#review-convergence-and-landing-gate) own gates. Reuse the reviewed boundary; final documentation updates trigger no extra replay or reviewer.
+- `committed`: This commit closes SG6 R1–R4: declared conversion, shared runtime policy, interpreted endpoint admission and model-aware target checking across ordinary, keyed and Having routes. [DateRange capabilities](implementation/date-range.md#cap-date-range-checked-declaration) own assurance; [SG6](gaps/numeric-and-temporal.md#gap-sg6) retains broader compositions and calibration.
+- `focused`: Input/formal-completion, recursive keyed/Having and native source/target controls pass. Integrated build, compact evidence and final trust/hygiene pass.
+- `review-boundary`: Fresh HIGH review completed; both findings are closed. The mixed-document standard-range liveness control now executes beside empty and malformed interpreted sources, and separator-cause prose names the effective runtime policy.
+- `replay-boundary`: Full replay on the corrected reviewed slice preserves all admitted matches with no instance refusal, divergence, unattributed outcome or execution fault. The [report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns counts and unchanged whole-row/evidence limits. Replay interval resets to zero; prose/report requests do not trigger another run.
+- `remaining-gates`: None for the accepted range family. Resume bounded route discovery for the next SG6 obligation.
+- `commands`: The [command ladder](TESTING.md#command-ladder) and [review disposition rules](TESTING.md#review-convergence-and-landing-gate) own gates. Reuse the accepted boundary; final documentation updates trigger no extra replay or reviewer.
 
 ## Consumer and evidence triggers
 

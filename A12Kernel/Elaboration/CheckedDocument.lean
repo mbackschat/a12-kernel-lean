@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.StringContext
-import A12Kernel.Elaboration.DateRangeInput
+import A12Kernel.Elaboration.DateRangeRuntimeInput
 import A12Kernel.Elaboration.PartialDateInput
 import A12Kernel.Elaboration.OmittingDateInput
 import A12Kernel.Elaboration.DateTimeInput
@@ -298,8 +298,7 @@ private def ClassifiedCellInput.canonicalScalarCoherent
       match declaration.toDateRangeDeclarationPolicy? with
       | none => true
       | some policy =>
-          match classifyStoredDateRangeForModel model.timeZoneId model.baseYear
-              policy input.stored with
+          match model.classifyRuntimeDateRange policy input.stored with
           | .ok canonical => input.raw == canonical
           | .error (.unsupportedPolicy _ _) => true
           | .error (.unsupportedZone _) | .error (.unresolvableEndpoint _) => false

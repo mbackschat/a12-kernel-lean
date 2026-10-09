@@ -150,8 +150,10 @@ def classifyStored (model : FlatModel) (declaration : FlatFieldDecl) (address : 
       match declaration.toDateRangeDeclarationPolicy? with
       | none => throw "date range without policy"
       | some policy =>
-          match classifyStoredDateRangeForModel model.timeZoneId model.baseYear policy stored with
-          | .ok raw => pure (cell raw)
+          let runtimeText ← (model.dateRangeRuntimeText policy stored).mapError
+            (fun error => s!"date range conversion: {repr error}")
+          match model.classifyRuntimeDateRange policy runtimeText with
+          | .ok raw => pure { address, stored := runtimeText, raw }
           | .error error => throw s!"date range text: {repr error}"
   | .temporal _ _ =>
       match CheckedDocument.canonicalTemporalCell? model declaration stored with

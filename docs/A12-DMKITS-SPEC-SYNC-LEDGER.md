@@ -35,6 +35,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-09-12"></a>
+### SPEC-2026-10-09-12 — interpreted DateRange reads use shared runtime formats
+
+- `status`: pending
+- `canonical`: [DateRange semantics](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) separates declared input conversion from runtime formatting and corrects the field-local configured-year generalization.
+- `delta`: first declaration wins within each interpretation/additional-check class, independently of format/separator. A shared yearless format can erase supplied years. Day-and-month wrapping uses default 2000 or Base Year; month-only wrapping is invalid under both directions, even with Base Year.
+- `basis`: the [four-model Kernel matrix](sources/date-range-construction.md#src-date-range-shared-runtime) covers all eight source profiles, both directions, configured/default years, ordered/wrapping/empty/malformed input and the additional-check partition. Both strategies agree throughout.
+- `target-delta`: the asymmetric sharing-class probe retains an errored month-only wrapping attempt and clears its dependent Year read. Empty source instead clears the range and permits dependent zero. Runtime target checking follows rendering, not the original typed endpoints alone.
+- `acceptance`: reconcile input conversion, shared policy, formal causes, endpoint extraction and target presentation together. Preserve source-derived scope beyond the two measured first profiles; do not infer a field-local correction from either declaration order. Lean integration remains open in [SG6](gaps/numeric-and-temporal.md#gap-sg6).
+
+
 <a id="spec-2026-10-09-11"></a>
 ### SPEC-2026-10-09-11 — native decimal ingestion preserves signed scale
 

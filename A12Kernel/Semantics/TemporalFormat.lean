@@ -96,6 +96,14 @@ structure DateRangeDeclarationPolicy where
   format : String
   separator : String
   interpretationOfYear : Option DateRangeYearInterpretation := none
+  youngerThan1900Check : Bool := false
+  deriving Repr, DecidableEq
+
+/-- The bounded classifier cannot guess a value when the declaration or model-zone profile is outside its exact executable fragment. Local-midnight resolution failure remains separate from stored-value formal invalidity. -/
+inductive DateRangeInputError where
+  | unsupportedPolicy (format separator : String)
+  | unsupportedZone (zoneId : String)
+  | unresolvableEndpoint (parts : DateParts)
   deriving Repr, DecidableEq
 
 /-- Decide declaration admission against the exact Kernel-measured `(format, separator)` allowlist. Month-only is the sole format admitting the legal empty separator, and admission carries no claim that every DateRange operation supports the pair. -/

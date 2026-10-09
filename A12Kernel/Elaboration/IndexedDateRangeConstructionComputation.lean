@@ -342,7 +342,7 @@ def execute (operation : CheckedIndexedDateRangeConstructionComputation model)
   let finish ← evaluateEndpoint operation.finish .finish column preliminary
   let construction : DateRangeConstructionObservation := {
     start := start.value, finish := finish.value }
-  let outcome ← operation.format.evaluateComputationResult
+  let outcome ← model.evaluateDateRangeTarget operation.target.source.id
       construction.asComputationResult |>.mapError .target
   pure { start, finish, outcome }
 

@@ -145,4 +145,37 @@ example : bounds.all (fun bound =>
       "02/02" "03/03" "02/02" (formatted "MM" "MM" (some 2024)) =
         some (.fired .omission, ["value 14"]) := by native_decide
 
+private def interpreted (direction : DateRangeYearInterpretation) (baseYear : Option Int := none) : FlatModel := {
+  model with
+    baseYear := baseYear
+    timeZoneId := "UTC"
+    fields := model.fields.map fun field =>
+      if field.id == 2 || field.id == 3 then { field with dateRangePolicy := some {
+        format := if field.id == 2 then "dd.MM" else "MM"
+        separator := if field.id == 2 then "-" else "/"
+        interpretationOfYear := some direction } } else field }
+
+example : [DateRangeYearInterpretation.anchorStart, .anchorFinish].all (fun direction =>
+    [none, some 2024].all fun baseYear =>
+      let fixture := interpreted direction baseYear
+      let year := toString (baseYear.getD 2000)
+      run ("YearFromDate(StartOfDateRange(Rows/Tag)) == " ++ year) "14"
+        "01.03-31.10" "03/10" "07/10" fixture == some (.fired .omission, ["value 14"]) &&
+      run "DayFromDate(EndOfDateRange($Expected)) == 31 And DayFromDate(EndOfDateRange(Rows/Tag)) == 1"
+        "14" "01.03-31.10" "03/10" "07/10" fixture == some (.fired .omission, ["value 14"]) &&
+      run ("EndOfDateRange(Rows/Tag) == \"01.10." ++ year ++ "\"") "14"
+        "01.03-31.10" "03/10" "07/10" fixture == some (.fired .omission, ["value 14"]) &&
+      run ("YearFromDate(AddYears(StartOfDateRange(Rows/Tag),1)) == " ++ toString (baseYear.getD 2000 + 1)) "14"
+        "01.03-31.10" "03/10" "07/10" fixture == some (.fired .omission, ["value 14"])) = true := by native_decide
+
+example : run "DayFromDate(EndOfDateRange(Rows/Tag)) == 0" "9"
+    "01.03-31.10" "" "03/10" (interpreted .anchorStart) = some (.fired .omission, ["value 9"]) ∧
+    run "YearFromDate(StartOfDateRange(Rows/Tag)) == 2000" "5"
+      "01.03-31.10" "bad" "03/10" (interpreted .anchorStart) = some (.fired .omission, []) ∧
+    HavingFixture.referencesFor
+      "YearFromDate(StartOfDateRange(/Form/Rows/Tag)) == YearFromDate(StartOfDateRange($/Form/Rows/Tag))"
+      { (interpreted .anchorStart) with fields := (interpreted .anchorStart).fields ++ [{
+        id := 6, name := "Token", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } }] }
+      "Token" = some (true, true) := by native_decide
+
 end A12Kernel.Dm.HavingRangeEndpointLocks

@@ -26,10 +26,10 @@ inductive FormalCause where
                              -- below the universal floor, below the enabled pre-1900 boundary, or a
                              -- partially known value whose omission is deeper than the declared
                              -- precision allows. One kernel code covers all three, so one cause here.
-  | dateRangeSeparator       -- the stored DateRange omits its declared range separator
+  | dateRangeSeparator       -- the stored DateRange omits its effective runtime separator (spec/05 §8)
   | dateRangeFormat          -- one stored DateRange endpoint is lexically or calendrically malformed
   | dateRangeInvalid         -- both endpoints are valid, but start is after finish
-  | dateRangeTooEarly        -- the ordered range starts before the universal Gregorian floor
+  | dateRangeTooEarly        -- formal completion violates the floor or enabled 1900 check (spec/05 §8)
   | booleanToken             -- stored Boolean token outside exact lowercase `true` / `false`
   | confirmToken             -- stored Confirm token outside exact lowercase `true`
   | declaredConstraint       -- pattern / length / range / scale violation

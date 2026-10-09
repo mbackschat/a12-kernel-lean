@@ -18,10 +18,10 @@ makes the keyed and direct reads structurally unable to disagree about a reached
 theorem semanticIndexDateRangeBoundPart_resolve_factors
     (operation : CheckedSemanticIndexDateRangeBoundPart model)
     (preliminary : CheckedIndexPreliminary model) (keyRaw : RawFlatContext)
-    (outer : Env) (observed : CellObservation DateRangeCellValue)
+    (outer : Env) (phase : Phase) (observed : CellObservation DateRangeCellValue)
     (reached : operation.source.observePreliminaryRange preliminary keyRaw
-      .validation outer = .ok observed) :
-    operation.resolvePreliminaryNumericOperand preliminary keyRaw outer =
+      phase outer = .ok observed) :
+    operation.resolvePreliminaryNumericOperand preliminary keyRaw outer phase =
       .ok (operation.part.fromDateRangeBoundObservation operation.bound
         observed) := by
   simp [CheckedSemanticIndexDateRangeBoundPart.resolvePreliminaryNumericOperand,
@@ -32,10 +32,10 @@ to tell an unresolvable column from a resolved one that selected nothing. -/
 theorem semanticIndexDateRangeBoundPart_resolve_context
     (operation : CheckedSemanticIndexDateRangeBoundPart model)
     (preliminary : CheckedIndexPreliminary model) (keyRaw : RawFlatContext)
-    (outer : Env) (error : SemanticIndexContextError)
+    (outer : Env) (phase : Phase) (error : SemanticIndexContextError)
     (failed : operation.source.observePreliminaryRange preliminary keyRaw
-      .validation outer = .error (.context error)) :
-    operation.resolvePreliminaryNumericOperand preliminary keyRaw outer =
+      phase outer = .error (.context error)) :
+    operation.resolvePreliminaryNumericOperand preliminary keyRaw outer phase =
       .error error := by
   simp [CheckedSemanticIndexDateRangeBoundPart.resolvePreliminaryNumericOperand,
     failed]
@@ -46,10 +46,10 @@ from acquiring a value through the keyed route when it could not through the dir
 theorem semanticIndexDateRangeBoundPart_resolve_wrongKind
     (operation : CheckedSemanticIndexDateRangeBoundPart model)
     (preliminary : CheckedIndexPreliminary model) (keyRaw : RawFlatContext)
-    (outer : Env) (fault : DirectDateRangeFault)
+    (outer : Env) (phase : Phase) (fault : DirectDateRangeFault)
     (failed : operation.source.observePreliminaryRange preliminary keyRaw
-      .validation outer = .error (.payload fault)) :
-    operation.resolvePreliminaryNumericOperand preliminary keyRaw outer =
+      phase outer = .error (.payload fault)) :
+    operation.resolvePreliminaryNumericOperand preliminary keyRaw outer phase =
       .ok (.unknown .malformed) := by
   simp [CheckedSemanticIndexDateRangeBoundPart.resolvePreliminaryNumericOperand,
     failed]
@@ -64,13 +64,12 @@ theorem checkedDateRangeSemanticIndex_index_unconstrained
   ⟨checked.indexOwned, checked.indexDeclared⟩
 
 /-- The certified component read carries its selected declaration's own exposure witness, so no
-consumer can reach a component the declared profile does not expose. The witness is stated over the
-certificate's retained profile, which is the same set the direct component gate re-derives from the
-declaration. -/
+consumer can reach a component the policy does not expose. The witness uses the same policy-owned
+set as the direct gate, including interpreted full-Date admission (spec/05 §8). -/
 theorem checkedSemanticIndexDateRangeBoundPart_exposed
     (operation : CheckedSemanticIndexDateRangeBoundPart model) :
     operation.part.admittedBy model.hasBaseYear
-      operation.source.format.components = true :=
+      (operation.source.policy.endpointComponents operation.source.format) = true :=
   operation.componentExposed
 
 /-- The keyed source's retained profile is the model's own certified profile for that declaration, so
@@ -118,13 +117,13 @@ theorem semanticIndexDateRangeEquality_order_retained
 /-- The two direct endpoint owners gate on complementary conditions, so one retained profile falls
 into exactly one runtime domain under one model. This is the claim that licenses reading the keyed
 endpoint's domain off its certificate instead of off which owner certified the operand. -/
-theorem dateRangeSemanticIndex_domain_total (format : DateRangeInputFormat)
-    (baseYear : Option Int) :
-    format.supportsDirectBound baseYear = true ↔
-      ¬ (format.includesYear = false ∧ baseYear = none) := by
-  cases format <;> cases baseYear <;>
-    simp [DateRangeInputFormat.supportsDirectBound,
-      DateRangeInputFormat.includesYear]
+theorem dateRangeSemanticIndex_domain_total (policy : DateRangeDeclarationPolicy)
+    (format : DateRangeInputFormat) (baseYear : Option Int) :
+    policy.supportsExactBound format baseYear = true ↔
+      ¬ (policy.interpretationOfYear = none ∧ format.includesYear = false ∧ baseYear = none) := by
+  cases interpretation : policy.interpretationOfYear <;> cases format <;> cases baseYear <;>
+    simp [DateRangeDeclarationPolicy.supportsExactBound, interpretation,
+      DateRangeInputFormat.supportsDirectBound, DateRangeInputFormat.includesYear]
 
 /-- A keyed endpoint whose profile resolves to Dates never compares against a bare label. The static
 gate does not establish this, so it fails closed rather than manufacturing a domain. -/
@@ -165,7 +164,7 @@ profiles the ordinary direct temporal rule refuses. -/
 theorem semanticIndexDateRangeBoundComparison_admitted
     (operation : CheckedSemanticIndexDateRangeBoundComparison model) :
     operation.comparison.admitsFormats model.baseYear.isSome
-      operation.keyed.format.components operation.direct.components = true :=
+      (operation.keyed.policy.endpointComponents operation.keyed.format) operation.direct.components = true :=
   operation.formatsAdmitted
 
 /-- Both overlap operands carry the operator's own declaration certificates and satisfy its

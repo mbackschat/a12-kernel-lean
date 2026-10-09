@@ -135,7 +135,7 @@ def execute (operation : CheckedDateRangeConstructionComputation model)
       DateRangeConstructionComputationResult := do
   let construction ← operation.construction.evaluate .computation input
     |>.mapError .construction
-  let outcome ← operation.format.evaluateComputationResult
+  let outcome ← model.evaluateDateRangeTarget operation.target.source.id
       construction.asComputationResult
     |>.mapError .target
   pure { construction, outcome }
@@ -194,7 +194,7 @@ def referencesField (operation : CheckedBoundDateRangeConstructionComputation mo
 def evaluateWith (operation : CheckedBoundDateRangeConstructionComputation model)
     (read : FieldId → CheckedCell) : Except DateRangeConstructionComputationFault DateRangeTargetOutcome := do
   let observation ← (operation.construction.evaluateWith .computation (fun field => pure (read field))).mapError .construction
-  (operation.format.evaluateComputationResult observation.asComputationResult).mapError .target
+  (model.evaluateDateRangeTarget operation.target.source.id observation.asComputationResult).mapError .target
 
 end CheckedBoundDateRangeConstructionComputation
 

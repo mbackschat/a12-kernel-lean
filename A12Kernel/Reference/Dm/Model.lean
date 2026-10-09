@@ -158,7 +158,11 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
       let separator ← body.getObjValAs? String "rangeSeparator"
       pure { base with
         policy := { kind := .dateRange }
-        dateRangePolicy := some { format, separator, interpretationOfYear } }
+        dateRangePolicy := some {
+          format := format
+          separator := separator
+          interpretationOfYear := interpretationOfYear
+          youngerThan1900Check := (bool? body "youngerThan1900Check").getD false } }
   | "CustomFieldType" =>
       let customName ← body.getObjValAs? String "name"
       pure { base with customType := some { name := customName } }

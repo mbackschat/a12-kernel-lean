@@ -1,11 +1,12 @@
 import A12Kernel.Elaboration.FullDateInput
+import A12Kernel.Semantics.LegacyCalendarExpression
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Elaboration.Flat.Types
 
 /-! # Checked DateRange declaration and stored-text ingestion
 
-This capsule classifies stored DateRange text for two exact full-Date pairs plus slash-separated `yyyy`, `yyyy-MM`, `MM`, and `MM-dd`. It retains present-empty placement and four distinct formal causes. Full-Date input, year-bearing fragments, and configured fragments resolve stored-Gregorian model-zone midnight instants; fragments without a Base Year retain only their ordered component identity. The Kernel's order-dependent unconfigured interpretation behavior requires model-wide shared-format state and remains outside this field-local classifier. Wider `SimpleDateFormat` syntax, other legal zones, JSON mapper behavior, and document traversal remain separate.
+This module owns the eight admitted DateRange input profiles and retains empty placement and distinct formal causes. Model-wide declared conversion, shared formatting and target checking are owned by `DateRangeRuntimeInput`. Anchored endpoints resolve classified components without imposing a second storage floor; unanchored uninterpreted ranges retain component identity. Wider lexical syntax and zones remain separate capabilities.
 -/
 
 namespace A12Kernel
@@ -55,13 +56,6 @@ def certifyCanonicalDateRangeField (declaration : FlatFieldDecl) :
   | none => throw (.unsupportedPolicy declaration.path
       checked.policy.format checked.policy.separator)
   | some format => pure { checked with format, formatOwned := hFormat }
-
-/-- The bounded classifier cannot guess a value when the declaration or model-zone profile is outside its exact executable fragment. Local-midnight resolution failure remains separate from stored-value formal invalidity. -/
-inductive DateRangeInputError where
-  | unsupportedPolicy (format separator : String)
-  | unsupportedZone (zoneId : String)
-  | unresolvableEndpoint (parts : DateParts)
-  deriving Repr, DecidableEq
 
 /-- Stored DateRange presentations classified by the checked-document route and reused as checked target profiles. Parsing and exact-or-yearless cell construction remain input-owned. A constructor names one stored presentation rather than one component shape: two constructors retain a month pair and two retain a month/day pair, because the declared separator and endpoint spelling change the stored text without changing the retained components. -/
 inductive DateRangeInputFormat where
@@ -125,7 +119,7 @@ structure CheckedDateRangeInputField extends CheckedDateRangeFieldPolicy where
   format : DateRangeInputFormat
   formatOwned : DateRangeInputFormat.ofPolicy? policy = some format
 
-/-- Certify one of the six checked-document DateRange input profiles without imposing an addressing shape. -/
+/-- Certify one of the eight checked-document DateRange input profiles without imposing an addressing shape. -/
 def certifyDateRangeInputField (declaration : FlatFieldDecl) :
     Except CanonicalDateRangeFieldError CheckedDateRangeInputField := do
   let checked ← certifyDateRangeFieldPolicy declaration
@@ -296,21 +290,20 @@ private def parseYearlessEndpoints (format : DateRangeInputFormat) (separator te
       pure (.yearlessMonthDay start finish)
   | .exact _ => throw .dateRangeFormat
 
-/-- Complete a decoded yearless pair into two civil dates, one placed in each supplied calendar year. An ordered range receives the same year twice; a wrapping range receives the adjacent pair its declared interpretation selects. The month-only finish takes the last day of its own placed year, so a February finish follows that year's leap rule rather than the start year's. -/
-private def completedCivilRange (startYear finishYear : Int) :
-    DateRangeCellValue → Except BaseFormalCause (CivilDate × CivilDate)
+/-- Complete endpoint labels in their placed years. The formal-check year remains separate;
+month-only endpoints can precede the storage floor (KF276). -/
+private def completedParts (startYear finishYear : Int) :
+    DateRangeCellValue → Except BaseFormalCause (DateParts × DateParts)
   | .yearlessMonth start finish => do
-      let startDate ← requireDateRangeFormat (CivilDate.ofYmd? startYear start 1)
-      let lastDay ← requireDateRangeFormat (DateParts.daysInMonth? finishYear finish)
-      let finishDate ← requireDateRangeFormat
-        (CivilDate.ofYmd? finishYear finish lastDay)
-      pure (startDate, finishDate)
+      let lastDay ← requireDateRangeFormat (DateParts.LegacyHybrid.daysInMonth? finishYear finish)
+      pure ({ year := startYear, month := start, day := 1 },
+        { year := finishYear, month := finish, day := lastDay })
   | .yearlessMonthDay start finish => do
-      let startDate ← requireDateRangeFormat
-        (CivilDate.ofYmd? startYear start.month start.day)
-      let finishDate ← requireDateRangeFormat
-        (CivilDate.ofYmd? finishYear finish.month finish.day)
-      pure (startDate, finishDate)
+      let left : DateParts := { year := startYear, month := start.month, day := start.day }
+      let right : DateParts := { year := finishYear, month := finish.month, day := finish.day }
+      if DateParts.LegacyHybrid.isReal left && DateParts.LegacyHybrid.isReal right then
+        pure (left, right)
+      else throw .dateRangeFormat
   | .exact _ => throw .dateRangeFormat
 
 end DateRangeInputFormat
@@ -336,6 +329,44 @@ def completionYears (interpretation : Option DateRangeYearInterpretation)
   else
     some (baseYear, baseYear)
 
+/-- Decode the document's basic Date endpoints before shared runtime formatting. Missing
+month/day defaults to 1 at this ingress, not the positional completion of an endpoint read
+(spec/05 §8, `FieldValueConverter.parseDateRange`). Conversion preserves inverted pairs;
+runtime formal checking applies to their subsequently formatted text. -/
+def DateRangeInputFormat.parseBasicEndpoints (format : DateRangeInputFormat)
+    (policy : DateRangeDeclarationPolicy) (baseYear : Int) (text : String) :
+    Except BaseFormalCause (DateParts × DateParts) := do
+  let pair : DateParts × DateParts ← match format with
+    | .exact exactFormat => do
+        let (left, right) ← splitDateRange policy.separator text
+        pure (← requireDateRangeFormat (exactFormat.parseEndpoint? left),
+          ← requireDateRangeFormat (exactFormat.parseEndpoint? right))
+    | .yearFragment => do
+        let (left, right) ← splitDateRange policy.separator text
+        pure ({ year := ← requireDateRangeFormat (DateRangeInputFormat.parseYear? left), month := 1, day := 1 },
+          { year := ← requireDateRangeFormat (DateRangeInputFormat.parseYear? right), month := 1, day := 1 })
+    | .yearMonthFragment => do
+        let (left, right) ← splitDateRange policy.separator text
+        let (leftYear, leftMonth) ← requireDateRangeFormat (DateRangeInputFormat.parseYearMonth? left)
+        let (rightYear, rightMonth) ← requireDateRangeFormat (DateRangeInputFormat.parseYearMonth? right)
+        pure ({ year := leftYear, month := leftMonth, day := 1 },
+          { year := rightYear, month := rightMonth, day := 1 })
+    | .yearlessMonth | .yearlessMonthConcatenated | .yearlessMonthDay | .yearlessDayMonthDotted => do
+        let labels ← format.parseYearlessEndpoints policy.separator text
+        match labels with
+        | .yearlessMonth left right =>
+            pure ({ year := baseYear, month := left, day := 1 },
+              { year := baseYear, month := right, day := 1 })
+        | .yearlessMonthDay left right =>
+            let (leftYear, rightYear) :=
+              (completionYears policy.interpretationOfYear baseYear labels).getD (baseYear, baseYear)
+            pure ({ year := leftYear, month := left.month, day := left.day },
+              { year := rightYear, month := right.month, day := right.day })
+        | .exact _ => throw .dateRangeFormat
+  if DateParts.LegacyHybrid.isReal pair.1 && DateParts.LegacyHybrid.isReal pair.2 then
+    pure pair
+  else throw .dateRangeFormat
+
 /-- Place a decoded yearless pair under the model's Base Year and declared year interpretation.
 
 Without a Base Year there is no anchor year to complete against, so the pair keeps its ordered component identity and a wrapping pair stays outside this field-local route under every interpretation. The Kernel's measured unconfigured result also depends on model declaration order through shared generated formats, a distinction this function does not receive. Under a Base Year the placement comes from `completionYears`, and an unplaceable wrapping pair is `dateRangeInvalid`. The model zone is consulted only where a completion actually happens, so an unsupported zone is not refused on the uncompleted route.
@@ -354,13 +385,24 @@ def resolveYearlessForModel (zoneId : String) (baseYear : Option Int)
           let profile ← match ModelZone.ConcreteProfile.ofId? zoneId with
             | some profile => pure profile
             | none => throw (.unsupportedZone zoneId)
-          match DateRangeInputFormat.completedCivilRange startYear finishYear yearless with
+          match DateRangeInputFormat.completedParts startYear finishYear yearless with
           | .error cause => pure (.rejected cause)
           | .ok (start, finish) =>
-              if decide (start.Before CivilDate.gregorianFloor) then
+              -- KF276: only day/month formal parsing takes Base Year; month-only
+              -- endpoint completion must not introduce a formal date-position failure.
+              let checksPosition := match yearless with
+                | .yearlessMonth _ _ => false
+                | _ => true
+              if checksPosition && decide (start.Before CivilDate.gregorianFloor.parts) then
                 pure (.rejected .dateRangeTooEarly)
               else
-                resolveCivilRange profile start finish
+                let startValue ← match profile.resolveCompletedDateParts? start with
+                  | some value => pure value
+                  | none => throw (.unresolvableEndpoint start)
+                let finishValue ← match profile.resolveCompletedDateParts? finish with
+                  | some value => pure value
+                  | none => throw (.unresolvableEndpoint finish)
+                pure (.parsed (.dateRange (.exact { start := startValue, finish := finishValue })))
 
 /-- Classify one physical DateRange token under a declaration and model zone. Formal text failures are successful classifications carrying their exact cause; only unsupported semantic capability returns `Except.error`. -/
 def classifyStoredDateRange (zoneId : String)
@@ -403,5 +445,27 @@ def classifyStoredDateRangeForModel (zoneId : String) (baseYear : Option Int)
         | .error cause => pure (.rejected cause)
         | .ok yearless =>
             resolveYearlessForModel zoneId baseYear policy.interpretationOfYear yearless
+
+/-- Whether one checked input profile supplies exact full-Date endpoints under the model's optional Base Year. -/
+def DateRangeInputFormat.supportsDirectBound
+    (format : DateRangeInputFormat) (baseYear : Option Int) : Bool :=
+  match format with
+  | .exact _ | .yearFragment | .yearMonthFragment => true
+  -- Every yearless presentation needs the model's Base Year to supply the missing
+  -- year, and the declared spelling does not change that.
+  | .yearlessMonth | .yearlessMonthDay | .yearlessMonthConcatenated
+  | .yearlessDayMonthDotted => baseYear.isSome
+
+/-- An interpreted endpoint exposes a full Date independently of declared spelling and Base Year
+(CheckDatumBereichOpImpl, spec/05 §8). Uninterpreted endpoints retain their declared components. -/
+def DateRangeDeclarationPolicy.endpointComponents (policy : DateRangeDeclarationPolicy)
+    (format : DateRangeInputFormat) : TemporalComponents :=
+  if policy.interpretationOfYear.isSome then TemporalComponents.fullDate else format.components
+
+/-- Interpretation uses the model's configured or default runtime anchor, so it belongs to the
+exact endpoint route even when the declaration itself omits year (spec/05 §8). -/
+def DateRangeDeclarationPolicy.supportsExactBound (policy : DateRangeDeclarationPolicy)
+    (format : DateRangeInputFormat) (baseYear : Option Int) : Bool :=
+  policy.interpretationOfYear.isSome || format.supportsDirectBound baseYear
 
 end A12Kernel

@@ -196,4 +196,24 @@ theorem dateRangeInputFormat_supportsDirectBound_eq_comparableWithFullDate
       TemporalComponents.hasTime, TemporalComponents.fullDate,
       TemporalComparisonOp.requiresSameTimePresence]
 
+/-- Policy-aware exact support and comparison with a full Date use one endpoint component set. -/
+theorem dateRangePolicy_supportsExactBound_eq_comparableWithFullDate
+    (policy : DateRangeDeclarationPolicy) (format : DateRangeInputFormat) (baseYear : Option Int)
+    (comparison : TemporalComparisonOp) :
+    policy.supportsExactBound format baseYear =
+      comparison.admitsFormats baseYear.isSome (policy.endpointComponents format)
+        TemporalComponents.fullDate := by
+  cases interpretation : policy.interpretationOfYear with
+  | none => simpa [DateRangeDeclarationPolicy.supportsExactBound,
+      DateRangeDeclarationPolicy.endpointComponents, interpretation] using
+      dateRangeInputFormat_supportsDirectBound_eq_comparableWithFullDate format baseYear comparison
+  | some direction =>
+      cases comparison <;> cases baseYear <;>
+        simp [DateRangeDeclarationPolicy.supportsExactBound,
+          DateRangeDeclarationPolicy.endpointComponents, interpretation,
+          TemporalComparisonOp.admitsFormats, temporalYearPresenceAgrees,
+          TemporalComponents.withBaseYear, TemporalComponents.hasDate,
+          TemporalComponents.hasTime, TemporalComponents.fullDate,
+          TemporalComparisonOp.requiresSameTimePresence]
+
 end A12Kernel

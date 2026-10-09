@@ -15,8 +15,8 @@ def HavingTemporalExpressionRef.matchesModel (reference : HavingTemporalExpressi
       declaration.toNumberField? == some field
   | .string field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
       declaration.toStringValueField? == some field
-  | .range field components => (model.dateRangeSourceProfile field).any fun (_, _, format) =>
-      format.components == components
+  | .range field components => (model.dateRangeSourceProfile field).any fun (_, policy, format) =>
+      policy.endpointComponents format == components
 
 private def elaborateHavingTimeComponent (model : FlatModel)
     (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl)
@@ -166,8 +166,8 @@ private def resolveCore (model : FlatModel) (numeric : HavingNumericResolvers)
   | .rangeBound reference bound => do
       let declaration ← resolve { origin := reference.origin, field := reference.field }
       let field : FlatDateRangeField := { id := declaration.id }
-      let some (_, _, format) := model.dateRangeSourceProfile field | throw .numericExpressionUnsupported
-      pure (.atom (.rangeBound reference.origin field format.components bound))
+      let some (_, policy, format) := model.dateRangeSourceProfile field | throw .numericExpressionUnsupported
+      pure (.atom (.rangeBound reference.origin field (policy.endpointComponents format) bound))
   | .timeConstruction components => do
       pure (.atom (.timeConstruction (← resolveTimeComponents model numeric resolveSelection resolve components)))
   | .dateConstruction components => do

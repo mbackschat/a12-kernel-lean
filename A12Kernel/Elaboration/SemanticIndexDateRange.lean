@@ -121,7 +121,7 @@ namespace CheckedDateRangeSemanticIndexSource
 yearless labels. The exact and yearless direct owners gate on complementary conditions, so this is a
 total decision: `dateRangeSemanticIndex_domain_total` states that complementarity. -/
 def exactDomain (checked : CheckedDateRangeSemanticIndexSource model) : Bool :=
-  checked.format.supportsDirectBound model.baseYear
+  checked.policy.supportsExactBound checked.format model.baseYear
 
 /-- Read the keyed row's selected cell and project it into the retained range identity through the
 direct route's own payload rule, so the two cannot disagree about emptiness, kind, or formal
@@ -144,14 +144,15 @@ structure CheckedSemanticIndexDateRangeBoundPart (model : FlatModel) where
   source : CheckedDateRangeSemanticIndexSource model
   bound : DateRangeBound
   part : DateNumericPart
-  componentExposed : part.admittedBy model.hasBaseYear source.format.components = true
+  componentExposed : part.admittedBy model.hasBaseYear (source.policy.endpointComponents source.format) = true
 
 /-- Certify a keyed DateRange source: the shared semantic-index certificate plus this target's kind. -/
 def elaborateDateRangeSemanticIndexSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceSemanticIndex) :
+    (declaringGroup : GroupPath) (authored : SurfaceSemanticIndex)
+    (readingScope? : Option (List RepeatableLevel) := none) :
     Except SemanticIndexDateRangeElabError
       (CheckedDateRangeSemanticIndexSource model) := do
-  let checked ← elaborateSemanticIndexSource model declaringGroup authored
+  let checked ← elaborateSemanticIndexSource model declaringGroup authored readingScope?
     |>.mapError .source
   let target : FlatDateRangeField := { id := checked.targetDeclaration.id }
   match hTarget : model.dateRangeSourceProfile target with
@@ -165,9 +166,8 @@ def elaborateDateRangeSemanticIndexSource (model : FlatModel)
         throw (.selectedTargetNotDateRange checked.targetDeclaration.path)
   | none => throw (.selectedTargetNotDateRange checked.targetDeclaration.path)
 
-/-- Certify the component read. The exposure gate is the selected declaration's own component set
-supplemented by the model's Base Year, which is the direct component owner's rule reaching this
-source unchanged. -/
+/-- Certify the component read. The exposure gate is the same policy-owned endpoint component set the direct route uses,
+including full-Date admission under interpretation (spec/05 §8). -/
 def checkSemanticIndexDateRangeBoundPart (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceSemanticIndex)
     (bound : DateRangeBound) (part : DateNumericPart) :
@@ -175,7 +175,7 @@ def checkSemanticIndexDateRangeBoundPart (model : FlatModel)
       (CheckedSemanticIndexDateRangeBoundPart model) := do
   let source ← elaborateDateRangeSemanticIndexSource model declaringGroup
     authored
-  if hPart : part.admittedBy model.hasBaseYear source.format.components = true then
+  if hPart : part.admittedBy model.hasBaseYear (source.policy.endpointComponents source.format) = true then
     pure { source, bound, part, componentExposed := hPart }
   else
     throw (.boundPartNotExposed source.targetDeclaration.path part)
@@ -189,9 +189,9 @@ the static gate has already admitted the declaration. -/
 def resolvePreliminaryNumericOperand
     (operation : CheckedSemanticIndexDateRangeBoundPart model)
     (preliminary : CheckedIndexPreliminary model)
-    (keyRaw : RawFlatContext) (outer : Env := []) :
+    (keyRaw : RawFlatContext) (outer : Env := []) (phase : Phase := .validation) :
     Except SemanticIndexContextError NumericOperand :=
-  match operation.source.observePreliminaryRange preliminary keyRaw .validation
+  match operation.source.observePreliminaryRange preliminary keyRaw phase
       outer with
   | .error (.context error) => .error error
   | .error (.payload _) => .ok (.unknown .malformed)
@@ -269,7 +269,7 @@ structure CheckedSemanticIndexDateRangeBoundComparison (model : FlatModel) where
   keyedFirst : Bool
   comparison : TemporalComparisonOp
   formatsAdmitted :
-    comparison.admitsFormats model.baseYear.isSome keyed.format.components
+    comparison.admitsFormats model.baseYear.isSome (keyed.policy.endpointComponents keyed.format)
       direct.components = true
 
 /-- Defensive failure while reading one side of a keyed endpoint comparison. -/
@@ -295,12 +295,12 @@ def elaborateSemanticIndexDateRangeBoundComparison (model : FlatModel)
   let direct ← elaborateDateRangeBoundOperand model directSource directBound
     |>.mapError .directBound
   if hFormats : comparison.admitsFormats model.baseYear.isSome
-      keyed.format.components direct.components = true then
+      (keyed.policy.endpointComponents keyed.format) direct.components = true then
     pure {
       keyed, keyedBound, direct, keyedFirst, comparison
       formatsAdmitted := hFormats }
   else
-    throw (.boundsNotComparable keyed.format.components direct.components)
+    throw (.boundsNotComparable (keyed.policy.endpointComponents keyed.format) direct.components)
 
 namespace CheckedSemanticIndexDateRangeBoundComparison
 

@@ -27,11 +27,10 @@ inductive CheckedDateRangeBoundOperand (model : FlatModel) where
 
 namespace CheckedDateRangeBoundOperand
 
-/-- The declared component set the endpoint exposes. It is the source declaration's own set in
-both cases: a Base-Year-completed value still answers for the components it declared, and the
-Base Year is supplied by the admission rule instead. -/
+/-- Interpretation exposes full-Date components; other endpoints retain the declared set and
+leave Base-Year supplementation to the comparison gate (spec/05 §8). -/
 def components : CheckedDateRangeBoundOperand model → TemporalComponents
-  | .exact bound => bound.format.components
+  | .exact bound => bound.policy.endpointComponents bound.format
   | .yearless bound => bound.format.components
 
 /-- The authored endpoint position, which decides a yearless label's completion. -/
@@ -180,12 +179,12 @@ def elaborateDateRangeBoundFixedDateComparison (model : FlatModel)
       (CheckedDateRangeBoundComparison model) := do
   let direct ← elaborateDirectDateRange model source
     |>.mapError (fun cause => .left (.source cause))
-  if comparison.admitsFormats model.baseYear.isSome direct.format.components
+  if comparison.admitsFormats model.baseYear.isSome (direct.policy.endpointComponents direct.format)
       TemporalComponents.fullDate then
     elaborateDateRangeBoundComparison model source bound position comparison
       expected |>.mapError (fun cause => .left (.source cause))
   else
-    throw (.formatsNotComparable direct.format.components
+    throw (.formatsNotComparable (direct.policy.endpointComponents direct.format)
       TemporalComponents.fullDate)
 
 end A12Kernel

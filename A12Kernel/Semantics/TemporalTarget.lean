@@ -403,6 +403,7 @@ inductive DateRangeComputationResult where
 /-- Target-owned rejection after a typed DateRange value has been rendered. -/
 inductive DateRangeTargetError where
   | inverted
+  | renderingRejected (cause : BaseFormalCause)
   deriving Repr, DecidableEq
 
 /-- Rich DateRange target result before delta classification or application. -/
@@ -416,6 +417,8 @@ inductive DateRangeTargetOutcome where
 /-- Structural failure while projecting one exact typed DateRange value into a checked target presentation. -/
 inductive DateRangeTargetEvaluationFault where
   | unresolvedEndpoint (range : DateRangeValue)
+  | input (cause : DateRangeInputError)
+  | targetUnavailable (field : FieldId)
   deriving Repr, DecidableEq
 
 namespace DateRangeFormat

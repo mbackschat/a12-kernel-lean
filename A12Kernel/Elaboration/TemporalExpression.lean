@@ -93,6 +93,11 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       let source ← (elaborateDateRangeBoundOperand model declaration.id bound scope).mapError .rangeBound
       pure (.atom (.rangeBound (← scalarProfile model) source),
         source.components.withBaseYear model.hasBaseYear)
+  | .indexedRangeBound authored bound => do
+      let source ← (elaborateDateRangeSemanticIndexSource model rowGroup authored
+        (targetGroup?.map model.repeatableScopeForGroupPath)).mapError .indexedRangeBound
+      pure (.atom (.indexedRangeBound (← scalarProfile model) source bound),
+        (source.policy.endpointComponents source.format).withBaseYear model.hasBaseYear)
   | .baseYearBound bound => do
       let some year := model.baseYear | throw .unsupportedSource
       pure (.atom (.baseYearBound (← scalarProfile model) year bound), TemporalComponents.fullDate)
@@ -403,6 +408,12 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       | some value => pure (.value (.date value) true)
       | none => throw .calendarUnavailable
   | .rangeBound profile source => readScalarRangeBound phase profile source context.read
+  | .indexedRangeBound profile source bound => do
+      let observation ← (source.toCheckedSemanticIndexSource.observeColumnWith phase
+        context.semanticIndexColumnReader context.row context.read context.storedText).mapError
+          (fun _ => .calendarUnavailable)
+      (projectScalarRangeBoundObservation profile (!source.exactDomain) bound observation).mapError
+        ScalarTemporalPrimitiveFault.toEvaluation
   | .now => pure (match context.world with
       | some world => .value (.instant world.now) true
       | none => .unknown .malformed)

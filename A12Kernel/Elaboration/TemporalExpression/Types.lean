@@ -4,7 +4,7 @@ import A12Kernel.Semantics.TemporalExpression
 import A12Kernel.Elaboration.TemporalExtremumStream
 import A12Kernel.Elaboration.Flat.FieldValueRead
 import A12Kernel.Elaboration.ValueAsDateTimeWorldComponents
-import A12Kernel.Elaboration.DateRangeBoundComparison
+import A12Kernel.Elaboration.SemanticIndexDateRange
 
 /-! # Scalar temporal expression types
 
@@ -29,6 +29,7 @@ inductive SurfaceScalarTemporalExpression where
   | timeLiteral (value : TimeOfDay)
   | dateTimeLiteral (value : LocalDateTime)
   | rangeBound (reference : SurfaceFieldPath) (bound : DateRangeBound)
+  | indexedRangeBound (source : SurfaceSemanticIndex) (bound : DateRangeBound)
   | baseYearBound (bound : BaseYearRangeEndpoint)
   | dateTimeConstruction (date time : SurfaceScalarTemporalExpression)
   | valueAsDate (reference : SurfaceFieldPath) (endpoint : ValueAsDateEndpoint)
@@ -67,7 +68,7 @@ def SurfaceScalarTemporalExpression.admittedSourceSlot (source : SurfaceScalarTe
       | .ordinary => false
       | .withPartialDate => true
   | .field _ | .indexed _ | .now | .today | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _
-  | .dateTimeConstruction _ _ | .rangeBound _ _ | .baseYearBound _ | .dateConstruction _ | .calendarShift _ _ _
+  | .dateTimeConstruction _ _ | .rangeBound _ _ | .indexedRangeBound _ _ | .baseYearBound _ | .dateConstruction _ | .calendarShift _ _ _
   | .timeConstruction _ | .dateFromDateTime _ | .timeFromDateTime _ | .subdayShift _ _ _ => true
 
 inductive ScalarTemporalExpressionError where
@@ -80,6 +81,7 @@ inductive ScalarTemporalExpressionError where
   | dateComponents (error : ConstructedDateComponentsElabError)
   | timeComponents (error : TimeComponentsElabError)
   | rangeBound (error : YearlessDateRangeBoundElabError)
+  | indexedRangeBound (error : SemanticIndexDateRangeElabError)
   | partialDate (error : ValueAsDateZonedElabError)
   | temporalPartPrecision (path : List String) (part : TemporalNumericPart)
   | nonTemporal (path : List String)
@@ -146,6 +148,8 @@ inductive ScalarTemporalAtom (model : FlatModel) where
   | valueAsDate (source : CheckedZonedValueAsDateSource model)
   | indexedValueAsDate (source : CheckedIndexedValueAsDateSource model)
   | rangeBound (profile : ModelZone.ConcreteProfile) (source : CheckedDateRangeBoundOperand model)
+  | indexedRangeBound (profile : ModelZone.ConcreteProfile)
+      (source : CheckedDateRangeSemanticIndexSource model) (bound : DateRangeBound)
   | baseYearBound (profile : ModelZone.ConcreteProfile) (year : Int) (bound : BaseYearRangeEndpoint)
 
 inductive ScalarTemporalTransform (model : FlatModel) where

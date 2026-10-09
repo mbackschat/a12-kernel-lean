@@ -247,7 +247,7 @@ def dateRange (model : FlatModel) (policy : DateRangeDeclarationPolicy) :
   | .noValue => pure empty
   | .poison _ | .errored _ _ => pure poison
   | .accepted stored => do
-      let raw ← (classifyStoredDateRangeForModel model.timeZoneId model.baseYear policy stored.text).mapError
+      let raw ← (model.classifyRuntimeDateRange policy stored.text).mapError
         .dateRangeRead
       pure (checkAdmittedRawCell raw)
 

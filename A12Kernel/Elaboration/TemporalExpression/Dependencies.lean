@@ -30,6 +30,7 @@ private def scalarTemporalAtomDependencies (storedOnly : Bool)
   | .timeConstruction components => scalarTemporalComponentDependencies storedOnly field entity indexed numeric components
   | .field source => if storedOnly then [] else field source.id
   | .indexed source => indexed source
+  | .indexedRangeBound _ source _ => indexed source.toCheckedSemanticIndexSource
   | .entityExtremum _ source => if storedOnly then [] else entity source
   | .rangeBound _ (.exact source) => if storedOnly then [] else field source.source.id
   | .rangeBound _ (.yearless source) => if storedOnly then [] else field source.source.id

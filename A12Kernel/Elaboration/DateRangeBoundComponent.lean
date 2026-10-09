@@ -8,25 +8,24 @@ owners retain different runtime carriers — an exact range yields a complete Da
 unconfigured yearless one yields only the labels its declaration keeps — yet a component read
 treats them uniformly, because both expose the same calendar-part view.
 
-The static gate is therefore the declaration's own component set supplemented by the model's
-Base Year, exactly as it is for a direct Date field, and *not* the exact-value gate that a
-comparable endpoint carries: an unconfigured yearless month range exposes month and quarter
-while refusing day and year. Locus admission, arithmetic composition, and the comparison
+Interpreted endpoints expose full-Date components. Uninterpreted endpoints use the declaration's
+own component set supplemented by Base Year: an unconfigured month range exposes month and
+quarter while refusing day and year. Locus admission, arithmetic composition, and the comparison
 consumers remain with their existing owners.
 -/
 
 namespace A12Kernel
 
 /-- Whether one DateRange declaration exposes the requested date component at its selected endpoint.
-The declared profile's own component set decides, with the model's Base Year supplementing the year
-exactly as it does for a direct Date field. -/
+Interpreted declarations expose a full Date; otherwise the declared component set and Base Year
+decide (spec/05 §8). -/
 def FlatModel.exposesDateRangeBoundPart (model : FlatModel)
     (field : FlatDateRangeField) (part : DateNumericPart) : Bool :=
   match model.lookupUniqueId field.id with
   | .ok declaration =>
       match (certifyDateRangeInputField declaration).toOption with
       | some checked =>
-          part.admittedBy model.hasBaseYear checked.format.components
+          part.admittedBy model.hasBaseYear (checked.policy.endpointComponents checked.format)
       | none => false
   | .error _ => false
 

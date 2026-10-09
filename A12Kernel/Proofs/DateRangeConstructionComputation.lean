@@ -61,6 +61,7 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_value
       DateRangeInputFormat.evaluateExactValue,
       DateRangeInputFormat.renderResolved,
       DateRangeFormat.evaluateComputationResult, projects, ordered]
+  all_goals cases ‹DateRangeFormat› <;> rfl
 
 /-- Every inverted resolved range retains the exact presentation attempted by the checked target. -/
 theorem dateRangeConstructionTarget_evaluateComputationResult_inverted
@@ -79,6 +80,7 @@ theorem dateRangeConstructionTarget_evaluateComputationResult_inverted
       DateRangeInputFormat.evaluateExactValue,
       DateRangeInputFormat.renderResolved,
       DateRangeFormat.evaluateComputationResult, projects, inverted]
+  all_goals cases ‹DateRangeFormat› <;> rfl
 
 /-- An ordered yearless month construction reaches the component-only target without manufacturing a year. -/
 theorem dateRangeConstructionTarget_evaluateComputationResult_yearlessMonth
@@ -176,25 +178,25 @@ theorem checkedDateRangeConstructionComputation_target_admitted
           some operation.format :=
   ⟨operation.declaringGroupValid, operation.profileOwned⟩
 
-/-- One supported construction evaluation reaches its checked target renderer without rereading either endpoint. -/
+/-- Execution retains the source observation and the model-shared target outcome. Ordered
+endpoints alone do not settle rendered acceptance across interpretation classes (spec/05 §8). -/
 theorem checkedDateRangeConstructionComputation_execute_value
     (operation : CheckedDateRangeConstructionComputation model)
     (input : CheckedDocument model)
     (observation : DateRangeConstructionObservation)
-    (range : DateRangeValue) (resolved : ResolvedDateRange)
+    (range : DateRangeValue) (targetOutcome : DateRangeTargetOutcome)
     (evaluated : operation.construction.evaluate .computation input =
       .ok observation)
     (projectsResult : observation.asComputationResult = .value (.exact range))
-    (projectsRange : range.toResolvedDateRange? = some resolved)
-    (ordered : resolved.direction = .ordered) :
+    (targetEvaluated : model.evaluateDateRangeTarget operation.target.source.id
+      (.value (.exact range)) = .ok targetOutcome) :
     operation.execute input = .ok {
       construction := observation
-      outcome := .accepted (operation.format.render resolved)
+      outcome := targetOutcome
     } := by
   rw [CheckedDateRangeConstructionComputation.execute, evaluated]
   simp [Except.mapError, bind, Except.bind, pure, Except.pure, projectsResult,
-    dateRangeConstructionTarget_evaluateComputationResult_value
-      operation.format range resolved projectsRange ordered]
+    targetEvaluated]
 
 /-- Rich construction result projection retains the checked target identity and delegates all five channels to the established DateRange classifier. -/
 theorem checkedDateRangeConstructionComputation_executeResult_projects
