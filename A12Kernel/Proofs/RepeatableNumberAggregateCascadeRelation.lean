@@ -20,12 +20,12 @@ theorem repeatableNumberAggregateCascade_execute_transition_trace
         { rows := some outcomes.rows,
           aggregate := some outcomes.aggregate } := by
   unfold CheckedRepeatableNumberAggregateCascade.execute at executed
-  cases rowResult : plan.row.execute input with
+  cases rowResult : plan.row.execute (input.withComputationFilterRows plan.filterFields.contains) with
   | error cause =>
       simp [rowResult, Except.mapError, Bind.bind, Except.bind] at executed
   | ok rows =>
       cases aggregateResult :
-          plan.executeAggregateAfterRows world input rows with
+          plan.executeAggregateAfterRows world (input.withComputationFilterRows plan.filterFields.contains) rows with
       | error cause =>
           simp [rowResult, aggregateResult, Except.mapError,
             Bind.bind, Except.bind] at executed
@@ -62,18 +62,24 @@ theorem repeatableNumberAggregateRunCascade_execute_trace
     (outcomes : RepeatableNumberAggregateRunCascadeOutcomes)
     (executed : plan.execute world input = .ok outcomes) :
     ∃ final,
-      NumericComputationRunTrace plan.run world input
+      NumericComputationRunTrace plan.run world (input.withComputationFilterRows fun field =>
+        plan.cascade.filterFields.contains field ||
+          plan.run.tables.any fun table => table.targetField == field || table.referencesField field)
         { completed := [{
             targetField := plan.cascade.total.operation.core.target.id
             outcome := outcomes.cascade.aggregate.outcome
           }] }
         outcomes.scalars final := by
   unfold CheckedRepeatableNumberAggregateRunCascade.execute at executed
-  cases cascadeResult : plan.cascade.execute world input with
+  generalize cacheEq : (input.withComputationFilterRows fun field =>
+    plan.cascade.filterFields.contains field ||
+      plan.run.tables.any fun table => table.targetField == field || table.referencesField field) =
+    cacheInput at executed ⊢
+  cases cascadeResult : plan.cascade.execute world cacheInput with
   | error cause =>
       simp [cascadeResult, Except.mapError, Bind.bind, Except.bind] at executed
   | ok cascade =>
-      cases suffixResult : plan.run.executeTables world input plan.run.tables {
+      cases suffixResult : plan.run.executeTables world cacheInput plan.run.tables {
           completed := [{
             targetField := plan.cascade.total.operation.core.target.id
             outcome := cascade.aggregate.outcome
@@ -97,7 +103,7 @@ theorem repeatableNumberAggregateRunCascade_execute_trace
                 plan
           obtain ⟨labels, trace, appended⟩ :=
             numericComputationRun_executeTables_seeded_trace
-              plan.run world input
+              plan.run world cacheInput
               [plan.cascade.total.operation.core.target.id]
               [] plan.run.tables {
                 completed := [{

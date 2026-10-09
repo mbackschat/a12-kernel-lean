@@ -229,11 +229,12 @@ private def scanNumber (context : ScalarComputationContext)
       pure (scanCells consume side.cells state)
   | .starHaving source =>
       let addressed ← addressed context
-      let resolved ← (source.source.source.path.resolveInCapacity addressed.document context.row).mapError .addressing
-      (source.having.scanComputation (({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
+      let candidates ← (model.filterEnvironments source.source.source.path
+        (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row true).mapError .addressing
+      (source.having.scanComputation (({ read := model.filterRead addressed.document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
         (fun state environment => consume state
-          (source.source.checkedValueListCellAt .computation addressed.read environment))
-        resolved.environments state).mapError (fun
+          (source.source.checkedValueListCellAt .computation (model.filterRead addressed.document addressed.read) environment))
+        candidates state).mapError (fun
           | .calendarUnavailable => .temporalUnavailable
           | .valueFailure => .valueFailure
           | .worldUnavailable => .contextRequired
@@ -263,9 +264,12 @@ private def scanToken (context : ScalarComputationContext)
       match source.filter with
       | none => pure (scanCells consume
           (resolved.toResolvedSide (source.valueListCellAt .computation addressed.read)).cells state)
-      | some having => (having.condition.scanComputation (({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
+      | some having => do
+          let candidates ← (model.filterEnvironments source.source.path
+            (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row true).mapError .addressing
+          (having.condition.scanComputation (({ read := model.filterRead addressed.document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
           (fun state environment => consume state
-            (source.valueListCellAt .computation addressed.read environment)) resolved.environments state).mapError (fun
+            (source.valueListCellAt .computation (model.filterRead addressed.document addressed.read) environment)) candidates state).mapError (fun
               | .calendarUnavailable => .temporalUnavailable
               | .valueFailure => .valueFailure
               | .worldUnavailable => .contextRequired
@@ -394,10 +398,14 @@ private def scanTemporal (context : ScalarComputationContext)
         (contextRead.read row source.declaration.id) (contextRead.storedText row source.declaration.id)
       match filter with
       | none => scanTemporalSlots read resolved.environments seen
-      | some having =>
+      | some having => do
+          let candidates ← (model.filterEnvironments path.path
+            (contextRead.document.filterRows.getD contextRead.document.instantiatedRows) context.row true).mapError .addressing
+          let read := fun row => temporalIdentity source.declaration.id
+            (model.filterRead contextRead.document contextRead.read row source.declaration.id) (contextRead.storedText row source.declaration.id)
           having.scanComputationResolving
             (({
-              read := fun row field => pure (filterRead row field)
+              read := fun row field => pure (model.filterRead contextRead.document filterRead row field)
               storedText := filterStoredText
               numberText := filterNumberText
               world := context.world
@@ -410,7 +418,7 @@ private def scanTemporal (context : ScalarComputationContext)
               groupUnavailable := ComputationPredicateError.addressing ∘ StarAddressingError.unsupportedGroupOperand
               bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationPredicateError).withModelComputationGroups model contextRead.document)
             context.row (fun seen row => ValueListCell.duplicateComputationStep (kind := .token) seen <$> read row)
-            resolved.environments seen
+            candidates seen
   | .group source =>
       scanOperands (fun declaration seen => do
         if declaration.repeatableScope.isEmpty then scanTemporalSlots direct [declaration] seen

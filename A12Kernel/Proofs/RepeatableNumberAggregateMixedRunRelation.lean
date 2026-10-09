@@ -29,18 +29,18 @@ theorem repeatableNumberAggregateMixedRun_execute_scalar_trace
         { aggregate := some outcomes.cascade.aggregate.outcome }
         { aggregate := some outcomes.cascade.aggregate.outcome,
           scalars := outcomes.scalars } ∧
-      ScalarComputationRunTrace plan.run world patterns input
+      ScalarComputationRunTrace plan.run world patterns (plan.filterInput input)
         { completed := [.number {
             targetField := plan.cascade.total.operation.core.target.id
             outcome := outcomes.cascade.aggregate.outcome
           }] }
         outcomes.scalars final := by
   unfold CheckedRepeatableNumberAggregateMixedRun.execute at executed
-  cases cascadeResult : plan.cascade.execute world input with
+  cases cascadeResult : plan.cascade.execute world (plan.filterInput input) with
   | error cause =>
       simp [cascadeResult, Except.mapError, Bind.bind, Except.bind] at executed
   | ok cascade =>
-      cases suffixResult : plan.run.executeSteps world patterns input
+      cases suffixResult : plan.run.executeSteps world patterns (plan.filterInput input)
           plan.run.steps {
             completed := [.number {
               targetField := plan.cascade.total.operation.core.target.id
@@ -65,7 +65,7 @@ theorem repeatableNumberAggregateMixedRun_execute_scalar_trace
                 plan
           obtain ⟨labels, trace, appended⟩ :=
             scalarComputationRun_executeSteps_seeded_trace
-              plan.run world patterns input
+              plan.run world patterns (plan.filterInput input)
               [plan.cascade.total.operation.core.target.id]
               [] plan.run.steps {
                 completed := [.number {
@@ -118,7 +118,7 @@ theorem repeatableNumberAggregateMixedRun_execute_failure_trace
       RepeatableNumberAggregateMixedRunFailureTrace
         plan world patterns input state fault := by
   unfold CheckedRepeatableNumberAggregateMixedRun.execute at executed
-  cases cascadeResult : plan.cascade.execute world input with
+  cases cascadeResult : plan.cascade.execute world (plan.filterInput input) with
   | error cause =>
       simp [cascadeResult, Except.mapError, Bind.bind, Except.bind] at executed
       cases executed
@@ -130,7 +130,7 @@ theorem repeatableNumberAggregateMixedRun_execute_failure_trace
           outcome := cascade.aggregate.outcome
         }]
       }
-      cases suffixResult : plan.run.executeSteps world patterns input
+      cases suffixResult : plan.run.executeSteps world patterns (plan.filterInput input)
           plan.run.steps initial with
       | error cause =>
           simp [initial, cascadeResult, suffixResult, Except.mapError,
@@ -147,7 +147,7 @@ theorem repeatableNumberAggregateMixedRun_execute_failure_trace
                 plan
           obtain ⟨outcomes, final, failure, _appended⟩ :=
             scalarComputationRun_executeSteps_seeded_failureTrace
-              plan.run world patterns input
+              plan.run world patterns (plan.filterInput input)
               [plan.cascade.total.operation.core.target.id]
               [] plan.run.steps initial cause seedDisjoint (by simp)
               (by simp [initial, ScalarComputationRunState.targetFields,

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.HavingRepetitionAdmission
 import A12Kernel.Elaboration.HavingGroupCount
 import A12Kernel.Elaboration.HavingNumericProduct
@@ -856,10 +857,12 @@ def resolvedValidationHavingValueListSide (checked : CheckedStarFieldPath model)
     (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide kind) := do
   let resolved ← checked.path.resolveInCapacity document outer
+  let candidates ← model.filterEnvironments checked.path
+    (document.filterRows.getD document.instantiatedRows) outer true
   let selected ← having.selectEnvironmentsResolving
-    ({ read := filterRead, world } : CorrelationContext).asStarResolving outer resolved.environments
+    ({ read := model.filterRead document filterRead, world } : CorrelationContext).asStarResolving outer candidates
   pure {
-    cells := selected.map classify
+    cells := selected.map fun row => if resolved.environments.contains row then classify row else .empty
     hasUninstantiatedTail := resolved.domain.hasOpenTail
     hasHaving := true }
 

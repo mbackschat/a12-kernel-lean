@@ -25,7 +25,7 @@ def asConservativeVerdict : ValidationFillOutcome → Verdict
 
 end ValidationFillOutcome
 
-/-- Extensional classification of one already-resolved, unfiltered field range. Unknown cells count in the range but are neither filled nor empty. -/
+/-- Extensional classification of one resolved field range. Reached virtual cells count as empty; the unvisited declared tail is separate. Unknown cells are neither filled nor empty. -/
 structure ValidationFillTally where
   filled : Nat
   empty : Nat
@@ -35,7 +35,7 @@ structure ValidationFillTally where
 
 namespace CellObservation
 
-/-- Classify one instantiated validation read for an extensional field-fill tally. Formal unavailability is neither filled nor empty. -/
+/-- Classify one reached validation read for an extensional field-fill tally. Formal unavailability is neither filled nor empty. -/
 @[simp]
 def asValidationFillTally : CellObservation → ValidationFillTally
   | .empty => { filled := 0, empty := 1, unknown := 0, uninstantiated := 0 }

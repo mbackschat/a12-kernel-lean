@@ -90,7 +90,9 @@ Both views hide the same pending targets and expose the same completed String ou
 def guardReadPolicy (run : CheckedStringComputationRun model)
     (state : StringComputationRunState) (input : CheckedDocument model) :
     ScalarComputationContext :=
-  input.computationContext.withFixedOverlay fun field =>
+  let current := input.withComputationFilterRows fun field =>
+    run.tables.any fun table => table.targetField == field || table.referencesField field
+  current.computationContext.withFixedOverlay fun field =>
     if run.targetFields.contains field then
       some (match state.find? field with
         | some completion => completion.dependencyCell.checked

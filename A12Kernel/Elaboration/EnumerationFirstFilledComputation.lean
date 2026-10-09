@@ -428,13 +428,13 @@ private def scanFilteredEnumerationFirstFilledStar (document : Document)
     (having : CheckedStarHaving model source.source source.bindingGroup)
     (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell) (outer : Env)
-    (resolved : ResolvedStarTopology) (state : FirstFilledScanState)
+    (resolved : ResolvedStarTopology) (candidates : List Env) (state : FirstFilledScanState)
     (world : Option World := none) :
     Except CorrelationRuntimeFault (FirstFilledScanState ⊕ FirstFilledTokenResult) := do
   match ← scanFilteredComputationFirstFilled having.condition
-      (({ read := filterRead, world } : CorrelationContext).withModelComputationGroups model document) outer
-      (source.valueListCellAt .computation starRead)
-      resolved.environments resolved.domain.hasOpenTail state with
+      (({ read := model.filterRead document filterRead, world } : CorrelationContext).withModelComputationGroups model document) outer
+      (fun row => if resolved.environments.contains row then source.valueListCellAt .computation starRead row else .empty)
+      candidates resolved.domain.hasOpenTail state with
   | .inl next => pure (.inl next)
   | .inr result => pure (.inr result.asToken)
 
@@ -458,9 +458,11 @@ private def scanEnumerationFirstFilledOperand
           pure (scanEnumerationFirstFilledStar source starRead resolved.environments
             (state.enterSelection resolved.environments.isEmpty
               resolved.domain.hasOpenTail false))
-      | some having =>
+      | some having => do
+          let candidates ← model.filterEnvironments source.source.path
+            (document.filterRows.getD document.instantiatedRows) outer
           (scanFilteredEnumerationFirstFilledStar document (world := direct.world) source having filterRead
-            starRead outer resolved state).mapError (fun
+            starRead outer resolved candidates state).mapError (fun
               | .calendarUnavailable => .unsupportedDateCalendar
               | .valueFailure => .temporalValueFailure
               | .worldUnavailable => .worldUnavailable
@@ -522,7 +524,7 @@ private def scanCheckedDocumentOperand
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ FirstFilledTokenResult)
   | .selected source .. => do
-      let side ← source.sideWith .computation document.source.toDocument outer
+      let side ← source.sideWith .computation document.readDocument outer
         (document.computationCellAt read outer) (document.storedTextWithRead read outer)
         (document.computationCellAt read) (document.resolveSemanticIndexColumnWith read)
       match scanFirstFilledItems id side.cells
@@ -535,7 +537,7 @@ private def scanCheckedDocumentOperand
       | .done result => pure (.inr result.asToken)
   | .star source => do
       let resolved ←
-        (source.source.path.resolveInCapacity document.source.toDocument outer)
+        (source.source.path.resolveInCapacity document.readDocument outer)
           |>.mapError .addressing
       match source.filter with
       | none =>
@@ -546,11 +548,13 @@ private def scanCheckedDocumentOperand
                 resolved.domain.hasOpenTail false) with
           | .inl next => pure (.inl next)
           | .inr result => pure (.inr result.asToken)
-      | some having =>
+      | some having => do
+          let read := document.filterReadWith read
+          let candidates ← source.source.filterEnvironments document outer false
           match ← scanFilteredComputationFirstFilledResolving having.condition
               (document.resolvingCorrelationContextWithRead (world := world) read) outer
               (fun environment => checkedStarCellAt document read environment source)
-              resolved.environments resolved.domain.hasOpenTail state with
+              candidates resolved.domain.hasOpenTail state with
           | .inl next => pure (.inl next)
           | .inr result => pure (.inr result.asToken)
 
@@ -617,7 +621,7 @@ def executeResult
     (world : Option World := none) :
     Except StarAddressingError
       (EnumerationComputationRunView model ResidualMessage) := do
-  let selected ← operation.source.evaluate (world := world) input.source.toDocument outer
+  let selected ← operation.source.evaluate (world := world) input.readDocument outer
     directRead filterRead starRead
   pure (EnumerationComputationRunView.fromTokenResult operation.target input
     residualMessages selected.asComputationResult)

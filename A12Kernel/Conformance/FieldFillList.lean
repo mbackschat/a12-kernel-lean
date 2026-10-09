@@ -159,7 +159,7 @@ example : (do
       (source.evaluateFill? .allFieldsFilled document []).toOption.join)) =
     some (some (.fired .omission), none) := by native_decide
 
-example : (do
+example : ((show Option (Option (List Env) × Option (List Env)) from do
     let model : FlatModel := {
       fields := [{
         id := 4
@@ -177,8 +177,9 @@ example : (do
     let source ← (elaborateStarFieldPath model ["Probe", "Rows"]
       { base := .relative 0, groups := [{ name := "Inner", starred := true }], field := "R" }).toOption
     pure ((source.declaredEnvironments? document [(4, 1)]).toOption.join,
-      (source.declaredEnvironments? document [(4, 2)]).toOption.isNone)) =
-    some (some [[(4, 1), (5, 1)], [(4, 1), (5, 2)]], true) := by native_decide
+      (source.declaredEnvironments? document [(4, 2)]).toOption.join)) ==
+    some (some [[(4, 1), (5, 1)], [(4, 1), (5, 2)]],
+      some [[(4, 2), (5, 1)], [(4, 2), (5, 2)]])) = true := by native_decide
 
 private def filteredCountSource : SurfaceFieldEntitySource := {
   first := direct "A"
@@ -304,5 +305,55 @@ private def boundDirectResults (row : Nat) :
 
 example : boundDirectResults 1 = some (some (.value 1 .fixed), some .falseOrUnknown) ∧
     boundDirectResults 3 = some (none, some .falseOrUnknown) := by native_decide
+
+private def emptyFilteredRange (capacity : Nat) : Option (Nat × Nat × Nat × Nat × Bool) := do
+  let model := { listModel with repeatableGroups :=
+    [{ level := 4, path := ["Probe", "Rows"], repeatability := some capacity }] }
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := [] }).toOption
+  let source ← (elaborateFieldFillList model ["Probe"]
+    { first := filteredR (filterFirst .greater 0), rest := [] } ["Probe"] .quantifier).toOption
+  let operand ← source.operands.head?
+  let range ← (operand.validationRange? true document []).toOption.join
+  pure (range.tally.filled, range.tally.empty, range.tally.unknown, range.tally.uninstantiated, range.hasHaving)
+
+-- KF528's visited virtual slot and the remaining declared tail partition one capacity.
+example : emptyFilteredRange 2 = some (0, 1, 0, 1, true) ∧
+    emptyFilteredRange 3 = some (0, 1, 0, 2, true) := by native_decide
+
+
+private def virtualOuterFill (row : Nat) (captured : Bool) :
+    Option (Option ValidationFillOutcome × Option ValidationFillOutcome) := do
+  let model : FlatModel := {
+    fields := [
+      { id := 1, groupPath := ["Form", "P", "C"], name := "N", repeatableScope := [10, 20],
+        policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 2, groupPath := ["Form", "P"], name := "Limit", repeatableScope := [10],
+        policy := { kind := .number { scale := 0, signed := true } } }]
+    repeatableGroups := [
+      { level := 10, path := ["Form", "P"], repeatability := some 2 },
+      { level := 20, path := ["Form", "P", "C"], repeatability := some 2 }] }
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US"
+    { instantiatedRows := [{ group := 10, path := [1] }], cells := [] }).toOption
+  let innerEmpty : SurfaceCorrelatedHaving := .presence .notFilled {
+    origin := .inner, field := { base := .absolute, groups := ["Form", "P", "C"], field := "N" } }
+  let outerEmpty : SurfaceCorrelatedHaving := .presence .notFilled {
+    origin := .outer, field := { base := .absolute, groups := ["Form", "P"], field := "Limit" } }
+  let path : SurfaceStarFieldPath := {
+    base := .absolute
+    groups := [{ name := "Form" }, { name := "P" }, { name := "C", starred := true }]
+    field := "N" }
+  let source ← (elaborateFieldFillList model ["Form", "P"] {
+    first := .starHaving path (if captured then .and innerEmpty outerEmpty else innerEmpty), rest := [] }
+    ["Form", "P"] .quantifier).toOption
+  pure ((source.evaluateFill? .allFieldsFilled document [(10, row)]).toOption.join,
+    (source.evaluateFill? .notAllFieldsFilled document [(10, row)]).toOption.join)
+
+example : [1, 2].all (fun row => [false, true].all fun captured =>
+    decide (virtualOuterFill row captured = some (some .falseOrUnknown, some (.fired .omission)))) = true := by
+  native_decide
 
 end A12Kernel

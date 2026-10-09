@@ -47,11 +47,15 @@ def computationSelection (document : Document) (outer : Env)
   | .star source => do
       let resolved ← source.source.path.resolveInCapacity document outer
       let classify := source.valueListCellAt .computation read
-      pure <| match source.filter with
-        | none => .rows resolved.environments resolved.domain.hasOpenTail classify
-        | some having => .filtered having.condition
-            (({ read, world, storedText := filterStoredText, numberText := filterNumberText } : CorrelationContext).withModelComputationGroups model document) resolved.environments
-            resolved.domain.hasOpenTail classify
+      match source.filter with
+      | none => pure (.rows resolved.environments resolved.domain.hasOpenTail classify)
+      | some having => do
+          let candidates ← model.filterEnvironments source.source.path
+            (document.filterRows.getD document.instantiatedRows) outer
+          let read := model.filterRead document read
+          pure (.filtered having.condition
+            (({ read, world, storedText := filterStoredText, numberText := filterNumberText } : CorrelationContext).withModelComputationGroups model document) candidates
+            resolved.domain.hasOpenTail (source.valueListCellAt .computation read))
   | .group source => (.side ·) <$> source.resolvedSideIn .computation document outer read
 
 end CheckedTokenEntityOperand
@@ -203,8 +207,8 @@ def evaluateAt (operation : CheckedStringFirstFilledComputation model)
       | .stringExpressionUnavailable => .stringExpressionUnavailable
       | .storedTextUnavailable fieldId => .storedTextUnavailable fieldId
       | .groupUnavailable path => .unsupportedGroupOperand path)
-      (·.computationSelection (world := world) (filterStoredText := input.storedTextWithRead read) input.source.toDocument environment (input.computationCellAt read)
-        (selectedRead := fun source => source.sideWith .computation input.source.toDocument environment
+      (·.computationSelection (world := world) (filterStoredText := input.storedTextWithRead read) input.readDocument environment (input.computationCellAt read)
+        (selectedRead := fun source => source.sideWith .computation input.readDocument environment
           (input.computationCellAt read environment) (input.storedTextWithRead read environment) (input.computationCellAt read)
           (input.resolveSemanticIndexColumnWith read) |>.mapError (fun _ => .unsupportedGroupOperand source.path)))
       operation.source.operands {}

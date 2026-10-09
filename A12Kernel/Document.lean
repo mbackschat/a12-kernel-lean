@@ -39,6 +39,9 @@ structure CellAddr where
 structure Document where
   instantiatedRows : List RowAddr
   rawCells         : CellAddr → Option String
+  /-- An evaluation view may restrict which stored rows contribute filter-depth maxima.
+  Physical addressing still uses `instantiatedRows`; `none` denotes the full input (KF528). -/
+  filterRows : Option (List RowAddr) := none
 
 /-- The **iteration environment**: each enclosing repeatable level bound to a chosen row
     index. Evaluation happens *at* such a context; iteration produces a set of them.

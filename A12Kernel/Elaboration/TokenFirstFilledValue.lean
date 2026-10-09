@@ -176,11 +176,13 @@ private def scanCheckedFirstFilledTokenOperand
       let resolved ← source.source.path.resolveInCapacity document outer
       let selected ← match source.filter with
         | none => pure resolved.environments
-        | some filter =>
+        | some filter => do
+            let candidates ← model.filterEnvironments source.source.path
+              (document.filterRows.getD document.instantiatedRows) outer
             filter.condition.selectEnvironmentsResolving
-              ({ read := starRead, world } : CorrelationContext).asStarResolving outer
-              resolved.environments
-      pure (source.scanPartialFirstFilledState scope starRead selected
+              ({ read := model.filterRead document starRead, world } : CorrelationContext).asStarResolving outer
+              candidates
+      pure (source.scanPartialFirstFilledState scope (if source.filter.isSome then model.filterRead document starRead else starRead) selected
         (state.enterSelection selected.isEmpty resolved.domain.hasOpenTail
           source.filter.isSome))
 
@@ -295,10 +297,10 @@ private def checkedPartialTokenAddresses (document : CheckedDocument model) (out
   | .selected source => throw (.addressing (.unsupportedGroupOperand source.path))
   | .field source => pure [(source.declaration, source.operand, outer)]
   | .star source => do
-      let resolved ← (source.source.path.resolveInCapacity document.source.toDocument outer).mapError .addressing
+      let resolved ← (source.source.path.resolveInCapacity document.readDocument outer).mapError .addressing
       pure (resolved.environments.map (source.source.declaration, source.operand, ·))
   | .group source => do
-      let (reads, _) ← (model.groupOperandReads document.source.toDocument outer
+      let (reads, _) ← (model.groupOperandReads document.readDocument outer
         source.source.boundLevelCount source.slots (·.declaration.repeatableScope)).mapError .addressing
       pure (reads.map fun (slot, row) => (slot.declaration, slot.operand, row))
 

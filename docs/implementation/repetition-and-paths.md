@@ -14,10 +14,17 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `assurance`: E/P closed for admitted scopes; the immutable starred-field projection is proved to specialize the caller-view form to the checked document's base read, and executable cases separate a reached caller-view poison from unchanged sibling topology and other parent-local scans; implicit validation row membership and pointers kernel-locked at a12-dmkits [source registry](../SOURCES.md); relative concrete/implicit emission order is a deterministic Lean account with external order unverified; selected C/X/Q
 - `remains`: Wider path grammar: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)
 
+- `filter-domain`: [Bounded traversal](../../A12Kernel/Semantics/StarAddressing.lean) uses model-depth maxima, minimum one and declared-capacity clipping. [Checked views](../../A12Kernel/Elaboration/CheckedDocument.lean) retain calculation operand/target ancestors separately from physical rows; subplans preserve an enclosing view.
+- `filter-assurance`: [Reader locks](../../A12Kernel/Reference/Dm/HavingTraversalLocks.lean) separate virtual rows, sibling visibility, nested extents, fixed depth and typed adapters. The [field-fill locks](../../A12Kernel/Conformance/FieldFillList.lean) partition visited empty slots from the remaining declared tail. [KF528 and source loci](../sources/inbound-handbacks.md#inbound-2026-10-09-extensions) distinguish measured behavior from source-derived extensions.
+- `filter-laws`: `filterDepthMaximum_sameDepth` states name independence at equal model depth; `checkedDocument_filterRows_inherited` prevents subplan cache narrowing; `checkedDocument_filterRows_read` preserves physical cell reads. Cascade transition/trace laws use the programme cache. These are internal laws.
+- `filter-limit`: Large sparse traversal is explicitly refused on unreconciled routes; partial validation remains outside this closure. [H10-R6](../gaps/paths-and-groups.md#gap-sg17-closure-matrix) owns the remaining partitions.
+
 <a id="cap-star-selection-and-correlation"></a>
 #### Star selection and correlation
 
 - `boundary`: Reopened-star extent, direct/plain/filtered selection, captured outer correlation, and one-star checked lowering
+
+
 - `owner`: [`StarCompleteness.lean`](../../A12Kernel/Semantics/StarCompleteness.lean), [`Correlation.lean`](../../A12Kernel/Semantics/Correlation.lean), [`Correlation.lean`](../../A12Kernel/Elaboration/Correlation.lean) with [`CorrelationWellFormed.lean`](../../A12Kernel/Elaboration/CorrelationWellFormed.lean), and the shared comparison vocabulary in [`LiteralComparisonDiagnostic.lean`](../../A12Kernel/Elaboration/LiteralComparisonDiagnostic.lean) with its [filter cases](../../A12Kernel/Conformance/HavingFilterDiagnostic.lean)
 - `boundary`: [Error-field binding](validation-messages-and-custom.md#cap-ordinary-once-repeatable-execution) includes Number filters.
 - `boundary`: Filters combine numeric expressions, [comparisons](#cap-simple-having-comparisons), presence, [literal](#cap-having-literal-membership)/[field membership](#cap-having-field-membership) [field-fill lists](#cap-having-direct-field-fill), [group predicates](#cap-having-group-predicates) [named-type predicates](#cap-having-named-type-predicates) and [pattern predicates](#cap-having-pattern-predicates) under `And`/`Or`. The legacy one-group route remains numeric and conjunctive; the public protocol remains limited to direct Number/repetition comparisons with `==`, `!=` or `<`, joined by `And`.

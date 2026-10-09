@@ -132,11 +132,13 @@ private def scanCheckedFirstFilledNumberOperandWith
           resolved.domain.hasOpenTail false))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
+      let candidates ← model.filterEnvironments source.source.source.path
+        (document.filterRows.getD document.instantiatedRows) outer
       let selected ← source.having.selectEnvironmentsResolving
-        ({ read := filterRead, world := direct.world } : CorrelationContext).asStarResolving
-        outer resolved.environments
+        ({ read := model.filterRead document filterRead, world := direct.world } : CorrelationContext).asStarResolving
+        outer candidates
       pure (source.source.scanPartialValidationFirstFilledStateWith scope
-        (classifyStar source.source) selected
+        (fun row => if resolved.environments.contains row then classifyStar source.source row else .empty) selected
         (state.enterSelection selected.isEmpty resolved.domain.hasOpenTail true))
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
@@ -206,8 +208,10 @@ private def CheckedNumberEntityOperand.computationSelection
         (source.checkedValueListCellAt .computation starRead))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      pure (.filtered source.having (({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world := direct.world } : CorrelationContext).withModelComputationGroups model document) resolved.environments
-        resolved.domain.hasOpenTail (source.source.checkedValueListCellAt .computation starRead))
+      let candidates ← model.filterEnvironments source.source.source.path
+        (document.filterRows.getD document.instantiatedRows) outer
+      pure (.filtered source.having (({ read := model.filterRead document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := direct.world } : CorrelationContext).withModelComputationGroups model document) candidates
+        resolved.domain.hasOpenTail (source.source.checkedValueListCellAt .computation (model.filterRead document starRead)))
   -- The group's cells in the shared walk's declaration-major index order: every row of one
   -- declaration before the next, measured over a repeatable descendant
   -- ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-fixed-group-descendants)).
@@ -297,8 +301,12 @@ private def scanCheckedDocumentValidationOperand
       let resolved ←
         (source.source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
-      let selected ← source.having.selectEnvironmentsResolving
-        (document.resolvingCorrelationContext world) outer resolved.environments
+      let candidates ← if fullDomain then source.source.source.filterEnvironments document outer false
+        else pure resolved.environments
+      let filterContext := if fullDomain then document.resolvingCorrelationContextWithRead document.readDeclared world
+        else document.resolvingCorrelationContext world
+      let selected ← source.having.selectEnvironmentsResolving filterContext outer candidates
+      let read := if fullDomain then document.checkedCellWithRead document.readDeclared else read
       source.source.scanPartialValidationFirstFilledStateResolvingWith scope
         (fun environment =>
           (fun cell => (observeCell .validation cell).asNumberValueListCell) <$> read environment source.source.field.id)
@@ -389,11 +397,11 @@ private def scanCheckedDocumentComputationOperand
         (source.source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       match ← scanFilteredComputationFirstFilledResolving source.having
-          (document.resolvingCorrelationContext world) outer
-          (fun environment =>
-            document.numberValueListCellAt .computation environment
-              source.source.field)
-          resolved.environments resolved.domain.hasOpenTail state with
+          (document.resolvingCorrelationContextWithRead document.readDeclared world) outer
+          (fun environment => do
+            let cell ← document.checkedCellWithRead document.readDeclared environment source.source.field.id
+            pure (observeCell .computation cell).asNumberValueListCell)
+          (← source.source.source.filterEnvironments document outer false) resolved.domain.hasOpenTail state with
       | .inl next => pure (.inl next)
       | .inr result => pure (.inr result.asNumber)
   | .group slot =>

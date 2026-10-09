@@ -19,14 +19,14 @@ inductive RepeatableNumberAggregateMixedRunTransition
       RepeatableNumberAggregateMixedRunState → Prop where
   | cascade
       (outcomes : RepeatableNumberAggregateCascadeOutcomes)
-      (executed : plan.cascade.execute world input = .ok outcomes) :
+      (executed : plan.cascade.execute world (plan.filterInput input) = .ok outcomes) :
       RepeatableNumberAggregateMixedRunTransition plan world patterns input
         {} { aggregate := some outcomes.aggregate.outcome }
   | suffix
       (aggregate : NumericTargetOutcome)
       (result : ScalarComputationRunState)
       (executed :
-        plan.run.executeSteps world patterns input plan.run.steps {
+        plan.run.executeSteps world patterns (plan.filterInput input) plan.run.steps {
           completed := [.number {
             targetField := plan.cascade.total.operation.core.target.id
             outcome := aggregate
@@ -48,7 +48,7 @@ inductive RepeatableNumberAggregateMixedRunFailureTrace
       RepeatableNumberAggregateMixedRunFault → Prop where
   | cascade
       (fault : RepeatableNumberAggregateCascadeFault)
-      (executed : plan.cascade.execute world input = .error fault) :
+      (executed : plan.cascade.execute world (plan.filterInput input) = .error fault) :
       RepeatableNumberAggregateMixedRunFailureTrace
         plan world patterns input {} (.cascade fault)
   | suffix
@@ -59,7 +59,7 @@ inductive RepeatableNumberAggregateMixedRunFailureTrace
       (cascadeSuccess : RepeatableNumberAggregateMixedRunTransition
         plan world patterns input {}
         { aggregate := some cascade.aggregate.outcome })
-      (failure : ScalarComputationRunFailureTrace plan.run world patterns input
+      (failure : ScalarComputationRunFailureTrace plan.run world patterns (plan.filterInput input)
         { completed := [.number {
             targetField := plan.cascade.total.operation.core.target.id
             outcome := cascade.aggregate.outcome

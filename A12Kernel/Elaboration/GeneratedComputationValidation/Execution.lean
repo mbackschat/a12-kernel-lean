@@ -126,7 +126,7 @@ private def addressedEvaluationContextWithRead
     read := checkedReadAtWith input read []
     world := some world
   }
-  document := input.source.toDocument
+  document := input.readDocument
   outer := []
   filterRead := checkedReadAtWith input read
   filterStoredText := input.storedTextWithRead read

@@ -36,7 +36,8 @@ def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     (ruleCondition : Option String := none) (computationPrecondition : Option String := none)
     (zoneRules : ModelZoneRules := ModelZoneRules.unavailable)
     (rowsOverride : Option (Array Json) := none)
-    (customFieldValidator? : String → Option RegisteredCustomFieldValidator := fun _ => none) : Option (Verdict × List String) := do
+    (customFieldValidator? : String → Option RegisteredCustomFieldValidator := fun _ => none)
+    (producerTargetRelPath : String := "../Expected") : Option (Verdict × List String) := do
   let dm : DmModel := {
     flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let row := fun (tag n : String) => Json.mkObj [("Tag", Json.str tag), ("N", Json.str n)]
@@ -60,7 +61,7 @@ def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     alternatives := [{ precondition := computationPrecondition, operation }], errorCodesToSuppress := [] }).toOption
   let computations ← if fresh then do
       let (_, producer) ← (lowerComputation model .english {
-        group := ["Form"], name := "Expected", targetRelPath := "../Expected", commonPrecondition := none,
+        group := ["Form"], name := "Expected", targetRelPath := producerTargetRelPath, commonPrecondition := none,
         alternatives := [{ precondition := none, operation := producerOperation }], errorCodesToSuppress := [] }).toOption
       pure [computation, producer]
     else pure [computation]

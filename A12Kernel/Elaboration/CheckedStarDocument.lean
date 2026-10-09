@@ -13,6 +13,19 @@ This boundary joins the immutable checked input to the existing checked star pat
 
 namespace A12Kernel
 
+/-- Missing filter coordinates read empty; concrete coordinates retain the caller's phase and
+completed-target overlay. No row is added to the source document (KF528). -/
+def FlatModel.filterRead (model : FlatModel) (document : Document)
+    (read : Env → FieldId → CheckedCell) (environment : Env) (field : FieldId) : CheckedCell :=
+  match (model.lookupUniqueId field).toOption with
+  | none => malformedCheckedCell
+  | some declaration => match (environment.pathForScope declaration.repeatableScope).toOption with
+      | none => malformedCheckedCell
+      | some path =>
+          if (repeatableAncestorRowsFor declaration.repeatableScope path).all document.instantiatedRows.contains
+          then read environment field else checkAdmittedRawCell .empty
+
+
 /-- Raw-document consumers retain filter failures in their existing addressing channel. Missing
 capabilities refuse at the reached leaf rather than turning a failed filter into UNKNOWN. -/
 def CorrelationContext.asStarResolving (context : CorrelationContext) :
@@ -600,23 +613,24 @@ def resolveCheckedField (source : CheckedStarFieldPath model)
     Except CheckedStarDocumentError ResolvedCheckedStarField :=
   source.resolveCheckedFieldWithRead checked checked.read outer
 
-/-- A captured or bound environment denotes physical rows. Declared-slot selection may reopen
-missing candidates, but must not manufacture the caller's row. -/
-def _root_.A12Kernel.CheckedDocument.requireInstantiatedEnvironment
-    (checked : CheckedDocument model) (scope : List RepeatableLevel) (environment : Env) :
-    Except CheckedAddressingError Unit := do
-  let coordinates ← (environment.pathForScope scope).mapError .environment
-  for row in repeatableAncestorRowsFor scope coordinates do
-    if !checked.source.instantiatedRows.contains row then throw (.document (.missingRow row))
-
 /-- Enumerate the finite declared slots under the bound prefix. `none` preserves missing capacity
 as unavailable information. The filtered field-fill grid (2026-10-03) separates this domain from
-instantiated topology; ordinary aggregates continue using `resolveInCapacity`. -/
+instantiated topology and the cache-bounded filter domain. Ordinary full-validation coordinates
+may themselves be declared empty slots (spec/07 §1); no physical row is required or created. -/
 def declaredEnvironments? (source : CheckedStarFieldPath model)
-    (checked : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError (Option (List Env)) := do
-  checked.requireInstantiatedEnvironment source.bindingScope outer
+    (_checked : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (Option (List Env)) :=
   source.path.declaredEnvironments? outer |>.mapError .addressing
+
+/-- Visit bounded filter coordinates without treating them as physical rows. The cache view is
+whole-document for validation and programme-restricted for computation (KF528). Ordinary full
+validation can bind a declared empty outer coordinate (spec/07 §1); binding legality does not
+require that coordinate to be a stored row. -/
+def filterEnvironments (source : CheckedStarFieldPath model)
+    (checked : CheckedDocument model) (outer : Env) (sparse : Bool := true) :
+    Except CheckedAddressingError (List Env) :=
+  model.filterEnvironments source.path
+    (checked.filterRows.getD checked.source.instantiatedRows) outer sparse |>.mapError .addressing
 
 /-- Resolve one full-validation starred entity-list occurrence. Optional checked-filter ownership remains with the typed caller; this function owns the common filter-before-addressing projection and preserves reached failures structurally. -/
 def resolveCheckedValidationEntityOperandCore
@@ -629,10 +643,13 @@ def resolveCheckedValidationEntityOperandCore
     (source.path.resolveInCapacity checked.source.toDocument outer).mapError .addressing
   let selected ← match having with
     | none => pure topology.environments
-    | some condition =>
+    | some condition => do
         condition.selectEnvironmentsResolving
-          (checked.resolvingCorrelationContext world) outer topology.environments
-  let addressedCells ← selected.mapM (source.addressedCell checked)
+          (checked.resolvingCorrelationContextWithRead checked.readDeclared world) outer
+          (← source.filterEnvironments checked outer)
+  let addressedCells ← selected.mapM fun environment =>
+    checked.addressedCellWithRead (if having.isSome then checked.readDeclared else checked.read)
+      environment source.declaration.id
   pure {
     topology := some topology
     addressedCells

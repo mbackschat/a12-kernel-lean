@@ -241,10 +241,12 @@ private def nestedTarget (family : Family) (mode : NestedMode) : Option (List St
     ([definition "Count" "../Rows/Out" s!"NumberOfDifferentValues({operand})"] ++
       if mode == .filterProducer then [definition "Producer" "../Rows/Choice" "2"] else [])
 
+/- KF528's shared child bound reaches the malformed captured Choice even in the parent with
+no stored Values rows. Unfiltered operands never evaluate that filter. -/
 example : [.number, .token, .enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
     nestedTarget family .group == some ["value 2", "value 2", "value 0"] &&
-    nestedTarget family .filtered == some ["value 1", "value 2", "value 0"] &&
-    nestedTarget family .filterPoison == some ["value 1", "cleared", "value 0"]) := by native_decide
+    nestedTarget family .filtered == some ["value 1", "value 2", "cleared"] &&
+    nestedTarget family .filterPoison == some ["value 1", "cleared", "cleared"]) := by native_decide
 
 example : [.number, .token, .enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
     nestedTarget family .filterProducer ==

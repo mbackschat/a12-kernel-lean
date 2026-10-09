@@ -71,7 +71,9 @@ def targetFields (run : CheckedNumericComputationRun model) :
 def readPolicy (run : CheckedNumericComputationRun model)
     (state : NumericComputationRunState) (input : CheckedDocument model) :
     ScalarComputationContext :=
-  input.computationContext.withFixedOverlay fun field =>
+  let current := input.withComputationFilterRows fun field =>
+    run.tables.any fun table => table.targetField == field || table.referencesField field
+  current.computationContext.withFixedOverlay fun field =>
     match state.find? field with
     | some completion =>
         some (NumericDependencyCell.ofOutcome completion.outcome).checked

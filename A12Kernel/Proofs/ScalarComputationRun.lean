@@ -80,9 +80,11 @@ theorem scalarComputationRun_numberRead_input
     (ordinary : field ∉ run.targetFields) :
     (run.numberContext world state input).read field =
       input.flatContext.read field := by
-  simp [CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay,
-    CheckedDocument.scalarComputationContext, pending, ordinary]
-  rfl
+  simp only [CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay,
+    pending, ordinary, List.contains_eq_mem, decide_false, Bool.false_eq_true, ↓reduceIte, Option.getD_none]
+  change (run.filterInput input).flatContext.read field = input.flatContext.read field
+  simp only [CheckedScalarComputationRun.filterInput, CheckedDocument.flatContext,
+    checkedDocument_filterRows_read]
 
 theorem scalarComputationRun_numberContext_world
     (run : CheckedScalarComputationRun model)
@@ -409,6 +411,8 @@ theorem scalarComputationRun_documentFor_read
     (valid : ∃ cell, input.read { field, path := [] } = .ok cell) :
     (run.documentFor state input).flatContext.read field =
       (run.numberContext world state input).read field := by
+  have validView : ∃ cell, (run.filterInput input).read { field, path := [] } = .ok cell := by
+    simpa only [CheckedScalarComputationRun.filterInput, checkedDocument_filterRows_read] using valid
   cases found : state.find? field with
   | some completion =>
       have find := scalarComputationRun_documentFor_find_listed run state input field
@@ -416,7 +420,7 @@ theorem scalarComputationRun_documentFor_read
       rw [found] at find
       unfold CheckedScalarComputationRun.documentFor at find ⊢
       simp only [CheckedDocument.flatContext,
-        checkedDocument_overlay_read_found input _ _ _ valid find,
+        checkedDocument_overlay_read_found (run.filterInput input) _ _ _ validView find,
         CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay, found]
       rfl
   | none =>
@@ -426,7 +430,7 @@ theorem scalarComputationRun_documentFor_read
         rw [found] at find
         unfold CheckedScalarComputationRun.documentFor at find ⊢
         simp only [CheckedDocument.flatContext,
-          checkedDocument_overlay_read_absent input _ _ valid find,
+          checkedDocument_overlay_read_absent (run.filterInput input) _ _ validView find,
           CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay, found, target]
         rfl
       · have unlisted :
@@ -444,8 +448,8 @@ theorem scalarComputationRun_documentFor_read
           · exact absentCompleted completion member (by simpa using same)
           · subst same
             exact target (List.contains_iff_mem.mpr member)
-        have same := checkedDocument_overlay_read_congr input _ { field, path := [] }
-          (checkedDocument_overlay_find_unlisted input _ { field, path := [] } unlisted)
+        have same := checkedDocument_overlay_read_congr (run.filterInput input) _ { field, path := [] }
+          (checkedDocument_overlay_find_unlisted (run.filterInput input) _ { field, path := [] } unlisted)
         unfold CheckedScalarComputationRun.documentFor
         simp only [CheckedDocument.flatContext, same,
           CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay, found, target,

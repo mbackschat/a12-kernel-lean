@@ -171,7 +171,9 @@ def targetFields (plan : CheckedMixedComputationPlan model compilePattern) : Lis
 /-- The overlaid document every step reads. -/
 def documentFor (plan : CheckedMixedComputationPlan model compilePattern)
     (state : MixedComputationState) (input : CheckedDocument model) : CheckedDocument model :=
-  input.overlayCells plan.targetFields (state.fixed.map (·.placement) ++ state.rows)
+  (input.withComputationFilterRows fun field =>
+    plan.authored.any fun step => step.targetField == field || step.referencesField field)
+    |>.overlayCells plan.targetFields (state.fixed.map (·.placement) ++ state.rows)
 
 /-- The String-family read of a fixed String table: a completed fixed target through its String
 cell, a pending one empty, as in the scalar plan. -/

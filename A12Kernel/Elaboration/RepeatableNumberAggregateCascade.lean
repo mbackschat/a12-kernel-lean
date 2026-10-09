@@ -20,6 +20,11 @@ inductive RepeatableNumberAggregateCascadeFault where
 
 namespace CheckedRepeatableNumberAggregateCascade
 
+/-- Static cache dependencies include both stages before either executes (CalculationCommand). -/
+def filterFields (cascade : CheckedRepeatableNumberAggregateCascade model) : List FieldId :=
+  cascade.row.targetField :: cascade.total.operation.core.target.id ::
+    (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies)
+
 /-- The exact root address owned by the aggregate target. -/
 def aggregateAddress
     (cascade : CheckedRepeatableNumberAggregateCascade model) : CellAddr := {
@@ -71,7 +76,7 @@ def executeAggregateAfterRows
     input.storedTextForCell address (read environment field)
   let checked ← plan.total.evaluateIn {
       scalar := input.scalarComputationContext world
-      document := input.source.toDocument
+      document := input.readDocument
       outer := []
       filterRead := read
       filterStoredText := storedText
@@ -96,6 +101,7 @@ def execute (plan : CheckedRepeatableNumberAggregateCascade model)
     (world : World) (input : CheckedDocument model) :
     Except RepeatableNumberAggregateCascadeFault
       RepeatableNumberAggregateCascadeOutcomes := do
+  let input := input.withComputationFilterRows plan.filterFields.contains
   let rows ← plan.row.execute input |>.mapError .row
   let aggregate ← plan.executeAggregateAfterRows world input rows
   pure { rows, aggregate }
@@ -357,6 +363,9 @@ def execute (plan : CheckedRepeatableNumberAggregateRunCascade model)
     (world : World) (input : CheckedDocument model) :
     Except RepeatableNumberAggregateRunCascadeFault
       RepeatableNumberAggregateRunCascadeOutcomes := do
+  let input := input.withComputationFilterRows fun field =>
+    plan.cascade.filterFields.contains field ||
+      plan.run.tables.any fun table => table.targetField == field || table.referencesField field
   let cascade ← plan.cascade.execute world input |>.mapError .cascade
   let initial : NumericComputationRunState := {
     completed := [{

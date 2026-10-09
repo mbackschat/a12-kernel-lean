@@ -119,7 +119,7 @@ def executeFixed (table : CheckedNumericComputationTable model) (world : World)
   let outcome ← supportedOutcome table <| table.evaluateIn {
       scalar := { input.computationContextAt [] with
         read := cellAt input read [], world := some world }
-      document := input.source.toDocument
+      document := input.readDocument
       outer := []
       filterRead := cellAt input read
       filterStoredText := input.storedTextWithRead read
@@ -154,7 +154,7 @@ def executeRows (table : CheckedNumericComputationTable model) (world : World)
       let outcome ← supportedOutcome table <| table.evaluateIn {
           scalar := { input.computationContextAt environment with
             read := cellAt input read environment, world := some world }
-          document := input.source.toDocument
+          document := input.readDocument
           outer := environment
           filterRead := cellAt input read
           filterStoredText := input.storedTextWithRead read
@@ -193,6 +193,8 @@ within a step. -/
 def execute (plan : CheckedRepeatableNumberPlan model) (world : World)
     (input : CheckedDocument model) :
     Except RepeatableNumberPlanFault (List (SourcedNumericTargetOutcome CellAddr)) :=
+  let input := input.withComputationFilterRows fun field =>
+    plan.authored.any fun table => table.targetField == field || table.referencesField field
   plan.executeSteps world input plan.execution []
 
 end CheckedRepeatableNumberPlan

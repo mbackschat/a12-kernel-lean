@@ -159,12 +159,14 @@ def resolveOperandAt (input : CheckedDocument model)
       match source.filter with
       | none => Except.ok <$> scanCells input read source.source.declaration.id resolved.environments
       | some having => do
+          let read := input.filterReadWith read
+          let candidates ← source.source.filterEnvironments input outer false
           let result ← having.condition.scanComputationResolving
             (input.resolvingCorrelationContextWithRead read world) outer
             (fun (_ : Unit) environment => do
               match ← scanCells input read source.source.declaration.id [environment] with
               | none => pure (.inl ())
-              | some cell => pure (.inr cell)) resolved.environments ()
+              | some cell => pure (.inr cell)) candidates ()
           pure (match result with
             | .exhausted _ => .ok none
             | .terminated cell => .ok (some cell)

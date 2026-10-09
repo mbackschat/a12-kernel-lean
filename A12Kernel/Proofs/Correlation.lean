@@ -496,12 +496,15 @@ theorem checkedStarFieldPath_havingFailureBeforeClassification
     (checked : CheckedStarFieldPath model) (document : Document) (outer : Env)
     (having : CorrelatedHaving) (read : Env → FieldId → CheckedCell)
     (world : Option World) (resolved : ResolvedStarTopology) (error : StarAddressingError)
+    (candidates : List Env)
     (classify : Env → ValueListCell kind)
     (topology : checked.path.resolveInCapacity document outer = .ok resolved)
+    (domain : model.filterEnvironments checked.path
+      (document.filterRows.getD document.instantiatedRows) outer true = .ok candidates)
     (failure : having.selectEnvironmentsResolving
-      ({ read, world } : CorrelationContext).asStarResolving outer resolved.environments = .error error) :
+      ({ read := model.filterRead document read, world } : CorrelationContext).asStarResolving outer candidates = .error error) :
     checked.resolvedValidationHavingValueListSide document outer having read classify world = .error error := by
-  simp only [CheckedStarFieldPath.resolvedValidationHavingValueListSide, topology, bind, Except.bind]
+  simp only [CheckedStarFieldPath.resolvedValidationHavingValueListSide, topology, domain, bind, Except.bind]
   rw [failure]
 
 private theorem correlatedKeeps_eq_true_iff (star : SingleCorrelatedStar)

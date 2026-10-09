@@ -39,7 +39,7 @@ theorem checkedEnumerationFirstFilled_executeResult_projects
     (starRead : Env → FieldId → RawCell)
     (residualMessages : List ResidualMessage)
     (selected : FirstFilledTokenResult)
-    (evaluated : operation.source.evaluate input.source.toDocument outer
+    (evaluated : operation.source.evaluate input.readDocument outer
       directRead filterRead starRead = .ok selected) :
     operation.executeResult input outer directRead filterRead starRead
         residualMessages =

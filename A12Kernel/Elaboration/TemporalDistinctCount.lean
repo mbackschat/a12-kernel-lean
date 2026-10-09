@@ -644,11 +644,14 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
       let read := fun environment => project (starRead environment source.declaration.id)
       match filter with
       | none => pure (.inl (resolved.toResolvedSide read))
-      | some having =>
+      | some having => do
+          let candidates ← model.filterEnvironments path.path
+            (document.filterRows.getD document.instantiatedRows) outer true
+          let read := fun environment => project (model.filterRead document starRead environment source.declaration.id)
           let consume := fun cells environment => match read environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
-          match ← (having.scanComputation (({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world } : CorrelationContext).withModelComputationGroups model document) outer consume resolved.environments []).mapError (fun
+          match ← (having.scanComputation (({ read := model.filterRead document filterRead, storedText := filterStoredText, numberText := filterNumberText, world } : CorrelationContext).withModelComputationGroups model document) outer consume candidates []).mapError (fun
             | .calendarUnavailable => .unsupportedDateCalendar
             | .valueFailure => .temporalValueFailure
             | .worldUnavailable => .worldUnavailable

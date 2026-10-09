@@ -1602,6 +1602,9 @@ run_cmd do
 #print axioms A12Kernel.checkedStarFieldPath_valueListExtentRelevant_partialSet_iff
 #print axioms A12Kernel.validationRelevanceScope_groupRelevance_full
 #print axioms A12Kernel.validationRelevanceScope_groupRelevance_empty
+#print axioms A12Kernel.filterDepthMaximum_sameDepth
+#print axioms A12Kernel.checkedDocument_filterRows_read
+#print axioms A12Kernel.checkedDocument_filterRows_inherited
 #print axioms A12Kernel.checkedStarNumberSource_ancestry
 #print axioms A12Kernel.checkedStarNumberHavingSource_wellFormed
 #print axioms A12Kernel.checkedStarNumberHavingSource_reachesReopenedLevel

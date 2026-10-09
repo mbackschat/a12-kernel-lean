@@ -67,8 +67,12 @@ private def groupRead : SurfaceCorrelatedHaving := .groupPresence .filled .inner
 example : callers none numberText = some (List.replicate 4 (some (.storedTextUnavailable 1))) ∧
     callers none groupRead = some (List.replicate 4 (some (.unsupportedGroupOperand ["Form", "Rows"]))) := by native_decide
 
-example : [predicate, numberText, groupRead].all (fun condition =>
-    callers none condition { document with instantiatedRows := [] } == some [none, none, none, none]) = true := by native_decide
+/- KF528 visits coordinate one without stored rows. Empty scalar reads bypass host lookup and
+stored-text requirements, but a reached unsupported group read remains observable. -/
+example : [predicate, numberText].all (fun condition =>
+    callers none condition { document with instantiatedRows := [] } == some [none, none, none, none]) = true ∧
+    callers none groupRead { document with instantiatedRows := [] } =
+      some (List.replicate 4 (some (.unsupportedGroupOperand ["Form", "Rows"]))) := by native_decide
 
 private def presence (polarity : HavingPresencePolarity) : SurfaceCorrelatedHaving := .presence polarity {
   origin := .inner, field := { base := .absolute, groups := ["Form", "Rows"], field := "Label" } }

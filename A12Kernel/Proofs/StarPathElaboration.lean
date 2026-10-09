@@ -109,4 +109,14 @@ theorem validationRelevanceScope_withGlobals_covers_global
       model groupPath environment = .noneRelevant := by
   rfl
 
+/-- Renaming a repeated group at the same model depth cannot change the shared traversal bound.
+The visible row universe is held fixed; changing calculation operands may change that universe. -/
+theorem filterDepthMaximum_sameDepth (model : FlatModel) (rows : List RowAddr)
+    (leftLevel rightLevel : RepeatableLevel) (left right : RepeatableGroupDecl)
+    (leftOwned : model.repeatableGroupAtLevel? leftLevel = some left)
+    (rightOwned : model.repeatableGroupAtLevel? rightLevel = some right)
+    (sameDepth : left.path.length = right.path.length) :
+    model.filterDepthMaximum rows leftLevel = model.filterDepthMaximum rows rightLevel := by
+  simp only [FlatModel.filterDepthMaximum, leftOwned, rightOwned, sameDepth]
+
 end A12Kernel

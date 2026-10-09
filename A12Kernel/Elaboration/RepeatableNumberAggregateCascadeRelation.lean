@@ -22,14 +22,15 @@ inductive RepeatableNumberAggregateCascadeTransition
       RepeatableNumberAggregateCascadeState → Prop where
   | rows
       (outcomes : List (SourcedNumericTargetOutcome CellAddr))
-      (executed : plan.row.execute input = .ok outcomes) :
+      (executed : plan.row.execute (input.withComputationFilterRows plan.filterFields.contains) = .ok outcomes) :
       RepeatableNumberAggregateCascadeTransition plan world input
         {} { rows := some outcomes }
   | aggregate
       (rows : List (SourcedNumericTargetOutcome CellAddr))
       (outcome : SourcedNumericTargetOutcome CellAddr)
       (executed :
-        plan.executeAggregateAfterRows world input rows = .ok outcome) :
+        plan.executeAggregateAfterRows world
+          (input.withComputationFilterRows plan.filterFields.contains) rows = .ok outcome) :
       RepeatableNumberAggregateCascadeTransition plan world input
         { rows := some rows }
         { rows := some rows, aggregate := some outcome }

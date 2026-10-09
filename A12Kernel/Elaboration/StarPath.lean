@@ -9,6 +9,24 @@ This boundary resolves structured group-segment stars against one validated `Fla
 
 namespace A12Kernel
 
+/-- Filter iteration shares maxima across group names at the same model depth, including blank
+rows. Fixed intervening groups count toward depth; their absence from `Env` must not merge depths.
+The caller supplies phase-visible rows (Kernel GroupFillCache; KF528). -/
+def FlatModel.filterDepthMaximum (model : FlatModel) (rows : List RowAddr)
+    (level : RepeatableLevel) : Nat :=
+  match model.repeatableGroupAtLevel? level with
+  | none => 1
+  | some group => rows.foldl (fun maximum row =>
+      match model.repeatableGroupAtLevel? row.group with
+      | some other => if other.path.length == group.path.length then
+          max maximum (row.path.getLast?.getD 1) else maximum
+      | none => maximum) 1
+
+def FlatModel.filterEnvironments (model : FlatModel) (path : StarPath)
+    (rows : List RowAddr) (outer : Env) (sparse : Bool := false) :
+    Except StarAddressingError (List Env) :=
+  path.boundedFilterEnvironments outer (model.filterDepthMaximum rows) sparse
+
 /-- One decoded group-path segment with its authored wildcard marker. -/
 structure SurfaceStarGroupSegment where
   name : String

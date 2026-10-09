@@ -419,10 +419,10 @@ example :
       checkedCrossLevelSelectionsOf [(10, 1), (20, 2)] = some [] := by
   native_decide
 
-/- Number references route independently: the candidate Amount reads each leaf, while the captured ancestor Limit remains fixed for the outer rule row. -/
+/- The depth-wide child bound visits the missing second child of parent 2 (KF528). Its empty Amount compares below the captured Limit, while the captured ancestor still belongs to the outer rule row. -/
 example :
     authoredNumberHavingCellsOf [(10, 1), (20, 2)] =
-      some ([.present 1], true, true) := by
+      some ([.present 1, .empty], true, true) := by
   native_decide
 
 /- An uncorrelated filter is legal when an inner reference reaches a reopened level. -/

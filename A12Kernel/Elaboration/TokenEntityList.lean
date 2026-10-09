@@ -848,13 +848,15 @@ def resolvedComputationSide
           pure (.inl (resolved.toResolvedSide
             (source.valueListCellAt .computation starRead)))
       | some having =>
-          let filterContext := ({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world } : CorrelationContext).withModelComputationGroups model document
+          let candidates ← model.filterEnvironments source.source.path
+            (document.filterRows.getD document.instantiatedRows) outer true
+          let filterContext := ({ read := model.filterRead document filterRead, storedText := filterStoredText, numberText := filterNumberText, world } : CorrelationContext).withModelComputationGroups model document
           let consume := fun cells environment =>
-            match source.valueListCellAt .computation starRead environment with
+            match source.valueListCellAt .computation (model.filterRead document starRead) environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
           match ← (having.condition.scanComputation filterContext outer consume
-              resolved.environments []).mapError (fun
+              candidates []).mapError (fun
                 | .calendarUnavailable => .unsupportedDateCalendar
                 | .valueFailure => .temporalValueFailure
                 | .worldUnavailable => .worldUnavailable

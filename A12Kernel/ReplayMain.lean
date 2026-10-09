@@ -40,6 +40,7 @@ import A12Kernel.Reference.Dm.AncestorErrorScopeLocks
 import A12Kernel.Reference.Dm.HavingComparisonLocks
 import A12Kernel.Reference.Dm.HavingAdmissionLocks
 import A12Kernel.Reference.Dm.HavingCalendarLocks
+import A12Kernel.Reference.Dm.HavingTraversalLocks
 import A12Kernel.Reference.Dm.HavingGroupLocks
 import A12Kernel.Reference.Dm.HavingTypeValidityLocks
 import A12Kernel.Reference.Dm.BooleanCountHavingLocks

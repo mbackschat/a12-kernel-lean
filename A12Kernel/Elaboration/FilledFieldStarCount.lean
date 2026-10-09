@@ -143,23 +143,23 @@ def evaluatePartialFilledFieldCountValidation
   else
     checked.source.evaluatePartialFilledFieldCountValidation document outer scope
 
-/-- A filtered star's selected missing slots. Only the missing candidates use the declared read
-view; physical candidates retain the ordinary checked-document resolver. Captured reads and the
-star's bound prefix must denote instantiated rows before missing candidate slots may be explored. -/
+/-- Selected missing slots beyond the visited filter domain. A visited virtual cell is already
+counted as empty, so the declared tail must not count it again (KF528 and the filtered-fill grid).
+The bound prefix and captured references retain legal declared coordinates without creating rows. -/
 def selectedMissingCount? (checked : CheckedFilledFieldStarSource model)
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
     Except CheckedAddressingError (Option Nat) := do
   let some candidates ← checked.source.declaredEnvironments? document outer | return none
+  let visited ← if checked.filter.isSome then checked.source.filterEnvironments document outer else pure []
   let scope := checked.source.declaration.repeatableScope
   let missing ← candidates.filterM fun environment => do
     let path ← (environment.pathForScope scope).mapError .environment
-    pure (!(repeatableAncestorRowsFor scope path).all document.source.instantiatedRows.contains)
+    pure (!visited.contains environment &&
+      !(repeatableAncestorRowsFor scope path).all document.source.instantiatedRows.contains)
   match checked.filter with
   | none => pure (some missing.length)
   | some filter =>
-      for scope in (CorrelatedHaving.outerIterationScopes model filter.condition).filterMap id do
-        document.requireInstantiatedEnvironment scope outer
       let selected ← filter.condition.selectEnvironmentsResolving
         (document.resolvingCorrelationContextWithRead (world := world) document.readDeclared) outer missing
       pure (some selected.length)

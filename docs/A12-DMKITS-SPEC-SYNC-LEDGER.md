@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-09-10"></a>
+### SPEC-2026-10-09-10 — filter extents retain whole-program cache scope
+
+- `status`: pending
+- `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation) extends the inbound KF528 account with its source-derived cache and depth rules.
+- `delta`: Include ancestor groups of static computation operands and targets, including unreached operands; do not narrow an enclosing programme's cache for a subplan. Target-only siblings can affect bounds before their calculations run. Compare full group-path depths, including fixed groups. Sparse traversal above 100 bounded slots is a distinct consumer policy; first-filled remains dense.
+- `basis`: Kernel 30.8.1 `CalculationCommand`, `GroupFillCache`, `RuntimeController` and `EbenenIterator`, at the [pinned source route](sources/inbound-handbacks.md#inbound-2026-10-09-extensions). Existing small-profile outcomes are inbound KF528; the target-only/fixed-depth extensions are source-derived and externally pending. This entry does not re-issue the accepted handback.
+- `acceptance`: Reconcile the cache and depth account in peer semantics/interpreter owners, with target-only sibling, unreached-operand, nested-programme and intervening-fixed-group controls. Preserve explicit partial/sparse traversal limits; no new measurement is claimed here. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
 <a id="spec-2026-10-09-09"></a>
 ### SPEC-2026-10-09-09 — parallel guards retain connective structure
 

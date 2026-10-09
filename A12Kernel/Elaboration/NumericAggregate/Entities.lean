@@ -169,14 +169,16 @@ def resolvedComputationAggregateSide
         (source.checkedValueListCellAt .computation starRead)))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      let filterContext := ({ read := filterRead, storedText := filterStoredText, numberText := filterNumberText, world := direct.world } : CorrelationContext).withModelComputationGroups model document
+      let candidates ← model.filterEnvironments source.source.source.path
+        (document.filterRows.getD document.instantiatedRows) outer true
+      let filterContext := ({ read := model.filterRead document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := direct.world } : CorrelationContext).withModelComputationGroups model document
       let consume := fun cells environment =>
         match source.source.checkedValueListCellAt .computation
-            starRead environment with
+            (model.filterRead document starRead) environment with
         | .unknown cause => .inr cause
         | cell => .inl (cell :: cells)
       match ← (source.having.scanComputation filterContext outer consume
-          resolved.environments []).mapError (fun
+          candidates []).mapError (fun
             | .calendarUnavailable => .unsupportedDateCalendar
             | .valueFailure => .temporalValueFailure
             | .worldUnavailable => .worldUnavailable
@@ -233,23 +235,10 @@ def resolvedCheckedDocumentValidationAggregateSide
     | .error cause => pure (.inr (.unknown cause))
     | .ok () => pure (.inl side)
 
-/-- Resolve one computation aggregate slot from the same checked document. A filtered slot retains one-kept-successor lookahead and keeps structural target/filter failure outside formal poison.
-
-    A plain or filtered **star** and a **group** operand narrow to their declared-capacity extent here exactly as
-    on the full-validation arm, and for the same reason: the over-limit row is not in the domain the
-    operand denotes, so it is neither aggregated nor able to poison the computation. The arm boundary
-    was measured rather than inherited — the same eight documents observed through `compute` answered
-    from the in-capacity domain on both codegen strategies
-    ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)),
-    and the kernel reported the over-limit index as a formal error in the operand while still
-    producing an uncleared computed value. A filtered star answered the same way: the over-limit row was never
-    kept, whichever way its filter would have judged it
-    ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)).
-
-    The star once resolved its own environments here instead of going through the shared operand
-    core. Both routes agreed on every retained computation case, so the capacity projection is the
-    only intended behavioural difference; the shared core is kept because it is the one the group
-    arm and the whole validation arm already use. -/
+/-- Resolve computation operands with ordered filter lookahead and phase-specific reads.
+Filtered stars visit cache-bounded virtual coordinates (KF528); plain stars retain physical topology.
+Both domains exclude over-capacity rows before filter or payload evaluation
+([capacity checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)). -/
 def resolvedCheckedDocumentComputationAggregateSide
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
@@ -266,13 +255,13 @@ def resolvedCheckedDocumentComputationAggregateSide
         (source.source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       let consume := fun cells environment => do
-        match ← document.numberValueListCellAt .computation environment
-            source.source.field with
+        let cell ← document.checkedCellWithRead document.readDeclared environment source.source.field.id
+        match (observeCell .computation cell).asNumberValueListCell with
         | .unknown cause => pure (.inr cause)
         | cell => pure (.inl (cell :: cells))
       match ← source.having.scanComputationResolving
-          (document.resolvingCorrelationContext world) outer consume
-          resolved.environments [] with
+          (document.resolvingCorrelationContextWithRead document.readDeclared world) outer consume
+          (← source.source.source.filterEnvironments document outer) [] with
       | .exhausted reversed =>
           pure (.inl {
             cells := reversed.reverse

@@ -92,6 +92,9 @@ structure CheckedDocument (model : FlatModel) where
   checkedCells : List CheckedCellPlacement
   modelWellFormed : model.validate.isOk = true
   rowsNodup : source.instantiatedRows.Nodup
+  /-- CalculationCommand retains operand/target ancestor groups before filling its cache.
+  This view affects filter bounds, never immutable topology or cell placement (KF528). -/
+  filterRows : Option (List RowAddr) := none
 
 private def firstDuplicateRow? : List RowAddr → Option RowAddr
   | [] => none
@@ -387,6 +390,10 @@ def FlatModel.actualRowEnvironments (model : FlatModel) (rows : List RowAddr)
 
 namespace CheckedDocument
 
+/-- Project the physical input together with this evaluation view's filter-cache visibility. -/
+def readDocument (checked : CheckedDocument model) : Document :=
+  { checked.source.toDocument with filterRows := checked.filterRows }
+
 /-- Specialize physical-row enumeration to the checked document's immutable topology. -/
 def actualRowEnvironments (checked : CheckedDocument model)
     (scope : List RepeatableLevel) : Except ActualRowEnvironmentError (List Env) :=
@@ -514,6 +521,15 @@ def overlayCells (checked : CheckedDocument model) (hidden : List FieldId)
         !hidden.contains placement.address.field &&
           !placements.any (·.address == placement.address)) ++ placements }
 
+/-- Set the whole-program calculation cache's row visibility. Include targets as well as every
+static operand, even an operand behind an unevaluated branch (CalculationCommand). An outer
+programme already owns an explicit view; executing a subplan must not narrow that cache. -/
+def withComputationFilterRows (checked : CheckedDocument model)
+    (relevant : FieldId → Bool) : CheckedDocument model :=
+  if checked.filterRows.isSome then checked else
+  { checked with filterRows := some (checked.source.instantiatedRows.filter fun row =>
+      model.fields.any fun field => relevant field.id && field.repeatableScope.contains row.group) }
+
 /-- Read a placement using the address declaration supplied by the validation gate. This common
 body is exposed so overlay laws can unfold the lookup without duplicating the two read views. -/
 def readValidatedAddress (checked : CheckedDocument model) (declaration : FlatFieldDecl)
@@ -537,6 +553,17 @@ filter to read an absent declared cell as empty; this view leaves physical topol
 def readDeclared (checked : CheckedDocument model) (address : CellAddr) :
     Except CheckedDocumentError CheckedCell := do
   checked.readValidatedAddress (← validateCellAddressShape model address) address
+
+/-- A virtual filter coordinate is empty, while a concrete coordinate keeps the supplied
+phase/producer overlay. Address legality is checked before choosing either read view (KF528). -/
+def filterReadWith (checked : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (address : CellAddr) :
+    Except CheckedDocumentError CheckedCell := do
+  let declaration ← validateCellAddressShape model address
+  if (repeatableAncestorRowsFor declaration.repeatableScope address.path).all checked.source.instantiatedRows.contains then
+    read address
+  else
+    checked.readValidatedAddress declaration address
 
 /-- The stored text placed at one address, read from the placement that owns it, so an overlaid
 target reads its rendering; `none` where no placement or no text is placed. -/
@@ -611,7 +638,7 @@ def flatContext (checked : CheckedDocument model) : FlatContext where
 
 /-- Expose immutable topology with the checked document's current overlay to addressed guards. -/
 def computationFillContext (checked : CheckedDocument model) : ComputationFillContext where
-  document := checked.source.toDocument
+  document := checked.readDocument
   storedText := checked.storedTextIn
   numberText environment field := do
     let declaration ← (model.lookupUniqueId field).toOption

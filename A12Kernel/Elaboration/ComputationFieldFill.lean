@@ -53,18 +53,6 @@ private def addressed (context : ScalarComputationContext) :
   | some addressed => pure addressed
   | none => throw .contextRequired
 
-/-- A missing declared row supplies empty fields without consulting the physical-only reader.
-Existing rows still use the caller's overlay, including freshly computed filter producers. -/
-private def declaredRead (model : FlatModel) (document : Document)
-    (read : Env → FieldId → CheckedCell) (environment : Env) (field : FieldId) : CheckedCell :=
-  match (model.lookupUniqueId field).toOption with
-  | none => malformedCheckedCell
-  | some declaration => match (environment.pathForScope declaration.repeatableScope).toOption with
-      | none => malformedCheckedCell
-      | some path =>
-          if (repeatableAncestorRowsFor declaration.repeatableScope path).all document.instantiatedRows.contains
-          then read environment field else checkAdmittedRawCell .empty
-
 private def scanExpanded (kind : ScanKind) (context : ScalarComputationContext)
     (field : FieldId) (axes : List StarAxis) (boundCount : Nat) (seen : Bool) :
     Except ComputationFillError SearchResult := do
@@ -85,16 +73,13 @@ private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
   | none => scanExpanded kind context field path.axes path.firstStar seen
   | some filter =>
       let addressed ← addressed context
-      let resolved ← (path.resolveInCapacity addressed.document context.row).mapError .addressing
       let candidates ← match kind with
         | .anyDeclaredEmpty => do
             let some rows ← (path.declaredEnvironments? context.row).mapError .addressing
               | throw .declaredCapacityRequired
             pure rows
-        | _ => pure resolved.environments
-      let read := match kind with
-        | .anyDeclaredEmpty => declaredRead model addressed.document
-        | _ => fun reader => reader
+        | _ => (model.filterEnvironments path (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row true).mapError .addressing
+      let read := model.filterRead addressed.document
       filter.condition.scanComputationResolving
         (({
           read := fun row field => pure (read filterRead row field)

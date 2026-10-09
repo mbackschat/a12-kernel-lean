@@ -27,12 +27,13 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
       if let some filter := source.filter then
         let some addressed := context.addressed
           | throw (.guardBinding (.fieldFill .contextRequired))
-        let resolved ← (source.source.path.resolveInCapacity addressed.document context.row).mapError
+        let candidates ← (model.filterEnvironments source.source.path
+          (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row true).mapError
           (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill ∘ ComputationFillError.addressing)
         let result ← (filter.condition.scanComputationResolving
           (({
             world := context.world
-            read := fun row field => pure ((filterRead?.getD addressed.read) row field)
+            read := fun row field => pure (model.filterRead addressed.document (filterRead?.getD addressed.read) row field)
             storedText := filterStoredText?.getD (if filterRead?.isSome then fun _ _ => none else addressed.storedText)
             numberText := filterNumberText?.getD (if filterRead?.isSome then fun _ _ => none else addressed.numberText)
             stringExpressionUnavailable := .addressing .stringExpressionUnavailable
@@ -44,11 +45,11 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
             groupUnavailable := ComputationFillError.addressing ∘ StarAddressingError.unsupportedGroupOperand
             bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withModelComputationGroups model addressed.document)
           context.row (fun count row => pure (match observeCell .computation
-              (addressed.read row source.source.declaration.id) with
+              (model.filterRead addressed.document addressed.read row source.source.declaration.id) with
             | .value _ => Sum.inl (count + 1)
             | .empty => Sum.inl count
             | .unknown cause | .poison cause => Sum.inr cause))
-          resolved.environments 0).mapError
+          candidates 0).mapError
           (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill)
         return match result with
           | .exhausted count => .ok count

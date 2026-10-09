@@ -106,6 +106,13 @@ def analyze (plan : CheckedRepeatableNumberAggregateMixedRun model) :
         candidates.filter fun field => step.referencesField field)
   }
 
+/-- Both stages share one static cache; the suffix cannot narrow the prefix's dependencies. -/
+def filterInput (plan : CheckedRepeatableNumberAggregateMixedRun model)
+    (input : CheckedDocument model) : CheckedDocument model :=
+  input.withComputationFilterRows fun field =>
+    plan.cascade.filterFields.contains field ||
+      plan.run.steps.any fun step => step.targetField == field || step.referencesField field
+
 /-- Execute the prefix, seed its aggregate as one typed Number completion, and reuse the existing supplied-order mixed executor. -/
 def execute (plan : CheckedRepeatableNumberAggregateMixedRun model)
     (world : World)
@@ -113,6 +120,7 @@ def execute (plan : CheckedRepeatableNumberAggregateMixedRun model)
     (input : CheckedDocument model) :
     Except RepeatableNumberAggregateMixedRunFault
       RepeatableNumberAggregateMixedRunOutcomes := do
+  let input := plan.filterInput input
   let cascade ← plan.cascade.execute world input |>.mapError .cascade
   let initial : ScalarComputationRunState := {
     completed := [.number {

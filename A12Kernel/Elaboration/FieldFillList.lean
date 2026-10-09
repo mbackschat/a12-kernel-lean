@@ -166,7 +166,7 @@ def computationSlots (document : CheckedDocument model) (outer : Env) :
       pure declarations.flatten
 
 /-- Produce one operand range for the shared validation fold. A declared-range filter evaluates
-missing slots separately; subtracting selected instantiated cells from unfiltered capacity would
+the unvisited declared tail separately; subtracting selected cells from unfiltered capacity would
 count dropped rows as omissions (the filtered field-fill grid, 2026-10-03). -/
 def validationRange? (operand : CheckedFieldFillOperand model) (declared : Bool)
     (document : CheckedDocument model) (outer : Env)
@@ -334,9 +334,9 @@ def computationSources (list : CheckedFieldFillList model) :
 
 /-- The extensional validation tally of the list's in-capacity extent.
 
-`uninstantiated` is `0`, because every operand enumerates instantiated rows only. The declared-range
-quantifiers supply the missing tail separately; counting a formally unknown instantiated cell as
-missing would turn the undecided all-full case into a false omission. -/
+`uninstantiated` is `0` in the visited stream; a reached virtual filter coordinate contributes an
+empty observation (KF528). Declared-range quantifiers supply only the remaining missing tail; counting
+a formally unknown cell as missing would turn the undecided all-full case into a false omission. -/
 def validationFillTally (list : CheckedFieldFillList model) (document : CheckedDocument model)
     (outer : Env)
     (world : Option World := none) : Except CheckedAddressingError ValidationFillTally := do

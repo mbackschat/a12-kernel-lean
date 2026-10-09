@@ -354,6 +354,11 @@ def targetFields (run : CheckedScalarComputationRun model) :
     List FieldId :=
   run.steps.map (·.targetField)
 
+/-- Derive one static operand/target cache for this run, preserving an enclosing programme's view. -/
+def filterInput (run : CheckedScalarComputationRun model) (input : CheckedDocument model) : CheckedDocument model :=
+  input.withComputationFilterRows fun field =>
+    run.steps.any fun step => step.targetField == field || step.referencesField field
+
 /-- Project completed targets for String consumption, hide suffix-owned pending targets, and delegate ordinary reads to the String document context. A completion may belong to an earlier checked phase rather than to this run. -/
 def stringContext (run : CheckedScalarComputationRun model)
     (state : ScalarComputationRunState)
@@ -370,7 +375,7 @@ def stringContext (run : CheckedScalarComputationRun model)
 cell and formal-read text, each pending one empty. -/
 def documentFor (run : CheckedScalarComputationRun model)
     (state : ScalarComputationRunState) (input : CheckedDocument model) : CheckedDocument model :=
-  input.overlayNonrepeatableCells
+  (run.filterInput input).overlayNonrepeatableCells
     (state.completed.map (fun completion => (completion.targetField, some completion.placement)) ++
       (run.targetFields.filter fun field => (state.find? field).isNone).map (·, none))
 
@@ -379,7 +384,7 @@ component must not read the original target's spelling (calendar review-control 
 def numberContext (run : CheckedScalarComputationRun model)
     (world : World) (state : ScalarComputationRunState)
     (input : CheckedDocument model) : ScalarComputationContext :=
-  (input.indexedScalarComputationContext world).withFixedOverlay (fun field =>
+  ((run.filterInput input).indexedScalarComputationContext world).withFixedOverlay (fun field =>
     match state.find? field with
     | some completion => some completion.numberCell
     | none =>

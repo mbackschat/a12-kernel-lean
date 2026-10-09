@@ -59,6 +59,8 @@ inductive StarAddressingError where
   | invalidStarPosition (firstStar axisCount : Nat)
   | duplicateAxis (level : RepeatableLevel)
   | invalidRepeatability (level : RepeatableLevel)
+  /-- Large filtered products need the consumer's sparse iterator, whose reset/lookahead behavior cannot be replaced by physical-row filtering. -/
+  | sparseFilterTraversalRequired
   | missingBinding (level : RepeatableLevel)
   | duplicateBinding (level : RepeatableLevel)
   | invalidBinding (level : RepeatableLevel) (coordinate : Nat)
@@ -126,6 +128,23 @@ def declaredEnvironments? (path : StarPath) (outer : Env) :
     environments := environments.flatMap fun parent =>
       (List.range capacity).map fun index => parent ++ [(axis.level, index + 1)]
   pure (some environments)
+
+/-- Reopen the cartesian suffix up to observed depth maxima, clipped by declaration capacity.
+An empty input still contributes coordinate one (Kernel GroupFillCache / EntityIterator; KF528).
+The bound is supplied per named axis so model group depth never becomes repeatable-axis ordinal. -/
+def boundedFilterEnvironments (path : StarPath) (outer : Env)
+    (maximum : RepeatableLevel → Nat) (sparse : Bool := false) :
+    Except StarAddressingError (List Env) := do
+  path.validate
+  let bound ← path.boundEnvironment outer
+  if StarAxes.environmentOverLimit path.axes bound then return []
+  let suffix := (path.axes.drop path.firstStar).map fun axis =>
+    let extent := max 1 (maximum axis.level)
+    (axis.level, min (axis.repeatability.getD extent) extent)
+  if sparse && (suffix.foldl (fun count axis => count * axis.2) 1) > 100 then
+    throw .sparseFilterTraversalRequired
+  pure (suffix.foldl (fun environments axis => environments.flatMap fun parent =>
+    (List.range axis.2).map fun index => parent ++ [(axis.1, index + 1)]) [bound])
 
 end StarPath
 

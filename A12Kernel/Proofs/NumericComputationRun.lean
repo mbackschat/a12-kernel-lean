@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation.Run
+import A12Kernel.Proofs.CheckedDocument
 
 /-! # Checked Number computation-run laws -/
 
@@ -31,6 +32,7 @@ theorem numericComputationRun_read_input
       input.flatContext.read field := by
   simp [CheckedNumericComputationRun.readPolicy, ScalarComputationContext.withFixedOverlay,
     CheckedDocument.computationContext, ordinary, pending]
+  simp only [CheckedDocument.flatContext, checkedDocument_filterRows_read]
 
 /-- Atomic Number-table evaluation attributes either structural fault to the checked target independently of the surrounding run policy. -/
 theorem numericComputationTable_evaluateCompletion_faultTarget

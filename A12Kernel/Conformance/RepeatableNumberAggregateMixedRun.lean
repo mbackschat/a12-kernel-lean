@@ -254,7 +254,7 @@ example :
 example :
     ∃ final,
       ScalarComputationRunTrace successfulPlan.run world prepared.patterns
-        successfulInput
+        (successfulPlan.filterInput successfulInput)
         { completed := [.number {
             targetField :=
               successfulPlan.cascade.total.operation.core.target.id
@@ -346,14 +346,14 @@ private def transitionInput : CheckedDocument model :=
   (input? (numberCell quantity.id [2] 3)).get (by native_decide)
 
 private def transitionCascade : RepeatableNumberAggregateCascadeOutcomes :=
-  (transitionPlan.cascade.execute world transitionInput).toOption.get
+  (transitionPlan.cascade.execute world (transitionPlan.filterInput transitionInput)).toOption.get
     (by native_decide)
 
 private theorem transitionCascadeExecuted :
-    transitionPlan.cascade.execute world transitionInput =
+    transitionPlan.cascade.execute world (transitionPlan.filterInput transitionInput) =
       .ok transitionCascade := by
   simpa [transitionCascade] using evaluated_to_get
-    (evaluation := transitionPlan.cascade.execute world transitionInput)
+    (evaluation := transitionPlan.cascade.execute world (transitionPlan.filterInput transitionInput))
     (by native_decide)
 
 private def transitionSeed : ScalarComputationRunState := {
@@ -369,7 +369,7 @@ example (outcomes : List ScalarComputationOutcome)
     (final : ScalarComputationRunState)
     (fault : ScalarComputationRunFault)
     (failure : ScalarComputationRunFailureTrace transitionPlan.run world
-      missingPatternMatchers transitionInput transitionSeed outcomes final
+      missingPatternMatchers (transitionPlan.filterInput transitionInput) transitionSeed outcomes final
       fault) :
     RepeatableNumberAggregateMixedRunFailureTrace transitionPlan world
       missingPatternMatchers transitionInput

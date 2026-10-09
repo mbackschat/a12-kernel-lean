@@ -32,7 +32,9 @@ example (plan : CheckedRepeatableNumberAggregateRunCascade model)
     (outcomes : RepeatableNumberAggregateRunCascadeOutcomes)
     (executed : plan.execute world input = .ok outcomes) :
     ∃ final,
-      NumericComputationRunTrace plan.run world input
+      NumericComputationRunTrace plan.run world (input.withComputationFilterRows fun field =>
+        plan.cascade.filterFields.contains field ||
+          plan.run.tables.any fun table => table.targetField == field || table.referencesField field)
         { completed := [{
             targetField := plan.cascade.total.operation.core.target.id
             outcome := outcomes.cascade.aggregate.outcome

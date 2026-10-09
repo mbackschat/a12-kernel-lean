@@ -610,4 +610,18 @@ theorem checkedDocument_overlay_read_congr
   rw [same]
   rfl
 
+/-- A subplan retains the enclosing programme's cache instead of dropping groups referenced
+only by other stages. Physical addressing remains independent of this visibility view. -/
+theorem checkedDocument_filterRows_inherited (checked : CheckedDocument model)
+    (relevant : FieldId → Bool) (specified : checked.filterRows.isSome = true) :
+    checked.withComputationFilterRows relevant = checked := by
+  simp only [CheckedDocument.withComputationFilterRows, specified, Bool.true_eq, ↓reduceIte]
+
+/-- Filter-cache visibility changes traversal bounds, never the cells read at an address. -/
+theorem checkedDocument_filterRows_read (checked : CheckedDocument model)
+    (relevant : FieldId → Bool) (address : CellAddr) :
+    (checked.withComputationFilterRows relevant).read address = checked.read address := by
+  unfold CheckedDocument.withComputationFilterRows
+  split <;> rfl
+
 end A12Kernel
