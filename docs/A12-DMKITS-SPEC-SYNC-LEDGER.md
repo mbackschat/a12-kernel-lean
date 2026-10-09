@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-09-07"></a>
+### SPEC-2026-10-09-07 — a reached indexed no-match retains first-filled omission provenance
+
+- `status`: pending
+- `canonical`: [spec/10 §4.1](../spec/10-validation-and-polarity.md#41-the-same-rule-fires-either-type) explicitly includes a clean semantic-index no-match among first-filled not-given prefixes.
+- `delta`: A later filled fallback can make the comparison fire as OMISSION; moving that fallback before the indexed operand bypasses the missing prefix. Do not collapse clean no-match into unknown or erase its prefix provenance.
+- `basis`: [Selected typed comparison checkpoint](sources/inbound-group-operand-batches.md#src-selected-typed-comparisons), Kernel 30.8.1, runtime `noMatch`: both strategies emit OMISSION for `FirstRule` and VALUE for `PrefixRule`. The existing reader-to-evaluator replay matches both.
+- `acceptance`: Reconcile the language-neutral first-filled polarity clause and any dependent interpreter guard; retain clean no-match/fallback and filled-prefix controls beside malformed-selection refusal. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
 <a id="spec-2026-10-09-06"></a>
 ### SPEC-2026-10-09-06 — error-field membership does not bind rule iteration
 
