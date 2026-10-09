@@ -38,39 +38,42 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-09-12"></a>
 ### SPEC-2026-10-09-12 — interpreted DateRange reads use shared runtime formats
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [DateRange semantics](../spec/05-dates-and-time.md#8-date-ranges-and-overlap) separates declared input conversion from runtime formatting and corrects the field-local configured-year generalization.
 - `delta`: first declaration wins within each interpretation/additional-check class, independently of format/separator. A shared yearless format can erase supplied years. Day-and-month wrapping uses default 2000 or Base Year; month-only wrapping is invalid under both directions, even with Base Year.
 - `basis`: the [four-model Kernel matrix](sources/date-range-construction.md#src-date-range-shared-runtime) covers all eight source profiles, both directions, configured/default years, ordered/wrapping/empty/malformed input and the additional-check partition. Both strategies agree throughout.
 - `target-delta`: the asymmetric sharing-class probe retains an errored month-only wrapping attempt and clears its dependent Year read. Empty source instead clears the range and permits dependent zero. Runtime target checking follows rendering, not the original typed endpoints alone.
-- `acceptance`: reconcile input conversion, shared policy, formal causes, endpoint extraction and target presentation together. Preserve source-derived scope beyond the two measured first profiles; do not infer a field-local correction from either declaration order. Lean integration remains open in [SG6](gaps/numeric-and-temporal.md#gap-sg6).
-
+- `acceptance`: reconcile input conversion, shared policy, formal causes, endpoint extraction and target presentation together. Preserve source-derived scope beyond the two measured first profiles; do not infer a field-local correction from either declaration order. The shared-runtime batch landed at `11493f71`; further compositions remain in [SG6](gaps/numeric-and-temporal.md#gap-sg6).
+- `accepted`: Reviewed peer `59b94e1e5f0801af264ce8df8afbb76aae91250a`, KF540, against the shared-format matrix. Input, endpoint, formal-cause and target-rendering claims corroborated within the named profile limits. Introducing revision `11493f71`. Dependent stored-value readback is a separate SG6 audit; acceptance does not close it. [Reviewed handback](sources/inbound-handbacks.md#src-inbound-2026-10-09a); tests inspected, not rerun here.
 
 <a id="spec-2026-10-09-11"></a>
 ### SPEC-2026-10-09-11 — native decimal ingestion preserves signed scale
 
-- `status`: pending
+- `status`: answered
 - `canonical`: [Number input conversion](../spec/04-numbers-and-decimals.md#stored-decimal-identity-and-runtime-read-text-depend-on-the-storage-regime) now states scale-preserving decimal-node text before field conversion, including negative scale and the plain/scientific threshold.
 - `basis`: the [typed mapper and converter route](sources/cross-layer-routes.md#src-number-wire-ingestion) is source-derived. Existing peer fidelity assertions establish positive-scale preservation; they do not calibrate negative-scale route equivalence.
 - `acceptance`: reconcile native/quoted inputs and Number/String destinations. Preserve the probe distinction: a file's native `1e3` reaches conversion with scale −3; inline plain reserialization produces scale 0. A quoted `"1e3"` retains scale −3 through either route. Include scientific-threshold and signed-zero controls; no new Kernel measurement is claimed.
+- `answered`: Reviewed peer `59b94e1e5f0801af264ce8df8afbb76aae91250a`, KF1. Native decimal semantics corroborated; the acceptance requirement to preserve inline scale loss is withdrawn because `c77e18a0a` fixes that probe defect. This instrument correction is not a Kernel semantic refutation. Introducing revision `712e1d93`; no further peer response owed. [Reviewed handback](sources/inbound-handbacks.md#src-inbound-2026-10-09a); tests inspected, not rerun here.
 
 <a id="spec-2026-10-09-10"></a>
 ### SPEC-2026-10-09-10 — filter extents retain whole-program cache scope
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation) extends the inbound KF528 account with its source-derived cache and depth rules.
 - `delta`: Include ancestor groups of static computation operands and targets, including unreached operands; do not narrow an enclosing programme's cache for a subplan. Target-only siblings can affect bounds before their calculations run. Compare full group-path depths, including fixed groups. Sparse traversal above 100 bounded slots is a distinct consumer policy; first-filled remains dense.
 - `basis`: Kernel 30.8.1 `CalculationCommand`, `GroupFillCache`, `RuntimeController` and `EbenenIterator`, at the [pinned source route](sources/inbound-handbacks.md#inbound-2026-10-09-extensions). Existing small-profile outcomes are inbound KF528; the target-only/fixed-depth extensions are source-derived and externally pending. This entry does not re-issue the accepted handback.
-- `acceptance`: Reconcile the cache and depth account in peer semantics/interpreter owners, with target-only sibling, unreached-operand, nested-programme and intervening-fixed-group controls. Preserve explicit partial/sparse traversal limits; no new measurement is claimed here. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Reconcile the cache and depth account in peer semantics/interpreter owners, with target-only sibling, unreached-operand, nested-programme and intervening-fixed-group controls. Preserve explicit partial/sparse traversal limits; no new measurement is claimed here. Introducing revision is recorded in the receipt below.
+- `accepted`: Reviewed peer `59b94e1e5f0801af264ce8df8afbb76aae91250a`, KF528/KF538. Target-only, unreached-operand, subplan and fixed-depth controls corroborate the requested account; target-repeatable-subtree inclusion extends it. Introducing revision `1fb3d1e3`. The canonical clause and open obligations incorporate that extension; partial/sparse limits remain. [Reviewed handback](sources/inbound-handbacks.md#src-inbound-2026-10-09a); tests inspected, not rerun here.
 
 <a id="spec-2026-10-09-09"></a>
 ### SPEC-2026-10-09-09 — parallel guards retain connective structure
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §2](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key) replaces the ambiguous positive-sibling exception with recursive reference-and-guard admission.
 - `delta`: One referenced guarding conjunct suffices for `And`; every `Or` branch must reference and guard the parallel level. A positive leaf anywhere is insufficient. Classify leaves statically, check ordinary frame levels independently, and preserve earlier prohibited-combination precedence.
 - `basis`: Kernel 30.8.1 source `ParserService.checkNormalRule` and `IterationNotValidVisitor`, pinned in the [source checkpoint](sources/diagnostic-class-vocabulary-and-sweeps.md#src-iteration-and-semantic-index-legality). The positive/negative conjunction is measured; nested/disjunctive external calibration remains pending.
-- `acceptance`: Reconcile static admission and prose against `positive And negative` versus `positive Or negative`, a disjunction of guarded conjunctions versus one unguarded branch, and both earlier combination refusals. Introducing revision is the first commit containing this ID; no peer disposition yet.
+- `acceptance`: Reconcile static admission and prose against `positive And negative` versus `positive Or negative`, a disjunction of guarded conjunctions versus one unguarded branch, and both earlier combination refusals. Introducing revision is recorded in the receipt below.
+- `accepted`: Reviewed peer `59b94e1e5f0801af264ce8df8afbb76aae91250a`, KF537/corrected KF435. Recursive guards and combination precedence corroborated, with ordinary-level and message-reference extensions recorded separately. Introducing revision `0c8973ed`. [Reviewed handback](sources/inbound-handbacks.md#src-inbound-2026-10-09a); tests inspected, not rerun here.
 
 <a id="spec-2026-10-09-08"></a>
 ### SPEC-2026-10-09-08 — deeper error fields preserve ancestor iteration

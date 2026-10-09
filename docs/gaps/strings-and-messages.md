@@ -150,6 +150,8 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 <a id="gap-sg10"></a>
 ### SG10 — message construction and formal-output integration
 
+- `joined-indices`: Reconcile [KF539](../sources/inbound-handbacks.md#src-inbound-2026-10-09a) against reference and omission fill-to-fix lists: joined payloads contribute their group's index field; an ordinary single-group rule is the negative control. Keep the previously unreceipted KF184/KF522 fill-to-fix obligations separate.
+
 - `remaining`: implement the inbound [omission-reference selection family](../sources/message-and-pointer-probes.md#src-message-construction-route) through one static selector: presence-only operands, upward count comparisons, filter references and positive root-group expansion. Keep referenced and fill-to-fix sets distinct; the source review resolves the handback table discrepancy in favor of excluding ordinary operands on both sides of an upward count comparison while preserving filter references. This is separate from indexed-count evaluation.
 
 - `state`: open
