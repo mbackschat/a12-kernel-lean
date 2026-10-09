@@ -715,10 +715,10 @@ def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : Group
     temporalPart := fun origin reference part => do
       let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels { origin, field := reference }
       let some source := declaration.toTemporalField? | throw .numericExpressionUnsupported
-      if !declaration.admitsHavingTemporalPartPrecision part then
+      if !declaration.admitsTemporalPartPrecision part then
         throw (.temporalPartPrecision declaration.id part)
-      if !part.admittedBy source model.hasBaseYear then throw .numericExpressionUnsupported
-      pure (source, model.constructedDateExtractorPartialFormat declaration.id)
+      if !model.admitsTemporalNumericPart source part (model.temporalNumericPartialFormat source.id) then throw .numericExpressionUnsupported
+      pure (source, model.temporalNumericPartialFormat declaration.id)
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels }
 

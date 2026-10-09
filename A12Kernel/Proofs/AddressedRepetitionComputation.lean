@@ -286,7 +286,7 @@ theorem admitsRepetitionOperand_rowBound {model : FlatModel}
     cases (by simpa using referenced : source.id = field)
     simp only [CheckedAddressedNumericTarget.admitsRepetitionOperand] at admitted
     exact admitsSourceField_rowBound admitted
-  case temporalFieldPart source _ =>
+  case temporalFieldPart source _ _ =>
     cases (by simpa using referenced : source.id = field)
     simp only [CheckedAddressedNumericTarget.admitsRepetitionOperand] at admitted
     exact admitsSourceField_rowBound admitted

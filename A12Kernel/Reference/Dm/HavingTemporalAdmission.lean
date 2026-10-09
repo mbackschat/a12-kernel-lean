@@ -86,7 +86,7 @@ def rawTemporalExtractorType (model : FlatModel) (operator : RawTemporalExtracto
     | .dateFromDateTime => .dateFromDateTime
     | .timeFromDateTime => .timeFromDateTime
   if let .numeric part := operator then
-    if direct.any (fun declaration => !declaration.admitsHavingTemporalPartPrecision part) then
+    if direct.any (fun declaration => !declaration.admitsTemporalPartPrecision part) then
       refuse "Having" KernelStaticDiagnostic.invalidDateType.kernelCode
   match checkTemporalExtractorEntry family (if literal then .literal (some kind) else .nonliteral) with
   | .error diagnostic => refuse "Having" diagnostic.kernelCode

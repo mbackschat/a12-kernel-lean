@@ -24,10 +24,12 @@ private def resolveTemporalNumericField (model : FlatModel) (rowGroup writtenGro
 /-- Scalar and addressed validation resolve declarations under different locus rules but share the same extractor gate and diagnostic split, so the common certification begins only after resolution. -/
 private def checkTemporalNumericPartField (model : FlatModel)
     (declaration : FlatFieldDecl) (part : TemporalNumericPart) :
-    Except NumericValidationElabError FlatTemporalField :=
+    Except NumericValidationElabError FlatTemporalField := do
+  if !declaration.admitsTemporalPartPrecision part then
+    throw (.temporalFieldPartPrecision declaration.path part)
   match declaration.toTemporalField? with
   | some field =>
-      if part.admittedBy field model.hasBaseYear then
+      if model.admitsTemporalNumericPart field part (model.temporalNumericPartialFormat field.id) then
         pure field
       else
         throw (.temporalFieldPartNotExposed declaration.path part
@@ -106,7 +108,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       let field ← checkTemporalNumericPartField model declaration part
-      pure (.temporalFieldPart field part)
+      pure (.temporalFieldPart field part (model.temporalNumericPartialFormat field.id))
   | .dateRangeBoundPart reference bound part => do
       let declaration ← (do
         model.validate
@@ -285,7 +287,7 @@ private def resolveAddressedNumericAtomIn (model : FlatModel)
         resolveAddressedNumericDeclaration model rowGroup reference
           (model.resolveFieldDeclarationUnchecked declaringGroup reference)
       let field ← checkTemporalNumericPartField model declaration part
-      pure (.temporalFieldPart field part)
+      pure (.temporalFieldPart field part (model.temporalNumericPartialFormat field.id))
   | .dateRangeBoundPart reference bound part => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference

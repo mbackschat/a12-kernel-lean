@@ -10,7 +10,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects model-resolved numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation selects model-wide nonrepeatable admission for scalar sources and model-wide checked-computation admission for sources that retain repeatable certificates. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, concrete-profile Date/DateTime day differences, and direct Number field-list aggregates share arithmetic. Dynamic `Now` is read only from the explicit evaluation `World`; checking retains the dependency without sampling it. The atom-parameterized comparison carrier lets generated validation retain checked direct/plain-star/filtered-star `FirstFilledValue`, entity-list aggregate, and row-paired `SumOfProducts` sources without adding another arithmetic tree or evaluator; ordinary addressed rules accept that same checked product source through the immutable checked document. Its bounded addressed context also carries the call-local projection used by admitted partial leaves; filter and relevance orchestration remain rule-owned, and structural address failures remain outside semantic UNKNOWN. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+This capsule connects model-resolved numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation selects model-wide nonrepeatable admission for scalar sources and model-wide checked-computation admission for sources that retain repeatable certificates. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, concrete-profile Date/DateTime day differences, and direct Number field-list aggregates share arithmetic. Dynamic `Now` is read only from the explicit evaluation `World`; checking retains the dependency without sampling it. The atom-parameterized comparison carrier lets generated validation retain checked direct/plain-star/filtered-star `FirstFilledValue`, entity-list aggregate, and row-paired `SumOfProducts` sources without adding another arithmetic tree or evaluator; ordinary addressed rules accept that same checked product source through the immutable checked document. Its bounded addressed context also carries the call-local projection used by admitted partial leaves; filter and relevance orchestration remain rule-owned, and structural address failures remain outside semantic UNKNOWN. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, constructed-Date legacy execution, and that decoder contract remain outside this module.
 
 The numeric, typed String/stored-Enumeration, and Boolean/Confirm value-count atoms retain their checked direct/plain-star/filtered-star sources, distinct static family certificates, and per-cell provenance; scalar validation accepts only direct subsets, while repeatable evaluation requires the bounded addressed context.
 -/
@@ -90,6 +90,7 @@ inductive NumericValidationElabError where
   | fieldValueAsNumberSource (path : List String)
       (error : FieldValueAsNumberSourceError)
   | incompatibleTemporalSource (path : List String)
+  | temporalFieldPartPrecision (path : List String) (part : TemporalNumericPart)
   /-- A direct temporal-component extractor received a non-temporal declaration. The requested part remains explicit because only measured extractor carriers may project a Kernel class. -/
   | temporalFieldPartSourceNotTemporal (path : List String)
       (part : TemporalNumericPart)
@@ -159,8 +160,9 @@ def dateRangeBoundPartDiagnostic? :
 
 /-- Project only the exact reviewed direct-extractor diagnostic controls. The flat declaration
 universe's non-temporal branch is the seven authorable kinds measured for `YearFromDate`; `UNKNOWN`
-has no constructor here. The format projection is deliberately narrower: only complete-date
-`HoursFromTime` is measured, so adjacent extractors and partial Date declarations remain unmapped.
+has no constructor here. Declared precision refuses all seven extractors before the format gate
+(spec/05 §3, KF529). The format projection remains narrower: only complete-date `HoursFromTime`
+is measured, so adjacent format refusals remain unmapped.
 
 The **declared kind is not read**, and that is measured rather than assumed: the same
 `MVK_WRONG_DATE_FORMAT_FOR_OP` comes back for a DATE-declared complete-date field and for a
@@ -168,6 +170,7 @@ TIME-declared one, so the component set alone selects the code
 ([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-operand-family-is-the-formats-not-the-kinds)). -/
 def temporalFieldPartDiagnostic? :
     NumericValidationElabError → Option KernelStaticDiagnostic
+  | .temporalFieldPartPrecision _ _ => some .invalidDateType
   | .temporalFieldPartSourceNotTemporal _ (.date .year) => some .noDate
   | .temporalFieldPartNotExposed _ (.time .hour) _ components =>
       if components == TemporalComponents.fullDate then
@@ -320,14 +323,14 @@ def NumericValidationAtom.admitted
           source.wellFormedIn model (model.repeatableScopeForGroupPath rowGroup)
       | .sameGroup | .modelWideNonrepeatable | .modelWideCheckedComputation => false
   | .baseYearDatePart year _ _ => model.baseYear == some year
-  | .temporalFieldPart source part =>
+  | .temporalFieldPart source part format =>
       (match scope with
         | .sameGroup => model.admitsTemporalInGroup rowGroup source
         | .sameGroupAddressed =>
             model.admitsAddressedTemporal rowGroup source
         | .modelWideNonrepeatable | .modelWideCheckedComputation =>
             model.admitsTemporalModelWide source) &&
-        part.admittedBy source model.hasBaseYear
+        model.admitsTemporalNumericPart source part format
   | .dateRangeBoundPart source _ part =>
       (match scope with
         | .sameGroup => model.admitsDateRangeInGroup rowGroup source
@@ -480,7 +483,7 @@ def NumericValidationAtom.referencesField (model : FlatModel) :
   | .fixedCurrentRepetition _, _ => false
   | .boundCurrentRepetition _, _ => false
   | .baseYear _, _ | .baseYearDatePart _ _ _, _ => false
-  | .temporalFieldPart source _, field => source.id == field
+  | .temporalFieldPart source _ _, field => source.id == field
   | .dateRangeBoundPart source _ _, field => source.id == field
   | .stringLength source, field => source.id == field
   | .stringRange source _ _, field => source.id == field
@@ -504,7 +507,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .fixedCurrentRepetition _ => true
   | .boundCurrentRepetition _ => true
   | .baseYear _ | .baseYearDatePart _ _ _ => true
-  | .temporalFieldPart source _ => isRelevant source.id
+  | .temporalFieldPart source _ _ => isRelevant source.id
   | .dateRangeBoundPart source _ _ => isRelevant source.id
   | .stringLength source => isRelevant source.id
   | .stringRange source _ _ => isRelevant source.id

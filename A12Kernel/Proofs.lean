@@ -330,5 +330,6 @@ import A12Kernel.Proofs.ValueList
 import A12Kernel.Proofs.FieldValueAsNumberSource
 import A12Kernel.Proofs.ValuesNotUnique
 import A12Kernel.Proofs.Verdict
+import A12Kernel.Proofs.TemporalNumericInput
 
 /-! Trusted theorem root for the currently supported semantic fragment. -/

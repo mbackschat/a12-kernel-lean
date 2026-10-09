@@ -125,18 +125,15 @@ def readNumeric (context : ScalarComputationContext) (declaration : FlatFieldDec
 boundary. A value is held by its format's family, not its declared kind, as every flat temporal read
 tests it ([`FlatTemporalField.holdsValue`](../../Semantics/FlatValidation.lean)). -/
 def readTemporalNumeric (context : ScalarComputationContext)
-    (field : FlatTemporalField) (project : TemporalValue → Option Rat) :
+    (field : FlatTemporalField) (part : TemporalNumericPart)
+    (partialFormat : Option FullDateTargetFormat := none) :
     Except NumericComputationFault NumericComputationResult :=
   match observeCell .computation (context.read field.id) with
   | .empty => pure (.value 0)
-  | .value (.temporal value) =>
-      if !field.holdsValue value then
-        throw (.fieldKindMismatch field.id)
-      else
-        match project value with
-        | some amount => pure (.value amount)
-        | none => throw (.fieldKindMismatch field.id)
-  | .value _ => throw (.fieldKindMismatch field.id)
+  | .value payload =>
+      match part.projectStored? field partialFormat payload with
+      | some amount => pure (.value amount)
+      | none => throw (.fieldKindMismatch field.id)
   | .unknown cause | .poison cause => pure (.poison cause)
 
 /-- Read one certified DateRange endpoint's numeric Date component in computation phase. The endpoint
@@ -229,8 +226,8 @@ def readNumericComputationAtomWith
       | .error _ => throw .repeatableContextRequired
   | .baseYearDatePart year source part =>
       pure (.value (baseYearDateSourceNumericPart year source part))
-  | .temporalFieldPart field part =>
-      context.readTemporalNumeric field part.project?
+  | .temporalFieldPart field part format =>
+      context.readTemporalNumeric field part format
   | .dateRangeBoundPart field bound part =>
       context.readDateRangeBoundNumeric field bound part
   | .stringLength field =>
@@ -663,7 +660,7 @@ def NumericComputationAtom.numericComputationFault? :
   | .fixedCurrentRepetition _ => none
   | .boundCurrentRepetition _ => none
   | .baseYearDatePart _ _ _ => none
-  | .temporalFieldPart _ _ => none
+  | .temporalFieldPart _ _ _ => none
   | .dateRangeBoundPart _ _ _ => none
   | .stringLength _ => none
   | .stringRange _ _ _ => none

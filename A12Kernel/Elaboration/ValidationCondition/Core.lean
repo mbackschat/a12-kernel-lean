@@ -255,7 +255,7 @@ private def numericClassificationSource : NumericValidationAtom → Bool
   | .fixedCurrentRepetition _ | .boundCurrentRepetition _ | .baseYear _ | .baseYearDatePart _ _ _ => false
   | .dateDifference _ left right | .dayDifference _ left right => left.isField || right.isField
   | .dateTimeDifference _ left right => !(left.fields ++ right.fields).isEmpty
-  | .field _ | .temporalFieldPart _ _ | .dateRangeBoundPart _ _ _ | .stringLength _
+  | .field _ | .temporalFieldPart _ _ _ | .dateRangeBoundPart _ _ _ | .stringLength _
   | .stringRange _ _ _ | .fieldValueAsNumber _ | .aggregate _ _ | .filledGroupCount _ => true
 
 private def orderedNumericClassificationSource : OrderedNumericValidationAtom model → Bool

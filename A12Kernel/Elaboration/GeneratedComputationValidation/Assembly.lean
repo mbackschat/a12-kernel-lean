@@ -469,8 +469,8 @@ def CheckedNumericComputationAtom.toValidationAtom :
       throw (.conditionAssembly .incoherentCore)
   | .numeric (.baseYearDatePart year source part) =>
       pure (.ordinary (.baseYearDatePart year source part))
-  | .numeric (.temporalFieldPart source part) =>
-      pure (.ordinary (.temporalFieldPart source part))
+  | .numeric (.temporalFieldPart source part format) =>
+      pure (.ordinary (.temporalFieldPart source part format))
   | .numeric (.dateRangeBoundPart source bound part) =>
       pure (.ordinary (.dateRangeBoundPart source bound part))
   | .numeric (.stringLength source) => pure (.ordinary (.stringLength source))

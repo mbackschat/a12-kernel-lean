@@ -210,17 +210,7 @@ def HavingNumericAtomOf.readArithmetic [SizeOf Temporal] (phase : Phase)
   | .temporalPart origin source part partialFormat => do
       let cell ← context.read (frame.envAt origin) source.id
       let observation := observeCell phase cell
-      let operand := match part with
-        | .date part =>
-            -- Direct extraction and constructed-Date components read the same declared spelling
-            -- (spec/05 §3); extraction does not complete an omitted component to an endpoint.
-            match classifyConstructedDateExtractor source part observation partialFormat with
-            | .ok (.value amount) => NumericOperand.value amount .fixed
-            | .ok .empty => .value 0 .both
-            | .ok (.unavailable cause) => .unknown cause
-            | .error _ => .unknown .malformed
-        | .time _ => observation.asTemporalNumericOperand source part.project?
-      pure operand.toValidationArithmetic
+      pure ((observation.asStoredTemporalNumericOperand source part partialFormat).toValidationArithmetic)
   | .field reference => do
       let cell ← context.read (frame.envAt reference.origin) reference.field.id
       pure ((observeCell phase cell).asDirectNumericComparisonOperand reference.field.info |>.toValidationArithmetic)

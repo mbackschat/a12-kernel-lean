@@ -75,9 +75,9 @@ def FlatModel.admitsNumericComputationOperand
       reference.scalarRepetitionWellFormedBool model
   | .numeric (.boundCurrentRepetition source) => source.wellFormedIn model scope
   | .numeric (.baseYearDatePart year _ _) => model.baseYear == some year
-  | .numeric (.temporalFieldPart source part) =>
+  | .numeric (.temporalFieldPart source part format) =>
       model.admitsTemporalComputationOperand scope source
-        (part.admittedBy source model.hasBaseYear)
+        (model.admitsTemporalNumericPart source part format)
   | .numeric (.dateRangeBoundPart source _ part) =>
       model.admitsDeclarationIn scope source.id (·.policy.kind.surfaceKind == .dateRange) &&
         model.exposesDateRangeBoundPart source part
@@ -179,7 +179,7 @@ def ResolvedNumericAtom.referencesFieldWith {Aggregate : Type}
   | .fixedCurrentRepetition _ => false
   | .boundCurrentRepetition _ => false
   | .baseYearDatePart _ _ _ => false
-  | .temporalFieldPart source _ => source.id == field
+  | .temporalFieldPart source _ _ => source.id == field
   | .dateRangeBoundPart source _ _ => source.id == field
   | .stringLength source => source.id == field
   | .stringRange source _ _ => source.id == field
@@ -427,10 +427,14 @@ def FlatModel.elaborateNumericComputationAtom
         | some year => pure (.numeric (.baseYearDatePart year source part))
         | none => throw .baseYearNotDeclared
     | .numeric (.temporalFieldPart reference part) => do
-        let field ← model.resolveTemporalNumericComputationField
-          declaringGroup targetGroup reference
-          (fun source => part.admittedBy source model.hasBaseYear)
-        pure (.numeric (.temporalFieldPart field part))
+        let declaration ← (model.resolveComputationOperandUnchecked declaringGroup targetGroup reference).mapError .resolve
+        if !declaration.admitsTemporalPartPrecision part then
+          throw (.temporalPartPrecision declaration.path part)
+        let some field := declaration.toTemporalField? | throw (.incompatibleTemporalSource declaration.path)
+        let format := model.temporalNumericPartialFormat field.id
+        if !model.admitsTemporalNumericPart field part format then
+          throw (.incompatibleTemporalSource declaration.path)
+        pure (.numeric (.temporalFieldPart field part format))
     | .numeric (.dateRangeBoundPart reference bound part) => do
         let declaration ←
           (model.resolveComputationEntityRead declaringGroup targetGroup reference).mapError

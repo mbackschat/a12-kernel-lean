@@ -159,11 +159,10 @@ def ordinaryNumericAtomFieldDeclarations?
             some [declaration]
           else none
       | .error _ => none
-  | .temporalFieldPart source part =>
+  | .temporalFieldPart source part format =>
       match model.lookupUniqueId source.id with
       | .ok declaration =>
-          if declaration.toTemporalField? == some source &&
-              part.admittedBy source model.hasBaseYear then
+          if model.admitsTemporalNumericPart source part format then
             some [declaration]
           else none
       | .error _ => none

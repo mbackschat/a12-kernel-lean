@@ -111,7 +111,7 @@ def classify (checked : CheckedConstructedDateExtractorField model)
     (observation : CellObservation Value) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
   (classifyConstructedDateExtractor checked.source checked.part observation
-    (model.constructedDateExtractorPartialFormat checked.source.id)).mapError ConstructedDateComponentFault.toEvaluationFault
+    (model.temporalNumericPartialFormat checked.source.id)).mapError ConstructedDateComponentFault.toEvaluationFault
 
 /-- Read one certified scalar Date component through the immutable checked document. -/
 def read (checked : CheckedConstructedDateExtractorField model)

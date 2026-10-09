@@ -489,8 +489,15 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env)
   | .indexed source => source.toCheckedSemanticIndexSource.referencePointers environment inputs
   | .indexedString source => source.selection.referencePointers environment inputs
   | .temporalExpression source => do
-      let pointers ← source.core.sources.mapM fun expression => temporalExpressionPointers expression.core environment inputs
-      pure pointers.flatten
+      match source.core with
+      | .temporal operation =>
+          let pointers ← operation.sources.mapM fun expression => temporalExpressionPointers expression.core environment inputs
+          pure pointers.flatten
+      | .storedProjection atom =>
+          (·.flatten) <$> (atom.dependenciesWith
+            (fun field => [resolvedFieldPointers (model := model) field environment])
+            (fun source => [temporalEntityPointers source environment inputs])
+            (fun source => [source.referencePointers environment inputs])).mapM id
   | .ordinary (.filledGroupCount groups) =>
       (·.flatten) <$> groups.mapM fun reference =>
         fixedGroupPointers model reference environment

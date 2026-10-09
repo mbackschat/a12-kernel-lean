@@ -3,7 +3,7 @@ import A12Kernel.Semantics.LegacyCalendarExpression
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.ConstructedDateDay
 import A12Kernel.Semantics.DateTimeComparison
-import A12Kernel.Semantics.FlatValidation
+import A12Kernel.Semantics.TemporalNumericInput
 import A12Kernel.Semantics.String
 
 namespace A12Kernel
@@ -85,23 +85,12 @@ def classifyConstructedDateExtractor (source : FlatTemporalField) (part : DateNu
   match observation with
   | .empty => pure .empty
   | .unknown cause | .poison cause => pure (.unavailable cause)
-  | .value (.temporal value) =>
-      if !source.holdsValue value then
-        throw (.payloadKind source.id)
-      else
-        match value.dateParts? with
-        | none => throw (.payloadKind source.id)
-        | some parts =>
-            let amount := part.extract parts
-            if amount.den = 1 then
-              pure (.value amount.num)
-            else
-              throw (.nonIntegralPayload source.id amount)
-  | .value (.partialDate text) =>
-      match partialFormat.bind (·.parseComponents? text) with
-      | some parts => pure (.value (part.extract parts).num)
+  | .value value =>
+      match (TemporalNumericPart.date part).projectStored? source partialFormat value with
       | none => throw (.payloadKind source.id)
-  | .value _ => throw (.payloadKind source.id)
+      | some amount =>
+          if amount.den == 1 then pure (.value amount.num)
+          else throw (.nonIntegralPayload source.id amount)
 /-- A cause-preserving checked observation around the existing four-way construction result. -/
 inductive ConstructedDateObservation where
   | resolved (result : DateConstructionResult)

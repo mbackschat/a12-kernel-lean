@@ -191,7 +191,7 @@ example : precisionCases.all (fun (mode, expected) =>
     (extractors.zip expected).all fun ((_, part, _), admitted) =>
       let fixture := partialModel mode
       ((fixture.lookupUniqueId 14).toOption.bind (·.toTemporalField?)).any (fun source =>
-        let format := fixture.constructedDateExtractorPartialFormat source.id
+        let format := fixture.temporalNumericPartialFormat source.id
         let atom : HavingNumericAtomOf Empty := .temporalPart .inner source (.date part) format
         let missingFormat : HavingNumericAtomOf Empty := .temporalPart .inner source (.date part)
         atom.wellFormedWith fixture [10] [] (fun _ _ _ => false) (fun _ _ => false) == admitted &&

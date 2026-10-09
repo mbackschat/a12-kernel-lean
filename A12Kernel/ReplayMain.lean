@@ -78,6 +78,7 @@ import A12Kernel.Reference.Dm.SemanticIndexLocks
 import A12Kernel.Reference.Dm.NestedSemanticIndexLocks
 import A12Kernel.Reference.Dm.KeyedExtentLocks
 import A12Kernel.Reference.Dm.IndexedGroupLocks
+import A12Kernel.Reference.Dm.TemporalExtractorPrecisionLocks
 import A12Kernel.Reference.Dm.IndexedTemporalLocks
 import A12Kernel.Reference.Dm.PartialTemporalLocks
 import A12Kernel.Reference.Dm.PartialStringExpressionLocks

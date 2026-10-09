@@ -81,6 +81,7 @@ inductive ScalarTemporalExpressionError where
   | timeComponents (error : TimeComponentsElabError)
   | rangeBound (error : YearlessDateRangeBoundElabError)
   | partialDate (error : ValueAsDateZonedElabError)
+  | temporalPartPrecision (path : List String) (part : TemporalNumericPart)
   | nonTemporal (path : List String)
   | unsupportedSource
   | incompatibleFormats
@@ -159,6 +160,8 @@ inductive ScalarTemporalTransform (model : FlatModel) where
 
 inductive ScalarTemporalNumericAtom (model : FlatModel) where
   | numeric (source : HavingNumericAtomOf (TemporalExpressionOf (ScalarTemporalAtom model) (ScalarTemporalTransform model)))
+  | indexedPart (selection : CheckedSemanticIndexSource model) (part : TemporalNumericPart)
+      (partialFormat : Option FullDateTargetFormat)
   | ordinary (source : CheckedTemporalShiftAmount model)
   | projection (part : TemporalNumericPart) (profile : ModelZone.ConcreteProfile)
       (source : TemporalExpressionOf (ScalarTemporalAtom model) (ScalarTemporalTransform model))

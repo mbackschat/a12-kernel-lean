@@ -73,9 +73,9 @@ def CheckedAddressedNumericTarget.admitsRepetitionOperand
         target.admitsSourceField source.id fun owned => owned.toStringValueField? == some source
   | .dateRangeBoundPart source _ _ =>
       target.admitsSourceField source.id fun owned => owned.toDateRangeField? == some source
-  | .temporalFieldPart source part =>
+  | .temporalFieldPart source part format =>
       target.admitsSourceField source.id fun owned =>
-        owned.toTemporalField? == some source && part.admittedBy source model.baseYear.isSome
+        model.admitsTemporalNumericPart source part format
   | .fieldValueAsNumber source =>
       match model.certifiedFieldValueAsNumberDeclaration? source with
       | some owned =>
@@ -243,7 +243,7 @@ private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget mod
         let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
           |>.mapError .source
         match declaration.toTemporalField? with
-        | some field => pure (.temporalFieldPart field part)
+        | some field => pure (.temporalFieldPart field part (model.temporalNumericPartialFormat field.id))
         | none => throw .unsupportedExpression
     | .fieldValueAsNumber source => do
         let declaration ← resolveRepetitionEntity target source.reference
@@ -372,8 +372,8 @@ def AddressedRepetitionOperand.readAt {model : FlatModel}
     exact readAddressedAtom model (.dateRangeBoundPart source bound part) [source.id] read environment
   case stringLength source =>
     exact readAddressedAtom model (.stringLength source) [source.id] read environment
-  case temporalFieldPart source part =>
-    exact readAddressedAtom model (.temporalFieldPart source part) [source.id] read environment
+  case temporalFieldPart source part format =>
+    exact readAddressedAtom model (.temporalFieldPart source part format) [source.id] read environment
   case fieldValueAsNumber source =>
     exact readAddressedAtom model (.fieldValueAsNumber source) [source.fieldId] read environment
   case dateDifference unit left right =>

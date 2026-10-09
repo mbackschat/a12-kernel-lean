@@ -398,17 +398,15 @@ theorem numericComputation_baseYearDatePart_evaluates
         .ok (.value (baseYearDateSourceNumericPart year source part)) := by
   rfl
 
-/-- Every clean temporal component projection shares one computation-phase value path; Date and Time specialization is supplied only by the projection function. -/
+/-- Computation projects the observed payload through the same certified stored-component reader. -/
 theorem readTemporalNumeric_value
     (context : ScalarComputationContext) (field : FlatTemporalField)
-    (project : TemporalValue → Option Rat) (value : TemporalValue) (amount : Rat)
-    (family : field.components.family? = some value.kind)
-    (projected : project value = some amount)
-    (observed : observeCell .computation (context.read field.id) =
-      .value (.temporal value)) :
-    context.readTemporalNumeric field project = .ok (.value amount) := by
-  simp [ScalarComputationContext.readTemporalNumeric, FlatTemporalField.holdsValue,
-    observed, family, projected] <;> rfl
+    (part : TemporalNumericPart) (format : Option FullDateTargetFormat)
+    (value : Value) (amount : Rat)
+    (projected : part.projectStored? field format value = some amount)
+    (observed : observeCell .computation (context.read field.id) = .value value) :
+    context.readTemporalNumeric field part format = .ok (.value amount) := by
+  simp [ScalarComputationContext.readTemporalNumeric, observed, projected] <;> rfl
 
 /-- A supported date-difference source uses the same phase reads and maps its exact numeric/fault provenance once into computation outcome space. -/
 theorem readDateDifference_evaluated

@@ -36,7 +36,7 @@ def havingDateComponentWellFormed (model : FlatModel) (position : ConstructedDat
       declaration.toTemporalTargetPolicy?.any fun policy =>
         model.admitsConstructedDateYearField position source policy scope
   | .extractor source part partialFormat => model.admitsConstructedDateExtractorField position part source scope &&
-      partialFormat == model.constructedDateExtractorPartialFormat source.id
+      partialFormat == model.temporalNumericPartialFormat source.id
   | .constant value =>
       let text := toString value
       let text := String.ofList (List.replicate (position.storedWidth - text.length) '0') ++ text

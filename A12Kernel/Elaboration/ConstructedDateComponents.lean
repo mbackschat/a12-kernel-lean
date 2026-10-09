@@ -4,6 +4,7 @@ import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.ModelZone
 import A12Kernel.Semantics.String
 import A12Kernel.Semantics.ConstructedDateInputs
+import A12Kernel.Elaboration.TemporalNumericInput
 
 /-! # Checked direct constructed Dates
 
@@ -175,13 +176,6 @@ structure CheckedConstructedDateYearField (model : FlatModel) where
   admitted :
     model.admitsConstructedDateYearField position source policy scope = true
 
-/-- Partial extraction uses the declaration's spelling to recover only retained components;
-full precision already carries decoded calendar parts. -/
-def FlatModel.constructedDateExtractorPartialFormat (model : FlatModel) (field : FieldId) : Option FullDateTargetFormat := do
-  let declaration ← (model.lookupUniqueId field).toOption
-  let policy ← declaration.toTemporalTargetPolicy?
-  if policy.partialMode == .full then none else FullDateTargetFormat.ofSource? policy.format
-
 /-- Exact direct field gate for one matching Date-component extractor.
 
     The declared **kind** is not read: `part.admittedBy` already requires the declared format to
@@ -199,10 +193,8 @@ def FlatModel.admitsConstructedDateExtractorField (model : FlatModel)
       declaration.repetitionBoundBy scope &&
         declaration.toTemporalField? == some source &&
         position.extractor? == some part &&
-        part.admittedBy model.hasBaseYear source.components &&
-        (declaration.temporalTargetPolicy.isNone || declaration.toTemporalTargetPolicy?.any (fun policy =>
-          part.admittedPartialMode policy.partialMode &&
-            (policy.partialMode == .full || (model.constructedDateExtractorPartialFormat source.id).isSome)))
+        model.admitsTemporalNumericPart source (.date part)
+          (model.temporalNumericPartialFormat source.id)
 
 /-- One ordinary Date or DateTime field carrying the matching component-extractor certificate. -/
 structure CheckedConstructedDateExtractorField (model : FlatModel) where
@@ -268,7 +260,7 @@ def CheckedConstructedDateSource.resolved : CheckedConstructedDateSource model �
   | .stringField checked => .stringField checked.source
   | .dateYearField checked => .dateYearField checked.source
   | .constant value => .constant value
-  | .extractor checked => .extractor checked.source checked.part (model.constructedDateExtractorPartialFormat checked.source.id)
+  | .extractor checked => .extractor checked.source checked.part (model.temporalNumericPartialFormat checked.source.id)
   | .baseYearExtractor checked => .baseYearExtractor checked.year checked.source checked.part
   | .pointInTimeExtractor checked => .pointInTimeExtractor checked.point checked.part model.timeZoneId checked.profile
 

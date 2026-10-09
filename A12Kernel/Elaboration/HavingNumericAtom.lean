@@ -3,25 +3,18 @@ import A12Kernel.Elaboration.HavingGroupCount
 import A12Kernel.Elaboration.HavingNumericProduct
 import A12Kernel.Elaboration.HavingCollectionCount
 import A12Kernel.Elaboration.DateRangeBoundComponent
+import A12Kernel.Elaboration.TemporalNumericInput
 import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Elaboration.ConstructedDateComponents
 
 namespace A12Kernel
 
-/-- The direct extractor precision gate precedes format/Base Year admission (spec/05 §3;
-`CheckDatumExtractOpImpl.checkAndAddNumberOpType`). Time components require a complete Date. -/
-def FlatFieldDecl.admitsHavingTemporalPartPrecision (declaration : FlatFieldDecl)
-    (part : TemporalNumericPart) : Bool :=
-  !(declaration.toTemporalTargetPolicy?.any fun policy => !(match part with
-    | .date part => part.admittedPartialMode policy.partialMode
-    | .time _ => policy.partialMode == .full))
-
-/-- Primitive numeric atoms must preserve the complete-field source boundary of
-`HavingTemporalExpression.wellFormed` and `resolveScalarTemporalExpression`. -/
+/-- Date differences retain the complete-field source boundary of the temporal expression
+owners; component atoms carry their own declaration precision certificate (spec/05 §3). -/
 def HavingNumericAtomOf.admitsTemporalAmountSources (model : FlatModel)
     (atom : HavingNumericAtomOf Temporal) : Bool :=
   let fields := match atom with
-    | .temporalPart .. | .dateDifference .. | .dayDifference .. | .dateTimeDifference .. =>
+    | .dateDifference .. | .dayDifference .. | .dateTimeDifference .. =>
         atom.fieldOriginsWith (fun _ => [])
     | _ => []
   fields.all fun (_, fieldId) => (model.lookupUniqueId fieldId).toOption.any fun declaration =>
@@ -174,10 +167,9 @@ def HavingNumericAtomOf.wellFormedWith (model : FlatModel) (candidateLevels oute
         repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
   | .temporalDifference unit left right => difference unit left right
   | .temporalExpressionPart part source => projection part source
-  | .temporalPart origin fld part format => part.admittedBy fld model.hasBaseYear &&
-      format == model.constructedDateExtractorPartialFormat fld.id &&
+  | .temporalPart origin fld part format => model.admitsTemporalNumericPart fld part format &&
       (model.lookupUniqueId fld.id).toOption.any fun declaration =>
-        declaration.toTemporalField? == some fld && declaration.admitsHavingTemporalPartPrecision part &&
+        declaration.toTemporalField? == some fld &&
           repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
   | .repetition reference => reference.availableIn model candidateLevels outerLevels
 

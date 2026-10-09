@@ -160,6 +160,30 @@ private def resolveScalarTemporalProjection (model : FlatModel) (rowGroup : Grou
   | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _ => throw .unsupportedSource
   | _ => pure ()
   if !surface.admittedSourceSlot .ordinary then throw .unsupportedSource
+  match surface with
+  | .field reference => do
+      let declaration ← (match targetGroup? with
+        | none => model.resolveFieldValueRead rowGroup reference
+        | some targetGroup => model.resolveComputationFieldValueRead rowGroup targetGroup reference).mapError .read
+      if !declaration.admitsTemporalPartPrecision part then
+        throw (.temporalPartPrecision declaration.path part)
+      if declaration.toTemporalTargetPolicy?.any (·.partialMode != .full) then
+        let some field := declaration.toTemporalField? | throw (.nonTemporal declaration.path)
+        let format := model.temporalNumericPartialFormat field.id
+        if !model.admitsTemporalNumericPart field part format then throw .incompatibleFormats
+        return .numeric (.temporalPart .inner field part format)
+  | .indexed authored => do
+      let selection ← (elaborateSemanticIndexSource model rowGroup authored
+        (targetGroup?.map model.repeatableScopeForGroupPath)).mapError .indexed
+      let declaration := selection.targetDeclaration
+      if !declaration.admitsTemporalPartPrecision part then
+        throw (.temporalPartPrecision declaration.path part)
+      if declaration.toTemporalTargetPolicy?.any (·.partialMode != .full) then
+        let some field := declaration.toTemporalField? | throw (.nonTemporal declaration.path)
+        let format := model.temporalNumericPartialFormat field.id
+        if !model.admitsTemporalNumericPart field part format then throw .incompatibleFormats
+        return .indexedPart selection part format
+  | _ => pure ()
   let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? surface
   if !part.admitsComponents components model.hasBaseYear then throw .incompatibleFormats
   pure (.projection part (← scalarProfile model) source)
@@ -171,7 +195,11 @@ private def resolveScalarTemporalAmount (model : FlatModel) (rowGroup : GroupPat
     Except ScalarTemporalExpressionError (AuthoredNumericExpr (ScalarTemporalNumericAtom model)) := do
   let scope := model.repeatableScopeForGroupPath (targetGroup?.getD rowGroup)
   let resolvers := model.havingNumericResolvers rowGroup scope scope
-  let core ← surface.mapMSubterm fun atom _ => do
+  let core ← surface.mapMSubterm fun atom _hAtom => do
+    match _hProjection : atom with
+    | .temporalExpressionPart part source =>
+        return ← resolveScalarTemporalProjection model rowGroup targetGroup? source part
+    | _ => pure ()
     let resolved ← (resolvers.resolveWith atom
       (fun unit left right _ _ => do
         if !left.admittedSourceSlot .withPartialDate || !right.admittedSourceSlot .withPartialDate then throw .numericExpressionUnsupported
@@ -198,7 +226,7 @@ private def resolveScalarTemporalAmount (model : FlatModel) (rowGroup : GroupPat
   | result => throw (.amount (.expression (.authoring result)))
   let summary : ScalarTemporalNumericAtom model → NumericScaleSummary
     | .numeric source => source.summary
-    | .projection _ _ _ => .field 0
+    | .projection _ _ _ | .indexedPart _ _ _ => .field 0
     | .ordinary (.literal _) => .field 0
     | .ordinary (.field source _) => .field source.info.scale
     | .ordinary (.expression checked _) => (checked.core.summary? numericValidationSummary).getD (.field 0)
@@ -288,6 +316,13 @@ private def resolveScalarTimeComponents (model : FlatModel) (rowGroup : GroupPat
         (← resolveScalarTimeComponent model rowGroup targetGroup? .second second))
 termination_by (sizeOf surface, 0)
 end
+
+def elaborateScalarTemporalProjection (model : FlatModel) (rowGroup : GroupPath)
+    (surface : SurfaceScalarTemporalExpression) (part : TemporalNumericPart)
+    (targetGroup? : Option GroupPath := none) :
+    Except ScalarTemporalExpressionError (ScalarTemporalNumericAtom model) := do
+  discard <| model.validate.mapError .model
+  resolveScalarTemporalProjection model rowGroup targetGroup? surface part
 
 def elaborateScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
     (surface : SurfaceScalarTemporalExpression) (targetGroup? : Option GroupPath := none) :
@@ -464,6 +499,23 @@ private def readRecursiveScalarAtom (phase : Phase) (context : ScalarComputation
       | .error none => pure (.error .nonRelevant)
       | .error (some fault) => throw fault
       | .ok value => pure value
+  | .indexedPart selection part format => do
+      let some field := selection.targetDeclaration.toTemporalField? | throw .calendarUnavailable
+      let operand ← match partialRead? with
+        | some partialRead => do
+            match ← partialRead.selectedCell selection context.row with
+            | none => return .error .nonRelevant
+            | some .empty => pure CellObservation.empty
+            | some (.unknown cause) | some (.poison cause) => pure (.unknown cause)
+            | some (.value (cell, _)) => pure (observeCell .validation cell)
+        | none => do
+            let some addressed := context.addressed | throw .calendarUnavailable
+            match ← (selection.selectEnvironmentWith phase context.semanticIndexColumnReader
+                context.row context.read context.storedText).mapError (fun _ => .calendarUnavailable) with
+            | .empty => pure CellObservation.empty
+            | .unknown cause | .poison cause => pure (.unknown cause)
+            | .value row => pure (observeCell phase (addressed.read row field.id))
+      pure ((operand.asStoredTemporalNumericOperand field part format).toValidationArithmetic)
   | .ordinary amount => match partialRead? with
       | some partialRead => readPartialScalarTemporalAmount partialRead context.row amount
       | none => pure (readScalarTemporalAmount { read := context.read, storedText := context.storedText, world := context.world } phase amount)
@@ -570,6 +622,13 @@ def CheckedConstructedDateComponents.evaluateScalarValidity
     Except ScalarTemporalEvaluationFault ConstructedDateObservation := do
   let (observation, relevance) ← observeRecursiveDateComponents phase context partialRead? components
   finishScalarDateValidity components observation relevance
+
+def ScalarTemporalNumericAtom.evalResult (atom : ScalarTemporalNumericAtom model) (phase : Phase)
+    (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := [])
+    (partialRead? : Option (TemporalPartialReadContext model) := none) :
+    Except ScalarTemporalEvaluationFault (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
+  readRecursiveScalarAtom phase
+    { read := context.read, storedText := context.storedText, world := context.world, addressed, row } partialRead? atom
 
 namespace CheckedScalarTemporalExpression
 

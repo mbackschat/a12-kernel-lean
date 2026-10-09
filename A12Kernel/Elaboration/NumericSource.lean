@@ -1,6 +1,6 @@
 import A12Kernel.Semantics.DateDifferenceSource
 import A12Kernel.Semantics.NumericAggregate
-import A12Kernel.Elaboration.Flat.Model
+import A12Kernel.Elaboration.TemporalNumericInput
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StaticDiagnostic
@@ -262,6 +262,7 @@ inductive ResolvedNumericAtom (Field : Type)
   | baseYearDatePart (year : Int) (source : BaseYearDateSource)
       (part : DateNumericPart)
   | temporalFieldPart (source : FlatTemporalField) (part : TemporalNumericPart)
+      (partialFormat : Option FullDateTargetFormat := none)
   | dateRangeBoundPart (source : FlatDateRangeField) (bound : DateRangeBound)
       (part : DateNumericPart)
   | stringLength (source : FlatStringField)
@@ -327,7 +328,7 @@ def summaryWith (fieldSummary : Field → NumericScaleSummary)
   | .boundCurrentRepetition _ => NumericScaleSummary.field 0
   | .baseYear _ => NumericScaleSummary.field 0
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
-  | .temporalFieldPart _ _ => NumericScaleSummary.field 0
+  | .temporalFieldPart _ _ _ => NumericScaleSummary.field 0
   | .dateRangeBoundPart _ _ _ => NumericScaleSummary.field 0
   | .stringLength _ => NumericScaleSummary.field 0
   | .stringRange _ _ _ => NumericScaleSummary.field 0

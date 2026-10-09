@@ -128,6 +128,7 @@ inductive NumericComputationElabError where
   | invalidStringRange (start finish : Nat)
   | fieldValueAsNumberSource (path : List String)
       (error : FieldValueAsNumberSourceError)
+  | temporalPartPrecision (path : List String) (part : TemporalNumericPart)
   | incompatibleTemporalSource (path : List String)
   /-- The declared DateRange profile does not expose the requested date component at its
   endpoint; the same measured class the validation surface reports. -/
@@ -190,6 +191,8 @@ authoring check this carrier also asks never answers first, because the node che
 refusals at the node it inspects, so its result stays unmapped with the other computation failures. -/
 def targetDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
+  | .temporalPartPrecision _ _ => some .invalidDateType
+  | .temporalExpression error => error.precisionDiagnostic?
   | .semanticIndex error => error.diagnostic?
   | .indexedString error => error.diagnostic?
   | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces

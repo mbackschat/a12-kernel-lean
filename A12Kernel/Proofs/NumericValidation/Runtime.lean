@@ -42,11 +42,12 @@ theorem orderedNumericValidationAtom_repeatableField_requiresAddressed
 /-- A model-certified direct temporal component under a nonempty repeatable declaration uses the shared addressed entry requirement without erasing the selected component. -/
 theorem orderedNumericValidationAtom_repeatableTemporalFieldPart_requiresAddressed
     (field : FlatTemporalField) (part : TemporalNumericPart)
+    (format : Option FullDateTargetFormat)
     (declaration : FlatFieldDecl)
     (lookup : model.lookupUniqueId field.id = .ok declaration)
     (repeatable : declaration.repeatableScope.isEmpty = false) :
     (OrderedNumericValidationAtom.ordinary
-        (.temporalFieldPart field part)).requiresAddressedValidation
+        (.temporalFieldPart field part format)).requiresAddressedValidation
         (model := model) = true := by
   simp [OrderedNumericValidationAtom.requiresAddressedValidation,
     lookup, repeatable]

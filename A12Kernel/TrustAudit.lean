@@ -3053,3 +3053,11 @@ run_cmd do
 
 #print axioms A12Kernel.HavingDateRangePredicate.evalOverlap_empty_scalar
 #print axioms A12Kernel.HavingDateRangePredicate.evalOverlap_poison_scalar
+
+#print axioms A12Kernel.storedTemporalNumeric_empty
+#print axioms A12Kernel.storedTemporalNumeric_unknown
+#print axioms A12Kernel.storedTemporalNumeric_poison
+#print axioms A12Kernel.storedTemporalNumeric_value
+#print axioms A12Kernel.storedTemporalNumeric_partial_parse
+#print axioms A12Kernel.storedTemporalNumeric_partial_time_refused
+#print axioms A12Kernel.storedTemporalNumeric_clock_year

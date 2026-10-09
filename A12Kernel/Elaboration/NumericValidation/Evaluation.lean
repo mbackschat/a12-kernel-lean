@@ -31,8 +31,8 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
   | .boundCurrentRepetition _ => .error .groupState
   | .baseYearDatePart year source part =>
       .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
-  | .temporalFieldPart field part =>
-      (context.fields.resolveTemporalNumericOperand field part).toValidationArithmetic
+  | .temporalFieldPart field part format =>
+      ((observeCell .validation (context.fields.read field.id)).asStoredTemporalNumericOperand field part format).toValidationArithmetic
   | .dateRangeBoundPart source bound part =>
       (context.fields.resolveDateRangeBoundNumericOperand source bound part).toValidationArithmetic
   | .stringLength field =>

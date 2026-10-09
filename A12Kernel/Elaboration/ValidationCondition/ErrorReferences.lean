@@ -102,7 +102,16 @@ private def numericAtomReferenceAt? (field : FieldId) (level : RepeatableLevel)
   | .tokenDistinctCount source => tokenReferenceAt? field level source
   | .filledFieldCount source => fillReferenceAt? field level source
   | .temporalExpression source =>
-      anyReference (source.core.sources.map fun source => temporalReferenceAt? field level source.core)
+      match source.core with
+      | .temporal operation =>
+          anyReference (operation.sources.map fun source => temporalReferenceAt? field level source.core)
+      | .storedProjection source =>
+          anyReference (source.dependenciesWith
+            (fun candidate => [some (candidate == field && (model.fieldRepeatableScope candidate).contains level)])
+            (fun source => [shapeReferenceAt? field level source.shape (source.filters.filterMap id)])
+            (fun source => [if source.referencesField field then none else some false])
+            (numeric := fun atom => (atom.fieldOriginsWith (fun _ => [])).map fun (_, candidate) =>
+              some (candidate == field && (model.fieldRepeatableScope candidate).contains level)))
   | .ordinary (.field source) => some (source.id == field && (model.fieldRepeatableScope field).contains level)
   | _ => none
 

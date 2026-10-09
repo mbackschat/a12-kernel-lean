@@ -452,10 +452,16 @@ def FlatContext.resolveTemporalNumericOperandBy (context : FlatContext)
     (field : FlatTemporalField) (project : TemporalValue → Option Rat) : NumericOperand :=
   (context.observeValidationAt field.id).asTemporalNumericOperand field project
 
+/-- Numeric Year extraction observes a clock's 1970 anchor; Base Year admits the operation
+but does not replace that anchor (spec/05 §3, KF261). Other Date components still need a Date payload. -/
+def DateNumericPart.projectTemporal? (part : DateNumericPart) : TemporalValue → Option Rat
+  | .time _ _ => if part == .year then some 1970 else none
+  | value => value.dateParts?.map part.extract
+
 /-- Resolve one checked field holding a date for direct numeric date-component extraction. -/
 def FlatContext.resolveDateNumericOperand (context : FlatContext)
     (field : FlatTemporalField) (part : DateNumericPart) : NumericOperand :=
-  context.resolveTemporalNumericOperandBy field fun value => value.dateParts?.map part.extract
+  context.resolveTemporalNumericOperandBy field part.projectTemporal?
 
 /-- Resolve one checked field holding a clock for direct numeric clock-component extraction. -/
 def FlatContext.resolveTimeNumericOperand (context : FlatContext)
@@ -488,7 +494,7 @@ def admittedBy (part : TemporalNumericPart) (field : FlatTemporalField)
 /-- Extract the selected amount from the matching decoded payload half. -/
 def project? (part : TemporalNumericPart) (value : TemporalValue) : Option Rat :=
   match part with
-  | .date datePart => value.dateParts?.map datePart.extract
+  | .date datePart => datePart.projectTemporal? value
   | .time timePart => value.time?.map timePart.extract
 
 end TemporalNumericPart

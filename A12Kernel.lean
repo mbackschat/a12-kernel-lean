@@ -58,6 +58,7 @@ import A12Kernel.Semantics.RuntimeFormalMessageKey
 import A12Kernel.Semantics.NumericTarget
 import A12Kernel.Semantics.NumericInput
 import A12Kernel.Semantics.NumericWire
+import A12Kernel.Semantics.TemporalNumericInput
 import A12Kernel.Semantics.NumericApplication
 import A12Kernel.Semantics.NumericDependency
 import A12Kernel.Semantics.HeterogeneousComputationDependency

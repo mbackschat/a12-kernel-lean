@@ -459,15 +459,15 @@ theorem numericTolerance_field_baseYearDatePart_delegates
 /-- Every direct Date/Time/DateTime component atom delegates to its unified flat payload projection before the ordinary or tolerance evaluator. -/
 theorem numericValidation_temporalFieldPart_literal_delegates
     (op : NumericValidationOp) (field : FlatTemporalField)
-    (part : TemporalNumericPart) (right : DecodedNumericLiteral)
+    (part : TemporalNumericPart) (format : Option FullDateTargetFormat) (right : DecodedNumericLiteral)
     (context : FlatContext) :
-    ({ op, left := .atom (.temporalFieldPart field part),
+    ({ op, left := .atom (.temporalFieldPart field part format),
         right := .literal right } :
       NumericComparison).evalSelected context =
-        op.eval (context.resolveTemporalNumericOperand field part)
+        op.eval ((observeCell .validation (context.read field.id)).asStoredTemporalNumericOperand field part format)
           (.value right.value .fixed) := by
   cases op <;>
-    cases observed : context.resolveTemporalNumericOperand field part <;>
+    cases observed : (observeCell .validation (context.read field.id)).asStoredTemporalNumericOperand field part format <;>
     simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,

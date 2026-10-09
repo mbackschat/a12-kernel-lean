@@ -50,7 +50,7 @@ namespace OrderedNumericValidationAtom
 def addressedNumericValidationFieldIds :
     NumericValidationAtom → List FieldId
   | .field source => [source.id]
-  | .temporalFieldPart source _ => [source.id]
+  | .temporalFieldPart source _ _ => [source.id]
   | .dateRangeBoundPart source _ _ => [source.id]
   | .stringLength source => [source.id]
   | .stringRange source _ _ => [source.id]
