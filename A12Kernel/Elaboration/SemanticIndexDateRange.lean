@@ -27,13 +27,11 @@ two direct owners' gates are complementary, so the decision is a total two-way r
 profile rather than a preference, and it is taken here from the certificate instead of from which
 owner happened to certify the operand.
 
-The overlap carrier is a **pair**, not the operator's list, and it now has two pairings: one keyed
-operand against a direct range, and — measured later — two keyed operands against each other. The
-list operator additionally admits starred, filtered, and group slots whose extent is a stream of rows
-reached by addressing; a keyed slot inside such a list would have to thread an index preliminary
-through that shared resolution, which no observation calls for. Both pairings instead reuse the
-operator's own two declaration gates, its uniform-year rule, its slot projection, and its pure
-any-pair scan, so each adds an operand shape rather than a predicate.
+This module retains pair-oriented overlap certificates: one selected operand against a direct range,
+or two selected operands. General selected operand streams are owned by
+`A12Kernel.Elaboration.DateRangeOverlap` and `A12Kernel.Elaboration.AtLeastOneDateRangeOverlap`.
+Both interfaces reuse the declaration gates, uniform-year rule, slot projection and pure overlap
+scans; the pair interfaces preserve their narrower construction contracts.
 
 The keyed pair is a separate certificate rather than a relaxation of the keyed/direct one because it
 carries a gate the other structurally cannot state: the two operands must not name the same

@@ -134,15 +134,15 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
   | .boundPair left right _ | .boundPairYearless left right _ =>
       [left.declaration, right.declaration]
   | .overlap source =>
-      -- Only the unstarred operands are read at the enclosing row. A starred operand reopens its
-      -- own levels, so it is neither bound by the reading scope nor a contributor to it.
+      -- Ordinary direct fields read at the caller row. Selected and starred operands retain
+      -- their own addressing; bindingScopes carries their caller demands (spec/08 §4).
       source.shape.operands.filterMap fun operand =>
         match operand with
         | .field declaration _ => some declaration
         | _ => none
   | .pluralOverlap source =>
-      -- The distinguished scalar is always read at the row; among the list operands only the
-      -- unstarred ones are, for the same reason a star contributes nothing above.
+      -- A selected scalar binds its payload row independently of the caller (spec/08 §4);
+      -- only ordinary direct declarations belong to this caller-row inventory.
       source.shape.operands.filterMap fun operand =>
         match operand with
         | .field declaration _ => some declaration
@@ -162,27 +162,50 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
         comparison.right.start.checked.declaration,
         comparison.right.finish.checked.declaration]
 
+/-- Overlap keeps the authored selection and extent, whose caller scope differs from its payload. -/
+def overlapShape? : IteratedDateRangeCondition model → Option (CheckedFieldEntityShape model)
+  | .overlap source => some source.shape
+  | .pluralOverlap source => some source.shape
+  | .yearlessOverlap source | .yearlessPluralOverlap source => some source.shape
+  | _ => none
+
+def bindingScopes (condition : IteratedDateRangeCondition model) : List (List RepeatableLevel) :=
+  match condition.overlapShape? with
+  | some shape => shape.operands.flatMap (·.bindingScopes)
+  | none => condition.operandDeclarations.map (·.repeatableScope)
+
 /-- The filters this condition's starred overlap operands carry, in authored order. -/
 def filters : IteratedDateRangeCondition model → List CorrelatedHaving
   | .overlap source =>
       source.operands.filterMap fun
         | .canonical (.star _ _ filter) => filter
-        | .canonical (.field _) | .fragmentField _ => none
+        | .canonical (.field _) | .canonical (.indexed ..) | .canonical (.keyed ..) | .fragmentField _ | .indexedFragment .. => none
   | .pluralOverlap source =>
       source.operands.filterMap fun
         | .field (.canonical (.star _ _ filter)) => filter
-        | .field (.canonical (.field _)) | .field (.fragmentField _) | .group _ => none
+        | .field (.canonical (.field _)) | .field (.canonical (.indexed ..)) | .field (.canonical (.keyed ..)) | .field (.fragmentField _) | .field (.indexedFragment ..) | .group _ | .keyed .. => none
   | .yearlessOverlap source =>
       source.operands.filterMap fun
         | .star _ _ filter => filter
-        | .direct _ | .group _ => none
+        | .direct _ | .indexed .. | .keyed .. | .group _ => none
   | .yearlessPluralOverlap source =>
       source.operands.filterMap fun
         | .star _ _ filter => filter
-        | .direct _ | .group _ => none
+        | .direct _ | .indexed .. | .keyed .. | .group _ => none
   | .storedEquality _ | .boundAgainstFixed _ _ _ _ | .boundPair _ _ _
   | .boundPairYearless _ _ _ | .constructionAgainstStored _
   | .constructionAgainstConstruction _ => []
+
+/-- Scheduling and structural dependency queries include lookup keys and index columns;
+error-field membership below intentionally remains the overlap payload/filter account. -/
+def referencesField (condition : IteratedDateRangeCondition model) (field : FieldId) : Bool :=
+  (match condition.overlapShape? with
+    | some shape => shape.operands.any fun
+        | .indexed source => source.referencesField field
+        | .keyed source => source.referencesField field
+        | operand => operand.expansionDeclarations.any (·.id == field)
+    | none => condition.operandDeclarations.any (·.id == field)) ||
+    condition.filters.any (·.referencesField field)
 
 /-- Error-field membership includes selected operands and marked filter reads (spec/07 §3).
 Unlike `operandDeclarations`, this gate counts starred and group expansions without binding their
@@ -214,7 +237,8 @@ rule-level owner: refusing the scalar shape would leave it unreachable from any 
 handing it to a second owner. -/
 def wellFormedIn (condition : IteratedDateRangeCondition model)
     (scope : List RepeatableLevel) : Bool :=
-  condition.operandDeclarations.all fun declaration =>
+  condition.bindingScopes.all (·.isPrefixOf scope) &&
+    condition.operandDeclarations.all fun declaration =>
       declaration.repetitionBoundBy scope &&
         match model.lookupUniqueId declaration.id with
         | .ok owned => owned == declaration
@@ -303,7 +327,9 @@ def verdictOf (condition : IteratedDateRangeCondition model)
             path := [] })
   | .yearlessPluralOverlap source =>
       (evaluateYearlessAtLeastOneDateRangeOverlapsOperands (world := world)
-        (.direct source.scalar) source.operands document outer).mapError
+        (match source.scalarSelection? with
+          | some selection => .indexed selection source.scalar
+          | none => .direct source.scalar) source.operands document outer).mapError
         (YearlessDateRangesOverlapEvaluationError.toAddressing
           { field := source.scalar.declaration.id, path := [] })
   | .constructionAgainstStored comparison => do

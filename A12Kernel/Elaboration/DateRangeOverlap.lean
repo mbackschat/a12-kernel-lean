@@ -7,7 +7,7 @@ import A12Kernel.Semantics.DateRangeOverlapOperators
 
 /-! # Checked DateRange overlap operands
 
-This boundary owns static admission and full-validation checked-document assembly for the any-pair singular `DateRangesOverlap` operator, plus the certification steps, field walk and uniform-year gate its plural sibling in `A12Kernel.Elaboration.AtLeastOneDateRangeOverlap` reuses. It reuses the shared entity-list shape and checked DateRange declaration policies; singular direct fields additionally certify the internally supported year fragment plus measured year-month and Base-Year-completed fragment profiles while starred and plural routes remain canonical. Every operand list passes the field walk and then the Kernel's uniform-year gate, which is decided by the declarations and the model's Base Year alone, before any operand is certified. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
+This boundary owns static admission and full-validation checked-document assembly for the any-pair singular `DateRangesOverlap` operator, plus the certification steps, field walk and uniform-year gate its plural sibling in `A12Kernel.Elaboration.AtLeastOneDateRangeOverlap` reuses. It reuses the shared entity-list shape and checked DateRange declaration policies; stored and selected fields additionally certify the internally supported year fragment plus measured year-month and Base-Year-completed fragment profiles while starred routes remain canonical. Every operand list passes the field walk and then the Kernel's uniform-year gate, which is decided by the declarations and the model's Base Year alone, before any operand is certified. Pure overlap truth and polarity remain in `A12Kernel.Semantics.DateRangeOverlapOperators`.
 -/
 
 namespace A12Kernel
@@ -40,9 +40,60 @@ def diagnostic? : DateRangesOverlapElabError → Option KernelStaticDiagnostic
 
 end DateRangesOverlapElabError
 
+/-- Selection failure has no physical address; successful selection retains every actual cell.
+Overlap projects both only at its consuming slot boundary (spec/07 §3, spec/08 §4.2). -/
+inductive ResolvedDateRangeOverlapCore where
+  | addressed (core : ResolvedCheckedEntityOperandCore)
+  | selected (cells : CellObservation (List CheckedAddressedCell))
+
+/-- Validation selection uses the authored index preliminary and retains its observation and actual
+payload coordinate for the consuming slot projection (spec/07 §3, spec/08 §4.2). -/
+def resolveSelectedOverlapCore (source : CheckedSemanticIndexSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError ResolvedDateRangeOverlapCore := do
+  let preliminary ← document.applySelectedFullIndexPreliminary [source.indexDeclaration.id]
+    |>.mapError .indexPreliminary
+  let column ← source.resolvePreliminaryColumn preliminary outer |>.mapError .semanticIndex
+  let keyCell ← match source.key with
+    | .literal .. => pure (checkAdmittedRawCell .empty)
+    | .field declaration => do
+        let address ← document.cellAddress outer declaration.id
+        preliminary.readAuthoredValidation address |>.mapError .document
+  let key ← source.observeCurrentKey .validation (fun _ => keyCell)
+    (document.storedTextIn outer) |>.mapError .semanticIndex
+  match column.lookupEnvironment .validation source.numericIndex key with
+  | .empty => pure (.selected .empty)
+  | .unknown cause => pure (.selected (.unknown cause))
+  | .poison cause => pure (.selected (.poison cause))
+  | .value none => throw (.checkedDocumentRequired source.group.path)
+  | .value (some environment) => do
+      let cell ← document.addressedCellWithRead preliminary.readAuthoredValidation
+        environment source.targetDeclaration.id
+      pure (.selected (.value [cell]))
+
+/-- Expand only below the selected row, retaining declaration-major physical addresses and the
+selection outcome separately from overlap's skipped-slot projection (spec/08 §4). -/
+def resolveKeyedOverlapCore (source : CheckedKeyedEntityExtent model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError ResolvedDateRangeOverlapCore := do
+  let context := document.computationContextAt outer
+  let selected ← source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read)
+    outer context.read context.storedText
+  match selected with
+  | .empty => pure (.selected .empty)
+  | .unknown cause => pure (.selected (.unknown cause))
+  | .poison cause => pure (.selected (.poison cause))
+  | .value environment => do
+      let rows ← source.rows document.source.toDocument environment |>.mapError .addressing
+      let cells ← rows.flatMapM fun (declaration, environments, _) =>
+        environments.mapM fun row => document.fullValidationAddressedCell row declaration.id
+      pure (.selected (.value cells))
+
 /-- One certified canonical direct, plain-star, or filter-bearing star DateRange operand. -/
 inductive CheckedDateRangesOverlapOperand (model : FlatModel) where
   | field (source : CheckedCanonicalDateRangeField)
+  | indexed (selection : CheckedSemanticIndexSource model) (source : CheckedCanonicalDateRangeField)
+  | keyed (selection : CheckedKeyedEntityExtent model) (source : CheckedCanonicalDateRangeField)
   | star (path : CheckedStarFieldPath model)
       (source : CheckedCanonicalDateRangeField)
       (filter : Option CorrelatedHaving)
@@ -51,24 +102,26 @@ namespace CheckedDateRangesOverlapOperand
 
 def source : CheckedDateRangesOverlapOperand model →
     CheckedCanonicalDateRangeField
-  | .field source | .star _ source _ => source
+  | .field source | .indexed _ source | .keyed _ source | .star _ source _ => source
 
 def hasHaving : CheckedDateRangesOverlapOperand model → Bool
-  | .field _ | .star _ _ none => false
+  | .field _ | .indexed .. | .keyed .. | .star _ _ none => false
   | .star _ _ (some _) => true
 
 /-- Resolve one full-validation operand through the shared checked direct/star addressing and filter boundary. -/
 def resolveValidationCore (operand : CheckedDateRangesOverlapOperand model)
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
-    Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
+    Except CheckedAddressingError ResolvedDateRangeOverlapCore :=
   match operand with
   | .field source =>
       -- The reading row, not the document root: a nonrepeatable operand addresses identically at
       -- either, and an operand the rule's own iteration binds must be read at its row.
-      document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
+      .addressed <$> document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
   | .star path _ filter =>
-      path.resolveCheckedValidationEntityOperandCore (world := world) document outer filter
+      .addressed <$> path.resolveCheckedValidationEntityOperandCore (world := world) document outer filter
+  | .indexed selection _ => resolveSelectedOverlapCore selection document outer
+  | .keyed selection _ => resolveKeyedOverlapCore selection document outer
 
 end CheckedDateRangesOverlapOperand
 
@@ -105,37 +158,40 @@ structure CheckedDirectDateRangeOverlapFragmentField (model : FlatModel)
   profile : DirectDateRangeOverlapFragmentProfile
   profileOwned : profile.accepts model format = true
 
-/-- One singular-overlap operand. Only a direct field gains the supported fragment profiles; canonical direct and star operands retain their existing certificate. -/
+/-- One singular-overlap operand. Stored and selected fields gain the same supported fragment profiles; canonical fields and star operands retain their existing certificate. -/
 inductive CheckedSingularDateRangesOverlapOperand (model : FlatModel) where
   | canonical (source : CheckedDateRangesOverlapOperand model)
   | fragmentField (source : CheckedDirectDateRangeOverlapFragmentField model)
+  | indexedFragment (selection : CheckedSemanticIndexSource model)
+      (source : CheckedDirectDateRangeOverlapFragmentField model)
 
 namespace CheckedSingularDateRangesOverlapOperand
 
 def hasHaving : CheckedSingularDateRangesOverlapOperand model → Bool
   | .canonical source => source.hasHaving
-  | .fragmentField _ => false
+  | .fragmentField _ | .indexedFragment .. => false
 
-/-- Whether the retained declaration satisfies the exact canonical policy or one singular-only direct fragment profile valid for the checked model. -/
+/-- Whether the retained declaration satisfies the exact canonical policy or one field fragment profile valid for the checked model. -/
 def policySupported : CheckedSingularDateRangesOverlapOperand model → Bool
   | .canonical source =>
       (DateRangeFormat.ofPolicy? source.source.policy).isSome
-  | .fragmentField source => source.profile.accepts model source.format
+  | .fragmentField source | .indexedFragment _ source => source.profile.accepts model source.format
 
-/-- The authored declaration behind a direct operand, or the starred field's declaration. -/
+/-- The authored declaration behind a stored, selected or starred operand. -/
 def declaration : CheckedSingularDateRangesOverlapOperand model → FlatFieldDecl
   | .canonical source => source.source.declaration
-  | .fragmentField source => source.declaration
+  | .fragmentField source | .indexedFragment _ source => source.declaration
 
 /-- Resolve one singular full-validation operand through the existing checked direct/star addressing boundary. -/
 def resolveValidationCore (operand : CheckedSingularDateRangesOverlapOperand model)
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
-    Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
+    Except CheckedAddressingError ResolvedDateRangeOverlapCore :=
   match operand with
   | .canonical source => source.resolveValidationCore (world := world) document outer
   | .fragmentField source =>
-      document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
+      .addressed <$> document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
+  | .indexedFragment selection _ => resolveSelectedOverlapCore selection document outer
 
 end CheckedSingularDateRangesOverlapOperand
 
@@ -175,7 +231,10 @@ def firstDateRangesOverlapGroup? :
     | .group reference => some reference.path
     | .starredGroup source => some source.group.path
     | .starredGroupPresence source => some source.groupPath
-    | .indexed _ | .keyed _ | .field .. | .star _ | .starHaving _ _ => none
+    | .keyed source => match source.target with
+        | .group path | .starredGroup path => some path
+        | .star _ => none
+    | .indexed _ | .field .. | .star _ | .starHaving _ _ => none
 
 /-- Both overlap operators' field walk: every field the operands expand to, in authored order, must be
 a DateRange declaration without a year interpretation. It completes before the uniform-year gate over
@@ -257,8 +316,10 @@ def certifyDateRangesOverlapOperand (model : FlatModel)
     (bindingGroup : GroupPath := declaringGroup) :
       Except DateRangesOverlapElabError
         (CheckedDateRangesOverlapOperand model) := match operand with
-  | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
-  | .keyed source => throw (.shape (.unsupportedIndexedOperand source.entityPath))
+  | .indexed source => .indexed source <$> certifyDateRangesOverlapField source.targetDeclaration
+  | .keyed source => match source.target with
+      | .star path => .keyed source <$> certifyDateRangesOverlapField path.declaration
+      | .group path | .starredGroup path => throw (.groupsNotAllowed path)
   | .field declaration .stored =>
       .field <$> certifyDateRangesOverlapField declaration
   | .field declaration form =>
@@ -274,11 +335,20 @@ def certifyDateRangesOverlapOperand (model : FlatModel)
   | .starredGroup source => throw (.groupsNotAllowed source.group.path)
   | .starredGroupPresence source => throw (.groupsNotAllowed source.groupPath)
 
-private def certifySingularDateRangesOverlapOperand (model : FlatModel)
+/-- Certify direct and selected fields through the same declaration profile; starred operands keep
+their canonical profile. The plural list reuses this contract (spec/07 §3). -/
+def certifySingularDateRangesOverlapOperand (model : FlatModel)
     (declaringGroup : GroupPath) (operand : ResolvedFieldEntityOperand model)
     (bindingGroup : GroupPath := declaringGroup) :
       Except DateRangesOverlapElabError
         (CheckedSingularDateRangesOverlapOperand model) := match operand with
+  | .indexed selection =>
+      match certifyDateRangesOverlapField selection.targetDeclaration with
+      | .ok source => pure (.canonical (.indexed selection source))
+      | .error (.unsupportedPolicy _ _ _) =>
+          .indexedFragment selection <$>
+            certifyDirectDateRangeOverlapFragmentField model selection.targetDeclaration
+      | .error error => throw error
   | .field declaration .stored =>
       match certifyDateRangesOverlapField declaration with
       | .ok source => pure (.canonical (.field source))
@@ -310,12 +380,23 @@ def dateRangeOperandIncludesYear? (model : FlatModel) :
   | .field declaration .stored =>
       (certifyDateRangeInputField declaration).toOption.map fun checked =>
         dateRangeProfileIncludesYear model checked.format
+  | .indexed source =>
+      (certifyDateRangeInputField source.targetDeclaration).toOption.map fun checked =>
+        dateRangeProfileIncludesYear model checked.format
   | _ => none
 
-/-- The Kernel's uniform-year gate over a whole overlap operand list: every compared range must include the year, or none may. It is a property of the list rather than of a distinguished pair, so it reaches lists longer than two and every declared spelling of a component set. A configured Base Year makes each yearless declaration year-bearing, so a configured model never mixes. -/
+/-- The year classes exposed by one overlap operand, including every selected descendant. -/
+def dateRangeOperandYearInclusions (model : FlatModel) :
+    ResolvedFieldEntityOperand model → List Bool
+  | .keyed source => source.declarations.filterMap fun declaration =>
+      (certifyDateRangeInputField declaration).toOption.map fun checked =>
+        dateRangeProfileIncludesYear model checked.format
+  | operand => (dateRangeOperandIncludesYear? model operand).toList
+
+/-- The Kernel's uniform-year gate over a whole overlap operand list: every compared range must include the year, or none may. It is a property of the list rather than of a distinguished pair. A configured Base Year makes each yearless declaration year-bearing. -/
 def mixesDateRangeYearInclusion (model : FlatModel)
     (operands : List (ResolvedFieldEntityOperand model)) : Bool :=
-  let inclusions := operands.filterMap (dateRangeOperandIncludesYear? model)
+  let inclusions := operands.flatMap (dateRangeOperandYearInclusions model)
   inclusions.contains true && inclusions.contains false
 
 /-- Apply the shared shape gates first, then the singular operator's group refusal, the field walk, the uniform-year gate, and exact-or-direct-fragment policy certification in authored order.
@@ -378,7 +459,7 @@ def DateRangesOverlapEvaluationError.toAddressing (fallback : CellAddr) :
 structure ResolvedCheckedDateRangesOverlapOperand (model : FlatModel) where
   private mk ::
   source : CheckedSingularDateRangesOverlapOperand model
-  core : ResolvedCheckedEntityOperandCore
+  core : ResolvedDateRangeOverlapCore
   semantic : ResolvedDateRangeOperand
 
 /-- Project one already-observed range into a kept-or-skipped overlap slot. Absence and formal
@@ -407,10 +488,16 @@ def checkedDateRangeSlot
 
 /-- Project one resolved operand core into the pure overlap operand, carrying its filter provenance. Shared with the plural operator's list side. -/
 def checkedDateRangeOperandSemantic
-    (core : ResolvedCheckedEntityOperandCore) :
+    (core : ResolvedDateRangeOverlapCore) :
     Except DateRangesOverlapEvaluationError ResolvedDateRangeOperand := do
-  let slots ← core.addressedCells.mapM checkedDateRangeSlot
-  pure { slots, hasFilter := core.hasHaving }
+  match core with
+  | .addressed core =>
+      let slots ← core.addressedCells.mapM checkedDateRangeSlot
+      pure { slots, hasFilter := core.hasHaving }
+  | .selected (.value cells) =>
+      pure { slots := ← cells.mapM checkedDateRangeSlot, hasFilter := false }
+  | .selected (.empty) | .selected (.unknown _) | .selected (.poison _) =>
+      pure { slots := [.skipped], hasFilter := false }
 
 namespace CheckedSingularDateRangesOverlapOperand
 

@@ -434,11 +434,10 @@ private def resolvedFieldPointers {model : FlatModel} (field : FieldId) (environ
   let declaration ← (model.lookupUniqueId field).mapError (fun _ => .unclassifiedOperand)
   pure [← concreteFieldPointer declaration environment]
 
-private def temporalEntityPointers (source : CheckedTemporalExtremumOperands model)
+private def entityShapePointers (shape : CheckedFieldEntityShape model)
     (environment : Env) (inputs : Option MessageReferenceInputs) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  if source.filters.any Option.isSome then .error .filteredStarOperand else
-  (·.flatten) <$> source.shape.operands.mapM fun
+  (·.flatten) <$> shape.operands.mapM fun
     | .field declaration _ => (concreteFieldPointer declaration environment).map ([·])
     | .indexed source => source.referencePointers environment inputs
     | .keyed source => source.referencePointers environment inputs
@@ -447,6 +446,12 @@ private def temporalEntityPointers (source : CheckedTemporalExtremumOperands mod
     | .group reference => fixedGroupPointers model reference environment
     | .starredGroup source => starredGroupPointers model source.group.path source.path.firstStar environment
     | .starredGroupPresence source => starredGroupPointers model source.groupPath source.path.firstStar environment
+
+private def temporalEntityPointers (source : CheckedTemporalExtremumOperands model)
+    (environment : Env) (inputs : Option MessageReferenceInputs) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  if source.filters.any Option.isSome then .error .filteredStarOperand else
+    entityShapePointers source.shape environment inputs
 
 private def temporalExpressionPointers (source : ScalarTemporalExpression model)
     (environment : Env) (inputs : Option MessageReferenceInputs) :
@@ -587,8 +592,12 @@ def ValidationConditionLeaf.referencePointers (environment : Env)
   | .guardedRepeatableCurrentRepetition guard _ _ =>
       (concreteFieldPointer guard environment).map ([·])
   | .iteratedDateRange condition =>
-      condition.operandDeclarations.mapM fun declaration =>
-        concreteFieldPointer declaration environment
+      match condition.overlapShape? with
+      | some shape =>
+          if !condition.filters.isEmpty then .error .filteredStarOperand else
+            entityShapePointers shape environment inputs
+      | none => condition.operandDeclarations.mapM fun declaration =>
+          concreteFieldPointer declaration environment
   | .constructedDateValidity _ source =>
       temporalExpressionPointers source.scalarCore environment inputs
   | .indexedCustomFieldValidity source => source.source.selection.referencePointers environment inputs

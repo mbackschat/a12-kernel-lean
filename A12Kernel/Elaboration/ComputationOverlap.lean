@@ -14,6 +14,7 @@ inductive CheckedComputationOverlap (model : FlatModel) where
 inductive ComputationOverlapError where
   | contextRequired
   | addressing (error : StarAddressingError)
+  | selection (error : CheckedAddressingError)
   | fieldKindMismatch (field : FieldId)
   deriving Repr, DecidableEq
 
@@ -33,11 +34,14 @@ def shape : CheckedComputationOverlap model → CheckedFieldEntityShape model
 
 def referencesField (source : CheckedComputationOverlap model) (field : FieldId)
     (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=
-  source.shape.operands.any (fun operand => operand.expansionDeclarations.any (·.id == field)) ||
+  source.shape.operands.any (fun operand => match operand with
+    | .indexed selected => selected.referencesField field
+    | .keyed selected => selected.referencesField field
+    | operand => operand.expansionDeclarations.any (·.id == field)) ||
     source.toValidation.filters.any (filterReads · field)
 
 def rowBoundBool (source : CheckedComputationOverlap model) (scope : List RepeatableLevel) : Bool :=
-  source.shape.operands.all (·.bindingScope.isPrefixOf scope)
+  source.shape.operands.all (fun operand => operand.bindingScopes.all (·.isPrefixOf scope))
 
 private def exactRange : Value → Option ResolvedDateRange
   | .dateRange (.exact range) => range.toResolvedDateRange?
@@ -48,14 +52,24 @@ private def yearlessRange : Value → Option YearlessInterval
   | .dateRange (.yearlessMonthDay start finish) => some (YearlessInterval.ofMonthDayPair start finish)
   | _ => none
 
-private def observation (project : Value → Option α) (field : FieldId) (cell : CheckedCell) :
-    Except ComputationOverlapError (CellObservation α) :=
-  match observeCell .computation cell with
+private def projectObservation (project : Value → Option α) (field : FieldId) :
+    CellObservation → Except ComputationOverlapError (CellObservation α)
   | .empty => pure .empty
   | .poison cause | .unknown cause => pure (.poison cause)
   | .value value => match project value with
       | some range => pure (.value range)
       | none => throw (.fieldKindMismatch field)
+
+private def observation (project : Value → Option α) (field : FieldId) (cell : CheckedCell) :
+    Except ComputationOverlapError (CellObservation α) :=
+  projectObservation project field (observeCell .computation cell)
+
+private def indexedObservation (project : Value → Option α)
+    (source : CheckedSemanticIndexSource model) (context : ScalarComputationContext) :
+    Except ComputationOverlapError (CellObservation α) := do
+  let value ← source.observeColumnWith .computation context.semanticIndexColumnReader
+    context.row context.read context.storedText |>.mapError .selection
+  projectObservation project source.targetDeclaration.id value
 
 private def scanSlots (project : Value → Option α) (overlaps : α → α → Bool)
     (field : FieldId) (read : slot → CheckedCell) : List slot → ComputationOverlapSearch α →
@@ -126,10 +140,30 @@ private def scanGroup (project : Value → Option α) (overlaps : α → α → 
       scanSlots project overlaps declaration.id (fun row => contextRead.read row declaration.id) rows state)
     declarations state
 
+private def scanKeyed (project : Value → Option α) (overlaps : α → α → Bool)
+    (context : ScalarComputationContext) (source : CheckedKeyedEntityExtent model)
+    (state : ComputationOverlapSearch α) : Except ComputationOverlapError
+      (ComputationHavingScanResult (ComputationOverlapSearch α) ComputationConditionResult) := do
+  let current ← addressed context
+  let selected ← source.selectWith .computation context.semanticIndexColumnReader
+    context.row context.read context.storedText |>.mapError .selection
+  match selected with
+  | .empty => pure (.exhausted state)
+  | .unknown cause | .poison cause => pure (.poison cause)
+  | .value environment =>
+      let rows ← source.rows current.document environment |>.mapError .addressing
+      scanOperands (fun (declaration, environments, _) state =>
+        scanSlots project overlaps declaration.id
+          (fun row => current.read row declaration.id) environments state) rows state
+
 private def scanExact (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell)
     (filterStoredText filterNumberText : Env → FieldId → Option String)
     (source : CheckedSingularDateRangesOverlapOperand model) (state : ComputationOverlapSearch ResolvedDateRange) :=
   match source with
+  | .canonical (.indexed selection _) | .indexedFragment selection _ =>
+      ComputationOverlapSearch.scan ResolvedDateRange.overlaps
+        (fun source => indexedObservation exactRange source context) [selection] state
+  | .canonical (.keyed selection _) => scanKeyed exactRange ResolvedDateRange.overlaps context selection state
   | .canonical (.star path _ filter) => scanStar exactRange ResolvedDateRange.overlaps context filterRead filterStoredText filterNumberText path filter state
   | source => scanSlots exactRange ResolvedDateRange.overlaps source.declaration.id
       context.read [source.declaration.id] state
@@ -139,6 +173,7 @@ private def scanExactList (context : ScalarComputationContext) (filterRead : Env
     (source : CheckedAtLeastOneDateRangeOverlapsListOperand model) (state : ComputationOverlapSearch ResolvedDateRange) :=
   match source with
   | .field source => scanExact context filterRead filterStoredText filterNumberText source state
+  | .keyed source _ _ => scanKeyed exactRange ResolvedDateRange.overlaps context source state
   | .group source =>
       scanGroup exactRange ResolvedDateRange.overlaps context source.source
         ((source.first :: source.rest).map (fun (field : CheckedCanonicalDateRangeField) => field.declaration)) state
@@ -147,6 +182,10 @@ private def scanYearless (context : ScalarComputationContext) (filterRead : Env 
     (filterStoredText filterNumberText : Env → FieldId → Option String)
     (source : CheckedYearlessDateRangeOverlapOperand model) (state : ComputationOverlapSearch YearlessInterval) :=
   match source with
+  | .indexed selection _ =>
+      ComputationOverlapSearch.scan YearlessInterval.overlaps
+        (fun source => indexedObservation yearlessRange source context) [selection] state
+  | .keyed selection _ _ => scanKeyed yearlessRange YearlessInterval.overlaps context selection state
   | .direct source => scanSlots yearlessRange YearlessInterval.overlaps source.declaration.id
       context.read [source.declaration.id] state
   | .star path _ filter => scanStar yearlessRange YearlessInterval.overlaps context filterRead filterStoredText filterNumberText path filter state
@@ -164,11 +203,15 @@ def evalChecked (source : CheckedComputationOverlap model) (context : ScalarComp
   | .yearlessAnyPair source => ComputationOverlapSearch.result <$>
       scanOperands (scanYearless context filterRead filterStoredText filterNumberText) source.operands (.anyPair [])
   | .scalar source => do
-      let scalar ← observation exactRange source.scalar.declaration.id (context.read source.scalar.declaration.id)
+      let scalar ← match source.scalarSelection? with
+        | some selection => indexedObservation exactRange selection context
+        | none => observation exactRange source.scalar.declaration.id (context.read source.scalar.declaration.id)
       ComputationOverlapSearch.scalarUsing scalar fun state => ComputationOverlapSearch.result <$>
         scanOperands (scanExactList context filterRead filterStoredText filterNumberText) source.operands state
   | .yearlessScalar source => do
-      let scalar ← observation yearlessRange source.scalar.declaration.id (context.read source.scalar.declaration.id)
+      let scalar ← match source.scalarSelection? with
+        | some selection => indexedObservation yearlessRange selection context
+        | none => observation yearlessRange source.scalar.declaration.id (context.read source.scalar.declaration.id)
       ComputationOverlapSearch.scalarUsing scalar fun state => ComputationOverlapSearch.result <$>
         scanOperands (scanYearless context filterRead filterStoredText filterNumberText) source.operands state
 

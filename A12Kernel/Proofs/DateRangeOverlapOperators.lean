@@ -16,12 +16,12 @@ theorem checkedDateRangesOverlap_policySupported_operand
   cases operand with
   | canonical source =>
       cases source with
-      | field source | star _ source _ =>
+      | field source | indexed _ source | keyed _ source | star _ source _ =>
           simp only [CheckedSingularDateRangesOverlapOperand.policySupported,
             CheckedDateRangesOverlapOperand.source]
           rw [source.formatOwned]
           rfl
-  | fragmentField source =>
+  | fragmentField source | indexedFragment _ source =>
       simp only [CheckedSingularDateRangesOverlapOperand.policySupported]
       exact source.profileOwned
 
@@ -56,6 +56,12 @@ theorem checkedAtLeastOneDateRangeOverlaps_policies_supported
         simpa only [CheckedAtLeastOneDateRangeOverlapsListOperand.policySupported]
           using checkedDateRangesOverlap_policySupported_operand source
     | group source =>
+        simp only [CheckedAtLeastOneDateRangeOverlapsListOperand.policySupported]
+        apply List.all_eq_true.mpr
+        intro field _
+        rw [field.formatOwned]
+        rfl
+    | keyed _ first rest =>
         simp only [CheckedAtLeastOneDateRangeOverlapsListOperand.policySupported]
         apply List.all_eq_true.mpr
         intro field _

@@ -419,11 +419,6 @@ These stable names help when a query crosses numbered clauses. Their capability 
 - `assurance`: E locks agreement with the hand-assembled comparison on three documents and both refusals in [`OrdinaryEntitySurface.lean`](../../A12Kernel/Conformance/ValidationRule/OrdinaryEntitySurface.lean). The [population replay](../TESTING.md#the-population-replay) reaches it for `Sum` and `NumberOfValueInFields`, every such rule-row matching, measured 2026-10-02.
 - `boundary`: an unstarred field of the rule's own repeatable level inside an entity list is refused as an unbound level, observed on the lock fixture 2026-10-02; whether the Kernel admits that field beside a star is unmeasured.
 
-<a id="cap-resolved-date-range-overlap-truth-admission-and-scans"></a>
-#### Resolved Date-range overlap truth, admission, and scans
-
-- `owner-and-boundary`: [`DateRangeOverlap.lean`](../../A12Kernel/Semantics/DateRangeOverlap.lean) owns primitive truth, [`DateRangeOverlapOperators.lean`](../../A12Kernel/Semantics/DateRangeOverlapOperators.lean) owns ordered scans, and [`DateRangeOverlap.lean`](../../A12Kernel/Elaboration/DateRangeOverlap.lean) owns checked singular/plural admission and full-validation assembly.
-
 <a id="cap-resolved-direct-date-construction-and-base-year-sources"></a>
 #### Resolved direct Date construction and Base-Year sources
 

@@ -422,8 +422,7 @@ private def ValidationConditionLeaf.iterationGuardAt
       -- A value comparison guards its own level at every polarity. The Kernel refuses a negated
       -- *presence* leaf at an iterated level, and the same model admits `==`, `!=`, and the order
       -- operators on a repeatable operand, so polarity is not this leaf's question.
-      if condition.repeatableDeclarations.any fun declaration =>
-          declaration.repeatableScope.contains level then
+      if condition.bindingScopes.any (·.contains level) then
         .guarded
       else
         .noReference

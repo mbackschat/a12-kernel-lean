@@ -653,7 +653,7 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-rule-comparisons-over-entity-lists"></a>
 - [Rule comparisons over entity lists](implementation/cross-clause.md#cap-rule-comparisons-over-entity-lists)
 <a id="cap-resolved-date-range-overlap-truth-admission-and-scans"></a>
-- [Resolved Date-range overlap truth, admission, and scans](implementation/cross-clause.md#cap-resolved-date-range-overlap-truth-admission-and-scans)
+- [Resolved Date-range overlap truth, admission, and scans](implementation/date-range.md#cap-resolved-date-range-overlap-truth-admission-and-scans)
 <a id="cap-resolved-direct-date-construction-and-base-year-sources"></a>
 - [Resolved direct Date construction and Base-Year sources](implementation/cross-clause.md#cap-resolved-direct-date-construction-and-base-year-sources)
 <a id="cap-berlin-legacy-calendar-arithmetic"></a>

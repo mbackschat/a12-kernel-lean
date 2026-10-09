@@ -335,7 +335,15 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | .error refusal => [.error refusal])
     | _ => []
   let lowerOverlap (construct : String)
-      (result : Except ValidationConditionAssemblyError (CheckedValidationCondition model)) :=
+      (result : Except ValidationConditionAssemblyError (CheckedValidationCondition model))
+      (yearless : Unit → Except ValidationConditionAssemblyError (CheckedValidationCondition model)) :=
+    -- Both profile certificates enforce the complete admission gates; keep the exact route's
+    -- refusal when neither applies, as the computation reader does (spec/07 §3).
+    let result : Except ValidationConditionAssemblyError (CheckedValidationCondition model) := match result with
+      | .ok checked => .ok checked
+      | .error error => match yearless () with
+          | .ok checked => .ok checked
+          | .error _ => .error error
     result.mapError fun error => {
       construct
       detail := (match error with
@@ -345,12 +353,14 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
     | .call "DateRangesOverlap" arguments none none => [do
         let source ← lowerEntitySource model rowGroup arguments filterBinding?
         lowerOverlap "DateRangesOverlap"
-          (CheckedValidationCondition.fromIteratedDateRangeOverlap model rowGroup source rowGroup (some bindingGroup))]
+          (CheckedValidationCondition.fromIteratedDateRangeOverlap model rowGroup source rowGroup (some bindingGroup))
+          (fun _ => CheckedValidationCondition.fromIteratedYearlessDateRangeOverlap model rowGroup source rowGroup (some bindingGroup))]
     | .call "AtLeastOneDateRangeOverlaps" [scalar] (some values) none => [do
         let source := { scalar := ← lowerEntityOperand model rowGroup scalar
                         list := ← lowerEntitySource model rowGroup values filterBinding? }
         lowerOverlap "AtLeastOneDateRangeOverlaps"
-          (CheckedValidationCondition.fromIteratedDateRangePluralOverlap model rowGroup source rowGroup (some bindingGroup))]
+          (CheckedValidationCondition.fromIteratedDateRangePluralOverlap model rowGroup source rowGroup (some bindingGroup))
+          (fun _ => CheckedValidationCondition.fromIteratedYearlessDateRangePluralOverlap model rowGroup source rowGroup (some bindingGroup))]
     | _ => []
   let pattern := match leaf with
     | .compare op (.value { path, index, category := none, filter := none }) right =>

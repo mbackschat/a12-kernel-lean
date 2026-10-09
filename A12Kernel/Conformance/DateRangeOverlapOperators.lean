@@ -167,7 +167,7 @@ private def pluralAdmissionError? (scalar first : SurfaceFieldEntityOperand)
 private def pluralGroupSummary? :
     CheckedAtLeastOneDateRangeOverlapsListOperand admissionModel →
       Option (GroupPath × Bool × List FieldId)
-  | .field _ => none
+  | .field _ | .keyed .. => none
   | .group source => some (
       source.source.groupPath,
       source.source.isStarred,
@@ -502,14 +502,21 @@ private def pluralVerdict? (scalar first : SurfaceFieldEntityOperand)
     (cells : List ClassifiedCellInput) : Option Verdict :=
   (evaluatedPlural? scalar first rest rows cells).map (·.verdict)
 
+private def overlapCoreAddresses? : ResolvedDateRangeOverlapCore →
+    Option (List (FieldId × List Nat))
+  | .addressed core => some (core.addressedCells.map fun cell =>
+      (cell.address.field, cell.address.path))
+  | .selected (.value cells) => some (cells.map fun cell =>
+      (cell.address.field, cell.address.path))
+  | .selected .empty => some []
+  | .selected (.unknown _) | .selected (.poison _) => none
+
 private def pluralListAddresses? (scalar first : SurfaceFieldEntityOperand)
     (rest : List SurfaceFieldEntityOperand) (rows : List RowAddr)
     (cells : List ClassifiedCellInput) :
     Option (List (List (FieldId × List Nat))) :=
-  (evaluatedPlural? scalar first rest rows cells).map fun result =>
-    result.operands.map fun operand =>
-      operand.core.addressedCells.map fun cell =>
-        (cell.address.field, cell.address.path)
+  (evaluatedPlural? scalar first rest rows cells).bind fun result =>
+    result.operands.mapM fun operand => overlapCoreAddresses? operand.core
 
 private def directOverlapCells : List ClassifiedCellInput := [
   rangeCell 1 [] "2024-01-01/2024-01-31" (.parsed (.dateRange januaryValue)),
@@ -519,10 +526,9 @@ private def directOverlapCells : List ClassifiedCellInput := [
 example :
     verdict? (direct "Start") [direct "Finish"] [] directOverlapCells =
         some (.fired .value) ∧
-      (evaluated? (direct "Start") [direct "Finish"] [] directOverlapCells).map
-        (fun result => result.operands.map fun operand =>
-          operand.core.addressedCells.map fun cell =>
-            (cell.address.field, cell.address.path)) =
+      (evaluated? (direct "Start") [direct "Finish"] [] directOverlapCells).bind
+        (fun result => result.operands.mapM fun operand =>
+          overlapCoreAddresses? operand.core) =
         some [[(1, [])], [(2, [])]] := by
   native_decide
 

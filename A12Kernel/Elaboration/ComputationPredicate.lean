@@ -586,6 +586,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   | .overlap source => (source.evalChecked context filterRead (filterStoredText := filterStoredText) (filterNumberText := filterNumberText)).mapError fun
       | .contextRequired => .contextRequired
       | .addressing error => .addressing error
+      | .selection error => .indexSelection error
       | .fieldKindMismatch field => .fieldKindMismatch field
   | .uniqueness source => evalUniqueness source context filterRead filterStoredText filterNumberText
   | .valueList source => evalValueList (.quantified source.quantifier) source context filterRead filterStoredText filterNumberText

@@ -22,17 +22,23 @@ theorem mixesDateRangeYearInclusion_eq_false_of_baseYear (model : FlatModel)
     (configured : model.baseYear.isSome = true)
     (operands : List (ResolvedFieldEntityOperand model)) :
     mixesDateRangeYearInclusion model operands = false := by
-  have hFalse : ∀ value ∈ operands.filterMap (dateRangeOperandIncludesYear? model),
+  have hFalse : ∀ value ∈ operands.flatMap (dateRangeOperandYearInclusions model),
       value ≠ false := by
     intro value hValue
-    rw [List.mem_filterMap] at hValue
+    rw [List.mem_flatMap] at hValue
     obtain ⟨operand, _, hOperand⟩ := hValue
     cases operand with
     | field declaration form =>
         cases form <;>
-          simp_all [dateRangeOperandIncludesYear?,
+          simp_all [dateRangeOperandYearInclusions, dateRangeOperandIncludesYear?,
             dateRangeProfileIncludesYear]
-    | _ => simp_all [dateRangeOperandIncludesYear?]
+    | keyed source =>
+        simp_all [dateRangeOperandYearInclusions, dateRangeOperandIncludesYear?,
+          dateRangeProfileIncludesYear]
+        obtain ⟨_, _, _, hYear⟩ := hOperand
+        exact hYear
+    | _ => simp_all [dateRangeOperandYearInclusions, dateRangeOperandIncludesYear?,
+        dateRangeProfileIncludesYear]
   simp only [mixesDateRangeYearInclusion,
     contains_eq_false_of_forall_ne hFalse, Bool.and_false]
 
@@ -41,12 +47,12 @@ route own that shape without contradicting this gate. -/
 theorem mixesDateRangeYearInclusion_eq_false_of_no_year (model : FlatModel)
     (operands : List (ResolvedFieldEntityOperand model))
     (yearless : ∀ operand ∈ operands,
-      dateRangeOperandIncludesYear? model operand ≠ some true) :
+      true ∉ dateRangeOperandYearInclusions model operand) :
     mixesDateRangeYearInclusion model operands = false := by
-  have hTrue : ∀ value ∈ operands.filterMap (dateRangeOperandIncludesYear? model),
+  have hTrue : ∀ value ∈ operands.flatMap (dateRangeOperandYearInclusions model),
       value ≠ true := by
     intro value hValue
-    rw [List.mem_filterMap] at hValue
+    rw [List.mem_flatMap] at hValue
     obtain ⟨operand, hMember, hOperand⟩ := hValue
     intro hEq
     exact yearless operand hMember (hEq ▸ hOperand)

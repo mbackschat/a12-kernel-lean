@@ -605,9 +605,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
       guard.id == field
   | .guardedRepeatableCurrentRepetition guard _ _, field =>
       guard.id == field
-  | .iteratedDateRange condition, field =>
-      condition.operandDeclarations.any fun declaration =>
-        declaration.id == field
+  | .iteratedDateRange condition, field => condition.referencesField field
   | .customFieldValidity leaf, field => leaf.operand.source == field
   | .indexedCustomFieldValidity leaf, field => leaf.source.selection.referencesField field
   | .fieldFill _ source, field => source.referencesField field
