@@ -102,7 +102,7 @@ example :
       (.ordinary .equal) 1).isNone := by
   native_decide
 
-/- A deeper error declaration cannot manufacture a deeper iteration level when the condition references only the outer scope. -/
+/- A deeper error declaration is scope-compatible but cannot replace the required reference to that error field. -/
 example :
     (outerIterationCondition?.map fun condition =>
       match assembleResolvedValidationRule ordinaryIterationModel condition
@@ -110,7 +110,7 @@ example :
       | .ok _ => none
       | .error error => some error) =
       some (some
-        (.iterationScopeMismatch innerAmount.id [10] [10, 20])) := by
+        (.errorFieldNotReferenced innerAmount.id)) := by
   native_decide
 
 /- A repeatable Number comparison must enter the existing ordered numeric condition carrier and derive the current-row scope without a new expression tree. -/

@@ -207,6 +207,25 @@ theorem checkedValidationRule_errorField_coherent
   ⟨rule.errorFieldLookup, rule.errorFieldScopeCompatible,
     rule.errorFieldReferenced⟩
 
+/-- Error addressing retains the resolved iteration prefix and defaults only its remaining suffix. -/
+theorem checkedValidationRule_errorPathAt_resolved
+    (rule : CheckedResolvedValidationRule model) (environment : Env) (bound : List Nat)
+    (resolved : environment.pathForScope (rule.iterationScope.getD []) = .ok bound) :
+    rule.errorPathAt environment = .ok
+      (bound ++ List.replicate (rule.errorDeclaration.repeatableScope.length - bound.length) 1) := by
+  simp only [CheckedResolvedValidationRule.errorPathAt, resolved]
+  rfl
+
+/-- Pinning error-only levels cannot replace a condition-bound coordinate. -/
+theorem checkedValidationRule_errorPathAt_preserves_bound
+    (rule : CheckedResolvedValidationRule model) (environment : Env) (bound : List Nat)
+    (resolved : environment.pathForScope (rule.iterationScope.getD []) = .ok bound) :
+    (rule.errorPathAt environment).map (List.take bound.length) = .ok bound := by
+  rw [checkedValidationRule_errorPathAt_resolved rule environment bound resolved]
+  change .ok ((bound ++ List.replicate
+    (rule.errorDeclaration.repeatableScope.length - bound.length) 1).take bound.length) = Except.ok bound
+  simp
+
 /-- Checked assembly cannot substitute a caller-selected ordinary iteration scope for the one derived from the complete checked condition tree. -/
 theorem checkedValidationRule_iterationScope_owned
     (rule : CheckedResolvedValidationRule model) :

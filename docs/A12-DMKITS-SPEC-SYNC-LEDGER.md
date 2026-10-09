@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-09-08"></a>
+### SPEC-2026-10-09-08 — deeper error fields preserve ancestor iteration
+
+- `status`: pending
+- `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) distinguishes condition-bound coordinates from a deeper error field's defaulted suffix.
+- `delta`: Ordinary full validation preserves the derived parent iteration and pins error-only levels to coordinate one. Emitting the error does not read or materialize that child row, and its capacity does not widen the rule's iteration domain. Keep error-field membership and per-level reference gates.
+- `basis`: Kernel 30.8.1 [iteration-domain checkpoint](sources/evaluation-and-application-routes.md#src-validation-iteration-domain), retained GroupSeen layouts and peer `iteration-groups` R_AG. `RuleIterationLimitCreator` and `CodeGenRuleDefinition.st` settle the bound/message distinction; partial-validation correspondence is not claimed.
+- `acceptance`: Reconcile parent-group and child-star aggregate messages with absent-child and multiple-parent controls, retaining exact-scope and incompatible/shorter-error controls. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
 <a id="spec-2026-10-09-07"></a>
 ### SPEC-2026-10-09-07 — a reached indexed no-match retains first-filled omission provenance
 

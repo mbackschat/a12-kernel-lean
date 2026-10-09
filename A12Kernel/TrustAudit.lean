@@ -1151,6 +1151,8 @@ run_cmd do
 #print axioms A12Kernel.checkedFlatRule_errorField_coherent
 #print axioms A12Kernel.checkedValidationRule_errorField_coherent
 #print axioms A12Kernel.checkedValidationRule_iterationScope_owned
+#print axioms A12Kernel.checkedValidationRule_errorPathAt_resolved
+#print axioms A12Kernel.checkedValidationRule_errorPathAt_preserves_bound
 #print axioms A12Kernel.checkedValidationRule_once_plan_exact
 #print axioms A12Kernel.assembleResolvedValidationRule_rejects_negativeIteration
 #print axioms A12Kernel.flatRuleAssemblyError_negativeIteration_diagnostic
