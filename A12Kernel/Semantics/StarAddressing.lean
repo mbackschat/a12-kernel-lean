@@ -75,6 +75,47 @@ def StarAddressingError.isFilterValueFailure : StarAddressingError → Bool
   | .temporalValueFailure | .typeValidityValueFailure => true
   | _ => false
 
+/-- Coordinate-prefix occupancy for a sparse filtered walk. Fixed model groups occupy a
+coordinate slot too; names do not partition occupancy (Kernel EbenenIterator / KF528). -/
+structure FilterOccupancy where
+  levels : List (Option RepeatableLevel)
+  occupied : List (List Nat)
+  deriving Repr, DecidableEq
+
+/-- The changed axis controls occupancy; lower axes restart a dense search until a filter holds. -/
+def FilterOccupancy.changedPrefix : List Nat → List Nat → List Nat
+  | before :: rest, current :: remaining =>
+      current :: (if before == current then changedPrefix rest remaining else [])
+  | _, remaining => remaining
+
+def FilterOccupancy.coordinates (occupancy : FilterOccupancy) (environment : Env) : List Nat :=
+  occupancy.levels.map fun level => level.bind (fun key => environment.lookup key) |>.getD 1
+
+/-- Before the first kept candidate every coordinate is searched. Thereafter only the prefix
+through the first changed axis must be occupied; rejected filters do not advance this cursor. -/
+def FilterOccupancy.allowsAfter (occupancy : FilterOccupancy)
+    (previous : Option Env) (candidate : Env) : Bool :=
+  match previous with
+  | none => true
+  | some previous =>
+      let stem := changedPrefix (occupancy.coordinates previous) (occupancy.coordinates candidate)
+      occupancy.occupied.any (stem.isPrefixOf ·)
+
+/-- Consumer-selected traversal. `requireSmall` preserves the bounded API's refusal when its
+caller has not supplied a large-domain policy; it never guesses sparse behavior. -/
+inductive FilterTraversalMode where
+  | dense
+  | sparse
+  | requireSmall
+  deriving Repr, DecidableEq
+
+/-- A bounded candidate space with the consumer's optional sparse traversal policy. Keeping the
+policy separate from the list preserves predicate-dependent reset and successor search. -/
+structure FilterTraversal where
+  candidates : List Env
+  occupancy : Option FilterOccupancy := none
+  deriving Repr, DecidableEq
+
 namespace StarPath
 
 /-- Repeatable levels strictly above the first star, which stay fixed by the surrounding rule environment. The starred level and every deeper axis are operand-local.

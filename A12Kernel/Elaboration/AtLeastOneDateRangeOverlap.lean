@@ -490,7 +490,7 @@ def resolveCheckedValidation
         core
         semantic := ← checkedDateRangeOperandSemantic core }
   | .field fieldSource => do
-      let core ← (fieldSource.resolveValidationCore (world := world) document outer)
+      let core ← (fieldSource.resolveValidationCore (world := world) (traversalMode := .sparse) document outer)
         |>.mapError .addressing
       let semantic ← checkedDateRangeOperandSemantic core
       pure {

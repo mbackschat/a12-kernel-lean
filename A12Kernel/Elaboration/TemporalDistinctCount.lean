@@ -472,7 +472,7 @@ def CheckedTemporalDistinctCountOperand.resolveDistinctCountCore
     (world : Option World := none) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
   match operand with
-  | .slot inner => inner.resolveValidationCore (world := world) document outer
+  | .slot inner => inner.resolveValidationCore (world := world) (traversalMode := .sparse) document outer
   | .selected source _ => throw (.checkedDocumentRequired source.path)
   | .group source =>
       document.resolveCheckedGroupEntityOperandCore outer
@@ -645,13 +645,13 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
       match filter with
       | none => pure (.inl (resolved.toResolvedSide read))
       | some having => do
-          let candidates ← model.filterEnvironments path.path
-            (document.filterRows.getD document.instantiatedRows) outer true
+          let traversal ← model.filterTraversal path.path
+            (document.filterRows.getD document.instantiatedRows) outer
           let read := fun environment => project (model.filterRead document starRead environment source.declaration.id)
           let consume := fun cells environment => match read environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
-          match ← (having.scanComputation (({ read := model.filterRead document filterRead, storedText := filterStoredText, numberText := filterNumberText, world } : CorrelationContext).withModelComputationGroups model document) outer consume candidates []).mapError (fun
+          match ← (having.scanComputation (({ read := model.filterRead document filterRead, storedText := filterStoredText, numberText := filterNumberText, world } : CorrelationContext).withModelComputationGroups model document) outer consume traversal.candidates [] traversal.occupancy).mapError (fun
             | .calendarUnavailable => .unsupportedDateCalendar
             | .valueFailure => .temporalValueFailure
             | .worldUnavailable => .worldUnavailable

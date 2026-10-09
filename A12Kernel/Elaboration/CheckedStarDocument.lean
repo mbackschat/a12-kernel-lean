@@ -632,21 +632,30 @@ def filterEnvironments (source : CheckedStarFieldPath model)
   model.filterEnvironments source.path
     (checked.filterRows.getD checked.source.instantiatedRows) outer sparse |>.mapError .addressing
 
+/-- Sparse-capable consumers retain the policy alongside candidates so filter rejection can
+preserve initialization/reset search rather than collapsing to occupied physical leaves. -/
+def filterTraversal (source : CheckedStarFieldPath model)
+    (checked : CheckedDocument model) (outer : Env) (mode : FilterTraversalMode := .sparse) :
+    Except CheckedAddressingError FilterTraversal :=
+  model.filterTraversal source.path
+    (checked.filterRows.getD checked.source.instantiatedRows) outer mode |>.mapError .addressing
+
 /-- Resolve one full-validation starred entity-list occurrence. Optional checked-filter ownership remains with the typed caller; this function owns the common filter-before-addressing projection and preserves reached failures structurally. -/
 def resolveCheckedValidationEntityOperandCore
     (source : CheckedStarFieldPath model)
     (checked : CheckedDocument model) (outer : Env)
     (having : Option CorrelatedHaving)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
   let topology ←
     (source.path.resolveInCapacity checked.source.toDocument outer).mapError .addressing
   let selected ← match having with
     | none => pure topology.environments
     | some condition => do
+        let traversal ← source.filterTraversal checked outer traversalMode
         condition.selectEnvironmentsResolving
           (checked.resolvingCorrelationContextWithRead checked.readDeclared world) outer
-          (← source.filterEnvironments checked outer)
+          traversal.candidates traversal.occupancy
   let addressedCells ← selected.mapM fun environment =>
     checked.addressedCellWithRead (if having.isSome then checked.readDeclared else checked.read)
       environment source.declaration.id

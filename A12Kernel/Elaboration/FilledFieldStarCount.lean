@@ -42,7 +42,7 @@ private def countInCapacity (checked : CheckedStarFieldPath model)
     (world : Option World := none) :
     Except CheckedAddressingError FilledFieldCount := do
   let resolved ←
-    checked.resolveCheckedValidationEntityOperandCore (world := world) document outer having
+    checked.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := .sparse) document outer having
   pure (numberOfFilledFields
     (resolved.inCapacityAddressedCells.map fun addressed =>
       observeCell .validation addressed.cell))

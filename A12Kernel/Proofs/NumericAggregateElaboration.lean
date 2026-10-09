@@ -174,7 +174,7 @@ theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
       (do
         if let .selected source := checked then
           return .inl (← source.sideIn .validation document outer)
-        let resolved ← checked.resolveCheckedValidationOperand (world := world) document outer
+        let resolved ← checked.resolveCheckedValidationOperand (world := world) (traversalMode := .sparse) document outer
         let side := match checked with
           | .selected _ | .star _ | .starHaving _ | .group _ =>
               resolved.inCapacityValueListSideAt .validation
@@ -192,7 +192,7 @@ theorem checkedNumberEntityFilteredStar_checkedValidationAggregate_usesCapacityP
     (CheckedNumberEntityOperand.starHaving source).resolvedCheckedDocumentValidationAggregateSide (world := world)
         document outer = (do
       let resolved ←
-        (CheckedNumberEntityOperand.starHaving source).resolveCheckedValidationOperand (world := world)
+        (CheckedNumberEntityOperand.starHaving source).resolveCheckedValidationOperand (world := world) (traversalMode := .sparse)
           document outer
       let side := resolved.inCapacityValueListSideAt .validation
       match side.available with

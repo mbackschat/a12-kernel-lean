@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.StarAddressing
 import A12Kernel.Semantics.HavingStringExpression
 import A12Kernel.Semantics.StringPattern
 import A12Kernel.Semantics.HavingSelectedComparison
@@ -502,17 +503,20 @@ def CorrelatedHaving.selectEnvironments (condition : CorrelatedHaving)
     (candidates : List Env) : List Env :=
   candidates.filter (condition.keepsEnvironment context outerEnv)
 
-/-- Select validation candidates in encounter order while preserving every reached addressed failure outside semantic UNKNOWN. Unlike computation, validation evaluates every candidate before the target consumer starts. -/
+/-- Select validation candidates in encounter order while preserving every reached addressed failure outside semantic UNKNOWN. Unlike computation, validation evaluates every traversal-eligible candidate before the target consumer starts. -/
 def CorrelatedHaving.selectEnvironmentsResolving
     (condition : CorrelatedHaving)
-    (context : ResolvingCorrelationContext Error) (outerEnv : Env) :
-    List Env → Except Error (List Env)
+    (context : ResolvingCorrelationContext Error) (outerEnv : Env)
+    (candidates : List Env) (occupancy : Option FilterOccupancy := none)
+    (previous : Option Env := none) : Except Error (List Env) :=
+  match candidates with
   | [] => pure []
   | candidate :: remaining => do
-      let truth ← condition.evalTruthInResolving context
-        { innerEnv := candidate, outerEnv }
-      let selected ←
-        condition.selectEnvironmentsResolving context outerEnv remaining
+      if !(occupancy.map (·.allowsAfter previous candidate)).getD true then
+        return ← condition.selectEnvironmentsResolving context outerEnv remaining occupancy previous
+      let truth ← condition.evalTruthInResolving context { innerEnv := candidate, outerEnv }
+      let selected ← condition.selectEnvironmentsResolving context outerEnv remaining occupancy
+        (if occupancy.isSome && truth == .tru then some candidate else previous)
       pure (if truth == .tru then candidate :: selected else selected)
 
 /-- Result of a computation-phase filtered scan. The consumer may terminate on a selected target, exhaust with accumulated state, or abort at the first filter poison. -/
@@ -525,81 +529,92 @@ inductive ComputationHavingScanResult (State Result : Type) where
 /-- Scan candidates with the runtime iterator's one-kept-candidate lookahead. A holding filter becomes pending; finding its next kept successor happens before the pending target is consumed. Thus a poison while searching for that successor wins over the current target read, while filters after the prefetched successor remain unread if the consumer terminates. -/
 def CorrelatedHaving.scanComputationCandidates
     (condition : CorrelatedHaving) (context : CorrelationContext)
-    (outerEnv : Env) (consume : State → Env → State ⊕ Result) :
-    List Env → Option Env → State → Except CorrelationRuntimeFault (ComputationHavingScanResult State Result)
+    (outerEnv : Env) (consume : State → Env → State ⊕ Result)
+    (candidates : List Env) (pending : Option Env) (state : State)
+    (occupancy : Option FilterOccupancy := none) :
+      Except CorrelationRuntimeFault (ComputationHavingScanResult State Result) :=
+  match candidates, pending, state with
   | [], none, state => pure (.exhausted state)
   | [], some pending, state =>
       match consume state pending with
       | .inl next => pure (.exhausted next)
       | .inr result => pure (.terminated result)
   | candidate :: remaining, pending, state => do
+      if !(occupancy.map (·.allowsAfter pending candidate)).getD true then
+        return ← condition.scanComputationCandidates context outerEnv consume remaining pending state occupancy
       match ← condition.evalComputationIn context
           { innerEnv := candidate, outerEnv } with
       | .notTrue =>
           condition.scanComputationCandidates context outerEnv consume
-            remaining pending state
+            remaining pending state occupancy
       | .poison cause => pure (.poison cause)
       | .holds =>
           match pending with
           | none =>
               condition.scanComputationCandidates context outerEnv consume
-                remaining (some candidate) state
+                remaining (some candidate) state occupancy
           | some current =>
               match consume state current with
               | .inr result => pure (.terminated result)
               | .inl next =>
                   condition.scanComputationCandidates context outerEnv consume
-                    remaining (some candidate) next
+                    remaining (some candidate) next occupancy
 
 /-- Start one computation-phase filtered scan with no prefetched candidate. -/
 def CorrelatedHaving.scanComputation (condition : CorrelatedHaving)
     (context : CorrelationContext) (outerEnv : Env)
     (consume : State → Env → State ⊕ Result)
-    (candidates : List Env) (initial : State) :
+    (candidates : List Env) (initial : State)
+    (occupancy : Option FilterOccupancy := none) :
     Except CorrelationRuntimeFault (ComputationHavingScanResult State Result) :=
   condition.scanComputationCandidates context outerEnv consume
-    candidates none initial
+    candidates none initial occupancy
 
 /-- Addressed computation scan with the established one-kept-successor order. Structural failures from either a reached filter or target consumer remain outside formal poison, and a terminal target still hides filters after its prefetched successor. -/
 def CorrelatedHaving.scanComputationCandidatesResolving
     (condition : CorrelatedHaving)
     (context : ResolvingCorrelationContext Error) (outerEnv : Env)
-    (consume : State → Env → Except Error (State ⊕ Result)) :
-    List Env → Option Env → State →
-      Except Error (ComputationHavingScanResult State Result)
+    (consume : State → Env → Except Error (State ⊕ Result))
+    (candidates : List Env) (pending : Option Env) (state : State)
+    (occupancy : Option FilterOccupancy := none) :
+      Except Error (ComputationHavingScanResult State Result) :=
+  match candidates, pending, state with
   | [], none, state => pure (.exhausted state)
   | [], some pending, state => do
       match ← consume state pending with
       | .inl next => pure (.exhausted next)
       | .inr result => pure (.terminated result)
   | candidate :: remaining, pending, state => do
+      if !(occupancy.map (·.allowsAfter pending candidate)).getD true then
+        return ← condition.scanComputationCandidatesResolving context outerEnv consume remaining pending state occupancy
       match ← condition.evalComputationInResolving context
           { innerEnv := candidate, outerEnv } with
       | .notTrue =>
           condition.scanComputationCandidatesResolving context outerEnv consume
-            remaining pending state
+            remaining pending state occupancy
       | .poison cause => pure (.poison cause)
       | .holds =>
           match pending with
           | none =>
               condition.scanComputationCandidatesResolving context outerEnv
-                consume remaining (some candidate) state
+                consume remaining (some candidate) state occupancy
           | some current =>
               match ← consume state current with
               | .inr result => pure (.terminated result)
               | .inl next =>
                   condition.scanComputationCandidatesResolving context outerEnv
-                    consume remaining (some candidate) next
+                    consume remaining (some candidate) next occupancy
 
 /-- Start one addressed computation scan with no prefetched candidate. -/
 def CorrelatedHaving.scanComputationResolving
     (condition : CorrelatedHaving)
     (context : ResolvingCorrelationContext Error) (outerEnv : Env)
     (consume : State → Env → Except Error (State ⊕ Result))
-    (candidates : List Env) (initial : State) :
+    (candidates : List Env) (initial : State)
+    (occupancy : Option FilterOccupancy := none) :
     Except Error (ComputationHavingScanResult State Result) :=
   condition.scanComputationCandidatesResolving context outerEnv consume
-    candidates none initial
+    candidates none initial occupancy
 
 def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf → Prop

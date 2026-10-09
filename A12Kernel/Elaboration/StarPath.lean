@@ -27,6 +27,26 @@ def FlatModel.filterEnvironments (model : FlatModel) (path : StarPath)
     Except StarAddressingError (List Env) :=
   path.boundedFilterEnvironments outer (model.filterDepthMaximum rows) sparse
 
+/-- Construct the consumer's traversal before evaluating its filter. Sparse consumers retain
+occupancy for the predicate-dependent cursor; unresolved policies refuse large domains. -/
+def FlatModel.filterTraversal (model : FlatModel) (path : StarPath)
+    (rows : List RowAddr) (outer : Env) (mode : FilterTraversalMode := .sparse) :
+    Except StarAddressingError FilterTraversal := do
+  if mode == .requireSmall then
+    return { candidates := ← model.filterEnvironments path rows outer true }
+  let candidates ← model.filterEnvironments path rows outer
+  if mode == .dense || candidates.length ≤ 100 then return { candidates }
+  let some axis := path.axes.getLast? | throw (.unsupportedGroupOperand [])
+  let some group := model.repeatableGroupAtLevel? axis.level
+    | throw (.unsupportedGroupOperand [])
+  let levels := (List.range group.path.length).map fun depth =>
+    (model.repeatableGroups.find? (·.path == group.path.take (depth + 1))).map (·.level)
+  let occupied := rows.filterMap fun row => do
+    let rowGroup ← model.repeatableGroupAtLevel? row.group
+    pure (model.groupCoordinates rowGroup.path
+      ((model.repeatableScopeForGroupPath rowGroup.path).zip row.path))
+  pure { candidates, occupancy := some { levels, occupied } }
+
 /-- One decoded group-path segment with its authored wildcard marker. -/
 structure SurfaceStarGroupSegment where
   name : String

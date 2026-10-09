@@ -190,4 +190,94 @@ example : ["Sum", "MaxValue"].all (fun head =>
     (generatedCacheResult head true).isNone) = true := by
   native_decide
 
+private def sparseNested : FlatModel := { nested with
+  repeatableGroups := nested.repeatableGroups.map fun group =>
+    if group.level == 10 then { group with repeatability := some 51 } else group }
+
+private def runSparseNested (firstRows : Nat) (operator : String := "Sum")
+    (expected : String := toString ((firstRows + 1) * 7)) : Option (Verdict × List String) :=
+  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"31.03.2024T02:30:00\""
+  runModel sparseNested condition false "" "" ""
+    (extra := [("Shipments", Json.arr #[shipment firstRows, shipment 1])])
+    (operationOverride := some (operator ++ "(Shipments*/Items*/N Having " ++ condition ++ ")"))
+    (ruleExpected := expected) (rowsOverride := some #[])
+
+example : runSparseNested 50 = some (.fired .value, []) ∧
+    runSparseNested 51 = some (.fired .omission, ["value 364"]) := by native_decide
+
+example : [("Sum", "364"), ("MinValue", "7"), ("MaxValue", "7"),
+    ("NumberOfDifferentValues", "1"), ("NumberOfFilledFields", "52")].all
+    (fun (operator, expected) => runSparseNested 51 operator expected ==
+      some (.fired .omission, ["value " ++ expected])) = true := by native_decide
+
+private def sparseTyped (base : FlatModel) : FlatModel := { base with
+  fields := base.fields.map fun field => if field.repeatableScope == [10] then
+    { field with groupPath := ["Form", "Shipments", "Items"], repeatableScope := [30, 10] }
+    else field
+  repeatableGroups := sparseNested.repeatableGroups }
+
+private def runSparseTyped (base : FlatModel) (head expected : String) (firstRows : Nat := 51) (validationOnly : Bool := false) : Option (Verdict × List String) :=
+  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"31.03.2024T02:30:00\""
+  let parent count := Json.mkObj [("Items", Json.arr (Array.replicate count typedRow))]
+  let operation := head ++ " Having " ++ condition ++ ")"
+  runModel (sparseTyped base) condition false "" "" ""
+    (extra := [("Shipments", Json.arr #[parent firstRows, parent 1])])
+    (operationOverride := some (if validationOnly then "1" else operation))
+    (ruleCondition := if validationOnly then some ("FieldFilled(Error) And " ++ operation ++ " == " ++ expected) else none)
+    (ruleExpected := expected) (rowsOverride := some #[])
+
+example : [(typedFixture, "NumberOfDifferentValues(Shipments*/Items*/Text", "1", "value 1"),
+    (typedFixture, "NumberOfDifferentValues(Shipments*/Items*/Tag", "1", "value 1"),
+    (stampTarget, "MaxValue(Shipments*/Items*/Tag", "\"31.03.2024T01:30:00\"", "value 2024-03-31T01:30:00"),
+    (stampTarget, "MinValue(Shipments*/Items*/Tag", "\"31.03.2024T01:30:00\"", "value 2024-03-31T01:30:00")].all
+    (fun (model, head, expected, output) => runSparseTyped model head expected ==
+      some (.fired .omission, [output])) = true := by native_decide
+
+example : ["NumberOfValueInFields(7 In Shipments*/Items*/N",
+    "NumberOfValueInFields(\"keep\" In Shipments*/Items*/Text",
+    "NumberOfValueInFields(True In Shipments*/Items*/Flag"].all
+    (fun head => runSparseTyped typedFixture head "2" 1 == some (.fired .omission, ["value 2"]) &&
+      runSparseTyped typedFixture head "52" 51 == some (.fired .value, [])) = true := by native_decide
+
+example : [(enumTarget, "FirstFilledValue(Shipments*/Items*/Text", "\"keep\"", "value keep"),
+    (stampTarget, "FirstFilledValue(Shipments*/Items*/Tag", "\"31.03.2024T01:30:00\"", "value 2024-03-31T01:30:00")].all
+    (fun (model, head, expected, output) =>
+      runSparseTyped model head expected 1 == some (.fired .omission, [output]) &&
+      runSparseTyped model head expected 51 == some (.fired .value, [output])) = true := by native_decide
+
+example : runSparseTyped typedFixture "FirstFilledValue(Shipments*/Items*/Text" "\"keep\"" 1 true =
+    some (.fired .omission, ["value 1"]) ∧
+    runSparseTyped typedFixture "FirstFilledValue(Shipments*/Items*/Text" "\"keep\"" 51 true =
+    some (.fired .value, ["value 1"]) := by native_decide
+
+private def runSparseOverlap (yearless : Bool) (firstRows : Nat) (scalar : Bool := false) : Option (Verdict × List String) :=
+  let base := { typedFixture with fields := typedFixture.fields ++ [{
+    id := 9, groupPath := ["Form", "Rows"], name := "Span", repeatableScope := [10],
+    policy := { kind := .dateRange },
+    dateRangePolicy := some { format := if yearless then "MM-dd" else "yyyy-MM-dd", separator := "/" } },
+    { id := 10, groupPath := ["Form"], name := "RootSpan", policy := { kind := .dateRange },
+      dateRangePolicy := some { format := if yearless then "MM-dd" else "yyyy-MM-dd", separator := "/" } }] }
+  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"31.03.2024T02:30:00\""
+  let guard := (if scalar then "AtLeastOneDateRangeOverlaps(RootSpan In " else "DateRangesOverlap(") ++
+    "Shipments*/Items*/Span Having " ++ condition ++ ")"
+  let row (filled : Bool) := Json.mkObj [("N", "7"), ("Tag", "2024-03-31T01:30:00"),
+    ("Span", Json.str (if !filled then "" else if yearless then "01-01/01-10" else "2024-01-01/2024-01-10"))]
+  let parent count first := Json.mkObj [("Items", Json.arr ((List.range count).map
+    (fun i => row (i == 0 && !(scalar && first)))).toArray)]
+  runModel (sparseTyped base) condition false "" "" ""
+    (extra := [("RootSpan", Json.str (if yearless then "01-01/01-10" else "2024-01-01/2024-01-10")),
+      ("Shipments", Json.arr #[parent firstRows true, parent 1 false])])
+    (operationOverride := some "1") (computationPrecondition := some guard)
+    (ruleCondition := some ("FieldFilled(Error) And " ++ guard)) (rowsOverride := some #[])
+
+example : [false, true].all (fun yearless =>
+    runSparseOverlap yearless 1 == some (.fired .omission, ["value 1"]) &&
+    runSparseOverlap yearless 50 == some (.fired .value, []) &&
+    runSparseOverlap yearless 51 == some (.fired .value, [])) = true := by native_decide
+
+example : [false, true].all (fun yearless =>
+    runSparseOverlap yearless 1 true == some (.fired .omission, ["value 1"]) &&
+    runSparseOverlap yearless 50 true == some (.fired .value, []) &&
+    runSparseOverlap yearless 51 true == some (.fired .omission, ["value 1"])) = true := by native_decide
+
 end A12Kernel.Dm.HavingTraversalLocks

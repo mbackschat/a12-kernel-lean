@@ -630,7 +630,7 @@ namespace CheckedNumberEntityOperand
 def resolveCheckedValidationOperand
     (source : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) :
     Except CheckedAddressingError
       (ResolvedCheckedNumberEntityOperand model) :=
   match source with
@@ -639,12 +639,12 @@ def resolveCheckedValidationOperand
       let core ← document.resolveCheckedDirectEntityOperandCoreAt outer direct.field.id
       pure { source, core }
   | .star starSource => do
-      let core ← starSource.source.resolveCheckedValidationEntityOperandCore
+      let core ← starSource.source.resolveCheckedValidationEntityOperandCore (traversalMode := traversalMode)
         document outer none
       pure { source, core }
   | .starHaving filtered => do
       let core ←
-        filtered.source.source.resolveCheckedValidationEntityOperandCore
+        filtered.source.source.resolveCheckedValidationEntityOperandCore (traversalMode := traversalMode)
           document outer (some filtered.having) world
       pure { source, core }
   | .group slot => do
@@ -656,10 +656,10 @@ def resolveCheckedValidationOperand
 selection; rich selected pointer projection remains a separate boundary. -/
 def checkedValidationSide (source : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) : Except CheckedAddressingError (ResolvedValueListSide .number) := do
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) : Except CheckedAddressingError (ResolvedValueListSide .number) := do
   match source with
   | .selected selection => selection.sideIn .validation document outer
-  | _ => pure ((← source.resolveCheckedValidationOperand (world := world) document outer).valueListSideAt .validation)
+  | _ => pure ((← source.resolveCheckedValidationOperand (world := world) (traversalMode := traversalMode) document outer).valueListSideAt .validation)
 
 /-- Resolve one unfiltered partial-validation operand. Direct masking precedes its read; a star retains canonical topology, reads only relevant concrete cells, and records incomplete extent on that exact authored operand. -/
 def resolveCheckedPartialValidationOperand

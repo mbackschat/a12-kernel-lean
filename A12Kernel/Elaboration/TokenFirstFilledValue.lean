@@ -242,7 +242,7 @@ private def resolveCheckedFirstFilledValidationSide
       pure { cells := [direct.operand.checkedValueListCellAt .validation addressed.cell]
              hasUninstantiatedTail := false, hasHaving := false }
   | .star _ | .group _ => do
-      pure ((← source.resolveCheckedValidationOperand (world := world) document outer)
+      pure ((← source.resolveCheckedValidationOperand (world := world) (traversalMode := .dense) document outer)
         |>.inCapacityValueListSideAt .validation)
 
 /-- Stored-token sources share the same scan across direct, starred and group operands.

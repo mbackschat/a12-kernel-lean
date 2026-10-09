@@ -79,10 +79,10 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
   let contextRead ← addressed context
   let resolved ← (source.path.resolveInCapacity contextRead.document context.row).mapError (fun _ => .calendarUnavailable)
   let fieldRead := if filter.isSome then model.filterRead contextRead.document contextRead.read else contextRead.read
-  let candidates ← if filter.isSome then
-      (model.filterEnvironments source.path (contextRead.document.filterRows.getD contextRead.document.instantiatedRows) context.row true).mapError
+  let traversal ← if filter.isSome then
+      (model.filterTraversal source.path (contextRead.document.filterRows.getD contextRead.document.instantiatedRows) context.row).mapError
         (ScalarTemporalEvaluationFault.addressing ∘ CheckedAddressingError.addressing)
-    else pure resolved.environments
+    else pure ({ candidates := resolved.environments } : FilterTraversal)
   let read := fun row => readField model phase source.declaration (fieldRead row source.declaration.id)
   let groups := model.correlationGroupsWithRead contextRead.document (fun row field => pure (fieldRead row field))
   let correlation : ResolvingCorrelationContext ScalarTemporalEvaluationFault := {
@@ -107,7 +107,7 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
   let values ← match filter, phase with
     | none, _ => resolved.environments.mapM read
     | some filter, .validation => do
-        let rows ← filter.selectEnvironmentsResolving correlation context.row candidates
+        let rows ← filter.selectEnvironmentsResolving correlation context.row traversal.candidates traversal.occupancy
         rows.mapM read
     | some filter, .computation => do
         let result ← filter.scanComputationResolving correlation context.row
@@ -115,7 +115,7 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
             let value ← read row
             pure (match value with
               | .unknown cause => .inr cause
-              | value => .inl (value :: values))) candidates []
+              | value => .inl (value :: values))) traversal.candidates [] traversal.occupancy
         pure (match result with
           | .exhausted values => values.reverse
           | .terminated cause | .poison cause => [.unknown cause])

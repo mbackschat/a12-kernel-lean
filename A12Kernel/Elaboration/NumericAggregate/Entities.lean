@@ -134,7 +134,7 @@ def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
 def resolvedValidationAggregateSideIn
     (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (direct : FlatContext)
-    (read : Env → FieldId → CheckedCell) :
+    (read : Env → FieldId → CheckedCell) (traversalMode : FilterTraversalMode := .sparse) :
     Except StarAddressingError (ResolvedValueListSide .number) :=
   match checked with
   | .selected source => .error (.unsupportedGroupOperand source.groupPath)
@@ -145,7 +145,7 @@ def resolvedValidationAggregateSideIn
       pure (resolved.toResolvedSide
         (source.checkedValueListCellAt .validation read))
   | .starHaving source =>
-      source.source.source.resolvedValidationHavingValueListSide document outer
+      source.source.source.resolvedValidationHavingValueListSide (traversalMode := traversalMode) document outer
         source.having read (source.source.checkedValueListCellAt .validation read) direct.world
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
@@ -156,7 +156,8 @@ def resolvedComputationAggregateSide
     (filterRead starRead : Env → FieldId → CheckedCell)
     (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath))
     (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
-    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none)
+    (traversalMode : FilterTraversalMode := .sparse) :
     Except StarAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   match checked with
@@ -169,8 +170,8 @@ def resolvedComputationAggregateSide
         (source.checkedValueListCellAt .computation starRead)))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      let candidates ← model.filterEnvironments source.source.source.path
-        (document.filterRows.getD document.instantiatedRows) outer true
+      let traversal ← model.filterTraversal source.source.source.path
+        (document.filterRows.getD document.instantiatedRows) outer traversalMode
       let filterContext := ({ read := model.filterRead document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := direct.world } : CorrelationContext).withModelComputationGroups model document
       let consume := fun cells environment =>
         match source.source.checkedValueListCellAt .computation
@@ -178,7 +179,7 @@ def resolvedComputationAggregateSide
         | .unknown cause => .inr cause
         | cell => .inl (cell :: cells)
       match ← (source.having.scanComputation filterContext outer consume
-          candidates []).mapError (fun
+          traversal.candidates [] traversal.occupancy).mapError (fun
             | .calendarUnavailable => .unsupportedDateCalendar
             | .valueFailure => .temporalValueFailure
             | .worldUnavailable => .worldUnavailable
@@ -220,13 +221,13 @@ def resolvedComputationAggregateSide
 def resolvedCheckedDocumentValidationAggregateSide
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .sparse) :
     Except CheckedAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   do
     if let .selected source := checked then
       return .inl (← source.sideIn .validation document outer)
-    let resolved ← checked.resolveCheckedValidationOperand document outer world
+    let resolved ← checked.resolveCheckedValidationOperand document outer world traversalMode
     let side := match checked with
       | .selected _ | .star _ | .starHaving _ | .group _ =>
           resolved.inCapacityValueListSideAt .validation
@@ -242,7 +243,7 @@ Both domains exclude over-capacity rows before filter or payload evaluation
 def resolvedCheckedDocumentComputationAggregateSide
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .sparse) :
     Except CheckedAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   match checked with
@@ -259,9 +260,10 @@ def resolvedCheckedDocumentComputationAggregateSide
         match (observeCell .computation cell).asNumberValueListCell with
         | .unknown cause => pure (.inr cause)
         | cell => pure (.inl (cell :: cells))
+      let traversal ← source.source.source.filterTraversal document outer traversalMode
       match ← source.having.scanComputationResolving
           (document.resolvingCorrelationContextWithRead document.readDeclared world) outer consume
-          (← source.source.source.filterEnvironments document outer) [] with
+          traversal.candidates [] traversal.occupancy with
       | .exhausted reversed =>
           pure (.inl {
             cells := reversed.reverse
@@ -617,7 +619,7 @@ def evaluateValueCountValidationIn (checked : CheckedNumberEntitySource model)
     (direct : FlatContext) (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError NumericOperand :=
   checked.evaluateValueCountWith expected fun operand => do
-    pure (.inl (← operand.resolvedValidationAggregateSideIn
+    pure (.inl (← operand.resolvedValidationAggregateSideIn (traversalMode := .dense)
       document outer direct read))
 
 /-- Evaluate numeric `NumberOfValueInFields` at computation phase. Filtered slots retain the existing one-kept-successor scan and propagate the first reached filter or target cause. -/
@@ -632,7 +634,7 @@ def evaluateValueCountComputation (checked : CheckedNumberEntitySource model)
     Except StarAddressingError NumericOperand :=
   let direct : FlatContext := { read := directRead, world }
   checked.evaluateValueCountWith expected fun operand =>
-    operand.resolvedComputationAggregateSide document outer direct
+    operand.resolvedComputationAggregateSide (traversalMode := .dense) document outer direct
       filterRead starRead selectedRead filterStoredText filterNumberText
 
 /-- Evaluate validation-phase numeric value count through the checked-document aggregate resolver, retaining per-selected-cell filter provenance. -/
@@ -642,7 +644,7 @@ def evaluateCheckedDocumentValueCountValidation
     (world : Option World := none) :
     Except CheckedAddressingError NumericOperand :=
   checked.evaluateValueCountWith expected fun operand =>
-    operand.resolvedCheckedDocumentValidationAggregateSide document outer world
+    operand.resolvedCheckedDocumentValidationAggregateSide (traversalMode := .dense) document outer world
 
 /-- Evaluate computation-phase numeric value count through the shared capacity-aware computation resolver and the established one-kept-successor filter traversal. -/
 def evaluateCheckedDocumentValueCountComputation
@@ -651,7 +653,7 @@ def evaluateCheckedDocumentValueCountComputation
     (world : Option World := none) :
     Except CheckedAddressingError NumericOperand :=
   checked.evaluateValueCountWith expected fun operand =>
-    operand.resolvedCheckedDocumentComputationAggregateSide document outer world
+    operand.resolvedCheckedDocumentComputationAggregateSide (traversalMode := .dense) document outer world
 
 /-- Run the common partial value-count fold over a raw or checked-document operand resolver. -/
 def evaluatePartialValueCountWith

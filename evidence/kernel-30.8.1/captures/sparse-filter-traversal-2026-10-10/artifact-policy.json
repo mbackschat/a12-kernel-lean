@@ -1,0 +1,4810 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "PolicySparse_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "small-control",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CountComp",
+              "field": "Form/Count",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Count"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Count"
+              ]
+            },
+            {
+              "code": "FirstComp",
+              "field": "Form/First",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/First"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/First"
+              ]
+            },
+            {
+              "code": "OtherCountComp",
+              "field": "Form/OtherCount",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ],
+              "fillToFix": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ]
+            },
+            {
+              "code": "PairOverlapComp",
+              "field": "Form/PairOverlap",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/PairSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/PairOverlap"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/PairSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/PairOverlap"
+              ]
+            },
+            {
+              "code": "PairOverlapMonthComp",
+              "field": "Form/PairOverlapMonth",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/PairSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/PairOverlapMonth"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/PairSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/PairOverlapMonth"
+              ]
+            },
+            {
+              "code": "ResetComp",
+              "field": "Form/Reset",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Reset"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Reset"
+              ]
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer/RowSum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ]
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer[2]/RowSum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[2]/Inner[0]/N",
+                "/Form[1]/Outer[2]/Inner[0]/Stamp",
+                "/Form[1]/Outer[2]/Inner[0]/V",
+                "Form/Outer[2]/RowSum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[2]/Inner[0]/N",
+                "/Form[1]/Outer[2]/Inner[0]/Stamp",
+                "/Form[1]/Outer[2]/Inner[0]/V",
+                "Form/Outer[2]/RowSum"
+              ]
+            },
+            {
+              "code": "ScalarOverlapComp",
+              "field": "Form/ScalarOverlap",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpan",
+                "Form/ScalarOverlap"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpan",
+                "Form/ScalarOverlap"
+              ]
+            },
+            {
+              "code": "ScalarOverlapMonthComp",
+              "field": "Form/ScalarOverlapMonth",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpanMonth",
+                "Form/ScalarOverlapMonth"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpanMonth",
+                "Form/ScalarOverlapMonth"
+              ]
+            },
+            {
+              "code": "SumComp",
+              "field": "Form/Sum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Sum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Sum"
+              ]
+            },
+            {
+              "code": "ValueBoolComp",
+              "field": "Form/ValueBool",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/Flag",
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/ValueBool"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/Flag",
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/ValueBool"
+              ]
+            },
+            {
+              "code": "ValueNumComp",
+              "field": "Form/ValueNum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/ValueNum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/ValueNum"
+              ]
+            },
+            {
+              "code": "ValueTextComp",
+              "field": "Form/ValueText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/Text",
+                "Form/ValueText"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/Text",
+                "Form/ValueText"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Count",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/First",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/OtherCount",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer[2]/RowSum",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/PairOverlap",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PairOverlapMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Reset",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/ScalarOverlap",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ScalarOverlapMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Sum",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/ValueBool",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/ValueNum",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/ValueText",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Count",
+                "value": "1"
+              },
+              {
+                "field": "Form/First",
+                "value": "5"
+              },
+              {
+                "field": "Form/OtherCount",
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer[2]/RowSum",
+                "value": "5"
+              },
+              {
+                "field": "Form/PairOverlap",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairOverlapMonth",
+                "value": "1"
+              },
+              {
+                "field": "Form/Reset",
+                "value": "5"
+              },
+              {
+                "field": "Form/ScalarOverlap",
+                "value": "1"
+              },
+              {
+                "field": "Form/ScalarOverlapMonth",
+                "value": "1"
+              },
+              {
+                "field": "Form/Sum",
+                "value": "5"
+              },
+              {
+                "field": "Form/ValueBool",
+                "value": "2"
+              },
+              {
+                "field": "Form/ValueNum",
+                "value": "2"
+              },
+              {
+                "field": "Form/ValueText",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Count": 1,
+                "First": 5,
+                "OtherCount": 0,
+                "PairOverlap": 1,
+                "PairOverlapMonth": 1,
+                "Reset": 5,
+                "RootSpan": "2024-01-01/2024-01-10",
+                "RootSpanMonth": "01-01/01-10",
+                "ScalarOverlap": 1,
+                "ScalarOverlapMonth": 1,
+                "Sum": 5,
+                "ValueBool": 2,
+                "ValueNum": 2,
+                "ValueText": 2,
+                "Outer": [
+                  {
+                    "RowSum": 0,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      }
+                    ]
+                  },
+                  {
+                    "RowSum": 5,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": "2024-01-01/2024-01-10",
+                        "ScalarSpanMonth": "01-01/01-10",
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep",
+                        "V": 5
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CountComp",
+              "field": "Form/Count",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Count"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Count"
+              ]
+            },
+            {
+              "code": "FirstComp",
+              "field": "Form/First",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/First"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/First"
+              ]
+            },
+            {
+              "code": "OtherCountComp",
+              "field": "Form/OtherCount",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ],
+              "fillToFix": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ]
+            },
+            {
+              "code": "PairOverlapComp",
+              "field": "Form/PairOverlap",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/PairSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/PairOverlap"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/PairSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/PairOverlap"
+              ]
+            },
+            {
+              "code": "PairOverlapMonthComp",
+              "field": "Form/PairOverlapMonth",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/PairSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/PairOverlapMonth"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/PairSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/PairOverlapMonth"
+              ]
+            },
+            {
+              "code": "ResetComp",
+              "field": "Form/Reset",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Reset"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Reset"
+              ]
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer/RowSum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ]
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer[2]/RowSum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[2]/Inner[0]/N",
+                "/Form[1]/Outer[2]/Inner[0]/Stamp",
+                "/Form[1]/Outer[2]/Inner[0]/V",
+                "Form/Outer[2]/RowSum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[2]/Inner[0]/N",
+                "/Form[1]/Outer[2]/Inner[0]/Stamp",
+                "/Form[1]/Outer[2]/Inner[0]/V",
+                "Form/Outer[2]/RowSum"
+              ]
+            },
+            {
+              "code": "ScalarOverlapComp",
+              "field": "Form/ScalarOverlap",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpan",
+                "Form/ScalarOverlap"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpan",
+                "Form/ScalarOverlap"
+              ]
+            },
+            {
+              "code": "ScalarOverlapMonthComp",
+              "field": "Form/ScalarOverlapMonth",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpanMonth",
+                "Form/ScalarOverlapMonth"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpanMonth",
+                "Form/ScalarOverlapMonth"
+              ]
+            },
+            {
+              "code": "SumComp",
+              "field": "Form/Sum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Sum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Sum"
+              ]
+            },
+            {
+              "code": "ValueBoolComp",
+              "field": "Form/ValueBool",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/Flag",
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/ValueBool"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/Flag",
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/ValueBool"
+              ]
+            },
+            {
+              "code": "ValueNumComp",
+              "field": "Form/ValueNum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/ValueNum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/ValueNum"
+              ]
+            },
+            {
+              "code": "ValueTextComp",
+              "field": "Form/ValueText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/Text",
+                "Form/ValueText"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/Text",
+                "Form/ValueText"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Count",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/First",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/OtherCount",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer[2]/RowSum",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/PairOverlap",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PairOverlapMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Reset",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/ScalarOverlap",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ScalarOverlapMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Sum",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/ValueBool",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/ValueNum",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/ValueText",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Count",
+                "value": "1"
+              },
+              {
+                "field": "Form/First",
+                "value": "5"
+              },
+              {
+                "field": "Form/OtherCount",
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer[2]/RowSum",
+                "value": "5"
+              },
+              {
+                "field": "Form/PairOverlap",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairOverlapMonth",
+                "value": "1"
+              },
+              {
+                "field": "Form/Reset",
+                "value": "5"
+              },
+              {
+                "field": "Form/ScalarOverlap",
+                "value": "1"
+              },
+              {
+                "field": "Form/ScalarOverlapMonth",
+                "value": "1"
+              },
+              {
+                "field": "Form/Sum",
+                "value": "5"
+              },
+              {
+                "field": "Form/ValueBool",
+                "value": "2"
+              },
+              {
+                "field": "Form/ValueNum",
+                "value": "2"
+              },
+              {
+                "field": "Form/ValueText",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Count": 1,
+                "First": 5,
+                "OtherCount": 0,
+                "PairOverlap": 1,
+                "PairOverlapMonth": 1,
+                "Reset": 5,
+                "RootSpan": "2024-01-01/2024-01-10",
+                "RootSpanMonth": "01-01/01-10",
+                "ScalarOverlap": 1,
+                "ScalarOverlapMonth": 1,
+                "Sum": 5,
+                "ValueBool": 2,
+                "ValueNum": 2,
+                "ValueText": 2,
+                "Outer": [
+                  {
+                    "RowSum": 0,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      }
+                    ]
+                  },
+                  {
+                    "RowSum": 5,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": "2024-01-01/2024-01-10",
+                        "ScalarSpanMonth": "01-01/01-10",
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep",
+                        "V": 5
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "above-threshold",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CountComp",
+              "field": "Form/Count",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Count"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Count"
+              ]
+            },
+            {
+              "code": "FirstComp",
+              "field": "Form/First",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "OtherCountComp",
+              "field": "Form/OtherCount",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ],
+              "fillToFix": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ]
+            },
+            {
+              "code": "PairOverlapComp",
+              "field": "Form/PairOverlap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PairOverlapMonthComp",
+              "field": "Form/PairOverlapMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ResetComp",
+              "field": "Form/Reset",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Reset"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Reset"
+              ]
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer/RowSum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ]
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer/RowSum",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ScalarOverlapComp",
+              "field": "Form/ScalarOverlap",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpan",
+                "Form/ScalarOverlap"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpan",
+                "Form/ScalarOverlap"
+              ]
+            },
+            {
+              "code": "ScalarOverlapMonthComp",
+              "field": "Form/ScalarOverlapMonth",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpanMonth",
+                "Form/ScalarOverlapMonth"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpanMonth",
+                "Form/ScalarOverlapMonth"
+              ]
+            },
+            {
+              "code": "SumComp",
+              "field": "Form/Sum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Sum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Sum"
+              ]
+            },
+            {
+              "code": "ValueBoolComp",
+              "field": "Form/ValueBool",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ValueNumComp",
+              "field": "Form/ValueNum",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ValueTextComp",
+              "field": "Form/ValueText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Count",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/First",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/OtherCount",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer[2]/RowSum",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairOverlap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairOverlapMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Reset",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/ScalarOverlap",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ScalarOverlapMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Sum",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/ValueBool",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValueNum",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValueText",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/First",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/First"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Outer[2]/RowSum",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Outer[2]/RowSum"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/PairOverlap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/PairOverlap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/PairOverlapMonth",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/PairOverlapMonth"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueBool",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueBool"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueNum",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueNum"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueText",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueText"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Count",
+                "value": "1"
+              },
+              {
+                "field": "Form/OtherCount",
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "value": "0"
+              },
+              {
+                "field": "Form/Reset",
+                "value": "5"
+              },
+              {
+                "field": "Form/ScalarOverlap",
+                "value": "1"
+              },
+              {
+                "field": "Form/ScalarOverlapMonth",
+                "value": "1"
+              },
+              {
+                "field": "Form/Sum",
+                "value": "5"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Count": 1,
+                "First": null,
+                "OtherCount": 0,
+                "PairOverlap": null,
+                "PairOverlapMonth": null,
+                "Reset": 5,
+                "RootSpan": "2024-01-01/2024-01-10",
+                "RootSpanMonth": "01-01/01-10",
+                "ScalarOverlap": 1,
+                "ScalarOverlapMonth": 1,
+                "Sum": 5,
+                "ValueBool": null,
+                "ValueNum": null,
+                "ValueText": null,
+                "Outer": [
+                  {
+                    "RowSum": 0,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      }
+                    ]
+                  },
+                  {
+                    "RowSum": null,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": "2024-01-01/2024-01-10",
+                        "ScalarSpanMonth": "01-01/01-10",
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep",
+                        "V": 5
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CountComp",
+              "field": "Form/Count",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Count"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Count"
+              ]
+            },
+            {
+              "code": "FirstComp",
+              "field": "Form/First",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "OtherCountComp",
+              "field": "Form/OtherCount",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ],
+              "fillToFix": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ]
+            },
+            {
+              "code": "PairOverlapComp",
+              "field": "Form/PairOverlap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PairOverlapMonthComp",
+              "field": "Form/PairOverlapMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ResetComp",
+              "field": "Form/Reset",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Reset"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Reset"
+              ]
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer/RowSum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ]
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer/RowSum",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ScalarOverlapComp",
+              "field": "Form/ScalarOverlap",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpan",
+                "Form/ScalarOverlap"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpan",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpan",
+                "Form/ScalarOverlap"
+              ]
+            },
+            {
+              "code": "ScalarOverlapMonthComp",
+              "field": "Form/ScalarOverlapMonth",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpanMonth",
+                "Form/ScalarOverlapMonth"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/ScalarSpanMonth",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "Form/RootSpanMonth",
+                "Form/ScalarOverlapMonth"
+              ]
+            },
+            {
+              "code": "SumComp",
+              "field": "Form/Sum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Sum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[0]/Inner[0]/N",
+                "/Form[1]/Outer[0]/Inner[0]/Stamp",
+                "/Form[1]/Outer[0]/Inner[0]/V",
+                "Form/Sum"
+              ]
+            },
+            {
+              "code": "ValueBoolComp",
+              "field": "Form/ValueBool",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ValueNumComp",
+              "field": "Form/ValueNum",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ValueTextComp",
+              "field": "Form/ValueText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Count",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/First",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/OtherCount",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer[2]/RowSum",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairOverlap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairOverlapMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Reset",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/ScalarOverlap",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ScalarOverlapMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Sum",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/ValueBool",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValueNum",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValueText",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/First",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/First"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Outer[2]/RowSum",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Outer[2]/RowSum"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/PairOverlap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/PairOverlap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/PairOverlapMonth",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/PairOverlapMonth"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueBool",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueBool"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueNum",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueNum"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueText",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueText"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Count",
+                "value": "1"
+              },
+              {
+                "field": "Form/OtherCount",
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "value": "0"
+              },
+              {
+                "field": "Form/Reset",
+                "value": "5"
+              },
+              {
+                "field": "Form/ScalarOverlap",
+                "value": "1"
+              },
+              {
+                "field": "Form/ScalarOverlapMonth",
+                "value": "1"
+              },
+              {
+                "field": "Form/Sum",
+                "value": "5"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Count": 1,
+                "First": null,
+                "OtherCount": 0,
+                "PairOverlap": null,
+                "PairOverlapMonth": null,
+                "Reset": 5,
+                "RootSpan": "2024-01-01/2024-01-10",
+                "RootSpanMonth": "01-01/01-10",
+                "ScalarOverlap": 1,
+                "ScalarOverlapMonth": 1,
+                "Sum": 5,
+                "ValueBool": null,
+                "ValueNum": null,
+                "ValueText": null,
+                "Outer": [
+                  {
+                    "RowSum": 0,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      }
+                    ]
+                  },
+                  {
+                    "RowSum": null,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": "2024-01-01/2024-01-10",
+                        "ScalarSpanMonth": "01-01/01-10",
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep",
+                        "V": 5
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "blank-tail",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CountComp",
+              "field": "Form/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FirstComp",
+              "field": "Form/First",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "OtherCountComp",
+              "field": "Form/OtherCount",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ],
+              "fillToFix": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ]
+            },
+            {
+              "code": "PairOverlapComp",
+              "field": "Form/PairOverlap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PairOverlapMonthComp",
+              "field": "Form/PairOverlapMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ResetComp",
+              "field": "Form/Reset",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer/RowSum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ]
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer/RowSum",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ScalarOverlapComp",
+              "field": "Form/ScalarOverlap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ScalarOverlapMonthComp",
+              "field": "Form/ScalarOverlapMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "SumComp",
+              "field": "Form/Sum",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ValueBoolComp",
+              "field": "Form/ValueBool",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ValueNumComp",
+              "field": "Form/ValueNum",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ValueTextComp",
+              "field": "Form/ValueText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Count",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/First",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/OtherCount",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer[2]/RowSum",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairOverlap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairOverlapMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Reset",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ScalarOverlap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ScalarOverlapMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Sum",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValueBool",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValueNum",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValueText",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Count",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Count"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/First",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/First"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Outer[2]/RowSum",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Outer[2]/RowSum"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/PairOverlap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/PairOverlap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/PairOverlapMonth",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/PairOverlapMonth"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Reset",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Reset"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ScalarOverlap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ScalarOverlap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ScalarOverlapMonth",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ScalarOverlapMonth"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Sum",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Sum"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueBool",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueBool"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueNum",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueNum"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueText",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueText"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/OtherCount",
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Count": null,
+                "First": null,
+                "OtherCount": 0,
+                "PairOverlap": null,
+                "PairOverlapMonth": null,
+                "Reset": null,
+                "RootSpan": "2024-01-01/2024-01-10",
+                "RootSpanMonth": "01-01/01-10",
+                "ScalarOverlap": null,
+                "ScalarOverlapMonth": null,
+                "Sum": null,
+                "ValueBool": null,
+                "ValueNum": null,
+                "ValueText": null,
+                "Outer": [
+                  {
+                    "RowSum": 0,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      }
+                    ]
+                  },
+                  {
+                    "RowSum": null,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": "2024-01-01/2024-01-10",
+                        "ScalarSpanMonth": "01-01/01-10",
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep",
+                        "V": 5
+                      },
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {}
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CountComp",
+              "field": "Form/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FirstComp",
+              "field": "Form/First",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "OtherCountComp",
+              "field": "Form/OtherCount",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ],
+              "fillToFix": [
+                "/Form[1]/Other[0]/Items[0]/Note",
+                "Form/OtherCount"
+              ]
+            },
+            {
+              "code": "PairOverlapComp",
+              "field": "Form/PairOverlap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PairOverlapMonthComp",
+              "field": "Form/PairOverlapMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ResetComp",
+              "field": "Form/Reset",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer/RowSum",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ],
+              "fillToFix": [
+                "/Form[1]/Outer[1]/Inner[0]/N",
+                "/Form[1]/Outer[1]/Inner[0]/Stamp",
+                "/Form[1]/Outer[1]/Inner[0]/V",
+                "Form/Outer/RowSum"
+              ]
+            },
+            {
+              "code": "RowSumComp",
+              "field": "Form/Outer/RowSum",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ScalarOverlapComp",
+              "field": "Form/ScalarOverlap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ScalarOverlapMonthComp",
+              "field": "Form/ScalarOverlapMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "SumComp",
+              "field": "Form/Sum",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ValueBoolComp",
+              "field": "Form/ValueBool",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ValueNumComp",
+              "field": "Form/ValueNum",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ValueTextComp",
+              "field": "Form/ValueText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Count",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/First",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/OtherCount",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer[2]/RowSum",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairOverlap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairOverlapMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Reset",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ScalarOverlap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ScalarOverlapMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Sum",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValueBool",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValueNum",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValueText",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Count",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Count"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/First",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/First"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Outer[2]/RowSum",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Outer[2]/RowSum"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/PairOverlap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/PairOverlap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/PairOverlapMonth",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/PairOverlapMonth"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Reset",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Reset"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ScalarOverlap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ScalarOverlap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ScalarOverlapMonth",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ScalarOverlapMonth"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Sum",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Sum"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueBool",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueBool"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueNum",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueNum"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/ValueText",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ValueText"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/OtherCount",
+                "value": "0"
+              },
+              {
+                "field": "Form/Outer/RowSum",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Count": null,
+                "First": null,
+                "OtherCount": 0,
+                "PairOverlap": null,
+                "PairOverlapMonth": null,
+                "Reset": null,
+                "RootSpan": "2024-01-01/2024-01-10",
+                "RootSpanMonth": "01-01/01-10",
+                "ScalarOverlap": null,
+                "ScalarOverlapMonth": null,
+                "Sum": null,
+                "ValueBool": null,
+                "ValueNum": null,
+                "ValueText": null,
+                "Outer": [
+                  {
+                    "RowSum": 0,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      },
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": null,
+                        "PairSpanMonth": null,
+                        "ScalarSpan": null,
+                        "ScalarSpanMonth": null,
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep"
+                      }
+                    ]
+                  },
+                  {
+                    "RowSum": null,
+                    "Inner": [
+                      {
+                        "Flag": true,
+                        "N": 1,
+                        "PairSpan": "2024-01-01/2024-01-10",
+                        "PairSpanMonth": "01-01/01-10",
+                        "ScalarSpan": "2024-01-01/2024-01-10",
+                        "ScalarSpanMonth": "01-01/01-10",
+                        "Stamp": "2024-03-31T01:30:00",
+                        "Text": "keep",
+                        "V": 5
+                      },
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {},
+                      {}
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -269,7 +269,7 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
   | .field declaration _ =>
       (document.resolveCheckedDirectEntityOperandCore declaration.id).mapError .addressing
   | .star source =>
-      (source.resolveCheckedValidationEntityOperandCore (world := world) document outer none).mapError .addressing
+      (source.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := .sparse) document outer none).mapError .addressing
   | .group reference =>
       (document.resolveCheckedGroupEntityOperandCore outer
         (CheckedEntityGroupSource.fixed (model := model) reference).boundLevelCount
@@ -290,7 +290,7 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
   | .starHaving source _ =>
       match filter with
       | some condition =>
-          (source.resolveCheckedValidationEntityOperandCore (world := world) document outer
+          (source.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := .sparse) document outer
             (some condition)).mapError .addressing
       | none =>
           throw (.declined (.operandNeedsAddressing source.declaration.path))

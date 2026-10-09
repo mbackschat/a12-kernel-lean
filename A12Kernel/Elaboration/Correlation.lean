@@ -854,13 +854,13 @@ def resolvedValidationHavingValueListSide (checked : CheckedStarFieldPath model)
     (document : Document) (outer : Env) (having : CorrelatedHaving)
     (filterRead : Env → FieldId → CheckedCell)
     (classify : Env → ValueListCell kind)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) :
     Except StarAddressingError (ResolvedValueListSide kind) := do
   let resolved ← checked.path.resolveInCapacity document outer
-  let candidates ← model.filterEnvironments checked.path
-    (document.filterRows.getD document.instantiatedRows) outer true
+  let traversal ← model.filterTraversal checked.path
+    (document.filterRows.getD document.instantiatedRows) outer traversalMode
   let selected ← having.selectEnvironmentsResolving
-    ({ read := model.filterRead document filterRead, world } : CorrelationContext).asStarResolving outer candidates
+    ({ read := model.filterRead document filterRead, world } : CorrelationContext).asStarResolving outer traversal.candidates traversal.occupancy
   pure {
     cells := selected.map fun row => if resolved.environments.contains row then classify row else .empty
     hasUninstantiatedTail := resolved.domain.hasOpenTail
@@ -872,13 +872,13 @@ def resolvedOptionalValidationHavingValueListSide
     (filter : Option (CheckedStarHaving model checked declaringGroup))
     (filterRead : Env → FieldId → CheckedCell)
     (classify : Env → ValueListCell kind)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) :
     Except StarAddressingError (ResolvedValueListSide kind) :=
   match filter with
   | none => checked.resolvedValueListSide document outer classify
   | some having =>
       checked.resolvedValidationHavingValueListSide document outer
-        having.condition filterRead classify world
+        having.condition filterRead classify world traversalMode
 
 end CheckedStarFieldPath
 

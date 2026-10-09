@@ -292,7 +292,7 @@ def evaluateValidation (checked : CheckedTokenValueCountSource model)
     Except StarAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     checked.expected checked.source.operands fun operand => do
-      pure (.inl (← operand.resolvedValidationSide (world := world) document outer
+      pure (.inl (← operand.resolvedValidationSide (world := world) (traversalMode := .dense) document outer
         directRead starRead))
 
 /-- Full validation over the immutable checked document reuses the shared addressed or selected token side and retains per-slot filter provenance for the existing value-count fold.
@@ -317,7 +317,7 @@ def evaluateCheckedDocumentValidation
     Except CheckedAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     checked.expected checked.source.operands fun operand => do
-      pure (.inl (← operand.checkedValidationSide (world := world) document outer
+      pure (.inl (← operand.checkedValidationSide (world := world) (traversalMode := .dense) document outer
         (inCapacity := operand.isAlreadyMany)))
 
 /-- Computation shares the same checked source and count fold while each filtered slot uses the computation iterator's one-kept-successor traversal. -/
@@ -333,7 +333,7 @@ def evaluateComputation (checked : CheckedTokenValueCountSource model)
     Except StarAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     checked.expected checked.source.operands fun operand =>
-      operand.resolvedComputationSide (world := world) document outer directRead
+      operand.resolvedComputationSide (world := world) (traversalMode := .dense) document outer directRead
         filterRead starRead (selectedRead := selectedRead) (filterStoredText := filterStoredText) (filterNumberText := filterNumberText)
 
 /-- Partial validation skips any filtered rule before topology or reads; otherwise it uses the local existential value-list account matching the measured numeric outcome pattern and reuses the same count fold. -/

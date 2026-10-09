@@ -220,7 +220,7 @@ def hasFilter : CheckedYearlessDateRangeOverlapOperand model → Bool
 def resolveCheckedValidation
     (operand : CheckedYearlessDateRangeOverlapOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .dense) :
     Except YearlessDateRangesOverlapEvaluationError
       (OverlapOperand YearlessInterval) :=
   match operand with
@@ -233,7 +233,7 @@ def resolveCheckedValidation
       CheckedYearlessDateRangeOverlapField.operandOfCore core
   | .star path _ filter => do
       let core ←
-        (path.resolveCheckedValidationEntityOperandCore (world := world) document outer filter)
+        (path.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := traversalMode) document outer filter)
           |>.mapError .addressing
       let slots ← core.addressedCells.mapM
         CheckedYearlessDateRangeOverlapField.slotFor
@@ -376,7 +376,7 @@ def evaluateYearlessAtLeastOneDateRangeOverlapsOperands
       | .skipped => pure Verdict.notFired
       | .kept _ => do
           let operands ← list.mapM fun operand =>
-            operand.resolveCheckedValidation (world := world) document outer
+            operand.resolveCheckedValidation (world := world) (traversalMode := .sparse) document outer
           pure (evalAtLeastOneYearlessRangeOverlaps slot operands)
   | slots => throw (.incoherentDirectOperand slots.length)
 

@@ -45,3 +45,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: the implicit nearest-repeatable-group guard is omitted when an authored computation already has a conditional-group profile protecting that row or a narrower containing group. A narrower guard can exclude outer siblings from expanded operand scope; explicit row guards still include them. Computed fields stay excluded from formal inputs.
 - `basis`: [three-model Kernel 30.8.1 matrix](sources/computation-scheduling-probes.md#src-computation-guard-operand-scope), 15 agreeing runtime rows, plus the source-owned common mechanism. Formal findings do not prevent the target computing. Cache consequences are source-derived, not newly runtime-measured.
 - `acceptance`: reconcile KF538's blanket target-subtree account and operand/cache collection with implicit, explicit-row and narrower-containing-group controls. Preserve per-authored-computation preprocessing and distinguish scheduling dependencies from operands. Retain nested/sparse/partial-validation limits. Introducing revision is the first commit containing this ID; no reviewed peer response yet.
+
+
+<a id="spec-2026-10-10-02"></a>
+### SPEC-2026-10-10-02 — consumer-specific sparse filter traversal above 100 candidates
+
+- `status`: pending
+- `canonical`: [filter traversal](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
+- `delta`: Sparse-enabled consumers use phase-visible coordinate-prefix occupancy above 100 cache-bounded candidates. Initial/reset searches remain dense until a candidate is kept; rejection does not advance the kept cursor. Computation retains successor lookahead. First-filled, value counts and any-pair overlap remain dense; scalar-versus-list overlap opts into sparse traversal.
+- `basis`: [Kernel 30.8.1 computation matrices and source account](sources/group-and-iteration-probes.md#src-sparse-filter-traversal), both strategies agreeing. Sum/filled count, threshold/reset/occupancy controls, Number/String/Boolean value counts and exact/yearless overlap policies are measured. Distinct/extrema extensions and full validation remain source-derived.
+- `reconcile`: iteration prose and consumer-specific evaluator traversal. Preserve the distinction between candidate cache scope, occupancy, filter execution and payload consumption; do not replace it with physical-row filtering.
+- `acceptance`: Review the canonical account against the retained matrix and source, reconcile the peer's supported surfaces, and state remaining predicate/prepass, partial-validation and external-calibration limits explicitly.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: pending.

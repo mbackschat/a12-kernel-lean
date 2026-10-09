@@ -108,8 +108,11 @@ private def scanStar (project : Value → Option α) (overlaps : α → α → B
   match filter with
   | none => scanSlots project overlaps field read resolved.environments state
   | some having => do
-      let candidates ← (model.filterEnvironments path.path
-        (contextRead.document.filterRows.getD contextRead.document.instantiatedRows) context.row true).mapError .addressing
+      let mode : FilterTraversalMode := match state with
+        | .anyPair _ => .dense
+        | .against _ => .sparse
+      let traversal ← (model.filterTraversal path.path
+        (contextRead.document.filterRows.getD contextRead.document.instantiatedRows) context.row mode).mapError .addressing
       let read := fun row => model.filterRead contextRead.document contextRead.read row field
       having.scanComputationResolving
         (({
@@ -126,7 +129,7 @@ private def scanStar (project : Value → Option α) (overlaps : α → α → B
           groupUnavailable := ComputationOverlapError.addressing ∘ StarAddressingError.unsupportedGroupOperand
           bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationOverlapError).withModelComputationGroups model contextRead.document)
         context.row (fun state row => state.step overlaps <$> observation project field (read row))
-        candidates state
+        traversal.candidates state traversal.occupancy
 
 private def scanGroup (project : Value → Option α) (overlaps : α → α → Bool)
     (context : ScalarComputationContext) (source : CheckedEntityGroupSource model)

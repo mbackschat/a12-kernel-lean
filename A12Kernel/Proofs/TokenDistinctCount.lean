@@ -108,7 +108,7 @@ theorem checkedTokenDistinctSource_checkedDocument_delegates
             (state := ResolvedValueListSide .token)
             (terminal := NumericOperand)
             (fun operand => do
-              pure (.inl (← operand.checkedValidationSide (world := world) document outer (inCapacity := true))))
+              pure (.inl (← operand.checkedValidationSide (world := world) (traversalMode := .sparse) document outer (inCapacity := true))))
             (fun cause => .unknown cause)
             (fun accumulated _ side => accumulated.append side)
             checked.operands {

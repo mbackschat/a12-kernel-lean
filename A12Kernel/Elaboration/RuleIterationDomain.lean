@@ -3,12 +3,6 @@ import A12Kernel.Semantics.RuleIterationDomain
 
 namespace A12Kernel
 
-private def FlatModel.groupCoordinates (model : FlatModel)
-    (path : GroupPath) (environment : Env) : List Nat :=
-  (List.range path.length).map fun depth =>
-    match model.repeatableGroups.find? (·.path == path.take (depth + 1)) with
-    | none => 1
-    | some group => (environment.lookup group.level).getD 1
 
 namespace CheckedDocument
 

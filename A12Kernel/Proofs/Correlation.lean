@@ -461,7 +461,7 @@ theorem correlatedHaving_selectResolving_congr
   induction candidates with
   | nil => rfl
   | cons candidate remaining ih =>
-      simp only [CorrelatedHaving.selectEnvironmentsResolving,
+      simp [CorrelatedHaving.selectEnvironmentsResolving,
         agree { innerEnv := candidate, outerEnv := outerEnv }, ih]
 
 /-- Every checked filtered-star value-list side records the filter encounter independently of what the filter retains. -/
@@ -499,8 +499,9 @@ theorem checkedStarFieldPath_havingFailureBeforeClassification
     (candidates : List Env)
     (classify : Env → ValueListCell kind)
     (topology : checked.path.resolveInCapacity document outer = .ok resolved)
-    (domain : model.filterEnvironments checked.path
-      (document.filterRows.getD document.instantiatedRows) outer true = .ok candidates)
+    (domain : model.filterTraversal checked.path
+      (document.filterRows.getD document.instantiatedRows) outer .requireSmall =
+        .ok { candidates })
     (failure : having.selectEnvironmentsResolving
       ({ read := model.filterRead document read, world } : CorrelationContext).asStarResolving outer candidates = .error error) :
     checked.resolvedValidationHavingValueListSide document outer having read classify world = .error error := by
@@ -665,11 +666,9 @@ theorem computationHavingResolvingScan_failedSuccessor_precedesCurrent
       { innerEnv := second, outerEnv := outer } = .error cause) :
     condition.scanComputationResolving context outer consume
         [first, second] initial = .error cause := by
-  rw [CorrelatedHaving.scanComputationResolving,
-    CorrelatedHaving.scanComputationCandidatesResolving, firstHolds]
-  simp only [bind, Except.bind]
-  rw [CorrelatedHaving.scanComputationCandidatesResolving, secondFails]
-  rfl
+  simp [CorrelatedHaving.scanComputationResolving,
+    CorrelatedHaving.scanComputationCandidatesResolving, firstHolds, secondFails,
+    bind, Except.bind, pure, Except.pure]
 
 /-- After a clean successor is prefetched, a terminal addressed target hides all later filters and structural failures. -/
 theorem computationHavingResolvingScan_terminalCurrent_hidesAfterSuccessor
@@ -685,12 +684,9 @@ theorem computationHavingResolvingScan_terminalCurrent_hidesAfterSuccessor
     (currentTerminates : consume initial first = .ok (.inr result)) :
     condition.scanComputationResolving context outer consume
         [first, second, third] initial = .ok (.terminated result) := by
-  rw [CorrelatedHaving.scanComputationResolving,
-    CorrelatedHaving.scanComputationCandidatesResolving, firstHolds]
-  simp only [bind, Except.bind]
-  rw [CorrelatedHaving.scanComputationCandidatesResolving, secondHolds,
-    currentTerminates]
-  rfl
+  simp [CorrelatedHaving.scanComputationResolving,
+    CorrelatedHaving.scanComputationCandidatesResolving, firstHolds, secondHolds, currentTerminates,
+    bind, Except.bind, pure, Except.pure]
 
 /-- Adding explicit repetition inequality in front of any rest condition removes the
     captured outer row from the executable selection. -/
@@ -822,5 +818,18 @@ theorem correlatedHaving_selectEnvironments_all_or_none
         simp only [CorrelatedHaving.keepsEnvironment] at hFirst ⊢
         rw [candidateInvariant candidate first]
         exact hFirst
+
+/-- An unoccupied successor is skipped before either its filter or target is read. -/
+theorem computationHavingResolvingScan_skippedCandidate_isUnread
+    (condition : CorrelatedHaving) (context : ResolvingCorrelationContext Error)
+    (outer candidate : Env) (remaining : List Env) (previous : Option Env)
+    (consume : State → Env → Except Error (State ⊕ Result)) (state : State)
+    (occupancy : FilterOccupancy)
+    (skipped : occupancy.allowsAfter previous candidate = false) :
+    condition.scanComputationCandidatesResolving context outer consume
+        (candidate :: remaining) previous state (some occupancy) =
+      condition.scanComputationCandidatesResolving context outer consume
+        remaining previous state (some occupancy) := by
+  simp [CorrelatedHaving.scanComputationCandidatesResolving, skipped]
 
 end A12Kernel

@@ -111,7 +111,7 @@ def hasHaving : CheckedDateRangesOverlapOperand model → Bool
 /-- Resolve one full-validation operand through the shared checked direct/star addressing and filter boundary. -/
 def resolveValidationCore (operand : CheckedDateRangesOverlapOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .dense) :
     Except CheckedAddressingError ResolvedDateRangeOverlapCore :=
   match operand with
   | .field source =>
@@ -119,7 +119,7 @@ def resolveValidationCore (operand : CheckedDateRangesOverlapOperand model)
       -- either, and an operand the rule's own iteration binds must be read at its row.
       .addressed <$> document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
   | .star path _ filter =>
-      .addressed <$> path.resolveCheckedValidationEntityOperandCore (world := world) document outer filter
+      .addressed <$> path.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := traversalMode) document outer filter
   | .indexed selection _ => resolveSelectedOverlapCore selection document outer
   | .keyed selection _ => resolveKeyedOverlapCore selection document outer
 
@@ -185,10 +185,10 @@ def declaration : CheckedSingularDateRangesOverlapOperand model → FlatFieldDec
 /-- Resolve one singular full-validation operand through the existing checked direct/star addressing boundary. -/
 def resolveValidationCore (operand : CheckedSingularDateRangesOverlapOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .dense) :
     Except CheckedAddressingError ResolvedDateRangeOverlapCore :=
   match operand with
-  | .canonical source => source.resolveValidationCore (world := world) document outer
+  | .canonical source => source.resolveValidationCore (world := world) (traversalMode := traversalMode) document outer
   | .fragmentField source =>
       .addressed <$> document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
   | .indexedFragment selection _ => resolveSelectedOverlapCore selection document outer

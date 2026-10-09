@@ -244,14 +244,14 @@ def hasHaving : CheckedTemporalUniquenessOperand model → Bool
 /-- Resolve one slot against the immutable checked document through the shared kind-neutral entity core, which owns topology, addressing, filter selection, and omitted-tail extent. -/
 def resolveValidationCore (operand : CheckedTemporalUniquenessOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
   match operand with
   | .selected source _ => throw (.checkedDocumentRequired source.path)
   | .field source =>
       document.resolveCheckedDirectEntityOperandCore source.declaration.id
   | .star path _ filter =>
-      path.resolveCheckedValidationEntityOperandCore (world := world) document outer filter
+      path.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := traversalMode) document outer filter
   | .group source =>
       document.resolveCheckedGroupEntityOperandCore outer
         source.source.boundLevelCount source.declarations

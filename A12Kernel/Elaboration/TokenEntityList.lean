@@ -645,9 +645,9 @@ def resolvedUnfilteredSideAt (checked : CheckedTokenStarSource model)
 def resolvedValidationSide (checked : CheckedTokenStarSource model)
     (document : Document) (outer : Env)
     (read : Env → FieldId → CheckedCell)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) :
     Except StarAddressingError (ResolvedValueListSide .token) :=
-  checked.source.resolvedOptionalValidationHavingValueListSide (world := world) document outer
+  checked.source.resolvedOptionalValidationHavingValueListSide (world := world) (traversalMode := traversalMode) document outer
     checked.filter read (checked.valueListCellAt .validation read)
 
 /-- Partial all-rows validation checks wildcard/ancestor extent before reading any selected target. Filtered rules are skipped by the owning whole-source consumer. -/
@@ -688,7 +688,7 @@ namespace CheckedTokenEntityOperand
 def resolveCheckedValidationOperand
     (source : CheckedTokenEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) :
     Except CheckedAddressingError
       (ResolvedCheckedTokenEntityOperand model) :=
   match source with
@@ -700,7 +700,7 @@ def resolveCheckedValidationOperand
   | .star starSource => do
       let having := starSource.filter.map fun filter => filter.condition
       let core ←
-        starSource.source.resolveCheckedValidationEntityOperandCore (world := world)
+        starSource.source.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := traversalMode)
           document outer having
       pure (.ofCore source starSource.operand core)
   | .group slot => do
@@ -712,12 +712,13 @@ def resolveCheckedValidationOperand
 The richer addressed-cell resolver remains unavailable until selected pointer projection closes. -/
 def checkedValidationSide (source : CheckedTokenEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) (inCapacity : Bool := false) :
+    (world : Option World := none) (inCapacity : Bool := false)
+    (traversalMode : FilterTraversalMode := .requireSmall) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
   match source with
   | .selected source => source.sideIn .validation document outer
   | _ =>
-      let resolved ← source.resolveCheckedValidationOperand (world := world) document outer
+      let resolved ← source.resolveCheckedValidationOperand (world := world) (traversalMode := traversalMode) document outer
       pure (if inCapacity then resolved.inCapacityValueListSideAt .validation else resolved.valueListSideAt .validation)
 
 /-- Resolve one partial-validation token operand without collapsing nonrelevance into a semantic cell. Filtered rules remain suppressed by the owning whole-source gate.
@@ -759,12 +760,12 @@ def resolvedValidationSide (checked : CheckedTokenEntityOperand model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
     (starRead : Env → FieldId → CheckedCell)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) :
     Except StarAddressingError (ResolvedValueListSide .token) :=
   match checked with
   | .selected source => .error (.unsupportedGroupOperand source.path)
   | .field source => pure (source.resolvedSideAt .validation directRead)
-  | .star source => source.resolvedValidationSide (world := world) document outer starRead
+  | .star source => source.resolvedValidationSide (world := world) (traversalMode := traversalMode) document outer starRead
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one unfiltered token slot under partial-validation relevance, preserving rule-level skip/nonrelevance outside the cell domain. -/
@@ -833,7 +834,8 @@ def resolvedComputationSide
     (selectedRead : CheckedSelectedTokenEntity model → Except StarAddressingError (ResolvedValueListSide .token) :=
       fun source => .error (.unsupportedGroupOperand source.path))
     (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
-    (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
+    (filterNumberText : Env → FieldId → Option String := fun _ _ => none)
+    (traversalMode : FilterTraversalMode := .sparse) :
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) NumericOperand) :=
   match checked with
@@ -848,15 +850,15 @@ def resolvedComputationSide
           pure (.inl (resolved.toResolvedSide
             (source.valueListCellAt .computation starRead)))
       | some having =>
-          let candidates ← model.filterEnvironments source.source.path
-            (document.filterRows.getD document.instantiatedRows) outer true
+          let traversal ← model.filterTraversal source.source.path
+            (document.filterRows.getD document.instantiatedRows) outer traversalMode
           let filterContext := ({ read := model.filterRead document filterRead, storedText := filterStoredText, numberText := filterNumberText, world } : CorrelationContext).withModelComputationGroups model document
           let consume := fun cells environment =>
             match source.valueListCellAt .computation (model.filterRead document starRead) environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
           match ← (having.condition.scanComputation filterContext outer consume
-              candidates []).mapError (fun
+              traversal.candidates [] traversal.occupancy).mapError (fun
                 | .calendarUnavailable => .unsupportedDateCalendar
                 | .valueFailure => .temporalValueFailure
                 | .worldUnavailable => .worldUnavailable

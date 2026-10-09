@@ -653,7 +653,7 @@ def resolvedValidationSide
   | .selected source => throw (.unsupportedGroupOperand source.path)
   | .field source => pure (directSideAt source .validation directRead)
   | .star source =>
-      source.source.resolvedOptionalValidationHavingValueListSide (world := world)
+      source.source.resolvedOptionalValidationHavingValueListSide (world := world) (traversalMode := .dense)
         document outer source.filter starRead
         (starCellAt source .validation starRead)
   | .group source =>
@@ -683,15 +683,15 @@ def resolvedComputationSide
           pure (.inl (resolved.toResolvedSide
             (starCellAt source .computation starRead)))
       | some having =>
-          let candidates ← model.filterEnvironments source.source.path
-            (document.filterRows.getD document.instantiatedRows) outer true
+          let traversal ← model.filterTraversal source.source.path
+            (document.filterRows.getD document.instantiatedRows) outer .dense
           let filterContext := ({ read := model.filterRead document filterRead, storedText := filterStoredText, numberText := filterNumberText, world } : CorrelationContext).withModelComputationGroups model document
           let consume := fun cells environment =>
             match starCellAt source .computation (model.filterRead document starRead) environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
           match ← (having.condition.scanComputation filterContext outer consume
-              candidates []).mapError (fun
+              traversal.candidates [] traversal.occupancy).mapError (fun
                 | .calendarUnavailable => .unsupportedDateCalendar
                 | .valueFailure => .temporalValueFailure
                 | .worldUnavailable => .worldUnavailable
@@ -733,7 +733,7 @@ def resolvedCheckedValidationSide
     | .field source =>
         document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
     | .star source =>
-        source.source.resolveCheckedValidationEntityOperandCore (world := world) document outer
+        source.source.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := .dense) document outer
           (source.filter.map (·.condition))
     | .group source =>
         document.resolveCheckedGroupEntityOperandCore outer

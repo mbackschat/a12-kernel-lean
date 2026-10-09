@@ -27,8 +27,8 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
       if let some filter := source.filter then
         let some addressed := context.addressed
           | throw (.guardBinding (.fieldFill .contextRequired))
-        let candidates ← (model.filterEnvironments source.source.path
-          (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row true).mapError
+        let traversal ← (model.filterTraversal source.source.path
+          (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row).mapError
           (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill ∘ ComputationFillError.addressing)
         let result ← (filter.condition.scanComputationResolving
           (({
@@ -49,7 +49,7 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
             | .value _ => Sum.inl (count + 1)
             | .empty => Sum.inl count
             | .unknown cause | .poison cause => Sum.inr cause))
-          candidates 0).mapError
+          traversal.candidates 0 traversal.occupancy).mapError
           (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill)
         return match result with
           | .exhausted count => .ok count

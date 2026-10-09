@@ -364,6 +364,7 @@ import A12Kernel.Conformance.SemanticIndexDateRange
 import A12Kernel.Conformance.SemanticIndexElaboration
 import A12Kernel.Conformance.ShiftedNowDateTimeComposition
 import A12Kernel.Conformance.StarAddressing
+import A12Kernel.Conformance.FilterTraversal
 import A12Kernel.Conformance.RuleIterationDomain
 import A12Kernel.Conformance.StarCompleteness
 import A12Kernel.Conformance.StarEnumerationValueList

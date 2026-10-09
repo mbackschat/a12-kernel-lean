@@ -72,7 +72,7 @@ theorem checkedTokenValueCount_checkedValidation_usesMeasuredProjection
     checked.evaluateCheckedDocumentValidation document outer =
       evalResolvedValueCountOperands checked.expected checked.source.operands
         (fun operand => do
-          pure (.inl (← operand.checkedValidationSide document outer
+          pure (.inl (← operand.checkedValidationSide (traversalMode := .dense) document outer
             (inCapacity := operand.isAlreadyMany)))) := by
   rfl
 
@@ -124,7 +124,7 @@ theorem checkedBooleanValueCountStar_usesCapacityProjection
     (document : CheckedDocument model) (outer : Env) :
     (CheckedBooleanValueCountOperand.star source).resolvedCheckedValidationSide
         document outer = (do
-      let core ← source.source.resolveCheckedValidationEntityOperandCore
+      let core ← source.source.resolveCheckedValidationEntityOperandCore (traversalMode := .dense)
         document outer (source.filter.map (·.condition))
       pure {
         cells := core.inCapacityAddressedCells.map fun cell =>
@@ -132,7 +132,7 @@ theorem checkedBooleanValueCountStar_usesCapacityProjection
         hasUninstantiatedTail := core.hasUninstantiatedTail
         hasHaving := core.hasHaving
         hasNonRelevant := core.hasNonRelevant }) := by
-  cases resolved : source.source.resolveCheckedValidationEntityOperandCore
+  cases resolved : source.source.resolveCheckedValidationEntityOperandCore (traversalMode := .dense)
       document outer (source.filter.map (·.condition)) <;>
     simp [CheckedBooleanValueCountOperand.resolvedCheckedValidationSide, resolved] <;>
     rfl

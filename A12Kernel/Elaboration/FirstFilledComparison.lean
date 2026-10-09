@@ -188,7 +188,7 @@ private def scanTypedFirstFilled (document : CheckedDocument model) (outer : Env
       Except CheckedAddressingError (SimpleComparisonOperand Value)
   | [], _ => pure .notEvaluated
   | operand :: rest, state => do
-      let cells ← operand.observations (world := world) document outer
+      let cells ← operand.observations (world := world) (traversalMode := .dense) document outer
       let state := state.enterSelection cells.isEmpty false operand.hasHaving
       match scanFirstFilledObservations cells state with
       | .inl next => scanTypedFirstFilled (world := world) document outer rest next

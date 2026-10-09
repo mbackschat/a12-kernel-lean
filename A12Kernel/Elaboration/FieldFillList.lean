@@ -104,7 +104,7 @@ def referencesField (operand : CheckedFieldFillOperand model) (field : FieldId)
 
 
 def observations (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) :
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) :
     CheckedFieldFillOperand model → Except CheckedAddressingError (List CellObservation)
   | .indexed source => List.singleton <$> source.observeDocument document outer .validation
   | .keyed source => do
@@ -117,7 +117,7 @@ def observations (document : CheckedDocument model) (outer : Env)
       let addressed ← document.fullValidationAddressedCell outer declaration.id
       pure [observeCell .validation addressed.cell]
   | .star source => do
-      let core ← source.source.resolveCheckedValidationEntityOperandCore (world := world) document outer
+      let core ← source.source.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := traversalMode) document outer
         (source.filter.map (·.condition))
       pure (core.inCapacityAddressedCells.map fun addressed => observeCell .validation addressed.cell)
   | .group source => source.observations document outer
@@ -376,7 +376,7 @@ def evaluateCountOperand? (list : CheckedFieldFillList model) (document : Checke
     (outer : Env)
     (world : Option World := none) : Except CheckedAddressingError (Option NumericOperand) := do
   let contributions ← list.operands.mapM fun operand => do
-    pure (operand.hasHaving, numberOfFilledFields (← operand.observations (world := world) document outer))
+    pure (operand.hasHaving, numberOfFilledFields (← operand.observations (world := world) (traversalMode := .sparse) document outer))
   let available := contributions.foldlM (m := Option) (init := ((0 : Nat), false)) fun (total, filtered) (having, count) =>
     match count with
     | .unknown => none
