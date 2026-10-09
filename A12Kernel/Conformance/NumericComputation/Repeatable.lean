@@ -402,9 +402,9 @@ example :
           (.placement (.sourceScope targetDescendantSource.path))) := by
   native_decide
 
-/- The whole-call plan preserves the complete authored source order and excludes the exact computed target in its separate role. -/
+/- The whole-call inventory retains authored sources before implicit target-row descendants; the computed-target set separately excludes the target from findings. -/
 example : multiFormalPlanProjection? =
-    some ([source.id, fallback.id], [target.id]) := by
+    some ([source.id, fallback.id, target.id, targetDescendantSource.id], [target.id]) := by
   native_decide
 
 private def prepared :

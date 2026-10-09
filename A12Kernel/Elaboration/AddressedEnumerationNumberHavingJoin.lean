@@ -388,7 +388,7 @@ def formalInputPlan
     (plan : CheckedAddressedEnumerationToNumberHavingCascade model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputOperations model plan.analyze.fieldDependencies
+  checkImplicitGuardFormalInputOperations model plan.analyze.fieldDependencies
 
 /-- Prepare the selected direct inputs once, then run all three typed phases through that fallback while retaining the eager inventory only at the whole-call boundary. -/
 def executeResultWithFormalInputs

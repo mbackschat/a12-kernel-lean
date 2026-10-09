@@ -289,7 +289,7 @@ private def formalInputSummary? : Option FormalInputSummary := do
 
 /- Selected FULL Date preliminary compares stored index identity, while a clean computation selects instant identity and renders through the target policy. Duplicate stored keys poison only their reached parent-local scan. -/
 example : formalInputSummary? = some {
-    planOperands := [source.id]
+    planOperands := [source.id, target.id, dottedTarget.id]
     planTargets := [target.id]
     findingsExact := true
     values := [(address target.id [1, 1], "2024-06-15")]

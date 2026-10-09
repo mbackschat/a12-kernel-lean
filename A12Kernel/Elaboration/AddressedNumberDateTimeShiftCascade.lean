@@ -159,7 +159,7 @@ def executeResult (plan : CheckedAddressedNumberDateTimeShiftCascade model)
 def formalInputPlan (plan : CheckedAddressedNumberDateTimeShiftCascade model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputOperations model plan.analyze.fieldDependencies
+  checkImplicitGuardFormalInputOperations model plan.analyze.fieldDependencies
 
 /-- Prepare the selected producer source once, then execute both typed phases while retaining the complete eager inventory. Number may still derive its established value-less target messages from its own outcomes. -/
 def executeResultWithFormalInputs

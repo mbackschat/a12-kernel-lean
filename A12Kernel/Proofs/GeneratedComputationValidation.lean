@@ -317,7 +317,7 @@ theorem generatedNumericFormalInputAppliedValidation_success_result_exact
   · cases completed
     rfl
 
-/-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/
+/-- The generated numeric table inventory is exactly the validated declarations in its common-expanded operand scope. -/
 theorem generatedNumericOperationTable_fieldDependencies_exact
     (computation : GeneratedComputationTable
       (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
@@ -325,7 +325,7 @@ theorem generatedNumericOperationTable_fieldDependencies_exact
     field ∈ computation.fieldDependencies ↔
       ∃ declaration ∈ model.fields,
         declaration.id = field ∧
-          computation.referencesField declaration.id = true := by
+          computation.operandField declaration.id = true := by
   rw [GeneratedComputationTable.fieldDependencies, List.mem_map]
   constructor
   · rintro ⟨declaration, member, equality⟩

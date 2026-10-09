@@ -111,7 +111,7 @@ def filterInput (plan : CheckedRepeatableNumberAggregateMixedRun model)
     (input : CheckedDocument model) : CheckedDocument model :=
   input.withComputationFilterRows fun field =>
     plan.cascade.filterFields.contains field ||
-      plan.run.steps.any fun step => step.targetField == field || step.referencesField field
+      plan.run.steps.any fun step => step.targetField == field || step.operandField field
 
 /-- Execute the prefix, seed its aggregate as one typed Number completion, and reuse the existing supplied-order mixed executor. -/
 def execute (plan : CheckedRepeatableNumberAggregateMixedRun model)

@@ -34,7 +34,7 @@ example (plan : CheckedRepeatableNumberAggregateRunCascade model)
     ∃ final,
       NumericComputationRunTrace plan.run world (input.withComputationFilterRows fun field =>
         plan.cascade.filterFields.contains field ||
-          plan.run.tables.any fun table => table.targetField == field || table.referencesField field)
+          plan.run.tables.any fun table => table.targetField == field || table.operandField field)
         { completed := [{
             targetField := plan.cascade.total.operation.core.target.id
             outcome := outcomes.cascade.aggregate.outcome

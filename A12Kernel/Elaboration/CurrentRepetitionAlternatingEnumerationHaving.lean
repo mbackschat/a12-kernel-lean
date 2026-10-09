@@ -177,7 +177,7 @@ def formalInputPlan
     (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputOperations model plan.analyze.fieldDependencies
+  checkImplicitGuardFormalInputOperations model plan.analyze.fieldDependencies
 
 /-- Prepare the selected final-consumer fallback once, then execute all four phases without supplied family residuals while retaining the complete eager inventory. Number retains its independently derived target-message semantics. -/
 def executeResultWithFormalInputs

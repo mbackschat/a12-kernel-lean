@@ -1,0 +1,96 @@
+{
+  "model": "narrow_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "clean",
+      "documentInline": {
+        "Form": {
+          "RootNoise": "bad",
+          "Rows": [
+            {
+              "RowNoise": "3",
+              "Box": {
+                "Gate": "3",
+                "X": "99"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "outer-invalid",
+      "documentInline": {
+        "Form": {
+          "RootNoise": "bad",
+          "Rows": [
+            {
+              "RowNoise": "bad",
+              "Box": {
+                "Gate": "3",
+                "X": "99"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "inner-invalid",
+      "documentInline": {
+        "Form": {
+          "RootNoise": "bad",
+          "Rows": [
+            {
+              "RowNoise": "3",
+              "Box": {
+                "Gate": "bad",
+                "X": "99"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "both-invalid",
+      "documentInline": {
+        "Form": {
+          "RootNoise": "bad",
+          "Rows": [
+            {
+              "RowNoise": "bad",
+              "Box": {
+                "Gate": "bad",
+                "X": "99"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "computed-invalid",
+      "documentInline": {
+        "Form": {
+          "RootNoise": "bad",
+          "Rows": [
+            {
+              "RowNoise": "3",
+              "Box": {
+                "Gate": "3",
+                "X": "bad"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

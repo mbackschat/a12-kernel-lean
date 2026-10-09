@@ -23,7 +23,9 @@ namespace CheckedRepeatableNumberAggregateCascade
 /-- Static cache dependencies include both stages before either executes (CalculationCommand). -/
 def filterFields (cascade : CheckedRepeatableNumberAggregateCascade model) : List FieldId :=
   cascade.row.targetField :: cascade.total.operation.core.target.id ::
-    (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies)
+    (cascade.row.sourceFields ++ cascade.consumer.fieldDependencies) ++
+      ((model.fields.filter fun field => model.computationImplicitOperand cascade.row.targetField
+        (fun (_ : Unit) => none) [] field.id).map (·.id))
 
 /-- The exact root address owned by the aggregate target. -/
 def aggregateAddress
@@ -365,7 +367,7 @@ def execute (plan : CheckedRepeatableNumberAggregateRunCascade model)
       RepeatableNumberAggregateRunCascadeOutcomes := do
   let input := input.withComputationFilterRows fun field =>
     plan.cascade.filterFields.contains field ||
-      plan.run.tables.any fun table => table.targetField == field || table.referencesField field
+      plan.run.tables.any fun table => table.targetField == field || table.operandField field
   let cascade ← plan.cascade.execute world input |>.mapError .cascade
   let initial : NumericComputationRunState := {
     completed := [{

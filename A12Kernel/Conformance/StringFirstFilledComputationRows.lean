@@ -438,7 +438,7 @@ private def formalInputSummary? : Option FormalInputSummary := do
 
 /- The selected String preliminary stays eager, but duplicate poison wins only when its parent-local scan reaches the annotated cell and therefore bypasses target-pattern rejection. -/
 example : formalInputSummary? = some {
-    planOperands := [source.id]
+    planOperands := [source.id, target.id, rawTarget.id, numberTarget.id, targetDescendantSource.id, 13]
     planTargets := [target.id]
     findingsExact := true
     values := [(address target.id [1, 1], "AA")]

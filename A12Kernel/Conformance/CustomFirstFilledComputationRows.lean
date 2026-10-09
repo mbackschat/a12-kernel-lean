@@ -351,7 +351,7 @@ private def formalInputSummary? : Option FormalInputSummary := do
 
 /- The whole call retains both the pre-existing registered rejection and generated duplicates in its eager inventory, while both poison classes classify exact source-filled target clears. -/
 example : formalInputSummary? = some {
-    planOperands := [source.id]
+    planOperands := [source.id, target.id]
     planTargets := [target.id]
     findingsExact := true
     values := [

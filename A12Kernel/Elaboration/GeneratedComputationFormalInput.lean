@@ -62,11 +62,18 @@ def referencesField (computation : GeneratedComputationTable
   optionalGeneratedGuardReferences computation.commonPrecondition field ||
     generatedNumericAlternativesReference computation.alternatives field
 
+/-- Generated validation keeps the same common-expanded operand scope as ordinary computation. -/
+def operandField (computation : GeneratedComputationTable
+    (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) (field : FieldId) : Bool :=
+  computationOperandField model computation.targetField computation.referencesField
+    (computation.checkedNumericAlternatives.map (·.precondition)) field
+    CheckedComputationPredicate.groupReference?
+
 /-- Enumerate every validated model declaration referenced anywhere in the generated numeric table. -/
 def fieldDependencies (computation : GeneratedComputationTable
     (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) : List FieldId :=
   (model.fields.filter fun declaration =>
-    computation.referencesField declaration.id).map fun declaration =>
+    computation.operandField declaration.id).map fun declaration =>
       declaration.id
 
 end GeneratedComputationTable

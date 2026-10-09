@@ -46,11 +46,21 @@ def referencesField (step : CheckedScalarComputationStep model)
   | .number table => table.referencesField field
   | .document step => step.referencesField field
 
+def protectionConditions : CheckedScalarComputationStep model → List (Option (CheckedComputationCondition model))
+  | .number table => table.protectionConditions
+  | .string table => table.protectionConditions
+  | .document step => step.protectionConditions
+
+/-- Complete operand scope, separate from conditional scheduling dependencies. -/
+def operandField (step : CheckedScalarComputationStep model) (field : FieldId) : Bool :=
+  computationOperandField model step.targetField step.referencesField step.protectionConditions
+    field CheckedComputationPredicate.groupReference?
+
 /-- Enumerate every model field referenced by this checked typed step. The model order is stable while the predicate traverses the step's complete guards and operations. -/
 def fieldDependencies (step : CheckedScalarComputationStep model) :
     List FieldId :=
   (model.fields.filter fun declaration =>
-    step.referencesField declaration.id).map (·.id)
+    step.operandField declaration.id).map (·.id)
 
 /-- Retain the family and complete operand inventory, without applying scheduling exemptions. -/
 def dependencyAnalysis (step : CheckedScalarComputationStep model) :
@@ -64,10 +74,6 @@ def supportsScalarEvaluation : CheckedScalarComputationStep model → Bool
   | .string _ | .document _ => true
   | .number table => table.supportsScalarEvaluation
 
-def protectionConditions : CheckedScalarComputationStep model → List (Option (CheckedComputationCondition model))
-  | .number table => table.protectionConditions
-  | .string table => table.protectionConditions
-  | .document step => step.protectionConditions
 
 def requiresProducer (producerProtected : FieldId → ResolvedGroupReference → Bool) :
     CheckedScalarComputationStep model → FieldId → Bool
@@ -357,7 +363,7 @@ def targetFields (run : CheckedScalarComputationRun model) :
 /-- Derive one static operand/target cache for this run, preserving an enclosing programme's view. -/
 def filterInput (run : CheckedScalarComputationRun model) (input : CheckedDocument model) : CheckedDocument model :=
   input.withComputationFilterRows fun field =>
-    run.steps.any fun step => step.targetField == field || step.referencesField field
+    run.steps.any fun step => step.targetField == field || step.operandField field
 
 /-- Project completed targets for String consumption, hide suffix-owned pending targets, and delegate ordinary reads to the String document context. A completion may belong to an earlier checked phase rather than to this run. -/
 def stringContext (run : CheckedScalarComputationRun model)

@@ -442,7 +442,7 @@ private def formalInputSummary? : Option FormalInputSummary := do
 
 /- Selected Boolean-index preparation stays eager while runtime poison remains parent-local: a unique `false` is a value and a reached duplicate clears only its source-filled target. -/
 example : formalInputSummary? = some {
-    planOperands := [source.id]
+    planOperands := [source.id, target.id, peerSource.id]
     planTargets := [target.id]
     findingsExact := true
     values := [(address target.id [1, 1], false)]

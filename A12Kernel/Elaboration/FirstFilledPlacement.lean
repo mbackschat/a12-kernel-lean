@@ -274,7 +274,7 @@ def instances {Outcome Fault : Type} (site : CheckedFirstFilledSite model)
 /-- Bind every source declaration and the computed target to the shared eager inventory. -/
 def formalInputPlan (site : CheckedFirstFilledSite model) :
     Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model
+  checkImplicitGuardFormalInputPlan model
     ((model.fields.filter (fun declaration => site.referencesField declaration.id)).map (·.id))
     [site.targetField]
 

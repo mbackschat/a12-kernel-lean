@@ -135,7 +135,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Model structure and declarations](sources/model-structure-and-declaration-probes.md)
 - [Rule-set metadata](sources/rule-set-meta-information.md)
 - [Computation placement and constants](sources/computation-placement-and-constant-probes.md)
-- [Computation scheduling and guards](sources/computation-scheduling-probes.md)
+- [Computation scheduling and guards](sources/computation-scheduling-probes.md), including [guard-derived operand scope](sources/computation-scheduling-probes.md#src-computation-guard-operand-scope)
 - [Evaluation and application](sources/evaluation-and-application-routes.md)
 - [Messages and pointers](sources/message-and-pointer-probes.md)
 - [Inbound handbacks and historical Git stubs](sources/inbound-handbacks.md), including [2026-10-09 reconciliation and additional observations](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation)

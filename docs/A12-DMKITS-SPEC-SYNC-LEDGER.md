@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-10-01"></a>
+### SPEC-2026-10-10-01 — explicit narrower guards qualify target-derived operand scope
+
+- `status`: pending
+- `canonical`: [computation formal inputs](../spec/09-computations.md) and [filter cache scope](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation) derive target subtrees from guard preprocessing, not an unconditional target expansion.
+- `delta`: the implicit nearest-repeatable-group guard is omitted when an authored computation already has a conditional-group profile protecting that row or a narrower containing group. A narrower guard can exclude outer siblings from expanded operand scope; explicit row guards still include them. Computed fields stay excluded from formal inputs.
+- `basis`: [three-model Kernel 30.8.1 matrix](sources/computation-scheduling-probes.md#src-computation-guard-operand-scope), 15 agreeing runtime rows, plus the source-owned common mechanism. Formal findings do not prevent the target computing. Cache consequences are source-derived, not newly runtime-measured.
+- `acceptance`: reconcile KF538's blanket target-subtree account and operand/cache collection with implicit, explicit-row and narrower-containing-group controls. Preserve per-authored-computation preprocessing and distinguish scheduling dependencies from operands. Retain nested/sparse/partial-validation limits. Introducing revision is the first commit containing this ID; no reviewed peer response yet.
+
 <a id="spec-2026-10-09-12"></a>
 ### SPEC-2026-10-09-12 — interpreted DateRange reads use shared runtime formats
 

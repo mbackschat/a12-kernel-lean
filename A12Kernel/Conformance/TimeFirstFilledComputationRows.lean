@@ -274,7 +274,7 @@ private def formalInputSummary? : Option FormalInputSummary := do
 
 /- Selected Time-index preparation compares stored identity, while a clean computation selects clock identity, discards the transport instant, and renders through the target. Duplicate keys poison only their reached parent-local scan. -/
 example : formalInputSummary? = some {
-    planOperands := [source.id]
+    planOperands := [source.id, target.id, wrongFormatTarget.id, clockShapedDateTarget.id]
     planTargets := [target.id]
     findingsExact := true
     values := [(address target.id [1, 1], "10:11:12")]

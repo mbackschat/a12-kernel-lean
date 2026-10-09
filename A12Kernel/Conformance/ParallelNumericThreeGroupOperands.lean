@@ -223,7 +223,7 @@ example :
       pure (
         checked.ordinaryFieldDependencies == [4, 6] &&
         checked.indexFieldDependencies == [1, 3, 5] &&
-        plan.operandFields == [1, 3, 4, 5, 6] &&
+        plan.operandFields == [1, 2, 3, 4, 5, 6, 8] &&
         plan.computedFields == [2] &&
         findings.length == 3 &&
         findings.contains (formalFinding 4 [2] .malformed) &&

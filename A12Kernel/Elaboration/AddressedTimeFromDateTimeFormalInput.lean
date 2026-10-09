@@ -24,7 +24,7 @@ def fieldDependencies (operation : CheckedAddressedTimeFromDateTime model) :
 def formalInputPlan (operation : CheckedAddressedTimeFromDateTime model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model operation.fieldDependencies
+  checkImplicitGuardFormalInputPlan model operation.fieldDependencies
     [operation.target.checked.target.id]
 
 /-- Prepare the exact source view once, then execute and project the addressed Time result while retaining the eager inventory on later faults. -/

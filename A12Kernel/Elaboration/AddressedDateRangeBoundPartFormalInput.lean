@@ -26,7 +26,7 @@ def formalInputPlan
     (operation : CheckedAddressedDateRangeBoundPart model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model operation.fieldDependencies
+  checkImplicitGuardFormalInputPlan model operation.fieldDependencies
     [operation.placement.targetField]
 
 /-- Prepare the selected source once, execute through that exact view, and retain raw findings outside the typed Number message channel. -/

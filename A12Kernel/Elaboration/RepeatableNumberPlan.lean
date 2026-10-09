@@ -194,7 +194,7 @@ def execute (plan : CheckedRepeatableNumberPlan model) (world : World)
     (input : CheckedDocument model) :
     Except RepeatableNumberPlanFault (List (SourcedNumericTargetOutcome CellAddr)) :=
   let input := input.withComputationFilterRows fun field =>
-    plan.authored.any fun table => table.targetField == field || table.referencesField field
+    plan.authored.any fun table => table.targetField == field || table.operandField field
   plan.executeSteps world input plan.execution []
 
 end CheckedRepeatableNumberPlan

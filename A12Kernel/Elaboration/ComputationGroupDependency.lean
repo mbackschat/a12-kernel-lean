@@ -55,6 +55,38 @@ def FlatModel.computationProtectsGroup (model : FlatModel) (target : FieldId)
               model.hasGroupPath reference.path &&
                 reference.protectsComputationGroup operator declaration.groupPath queriedGroup) conditions absentProtection)
 
+/-- Fields contributed by the implicit nearest-row guard, independently of scheduling edges.
+An explicit positive containing-group profile suppresses that guard; a narrower guard must not
+widen to outer siblings (`src-computation-guard-operand-scope`). On admitted tables an absent
+alternative is a sole authored computation, so absence contributes an unprotected profile even
+after same-target assembly. Unknown targets and nonrepeatable targets contribute no subtree. -/
+def FlatModel.computationImplicitOperand (model : FlatModel) (target : FieldId)
+    (groupLeaf : Leaf → Option (GroupPresenceOperator × ResolvedGroupReference))
+    (conditions : List (Option (ConditionTree Leaf))) (field : FieldId) : Bool :=
+  match model.lookupUniqueId target with
+  | .error _ => false
+  | .ok declaration =>
+      match declaration.repeatableScope.getLast? >>= model.repeatableGroupAtLevel? with
+      | none => false
+      | some row =>
+          let explicitlyProtected := ComputationGroupDependency.alternativesProtect (fun leaf =>
+            (groupLeaf leaf).any fun (operator, reference) =>
+              model.hasGroupPath reference.path &&
+                reference.protectsComputationGroup operator declaration.groupPath row.path)
+            conditions (some false)
+          !explicitlyProtected && (model.groupSubtreeFields row.path).any (·.id == field)
+
+/-- Combine authored operands with the implicit guard's expansion. Keep this inventory separate
+from producer requirements: conditional group reads include operands whose scheduling edges are
+exempt (`spec/09` §1.1 and formal-input scope). -/
+def computationOperandField (model : FlatModel) (target : FieldId)
+    (references : FieldId → Bool)
+    (conditions : List (Option (ComputationConditionOf Atom Predicate))) (field : FieldId)
+    (predicateReference : Predicate → Option (GroupPresenceOperator × ResolvedGroupReference) := fun _ => none) : Bool :=
+  references field || model.computationImplicitOperand target (fun leaf => match leaf with
+    | .predicate source => predicateReference source
+    | leaf => leaf.groupReference?) conditions field
+
 /-- Positive reads of a containing group are exempt from the computed-target reference ban;
 negative reads retain it, as `spec/09` §5's paired group controls establish. -/
 def ResolvedGroupReference.computationForbidsTarget (reference : ResolvedGroupReference)

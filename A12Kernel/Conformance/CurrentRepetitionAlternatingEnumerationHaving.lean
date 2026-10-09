@@ -352,7 +352,7 @@ example : resultApplicationSummary? = some {
 } := by
   native_decide
 
-/- The whole four-stage call inventories direct and filter inputs at their exact nested placements while excluding every computed target and the unrelated field. -/
+/- The whole four-stage call inventories direct and filter inputs at their exact nested placements including the implicit-row sibling while excluding every computed target. -/
 example :
     (do
       let plan ← plan?
@@ -370,6 +370,8 @@ example :
           { address := { field := choice.id, path := [1, 2] }
             cause := .declaredConstraint },
           { address := { field := limit.id, path := [1] }
+            cause := .malformed },
+          { address := { field := unrelated.id, path := [1] }
             cause := .malformed }], [], [], []) := by
   native_decide
 

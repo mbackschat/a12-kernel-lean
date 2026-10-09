@@ -20,7 +20,7 @@ namespace CheckedAddressedEnumerationComputation
 def formalInputPlan (operation : CheckedAddressedEnumerationComputation model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model operation.source.fieldDependencies
+  checkImplicitGuardFormalInputPlan model operation.source.fieldDependencies
     [operation.target.field]
 
 /-- Prepare selected source findings and index state once, then execute through that exact view and retain the inventory beside either result arm. -/
@@ -54,7 +54,7 @@ def formalInputPlan
     (operation : CheckedAddressedEnumerationFirstFilledComputation model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model operation.source.fieldDependencies
+  checkImplicitGuardFormalInputPlan model operation.source.fieldDependencies
     [operation.target.field]
 
 /-- Prepare every selected operand once, then preserve lazy runtime reads while retaining the eager inventory beside either result arm. -/

@@ -101,11 +101,11 @@ private def summary? : Option Summary := do
     cleared := result.time.cleared
   }
 
-/- The selected DateTime source remains the sole formal input, while duplicate index poison is both eagerly retained and reached by each source-filled Time target. -/
+/- The implicit row guard includes the uncomputed sibling alongside the DateTime source; duplicate index poison is eagerly retained and reached by each source-filled Time target. -/
 example : summary? = some {
-    operands := [source.id]
+    operands := [source.id, target.id, unrelated.id]
     targets := [target.id]
-    selected := [source.id]
+    selected := [source.id, unrelated.id]
     findings := [finding 1, finding 2]
     values := []
     errorsEmpty := true

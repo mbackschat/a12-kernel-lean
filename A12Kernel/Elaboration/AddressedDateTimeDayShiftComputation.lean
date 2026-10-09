@@ -120,7 +120,7 @@ def formalInputPlan
     (operation : CheckedAddressedDateTimeDayShiftComputation model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model operation.fieldDependencies
+  checkImplicitGuardFormalInputPlan model operation.fieldDependencies
     [operation.checkedTarget.targetField]
 
 private def classifyAt

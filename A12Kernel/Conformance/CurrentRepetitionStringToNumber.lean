@@ -387,7 +387,7 @@ private def selectedCascadeSummary? : Option SelectedCascadeSummary := do
 
 /- Duplicate selected Number indexes poison both reached String conversions, whose completed dependency cells become cause-blind poison for the Number phase; eager findings remain whole-call only. -/
 example : selectedCascadeSummary? = some {
-  selectedFields := [base.id]
+  selectedFields := [base.id, otherString.id]
   formalErrors := [
     { address := { field := base.id, path := [1] }, cause := .duplicateIndex },
     { address := { field := base.id, path := [2] }, cause := .duplicateIndex }]

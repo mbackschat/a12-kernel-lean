@@ -282,7 +282,7 @@ def formalInputPlan
     (operation : CheckedIndexedDateRangeConstructionComputation model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model
+  checkImplicitGuardFormalInputPlan model
     operation.formalInputFields
     [operation.target.source.id]
 

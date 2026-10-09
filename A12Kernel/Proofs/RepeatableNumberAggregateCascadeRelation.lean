@@ -64,7 +64,7 @@ theorem repeatableNumberAggregateRunCascade_execute_trace
     ∃ final,
       NumericComputationRunTrace plan.run world (input.withComputationFilterRows fun field =>
         plan.cascade.filterFields.contains field ||
-          plan.run.tables.any fun table => table.targetField == field || table.referencesField field)
+          plan.run.tables.any fun table => table.targetField == field || table.operandField field)
         { completed := [{
             targetField := plan.cascade.total.operation.core.target.id
             outcome := outcomes.cascade.aggregate.outcome
@@ -73,7 +73,7 @@ theorem repeatableNumberAggregateRunCascade_execute_trace
   unfold CheckedRepeatableNumberAggregateRunCascade.execute at executed
   generalize cacheEq : (input.withComputationFilterRows fun field =>
     plan.cascade.filterFields.contains field ||
-      plan.run.tables.any fun table => table.targetField == field || table.referencesField field) =
+      plan.run.tables.any fun table => table.targetField == field || table.operandField field) =
     cacheInput at executed ⊢
   cases cascadeResult : plan.cascade.execute world cacheInput with
   | error cause =>

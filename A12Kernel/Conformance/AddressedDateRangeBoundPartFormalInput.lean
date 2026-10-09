@@ -101,7 +101,7 @@ private def summary? : Option Summary := do
 
 /- The selected DateRange source remains the sole raw input. Duplicate-index poison reaches both rows while raw findings stay outside the typed Number message channel. -/
 example : summary? = some {
-    operands := [source.id]
+    operands := [source.id, target.id]
     targets := [target.id]
     selected := [source.id]
     findings := [finding 1, finding 2]

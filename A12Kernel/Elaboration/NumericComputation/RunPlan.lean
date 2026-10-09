@@ -87,6 +87,11 @@ def referencesField (table : CheckedNumericComputationTable model)
 def protectionConditions (table : CheckedNumericComputationTable model) : List (Option (CheckedComputationCondition model)) :=
   table.selectableAlternatives.map (·.precondition)
 
+/-- Complete preprocessed operand scope, including an unsuppressed implicit row guard. -/
+def operandField (table : CheckedNumericComputationTable model) (field : FieldId) : Bool :=
+  computationOperandField model table.targetField table.referencesField table.protectionConditions
+    field CheckedComputationPredicate.groupReference?
+
 def requiresProducer (table : CheckedNumericComputationTable model)
     (producerProtected : FieldId → ResolvedGroupReference → Bool) (field : FieldId) : Bool :=
   table.selectableAlternatives.any fun alternative =>

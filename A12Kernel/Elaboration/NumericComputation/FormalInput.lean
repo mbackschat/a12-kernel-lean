@@ -47,7 +47,7 @@ def fieldDependencies (operation : CheckedNumericComputationOperation model) :
 def formalInputPlan (operation : CheckedNumericComputationOperation model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model operation.fieldDependencies
+  checkImplicitGuardFormalInputPlan model operation.fieldDependencies
     [operation.core.target.id]
 
 end CheckedNumericComputationOperation
@@ -58,7 +58,7 @@ namespace CheckedNumericComputationTable
 def fieldDependencies (table : CheckedNumericComputationTable model) :
     List FieldId :=
   (model.fields.filter fun declaration =>
-    table.referencesField declaration.id).map (·.id)
+    table.operandField declaration.id).map (·.id)
 
 /-- Bind one complete checked numeric table's dependencies and shared target to the formal-input collector. -/
 def formalInputPlan (table : CheckedNumericComputationTable model) :
@@ -111,7 +111,7 @@ def formalInputPlan
     (operation : CheckedAddressedNumberFirstFilledComputation model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model operation.sourceFields
+  checkImplicitGuardFormalInputPlan model operation.sourceFields
     [operation.targetField]
 
 /-- Prepare every selected source once, execute through that exact view, and retain raw findings beside rather than inside the typed Number result channels. -/

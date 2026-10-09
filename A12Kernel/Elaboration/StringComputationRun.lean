@@ -91,7 +91,7 @@ def guardReadPolicy (run : CheckedStringComputationRun model)
     (state : StringComputationRunState) (input : CheckedDocument model) :
     ScalarComputationContext :=
   let current := input.withComputationFilterRows fun field =>
-    run.tables.any fun table => table.targetField == field || table.referencesField field
+    run.tables.any fun table => table.targetField == field || table.operandField field
   current.computationContext.withFixedOverlay fun field =>
     if run.targetFields.contains field then
       some (match state.find? field with

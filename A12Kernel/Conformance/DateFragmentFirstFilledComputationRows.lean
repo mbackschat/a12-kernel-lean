@@ -273,7 +273,7 @@ private def formalInputSummary? : Option FormalInputSummary := do
 
 /- Selected partial-Date index preparation keeps the exact clean token while duplicate keys remain eager findings and poison only the reached parent-local scan. -/
 example : formalInputSummary? = some {
-    planOperands := [source.id]
+    planOperands := [source.id, target.id, yearTarget.id, yearMonthTarget.id, monthDayTarget.id, fullDateTarget.id]
     planTargets := [target.id]
     findingsExact := true
     values := [(address target.id [1, 1], "06")]

@@ -21,13 +21,13 @@ theorem checkedNumericComputationOperation_fieldDependencies_exact
   · rintro ⟨declaration, member, equality, referenced⟩
     exact ⟨declaration, by simpa using And.intro member referenced, equality⟩
 
-/-- The table dependency inventory is exactly the validated declarations referenced by at least one checked alternative guard or operation. -/
+/-- The table inventory is exactly the validated declarations in its preprocessed operand scope. -/
 theorem checkedNumericComputationTable_fieldDependencies_exact
     (table : CheckedNumericComputationTable model)
     (field : FieldId) :
     field ∈ table.fieldDependencies ↔
       ∃ declaration ∈ model.fields,
-        declaration.id = field ∧ table.referencesField declaration.id = true := by
+        declaration.id = field ∧ table.operandField declaration.id = true := by
   rw [CheckedNumericComputationTable.fieldDependencies, List.mem_map]
   constructor
   · rintro ⟨declaration, member, equality⟩

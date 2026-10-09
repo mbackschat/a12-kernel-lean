@@ -20,7 +20,7 @@ def formalInputPlan
     (operation : CheckedAddressedTimeConstructionComputation model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model operation.fieldDependencies
+  checkImplicitGuardFormalInputPlan model operation.fieldDependencies
     [operation.checkedTarget.targetField]
 
 /-- Prepare the direct component view once, then execute and project the addressed Time result while retaining the eager inventory on later faults. -/

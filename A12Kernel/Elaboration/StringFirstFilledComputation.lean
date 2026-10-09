@@ -307,7 +307,7 @@ namespace CheckedStringFirstFilledComputation
 /-- Bind every source declaration and the computed target to the shared eager inventory. -/
 def formalInputPlan (operation : CheckedStringFirstFilledComputation model) :
     Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputPlan model
+  checkImplicitGuardFormalInputPlan model
     ((operation.source.operands.flatMap (·.declarations)).map (·.id)) [operation.targetField]
 
 /-- Prepare the selected sources once, retain every eager finding, and run lazily through the

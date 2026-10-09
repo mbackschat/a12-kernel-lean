@@ -324,7 +324,7 @@ private def formalInputSummary? : Option FormalInputSummary := do
 
 /- Selected DateTime-index preparation compares stored identity, while a clean computation selects instant identity, ignores cached wall-label parts, and renders in the target's model zone. Duplicate keys poison only their reached parent-local scan. -/
 example : formalInputSummary? = some {
-    planOperands := [source.id]
+    planOperands := [source.id, target.id, incompleteTarget.id]
     planTargets := [target.id]
     findingsExact := true
     values := [(address target.id [1, 1], "2024-06-01T10:11:12")]

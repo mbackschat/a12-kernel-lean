@@ -333,7 +333,7 @@ def formalInputPlan
     (plan : CheckedAddressedEnumerationThreeStageCascade model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputOperations model plan.analyze.fieldDependencies
+  checkImplicitGuardFormalInputOperations model plan.analyze.fieldDependencies
 
 /-- Prepare the selected global inventory once, then execute all three phases through that fallback view with no duplicated phase residuals. -/
 def executeResultWithFormalInputs

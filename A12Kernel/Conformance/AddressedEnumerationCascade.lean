@@ -544,7 +544,7 @@ example : selectedDefaultCascadeSummary? = some {
 } := by
   native_decide
 
-/- The whole three-stage call reports one direct-source formal finding globally, not once per phase or for computed and unrelated fields. -/
+/- The whole three-stage call reports direct-source and implicit-row findings globally, not once per phase or for computed targets. -/
 example :
     (do
       let plan ← threeStageCascade?
@@ -555,6 +555,9 @@ example :
         view.phases.second.formalErrorsInOperands,
         view.phases.third.formalErrorsInOperands)) = some ([{
           address := address source.id 1
+          cause := .declaredConstraint
+        }, {
+          address := address unrelated.id 1
           cause := .declaredConstraint
         }], [], [], []) := by
   native_decide

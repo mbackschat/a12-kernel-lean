@@ -28,6 +28,11 @@ def referencesField (table : CheckedStringComputationTable model)
 def protectionConditions (table : CheckedStringComputationTable model) : List (Option (CheckedComputationCondition model)) :=
   table.selectableAlternatives.map (·.precondition)
 
+/-- Complete operand inventory after the implicit-row guard decision. -/
+def operandField (table : CheckedStringComputationTable model) (field : FieldId) : Bool :=
+  computationOperandField model table.targetField table.referencesField table.protectionConditions
+    field CheckedComputationPredicate.groupReference?
+
 def requiresProducer (table : CheckedStringComputationTable model)
     (producerProtected : FieldId → ResolvedGroupReference → Bool) (field : FieldId) : Bool :=
   table.selectableAlternatives.any fun alternative =>

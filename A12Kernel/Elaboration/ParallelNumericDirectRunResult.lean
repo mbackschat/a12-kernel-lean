@@ -102,8 +102,9 @@ def formalInputPlan
       (CheckedComputationFormalInputPlan model) :=
   checkComputationFormalInputPlan model
     (model.fields.filterMap fun declaration =>
-      if checked.referencesField declaration.id ||
-          checked.referencesIndexField declaration.id then
+      if computationOperandField model checked.route.targetField
+          (fun field => checked.referencesField field || checked.referencesIndexField field)
+          [checked.precondition] declaration.id CheckedComputationPredicate.groupReference? then
         some declaration.id
       else
         none)

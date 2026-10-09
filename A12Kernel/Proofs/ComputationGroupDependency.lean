@@ -59,6 +59,26 @@ end A12Kernel.ComputationGroupDependency
 
 namespace A12Kernel
 
+/-- Implicit guard expansion cannot erase any authored operand. This is an inventory law,
+not a claim that every operand creates a scheduling edge or is read during evaluation. -/
+theorem computationOperandField_of_reference (model : FlatModel) (target field : FieldId)
+    (references : FieldId → Bool)
+    (conditions : List (Option (ComputationConditionOf Atom Predicate)))
+    (predicateReference : Predicate → Option (GroupPresenceOperator × ResolvedGroupReference))
+    (referenced : references field = true) :
+    computationOperandField model target references conditions field predicateReference = true := by
+  simp [computationOperandField, referenced]
+
+/-- Nonrepeatable targets cannot introduce an implicit group operand. -/
+theorem computationImplicitOperand_nonrepeatable (model : FlatModel) (target field : FieldId)
+    (declaration : FlatFieldDecl)
+    (groupLeaf : Leaf → Option (GroupPresenceOperator × ResolvedGroupReference))
+    (conditions : List (Option (ConditionTree Leaf)))
+    (resolved : model.lookupUniqueId target = .ok declaration)
+    (fixed : declaration.repeatableScope = []) :
+    model.computationImplicitOperand target groupLeaf conditions field = false := by
+  simp [FlatModel.computationImplicitOperand, resolved, fixed]
+
 theorem negativeGroupRead_preservesOperandDependency (reference : ResolvedGroupReference)
     (model : FlatModel) (consumer producer : FieldId) (producerProtected : Bool) :
     reference.requiresComputationProducer .notFilled model consumer producer producerProtected =

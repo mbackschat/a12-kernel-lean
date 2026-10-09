@@ -283,7 +283,7 @@ def formalInputPlan
     (plan : CheckedCurrentRepetitionStringToNumberCascade model) :
     Except ComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) :=
-  checkComputationFormalInputOperations model plan.analyze.fieldDependencies
+  checkImplicitGuardFormalInputOperations model plan.analyze.fieldDependencies
 
 /-- Preserve the Number declaration's formal-text regime while adding only the selected generated index finding at the first phase boundary. -/
 def preparedStringSourceRead

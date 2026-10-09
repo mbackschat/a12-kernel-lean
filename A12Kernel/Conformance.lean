@@ -94,6 +94,7 @@ import A12Kernel.Conformance.CheckedIndexPreliminary
 import A12Kernel.Conformance.CheckedStarDocument
 import A12Kernel.Conformance.ComputationCondition
 import A12Kernel.Conformance.ComputationGroupDependency
+import A12Kernel.Conformance.ComputationOperandScope
 import A12Kernel.Conformance.ComputationFillQuantifier
 import A12Kernel.Conformance.ComputationFormalInput
 import A12Kernel.Conformance.ComputationMessage

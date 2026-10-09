@@ -60,6 +60,11 @@ def protectionConditions : MixedComputationStep model compilePattern → List (O
   | .document step => step.protectionConditions
   | .rows step => step.protectionConditions
 
+/-- Expanded operands are independent of the scheduler's conditional producer exemptions. -/
+def operandField (step : MixedComputationStep model compilePattern) (field : FieldId) : Bool :=
+  computationOperandField model step.targetField step.referencesField step.protectionConditions
+    field CheckedComputationPredicate.groupReference?
+
 def requiresProducer (producerProtected : FieldId → ResolvedGroupReference → Bool) :
     MixedComputationStep model compilePattern → FieldId → Bool
   | .number table => table.requiresProducer producerProtected
@@ -172,7 +177,7 @@ def targetFields (plan : CheckedMixedComputationPlan model compilePattern) : Lis
 def documentFor (plan : CheckedMixedComputationPlan model compilePattern)
     (state : MixedComputationState) (input : CheckedDocument model) : CheckedDocument model :=
   (input.withComputationFilterRows fun field =>
-    plan.authored.any fun step => step.targetField == field || step.referencesField field)
+    plan.authored.any fun step => step.targetField == field || step.operandField field)
     |>.overlayCells plan.targetFields (state.fixed.map (·.placement) ++ state.rows)
 
 /-- The String-family read of a fixed String table: a completed fixed target through its String

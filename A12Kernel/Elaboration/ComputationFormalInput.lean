@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedIndexPreliminary
+import A12Kernel.Elaboration.ComputationGroupDependency
 
 /-! # Checked direct-field computation formal-input inventory
 
@@ -54,6 +55,23 @@ def checkComputationFormalInputOperations (model : FlatModel)
       (CheckedComputationFormalInputPlan model) :=
   checkComputationFormalInputPlan model
     (operations.flatMap Prod.snd) (operations.map Prod.fst)
+
+/-- Bind a call whose computations have no explicit group profile suppressing their implicit row
+guards. Specialized operation carriers use this boundary; guarded tables supply their expanded
+inventory to `checkComputationFormalInputPlan` instead (`spec/09` formal-input scope). -/
+def checkImplicitGuardFormalInputPlan (model : FlatModel)
+    (operandFields computedFields : List FieldId) :
+    Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
+  let implicitFields := model.fields.filter fun field => computedFields.any fun target =>
+    model.computationImplicitOperand target (fun (_ : Unit) => none) [] field.id
+  checkComputationFormalInputPlan model
+    (operandFields ++ implicitFields.map (·.id)) computedFields
+
+/-- Union specialized operations with unsuppressed implicit row guards before excluding targets. -/
+def checkImplicitGuardFormalInputOperations (model : FlatModel)
+    (operations : List (FieldId × List FieldId)) :
+    Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
+  checkImplicitGuardFormalInputPlan model (operations.flatMap Prod.snd) (operations.map Prod.fst)
 
 namespace CheckedComputationFormalInputPlan
 

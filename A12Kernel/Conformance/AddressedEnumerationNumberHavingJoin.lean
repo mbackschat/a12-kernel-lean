@@ -435,7 +435,7 @@ private def selectedCascadeSummary? : Option SelectedCascadeSummary := do
 
 /- A selected absent Enumeration index receives its declared default before the first typed phase, then crosses category conversion and a reached `Having` read without stale target leakage. -/
 example : selectedCascadeSummary? = some {
-  selectedFields := [selectedRawChoice.id, directChoice.id, limit.id]
+  selectedFields := [selectedRawChoice.id, directChoice.id, limit.id, rawGate.id, otherChoice.id]
   formalErrors := []
   enumerationValues := [
     ({ field := computedChoice.id, path := [1, 1] }, "B")]
