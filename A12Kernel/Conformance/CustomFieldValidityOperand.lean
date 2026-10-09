@@ -278,8 +278,8 @@ example : partialVerdict? .valid (.parsed (.num 7)) true = some .unknown := by
 /-! ## Assembly separates admission from well-formedness
 
 The operand slot asks what the declaration *is*; the rule asks where it *sits*. A repeatable String
-is admitted by the first and refused by the second, which is why the fixture carries one — a model
-whose every String is nonrepeatable cannot tell the two gates apart. -/
+is admitted by the first but needs a bound row in the second; this fixture deliberately supplies
+no such row, separating the operand certificate from rule placement. -/
 
 private def assemble? (source : FieldId) :
     Option (CheckedValidationCondition probeModel) :=

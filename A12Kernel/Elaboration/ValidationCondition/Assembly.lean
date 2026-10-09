@@ -129,19 +129,23 @@ def fromConstructedDateValidity (model : FlatModel) (rowGroup : GroupPath)
 
 /-- Assemble one explicit `Valid`/`Invalid` predicate at a rule group.
 
-    The model check runs first, as it does for every member, and `checkCore` then applies the leaf's own well-formedness — which for this family is the nonrepeatable operand. Both refusals of the leaf itself are mapped to the assembly's generic incoherent-core class rather than to a Kernel diagnostic, because no row places a class on either at this position. -/
+    Names resolve at the declaring group; the error field's group binds ordinary repeated reads
+    under spec/07's validation scope rule. Leaf refusals retain the generic incoherent-core class. -/
 def fromCustomFieldValidity (model : FlatModel) (rowGroup : GroupPath)
     (world : World) (source : FieldId) (name : String)
-    (operation : CustomFieldValidityOp) :
+    (operation : CustomFieldValidityOp) (bindingGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
   | .ok () =>
       match elaborateCustomFieldValidityLeaf model world source name operation with
       | .error _ => .error .incoherentCore
-      | .ok leaf =>
-          checkCore model rowGroup (ValidationCondition.customFieldValidity leaf)
-            (by rw [hModel]; rfl)
+      | .ok leaf => do
+          if (model.unboundReadLevel? rowGroup bindingGroup leaf.operand.declaration.repeatableScope
+              (model.repeatableScopeForGroupPath bindingGroup)).isSome then
+            throw .incoherentCore
+          checkCore model bindingGroup (ValidationCondition.customFieldValidity leaf)
+            (by rw [hModel]; rfl) rowGroup
 
 def fromIndexedCustomFieldValidity (model : FlatModel) (rowGroup : GroupPath)
     (world : World) (source : SurfaceSemanticIndex) (name : String) (operation : CustomFieldValidityOp) :

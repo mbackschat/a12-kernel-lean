@@ -297,20 +297,15 @@ def evalAddressedPartial?
           | .checked document | .partialView document _ => pure document
           | .legacy _ _ => throw (.checkedDocumentRequired leaf.source.selection.group.path)
         let observation ← leaf.source.selection.observePartialDocument document scope context.outer context.readPartialCell
-        pure (observation.map leaf.directLeaf.evalObservation |>.getD .unknown)
-  -- An **uncovered** cell is UNKNOWN and never reaches the validator, which is the same answer an
-  -- unreadable covered cell gets and for the same reason: the predicate only ever speaks about a
-  -- value this theory could read. The covered branch shares the family's own `evalCell`, so it
-  -- cannot drift from the scalar route.
+        match observation with
+        | none => pure .unknown
+        | some observation => (leaf.directLeaf.evalValidationObservation observation).mapError (fun _ => .typeValidityValueFailure)
   | .customFieldValidity leaf =>
-      some (if isRelevant leaf.operand.source then
-        context.readPartialCell context.outer leaf.operand.source
-          |>.map fun cell? =>
-            match cell? with
-            | some cell => leaf.evalCell .validation cell
-            | none => .unknown
-      else
-        pure .unknown)
+      some do
+        if !isRelevant leaf.operand.source then return .unknown
+        match ← context.readPartialCell context.outer leaf.operand.source with
+        | some cell => (leaf.evalValidationObservation (observeCell .validation cell)).mapError (fun _ => .typeValidityValueFailure)
+        | none => pure .unknown
   -- The covered cell replaces its own read in the scalar context, so both routes share the
   -- condition's `evalSelected`.
   | .stringPattern leaf =>
@@ -386,7 +381,14 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
       let document ← match context.input with
         | .checked document => pure document
         | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired leaf.source.selection.group.path)
-      pure (leaf.directLeaf.evalObservation (← leaf.source.selection.observeDocument document context.outer .validation))
+      (leaf.directLeaf.evalValidationObservation
+        (← leaf.source.selection.observeDocument document context.outer .validation)).mapError
+          (fun _ => .typeValidityValueFailure)
+  | .customFieldValidity leaf => do
+      if !context.directRelevant leaf.operand.source then return .unknown
+      let cell ← context.readCell context.outer leaf.operand.source
+      (leaf.evalValidationObservation (observeCell .validation cell)).mapError
+        (fun _ => .typeValidityValueFailure)
   | .stringPattern leaf => do
       let source := leaf.condition.field.id
       if !context.directRelevant source then return .unknown

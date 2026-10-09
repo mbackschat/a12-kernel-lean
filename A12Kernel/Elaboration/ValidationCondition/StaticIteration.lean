@@ -338,6 +338,9 @@ def ordinaryIterationScope :
       mergeIterationScopeList (leaf.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
   | .leaf (.indexedCustomFieldValidity leaf) =>
       mergeIterationScopeList (leaf.source.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
+  | .leaf (.customFieldValidity leaf) =>
+      let scope := leaf.operand.declaration.repeatableScope
+      pure (if scope.isEmpty then none else some scope)
   | .leaf (.repeatableFieldPresence _ declaration) =>
       pure (some declaration.repeatableScope)
   | .leaf (.constructedDateValidity _ source) =>

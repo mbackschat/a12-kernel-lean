@@ -415,8 +415,7 @@ private def evalOrdinaryPartialAdmittedAt
       | none => .error (.inl .unsupportedCondition)) (.error (.inl .unsupportedCondition))
       (onTemporalValueFailure := fun fault => .error (.inr fault))
       (leafRuntimeFault? := fun
-        | .inl (.conditionAddressing (.constructedDate (.stringNotConvertible _ _))) => some .componentNumberInvalid
-        | .inl (.conditionAddressing .temporalValueFailure) => some .dateTimeLabelUnresolved
+        | .inl (.conditionAddressing error) => ValidationCondition.addressedValueFailure? error
         | _ => none)
       (firstFilledResult := fun comparison =>
         match comparison.evaluatePartial? checked environment context.scalar.fields scope context.readPartialCell with
@@ -439,6 +438,8 @@ private def evalOrdinaryPartialAdmittedAt
   match result with
   | .ok verdict => pure (.next environment (rule.core.emitAt errorPath verdict))
   | .error (.inl error) => throw error
+  | .error (.inr (.addressing .typeValidityValueFailure)) =>
+      pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
   | .error (.inr (.addressing error)) => throw (.conditionAddressing error)
   | .error (.inr _) => pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
 

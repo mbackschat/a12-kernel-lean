@@ -351,7 +351,9 @@ private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
   | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
-  | .customCondition _ | .customFieldValidity _ => .noReference
+  | .customCondition _ => .noReference
+  | .customFieldValidity leaf =>
+      if leaf.operand.declaration.repeatableScope.contains level then .guarded else .noReference
   | .indexedStringPattern leaf =>
       if leaf.bindingScopes.any (·.contains level) then .guarded else .noReference
   | .indexedCustomFieldValidity leaf =>
@@ -609,7 +611,14 @@ def evalSelected (condition : ValidationCondition model)
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance := fun _ => true) : Verdict :=
   match condition.evalWithTemporalResult context isRelevant
-      (fun leaf => Except.ok (ε := Empty) (leaf.evalSelected context isRelevant)) with
+      (fun leaf => Except.ok (ε := Empty) (leaf.evalSelected context isRelevant))
+      (temporalPartialResult? := fun
+        | .customFieldValidity leaf => some do
+            if !isRelevant leaf.operand.source then return .unknown
+            (leaf.evalValidationObservation (observeCell .validation
+              (context.fields.read leaf.operand.source))).mapError
+                (fun _ => .inr (.addressing .typeValidityValueFailure))
+        | _ => none) with
   | .ok verdict => verdict
   | .error impossible => nomatch impossible
 

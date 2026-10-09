@@ -19,7 +19,19 @@ theorem validationCondition_customFieldValidity_evalSelected
         leaf.evalAt context.fields .validation
       else
         .unknown) := by
-  rfl
+  cases relevant : isRelevant leaf.operand.source <;>
+    simp [ValidationCondition.customFieldValidity, ValidationCondition.evalSelected,
+      ValidationCondition.evalWithTemporalResult, relevant,
+      CheckedCustomFieldValidityLeaf.evalValidationObservation,
+      CheckedCustomFieldValidityLeaf.evalAt, CheckedCustomFieldValidityLeaf.evalCell,
+      CheckedCustomFieldValidityLeaf.evalObservation, Except.mapError, pure, Except.pure]
+  generalize (observeCell .validation (context.fields.read leaf.operand.source)).asTypeValidityText = observation
+  cases observation with
+  | empty | unknown _ | poison _ => rfl
+  | value value =>
+      cases empty : value.isEmpty <;> cases registry : leaf.validity.validator? <;>
+        simp [CheckedCustomFieldValidity.evalValidation, CheckedCustomFieldValidity.eval,
+          empty, registry]
 
 /-- A nonrelevant operand is UNKNOWN rather than a verdict, so partial coverage cannot make the predicate answer about a cell it never read. -/
 theorem validationCondition_customFieldValidity_notRelevant
@@ -71,7 +83,8 @@ theorem validationConditionLeaf_customFieldValidity_partialUncovered
   simp [ValidationConditionLeaf.evalAddressedPartial?, relevant, uncovered]
   rfl
 
-/-- On a covered cell the partial route returns the family's own evaluator applied to that cell, so wherever the two reads agree the partial verdict is the scalar one. The arm cannot answer differently by construction; this states that it does not. -/
+/-- Covered partial evaluation preserves the family's rule-level effect as well as its verdict.
+A missing registration must survive until the enclosing Boolean tree's rule handler (spec/06 A3). -/
 theorem validationConditionLeaf_customFieldValidity_partialCoveredAgrees
     (model : FlatModel) (leaf : CheckedCustomFieldValidityLeaf model)
     (context : AddressedValidationEvaluationContext model)
@@ -82,17 +95,12 @@ theorem validationConditionLeaf_customFieldValidity_partialCoveredAgrees
     (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult)
     (cell : CheckedCell)
     (relevant : isRelevant leaf.operand.source = true)
-    (covered :
-      context.readPartialCell context.outer leaf.operand.source =
-        .ok (some cell))
-    (agrees : context.scalar.fields.read leaf.operand.source = cell) :
+    (covered : context.readPartialCell context.outer leaf.operand.source = .ok (some cell)) :
     ValidationConditionLeaf.evalAddressedPartial? context scope isRelevant
-        resolveGroup repetitionNotUniqueResult?
-        (.customFieldValidity leaf) =
-      some (.ok ((ValidationCondition.customFieldValidity leaf).evalSelected
-        context.scalar isRelevant)) := by
-  simp [ValidationConditionLeaf.evalAddressedPartial?, relevant, covered,
-    CheckedCustomFieldValidityLeaf.evalAt, agrees]
+        resolveGroup repetitionNotUniqueResult? (.customFieldValidity leaf) =
+      some ((leaf.evalValidationObservation (observeCell .validation cell)).mapError
+        (fun _ => .typeValidityValueFailure)) := by
+  simp [ValidationConditionLeaf.evalAddressedPartial?, relevant, covered]
   rfl
 
 end A12Kernel

@@ -657,9 +657,10 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .guardedRepeatableCurrentRepetition _ _ _
   | .customFieldValidity _ | .indexedCustomFieldValidity _ | .stringPattern _ | .indexedStringPattern _ => false
 
-/-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
+/-- Whether this leaf needs an addressed context rather than the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .customCondition _ | .indexedCustomFieldValidity _ | .indexedStringPattern _ => true
+  | .customFieldValidity leaf => !leaf.operand.declaration.repeatableScope.isEmpty
   | .stringPattern leaf => !(model.fieldRepeatableScope leaf.condition.field.id).isEmpty
   | .constructedDateValidity _ _ | .stringExpression _ => true
   | .scalarTemporal comparison => comparison.left.requiresAddressed || comparison.right.requiresAddressed ||
@@ -732,11 +733,8 @@ def wellFormedBool (rowGroup : GroupPath) (declaringGroup : GroupPath := rowGrou
         match model.lookupUniqueId guard.id with
         | .ok checkedGuard => checkedGuard == guard
         | .error _ => false
-  -- Model ownership of the operand is already a certificate the checked leaf carries, so the only
-  -- open condition is the fragment's: a nonrepeatable operand. No containment gate is asserted here
-  -- because none is measured — whether the Kernel requires the operand inside the rule's group is
-  -- untested for this predicate.
-  | .customFieldValidity leaf => leaf.operand.declaration.repeatableScope.isEmpty
+  | .customFieldValidity leaf =>
+      leaf.operand.declaration.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
   | .indexedCustomFieldValidity leaf => leaf.source.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   -- The rule's row must bind every level the operand leaves unstarred above its own depth.
   | .fieldFill _ source =>

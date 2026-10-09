@@ -217,7 +217,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
           | some operation, some path => [do
               let declaration ← elaborated id (model.resolveFieldDeclarationUnchecked rowGroup path)
               elaborated id (CheckedValidationCondition.fromCustomFieldValidity
-                model rowGroup world declaration.id name operation)]
+                model rowGroup world declaration.id name operation bindingGroup)]
           | _, _ => []
     | _ => []
   let uniqueness := match leaf with

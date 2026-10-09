@@ -2057,6 +2057,8 @@ run_cmd do
 #print axioms A12Kernel.customFieldValidity_valueEmpty_unknown
 #print axioms A12Kernel.customFieldValidity_unavailable_unknown
 #print axioms A12Kernel.customFieldValidity_unsupplied_fires_both
+#print axioms A12Kernel.customFieldValidity_unsupplied_validation_failure
+#print axioms A12Kernel.customFieldValidity_resolved_validation_agrees
 #print axioms A12Kernel.customFieldValidity_never_omission
 #print axioms A12Kernel.customFieldValidity_present_complement
 #print axioms A12Kernel.customFieldValidity_complement_needs_validator

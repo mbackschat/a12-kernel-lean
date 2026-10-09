@@ -158,10 +158,17 @@ namespace CheckedCustomFieldValidityLeaf
 
     Enumeration cells retain their stored token. RuntimeController’s predefined-type predicates read the XML value, so display labels must not replace that token (source checkpoint: named-type computation guards, 2026-10-04).
 
-    Scalar, selected and addressed partial reads share this projection, so a covered cell gets one answer by construction rather than by separate arms happening to agree. -/
+    This standalone verdict projection shares its checked text projection with effectful ordinary
+    validation. Composing callers use `evalValidationObservation` to retain registry failure. -/
 def evalObservation (leaf : CheckedCustomFieldValidityLeaf model)
     (observation : CellObservation) : Verdict :=
   leaf.validity.eval leaf.operation observation.asTypeValidityText
+
+/-- Keep registry failure for the enclosing rule handler, including through Boolean connectives
+    (spec/06 §A3); the standalone verdict projection above cannot preserve that effect. -/
+def evalValidationObservation (leaf : CheckedCustomFieldValidityLeaf model)
+    (observation : CellObservation) : Except CustomFieldValidityRuntimeFault Verdict :=
+  leaf.validity.evalValidation leaf.operation observation.asTypeValidityText
 
 def evalCell (leaf : CheckedCustomFieldValidityLeaf model) (phase : Phase)
     (cell : CheckedCell) : Verdict :=

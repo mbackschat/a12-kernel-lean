@@ -59,6 +59,23 @@ theorem customFieldValidity_unsupplied_fires_both
     checked.eval operation (.value value) = .fired .value := by
   simp [CheckedCustomFieldValidity.eval, nonempty, unsupplied]
 
+/-- Composition must retain reached registry failure until the rule handler (spec/06 A3). -/
+theorem customFieldValidity_unsupplied_validation_failure
+    (checked : CheckedCustomFieldValidity) (value : String)
+    (operation : CustomFieldValidityOp)
+    (nonempty : value.isEmpty = false) (unsupplied : checked.validator? = none) :
+    checked.evalValidation operation (.value value) = .error .validatorUnavailable := by
+  simp [CheckedCustomFieldValidity.evalValidation, nonempty, unsupplied]
+
+/-- Once the registry resolves, effectful validation retains the standalone verdict on every
+observation; the missing-registration non-law above explains the necessary hypothesis. -/
+theorem customFieldValidity_resolved_validation_agrees
+    (checked : CheckedCustomFieldValidity) (operation : CustomFieldValidityOp)
+    (observation : CellObservation String) (validator : RegisteredCustomFieldValidator)
+    (resolved : checked.validator? = some validator) :
+    checked.evalValidation operation observation = .ok (checked.eval operation observation) := by
+  cases observation <;> simp [CheckedCustomFieldValidity.evalValidation, resolved]
+
 /-- Neither polarity ever types a firing as OMISSION, in either registration state. Filling the operand is not what would clear this predicate, so a consumer may treat every firing it produces as value-typed. -/
 theorem customFieldValidity_never_omission
     (checked : CheckedCustomFieldValidity) (operation : CustomFieldValidityOp)

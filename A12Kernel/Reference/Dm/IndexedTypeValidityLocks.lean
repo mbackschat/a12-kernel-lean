@@ -192,7 +192,7 @@ private def partialMatches (actual : Option (Except CheckedAddressingError Verdi
   | _, _ => false
 
 example : states.all (fun state => variableGuards.all fun guard =>
-    partialMatches (partialLeaf guard (scenarioFor state)) (.ok (if reached state then .fired .value else .unknown))) = true := by native_decide
+    partialMatches (partialLeaf guard (scenarioFor state)) (if reached state then .error .typeValidityValueFailure else .ok .unknown)) = true := by native_decide
 
 example : ["Text", "Enum"].all (fun field =>
     let source := if field == "Enum" then 5 else 4
@@ -208,7 +208,7 @@ example : ["Text", "Enum"].all (fun field =>
 
 example : variableGuards.all (fun guard =>
     partialMatches (partialLeaf guard { firstId := "B" } (.partialSet [keyRelevant, rowsRelevant])) (.ok .unknown) &&
-    partialMatches (partialLeaf guard { firstId := "B" } (.partialSet [keyRelevant, rowRelevant 2])) (.ok (.fired .value)) &&
+    partialMatches (partialLeaf guard { firstId := "B" } (.partialSet [keyRelevant, rowRelevant 2])) (.error .typeValidityValueFailure) &&
     partialMatches (partialLeaf guard {} (.partialSet [rowsRelevant])) (.ok .unknown) &&
     partialMatches (partialLeaf guard {} (.partialSet [keyRelevant, { path := ["Form", "Rows", "Id"], indices := [.all, .all, .all] }])) (.ok .unknown) &&
     partialMatches (partialLeaf guard { key := "Z" } (.partialSet [keyRelevant, rowRelevant 2])) (.ok .unknown) &&
