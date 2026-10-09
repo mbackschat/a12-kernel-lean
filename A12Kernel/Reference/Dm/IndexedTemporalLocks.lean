@@ -13,7 +13,8 @@ private def model (kind : TemporalKind) (components : TemporalComponents) (forma
     policy := { kind := .temporal kind components }, temporalTargetPolicy := some { format } }
   { fields := [temporal 1 "Out", temporal 2 "Low", temporal 3 "High",
       { id := 4, name := "Key", groupPath := ["Form"], policy := { kind := .string } },
-      { id := 5, name := "Code", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } },
+      { id := 5, name := "Code", groupPath := ["Form", "Rows"], repeatableScope := [10],
+        policy := { kind := .string }, stringPolicy := { maxLength := some 2 } },
       temporal 6 "A" ["Form", "Rows", "Body"] [10], temporal 7 "B" ["Form", "Rows", "Body"] [10],
       temporal 8 "Value" ["Form", "Rows", "Children"] [10,20],
       { id := 9, name := "Flag", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
@@ -780,6 +781,24 @@ example : evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
     evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
       "ValueAsDate(Rows/Body/A For Key,LastDay)" true none
       { partialMode := .dayOptional, key := "missing", producer := some ("Key", "\"R1\""), fullDateTarget := true } = some (.inr "value 2024-02-29") := by native_decide
+
+-- KF531's index defects distinguish validation selection from computation's whole-column input.
+example : ["FirstDay", "LastDay"].all (fun endpoint =>
+    let selected := "ValueAsDate(Rows/Body/A For Key," ++ endpoint ++ ")"
+    let scenario : Scenario := { partialMode := .yearOptional, fullDateTarget := true }
+    ["", "long"].all (fun defective =>
+      [selected ++ " < \"10.01.2024\"",
+       "AddDays(" ++ selected ++ ",30) < \"10.01.2024\"",
+       "DifferenceInDays(" ++ selected ++ ",\"10.01.2024\") > 5"].all (fun condition =>
+        evaluate .date .fullDate "yyyy-MM-dd" "2023-05-00" "2023-05-00" condition false none
+          { scenario with secondCode := defective } == some (.inl (.fired .value))) &&
+      evaluate .date .fullDate "yyyy-MM-dd" "2023-05-00" "2023-05-00" selected true none
+        { scenario with secondCode := defective } == some (.inr "cleared")) &&
+    evaluate .date .fullDate "yyyy-MM-dd" "2023-05-00" "2023-05-00" selected true none scenario ==
+      some (.inr (if endpoint == "FirstDay" then "value 2023-05-01" else "value 2023-05-31")) &&
+    evaluate .date .fullDate "yyyy-MM-dd" "2023-05-00" "2023-05-00"
+      (selected ++ " < \"10.01.2024\"") false none
+      { scenario with key := "long", secondCode := "long" } == some (.inl .unknown)) = true := by native_decide
 
 private def indexedPartialDependencies (key : String) :
     Option (List FieldId × List FieldId × List (List RepeatableLevel) × Bool × List FieldId) := do

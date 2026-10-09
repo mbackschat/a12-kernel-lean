@@ -17,11 +17,11 @@ Resume the active family through its owner links. Update this file only when the
 <a id="active-unit"></a>
 ## Selected work
 
-- `milestone`: Continue the [SG6 constructor/endpoint audit](gaps/numeric-and-temporal.md#gap-sg6) after closing the shared Date/Time component grammar and ordered-admission batch.
+- `milestone`: Audit [stored Date/DateRange dependent reads](gaps/numeric-and-temporal.md#gap-sg6) against the follow-up handback through the existing computation readback mechanism.
 - `oracle`: Start from the [temporal clause](../spec/05-dates-and-time.md) and [inbound constructor controls](sources/inbound-handbacks.md#inbound-2026-10-09-extensions). The accepted [shared-runtime matrix](sources/date-range-construction.md#src-date-range-shared-runtime) is the DateRange input/endpoint baseline.
-- `working-tree`: The constructor-admission batch is accepted at this commit; no unfinished implementation or live process is carried forward. Both Downloads handback replies are complete. Work is active. The [follow-up receipt](sources/inbound-handbacks.md#src-inbound-2026-10-09a) retains target-subtree, stored-readback, message-index and wire-route audits in their gap owners.
+- `working-tree`: Constructor admission is accepted at `854048ed`; this commit reconciles the remaining keyed-endpoint/component-policy audit with existing implementation and extends phase guards. No unfinished implementation or live process is carried forward. Both Downloads handback replies are complete. Work is active. The [follow-up receipt](sources/inbound-handbacks.md#src-inbound-2026-10-09a) retains target-subtree, stored-readback, message-index and wire-route audits in their gap owners.
 - `state`: Broad coverage remains 217/217. The [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns the refreshed population and its remaining whole-row/evidence limits.
-- `next`: Reconcile KF531 keyed ValueAsDate phase/index-defect cases and KF373/KF423 component-policy boundaries against existing guards before selecting missing semantics. Then audit the handback’s stored Date/DateRange dependent-read witnesses through the existing computation readback owner. Do not assume a stale gap row requires new implementation.
+- `next`: Establish a finite readback matrix for yearless Date rollover and FROM-to-TO DateRange copies, with retained target storage distinguished from discarded expression components. Inspect `DocumentComputationReadBack`, target completion and both scalar/addressed scheduling routes before changing semantics; the shared readback owner already reclassifies stored text.
 - `consumer`: Execute needs selected-operand scope, completion and target checking to agree. Preserve declared versus runtime policy and external-calibration limits when composing the accepted range account.
 - `blocker`: No verified hard blocker.
 - `stop-condition`: An unresolved source distinction stops dependent implementation, not discovery. Settle a finite acceptance matrix before widening the next family.
@@ -29,11 +29,11 @@ Resume the active family through its owner links. Update this file only when the
 
 ## Verified baseline
 
-- `committed`: This commit closes the eight-slot Date/Time component grammar and ordered native-admission matrix across ordinary/Having validation and computation. [Constructor capabilities](implementation/temporal.md#cap-recursive-date-components) own assurance and exclusions; [SG6](gaps/numeric-and-temporal.md#gap-sg6) owns remaining compositions.
+- `committed`: `854048ed` closes the eight-slot Date/Time component grammar and ordered native-admission matrix across ordinary/Having validation and computation. The subsequent audit retains keyed-endpoint phase controls and confirms the existing split-year policy owner; it adds no semantic mechanism or broad cell. [Constructor capabilities](implementation/temporal.md#cap-recursive-date-components) own assurance and exclusions; [SG6](gaps/numeric-and-temporal.md#gap-sg6) owns remaining compositions.
 - `focused`: Grammar, conflicting diagnostic orders, digit-named fields, split-year controls and selected String execution pass. Scalar Min/Max retain Base Year compatibility without changing their leader result type; with/without-BaseYear controls and prior clock controls pass. Integrated build, compact evidence and trust pass.
 - `review-boundary`: Fresh HIGH constructor review and its bounded Base Year correction review completed with no actionable findings. The correction follows a reproduced replay regression and preserves the original acceptance requirement that admitted compositions remain admitted.
 - `replay-boundary`: Full replay on the corrected reviewed slice preserves all admitted matches with no instance refusal, divergence, unattributed outcome or execution fault. The [report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns counts and unchanged whole-row/evidence limits. Replay interval resets to zero; prose/report requests do not trigger another run.
-- `remaining-gates`: None for the accepted constructor family. Resume bounded route discovery for the next SG6 obligation.
+- `remaining-gates`: None for the accepted constructor family and keyed-endpoint audit. The audit changes test coverage only; the focused/integrated, compact evidence and trust/hygiene gates pass, with no new population replay or cold-review trigger.
 - `commands`: The [command ladder](TESTING.md#command-ladder) and [review disposition rules](TESTING.md#review-convergence-and-landing-gate) own gates. Reuse the accepted boundary; final documentation updates trigger no extra replay or reviewer.
 
 ## Consumer and evidence triggers
