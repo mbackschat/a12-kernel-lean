@@ -2807,8 +2807,8 @@ run_cmd do
 #print axioms A12Kernel.indexScan_prefix_determines
 #print axioms A12Kernel.indexScan_class_follows_reference
 #print axioms A12Kernel.FilterRuleFacts.merge_assoc
-#print axioms A12Kernel.conditionRefusal_needs_parallelIteration
-#print axioms A12Kernel.conditionRefusal_invalid_implies_earlier_clear
+#print axioms A12Kernel.conditionRefusal_without_parallelIteration
+#print axioms A12Kernel.conditionRefusal_preserves_earlier_refusal
 #print axioms A12Kernel.conditionRefusal_parallel_guard_iff
 #print axioms A12Kernel.a12TableView_not_table
 #print axioms A12Kernel.valueNotConsistent_a12_always_refuses

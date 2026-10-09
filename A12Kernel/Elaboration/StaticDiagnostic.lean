@@ -410,6 +410,8 @@ inductive KernelStaticDiagnostic where
   | notInSamePath
   /-- Keys of `RepetitionNotUnique` in two parallel repeatable groups the rule iterates jointly, once an `@From` scope's gates pass. The construct forbids parallel iteration beside it after the parse ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-paired-gates)). -/
   | parallelIterationNotAllowed
+  /-- The parallel condition fails the structural reference-and-guard test (spec/07 §2). -/
+  | parallelIterationInvalid
   /-- A filtered reference itself joins a parallel group, before the body/index global gates
   (ParserService.checkNormalRule). -/
   | parallelIterationForFilteredEntityNotAllowed
@@ -672,6 +674,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noFieldsAllowed => "MVK_NO_FIELDS_ALLOWED"
   | .notInSamePath => "MVK_NOT_IN_SAME_PATH"
   | .parallelIterationNotAllowed => "MVK_PARALLEL_ITERATION_NOT_ALLOWED"
+  | .parallelIterationInvalid => "MVK_PARALLEL_ITERATION_INVALID"
   | .parallelIterationForFilteredEntityNotAllowed => "MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED"
   | .invalidCombinationOfRepetitionNotUnique => "MVK_INVALID_COMBINATION_OF_REPETITON_NOT_UNIQUE"
   | .indexTypeInconsistent => "MVK_INDEX_TYPE_INCONSISTENT"
@@ -770,7 +773,7 @@ def all : List KernelStaticDiagnostic :=
     .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .noTypeYesNo, .invalidType, .invalidInterval, .noNumberForCalc, .noStringOrNumberForAdd,
     .invalidCompareEnumToString, .invalidCompareEnumToEnum, .invalidDateString, .noConst,
     .paramSizeInvalidTwo, .pointInA12Model,
-    .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .parallelIterationNotAllowed, .parallelIterationForFilteredEntityNotAllowed,
+    .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .parallelIterationNotAllowed, .parallelIterationInvalid, .parallelIterationForFilteredEntityNotAllowed,
     .invalidCombinationOfRepetitionNotUnique,
     .indexTypeInconsistent,
     .invalidFieldInParameter, .illegalSemanticIndex, .conditionNoBaseYear, .noString,

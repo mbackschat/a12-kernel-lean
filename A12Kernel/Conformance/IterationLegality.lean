@@ -141,9 +141,9 @@ example :
   native_decide
 
 example :
-    conditionRefusal { repetitionNotUnique := true } (.leaf false) = none ∧
+    conditionRefusal { repetitionNotUniqueCount := 1 } (.leaf false) = none ∧
       conditionRefusal { parallelIteration := true } (.leaf true) = none ∧
-      conditionRefusal { parallelIteration := true, repetitionNotUnique := true } (.leaf true) =
+      conditionRefusal { parallelIteration := true, repetitionNotUniqueCount := 1 } (.leaf true) =
         some .parallelIterationNotAllowed := by native_decide
 
 example :
@@ -151,11 +151,42 @@ example :
       conditionRefusal { parallelIteration := true } (.leaf true) = none := by native_decide
 
 example :
-    conditionRefusal { parallelIteration := true, repetitionNotUnique := true,
-                       filterIteratesOrIndexes := true } (.leaf false) =
+    conditionRefusal { parallelIteration := true, repetitionNotUniqueCount := 1,
+                       parallelFilterBody := true } (.leaf false) =
         some .parallelIterationNotAllowed ∧
-      conditionRefusal { parallelIteration := true, filterIteratesOrIndexes := true }
+      conditionRefusal { parallelIteration := true, parallelFilterBody := true }
         (.or (.leaf true) (.leaf false)) = some .parallelIterationNotAllowed := by native_decide
+
+example : [false, true].all (fun parallel => decide (
+    conditionRefusal { parallelIteration := parallel, filterUsesIndex := true } (.leaf true) =
+      some .semanticIndexNotAllowed ∧
+    conditionRefusal { parallelIteration := parallel, parallelFilterBody := true } (.leaf true) =
+      some .parallelIterationNotAllowed ∧
+    conditionRefusal { parallelIteration := parallel, parallelFilteredEntity := true } (.leaf true) =
+      some .parallelIterationForFilteredEntityNotAllowed ∧
+    conditionRefusal { parallelIteration := parallel } (.leaf true) = none)) = true := by native_decide
+
+private def precedenceRows : List (FilterRuleFacts × KernelStaticDiagnostic) := [
+  ({ repetitionNotUniqueCount := 2, parallelIteration := true, parallelFilteredEntity := true,
+     parallelFilterBody := true, filterUsesIndex := true, rawLength := true }, .parallelIterationNotAllowed),
+  ({ repetitionNotUniqueCount := 2, parallelFilteredEntity := true,
+     parallelFilterBody := true, filterUsesIndex := true, rawLength := true }, .parallelIterationForFilteredEntityNotAllowed),
+  ({ repetitionNotUniqueCount := 2, parallelFilterBody := true, filterUsesIndex := true,
+     rawLength := true }, .parallelIterationNotAllowed),
+  ({ repetitionNotUniqueCount := 2, filterUsesIndex := true, rawLength := true }, .semanticIndexNotAllowed),
+  ({ repetitionNotUniqueCount := 2, rawLength := true }, .invalidCombinationOfRepetitionNotUnique),
+  ({ rawLength := true }, .invalidLengthOfRawType) ]
+
+example : precedenceRows.all (fun (facts, expected) => [false, true].all fun guard =>
+    decide (facts.beforeIterationRefusal? = some expected ∧
+      conditionRefusal facts (.leaf guard) = some expected)) = true := by native_decide
+
+example : conditionRefusal { parallelIteration := true, rawLength := true } (.leaf false) =
+    some .invalidLengthOfRawType ∧
+    conditionRefusal { parallelIteration := true } (.leaf false) = some .parallelIterationInvalid ∧
+    conditionRefusal { repetitionNotUniqueCount := 1 } (.leaf false) = none ∧
+    conditionRefusal { repetitionNotUniqueCount := 2 } (.leaf true) =
+      some .invalidCombinationOfRepetitionNotUnique := by native_decide
 
 private def guarded : ConditionTree Bool := .leaf true
 private def unguarded : ConditionTree Bool := .leaf false
@@ -183,7 +214,7 @@ example :
     (IterationRefusal.all.map (·.catalogKey)).eraseDups.length = IterationRefusal.all.length ∧
       IterationRefusal.noWildcard.catalogKey = "MVK_NO_WILDCARD" ∧
       IterationRefusal.semanticIndexInvalidIter.catalogKey = "MVK_SEMANTIC_INDEX_INVALID_ITER" ∧
-      IterationRefusal.all.length = 7 := by
+      IterationRefusal.all.length = 5 := by
   native_decide
 
 /- The filter-walk cases below use spec/07 §3 and its parser/checker source account; they are

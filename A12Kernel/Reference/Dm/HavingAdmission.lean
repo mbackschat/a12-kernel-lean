@@ -697,10 +697,8 @@ def checkLateFilterIndex (model : FlatModel) (group bindingGroup : GroupPath)
     (expression : Expr) (suppressExactScaleWarning : Bool := false) : Lowering Unit := do
   if !expression.hasHaving then return
   let (_, facts) ← (admitBody model group bindingGroup [] [] { suppressExactScaleWarning } false false expression).run {}
-  if let some diagnostic := facts.refusal? then refuse "Having" diagnostic.kernelCode
-  -- A successful filter-containing condition cannot be the standalone raw-Length limiter:
-  -- Having requires a star, while Length forbids stars (CheckFeldOpImpl; AnalyseService).
-  if facts.rawLength then refuse "Having" KernelStaticDiagnostic.invalidLengthOfRawType.kernelCode
+  -- Having requires a star while Length forbids stars, so this is not the standalone limiter exception (CheckFeldOpImpl; AnalyseService).
+  if let some diagnostic := facts.beforeIterationRefusal? then refuse "Having" diagnostic.kernelCode
 
 /-- Admit one fragment and retain its contribution to the generated rule's global checks. -/
 def checkRawConditionBeforeGlobals (model : FlatModel) (group bindingGroup : GroupPath)

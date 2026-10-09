@@ -370,9 +370,8 @@ private def checkComputationFilterAdmission (language : Language) (model : FlatM
       | some "DiffersWithToleranceRange10" => pure (.tolerance 10)
       | some _ => refuse "ToleranceRange" "unknown range"
     facts := facts.merge (← check (.compare comparison (rawComputationTarget target) operation) suppress)
-  if let some diagnostic := facts.refusal? then refuse "Having" diagnostic.kernelCode
   -- The generated filled-target conjunction is not a standalone raw-Length limiter (spec/09 §6).
-  if facts.rawLength then refuse "Having" KernelStaticDiagnostic.invalidLengthOfRawType.kernelCode
+  if let some diagnostic := facts.beforeIterationRefusal? then refuse "Having" diagnostic.kernelCode
 
 private def lowerComputationWith (allowParallelGuards : Bool)
     (model : FlatModel) (language : Language) (computation : DmComputation) :

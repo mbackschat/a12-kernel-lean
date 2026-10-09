@@ -108,27 +108,22 @@ theorem indexScan_class_follows_reference (semantic : Bool) :
             cases hl <;> simp
         · exact absurd hl (by simp)
 
-/-- Whole-condition combination and guard refusals require parallel iteration. -/
-theorem conditionRefusal_needs_parallelIteration (shape : ConditionShape) (guards : ConditionTree Bool)
-    (h : shape.parallelIteration = false) : conditionRefusal shape guards = none := by
+/-- Removing outer parallel iteration preserves all filter-owned and earlier global refusals. -/
+theorem conditionRefusal_without_parallelIteration (facts : FilterRuleFacts) (guards : ConditionTree Bool)
+    (h : facts.parallelIteration = false) : conditionRefusal facts guards = facts.beforeIterationRefusal? := by
+  cases earlier : facts.beforeIterationRefusal? <;> simp [conditionRefusal, earlier, h]
+
+/-- An earlier global or raw-Length refusal masks the final structural guard independently of its tree. -/
+theorem conditionRefusal_preserves_earlier_refusal (facts : FilterRuleFacts) (guards : ConditionTree Bool)
+    (diagnostic : KernelStaticDiagnostic) (h : facts.beforeIterationRefusal? = some diagnostic) :
+    conditionRefusal facts guards = some diagnostic := by
   simp [conditionRefusal, h]
 
-/-- A structural guard refusal certifies that both earlier combination tests passed. -/
-theorem conditionRefusal_invalid_implies_earlier_clear (shape : ConditionShape) (guards : ConditionTree Bool)
-    (h : conditionRefusal shape guards = some .parallelIterationInvalid) :
-    shape.repetitionNotUnique = false ∧ shape.filterIteratesOrIndexes = false ∧
-      shape.parallelIteration = true ∧ guards.iterationGuarded id = false := by
-  unfold conditionRefusal at h
-  cases hp : shape.parallelIteration <;> cases hr : shape.repetitionNotUnique <;>
-    cases hf : shape.filterIteratesOrIndexes <;> cases hg : guards.iterationGuarded id <;>
-    simp_all
-
-/-- Once earlier combination gates pass, parallel admission is exactly the shared structural guard test. -/
-theorem conditionRefusal_parallel_guard_iff (shape : ConditionShape) (guards : ConditionTree Bool)
-    (hp : shape.parallelIteration = true) (hr : shape.repetitionNotUnique = false)
-    (hf : shape.filterIteratesOrIndexes = false) :
-    conditionRefusal shape guards = none ↔ guards.iterationGuarded id = true := by
-  cases hg : guards.iterationGuarded id <;> simp [conditionRefusal, hp, hr, hf, hg]
+/-- After the shared pre-iteration gate passes, parallel admission is exactly structural guardedness. -/
+theorem conditionRefusal_parallel_guard_iff (facts : FilterRuleFacts) (guards : ConditionTree Bool)
+    (hp : facts.parallelIteration = true) (he : facts.beforeIterationRefusal? = none) :
+    conditionRefusal facts guards = none ↔ guards.iterationGuarded id = true := by
+  cases hg : guards.iterationGuarded id <;> simp [conditionRefusal, hp, he, hg]
 
 /-- A refused reference prefix fixes the filter walk's diagnostic independently of later reads. -/
 theorem filterReferenceWalk_prefix_determines (front suffix : List FilterIndexedReference)
