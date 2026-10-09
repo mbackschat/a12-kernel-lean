@@ -282,6 +282,9 @@ private def numericFieldForm? : String → Option NumericFieldForm
   | "RoundAccountingValue" => some (.rounded .halfUp)
   | _ => none
 
+/-- Syntax routing shares the field-form vocabulary without running its operand gates. -/
+def isNumericFieldForm (name : String) : Bool := (numericFieldForm? name).isSome
+
 /-- The grammar admits only an optional unsigned digit token (GrammarOnly rundenOp).
 Semantic precision bounds are checked separately, after the field (KF393/KF448). -/
 private def fieldRoundingArgument (arguments : List Argument) : Lowering (Option Nat) :=
@@ -292,51 +295,74 @@ private def fieldRoundingArgument (arguments : List Argument) : Lowering (Option
         | none => refuse "NumericFieldForm" KernelStaticDiagnostic.unexpectedToken.kernelCode
     | _ => refuse "NumericFieldForm" KernelStaticDiagnostic.unexpectedToken.kernelCode
 
-/-- An authored numeric operation over atoms the caller lowers. Grouping braces, call boundaries and
-operand order are kept as written, since rounding at every node makes reassociation observable
-(spec §4); a `Min`/`Max` call is the left fold of its operands wrapped once as the call. -/
-partial def lowerNumericExpr (atom fieldAtom : Expr → Lowering Atom) : Expr → Lowering (AuthoredNumericExpr Atom)
-  | .number text => match decodeNumber? text with
-      | some literal => pure (.literal literal)
-      | none => refuse "NumberLiteral" text
-  | .braces body => (.group ·) <$> lowerNumericExpr atom fieldAtom body
-  | .arith .pow base exponent => do
-      pure (.power (← lowerNumericExpr atom fieldAtom base) (← lowerNumericExpr atom fieldAtom exponent))
-  | .arith op left right => do
-      let op : NumericScaleBinaryOp := match op with
-        | .add => .add | .sub => .subtract | .mul => .multiply | _ => .divide
-      pure (.binary op (← lowerNumericExpr atom fieldAtom left) (← lowerNumericExpr atom fieldAtom right))
-  | .call "Abs" [.mk body none] none none => (.abs ·) <$> lowerNumericExpr atom fieldAtom body
-  | .call id (.mk first none :: rest) none none =>
-      if let some form := numericFieldForm? id then do
-        match form with
-        | .absolute =>
-            if !rest.isEmpty then refuse id KernelStaticDiagnostic.unexpectedToken.kernelCode
-            else pure (.abs (.atom (← fieldAtom first)))
-        | .rounded mode =>
-            let argument ← fieldRoundingArgument rest
-            let source ← fieldAtom first
-            let places ← match checkRoundingArgument argument with
-              | .ok places => pure places
-              | .error error => refuse id error.kernelCode
-            pure (.round mode places (.atom source))
-      else if id == "Min" || id == "Max" then do
-        let op : NumericExtremumOp := if id == "Min" then .minimum else .maximum
-        let operands ← (first :: rest.filterMap fun | .mk e none => some e | _ => none).mapM
-          (lowerNumericExpr atom fieldAtom)
-        if operands.length != rest.length + 1 then refuse id "filtered operand"
-        match operands with
-        | head :: tail => pure (.extremumCall op (tail.foldl (.extremum op) head))
-        | [] => refuse id
-      else match roundingMode? id, roundingPlaces? rest with
-        | some mode, some places => do
-            pure (.round mode places (← lowerNumericExpr atom fieldAtom first))
-        | some _, none => refuse id "decimal places"
-        | none, _ => (.atom ·) <$> atom (.call id (.mk first none :: rest) none none)
-  | expression@(.call id [] none none) =>
-      if (numericFieldForm? id).isSome then refuse id KernelStaticDiagnostic.unexpectedToken.kernelCode
-      else (.atom ·) <$> atom expression
-  | other => (.atom ·) <$> atom other
+private def numericReadRefusal [MonadExceptOf Refusal m] (construct : String)
+    (detail : String := "") : m α := throw { construct, detail }
+
+/-- Read numeric syntax in source order, exposing each completed operation to its admission
+owner before proceeding to a sibling. Rounding operand gates precede precision gates
+(CheckRundenOpImpl; CheckRundenOperOpImpl). -/
+partial def lowerNumericExprWith [Monad m] [MonadExceptOf Refusal m]
+    [Nonempty (m (AuthoredNumericExpr Atom))]
+    (atom fieldAtom : Expr → m Atom)
+    (beforeRounding : Expr → AuthoredNumericExpr Atom → m Unit)
+    (complete : Expr → AuthoredNumericExpr Atom → m Unit)
+    (expression : Expr) : m (AuthoredNumericExpr Atom) := do
+  let recurse := lowerNumericExprWith atom fieldAtom beforeRounding complete
+  let argument (arguments : List Argument) : m (Option Nat) :=
+    match fieldRoundingArgument arguments with
+    | .ok value => pure value
+    | .error error => throw error
+  let rounding (id : String) (argument : Option Nat) : m RoundingPlaces := do
+    match checkRoundingArgument argument with
+    | .ok places => pure places
+    | .error error => numericReadRefusal id error.kernelCode
+  let tree ← match expression with
+    | .number text => match decodeNumber? text with
+        | some literal => pure (.literal literal)
+        | none => numericReadRefusal "NumberLiteral" text
+    | .braces body => (.group ·) <$> recurse body
+    | .arith .pow base exponent => do
+        pure (.power (← recurse base) (← recurse exponent))
+    | .arith op left right => do
+        let op : NumericScaleBinaryOp := match op with
+          | .add => .add | .sub => .subtract | .mul => .multiply | _ => .divide
+        pure (.binary op (← recurse left) (← recurse right))
+    | .call "Abs" [.mk body none] none none => (.abs ·) <$> recurse body
+    | .call id (.mk first none :: rest) none none =>
+        if let some form := numericFieldForm? id then do
+          match form with
+          | .absolute =>
+              if !rest.isEmpty then numericReadRefusal id KernelStaticDiagnostic.unexpectedToken.kernelCode
+              else pure (.abs (.atom (← fieldAtom first)))
+          | .rounded mode =>
+              let places ← argument rest
+              let source ← fieldAtom first
+              pure (.round mode (← rounding id places) (.atom source))
+        else if id == "Min" || id == "Max" then do
+          let op : NumericExtremumOp := if id == "Min" then .minimum else .maximum
+          let operands ← (first :: rest.filterMap fun | .mk e none => some e | _ => none).mapM recurse
+          if operands.length != rest.length + 1 then numericReadRefusal id "filtered operand"
+          match operands with
+          | head :: tail => pure (.extremumCall op (tail.foldl (.extremum op) head))
+          | [] => numericReadRefusal id
+        else if let some mode := roundingMode? id then do
+          let places ← argument rest
+          let body ← recurse first
+          beforeRounding first body
+          pure (.round mode (← rounding id places) body)
+        else (.atom ·) <$> atom expression
+    | .call id [] none none =>
+        if (numericFieldForm? id).isSome then numericReadRefusal id KernelStaticDiagnostic.unexpectedToken.kernelCode
+        else (.atom ·) <$> atom expression
+    | other => (.atom ·) <$> atom other
+  complete expression tree
+  pure tree
+
+/-- Retain authored grouping, call boundaries and operand order for later typed admission;
+rounding at each node makes reassociation observable (spec §4). -/
+partial def lowerNumericExpr (atom fieldAtom : Expr → Lowering Atom) :
+    Expr → Lowering (AuthoredNumericExpr Atom) :=
+  lowerNumericExprWith atom fieldAtom (fun _ _ => pure ()) (fun _ _ => pure ())
 
 /-- The first operator call in a tree, left to right: what a comparison is about when its sides are
 operations, and so the cluster key a refused comparison is filed under. -/
