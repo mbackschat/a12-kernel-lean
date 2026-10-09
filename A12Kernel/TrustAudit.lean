@@ -1993,6 +1993,7 @@ run_cmd do
 #print axioms A12Kernel.resolvedStringPattern_readsNormalized
 #print axioms A12Kernel.stringPattern_evalResolved_fired_is_value
 #print axioms A12Kernel.stringPattern_evalComputation_bridge
+#print axioms A12Kernel.matchesNonemptyCodePointRange_iff
 #print axioms A12Kernel.stringPattern_evalComputation_poison_iff
 #print axioms A12Kernel.stringPattern_evalResolved_notEvaluated
 #print axioms A12Kernel.stringPattern_evalResolved_unknown

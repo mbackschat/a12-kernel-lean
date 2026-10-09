@@ -2,10 +2,19 @@ import A12Kernel.Semantics.StringPattern
 
 /-! # A12Kernel.Proofs.StringPattern — resolved pattern laws
 
-These laws concern consumption of an already-admitted whole-value matcher. Java pattern compilation and the kernel's bounded admission gate remain outside this proof boundary.
+These laws characterize the finite range matcher and consumption of an already-admitted whole-value matcher. Java pattern compilation and the kernel's bounded admission gate remain outside this proof boundary.
 -/
 
 namespace A12Kernel
+
+/-- The finite profiles match the entire nonempty value, with both range bounds inclusive. -/
+theorem matchesNonemptyCodePointRange_iff (lower upper : Nat) (value : String) :
+    matchesNonemptyCodePointRange lower upper value = true ↔
+      value.toList ≠ [] ∧ ∀ character ∈ value.toList,
+        lower ≤ character.toNat ∧ character.toNat ≤ upper := by
+  cases h : value.toList with
+  | nil => simp [matchesNonemptyCodePointRange, h]
+  | cons head tail => simp [matchesNonemptyCodePointRange, h, List.all_eq_true]
 
 /-- Forgetting the computation's retained poison cause yields the same resolved pattern verdict. -/
 theorem stringPattern_evalComputation_bridge (op : StringPatternOp)

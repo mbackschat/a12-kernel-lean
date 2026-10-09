@@ -10,15 +10,17 @@ structure RawFlatContext where
 def malformedCheckedCell : CheckedCell :=
   { rawPresent := true, parsed := none, findings := [.malformed] }
 
-/-- Return the one source matcher whose meaning is already implemented without an injected host compiler. -/
+/-- Recognize only the closed ASCII profiles; wider sources require an injected host compiler. -/
 def locallyExecutableStringPatternMatcher? (source : String) :
     Option (String → Bool) :=
   if source == asciiDigitsPatternSource then
     some matchesAsciiDigitsPattern
+  else if source == asciiUppercasePatternSource then
+    some matchesAsciiUppercasePattern
   else
     none
 
-/-- Return the one declaration matcher whose meaning is already implemented without an injected host compiler. Every wider admitted source remains available only through the prepared pattern capability. -/
+/-- Resolve a declaration through the closed ASCII profiles. Wider admitted sources remain available only through the prepared pattern capability. -/
 def FlatFieldDecl.executableStringPatternMatcher?
     (declaration : FlatFieldDecl) : Option (String → Bool) :=
   declaration.stringPatternSource.bind locallyExecutableStringPatternMatcher?

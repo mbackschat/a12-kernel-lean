@@ -590,7 +590,7 @@ Repeatable computation additionally uses `CalculatedFieldIterationLimitCreator`,
 - `outcome`: no cell fires both members. Outside the guarded pairs, every cell where neither fires has one of three causes: a malformed member of the operand, an operand without a value, or the empty-instance gate on `all-empty` and `blank`.
 - `outcome`: `SONE` and `SALL` keep the guard on both sides, so they are a guarded pair and not a negation: De Morgan negates the guard too, and the guarded complement is silent wherever `A` is empty.
 - `outcome`: polarity is per pair, not shared. `AllFieldsFilled` fires VALUE where `NotAllFieldsFilled` fires OMISSION, and `[K] != True` fires OMISSION on every document with content and no `K`, where its original cannot fire at all.
-- `limit`: one document set over flat operands, a fixed group and one repeatable level; the pattern pair is not replayed by Lean, whose only built-in pattern compiler is the ASCII-digits one.
+- `limit`: one document set over flat operands, a fixed group and one repeatable level. The [pattern implementation](../implementation/strings-and-enumerations.md#cap-pattern-and-charset-admission) owns current compiler and replay coverage; this capture does not establish arbitrary Java-pattern correspondence.
 - `bytes`: [`negation-pair-grid-2026-10-02`](../../evidence/kernel-30.8.1/captures/negation-pair-grid-2026-10-02/) — `Neg_DM.json` SHA-256 `7d3dd20309d6c8ff50c6f081623a4fe4575991b265d2676c8346fbaeface639a`, `request.json` `549285e306344be03f07b37ae7e0074b8a1dacae0e33fd3b69246db0151c0274`, `artifact.json` `8108a7b87f08f8045869a58acaa0d837cf92a659142e27d3f7a237835f0ef53a`, its Kernel message text redacted in place.
 
 <a id="src-negated-corpus"></a>

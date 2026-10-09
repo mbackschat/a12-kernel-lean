@@ -8,7 +8,7 @@ Ordinary declared patterns and registered custom validators are mutually exclusi
 
 namespace A12Kernel
 
-/-- The explicit compiler for the sole declared pattern whose matcher is implemented without a host regex capability. -/
+/-- Compile the closed ASCII profiles without a host regex capability. -/
 def builtinStringPatternCompiler : StringPatternCompiler :=
   locallyExecutableStringPatternMatcher?
 

@@ -73,6 +73,41 @@ private def condition (source : String := "[A-Z]{3}")
 private def raw (value : RawCell) : RawFlatContext where
   read id := if id == 1 then value else .empty
 
+private def uppercaseCases : List (String × Bool) := [
+  ("", false), ("A", true), ("Z", true), ("AZBY", true), ("a", false),
+  ("@", false), ("[", false), ("A1", false), ("1A", false), ("A Z", false),
+  ("Å", false), ("Ａ", false), ("𝔄", false), ("A\n", false), ("A\r\n", false)]
+
+example : (builtinStringPatternCompiler "[A-Z]+").map (fun matcher =>
+    uppercaseCases.all fun (value, expected) => matcher value == expected) = some true := by native_decide
+
+example : (builtinStringPatternCompiler "[0-9]+").map (fun matcher =>
+    [("", false), ("0", true), ("9", true), ("0129", true), ("/", false),
+      (":", false), ("١", false), ("１", false), ("1A", false)].all
+      fun (value, expected) => matcher value == expected) = some true := by native_decide
+
+example : ["[A-Z]*", "[A-Z]{3}", "[a-z]+", "[A-Za-z]+", "[A-Z]+$", "("].all
+    (fun source => (builtinStringPatternCompiler source).isNone) = true := by native_decide
+
+example : [StringPatternOp.matched, .violated].all (fun op =>
+    ["ABC", "abc", ""].all fun value =>
+      (elaborateAndEvalStringPatternFull builtinStringPatternCompiler model ["Claim"]
+        (raw (.parsed (.str value))) true (condition "[A-Z]+" op)).toOption ==
+      some (if value.isEmpty then Verdict.notFired else
+        if op.acceptsMatchResult (value == "ABC") then .fired .value else .notFired)) = true := by native_decide
+
+example : [StringPatternOp.matched, .violated].all (fun op =>
+    (elaborateAndEvalStringPatternFull builtinStringPatternCompiler model ["Claim"]
+      (raw (.rejected .declaredConstraint)) true (condition "[A-Z]+" op)).toOption ==
+    some .unknown) = true := by native_decide
+
+example :
+    let declared : FlatModel := { fields := [{ stringDeclaration with stringPatternSource := some "[A-Z]+" }] }
+    (elaborateAndEvalStringPatternFull builtinStringPatternCompiler declared ["Claim"]
+      (raw (.parsed (.str "ABC"))) true (condition "[0-9]+" .violated)).toOption == some (.fired .value) &&
+    (elaborateAndEvalStringPatternFull builtinStringPatternCompiler declared ["Claim"]
+      (raw (.parsed (.str "123"))) true (condition "[0-9]+" .matched)).toOption == some .unknown = true := by native_decide
+
 private def normalizedResult : Option Verdict :=
   match elaborateAndEvalStringPatternFull compileNormalized lineBreakModel ["Claim"]
       (raw (.parsed (.str "AB\r\nCD"))) true (condition "AB\\sCD") with
@@ -335,15 +370,13 @@ example :
           some (.pattern .kernelRestriction) := by
   native_decide
 
-/- The existing executable numeric specialization and the prepared general route agree on accepted and rejected cells. -/
-example :
-    let declaration := {
-      stringDeclaration with stringPatternSource := some "[0-9]+" }
+/- The injected test compiler and built-in declaration route independently classify both finite profiles. -/
+example : ["[0-9]+", "[A-Z]+"].all (fun source =>
+    let declaration := { stringDeclaration with stringPatternSource := some source }
     let declaredModel : FlatModel := { fields := [declaration] }
-    preparedCell declaredModel 1 (.parsed (.str "123")) =
-        some (declaration.checkRaw (.parsed (.str "123"))) ∧
-      preparedCell declaredModel 1 (.parsed (.str "12A")) =
-        some (declaration.checkRaw (.parsed (.str "12A"))) := by
+    ["123", "12A", "ABC", "AbC", "", " ABC "].all fun value =>
+      preparedCell declaredModel 1 (.parsed (.str value)) ==
+        some (declaration.checkRaw (.parsed (.str value)))) = true := by
   native_decide
 
 private def multiPatternModel : FlatModel :=
