@@ -49,7 +49,8 @@ theorem customFieldValidity_unavailable_unknown
     checked.eval operation (.unknown cause) = .unknown := by
   cases operation <;> rfl
 
-/-- With no usable validator the predicate is degenerate: on one present nonempty value **both** polarities fire VALUE. This is the measured observable; its cause is unresolved and unmodelled. -/
+/-- Both standalone rules project reached missing-validator failure to VALUE. This theorem concerns
+`eval`; composing consumers retain the failure through `evalValidation` (spec/06 A.3). -/
 theorem customFieldValidity_unsupplied_fires_both
     (checked : CheckedCustomFieldValidity) (value : String)
     (operation : CustomFieldValidityOp)

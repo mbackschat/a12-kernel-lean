@@ -1,0 +1,3550 @@
+{
+  "header" : {
+    "id" : "Probe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Probe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Probe/SkuText",
+            "name" : "SkuText",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Amount",
+            "name" : "Amount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Flag",
+            "name" : "Flag",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FiledOn",
+            "name" : "FiledOn",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/ClosedOn",
+            "name" : "ClosedOn",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/CoverFrom",
+            "name" : "CoverFrom",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Sub",
+                "name" : "Sub",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Sub/Leaf",
+                    "name" : "Leaf",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowVal",
+                "name" : "RowVal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowDate",
+                "name" : "RowDate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowText",
+                "name" : "RowText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowScaled",
+                "name" : "RowScaled",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowFlag",
+                "name" : "RowFlag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowAgreed",
+                "name" : "RowAgreed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowChoice",
+                "name" : "RowChoice",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowClock",
+                "name" : "RowClock",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowSpan",
+                "name" : "RowSpan",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Pair",
+                "name" : "Pair",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Pair/A",
+                    "name" : "A",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Pair/B",
+                    "name" : "B",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Members",
+                "name" : "Members",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Members/M",
+                    "name" : "M",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/D",
+                "name" : "D",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 0,
+                      "maxValue" : 31
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/M",
+                "name" : "M",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 0,
+                      "maxValue" : 12
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Y",
+                "name" : "Y",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 0,
+                      "maxValue" : 9999
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Peer",
+                "name" : "Peer",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 4
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/GroupFilledDirect",
+                "name" : "GroupFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/GroupNotFilledDirect",
+                "name" : "GroupNotFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/AllGroupsFilledDirect",
+                "name" : "AllGroupsFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NoGroupFilledDirect",
+                "name" : "NoGroupFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/AtLeastOneGroupFilledDirect",
+                "name" : "AtLeastOneGroupFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NotAllGroupsFilledDirect",
+                "name" : "NotAllGroupsFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/GroupsNotCollectivelyFilledDirect",
+                "name" : "GroupsNotCollectivelyFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/AllFieldsFilledDirect",
+                "name" : "AllFieldsFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NoFieldFilledDirect",
+                "name" : "NoFieldFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/AtLeastOneFieldFilledDirect",
+                "name" : "AtLeastOneFieldFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/MoreThanOneFieldFilledDirect",
+                "name" : "MoreThanOneFieldFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NotAllFieldsFilledDirect",
+                "name" : "NotAllFieldsFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NotExactlyOneFieldFilledDirect",
+                "name" : "NotExactlyOneFieldFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/FieldsNotCollectivelyFilledDirect",
+                "name" : "FieldsNotCollectivelyFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/FieldFilledDirect",
+                "name" : "FieldFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/FieldNotFilledDirect",
+                "name" : "FieldNotFilledDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NoGroupFilledStarDirect",
+                "name" : "NoGroupFilledStarDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/AtLeastOneGroupFilledStarDirect",
+                "name" : "AtLeastOneGroupFilledStarDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/UniqueNumberDirect",
+                "name" : "UniqueNumberDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/UniqueTextDirect",
+                "name" : "UniqueTextDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/UniqueStarDirect",
+                "name" : "UniqueStarDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/PatternMatchedDirect",
+                "name" : "PatternMatchedDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/PatternViolatedDirect",
+                "name" : "PatternViolatedDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NamedValidDirect",
+                "name" : "NamedValidDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NamedInvalidDirect",
+                "name" : "NamedInvalidDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/DateValidDirect",
+                "name" : "DateValidDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/DateInvalidDirect",
+                "name" : "DateInvalidDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/FieldValueIncludedInValueListNumberDirect",
+                "name" : "FieldValueIncludedInValueListNumberDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/FieldValueIncludedInValueListTextDirect",
+                "name" : "FieldValueIncludedInValueListTextDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/FieldValueNotIncludedInValueListNumberDirect",
+                "name" : "FieldValueNotIncludedInValueListNumberDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/FieldValueNotIncludedInValueListTextDirect",
+                "name" : "FieldValueNotIncludedInValueListTextDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/AtLeastOneFieldValueIncludedInValueListNumberDirect",
+                "name" : "AtLeastOneFieldValueIncludedInValueListNumberDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/AtLeastOneFieldValueIncludedInValueListTextDirect",
+                "name" : "AtLeastOneFieldValueIncludedInValueListTextDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NoFieldValueIncludedInValueListNumberDirect",
+                "name" : "NoFieldValueIncludedInValueListNumberDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NoFieldValueIncludedInValueListTextDirect",
+                "name" : "NoFieldValueIncludedInValueListTextDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NotAllFieldValuesIncludedInValueListNumberDirect",
+                "name" : "NotAllFieldValuesIncludedInValueListNumberDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/NotAllFieldValuesIncludedInValueListTextDirect",
+                "name" : "NotAllFieldValuesIncludedInValueListTextDirect",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/CapturedGroup",
+                "name" : "CapturedGroup",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/CapturedMembership",
+                "name" : "CapturedMembership",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/CapturedUniqueness",
+                "name" : "CapturedUniqueness",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/CapturedDate",
+                "name" : "CapturedDate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Other/OtherVal",
+                "name" : "OtherVal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Allowed",
+            "name" : "Allowed",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Allowed/Value",
+                "name" : "Value",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/GroupFilledHaving",
+            "name" : "GroupFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GroupFilledHavingRule",
+            "name" : "GroupFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "GroupFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (GroupFilled(Rows/Sub)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GroupFilledDirectRule",
+            "name" : "GroupFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "GroupFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (GroupFilled(Rows/Sub))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/GroupFilledHavingComp",
+            "name" : "GroupFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GroupFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (GroupFilled(Rows/Sub)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/GroupFilledDirectComp",
+            "name" : "GroupFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/GroupFilledDirect",
+              "commonPrecondition" : "GroupFilled(Rows/Sub)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/GroupNotFilledHaving",
+            "name" : "GroupNotFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GroupNotFilledHavingRule",
+            "name" : "GroupNotFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "GroupNotFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (GroupNotFilled(Rows/Sub)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GroupNotFilledDirectRule",
+            "name" : "GroupNotFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "GroupNotFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (GroupNotFilled(Rows/Sub))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/GroupNotFilledHavingComp",
+            "name" : "GroupNotFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GroupNotFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (GroupNotFilled(Rows/Sub)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/GroupNotFilledDirectComp",
+            "name" : "GroupNotFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/GroupNotFilledDirect",
+              "commonPrecondition" : "GroupNotFilled(Rows/Sub)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AllGroupsFilledHaving",
+            "name" : "AllGroupsFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AllGroupsFilledHavingRule",
+            "name" : "AllGroupsFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AllGroupsFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AllGroupsFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AllGroupsFilledDirectRule",
+            "name" : "AllGroupsFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "AllGroupsFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (AllGroupsFilled(Rows/Sub, Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AllGroupsFilledHavingComp",
+            "name" : "AllGroupsFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AllGroupsFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (AllGroupsFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AllGroupsFilledDirectComp",
+            "name" : "AllGroupsFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/AllGroupsFilledDirect",
+              "commonPrecondition" : "AllGroupsFilled(Rows/Sub, Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NoGroupFilledHaving",
+            "name" : "NoGroupFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NoGroupFilledHavingRule",
+            "name" : "NoGroupFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NoGroupFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NoGroupFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NoGroupFilledDirectRule",
+            "name" : "NoGroupFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NoGroupFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (NoGroupFilled(Rows/Sub, Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NoGroupFilledHavingComp",
+            "name" : "NoGroupFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NoGroupFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (NoGroupFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NoGroupFilledDirectComp",
+            "name" : "NoGroupFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NoGroupFilledDirect",
+              "commonPrecondition" : "NoGroupFilled(Rows/Sub, Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AtLeastOneGroupFilledHaving",
+            "name" : "AtLeastOneGroupFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AtLeastOneGroupFilledHavingRule",
+            "name" : "AtLeastOneGroupFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AtLeastOneGroupFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AtLeastOneGroupFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AtLeastOneGroupFilledDirectRule",
+            "name" : "AtLeastOneGroupFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "AtLeastOneGroupFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (AtLeastOneGroupFilled(Rows/Sub, Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AtLeastOneGroupFilledHavingComp",
+            "name" : "AtLeastOneGroupFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AtLeastOneGroupFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (AtLeastOneGroupFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AtLeastOneGroupFilledDirectComp",
+            "name" : "AtLeastOneGroupFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/AtLeastOneGroupFilledDirect",
+              "commonPrecondition" : "AtLeastOneGroupFilled(Rows/Sub, Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NotAllGroupsFilledHaving",
+            "name" : "NotAllGroupsFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NotAllGroupsFilledHavingRule",
+            "name" : "NotAllGroupsFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NotAllGroupsFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NotAllGroupsFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NotAllGroupsFilledDirectRule",
+            "name" : "NotAllGroupsFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NotAllGroupsFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (NotAllGroupsFilled(Rows/Sub, Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NotAllGroupsFilledHavingComp",
+            "name" : "NotAllGroupsFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NotAllGroupsFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (NotAllGroupsFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NotAllGroupsFilledDirectComp",
+            "name" : "NotAllGroupsFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NotAllGroupsFilledDirect",
+              "commonPrecondition" : "NotAllGroupsFilled(Rows/Sub, Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/GroupsNotCollectivelyFilledHaving",
+            "name" : "GroupsNotCollectivelyFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GroupsNotCollectivelyFilledHavingRule",
+            "name" : "GroupsNotCollectivelyFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "GroupsNotCollectivelyFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (GroupsNotCollectivelyFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GroupsNotCollectivelyFilledDirectRule",
+            "name" : "GroupsNotCollectivelyFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "GroupsNotCollectivelyFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (GroupsNotCollectivelyFilled(Rows/Sub, Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/GroupsNotCollectivelyFilledHavingComp",
+            "name" : "GroupsNotCollectivelyFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GroupsNotCollectivelyFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (GroupsNotCollectivelyFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/GroupsNotCollectivelyFilledDirectComp",
+            "name" : "GroupsNotCollectivelyFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/GroupsNotCollectivelyFilledDirect",
+              "commonPrecondition" : "GroupsNotCollectivelyFilled(Rows/Sub, Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AllFieldsFilledHaving",
+            "name" : "AllFieldsFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AllFieldsFilledHavingRule",
+            "name" : "AllFieldsFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AllFieldsFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AllFieldsFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AllFieldsFilledDirectRule",
+            "name" : "AllFieldsFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "AllFieldsFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (AllFieldsFilled(Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AllFieldsFilledHavingComp",
+            "name" : "AllFieldsFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AllFieldsFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (AllFieldsFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AllFieldsFilledDirectComp",
+            "name" : "AllFieldsFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/AllFieldsFilledDirect",
+              "commonPrecondition" : "AllFieldsFilled(Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NoFieldFilledHaving",
+            "name" : "NoFieldFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NoFieldFilledHavingRule",
+            "name" : "NoFieldFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NoFieldFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NoFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NoFieldFilledDirectRule",
+            "name" : "NoFieldFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NoFieldFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (NoFieldFilled(Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NoFieldFilledHavingComp",
+            "name" : "NoFieldFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NoFieldFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (NoFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NoFieldFilledDirectComp",
+            "name" : "NoFieldFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NoFieldFilledDirect",
+              "commonPrecondition" : "NoFieldFilled(Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AtLeastOneFieldFilledHaving",
+            "name" : "AtLeastOneFieldFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AtLeastOneFieldFilledHavingRule",
+            "name" : "AtLeastOneFieldFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AtLeastOneFieldFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AtLeastOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AtLeastOneFieldFilledDirectRule",
+            "name" : "AtLeastOneFieldFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "AtLeastOneFieldFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (AtLeastOneFieldFilled(Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AtLeastOneFieldFilledHavingComp",
+            "name" : "AtLeastOneFieldFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AtLeastOneFieldFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (AtLeastOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AtLeastOneFieldFilledDirectComp",
+            "name" : "AtLeastOneFieldFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/AtLeastOneFieldFilledDirect",
+              "commonPrecondition" : "AtLeastOneFieldFilled(Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/MoreThanOneFieldFilledHaving",
+            "name" : "MoreThanOneFieldFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/MoreThanOneFieldFilledHavingRule",
+            "name" : "MoreThanOneFieldFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "MoreThanOneFieldFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (MoreThanOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/MoreThanOneFieldFilledDirectRule",
+            "name" : "MoreThanOneFieldFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "MoreThanOneFieldFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (MoreThanOneFieldFilled(Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/MoreThanOneFieldFilledHavingComp",
+            "name" : "MoreThanOneFieldFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MoreThanOneFieldFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (MoreThanOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/MoreThanOneFieldFilledDirectComp",
+            "name" : "MoreThanOneFieldFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/MoreThanOneFieldFilledDirect",
+              "commonPrecondition" : "MoreThanOneFieldFilled(Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NotAllFieldsFilledHaving",
+            "name" : "NotAllFieldsFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NotAllFieldsFilledHavingRule",
+            "name" : "NotAllFieldsFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NotAllFieldsFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NotAllFieldsFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NotAllFieldsFilledDirectRule",
+            "name" : "NotAllFieldsFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NotAllFieldsFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (NotAllFieldsFilled(Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NotAllFieldsFilledHavingComp",
+            "name" : "NotAllFieldsFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NotAllFieldsFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (NotAllFieldsFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NotAllFieldsFilledDirectComp",
+            "name" : "NotAllFieldsFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NotAllFieldsFilledDirect",
+              "commonPrecondition" : "NotAllFieldsFilled(Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NotExactlyOneFieldFilledHaving",
+            "name" : "NotExactlyOneFieldFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NotExactlyOneFieldFilledHavingRule",
+            "name" : "NotExactlyOneFieldFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NotExactlyOneFieldFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NotExactlyOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NotExactlyOneFieldFilledDirectRule",
+            "name" : "NotExactlyOneFieldFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NotExactlyOneFieldFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (NotExactlyOneFieldFilled(Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NotExactlyOneFieldFilledHavingComp",
+            "name" : "NotExactlyOneFieldFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NotExactlyOneFieldFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (NotExactlyOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NotExactlyOneFieldFilledDirectComp",
+            "name" : "NotExactlyOneFieldFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NotExactlyOneFieldFilledDirect",
+              "commonPrecondition" : "NotExactlyOneFieldFilled(Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FieldsNotCollectivelyFilledHaving",
+            "name" : "FieldsNotCollectivelyFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldsNotCollectivelyFilledHavingRule",
+            "name" : "FieldsNotCollectivelyFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FieldsNotCollectivelyFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldsNotCollectivelyFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldsNotCollectivelyFilledDirectRule",
+            "name" : "FieldsNotCollectivelyFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "FieldsNotCollectivelyFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (FieldsNotCollectivelyFilled(Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldsNotCollectivelyFilledHavingComp",
+            "name" : "FieldsNotCollectivelyFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FieldsNotCollectivelyFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldsNotCollectivelyFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldsNotCollectivelyFilledDirectComp",
+            "name" : "FieldsNotCollectivelyFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/FieldsNotCollectivelyFilledDirect",
+              "commonPrecondition" : "FieldsNotCollectivelyFilled(Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FieldFilledHaving",
+            "name" : "FieldFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldFilledHavingRule",
+            "name" : "FieldFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FieldFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldFilled(Rows/Pair/A)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldFilledDirectRule",
+            "name" : "FieldFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "FieldFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (FieldFilled(Rows/Pair/A))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldFilledHavingComp",
+            "name" : "FieldFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FieldFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldFilled(Rows/Pair/A)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldFilledDirectComp",
+            "name" : "FieldFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/FieldFilledDirect",
+              "commonPrecondition" : "FieldFilled(Rows/Pair/A)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FieldNotFilledHaving",
+            "name" : "FieldNotFilledHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldNotFilledHavingRule",
+            "name" : "FieldNotFilledHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FieldNotFilledHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldNotFilled(Rows/Pair/A)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldNotFilledDirectRule",
+            "name" : "FieldNotFilledDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "FieldNotFilledDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (FieldNotFilled(Rows/Pair/A))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldNotFilledHavingComp",
+            "name" : "FieldNotFilledHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FieldNotFilledHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldNotFilled(Rows/Pair/A)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldNotFilledDirectComp",
+            "name" : "FieldNotFilledDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/FieldNotFilledDirect",
+              "commonPrecondition" : "FieldNotFilled(Rows/Pair/A)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NoGroupFilledStarHaving",
+            "name" : "NoGroupFilledStarHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NoGroupFilledStarHavingRule",
+            "name" : "NoGroupFilledStarHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NoGroupFilledStarHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NoGroupFilled(Rows*/Sub)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NoGroupFilledStarDirectRule",
+            "name" : "NoGroupFilledStarDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NoGroupFilledStarDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (NoGroupFilled(Rows*/Sub))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NoGroupFilledStarHavingComp",
+            "name" : "NoGroupFilledStarHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NoGroupFilledStarHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (NoGroupFilled(Rows*/Sub)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NoGroupFilledStarDirectComp",
+            "name" : "NoGroupFilledStarDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NoGroupFilledStarDirect",
+              "commonPrecondition" : "NoGroupFilled(Rows*/Sub)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AtLeastOneGroupFilledStarHaving",
+            "name" : "AtLeastOneGroupFilledStarHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AtLeastOneGroupFilledStarHavingRule",
+            "name" : "AtLeastOneGroupFilledStarHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AtLeastOneGroupFilledStarHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AtLeastOneGroupFilled(Rows*/Sub)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AtLeastOneGroupFilledStarDirectRule",
+            "name" : "AtLeastOneGroupFilledStarDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "AtLeastOneGroupFilledStarDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (AtLeastOneGroupFilled(Rows*/Sub))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AtLeastOneGroupFilledStarHavingComp",
+            "name" : "AtLeastOneGroupFilledStarHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AtLeastOneGroupFilledStarHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (AtLeastOneGroupFilled(Rows*/Sub)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AtLeastOneGroupFilledStarDirectComp",
+            "name" : "AtLeastOneGroupFilledStarDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/AtLeastOneGroupFilledStarDirect",
+              "commonPrecondition" : "AtLeastOneGroupFilled(Rows*/Sub)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/UniqueNumberHaving",
+            "name" : "UniqueNumberHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/UniqueNumberHavingRule",
+            "name" : "UniqueNumberHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "UniqueNumberHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/UniqueNumberDirectRule",
+            "name" : "UniqueNumberDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "UniqueNumberDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (FieldValuesNotUnique(Rows/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/UniqueNumberHavingComp",
+            "name" : "UniqueNumberHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../UniqueNumberHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/UniqueNumberDirectComp",
+            "name" : "UniqueNumberDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/UniqueNumberDirect",
+              "commonPrecondition" : "FieldValuesNotUnique(Rows/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/UniqueTextHaving",
+            "name" : "UniqueTextHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/UniqueTextHavingRule",
+            "name" : "UniqueTextHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "UniqueTextHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/RowText, Rows/Peer)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/UniqueTextDirectRule",
+            "name" : "UniqueTextDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "UniqueTextDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (FieldValuesNotUnique(Rows/RowText, Rows/Peer))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/UniqueTextHavingComp",
+            "name" : "UniqueTextHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../UniqueTextHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/RowText, Rows/Peer)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/UniqueTextDirectComp",
+            "name" : "UniqueTextDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/UniqueTextDirect",
+              "commonPrecondition" : "FieldValuesNotUnique(Rows/RowText, Rows/Peer)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/UniqueStarHaving",
+            "name" : "UniqueStarHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/UniqueStarHavingRule",
+            "name" : "UniqueStarHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "UniqueStarHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows*/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/UniqueStarDirectRule",
+            "name" : "UniqueStarDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "UniqueStarDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (FieldValuesNotUnique(Rows*/Pair))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/UniqueStarHavingComp",
+            "name" : "UniqueStarHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../UniqueStarHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows*/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/UniqueStarDirectComp",
+            "name" : "UniqueStarDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/UniqueStarDirect",
+              "commonPrecondition" : "FieldValuesNotUnique(Rows*/Pair)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/PatternMatchedHaving",
+            "name" : "PatternMatchedHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/PatternMatchedHavingRule",
+            "name" : "PatternMatchedHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "PatternMatchedHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having ([Rows/Code] PatternMatched \"[0-9]+\") And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/PatternMatchedDirectRule",
+            "name" : "PatternMatchedDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "PatternMatchedDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And ([Rows/Code] PatternMatched \"[0-9]+\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/PatternMatchedHavingComp",
+            "name" : "PatternMatchedHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PatternMatchedHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having ([Rows/Code] PatternMatched \"[0-9]+\") And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/PatternMatchedDirectComp",
+            "name" : "PatternMatchedDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/PatternMatchedDirect",
+              "commonPrecondition" : "[Rows/Code] PatternMatched \"[0-9]+\"",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/PatternViolatedHaving",
+            "name" : "PatternViolatedHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/PatternViolatedHavingRule",
+            "name" : "PatternViolatedHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "PatternViolatedHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having ([Rows/Code] PatternViolated \"[0-9]+\") And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/PatternViolatedDirectRule",
+            "name" : "PatternViolatedDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "PatternViolatedDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And ([Rows/Code] PatternViolated \"[0-9]+\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/PatternViolatedHavingComp",
+            "name" : "PatternViolatedHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PatternViolatedHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having ([Rows/Code] PatternViolated \"[0-9]+\") And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/PatternViolatedDirectComp",
+            "name" : "PatternViolatedDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/PatternViolatedDirect",
+              "commonPrecondition" : "[Rows/Code] PatternViolated \"[0-9]+\"",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NamedValidHaving",
+            "name" : "NamedValidHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NamedValidHavingRule",
+            "name" : "NamedValidHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NamedValidHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (Valid(Rows/Code, \"AbsentType\")) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NamedValidDirectRule",
+            "name" : "NamedValidDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NamedValidDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (Valid(Rows/Code, \"AbsentType\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NamedValidHavingComp",
+            "name" : "NamedValidHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NamedValidHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (Valid(Rows/Code, \"AbsentType\")) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NamedValidDirectComp",
+            "name" : "NamedValidDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NamedValidDirect",
+              "commonPrecondition" : "Valid(Rows/Code, \"AbsentType\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NamedInvalidHaving",
+            "name" : "NamedInvalidHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NamedInvalidHavingRule",
+            "name" : "NamedInvalidHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NamedInvalidHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (Invalid(Rows/Code, \"AbsentType\")) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NamedInvalidDirectRule",
+            "name" : "NamedInvalidDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NamedInvalidDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (Invalid(Rows/Code, \"AbsentType\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NamedInvalidHavingComp",
+            "name" : "NamedInvalidHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NamedInvalidHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (Invalid(Rows/Code, \"AbsentType\")) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NamedInvalidDirectComp",
+            "name" : "NamedInvalidDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NamedInvalidDirect",
+              "commonPrecondition" : "Invalid(Rows/Code, \"AbsentType\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/DateValidHaving",
+            "name" : "DateValidHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/DateValidHavingRule",
+            "name" : "DateValidHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "DateValidHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (Valid(Date(Rows/D, Rows/M, Rows/Y))) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/DateValidDirectRule",
+            "name" : "DateValidDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "DateValidDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (Valid(Date(Rows/D, Rows/M, Rows/Y)))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DateValidHavingComp",
+            "name" : "DateValidHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DateValidHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (Valid(Date(Rows/D, Rows/M, Rows/Y))) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DateValidDirectComp",
+            "name" : "DateValidDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/DateValidDirect",
+              "commonPrecondition" : "Valid(Date(Rows/D, Rows/M, Rows/Y))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/DateInvalidHaving",
+            "name" : "DateInvalidHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/DateInvalidHavingRule",
+            "name" : "DateInvalidHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "DateInvalidHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (Invalid(Date(Rows/D, Rows/M, Rows/Y))) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/DateInvalidDirectRule",
+            "name" : "DateInvalidDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "DateInvalidDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (Invalid(Date(Rows/D, Rows/M, Rows/Y)))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DateInvalidHavingComp",
+            "name" : "DateInvalidHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DateInvalidHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (Invalid(Date(Rows/D, Rows/M, Rows/Y))) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DateInvalidDirectComp",
+            "name" : "DateInvalidDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/DateInvalidDirect",
+              "commonPrecondition" : "Invalid(Date(Rows/D, Rows/M, Rows/Y))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FieldValueIncludedInValueListNumberHaving",
+            "name" : "FieldValueIncludedInValueListNumberHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldValueIncludedInValueListNumberHavingRule",
+            "name" : "FieldValueIncludedInValueListNumberHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FieldValueIncludedInValueListNumberHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/Pair/A, [Rows/Members/M])) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldValueIncludedInValueListNumberDirectRule",
+            "name" : "FieldValueIncludedInValueListNumberDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "FieldValueIncludedInValueListNumberDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (FieldValueIncludedInValueList(Rows/Pair/A, [Rows/Members/M]))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldValueIncludedInValueListNumberHavingComp",
+            "name" : "FieldValueIncludedInValueListNumberHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FieldValueIncludedInValueListNumberHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/Pair/A, [Rows/Members/M])) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldValueIncludedInValueListNumberDirectComp",
+            "name" : "FieldValueIncludedInValueListNumberDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/FieldValueIncludedInValueListNumberDirect",
+              "commonPrecondition" : "FieldValueIncludedInValueList(Rows/Pair/A, [Rows/Members/M])",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FieldValueIncludedInValueListTextHaving",
+            "name" : "FieldValueIncludedInValueListTextHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldValueIncludedInValueListTextHavingRule",
+            "name" : "FieldValueIncludedInValueListTextHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FieldValueIncludedInValueListTextHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/RowText, [Rows/Peer])) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldValueIncludedInValueListTextDirectRule",
+            "name" : "FieldValueIncludedInValueListTextDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "FieldValueIncludedInValueListTextDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (FieldValueIncludedInValueList(Rows/RowText, [Rows/Peer]))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldValueIncludedInValueListTextHavingComp",
+            "name" : "FieldValueIncludedInValueListTextHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FieldValueIncludedInValueListTextHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/RowText, [Rows/Peer])) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldValueIncludedInValueListTextDirectComp",
+            "name" : "FieldValueIncludedInValueListTextDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/FieldValueIncludedInValueListTextDirect",
+              "commonPrecondition" : "FieldValueIncludedInValueList(Rows/RowText, [Rows/Peer])",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FieldValueNotIncludedInValueListNumberHaving",
+            "name" : "FieldValueNotIncludedInValueListNumberHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldValueNotIncludedInValueListNumberHavingRule",
+            "name" : "FieldValueNotIncludedInValueListNumberHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FieldValueNotIncludedInValueListNumberHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValueNotIncludedInValueList(Rows/Pair/A, [Rows/Members/M])) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldValueNotIncludedInValueListNumberDirectRule",
+            "name" : "FieldValueNotIncludedInValueListNumberDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "FieldValueNotIncludedInValueListNumberDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (FieldValueNotIncludedInValueList(Rows/Pair/A, [Rows/Members/M]))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldValueNotIncludedInValueListNumberHavingComp",
+            "name" : "FieldValueNotIncludedInValueListNumberHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FieldValueNotIncludedInValueListNumberHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldValueNotIncludedInValueList(Rows/Pair/A, [Rows/Members/M])) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldValueNotIncludedInValueListNumberDirectComp",
+            "name" : "FieldValueNotIncludedInValueListNumberDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/FieldValueNotIncludedInValueListNumberDirect",
+              "commonPrecondition" : "FieldValueNotIncludedInValueList(Rows/Pair/A, [Rows/Members/M])",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FieldValueNotIncludedInValueListTextHaving",
+            "name" : "FieldValueNotIncludedInValueListTextHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldValueNotIncludedInValueListTextHavingRule",
+            "name" : "FieldValueNotIncludedInValueListTextHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FieldValueNotIncludedInValueListTextHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValueNotIncludedInValueList(Rows/RowText, [Rows/Peer])) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldValueNotIncludedInValueListTextDirectRule",
+            "name" : "FieldValueNotIncludedInValueListTextDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "FieldValueNotIncludedInValueListTextDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (FieldValueNotIncludedInValueList(Rows/RowText, [Rows/Peer]))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldValueNotIncludedInValueListTextHavingComp",
+            "name" : "FieldValueNotIncludedInValueListTextHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FieldValueNotIncludedInValueListTextHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldValueNotIncludedInValueList(Rows/RowText, [Rows/Peer])) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldValueNotIncludedInValueListTextDirectComp",
+            "name" : "FieldValueNotIncludedInValueListTextDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/FieldValueNotIncludedInValueListTextDirect",
+              "commonPrecondition" : "FieldValueNotIncludedInValueList(Rows/RowText, [Rows/Peer])",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AtLeastOneFieldValueIncludedInValueListNumberHaving",
+            "name" : "AtLeastOneFieldValueIncludedInValueListNumberHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AtLeastOneFieldValueIncludedInValueListNumberHavingRule",
+            "name" : "AtLeastOneFieldValueIncludedInValueListNumberHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AtLeastOneFieldValueIncludedInValueListNumberHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AtLeastOneFieldValueIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AtLeastOneFieldValueIncludedInValueListNumberDirectRule",
+            "name" : "AtLeastOneFieldValueIncludedInValueListNumberDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "AtLeastOneFieldValueIncludedInValueListNumberDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (AtLeastOneFieldValueIncludedInValueList(Rows/Pair In Rows/Members))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AtLeastOneFieldValueIncludedInValueListNumberHavingComp",
+            "name" : "AtLeastOneFieldValueIncludedInValueListNumberHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AtLeastOneFieldValueIncludedInValueListNumberHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (AtLeastOneFieldValueIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AtLeastOneFieldValueIncludedInValueListNumberDirectComp",
+            "name" : "AtLeastOneFieldValueIncludedInValueListNumberDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/AtLeastOneFieldValueIncludedInValueListNumberDirect",
+              "commonPrecondition" : "AtLeastOneFieldValueIncludedInValueList(Rows/Pair In Rows/Members)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AtLeastOneFieldValueIncludedInValueListTextHaving",
+            "name" : "AtLeastOneFieldValueIncludedInValueListTextHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AtLeastOneFieldValueIncludedInValueListTextHavingRule",
+            "name" : "AtLeastOneFieldValueIncludedInValueListTextHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AtLeastOneFieldValueIncludedInValueListTextHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AtLeastOneFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AtLeastOneFieldValueIncludedInValueListTextDirectRule",
+            "name" : "AtLeastOneFieldValueIncludedInValueListTextDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "AtLeastOneFieldValueIncludedInValueListTextDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (AtLeastOneFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AtLeastOneFieldValueIncludedInValueListTextHavingComp",
+            "name" : "AtLeastOneFieldValueIncludedInValueListTextHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AtLeastOneFieldValueIncludedInValueListTextHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (AtLeastOneFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AtLeastOneFieldValueIncludedInValueListTextDirectComp",
+            "name" : "AtLeastOneFieldValueIncludedInValueListTextDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/AtLeastOneFieldValueIncludedInValueListTextDirect",
+              "commonPrecondition" : "AtLeastOneFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NoFieldValueIncludedInValueListNumberHaving",
+            "name" : "NoFieldValueIncludedInValueListNumberHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NoFieldValueIncludedInValueListNumberHavingRule",
+            "name" : "NoFieldValueIncludedInValueListNumberHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NoFieldValueIncludedInValueListNumberHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NoFieldValueIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NoFieldValueIncludedInValueListNumberDirectRule",
+            "name" : "NoFieldValueIncludedInValueListNumberDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NoFieldValueIncludedInValueListNumberDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (NoFieldValueIncludedInValueList(Rows/Pair In Rows/Members))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NoFieldValueIncludedInValueListNumberHavingComp",
+            "name" : "NoFieldValueIncludedInValueListNumberHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NoFieldValueIncludedInValueListNumberHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (NoFieldValueIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NoFieldValueIncludedInValueListNumberDirectComp",
+            "name" : "NoFieldValueIncludedInValueListNumberDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NoFieldValueIncludedInValueListNumberDirect",
+              "commonPrecondition" : "NoFieldValueIncludedInValueList(Rows/Pair In Rows/Members)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NoFieldValueIncludedInValueListTextHaving",
+            "name" : "NoFieldValueIncludedInValueListTextHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NoFieldValueIncludedInValueListTextHavingRule",
+            "name" : "NoFieldValueIncludedInValueListTextHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NoFieldValueIncludedInValueListTextHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NoFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NoFieldValueIncludedInValueListTextDirectRule",
+            "name" : "NoFieldValueIncludedInValueListTextDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NoFieldValueIncludedInValueListTextDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (NoFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NoFieldValueIncludedInValueListTextHavingComp",
+            "name" : "NoFieldValueIncludedInValueListTextHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NoFieldValueIncludedInValueListTextHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (NoFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NoFieldValueIncludedInValueListTextDirectComp",
+            "name" : "NoFieldValueIncludedInValueListTextDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NoFieldValueIncludedInValueListTextDirect",
+              "commonPrecondition" : "NoFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NotAllFieldValuesIncludedInValueListNumberHaving",
+            "name" : "NotAllFieldValuesIncludedInValueListNumberHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NotAllFieldValuesIncludedInValueListNumberHavingRule",
+            "name" : "NotAllFieldValuesIncludedInValueListNumberHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NotAllFieldValuesIncludedInValueListNumberHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NotAllFieldValuesIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NotAllFieldValuesIncludedInValueListNumberDirectRule",
+            "name" : "NotAllFieldValuesIncludedInValueListNumberDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NotAllFieldValuesIncludedInValueListNumberDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (NotAllFieldValuesIncludedInValueList(Rows/Pair In Rows/Members))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NotAllFieldValuesIncludedInValueListNumberHavingComp",
+            "name" : "NotAllFieldValuesIncludedInValueListNumberHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NotAllFieldValuesIncludedInValueListNumberHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (NotAllFieldValuesIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NotAllFieldValuesIncludedInValueListNumberDirectComp",
+            "name" : "NotAllFieldValuesIncludedInValueListNumberDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NotAllFieldValuesIncludedInValueListNumberDirect",
+              "commonPrecondition" : "NotAllFieldValuesIncludedInValueList(Rows/Pair In Rows/Members)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/NotAllFieldValuesIncludedInValueListTextHaving",
+            "name" : "NotAllFieldValuesIncludedInValueListTextHaving",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NotAllFieldValuesIncludedInValueListTextHavingRule",
+            "name" : "NotAllFieldValuesIncludedInValueListTextHavingRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "NotAllFieldValuesIncludedInValueListTextHavingRule",
+              "errorCondition" : "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NotAllFieldValuesIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/NotAllFieldValuesIncludedInValueListTextDirectRule",
+            "name" : "NotAllFieldValuesIncludedInValueListTextDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "NotAllFieldValuesIncludedInValueListTextDirectRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And (NotAllFieldValuesIncludedInValueList(Rows/RowText, Rows/Peer In \"a\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NotAllFieldValuesIncludedInValueListTextHavingComp",
+            "name" : "NotAllFieldValuesIncludedInValueListTextHavingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NotAllFieldValuesIncludedInValueListTextHaving",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (NotAllFieldValuesIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/NotAllFieldValuesIncludedInValueListTextDirectComp",
+            "name" : "NotAllFieldValuesIncludedInValueListTextDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/NotAllFieldValuesIncludedInValueListTextDirect",
+              "commonPrecondition" : "NotAllFieldValuesIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/CapturedGroupRule",
+            "name" : "CapturedGroupRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "CapturedGroupRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal Having (GroupFilled($Rows/Sub) And GroupFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/CapturedGroupComp",
+            "name" : "CapturedGroupComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/CapturedGroup",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (GroupFilled($Rows/Sub) And GroupFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/CapturedMembershipRule",
+            "name" : "CapturedMembershipRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "CapturedMembershipRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/Pair/A, [$Rows/Members/M])) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/CapturedMembershipComp",
+            "name" : "CapturedMembershipComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/CapturedMembership",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/Pair/A, [$Rows/Members/M])) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/CapturedUniquenessRule",
+            "name" : "CapturedUniquenessRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "CapturedUniquenessRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/Pair/A, $Rows/Pair/B)) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/CapturedUniquenessComp",
+            "name" : "CapturedUniquenessComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/CapturedUniqueness",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/Pair/A, $Rows/Pair/B)) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/CapturedDateRule",
+            "name" : "CapturedDateRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/RowVal",
+              "errorCode" : "CapturedDateRule",
+              "errorCondition" : "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal Having (Valid(Date(Rows/D, Rows/M, $Rows/Y))) And CurrentRepetition(Rows) > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/CapturedDateComp",
+            "name" : "CapturedDateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/CapturedDate",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/RowVal Having (Valid(Date(Rows/D, Rows/M, $Rows/Y))) And CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

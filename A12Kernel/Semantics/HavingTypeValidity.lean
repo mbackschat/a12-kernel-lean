@@ -19,7 +19,7 @@ def evalHavingTypeValidityValidation (operation : CustomFieldValidityOp)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error Verdict := do
   let observation := (← reference.observeInAtResolving .validation context frame).asTypeValidityText
   let validity ← validityForObservation name observation context
-  pure (validity.eval operation observation)
+  (validity.evalValidation operation observation).mapError fun _ => context.typeValidityValueFailure
 
 def evalHavingTypeValidityComputation (operation : CustomFieldValidityOp)
     (reference : HavingPresenceRef) (name : String)

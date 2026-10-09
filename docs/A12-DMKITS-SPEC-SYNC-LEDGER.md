@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-09-04"></a>
+### SPEC-2026-10-09-04 — missing named-type validators abort enclosing validation rules
+
+- `status`: pending
+- `canonical`: [spec/06 A.3](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation) and [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
+- `delta`: Replace the observable-only double-firing account with a reached lookup failure caught outside the rule condition. A missing named validator is not true inside Boolean composition or Having selection; preserve empty/unavailable and unreached-branch bypasses. Restrict validation operand-reordering claims to effect-preserving rewrites rather than unconditional commutativity.
+- `basis`: Kernel 30.8.1 [predicate-family capture and runtime source](sources/having-filter-probes.md#src-having-predicate-family), both strategies. The selected-target-malformed case still produces VALUE with empty reference sets.
+- `acceptance`: Reconcile ordinary and filtered named-type validation with the enclosing failure handler; retain both polarities, false trailing conditions, bypassed lookup and the distinct declared-Custom whole-call failure. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
 <a id="spec-2026-10-09-03"></a>
 ### SPEC-2026-10-09-03 — complete parsing precedes ordered whole-rule filter gates
 

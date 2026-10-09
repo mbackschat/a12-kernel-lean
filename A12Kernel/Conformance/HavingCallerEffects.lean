@@ -54,7 +54,7 @@ private def callers (clock : Option World) (condition : SurfaceCorrelatedHaving 
 example : callers (some (world true)) = some [none, none, none, none] := by native_decide
 
 example : callers none = some (List.replicate 4 (some .worldUnavailable)) ∧
-    callers (some (world false)) = some [none, none, none, none] := by native_decide
+    callers (some (world false)) = some (List.replicate 4 (some .typeValidityValueFailure)) := by native_decide
 
 private def numberText : SurfaceCorrelatedHaving := .compareStringExpression .equal
   (.fieldValueAsString (.field {
@@ -77,6 +77,13 @@ example : callers none (.and (presence .notFilled) predicate) = some [none, none
     callers none (.or (presence .filled) predicate) = some [none, none, none, none] ∧
     callers none (.and (presence .filled) predicate) = some (List.replicate 4 (some .worldUnavailable)) ∧
     callers none (.or (presence .notFilled) predicate) = some (List.replicate 4 (some .worldUnavailable)) := by native_decide
+
+example : callers (some (world false)) (.and (presence .notFilled) predicate) = some [none, none, none, none] ∧
+    callers (some (world false)) (.or (presence .filled) predicate) = some [none, none, none, none] ∧
+    callers (some (world false)) (.and (presence .filled) predicate) =
+      some (List.replicate 4 (some .typeValidityValueFailure)) ∧
+    callers (some (world false)) (.or (presence .notFilled) predicate) =
+      some (List.replicate 4 (some .typeValidityValueFailure)) := by native_decide
 
 private def temporalFailure : SurfaceCorrelatedHaving := .dateValidity .valid {
   day := .constant "01"

@@ -1,0 +1,6 @@
+{
+  "CapturedGroup": "GroupFilled($Rows/Sub) And GroupFilled(Rows/Pair)",
+  "CapturedMembership": "FieldValueIncludedInValueList(Rows/Pair/A, [$Rows/Members/M])",
+  "CapturedUniqueness": "FieldValuesNotUnique(Rows/Pair/A, $Rows/Pair/B)",
+  "CapturedDate": "Valid(Date(Rows/D, Rows/M, $Rows/Y))"
+}

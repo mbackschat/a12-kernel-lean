@@ -4,7 +4,7 @@ import A12Kernel.Semantics.CustomFieldType
 
 This capsule models the two-argument `Valid(field, "Name")` / `Invalid(field, "Name")` forms after String observation and validator-name resolution. Unlike a declared custom field, this consumer has no declaration-owned length bounds; it supplies the kernel's fixed German, stored-value context through the same validator interface.
 
-The predefined types are a host client SPI, so the registry is **partial by construction** and the authored name may resolve to nothing. The model check does not consult it, which makes an unregistered name legal and its runtime behaviour degenerate rather than rejected: on a filled value both polarities fire, so they are complements only where a validator exists. That observable is measured across both kernel strategies; its cause is unresolved on both sides and is deliberately not modelled here. [`SG7`](../../docs/SEMANTICS-GAPS.md) owns the open mechanism and this capsule's residual static boundary.
+The predefined types are a host client SPI, so the registry is **partial by construction** and the authored name may resolve to nothing. The model check does not consult it, so an unregistered name is legal. On a filled value, lookup failure aborts the enclosing rule and becomes a VALUE message for either polarity; it is not a true leaf inside a Boolean expression (Having runtime calibration, 2026-10-09). `evalValidation` preserves that effect, while `eval` projects the standalone rule observable.
 -/
 
 namespace A12Kernel
@@ -40,7 +40,7 @@ def explicitCustomFieldValidationContext : CustomFieldValidationContext where
   maxLength := none
   isDisplayValue := false
 
-/-- Admit any nonempty authored name and retain whatever the host registry resolves for it. An unregistered name is legal, so its degenerate runtime behaviour is reached rather than replaced by a checked rejection. -/
+/-- Admit any nonempty authored name and retain whatever the host registry resolves for it. An unregistered name is legal, so its runtime lookup failure remains reachable rather than becoming a static rejection. -/
 def elaborateCustomFieldValidity (world : World) (name : String) :
     Except CustomFieldValidityElabError CheckedCustomFieldValidity :=
   if name.isEmpty then
@@ -55,11 +55,15 @@ inductive CustomFieldValidityComputationResult where
   | validatorUnavailable
   deriving Repr, DecidableEq
 
+inductive CustomFieldValidityRuntimeFault where
+  | validatorUnavailable
+  deriving Repr, DecidableEq
+
 namespace CheckedCustomFieldValidity
 
-/-- Evaluate one checked explicit validity predicate.
+/-- Project the standalone rule result for one checked explicit validity predicate.
 
-    The value-specified gate runs first and is registration-blind: empty and unavailable observations remain UNKNOWN whether or not a validator exists. A present nonempty value with a resolved validator is accepted exactly when that validator returns no rejection. Without a usable validator the predicate is degenerate and **both** polarities fire VALUE on the same value, which is the measured observable and not an inferred failure mode. -/
+    The value-specified gate runs first and is registration-blind: empty and unavailable observations remain UNKNOWN whether or not a validator exists. A present nonempty value with a resolved validator is accepted exactly when that validator returns no rejection. Without a usable validator, both standalone rules produce VALUE. Composing callers must use `evalValidation` so that the enclosing rule catches the failure after Boolean evaluation aborts. -/
 def eval (checked : CheckedCustomFieldValidity)
     (operation : CustomFieldValidityOp)
     (observation : CellObservation String) : Verdict :=
@@ -80,8 +84,17 @@ def eval (checked : CheckedCustomFieldValidity)
             | .invalid, none => .notFired
             | .invalid, some _ => .fired .value
 
-/-- Computation preserves reached source invalidity and missing-validator failure; validation's
-unregistered double firing is phase-specific (computation probe, 2026-10-04). -/
+/-- Preserve missing-validator failure until the enclosing rule handler; the standalone `eval`
+projection cannot be used inside Boolean expressions (Having runtime calibration, 2026-10-09). -/
+def evalValidation (checked : CheckedCustomFieldValidity) (operation : CustomFieldValidityOp)
+    (observation : CellObservation String) : Except CustomFieldValidityRuntimeFault Verdict :=
+  match observation, checked.validator? with
+  | .value value, none =>
+      if value.isEmpty then .ok .unknown else .error .validatorUnavailable
+  | _, _ => .ok (checked.eval operation observation)
+
+/-- Computation additionally preserves reached source invalidity; both phases retain
+missing-validator failure (computation probe, 2026-10-04; Having calibration, 2026-10-09). -/
 def evalComputation (checked : CheckedCustomFieldValidity) (operation : CustomFieldValidityOp) :
     CellObservation String → CustomFieldValidityComputationResult
   | .empty => .notTrue

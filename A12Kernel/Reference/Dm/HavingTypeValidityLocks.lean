@@ -145,8 +145,27 @@ example : [false, true].all (fun enumerated =>
 
 example : ["Valid", "Invalid"].all (fun op =>
     run (sum (predicate op)) { registered := false, expected := "14" } ==
-      .inr { (fired "14") with values := ["cleared"], dependent := ["cleared"] } &&
+      .inr { (fired "14") with verdicts := [.fired .value], values := ["cleared"], dependent := ["cleared"] } &&
     run (sum (predicate op)) { registered := false, tags := ["", "", ""], expected := "0" } == .inr (fired "0")) = true := by native_decide
+
+private def validationOutcome (condition : String) : Sum RunError (List Verdict × List String) :=
+  match run "1" { registered := false, validation := some ("FieldFilled(Error) And (" ++ condition ++ ")") } with
+  | .inl error => .inl error
+  | .inr outcome => .inr (outcome.verdicts, outcome.pointers)
+
+example : ["Valid", "Invalid"].all (fun op =>
+    run (sum (predicate op)) { registered := false, rows := true } ==
+      .inr {
+        verdicts := [.fired .value], pointers := ["Form/Rows/N"],
+        values := ["cleared", "cleared", "cleared"], dependent := ["cleared", "cleared", "cleared"] }) = true := by native_decide
+
+example : ["Valid", "Invalid"].all (fun op =>
+    let failing := sum (predicate op) ++ " == -1"
+    [failing, failing ++ " And [Error] == \"never\"",
+      sum (predicate op) ++ " != -1"].all (fun condition =>
+        validationOutcome condition == .inr ([.fired .value], ["Form/Error"])) &&
+    validationOutcome ("[Error] == \"never\" And " ++ failing) == .inr ([.notFired], []) &&
+    validationOutcome ("FieldFilled(Error) Or " ++ failing) == .inr ([.fired .value], ["Form/Error"])) = true := by native_decide
 
 example : run (sum (predicate "Valid")) { tags := ["", "drop", "kept"], expected := "7" } = .inr (fired "7") ∧
     run (sum (predicate "Invalid")) { tags := ["", "drop", "kept"], expected := "5" } = .inr (fired "5") ∧
@@ -204,6 +223,25 @@ private def positiveOutcomes (op : String) : List (Option String) :=
     some "2024-03-01", some "kept", some "kept", some "true", some "2024-03-01"]
   else [some "5", some "1", some "1", some "0", some "0", some "1",
     some "2024-03-02", none, none, none, some "2024-03-02"]
+
+example : ["Valid", "Invalid"].all (fun op =>
+    (carriers op).all fun (operation, targetKind, enumerated) =>
+      let rhs := match targetKind with
+        | .number _ => "-1"
+        | .boolean => "True"
+        | .temporal _ _ => "\"01.03.2024\""
+        | _ => "\"kept\""
+      run operation {
+        registered := false, targetKind, enumerated,
+        validation := some ("FieldFilled(Error) And " ++ operation ++ " == " ++ rhs) } ==
+        .inr {
+          verdicts := [.fired .value], pointers := ["Form/Error"],
+          values := ["cleared"], dependent := ["cleared"] }) = true := by native_decide
+
+example : ["Valid", "Invalid"].all (fun op =>
+    ["AtLeastOneFieldFilled", "FieldValuesNotUnique"].all fun carrier =>
+      validationOutcome (carrier ++ "(Rows*/Tag Having " ++ predicate op ++ ")") ==
+        .inr ([.fired .value], ["Form/Error"])) = true := by native_decide
 
 example : ["Valid", "Invalid"].all (fun op =>
     (carriers op).length == (positiveOutcomes op).length &&

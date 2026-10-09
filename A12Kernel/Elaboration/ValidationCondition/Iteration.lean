@@ -539,13 +539,15 @@ def evalWithTemporalResult (condition : ValidationCondition model)
         -- explicit. `CodeGenRuleDefinition.st` enters classification only after a true condition.
         condition.evalVerdictExcept fun leaf =>
           match readLeaf leaf with
-          | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid) => .ok .unknown
+          | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid)
+          | .error (.inr (.addressing .typeValidityValueFailure)) => .ok .unknown
           | result => result
   match result with
   | .ok verdict => .ok verdict
   | .error (.inl error) => .error error
   | .error (.inr fault@(.dateTimeLabelUnresolved))
-  | .error (.inr fault@(.componentNumberInvalid)) => onTemporalValueFailure fault
+  | .error (.inr fault@(.componentNumberInvalid))
+  | .error (.inr fault@(.addressing .typeValidityValueFailure)) => onTemporalValueFailure fault
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported)
   | .error (.inr (.addressing _)) => onTemporalUnavailable
 
@@ -599,6 +601,7 @@ handler catches that failure outside the Boolean tree (spec/05 §3), unlike a mi
 def addressedValueFailure? : CheckedAddressingError → Option ScalarTemporalEvaluationFault
   | .constructedDate (.stringNotConvertible _ _) => some .componentNumberInvalid
   | .temporalValueFailure => some .dateTimeLabelUnresolved
+  | .typeValidityValueFailure => some (.addressing .typeValidityValueFailure)
   | _ => none
 
 /-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. Truth testing and conditional classification retain their separate failure boundaries. -/

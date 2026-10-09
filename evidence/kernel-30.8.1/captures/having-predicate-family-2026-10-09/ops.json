@@ -1,0 +1,3348 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Probe/Rows",
+    "name": "Pair"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Probe/Rows",
+    "name": "Members"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Probe",
+    "name": "Allowed"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows/Pair",
+    "name": "A",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows/Pair",
+    "name": "B",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows/Members",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Allowed",
+    "name": "Value",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "D",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0,
+      "min": "0",
+      "max": "31"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0,
+      "min": "0",
+      "max": "12"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "Y",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0,
+      "min": "0",
+      "max": "9999"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "Peer",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "Code",
+    "kind": "STRING",
+    "string": {
+      "maxLength": 4
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "GroupFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "GroupFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "GroupFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (GroupFilled(Rows/Sub)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "GroupFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (GroupFilled(Rows/Sub))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/GroupFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (GroupFilled(Rows/Sub)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/GroupFilledDirect",
+    "commonPrecondition": "GroupFilled(Rows/Sub)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "GroupNotFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "GroupNotFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "GroupNotFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (GroupNotFilled(Rows/Sub)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "GroupNotFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (GroupNotFilled(Rows/Sub))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/GroupNotFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (GroupNotFilled(Rows/Sub)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/GroupNotFilledDirect",
+    "commonPrecondition": "GroupNotFilled(Rows/Sub)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AllGroupsFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "AllGroupsFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AllGroupsFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AllGroupsFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "AllGroupsFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (AllGroupsFilled(Rows/Sub, Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/AllGroupsFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (AllGroupsFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/AllGroupsFilledDirect",
+    "commonPrecondition": "AllGroupsFilled(Rows/Sub, Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NoGroupFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NoGroupFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NoGroupFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NoGroupFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NoGroupFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (NoGroupFilled(Rows/Sub, Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NoGroupFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (NoGroupFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NoGroupFilledDirect",
+    "commonPrecondition": "NoGroupFilled(Rows/Sub, Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AtLeastOneGroupFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "AtLeastOneGroupFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AtLeastOneGroupFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AtLeastOneGroupFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "AtLeastOneGroupFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (AtLeastOneGroupFilled(Rows/Sub, Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/AtLeastOneGroupFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (AtLeastOneGroupFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/AtLeastOneGroupFilledDirect",
+    "commonPrecondition": "AtLeastOneGroupFilled(Rows/Sub, Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NotAllGroupsFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NotAllGroupsFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NotAllGroupsFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NotAllGroupsFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NotAllGroupsFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (NotAllGroupsFilled(Rows/Sub, Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NotAllGroupsFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (NotAllGroupsFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NotAllGroupsFilledDirect",
+    "commonPrecondition": "NotAllGroupsFilled(Rows/Sub, Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "GroupsNotCollectivelyFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "GroupsNotCollectivelyFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "GroupsNotCollectivelyFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (GroupsNotCollectivelyFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "GroupsNotCollectivelyFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (GroupsNotCollectivelyFilled(Rows/Sub, Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/GroupsNotCollectivelyFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (GroupsNotCollectivelyFilled(Rows/Sub, Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/GroupsNotCollectivelyFilledDirect",
+    "commonPrecondition": "GroupsNotCollectivelyFilled(Rows/Sub, Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AllFieldsFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "AllFieldsFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AllFieldsFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AllFieldsFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "AllFieldsFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (AllFieldsFilled(Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/AllFieldsFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (AllFieldsFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/AllFieldsFilledDirect",
+    "commonPrecondition": "AllFieldsFilled(Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NoFieldFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NoFieldFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NoFieldFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NoFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NoFieldFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (NoFieldFilled(Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NoFieldFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (NoFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NoFieldFilledDirect",
+    "commonPrecondition": "NoFieldFilled(Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AtLeastOneFieldFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "AtLeastOneFieldFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AtLeastOneFieldFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AtLeastOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "AtLeastOneFieldFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (AtLeastOneFieldFilled(Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/AtLeastOneFieldFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (AtLeastOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/AtLeastOneFieldFilledDirect",
+    "commonPrecondition": "AtLeastOneFieldFilled(Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "MoreThanOneFieldFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "MoreThanOneFieldFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "MoreThanOneFieldFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (MoreThanOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "MoreThanOneFieldFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (MoreThanOneFieldFilled(Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/MoreThanOneFieldFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (MoreThanOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/MoreThanOneFieldFilledDirect",
+    "commonPrecondition": "MoreThanOneFieldFilled(Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NotAllFieldsFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NotAllFieldsFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NotAllFieldsFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NotAllFieldsFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NotAllFieldsFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (NotAllFieldsFilled(Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NotAllFieldsFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (NotAllFieldsFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NotAllFieldsFilledDirect",
+    "commonPrecondition": "NotAllFieldsFilled(Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NotExactlyOneFieldFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NotExactlyOneFieldFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NotExactlyOneFieldFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NotExactlyOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NotExactlyOneFieldFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (NotExactlyOneFieldFilled(Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NotExactlyOneFieldFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (NotExactlyOneFieldFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NotExactlyOneFieldFilledDirect",
+    "commonPrecondition": "NotExactlyOneFieldFilled(Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "FieldsNotCollectivelyFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "FieldsNotCollectivelyFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FieldsNotCollectivelyFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldsNotCollectivelyFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "FieldsNotCollectivelyFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (FieldsNotCollectivelyFilled(Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/FieldsNotCollectivelyFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldsNotCollectivelyFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/FieldsNotCollectivelyFilledDirect",
+    "commonPrecondition": "FieldsNotCollectivelyFilled(Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "FieldFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "FieldFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FieldFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldFilled(Rows/Pair/A)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "FieldFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (FieldFilled(Rows/Pair/A))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/FieldFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldFilled(Rows/Pair/A)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/FieldFilledDirect",
+    "commonPrecondition": "FieldFilled(Rows/Pair/A)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "FieldNotFilledHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "FieldNotFilledDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FieldNotFilledHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldNotFilled(Rows/Pair/A)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "FieldNotFilledDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (FieldNotFilled(Rows/Pair/A))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/FieldNotFilledHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldNotFilled(Rows/Pair/A)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/FieldNotFilledDirect",
+    "commonPrecondition": "FieldNotFilled(Rows/Pair/A)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NoGroupFilledStarHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NoGroupFilledStarDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NoGroupFilledStarHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NoGroupFilled(Rows*/Sub)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NoGroupFilledStarDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (NoGroupFilled(Rows*/Sub))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NoGroupFilledStarHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (NoGroupFilled(Rows*/Sub)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NoGroupFilledStarDirect",
+    "commonPrecondition": "NoGroupFilled(Rows*/Sub)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AtLeastOneGroupFilledStarHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "AtLeastOneGroupFilledStarDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AtLeastOneGroupFilledStarHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AtLeastOneGroupFilled(Rows*/Sub)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "AtLeastOneGroupFilledStarDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (AtLeastOneGroupFilled(Rows*/Sub))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/AtLeastOneGroupFilledStarHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (AtLeastOneGroupFilled(Rows*/Sub)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/AtLeastOneGroupFilledStarDirect",
+    "commonPrecondition": "AtLeastOneGroupFilled(Rows*/Sub)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "UniqueNumberHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "UniqueNumberDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "UniqueNumberHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "UniqueNumberDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (FieldValuesNotUnique(Rows/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/UniqueNumberHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/UniqueNumberDirect",
+    "commonPrecondition": "FieldValuesNotUnique(Rows/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "UniqueTextHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "UniqueTextDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "UniqueTextHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/RowText, Rows/Peer)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "UniqueTextDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (FieldValuesNotUnique(Rows/RowText, Rows/Peer))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/UniqueTextHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/RowText, Rows/Peer)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/UniqueTextDirect",
+    "commonPrecondition": "FieldValuesNotUnique(Rows/RowText, Rows/Peer)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "UniqueStarHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "UniqueStarDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "UniqueStarHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows*/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "UniqueStarDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (FieldValuesNotUnique(Rows*/Pair))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/UniqueStarHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows*/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/UniqueStarDirect",
+    "commonPrecondition": "FieldValuesNotUnique(Rows*/Pair)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "PatternMatchedHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "PatternMatchedDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "PatternMatchedHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having ([Rows/Code] PatternMatched \"[0-9]+\") And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "PatternMatchedDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And ([Rows/Code] PatternMatched \"[0-9]+\")",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/PatternMatchedHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having ([Rows/Code] PatternMatched \"[0-9]+\") And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/PatternMatchedDirect",
+    "commonPrecondition": "[Rows/Code] PatternMatched \"[0-9]+\"",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "PatternViolatedHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "PatternViolatedDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "PatternViolatedHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having ([Rows/Code] PatternViolated \"[0-9]+\") And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "PatternViolatedDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And ([Rows/Code] PatternViolated \"[0-9]+\")",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/PatternViolatedHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having ([Rows/Code] PatternViolated \"[0-9]+\") And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/PatternViolatedDirect",
+    "commonPrecondition": "[Rows/Code] PatternViolated \"[0-9]+\"",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NamedValidHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NamedValidDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NamedValidHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (Valid(Rows/Code, \"AbsentType\")) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NamedValidDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (Valid(Rows/Code, \"AbsentType\"))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NamedValidHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (Valid(Rows/Code, \"AbsentType\")) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NamedValidDirect",
+    "commonPrecondition": "Valid(Rows/Code, \"AbsentType\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NamedInvalidHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NamedInvalidDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NamedInvalidHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (Invalid(Rows/Code, \"AbsentType\")) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NamedInvalidDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (Invalid(Rows/Code, \"AbsentType\"))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NamedInvalidHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (Invalid(Rows/Code, \"AbsentType\")) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NamedInvalidDirect",
+    "commonPrecondition": "Invalid(Rows/Code, \"AbsentType\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "DateValidHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "DateValidDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "DateValidHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (Valid(Date(Rows/D, Rows/M, Rows/Y))) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "DateValidDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (Valid(Date(Rows/D, Rows/M, Rows/Y)))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/DateValidHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (Valid(Date(Rows/D, Rows/M, Rows/Y))) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/DateValidDirect",
+    "commonPrecondition": "Valid(Date(Rows/D, Rows/M, Rows/Y))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "DateInvalidHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "DateInvalidDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "DateInvalidHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (Invalid(Date(Rows/D, Rows/M, Rows/Y))) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "DateInvalidDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (Invalid(Date(Rows/D, Rows/M, Rows/Y)))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/DateInvalidHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (Invalid(Date(Rows/D, Rows/M, Rows/Y))) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/DateInvalidDirect",
+    "commonPrecondition": "Invalid(Date(Rows/D, Rows/M, Rows/Y))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "FieldValueIncludedInValueListNumberHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "FieldValueIncludedInValueListNumberDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FieldValueIncludedInValueListNumberHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/Pair/A, [Rows/Members/M])) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "FieldValueIncludedInValueListNumberDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (FieldValueIncludedInValueList(Rows/Pair/A, [Rows/Members/M]))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/FieldValueIncludedInValueListNumberHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/Pair/A, [Rows/Members/M])) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/FieldValueIncludedInValueListNumberDirect",
+    "commonPrecondition": "FieldValueIncludedInValueList(Rows/Pair/A, [Rows/Members/M])",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "FieldValueIncludedInValueListTextHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "FieldValueIncludedInValueListTextDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FieldValueIncludedInValueListTextHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/RowText, [Rows/Peer])) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "FieldValueIncludedInValueListTextDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (FieldValueIncludedInValueList(Rows/RowText, [Rows/Peer]))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/FieldValueIncludedInValueListTextHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/RowText, [Rows/Peer])) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/FieldValueIncludedInValueListTextDirect",
+    "commonPrecondition": "FieldValueIncludedInValueList(Rows/RowText, [Rows/Peer])",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "FieldValueNotIncludedInValueListNumberHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "FieldValueNotIncludedInValueListNumberDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FieldValueNotIncludedInValueListNumberHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValueNotIncludedInValueList(Rows/Pair/A, [Rows/Members/M])) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "FieldValueNotIncludedInValueListNumberDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (FieldValueNotIncludedInValueList(Rows/Pair/A, [Rows/Members/M]))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/FieldValueNotIncludedInValueListNumberHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldValueNotIncludedInValueList(Rows/Pair/A, [Rows/Members/M])) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/FieldValueNotIncludedInValueListNumberDirect",
+    "commonPrecondition": "FieldValueNotIncludedInValueList(Rows/Pair/A, [Rows/Members/M])",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "FieldValueNotIncludedInValueListTextHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "FieldValueNotIncludedInValueListTextDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FieldValueNotIncludedInValueListTextHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (FieldValueNotIncludedInValueList(Rows/RowText, [Rows/Peer])) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "FieldValueNotIncludedInValueListTextDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (FieldValueNotIncludedInValueList(Rows/RowText, [Rows/Peer]))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/FieldValueNotIncludedInValueListTextHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldValueNotIncludedInValueList(Rows/RowText, [Rows/Peer])) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/FieldValueNotIncludedInValueListTextDirect",
+    "commonPrecondition": "FieldValueNotIncludedInValueList(Rows/RowText, [Rows/Peer])",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AtLeastOneFieldValueIncludedInValueListNumberHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "AtLeastOneFieldValueIncludedInValueListNumberDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AtLeastOneFieldValueIncludedInValueListNumberHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AtLeastOneFieldValueIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "AtLeastOneFieldValueIncludedInValueListNumberDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (AtLeastOneFieldValueIncludedInValueList(Rows/Pair In Rows/Members))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/AtLeastOneFieldValueIncludedInValueListNumberHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (AtLeastOneFieldValueIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/AtLeastOneFieldValueIncludedInValueListNumberDirect",
+    "commonPrecondition": "AtLeastOneFieldValueIncludedInValueList(Rows/Pair In Rows/Members)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AtLeastOneFieldValueIncludedInValueListTextHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "AtLeastOneFieldValueIncludedInValueListTextDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AtLeastOneFieldValueIncludedInValueListTextHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (AtLeastOneFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "AtLeastOneFieldValueIncludedInValueListTextDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (AtLeastOneFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\"))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/AtLeastOneFieldValueIncludedInValueListTextHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (AtLeastOneFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/AtLeastOneFieldValueIncludedInValueListTextDirect",
+    "commonPrecondition": "AtLeastOneFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NoFieldValueIncludedInValueListNumberHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NoFieldValueIncludedInValueListNumberDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NoFieldValueIncludedInValueListNumberHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NoFieldValueIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NoFieldValueIncludedInValueListNumberDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (NoFieldValueIncludedInValueList(Rows/Pair In Rows/Members))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NoFieldValueIncludedInValueListNumberHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (NoFieldValueIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NoFieldValueIncludedInValueListNumberDirect",
+    "commonPrecondition": "NoFieldValueIncludedInValueList(Rows/Pair In Rows/Members)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NoFieldValueIncludedInValueListTextHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NoFieldValueIncludedInValueListTextDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NoFieldValueIncludedInValueListTextHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NoFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NoFieldValueIncludedInValueListTextDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (NoFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\"))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NoFieldValueIncludedInValueListTextHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (NoFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NoFieldValueIncludedInValueListTextDirect",
+    "commonPrecondition": "NoFieldValueIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NotAllFieldValuesIncludedInValueListNumberHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NotAllFieldValuesIncludedInValueListNumberDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NotAllFieldValuesIncludedInValueListNumberHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NotAllFieldValuesIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NotAllFieldValuesIncludedInValueListNumberDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (NotAllFieldValuesIncludedInValueList(Rows/Pair In Rows/Members))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NotAllFieldValuesIncludedInValueListNumberHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (NotAllFieldValuesIncludedInValueList(Rows/Pair In Rows/Members)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NotAllFieldValuesIncludedInValueListNumberDirect",
+    "commonPrecondition": "NotAllFieldValuesIncludedInValueList(Rows/Pair In Rows/Members)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "NotAllFieldValuesIncludedInValueListTextHaving",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "NotAllFieldValuesIncludedInValueListTextDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "NotAllFieldValuesIncludedInValueListTextHavingRule",
+    "condition": "FieldFilled(SkuText) And Sum(Rows*/RowVal Having (NotAllFieldValuesIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "NotAllFieldValuesIncludedInValueListTextDirectRule",
+    "condition": "FieldFilled(Rows/RowVal) And (NotAllFieldValuesIncludedInValueList(Rows/RowText, Rows/Peer In \"a\"))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/NotAllFieldValuesIncludedInValueListTextHaving",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (NotAllFieldValuesIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/NotAllFieldValuesIncludedInValueListTextDirect",
+    "commonPrecondition": "NotAllFieldValuesIncludedInValueList(Rows/RowText, Rows/Peer In \"a\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "CapturedGroup",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "CapturedGroupRule",
+    "condition": "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal Having (GroupFilled($Rows/Sub) And GroupFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/CapturedGroup",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (GroupFilled($Rows/Sub) And GroupFilled(Rows/Pair)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "CapturedMembership",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "CapturedMembershipRule",
+    "condition": "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/Pair/A, [$Rows/Members/M])) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/CapturedMembership",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldValueIncludedInValueList(Rows/Pair/A, [$Rows/Members/M])) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "CapturedUniqueness",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "CapturedUniquenessRule",
+    "condition": "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/Pair/A, $Rows/Pair/B)) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/CapturedUniqueness",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (FieldValuesNotUnique(Rows/Pair/A, $Rows/Pair/B)) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "CapturedDate",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/Rows/RowVal",
+    "code": "CapturedDateRule",
+    "condition": "FieldFilled(Rows/RowVal) And Sum(Rows*/RowVal Having (Valid(Date(Rows/D, Rows/M, $Rows/Y))) And CurrentRepetition(Rows) > 0) > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Rows/CapturedDate",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/RowVal Having (Valid(Date(Rows/D, Rows/M, $Rows/Y))) And CurrentRepetition(Rows) > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  }
+]

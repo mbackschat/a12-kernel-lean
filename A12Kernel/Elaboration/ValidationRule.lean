@@ -557,6 +557,8 @@ private def evalOrdinaryRepeatableAt
       context repetitionNotUniqueResult? with
   | .ok verdict => pure (.next environment (rule.core.emitAt errorCell.address.path verdict))
   | .error (.inl error) => throw (.conditionAddressing error)
+  | .error (.inr (.addressing .typeValidityValueFailure)) =>
+      pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
   | .error (.inr (.addressing error)) => throw (.conditionAddressing error)
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported) => throw (.conditionAddressing .temporalUnavailable)
   | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid) =>

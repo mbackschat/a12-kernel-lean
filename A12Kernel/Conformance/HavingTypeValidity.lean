@@ -39,7 +39,7 @@ example : validation .valid value (some true) = toOutcome (Except.ok (ε := Corr
     validation .invalid value (some true) .outer = toOutcome (Except.ok (ε := CorrelationRuntimeFault) (Verdict.fired .value)) := by native_decide
 
 example : [CustomFieldValidityOp.valid, .invalid].all (fun op => decide (
-    validation op value (some false) = toOutcome (Except.ok (ε := CorrelationRuntimeFault) (Verdict.fired .value)) ∧
+    validation op value (some false) = toOutcome (Except.error (α := Verdict) CorrelationRuntimeFault.typeValidityValueFailure) ∧
     computation op value (some false) = toOutcome (Except.error (α := ComputationConditionResult) CorrelationRuntimeFault.typeValidityValueFailure) ∧
     validation op empty none = toOutcome (Except.ok (ε := CorrelationRuntimeFault) Verdict.unknown) ∧
     computation op empty none = toOutcome (Except.ok (ε := CorrelationRuntimeFault) ComputationConditionResult.notTrue) ∧

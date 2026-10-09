@@ -83,3 +83,7 @@ A new semantic capsule may land as `external evidence pending`. Before claiming 
 A pure Lean refactor or protocol-layout change must not alter retained observation bytes. A semantic disagreement is investigated at the definition or projection boundary; expected evidence is never refreshed merely to make a test green. A correction carries explicit provenance, and a new kernel version receives a new versioned bundle rather than rewriting `kernel-30.8.1`.
 
 The exact historical validation estate, receipt and model identities, triangulation detail, dual-path checkpoint, deletion inventory, and recovery commands are in the validation archive (`docs/archived/VALIDATION-RAW-EVIDENCE.md` at `a050f150`). Use Git to inspect those bytes when an audit needs them; do not restore the retired schema/replay stack to routine source.
+
+### Having predicate-family runtime capture
+
+The [2026-10-09 capture](../evidence/kernel-30.8.1/captures/having-predicate-family-2026-10-09/) retains ten dual-strategy validation/computation documents with seeded outputs. [Source provenance and matrix limits](sources/having-filter-probes.md#src-having-predicate-family) own the route and scope. Its manifest binds model, operations, cases, request and artifact; rendered messages are redacted while codes, pointers, types, reference sets and computation outcomes remain. This is retained population-replay evidence, not a new compact-evidence suite or public shipment.

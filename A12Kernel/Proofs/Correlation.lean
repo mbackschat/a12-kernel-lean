@@ -440,11 +440,10 @@ theorem correlatedHaving_selectResolving_headError
 rewrite on that arm.** A rewrite is sound here precisely when it preserves `evalTruthInResolving` at
 every frame — not merely `evalTruthIn`, which is what the pure-route laws preserve.
 
-That gap is the whole arm split, stated positively rather than as a list of counterexamples. The
-resolving evaluator can raise, and `correlatedHaving_selectResolving_headError` above shows the raise
-is positional: it is the *first* reached failure that surfaces. So a rewrite that permutes leaves
-preserves the pure route and can still change which cause a consumer sees, which is why root
-commutativity is a law on one arm and a measured non-law on the other.
+The resolving evaluator can raise in validation as well as computation (spec/07 §3), and
+`correlatedHaving_selectResolving_headError` above shows the raise is positional: the first reached
+failure surfaces. Permuting leaves can therefore preserve the pure projection while changing
+whether a runtime consumer reaches a failure.
 
 The useful reading for a canonicalizer is the contrapositive of that: every pure-route law it already
 has — commutativity, associativity, distribution — transfers to this arm on the fragment where no
