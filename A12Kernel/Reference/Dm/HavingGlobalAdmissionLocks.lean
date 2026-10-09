@@ -510,6 +510,23 @@ example : nestedReferenceModel.validate.isOk = true ∧
     markedGroupResult true false = "A12Kernel.FlatRuleAssemblyError.errorFieldIterationInvalid 12 20" ∧
     [false, true].all (fun nested => markedGroupResult nested true == "admitted") = true := by native_decide
 
+private def firstFieldComparisons : List String :=
+  [false, true].flatMap fun filtered =>
+    let first := "FirstFilledValue(Rows*/RowText" ++
+      (if filtered then " Having [Rows/RowVal] > 0" else "") ++ ")"
+    ["==", "!="].flatMap fun op =>
+      [first ++ " " ++ op ++ " [SkuText]", "[SkuText] " ++ op ++ " " ++ first]
+
+example : firstFieldComparisons.all (fun condition =>
+    referenceResult "Rows/RowText" condition "../Rows/Output" ==
+      ("admitted", "admitted")) = true := by native_decide
+
+example : [false, true].all (fun filtered =>
+    let first := "FirstFilledValue(Rows*/RowText" ++
+      (if filtered then " Having [Rows/RowVal] > 0" else "") ++ ")"
+    let refused := referenceResult "Rows/RowText" (first ++ " == SkuText") "../Rows/Output"
+    refused.1 != "admitted" && refused.2 != "admitted") = true := by native_decide
+
 private def runCaller (condition : String) (range : Bool := false)
     (rows : Array Lean.Json := #[]) (expected : String := "a") : Option (Verdict × List String) :=
   let fixture := if range then { HavingFixture.model with
@@ -533,6 +550,14 @@ example : runCaller "FirstFilledValue(Rows*/Tag Having [Rows/N] > 0) == \"a\""
     runCaller "FirstFilledValue(Rows*/Tag Having [Rows/N] > 0) == \"a\""
       false #[callerRow "a" "0", callerRow "b" "1"] =
       some (.notFired, ["cleared"]) := by native_decide
+
+example : [false, true].all (fun reverse =>
+    let selected := "FirstFilledValue(Rows*/Tag Having [Rows/N] > 0)"
+    let condition := if reverse then "[Expected] == " ++ selected else selected ++ " == [Expected]"
+    runCaller condition false #[callerRow "drop" "0", callerRow "a" "1", callerRow "b" "1"] ==
+      some (.fired .omission, ["value 9"]) &&
+    runCaller condition false #[callerRow "a" "0", callerRow "b" "1"] ==
+      some (.notFired, ["cleared"])) = true := by native_decide
 
 example : runCaller "DateRangesOverlap(Rows*/Tag Having [Rows/N] > 0)"
       true #[callerRow "bad" "0", callerRow "2024-01-01/2024-01-10" "1",

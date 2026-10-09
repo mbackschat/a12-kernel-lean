@@ -1,0 +1,10 @@
+{
+  "TokenLiteral": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == \"a\"",
+  "TokenField": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == [SkuText]",
+  "TokenReverse": "[SkuText] == FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0)",
+  "TokenNotEqual": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) != [SkuText]",
+  "TokenFirst": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == FirstFilledValue(SkuText, OtherText)",
+  "RangePair": "DateRangesOverlap(Rows*/RowSpan Having [Rows/RowVal] > 0)",
+  "RangeAgainst": "AtLeastOneDateRangeOverlaps(ExpectedRange In Rows*/RowSpan Having [Rows/RowVal] > 0)",
+  "RangeGroup": "AtLeastOneDateRangeOverlaps(ExpectedRange In Rows*/Ranges)"
+}

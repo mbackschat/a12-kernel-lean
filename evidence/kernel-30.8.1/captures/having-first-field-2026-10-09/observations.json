@@ -1,0 +1,146 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state" : "CLEAN"
+  },
+  "model" : "f17b4a9129d0e9c0f0a963748ab6cb4ae0c4e3950fe1f9225da356d58ed152ad",
+  "observations" : [ {
+    "id" : "vf0o0r0",
+    "inputHash" : "dd4de90e621b50b740591d548e0d44405bda22827346540799f614e8066851ea",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cf0o0r0",
+    "inputHash" : "be2471717c6fa60ae2b64468349589c64ebb29878252740e769ee7556bb0c238",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vf0o0r1",
+    "inputHash" : "e604270c3c3b75516709c40257340f40a1c2a7d487bfee01c46a4e907f13451c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cf0o0r1",
+    "inputHash" : "ea58655d3f64f9920fcd401e61ce0c0f231d97d05f8e970766fb3794f0461f23",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vf0o1r0",
+    "inputHash" : "5718c3d5156bb5fa7e0ae3a2160d42623bc223f551c175225b770a0f9147d14b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cf0o1r0",
+    "inputHash" : "dff8ed7e3b6b4e6f0c7911fbb9b1828545e164d85f57f38d9e1f85393ab20271",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vf0o1r1",
+    "inputHash" : "d04701436ea643d53d611ff0bd8bd0d5dab3f8d8b8f8e884f2859f2d7330ed3b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cf0o1r1",
+    "inputHash" : "42d38665e98308abf30f450b28e10f35da3ec4eb1e7a7d2305a9753de855eeef",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vcontrol01",
+    "inputHash" : "5601b7efac2f5e6d15bb936449bb31fa94d0788b6e893eff7d9da3676bd0420f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "ccontrol01",
+    "inputHash" : "8a5a4e76bcc31095869e557924e8c20f8c8547f25e9dc7c910605554b4444525",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "vcontrol00",
+    "inputHash" : "da07ad7833c01f5273bbf49522734687fb2701ce1deee2062522f8dd3c9e6ca0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ccontrol00",
+    "inputHash" : "e09fd2cca287d9e45a58e341a474be0399251ae17cbe5976e72d773eb6b47233",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vf1o0r0",
+    "inputHash" : "1e45a6f5c104845d8eb5ac41fbae526c2ab4b28bbca97c5925080d7a33c43e63",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cf1o0r0",
+    "inputHash" : "9c0a2b9a283e492712491b49dc35daded52c5f74ae3e20a26febd04f909165ef",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vf1o0r1",
+    "inputHash" : "18ee936f0ae4609064e897ab2d5ec1c0219308bca470f78d029235aa077a22cd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cf1o0r1",
+    "inputHash" : "ca1307d8ea26d291b2198dbfdbb447383111eb51808e2145ab29e5ff9885fd9f",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vf1o1r0",
+    "inputHash" : "f328cd61948d20605b0505d6225ddf147b7590c5cda5c70e4633215f20e9f89b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cf1o1r0",
+    "inputHash" : "7950c2492e988eb54c55f6490c3b1ea2dbc9c125c599d14156ee09a6ac245fc2",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vf1o1r1",
+    "inputHash" : "6b3b73c2d5cf30fdde2d4328d7126cb92fbaedf0726236305ed8126d0d3197bb",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "cf1o1r1",
+    "inputHash" : "9a924d194b114b34065145ff7c5ec7b435e3db8312504afda6699cc69ea73733",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "vcontrol11",
+    "inputHash" : "a78534f64b6646592ff8ee86bae486fd51ac121cf8acfd7fa48d790650411444",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "ccontrol11",
+    "inputHash" : "148d541ebfdfd15b2afa9d105b88d5141aab74ffe406c6aa41e9b0a5a13c455c",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "vcontrol10",
+    "inputHash" : "14c5fc4661b3bd0b40b83f9565c5a90213637a08109276d01e8201599f53ab5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ccontrol10",
+    "inputHash" : "71e42daffed91d5eb172ee3147155b926898151dfadf5e820bdef01dc384eab4",
+    "ok" : true,
+    "codes" : [ ]
+  } ]
+}

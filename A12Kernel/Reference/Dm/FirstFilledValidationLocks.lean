@@ -234,9 +234,9 @@ example : [(number, "7", "7"), (text, "selected", "\"selected\"")].all (fun (pro
     runOutcomes prototype condition none (some value) (partialScope := some .full) == some [.fired .omission]) := by
   native_decide
 
-example : run text "FirstFilledValue(Values) == Fallback" none (some "selected") (some "selected") =
+example : run text "FirstFilledValue(Values) == [Fallback]" none (some "selected") (some "selected") =
       some (.fired .omission) ∧
-    runOutcomes text "Fallback != FirstFilledValue(Values)" (some "selected") none (some "different")
+    runOutcomes text "[Fallback] != FirstFilledValue(Values)" (some "selected") none (some "different")
       (partialScope := some .full) = some [.fired .value] := by native_decide
 
 private def selectedReadback (prototype : FlatFieldDecl) (stored : String) (value : Value)
@@ -269,11 +269,11 @@ private def enumeration : FlatFieldDecl := {
   id := 0, groupPath := ["Form"], name := "E", policy := { kind := .enumeration },
   enumeration := some { storedTokens := ["A", "B"], categories := [] } }
 
-example : run enumeration "FirstFilledValue(Values) == Fallback" none (some "A") (some "A") =
+example : run enumeration "FirstFilledValue(Values) == [Fallback]" none (some "A") (some "A") =
       some (.fired .omission) ∧
-    runOutcomes enumeration "FirstFilledValue(Values) != Fallback" (some "A") none (some "B")
+    runOutcomes enumeration "FirstFilledValue(Values) != [Fallback]" (some "A") none (some "B")
       (partialScope := some .full) = some [.fired .value] ∧
-    runOutcomes enumeration "FirstFilledValue(Values) == Fallback" (some "invalid") (some "A") (some "A")
+    runOutcomes enumeration "FirstFilledValue(Values) == [Fallback]" (some "invalid") (some "A") (some "A")
       (partialScope := some .full) = some [.unknown] := by native_decide
 
 private def custom : FlatFieldDecl := { text with customType := some { name := "Code" } }
@@ -281,7 +281,7 @@ private def custom : FlatFieldDecl := { text with customType := some { name := "
 example : [(number, "7"), (text, "selected"), (enumeration, "A"), (custom, "code"),
     (boolean, "false"), (date, "2024-03-05"), (fragment, "03-05"), (time, "03:04:05"),
     (stamp, "2024-03-05T03:04:05"), (range, "2024-03-05/2024-04-06")].all (fun (prototype, value) => [none, some ValidationRelevanceScope.full].all fun partialScope =>
-      runOutcomes prototype (if prototype.policy.kind.surfaceKind == .number then
+      runOutcomes prototype (if [.number, .string, .enumeration].contains prototype.policy.kind.surfaceKind then
         "FirstFilledValue(A, B) == [B]" else "FirstFilledValue(A, B) == B") none none none
         [(none, some value), (some value, some value)] true (partialScope := partialScope) ==
           some [.fired .omission, .fired .value]) := by native_decide

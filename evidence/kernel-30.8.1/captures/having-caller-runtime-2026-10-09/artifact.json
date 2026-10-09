@@ -1,0 +1,4504 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Probe_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "selected",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangePairComp",
+              "field": "Probe/RangePair",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/RangePair"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/RangePair"
+              ]
+            },
+            {
+              "code": "RangePairRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Probe/Rows/Ranges/R",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows/Ranges/R"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Probe/Rows/RowSpan",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows/RowSpan"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Probe/Rows/Ranges/R",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows/Ranges/R"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Probe/Rows/RowSpan",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows/RowSpan"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangePairComp",
+              "field": "Probe/RangePair",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/RangePair"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/RangePair"
+              ]
+            },
+            {
+              "code": "RangePairRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Probe/Rows/Ranges/R",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows/Ranges/R"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Probe/Rows/RowSpan",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows/RowSpan"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Probe/Rows/Ranges/R",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows/Ranges/R"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Probe/Rows/RowSpan",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows/RowSpan"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "different",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TokenNotEqualComp",
+              "field": "Probe/TokenNotEqual",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenNotEqual"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenNotEqual"
+              ]
+            },
+            {
+              "code": "TokenNotEqualRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TokenNotEqualComp",
+              "field": "Probe/TokenNotEqual",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenNotEqual"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenNotEqual"
+              ]
+            },
+            {
+              "code": "TokenNotEqualRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "emptySelected",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "earlyBadFilter",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Probe/Rows/RowVal",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows/RowVal"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Probe/Rows/RowVal",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows/RowVal"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Probe/Rows/RowVal",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows/RowVal"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Probe/Rows/RowVal",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows/RowVal"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "lateBadFilter",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Probe/Rows[2]/RowVal",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[2]/RowVal"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Probe/Rows[2]/RowVal",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[2]/RowVal"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Probe/Rows[2]/RowVal",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[2]/RowVal"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Probe/Rows[2]/RowVal",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[2]/RowVal"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "lateBadRange",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Probe/Rows[2]/Ranges/R",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[2]/Ranges/R"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Probe/Rows[2]/RowSpan",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[2]/RowSpan"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Probe/Rows[2]/Ranges/R",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[2]/Ranges/R"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Probe/Rows[2]/RowSpan",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[2]/RowSpan"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Probe/Rows[2]/Ranges/R",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[2]/Ranges/R"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Probe/Rows[2]/RowSpan",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[2]/RowSpan"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Probe/Rows[2]/Ranges/R",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[2]/Ranges/R"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Probe/Rows[2]/RowSpan",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[2]/RowSpan"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "noRows",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "overCapacity",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Probe/Rows[4]/Ranges",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]/Ranges"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Probe/Rows[4]/Ranges/R",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]/Ranges/R"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Probe/Rows[4]/RowSpan",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]/RowSpan"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Probe/Rows[4]/RowText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]/RowText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Probe/Rows[4]/RowVal",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]/RowVal"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Probe/Rows[4]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Probe/Rows[4]/Ranges",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]/Ranges"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Probe/Rows[4]/Ranges/R",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]/Ranges/R"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Probe/Rows[4]/RowSpan",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]/RowSpan"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Probe/Rows[4]/RowText",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]/RowText"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Probe/Rows[4]/RowVal",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]/RowVal"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseZeile",
+                "field": "Probe/Rows[4]",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Probe/Rows[4]/Ranges",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]/Ranges"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Probe/Rows[4]/Ranges/R",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]/Ranges/R"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Probe/Rows[4]/RowSpan",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]/RowSpan"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Probe/Rows[4]/RowText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]/RowText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Probe/Rows[4]/RowVal",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]/RowVal"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Probe/Rows[4]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[4]"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Probe/Rows[4]/Ranges",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]/Ranges"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Probe/Rows[4]/Ranges/R",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]/Ranges/R"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Probe/Rows[4]/RowSpan",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]/RowSpan"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Probe/Rows[4]/RowText",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]/RowText"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Probe/Rows[4]/RowVal",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]/RowVal"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseZeile",
+                "field": "Probe/Rows[4]",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[4]"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "poisonAfterSuccessor",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangePairComp",
+              "field": "Probe/RangePair",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/RangePair"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/RangePair"
+              ]
+            },
+            {
+              "code": "RangePairRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Probe/Rows[3]/RowVal",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[3]/RowVal"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Probe/Rows[3]/RowVal",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[3]/RowVal"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangePairComp",
+              "field": "Probe/RangePair",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/RangePair"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/RangePair"
+              ]
+            },
+            {
+              "code": "RangePairRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Probe/Rows[3]/RowVal",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[3]/RowVal"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Probe/Rows[3]/RowVal",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[3]/RowVal"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "poisonAfterDropped",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Probe/Rows[3]/RowVal",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[3]/RowVal"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Probe/Rows[3]/RowVal",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[3]/RowVal"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RangeAgainstComp",
+              "field": "Probe/RangeAgainst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/RangeAgainst"
+              ]
+            },
+            {
+              "code": "RangeAgainstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowSpan",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/ExpectedRange"
+              ]
+            },
+            {
+              "code": "RangeGroupComp",
+              "field": "Probe/RangeGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/RangeGroup"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeGroupRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/Ranges[1]/R",
+                "Probe/ExpectedRange",
+                "Probe/SkuText"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TokenFieldComp",
+              "field": "Probe/TokenField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenField"
+              ]
+            },
+            {
+              "code": "TokenFieldRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenFirstComp",
+              "field": "Probe/TokenFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText",
+                "Probe/TokenFirst"
+              ]
+            },
+            {
+              "code": "TokenFirstRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/OtherText",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "TokenLiteralComp",
+              "field": "Probe/TokenLiteral",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/TokenLiteral"
+              ]
+            },
+            {
+              "code": "TokenLiteralRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal"
+              ]
+            },
+            {
+              "code": "TokenReverseComp",
+              "field": "Probe/TokenReverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText",
+                "Probe/TokenReverse"
+              ]
+            },
+            {
+              "code": "TokenReverseRule",
+              "field": "Probe/SkuText",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ],
+              "fillToFix": [
+                "/Probe[1]/Rows[0]/RowText",
+                "/Probe[1]/Rows[0]/RowVal",
+                "Probe/SkuText"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Probe/Rows[3]/RowVal",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Probe/Rows[3]/RowVal"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Probe/RangeAgainst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/RangeGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Probe/RangePair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenNotEqual",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Probe/TokenReverse",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Probe/Rows[3]/RowVal",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Probe/Rows[3]/RowVal"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,356 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "OtherText",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "ExpectedRange",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "TokenLiteral",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "TokenLiteralRule",
+    "condition": "FieldFilled(SkuText) And FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == \"a\"",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/TokenLiteral",
+    "commonPrecondition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == \"a\"",
+    "alternatives": [
+      {
+        "operation": "9"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "TokenField",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "TokenFieldRule",
+    "condition": "FieldFilled(SkuText) And FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == [SkuText]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/TokenField",
+    "commonPrecondition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == [SkuText]",
+    "alternatives": [
+      {
+        "operation": "9"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "TokenReverse",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "TokenReverseRule",
+    "condition": "FieldFilled(SkuText) And [SkuText] == FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/TokenReverse",
+    "commonPrecondition": "[SkuText] == FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0)",
+    "alternatives": [
+      {
+        "operation": "9"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "TokenNotEqual",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "TokenNotEqualRule",
+    "condition": "FieldFilled(SkuText) And FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) != [SkuText]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/TokenNotEqual",
+    "commonPrecondition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) != [SkuText]",
+    "alternatives": [
+      {
+        "operation": "9"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "TokenFirst",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "TokenFirstRule",
+    "condition": "FieldFilled(SkuText) And FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == FirstFilledValue(SkuText, OtherText)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/TokenFirst",
+    "commonPrecondition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == FirstFilledValue(SkuText, OtherText)",
+    "alternatives": [
+      {
+        "operation": "9"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "RangePair",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "RangePairRule",
+    "condition": "FieldFilled(SkuText) And DateRangesOverlap(Rows*/RowSpan Having [Rows/RowVal] > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/RangePair",
+    "commonPrecondition": "DateRangesOverlap(Rows*/RowSpan Having [Rows/RowVal] > 0)",
+    "alternatives": [
+      {
+        "operation": "9"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "RangeAgainst",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "RangeAgainstRule",
+    "condition": "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(ExpectedRange In Rows*/RowSpan Having [Rows/RowVal] > 0)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/RangeAgainst",
+    "commonPrecondition": "AtLeastOneDateRangeOverlaps(ExpectedRange In Rows*/RowSpan Having [Rows/RowVal] > 0)",
+    "alternatives": [
+      {
+        "operation": "9"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "RangeGroup",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "RangeGroupRule",
+    "condition": "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(ExpectedRange In Rows*/Ranges)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/RangeGroup",
+    "commonPrecondition": "AtLeastOneDateRangeOverlaps(ExpectedRange In Rows*/Ranges)",
+    "alternatives": [
+      {
+        "operation": "9"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  }
+]

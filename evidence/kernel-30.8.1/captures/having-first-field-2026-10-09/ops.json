@@ -1,0 +1,314 @@
+[
+  {
+    "id": "vf0o0r0",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vf0o0r0",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText) == [SkuText]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cf0o0r0",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cf0o0r0.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vf0o0r1",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vf0o0r1",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "[SkuText] == FirstFilledValue(Rows*/RowText)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cf0o0r1",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cf0o0r1.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vf0o1r0",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vf0o1r0",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText) != [SkuText]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cf0o1r0",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cf0o1r0.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vf0o1r1",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vf0o1r1",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "[SkuText] != FirstFilledValue(Rows*/RowText)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cf0o1r1",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cf0o1r1.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vcontrol01",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vcontrol01",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText) == SkuText",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "ccontrol01",
+    "verb": "computation",
+    "args": [
+      "add",
+      "ccontrol01.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vcontrol00",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vcontrol00",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "ccontrol00",
+    "verb": "computation",
+    "args": [
+      "add",
+      "ccontrol00.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vf1o0r0",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vf1o0r0",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == [SkuText]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cf1o0r0",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cf1o0r0.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vf1o0r1",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vf1o0r1",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "[SkuText] == FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cf1o0r1",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cf1o0r1.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vf1o1r0",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vf1o1r0",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) != [SkuText]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cf1o1r0",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cf1o1r0.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vf1o1r1",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vf1o1r1",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "[SkuText] != FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cf1o1r1",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cf1o1r1.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vcontrol11",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vcontrol11",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == SkuText",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "ccontrol11",
+    "verb": "computation",
+    "args": [
+      "add",
+      "ccontrol11.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vcontrol10",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vcontrol10",
+      "--field",
+      "/Probe/Rows/RowText",
+      "--group",
+      "/Probe",
+      "--condition",
+      "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == \"a\"",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "ccontrol10",
+    "verb": "computation",
+    "args": [
+      "add",
+      "ccontrol10.json",
+      "--dry-run"
+    ]
+  }
+]

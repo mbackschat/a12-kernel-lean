@@ -80,7 +80,7 @@ def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
   | .string value => pure (.literal value)
   | .call "FirstFilledValue" arguments none none =>
       (.firstFilled ·) <$> lowerFirstFilledEntitySource model rowGroup arguments bindingGroup?
-  | expression => match expression.fieldEntity? with
+  | expression => match expression.fieldValue? with
       | some field => pure (.field field)
       | none => refuse "TokenComparison" expression.construct
 

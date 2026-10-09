@@ -1,0 +1,50 @@
+[
+  {
+    "id": "f0o0r0",
+    "condition": "FirstFilledValue(Rows*/RowText) == [SkuText]"
+  },
+  {
+    "id": "f0o0r1",
+    "condition": "[SkuText] == FirstFilledValue(Rows*/RowText)"
+  },
+  {
+    "id": "f0o1r0",
+    "condition": "FirstFilledValue(Rows*/RowText) != [SkuText]"
+  },
+  {
+    "id": "f0o1r1",
+    "condition": "[SkuText] != FirstFilledValue(Rows*/RowText)"
+  },
+  {
+    "id": "control01",
+    "condition": "FirstFilledValue(Rows*/RowText) == SkuText"
+  },
+  {
+    "id": "control00",
+    "condition": "FirstFilledValue(Rows*/RowText) == \"a\""
+  },
+  {
+    "id": "f1o0r0",
+    "condition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == [SkuText]"
+  },
+  {
+    "id": "f1o0r1",
+    "condition": "[SkuText] == FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0)"
+  },
+  {
+    "id": "f1o1r0",
+    "condition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) != [SkuText]"
+  },
+  {
+    "id": "f1o1r1",
+    "condition": "[SkuText] != FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0)"
+  },
+  {
+    "id": "control11",
+    "condition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == SkuText"
+  },
+  {
+    "id": "control10",
+    "condition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == \"a\""
+  }
+]

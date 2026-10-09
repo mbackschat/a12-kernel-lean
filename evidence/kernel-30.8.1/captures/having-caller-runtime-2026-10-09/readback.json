@@ -1,0 +1,814 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": true,
+  "summary": "dispatched 18 ops; all children exited zero",
+  "data": {
+    "ops": 18,
+    "dispatched": true,
+    "allExitedZero": true,
+    "results": [
+      {
+        "op": 0,
+        "id": "modelCheck",
+        "verb": "model",
+        "args": [
+          "check"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "model",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "model is valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "modelReadback",
+        "verb": "model",
+        "args": [
+          "describe"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "model",
+          "op": "describe",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "model card",
+          "data": {
+            "fields": [
+              {
+                "path": "/Probe/SkuText",
+                "name": "SkuText",
+                "kind": "STRING"
+              },
+              {
+                "path": "/Probe/Amount",
+                "name": "Amount",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/Flag",
+                "name": "Flag",
+                "kind": "BOOLEAN"
+              },
+              {
+                "path": "/Probe/FiledOn",
+                "name": "FiledOn",
+                "kind": "DATE"
+              },
+              {
+                "path": "/Probe/ClosedOn",
+                "name": "ClosedOn",
+                "kind": "DATE"
+              },
+              {
+                "path": "/Probe/CoverFrom",
+                "name": "CoverFrom",
+                "kind": "DATE"
+              },
+              {
+                "path": "/Probe/Rows/Sub/Leaf",
+                "name": "Leaf",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/Rows/RowVal",
+                "name": "RowVal",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/Rows/RowDate",
+                "name": "RowDate",
+                "kind": "DATE"
+              },
+              {
+                "path": "/Probe/Rows/RowText",
+                "name": "RowText",
+                "kind": "STRING"
+              },
+              {
+                "path": "/Probe/Rows/RowScaled",
+                "name": "RowScaled",
+                "kind": "NUMBER",
+                "scale": 2
+              },
+              {
+                "path": "/Probe/Rows/RowFlag",
+                "name": "RowFlag",
+                "kind": "BOOLEAN"
+              },
+              {
+                "path": "/Probe/Rows/RowAgreed",
+                "name": "RowAgreed",
+                "kind": "CONFIRM"
+              },
+              {
+                "path": "/Probe/Rows/RowChoice",
+                "name": "RowChoice",
+                "kind": "ENUMERATION",
+                "values": [
+                  "A",
+                  "B"
+                ]
+              },
+              {
+                "path": "/Probe/Rows/RowClock",
+                "name": "RowClock",
+                "kind": "TIME"
+              },
+              {
+                "path": "/Probe/Rows/RowSpan",
+                "name": "RowSpan",
+                "kind": "DATE_RANGE"
+              },
+              {
+                "path": "/Probe/Rows/Ranges/R",
+                "name": "R",
+                "kind": "DATE_RANGE"
+              },
+              {
+                "path": "/Probe/Rows/Output",
+                "name": "Output",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/Other/OtherVal",
+                "name": "OtherVal",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/OtherText",
+                "name": "OtherText",
+                "kind": "STRING"
+              },
+              {
+                "path": "/Probe/ExpectedRange",
+                "name": "ExpectedRange",
+                "kind": "DATE_RANGE"
+              },
+              {
+                "path": "/Probe/TokenLiteral",
+                "name": "TokenLiteral",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/TokenField",
+                "name": "TokenField",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/TokenReverse",
+                "name": "TokenReverse",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/TokenNotEqual",
+                "name": "TokenNotEqual",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/TokenFirst",
+                "name": "TokenFirst",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/RangePair",
+                "name": "RangePair",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/RangeAgainst",
+                "name": "RangeAgainst",
+                "kind": "NUMBER",
+                "scale": 0
+              },
+              {
+                "path": "/Probe/RangeGroup",
+                "name": "RangeGroup",
+                "kind": "NUMBER",
+                "scale": 0
+              }
+            ],
+            "groups": [
+              {
+                "path": "/Probe",
+                "repeatable": false
+              },
+              {
+                "path": "/Probe/Rows",
+                "repeatable": true,
+                "maxRepetitions": 3
+              },
+              {
+                "path": "/Probe/Rows/Sub",
+                "repeatable": false
+              },
+              {
+                "path": "/Probe/Rows/Ranges",
+                "repeatable": false
+              },
+              {
+                "path": "/Probe/Other",
+                "repeatable": true,
+                "maxRepetitions": 3
+              }
+            ],
+            "locales": [
+              "en_US"
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "TokenLiteralRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/TokenLiteralRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/TokenLiteralRule",
+          "data": {
+            "rule": "/Probe/TokenLiteralRule",
+            "severity": "ERROR",
+            "errorCode": "TokenLiteralRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And FirstFilledValue(/Probe/Rows*/RowText Having [/Probe/Rows/RowVal] > 0) == \"a\"",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "TokenLiteralComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/TokenLiteralComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/TokenLiteralComp",
+          "data": {
+            "computation": "/Probe/TokenLiteralComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/TokenLiteral",
+            "alternatives": [
+              {
+                "precondition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == \"a\"",
+                "operation": "9"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "TokenFieldRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/TokenFieldRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/TokenFieldRule",
+          "data": {
+            "rule": "/Probe/TokenFieldRule",
+            "severity": "ERROR",
+            "errorCode": "TokenFieldRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And FirstFilledValue(/Probe/Rows*/RowText Having [/Probe/Rows/RowVal] > 0) == [/Probe/SkuText]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "TokenFieldComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/TokenFieldComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/TokenFieldComp",
+          "data": {
+            "computation": "/Probe/TokenFieldComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/TokenField",
+            "alternatives": [
+              {
+                "precondition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == [SkuText]",
+                "operation": "9"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "TokenReverseRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/TokenReverseRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/TokenReverseRule",
+          "data": {
+            "rule": "/Probe/TokenReverseRule",
+            "severity": "ERROR",
+            "errorCode": "TokenReverseRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And [/Probe/SkuText] == FirstFilledValue(/Probe/Rows*/RowText Having [/Probe/Rows/RowVal] > 0)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "TokenReverseComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/TokenReverseComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/TokenReverseComp",
+          "data": {
+            "computation": "/Probe/TokenReverseComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/TokenReverse",
+            "alternatives": [
+              {
+                "precondition": "[SkuText] == FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0)",
+                "operation": "9"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 8,
+        "id": "TokenNotEqualRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/TokenNotEqualRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/TokenNotEqualRule",
+          "data": {
+            "rule": "/Probe/TokenNotEqualRule",
+            "severity": "ERROR",
+            "errorCode": "TokenNotEqualRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And FirstFilledValue(/Probe/Rows*/RowText Having [/Probe/Rows/RowVal] > 0) != [/Probe/SkuText]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 9,
+        "id": "TokenNotEqualComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/TokenNotEqualComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/TokenNotEqualComp",
+          "data": {
+            "computation": "/Probe/TokenNotEqualComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/TokenNotEqual",
+            "alternatives": [
+              {
+                "precondition": "FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) != [SkuText]",
+                "operation": "9"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 10,
+        "id": "TokenFirstRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/TokenFirstRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/TokenFirstRule (Opaque)",
+          "data": {
+            "rule": "/Probe/TokenFirstRule",
+            "severity": "ERROR",
+            "errorCode": "TokenFirstRule",
+            "errorField": "/Probe/SkuText",
+            "converted": false,
+            "canonicalText": "FieldFilled(SkuText) And FirstFilledValue(Rows*/RowText Having [Rows/RowVal] > 0) == FirstFilledValue(SkuText, OtherText)",
+            "reason": "F10 converter does not yet handle string-expression compared against an unsupported operand [kernel node: IComparisonCondition]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 11,
+        "id": "TokenFirstComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/TokenFirstComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/TokenFirstComp",
+          "data": {
+            "computation": "/Probe/TokenFirstComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": false,
+            "reason": "F10 converter does not yet handle string-expression compared against an unsupported operand [kernel node: IComparisonCondition]"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 12,
+        "id": "RangePairRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/RangePairRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangePairRule",
+          "data": {
+            "rule": "/Probe/RangePairRule",
+            "severity": "ERROR",
+            "errorCode": "RangePairRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And DateRangesOverlap(/Probe/Rows*/RowSpan Having [/Probe/Rows/RowVal] > 0)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 13,
+        "id": "RangePairComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/RangePairComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangePairComp",
+          "data": {
+            "computation": "/Probe/RangePairComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/RangePair",
+            "alternatives": [
+              {
+                "precondition": "DateRangesOverlap(Rows*/RowSpan Having [Rows/RowVal] > 0)",
+                "operation": "9"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 14,
+        "id": "RangeAgainstRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/RangeAgainstRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangeAgainstRule",
+          "data": {
+            "rule": "/Probe/RangeAgainstRule",
+            "severity": "ERROR",
+            "errorCode": "RangeAgainstRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And AtLeastOneDateRangeOverlaps(/Probe/ExpectedRange In /Probe/Rows*/RowSpan Having [/Probe/Rows/RowVal] > 0)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 15,
+        "id": "RangeAgainstComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/RangeAgainstComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangeAgainstComp",
+          "data": {
+            "computation": "/Probe/RangeAgainstComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/RangeAgainst",
+            "alternatives": [
+              {
+                "precondition": "AtLeastOneDateRangeOverlaps(ExpectedRange In Rows*/RowSpan Having [Rows/RowVal] > 0)",
+                "operation": "9"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 16,
+        "id": "RangeGroupRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/RangeGroupRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangeGroupRule (Opaque)",
+          "data": {
+            "rule": "/Probe/RangeGroupRule",
+            "severity": "ERROR",
+            "errorCode": "RangeGroupRule",
+            "errorField": "/Probe/SkuText",
+            "converted": false,
+            "canonicalText": "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(ExpectedRange In Rows*/Ranges)",
+            "reason": "converter error (IllegalArgumentException): not a field: /Probe/Rows/Ranges at ModelIndex.fieldNode(ModelIndex.java:454)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 17,
+        "id": "RangeGroupComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/RangeGroupComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangeGroupComp",
+          "data": {
+            "computation": "/Probe/RangeGroupComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": false,
+            "reason": "converter error (IllegalArgumentException): not a field: /Probe/Rows/Ranges at ModelIndex.fieldNode(ModelIndex.java:454)"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

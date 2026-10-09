@@ -1,0 +1,385 @@
+{
+  "model": "Probe_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "selected",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "a",
+          "OtherText": "b",
+          "ExpectedRange": "2024-01-01/2024-01-10",
+          "Rows": [
+            {
+              "RowText": "drop",
+              "RowVal": 0,
+              "RowSpan": "bad",
+              "Ranges": {
+                "R": "bad"
+              }
+            },
+            {
+              "RowText": "a",
+              "RowVal": 1,
+              "RowSpan": "2024-01-01/2024-01-10",
+              "Ranges": {
+                "R": "2024-01-01/2024-01-10"
+              }
+            },
+            {
+              "RowText": "b",
+              "RowVal": 1,
+              "RowSpan": "2024-01-10/2024-01-20",
+              "Ranges": {
+                "R": "2024-01-10/2024-01-20"
+              }
+            }
+          ],
+          "TokenLiteral": 99,
+          "TokenField": 99,
+          "TokenReverse": 99,
+          "TokenNotEqual": 99,
+          "TokenFirst": 99,
+          "RangePair": 99,
+          "RangeAgainst": 99,
+          "RangeGroup": 99
+        }
+      }
+    },
+    {
+      "name": "different",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "a",
+          "OtherText": "b",
+          "ExpectedRange": "2024-01-01/2024-01-10",
+          "Rows": [
+            {
+              "RowText": "a",
+              "RowVal": 0,
+              "RowSpan": "2024-01-01/2024-01-10",
+              "Ranges": {
+                "R": "2024-01-01/2024-01-10"
+              }
+            },
+            {
+              "RowText": "b",
+              "RowVal": 1,
+              "RowSpan": "2024-03-01/2024-03-10",
+              "Ranges": {
+                "R": "2024-03-01/2024-03-10"
+              }
+            }
+          ],
+          "TokenLiteral": 99,
+          "TokenField": 99,
+          "TokenReverse": 99,
+          "TokenNotEqual": 99,
+          "TokenFirst": 99,
+          "RangePair": 99,
+          "RangeAgainst": 99,
+          "RangeGroup": 99
+        }
+      }
+    },
+    {
+      "name": "emptySelected",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "a",
+          "OtherText": "b",
+          "ExpectedRange": "2024-01-01/2024-01-10",
+          "Rows": [
+            {
+              "RowText": null,
+              "RowVal": 1,
+              "RowSpan": null,
+              "Ranges": {
+                "R": null
+              }
+            }
+          ],
+          "TokenLiteral": 99,
+          "TokenField": 99,
+          "TokenReverse": 99,
+          "TokenNotEqual": 99,
+          "TokenFirst": 99,
+          "RangePair": 99,
+          "RangeAgainst": 99,
+          "RangeGroup": 99
+        }
+      }
+    },
+    {
+      "name": "earlyBadFilter",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "a",
+          "OtherText": "b",
+          "ExpectedRange": "2024-01-01/2024-01-10",
+          "Rows": [
+            {
+              "RowText": "x",
+              "RowVal": "bad",
+              "RowSpan": "2024-01-01/2024-01-10",
+              "Ranges": {
+                "R": "2024-01-01/2024-01-10"
+              }
+            },
+            {
+              "RowText": "a",
+              "RowVal": 1,
+              "RowSpan": "2024-01-10/2024-01-20",
+              "Ranges": {
+                "R": "2024-01-10/2024-01-20"
+              }
+            }
+          ],
+          "TokenLiteral": 99,
+          "TokenField": 99,
+          "TokenReverse": 99,
+          "TokenNotEqual": 99,
+          "TokenFirst": 99,
+          "RangePair": 99,
+          "RangeAgainst": 99,
+          "RangeGroup": 99
+        }
+      }
+    },
+    {
+      "name": "lateBadFilter",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "a",
+          "OtherText": "b",
+          "ExpectedRange": "2024-01-01/2024-01-10",
+          "Rows": [
+            {
+              "RowText": "a",
+              "RowVal": 1,
+              "RowSpan": "2024-01-01/2024-01-10",
+              "Ranges": {
+                "R": "2024-01-01/2024-01-10"
+              }
+            },
+            {
+              "RowText": "x",
+              "RowVal": "bad",
+              "RowSpan": "2024-01-10/2024-01-20",
+              "Ranges": {
+                "R": "2024-01-10/2024-01-20"
+              }
+            }
+          ],
+          "TokenLiteral": 99,
+          "TokenField": 99,
+          "TokenReverse": 99,
+          "TokenNotEqual": 99,
+          "TokenFirst": 99,
+          "RangePair": 99,
+          "RangeAgainst": 99,
+          "RangeGroup": 99
+        }
+      }
+    },
+    {
+      "name": "lateBadRange",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "a",
+          "OtherText": "b",
+          "ExpectedRange": "2024-01-01/2024-01-10",
+          "Rows": [
+            {
+              "RowText": "a",
+              "RowVal": 1,
+              "RowSpan": "2024-01-01/2024-01-10",
+              "Ranges": {
+                "R": "2024-01-01/2024-01-10"
+              }
+            },
+            {
+              "RowText": "b",
+              "RowVal": 1,
+              "RowSpan": "bad",
+              "Ranges": {
+                "R": "bad"
+              }
+            }
+          ],
+          "TokenLiteral": 99,
+          "TokenField": 99,
+          "TokenReverse": 99,
+          "TokenNotEqual": 99,
+          "TokenFirst": 99,
+          "RangePair": 99,
+          "RangeAgainst": 99,
+          "RangeGroup": 99
+        }
+      }
+    },
+    {
+      "name": "noRows",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "a",
+          "OtherText": "b",
+          "ExpectedRange": "2024-01-01/2024-01-10",
+          "Rows": [],
+          "TokenLiteral": 99,
+          "TokenField": 99,
+          "TokenReverse": 99,
+          "TokenNotEqual": 99,
+          "TokenFirst": 99,
+          "RangePair": 99,
+          "RangeAgainst": 99,
+          "RangeGroup": 99
+        }
+      }
+    },
+    {
+      "name": "overCapacity",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "a",
+          "OtherText": "b",
+          "ExpectedRange": "2024-01-01/2024-01-10",
+          "Rows": [
+            {
+              "RowText": null,
+              "RowVal": 0,
+              "RowSpan": "2024-03-01/2024-03-10",
+              "Ranges": {
+                "R": "2024-03-01/2024-03-10"
+              }
+            },
+            {
+              "RowText": null,
+              "RowVal": 0,
+              "RowSpan": "2024-03-01/2024-03-10",
+              "Ranges": {
+                "R": "2024-03-01/2024-03-10"
+              }
+            },
+            {
+              "RowText": null,
+              "RowVal": 0,
+              "RowSpan": "2024-03-01/2024-03-10",
+              "Ranges": {
+                "R": "2024-03-01/2024-03-10"
+              }
+            },
+            {
+              "RowText": "a",
+              "RowVal": 1,
+              "RowSpan": "2024-01-01/2024-01-10",
+              "Ranges": {
+                "R": "2024-01-01/2024-01-10"
+              }
+            }
+          ],
+          "TokenLiteral": 99,
+          "TokenField": 99,
+          "TokenReverse": 99,
+          "TokenNotEqual": 99,
+          "TokenFirst": 99,
+          "RangePair": 99,
+          "RangeAgainst": 99,
+          "RangeGroup": 99
+        }
+      }
+    },
+    {
+      "name": "poisonAfterSuccessor",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "a",
+          "OtherText": "b",
+          "ExpectedRange": "2024-01-01/2024-01-10",
+          "Rows": [
+            {
+              "RowText": "a",
+              "RowVal": 1,
+              "RowSpan": "2024-01-01/2024-01-10",
+              "Ranges": {
+                "R": "2024-01-01/2024-01-10"
+              }
+            },
+            {
+              "RowText": "b",
+              "RowVal": 1,
+              "RowSpan": "2024-01-10/2024-01-20",
+              "Ranges": {
+                "R": "2024-01-10/2024-01-20"
+              }
+            },
+            {
+              "RowText": "c",
+              "RowVal": "bad",
+              "RowSpan": "2024-01-10/2024-01-20",
+              "Ranges": {
+                "R": "2024-01-10/2024-01-20"
+              }
+            }
+          ],
+          "TokenLiteral": 99,
+          "TokenField": 99,
+          "TokenReverse": 99,
+          "TokenNotEqual": 99,
+          "TokenFirst": 99,
+          "RangePair": 99,
+          "RangeAgainst": 99,
+          "RangeGroup": 99
+        }
+      }
+    },
+    {
+      "name": "poisonAfterDropped",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "a",
+          "OtherText": "b",
+          "ExpectedRange": "2024-01-01/2024-01-10",
+          "Rows": [
+            {
+              "RowText": "a",
+              "RowVal": 1,
+              "RowSpan": "2024-01-01/2024-01-10",
+              "Ranges": {
+                "R": "2024-01-01/2024-01-10"
+              }
+            },
+            {
+              "RowText": "b",
+              "RowVal": 0,
+              "RowSpan": "2024-01-10/2024-01-20",
+              "Ranges": {
+                "R": "2024-01-10/2024-01-20"
+              }
+            },
+            {
+              "RowText": "c",
+              "RowVal": "bad",
+              "RowSpan": "2024-01-10/2024-01-20",
+              "Ranges": {
+                "R": "2024-01-10/2024-01-20"
+              }
+            }
+          ],
+          "TokenLiteral": 99,
+          "TokenField": 99,
+          "TokenReverse": 99,
+          "TokenNotEqual": 99,
+          "TokenFirst": 99,
+          "RangePair": 99,
+          "RangeAgainst": 99,
+          "RangeGroup": 99
+        }
+      }
+    }
+  ]
+}

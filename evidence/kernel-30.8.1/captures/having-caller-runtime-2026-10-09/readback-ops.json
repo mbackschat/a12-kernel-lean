@@ -1,0 +1,144 @@
+[
+  {
+    "id": "modelCheck",
+    "verb": "model",
+    "args": [
+      "check"
+    ]
+  },
+  {
+    "id": "modelReadback",
+    "verb": "model",
+    "args": [
+      "describe"
+    ]
+  },
+  {
+    "id": "TokenLiteralRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/TokenLiteralRule"
+    ]
+  },
+  {
+    "id": "TokenLiteralComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/TokenLiteralComp"
+    ]
+  },
+  {
+    "id": "TokenFieldRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/TokenFieldRule"
+    ]
+  },
+  {
+    "id": "TokenFieldComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/TokenFieldComp"
+    ]
+  },
+  {
+    "id": "TokenReverseRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/TokenReverseRule"
+    ]
+  },
+  {
+    "id": "TokenReverseComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/TokenReverseComp"
+    ]
+  },
+  {
+    "id": "TokenNotEqualRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/TokenNotEqualRule"
+    ]
+  },
+  {
+    "id": "TokenNotEqualComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/TokenNotEqualComp"
+    ]
+  },
+  {
+    "id": "TokenFirstRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/TokenFirstRule"
+    ]
+  },
+  {
+    "id": "TokenFirstComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/TokenFirstComp"
+    ]
+  },
+  {
+    "id": "RangePairRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/RangePairRule"
+    ]
+  },
+  {
+    "id": "RangePairComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/RangePairComp"
+    ]
+  },
+  {
+    "id": "RangeAgainstRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/RangeAgainstRule"
+    ]
+  },
+  {
+    "id": "RangeAgainstComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/RangeAgainstComp"
+    ]
+  },
+  {
+    "id": "RangeGroupRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/RangeGroupRule"
+    ]
+  },
+  {
+    "id": "RangeGroupComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/RangeGroupComp"
+    ]
+  }
+]
