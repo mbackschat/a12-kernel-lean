@@ -1,0 +1,17 @@
+{
+  "name": "Group",
+  "group": "/Probe",
+  "computedField": "/Probe/Amount",
+  "commonPrecondition": "AtLeastOneDateRangeOverlaps(A In Rows/Ranges For \"one\")",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ]
+}

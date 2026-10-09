@@ -1,0 +1,74 @@
+[
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Probe/Rows",
+    "name": "RowText",
+    "kind": "STRING",
+    "string": {
+      "maxLength": 3
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "A",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "B",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "M",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "name": "RowMonth",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Probe/Rows",
+    "name": "Children",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe/Rows/Children",
+    "name": "Span",
+    "kind": "DATE_RANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "name": "Dynamic",
+  "group": "/Probe",
+  "computedField": "/Probe/Amount",
+  "commonPrecondition": "DateRangesOverlap(Rows/RowSpan For SkuText, A)",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ]
+}

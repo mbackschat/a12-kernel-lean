@@ -1,0 +1,996 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AnyDirect",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AnyDirectDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AnyDirectRule",
+    "condition": "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", A)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "AnyDirectComp",
+    "group": "/Probe",
+    "computedField": "/Probe/AnyDirect",
+    "commonPrecondition": "DateRangesOverlap(Rows/RowSpan For \"one\", A)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "AnyDirectDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/AnyDirectDep",
+    "alternatives": [
+      {
+        "operation": "[AnyDirect] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AnyPair",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AnyPairDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AnyPairRule",
+    "condition": "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\")",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "AnyPairComp",
+    "group": "/Probe",
+    "computedField": "/Probe/AnyPair",
+    "commonPrecondition": "DateRangesOverlap(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "AnyPairDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/AnyPairDep",
+    "alternatives": [
+      {
+        "operation": "[AnyPair] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AnyPrefix",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AnyPrefixDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AnyPrefixRule",
+    "condition": "FieldFilled(SkuText) And DateRangesOverlap(A, B, Rows/RowSpan For \"one\")",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "AnyPrefixComp",
+    "group": "/Probe",
+    "computedField": "/Probe/AnyPrefix",
+    "commonPrecondition": "DateRangesOverlap(A, B, Rows/RowSpan For \"one\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "AnyPrefixDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/AnyPrefixDep",
+    "alternatives": [
+      {
+        "operation": "[AnyPrefix] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AnyReached",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "AnyReachedDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "AnyReachedRule",
+    "condition": "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", A, B)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "AnyReachedComp",
+    "group": "/Probe",
+    "computedField": "/Probe/AnyReached",
+    "commonPrecondition": "DateRangesOverlap(Rows/RowSpan For \"one\", A, B)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "AnyReachedDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/AnyReachedDep",
+    "alternatives": [
+      {
+        "operation": "[AnyReached] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "Scalar",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "ScalarDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "ScalarRule",
+    "condition": "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In A, B)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "ScalarComp",
+    "group": "/Probe",
+    "computedField": "/Probe/Scalar",
+    "commonPrecondition": "AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In A, B)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "ScalarDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/ScalarDep",
+    "alternatives": [
+      {
+        "operation": "[Scalar] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "List",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "ListDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "ListRule",
+    "condition": "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(A In Rows/RowSpan For \"one\", B)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "ListComp",
+    "group": "/Probe",
+    "computedField": "/Probe/List",
+    "commonPrecondition": "AtLeastOneDateRangeOverlaps(A In Rows/RowSpan For \"one\", B)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "ListDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/ListDep",
+    "alternatives": [
+      {
+        "operation": "[List] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "ListPrefix",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "ListPrefixDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "ListPrefixRule",
+    "condition": "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(A In B, Rows/RowSpan For \"one\")",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "ListPrefixComp",
+    "group": "/Probe",
+    "computedField": "/Probe/ListPrefix",
+    "commonPrecondition": "AtLeastOneDateRangeOverlaps(A In B, Rows/RowSpan For \"one\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "ListPrefixDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/ListPrefixDep",
+    "alternatives": [
+      {
+        "operation": "[ListPrefix] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "Pair",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "PairDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "PairRule",
+    "condition": "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In Rows/RowSpan For \"two\")",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "PairComp",
+    "group": "/Probe",
+    "computedField": "/Probe/Pair",
+    "commonPrecondition": "AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In Rows/RowSpan For \"two\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "PairDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/PairDep",
+    "alternatives": [
+      {
+        "operation": "[Pair] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "Lower",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "LowerDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "LowerRule",
+    "condition": "FieldFilled(SkuText) And DateRangesOverlap(A, Rows/Children*/Span For \"one\")",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "LowerComp",
+    "group": "/Probe",
+    "computedField": "/Probe/Lower",
+    "commonPrecondition": "DateRangesOverlap(A, Rows/Children*/Span For \"one\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "LowerDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/LowerDep",
+    "alternatives": [
+      {
+        "operation": "[Lower] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "Group",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "GroupDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "GroupRule",
+    "condition": "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(A In Rows/Ranges For \"one\")",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "GroupComp",
+    "group": "/Probe",
+    "computedField": "/Probe/Group",
+    "commonPrecondition": "AtLeastOneDateRangeOverlaps(A In Rows/Ranges For \"one\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "GroupDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/GroupDep",
+    "alternatives": [
+      {
+        "operation": "[Group] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "Month",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "MonthDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "MonthRule",
+    "condition": "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowMonth For \"one\", M)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "MonthComp",
+    "group": "/Probe",
+    "computedField": "/Probe/Month",
+    "commonPrecondition": "DateRangesOverlap(Rows/RowMonth For \"one\", M)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "MonthDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/MonthDep",
+    "alternatives": [
+      {
+        "operation": "[Month] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "MonthScalar",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "MonthScalarDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "MonthScalarRule",
+    "condition": "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Rows/RowMonth For \"one\" In M)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "MonthScalarComp",
+    "group": "/Probe",
+    "computedField": "/Probe/MonthScalar",
+    "commonPrecondition": "AtLeastOneDateRangeOverlaps(Rows/RowMonth For \"one\" In M)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "MonthScalarDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/MonthScalarDep",
+    "alternatives": [
+      {
+        "operation": "[MonthScalar] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "Star",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "StarDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "StarRule",
+    "condition": "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", Rows*/RowSpan)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "StarComp",
+    "group": "/Probe",
+    "computedField": "/Probe/Star",
+    "commonPrecondition": "DateRangesOverlap(Rows/RowSpan For \"one\", Rows*/RowSpan)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "StarDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/StarDep",
+    "alternatives": [
+      {
+        "operation": "[Star] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "Dynamic",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "DynamicDep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "DynamicRule",
+    "condition": "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For SkuText, A)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "DynamicComp",
+    "group": "/Probe",
+    "computedField": "/Probe/Dynamic",
+    "commonPrecondition": "DateRangesOverlap(Rows/RowSpan For SkuText, A)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "DynamicDepComp",
+    "group": "/Probe",
+    "computedField": "/Probe/DynamicDep",
+    "alternatives": [
+      {
+        "operation": "[Dynamic] + 1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  }
+]

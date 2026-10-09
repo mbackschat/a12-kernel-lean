@@ -1,0 +1,17 @@
+{
+  "name": "AnyReached",
+  "group": "/Probe",
+  "computedField": "/Probe/Amount",
+  "commonPrecondition": "DateRangesOverlap(Rows/RowSpan For \"one\", A, B)",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ]
+}

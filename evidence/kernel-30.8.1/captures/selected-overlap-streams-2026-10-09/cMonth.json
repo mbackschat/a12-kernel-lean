@@ -1,0 +1,17 @@
+{
+  "name": "Month",
+  "group": "/Probe",
+  "computedField": "/Probe/Amount",
+  "commonPrecondition": "DateRangesOverlap(Rows/RowMonth For \"one\", M)",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ]
+}

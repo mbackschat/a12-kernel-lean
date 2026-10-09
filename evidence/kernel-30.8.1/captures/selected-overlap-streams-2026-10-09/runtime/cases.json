@@ -1,0 +1,16 @@
+{
+  "AnyDirect": "DateRangesOverlap(Rows/RowSpan For \"one\", A)",
+  "AnyPair": "DateRangesOverlap(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\")",
+  "AnyPrefix": "DateRangesOverlap(A, B, Rows/RowSpan For \"one\")",
+  "AnyReached": "DateRangesOverlap(Rows/RowSpan For \"one\", A, B)",
+  "Scalar": "AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In A, B)",
+  "List": "AtLeastOneDateRangeOverlaps(A In Rows/RowSpan For \"one\", B)",
+  "ListPrefix": "AtLeastOneDateRangeOverlaps(A In B, Rows/RowSpan For \"one\")",
+  "Pair": "AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In Rows/RowSpan For \"two\")",
+  "Lower": "DateRangesOverlap(A, Rows/Children*/Span For \"one\")",
+  "Group": "AtLeastOneDateRangeOverlaps(A In Rows/Ranges For \"one\")",
+  "Month": "DateRangesOverlap(Rows/RowMonth For \"one\", M)",
+  "MonthScalar": "AtLeastOneDateRangeOverlaps(Rows/RowMonth For \"one\" In M)",
+  "Star": "DateRangesOverlap(Rows/RowSpan For \"one\", Rows*/RowSpan)",
+  "Dynamic": "DateRangesOverlap(Rows/RowSpan For SkuText, A)"
+}

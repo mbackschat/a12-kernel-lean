@@ -113,6 +113,8 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 
 ### SG29 — semantic-index reads beyond the scalar lookup
 
+<a id="gap-sg29-overlap-matrix"></a>
+- [Selected overlap closure matrix](gaps/paths-and-groups.md#gap-sg29-overlap-matrix)
 <a id="gap-sg29"></a>
 - [open obligation](gaps/paths-and-groups.md#gap-sg29)
 

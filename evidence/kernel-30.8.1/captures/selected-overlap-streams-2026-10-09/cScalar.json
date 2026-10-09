@@ -1,0 +1,17 @@
+{
+  "name": "Scalar",
+  "group": "/Probe",
+  "computedField": "/Probe/Amount",
+  "commonPrecondition": "AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In A, B)",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ]
+}

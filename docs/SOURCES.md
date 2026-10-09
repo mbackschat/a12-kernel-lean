@@ -171,3 +171,4 @@ An a12-dmkits interpreter agreement is triangulation. A maintained adapter test 
 Edit the source shard when its provenance or drill route changes; change this hub only for navigation. [Documentation discipline](DOC-DISCIPLINE.md) owns the update boundaries.
 
 - [Selected Boolean, Confirm and DateRange comparisons](sources/inbound-group-operand-batches.md#src-selected-typed-comparisons): static admission, comparison spelling, phase observations and first-filled prefix behavior.
+- [Selected overlap streams](sources/date-range-construction.md#src-selected-overlap-streams): both-arm admission, selected scalar/list roles and reached-versus-bypassed poison.

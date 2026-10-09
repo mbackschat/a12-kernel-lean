@@ -110,6 +110,23 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 - `entry-evidence`: A piped Lean query at the existing built baseline validates the fixture, admits the unindexed Boolean control, reproduces both SI2 reader refusals and the indexed first-filled validation/computation split, and confirms SI4's parse failure. The [entry capture](../sources/inbound-group-operand-batches.md#src-pr2-rulegroup-semantic-index) subsequently confirms both-arm Boolean admission and the RuleGroup/explicit-group static twins. The matrix preceded semantic implementation.
 - `promotion`: The finite SI1–SI5 matrix defines broad representation, not complete conformance. Reopen classification if a reproduced residual removes a main form; retain every narrower composition and calibration obligation above.
 
+<a id="gap-sg29-overlap-matrix"></a>
+#### Selected overlap closure matrix
+
+- `milestone`: Extend the existing any-pair and scalar/list overlap carriers through shared semantic-index selection. Do not add another keyed-pair evaluator; [static/runtime evidence](../sources/date-range-construction.md#src-selected-overlap-streams) settles the selected-stream mechanism.
+- `baseline-red`: The retained 11-document request refuses 308 overlap rule/guard instances through the ordinary reader; 154 dependent computations are unattributable because their producers refuse. This is the selected adapter's missing route, not a new overlap relation.
+
+| ID | Remaining acceptance | Shared owner and separator |
+|---|---|---|
+| SO1 | Admit selected field, selected lower-star field and plural selected-group slots under existing profile/shape gates | Extend `DateRangeOverlap`, `YearlessDateRangeOverlap` and `AtLeastOneDateRangeOverlap`; preserve duplicate key identity, singular group ban, scalar-slot restrictions and mixed-year gate, with admitted twins. |
+| SO2 | Full validation preserves selected observations and ordinary overlap projection | Reuse `SemanticIndex`/`KeyedEntityExtent`, exact/yearless overlap identity, authored slot order and no-match/unavailable distinctions until the consumer projects them. Include direct/selected, both-selected, mixed three-slot and group/lower-star cases. |
+| SO3 | Computation uses lazy phase-aware selection and existing ordered search | Reuse `ComputationOverlapSearch`; test match-before-poison, reached poison, empty scalar bypass and lower-star invalid suffix. Dependent targets must distinguish clean clearing from poison. |
+| SO4 | Reader, dependency/binding, generated validation and structural-reference adapters retain selected identity | Execute fresh key/payload producers, root-declared repeated targets versus unbound refusal, and generated validation. Reuse the existing slot/profile certificates and inspect all changed constructor consumers. |
+
+- `consumer`: Execute/Analyze must distinguish selected topology and key/payload dependencies, phase-specific column validity, clean clearing and poison, and termination before later selected operands.
+- `limits`: Partial-call calibration, complete messages/cache order, deeper topology and wider profile calibration remain open; existing unselected profile support must not regress. A newly independent mechanism becomes another milestone.
+- `next`: Implement one full-Date selected field end to end, then propagate the settled adapter across both operators and existing exact/yearless profiles as one family batch. Keep the acceptance denominator fixed and run one integrated gate/review at its frozen boundary.
+
 <a id="gap-sg13"></a>
 ### SG13 — group-list and group-count completion
 

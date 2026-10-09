@@ -1,0 +1,713 @@
+{
+  "model": "Probe_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "good",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": "2024-01-05/2024-01-06",
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [
+            {
+              "RowText": "one",
+              "RowSpan": "2024-01-01/2024-01-10",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            },
+            {
+              "RowText": "two",
+              "RowSpan": "2024-01-08/2024-01-12",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            }
+          ],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    },
+    {
+      "name": "disjoint",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": "2024-01-05/2024-01-06",
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [
+            {
+              "RowText": "one",
+              "RowSpan": "2024-02-01/2024-02-10",
+              "RowMonth": "05/06",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            },
+            {
+              "RowText": "two",
+              "RowSpan": "2024-01-08/2024-01-12",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            }
+          ],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    },
+    {
+      "name": "emptySelected",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": "2024-01-05/2024-01-06",
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [
+            {
+              "RowText": "one",
+              "RowSpan": null,
+              "RowMonth": null,
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            },
+            {
+              "RowText": "two",
+              "RowSpan": "2024-01-08/2024-01-12",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            }
+          ],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    },
+    {
+      "name": "malformedSelected",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": "2024-01-05/2024-01-06",
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [
+            {
+              "RowText": "one",
+              "RowSpan": "bad",
+              "RowMonth": "bad",
+              "Ranges": {
+                "R": "bad"
+              },
+              "Children": [
+                {
+                  "Span": "bad"
+                }
+              ]
+            },
+            {
+              "RowText": "two",
+              "RowSpan": "2024-01-08/2024-01-12",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            }
+          ],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    },
+    {
+      "name": "noMatch",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": "2024-01-05/2024-01-06",
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [
+            {
+              "RowText": "two",
+              "RowSpan": "2024-01-08/2024-01-12",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            }
+          ],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    },
+    {
+      "name": "duplicate",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": "2024-01-05/2024-01-06",
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [
+            {
+              "RowText": "one",
+              "RowSpan": "2024-01-01/2024-01-10",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            },
+            {
+              "RowText": "one",
+              "RowSpan": "2024-01-08/2024-01-12",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            }
+          ],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    },
+    {
+      "name": "badOtherIndex",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": "2024-01-05/2024-01-06",
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [
+            {
+              "RowText": "one",
+              "RowSpan": "2024-01-01/2024-01-10",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            },
+            {
+              "RowText": "long",
+              "RowSpan": "2024-01-08/2024-01-12",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            }
+          ],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    },
+    {
+      "name": "invalidLowerSuffix",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": "2024-01-05/2024-01-06",
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [
+            {
+              "RowText": "one",
+              "RowSpan": "2024-01-01/2024-01-10",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-08/2024-01-12"
+                },
+                {
+                  "Span": "bad"
+                }
+              ]
+            },
+            {
+              "RowText": "two",
+              "RowSpan": "2024-01-08/2024-01-12",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-08/2024-01-12"
+                }
+              ]
+            }
+          ],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    },
+    {
+      "name": "emptyScalarBadIndex",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": null,
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [
+            {
+              "RowText": "one",
+              "RowSpan": "2024-01-01/2024-01-10",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            },
+            {
+              "RowText": "long",
+              "RowSpan": "2024-01-08/2024-01-12",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            }
+          ],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    },
+    {
+      "name": "noRows",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": "2024-01-05/2024-01-06",
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    },
+    {
+      "name": "lowerMatchInvalidSuffix",
+      "documentInline": {
+        "Probe": {
+          "SkuText": "one",
+          "A": "2024-01-05/2024-01-06",
+          "B": "2024-01-06/2024-01-07",
+          "M": "02/04",
+          "Rows": [
+            {
+              "RowText": "one",
+              "RowSpan": "2024-01-01/2024-01-10",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                },
+                {
+                  "Span": "bad"
+                }
+              ]
+            },
+            {
+              "RowText": "two",
+              "RowSpan": "2024-01-08/2024-01-12",
+              "RowMonth": "01/03",
+              "Ranges": {
+                "R": "2024-01-06/2024-01-12"
+              },
+              "Children": [
+                {
+                  "Span": "2024-01-06/2024-01-12"
+                }
+              ]
+            }
+          ],
+          "AnyDirect": 99,
+          "AnyDirectDep": 99,
+          "AnyPair": 99,
+          "AnyPairDep": 99,
+          "AnyPrefix": 99,
+          "AnyPrefixDep": 99,
+          "AnyReached": 99,
+          "AnyReachedDep": 99,
+          "Scalar": 99,
+          "ScalarDep": 99,
+          "List": 99,
+          "ListDep": 99,
+          "ListPrefix": 99,
+          "ListPrefixDep": 99,
+          "Pair": 99,
+          "PairDep": 99,
+          "Lower": 99,
+          "LowerDep": 99,
+          "Group": 99,
+          "GroupDep": 99,
+          "Month": 99,
+          "MonthDep": 99,
+          "MonthScalar": 99,
+          "MonthScalarDep": 99,
+          "Star": 99,
+          "StarDep": 99,
+          "Dynamic": 99,
+          "DynamicDep": 99
+        }
+      }
+    }
+  ]
+}

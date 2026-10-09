@@ -1,0 +1,17 @@
+{
+  "name": "MonthScalar",
+  "group": "/Probe",
+  "computedField": "/Probe/Amount",
+  "commonPrecondition": "AtLeastOneDateRangeOverlaps(Rows/RowMonth For \"one\" In M)",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ]
+}

@@ -1,0 +1,398 @@
+[
+  {
+    "id": "vAnyDirect",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", A)",
+      "--code",
+      "vAnyDirect"
+    ]
+  },
+  {
+    "id": "cAnyDirect",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAnyDirect.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAnyPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\")",
+      "--code",
+      "vAnyPair"
+    ]
+  },
+  {
+    "id": "cAnyPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAnyPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAnyPrefix",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(A, B, Rows/RowSpan For \"one\")",
+      "--code",
+      "vAnyPrefix"
+    ]
+  },
+  {
+    "id": "cAnyPrefix",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAnyPrefix.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAnyReached",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", A, B)",
+      "--code",
+      "vAnyReached"
+    ]
+  },
+  {
+    "id": "cAnyReached",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAnyReached.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vScalar",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In A, B)",
+      "--code",
+      "vScalar"
+    ]
+  },
+  {
+    "id": "cScalar",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cScalar.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vList",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(A In Rows/RowSpan For \"one\", B)",
+      "--code",
+      "vList"
+    ]
+  },
+  {
+    "id": "cList",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cList.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vListPrefix",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(A In B, Rows/RowSpan For \"one\")",
+      "--code",
+      "vListPrefix"
+    ]
+  },
+  {
+    "id": "cListPrefix",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cListPrefix.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vPair",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In Rows/RowSpan For \"two\")",
+      "--code",
+      "vPair"
+    ]
+  },
+  {
+    "id": "cPair",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cPair.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vLower",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(A, Rows/Children*/Span For \"one\")",
+      "--code",
+      "vLower"
+    ]
+  },
+  {
+    "id": "cLower",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cLower.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroup",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(A In Rows/Ranges For \"one\")",
+      "--code",
+      "vGroup"
+    ]
+  },
+  {
+    "id": "cGroup",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroup.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMonth",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowMonth For \"one\", M)",
+      "--code",
+      "vMonth"
+    ]
+  },
+  {
+    "id": "cMonth",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMonth.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMonthScalar",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Rows/RowMonth For \"one\" In M)",
+      "--code",
+      "vMonthScalar"
+    ]
+  },
+  {
+    "id": "cMonthScalar",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMonthScalar.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vStar",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", Rows*/RowSpan)",
+      "--code",
+      "vStar"
+    ]
+  },
+  {
+    "id": "cStar",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cStar.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDynamic",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For SkuText, A)",
+      "--code",
+      "vDynamic"
+    ]
+  },
+  {
+    "id": "cDynamic",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDynamic.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDuplicate",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", Rows/RowSpan For \"one\")",
+      "--code",
+      "vDuplicate"
+    ]
+  },
+  {
+    "id": "cDuplicate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDuplicate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupRefusal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(A, Rows/Ranges For \"one\")",
+      "--code",
+      "vGroupRefusal"
+    ]
+  },
+  {
+    "id": "cGroupRefusal",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupRefusal.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vScalarGroupRefusal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Rows/Ranges For \"one\" In A)",
+      "--code",
+      "vScalarGroupRefusal"
+    ]
+  },
+  {
+    "id": "cScalarGroupRefusal",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cScalarGroupRefusal.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vMixedYear",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", Rows/RowMonth For \"two\")",
+      "--code",
+      "vMixedYear"
+    ]
+  },
+  {
+    "id": "cMixedYear",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cMixedYear.json",
+      "--dry-run"
+    ]
+  }
+]

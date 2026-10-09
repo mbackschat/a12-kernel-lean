@@ -1,0 +1,1306 @@
+{
+  "header" : {
+    "id" : "Probe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Probe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Probe/SkuText",
+            "name" : "SkuText",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Amount",
+            "name" : "Amount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Flag",
+            "name" : "Flag",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FiledOn",
+            "name" : "FiledOn",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/ClosedOn",
+            "name" : "ClosedOn",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/CoverFrom",
+            "name" : "CoverFrom",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Sub",
+                "name" : "Sub",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Sub/Leaf",
+                    "name" : "Leaf",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowVal",
+                "name" : "RowVal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowDate",
+                "name" : "RowDate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowText",
+                "name" : "RowText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 3
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowScaled",
+                "name" : "RowScaled",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowFlag",
+                "name" : "RowFlag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowAgreed",
+                "name" : "RowAgreed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowChoice",
+                "name" : "RowChoice",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowClock",
+                "name" : "RowClock",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowSpan",
+                "name" : "RowSpan",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Ranges",
+                "name" : "Ranges",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Ranges/R",
+                    "name" : "R",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateRangeType",
+                        "DateRangeType" : {
+                          "format" : "yyyy-MM-dd",
+                          "rangeSeparator" : "/"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Output",
+                "name" : "Output",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowMonth",
+                "name" : "RowMonth",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "MM",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Children",
+                "name" : "Children",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Children/Span",
+                    "name" : "Span",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateRangeType",
+                        "DateRangeType" : {
+                          "format" : "yyyy-MM-dd",
+                          "rangeSeparator" : "/"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "RowText"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Other/OtherVal",
+                "name" : "OtherVal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/M",
+            "name" : "M",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "MM",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AnyDirect",
+            "name" : "AnyDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AnyDirectDep",
+            "name" : "AnyDirectDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AnyDirectRule",
+            "name" : "AnyDirectRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AnyDirectRule",
+              "errorCondition" : "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AnyDirectComp",
+            "name" : "AnyDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyDirect",
+              "commonPrecondition" : "DateRangesOverlap(Rows/RowSpan For \"one\", A)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AnyDirectDepComp",
+            "name" : "AnyDirectDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyDirectDep",
+              "computationAlternatives" : [ {
+                "operation" : "[AnyDirect] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AnyPair",
+            "name" : "AnyPair",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AnyPairDep",
+            "name" : "AnyPairDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AnyPairRule",
+            "name" : "AnyPairRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AnyPairRule",
+              "errorCondition" : "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AnyPairComp",
+            "name" : "AnyPairComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyPair",
+              "commonPrecondition" : "DateRangesOverlap(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AnyPairDepComp",
+            "name" : "AnyPairDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyPairDep",
+              "computationAlternatives" : [ {
+                "operation" : "[AnyPair] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AnyPrefix",
+            "name" : "AnyPrefix",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AnyPrefixDep",
+            "name" : "AnyPrefixDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AnyPrefixRule",
+            "name" : "AnyPrefixRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AnyPrefixRule",
+              "errorCondition" : "FieldFilled(SkuText) And DateRangesOverlap(A, B, Rows/RowSpan For \"one\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AnyPrefixComp",
+            "name" : "AnyPrefixComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyPrefix",
+              "commonPrecondition" : "DateRangesOverlap(A, B, Rows/RowSpan For \"one\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AnyPrefixDepComp",
+            "name" : "AnyPrefixDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyPrefixDep",
+              "computationAlternatives" : [ {
+                "operation" : "[AnyPrefix] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AnyReached",
+            "name" : "AnyReached",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/AnyReachedDep",
+            "name" : "AnyReachedDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/AnyReachedRule",
+            "name" : "AnyReachedRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "AnyReachedRule",
+              "errorCondition" : "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", A, B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AnyReachedComp",
+            "name" : "AnyReachedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyReached",
+              "commonPrecondition" : "DateRangesOverlap(Rows/RowSpan For \"one\", A, B)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/AnyReachedDepComp",
+            "name" : "AnyReachedDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyReachedDep",
+              "computationAlternatives" : [ {
+                "operation" : "[AnyReached] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Scalar",
+            "name" : "Scalar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/ScalarDep",
+            "name" : "ScalarDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/ScalarRule",
+            "name" : "ScalarRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "ScalarRule",
+              "errorCondition" : "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In A, B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ScalarComp",
+            "name" : "ScalarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Scalar",
+              "commonPrecondition" : "AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In A, B)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ScalarDepComp",
+            "name" : "ScalarDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ScalarDep",
+              "computationAlternatives" : [ {
+                "operation" : "[Scalar] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/List",
+            "name" : "List",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/ListDep",
+            "name" : "ListDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/ListRule",
+            "name" : "ListRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "ListRule",
+              "errorCondition" : "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(A In Rows/RowSpan For \"one\", B)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ListComp",
+            "name" : "ListComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../List",
+              "commonPrecondition" : "AtLeastOneDateRangeOverlaps(A In Rows/RowSpan For \"one\", B)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ListDepComp",
+            "name" : "ListDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ListDep",
+              "computationAlternatives" : [ {
+                "operation" : "[List] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/ListPrefix",
+            "name" : "ListPrefix",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/ListPrefixDep",
+            "name" : "ListPrefixDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/ListPrefixRule",
+            "name" : "ListPrefixRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "ListPrefixRule",
+              "errorCondition" : "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(A In B, Rows/RowSpan For \"one\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ListPrefixComp",
+            "name" : "ListPrefixComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ListPrefix",
+              "commonPrecondition" : "AtLeastOneDateRangeOverlaps(A In B, Rows/RowSpan For \"one\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ListPrefixDepComp",
+            "name" : "ListPrefixDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ListPrefixDep",
+              "computationAlternatives" : [ {
+                "operation" : "[ListPrefix] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Pair",
+            "name" : "Pair",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/PairDep",
+            "name" : "PairDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/PairRule",
+            "name" : "PairRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "PairRule",
+              "errorCondition" : "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In Rows/RowSpan For \"two\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/PairComp",
+            "name" : "PairComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Pair",
+              "commonPrecondition" : "AtLeastOneDateRangeOverlaps(Rows/RowSpan For \"one\" In Rows/RowSpan For \"two\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/PairDepComp",
+            "name" : "PairDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PairDep",
+              "computationAlternatives" : [ {
+                "operation" : "[Pair] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Lower",
+            "name" : "Lower",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/LowerDep",
+            "name" : "LowerDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/LowerRule",
+            "name" : "LowerRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "LowerRule",
+              "errorCondition" : "FieldFilled(SkuText) And DateRangesOverlap(A, Rows/Children*/Span For \"one\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/LowerComp",
+            "name" : "LowerComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Lower",
+              "commonPrecondition" : "DateRangesOverlap(A, Rows/Children*/Span For \"one\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/LowerDepComp",
+            "name" : "LowerDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../LowerDep",
+              "computationAlternatives" : [ {
+                "operation" : "[Lower] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Group",
+            "name" : "Group",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/GroupDep",
+            "name" : "GroupDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/GroupRule",
+            "name" : "GroupRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "GroupRule",
+              "errorCondition" : "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(A In Rows/Ranges For \"one\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/GroupComp",
+            "name" : "GroupComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Group",
+              "commonPrecondition" : "AtLeastOneDateRangeOverlaps(A In Rows/Ranges For \"one\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/GroupDepComp",
+            "name" : "GroupDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GroupDep",
+              "computationAlternatives" : [ {
+                "operation" : "[Group] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Month",
+            "name" : "Month",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/MonthDep",
+            "name" : "MonthDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/MonthRule",
+            "name" : "MonthRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "MonthRule",
+              "errorCondition" : "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowMonth For \"one\", M)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/MonthComp",
+            "name" : "MonthComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Month",
+              "commonPrecondition" : "DateRangesOverlap(Rows/RowMonth For \"one\", M)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/MonthDepComp",
+            "name" : "MonthDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MonthDep",
+              "computationAlternatives" : [ {
+                "operation" : "[Month] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/MonthScalar",
+            "name" : "MonthScalar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/MonthScalarDep",
+            "name" : "MonthScalarDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/MonthScalarRule",
+            "name" : "MonthScalarRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "MonthScalarRule",
+              "errorCondition" : "FieldFilled(SkuText) And AtLeastOneDateRangeOverlaps(Rows/RowMonth For \"one\" In M)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/MonthScalarComp",
+            "name" : "MonthScalarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MonthScalar",
+              "commonPrecondition" : "AtLeastOneDateRangeOverlaps(Rows/RowMonth For \"one\" In M)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/MonthScalarDepComp",
+            "name" : "MonthScalarDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MonthScalarDep",
+              "computationAlternatives" : [ {
+                "operation" : "[MonthScalar] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Star",
+            "name" : "Star",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/StarDep",
+            "name" : "StarDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/StarRule",
+            "name" : "StarRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "StarRule",
+              "errorCondition" : "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For \"one\", Rows*/RowSpan)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/StarComp",
+            "name" : "StarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Star",
+              "commonPrecondition" : "DateRangesOverlap(Rows/RowSpan For \"one\", Rows*/RowSpan)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/StarDepComp",
+            "name" : "StarDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../StarDep",
+              "computationAlternatives" : [ {
+                "operation" : "[Star] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Dynamic",
+            "name" : "Dynamic",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/DynamicDep",
+            "name" : "DynamicDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/DynamicRule",
+            "name" : "DynamicRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "DynamicRule",
+              "errorCondition" : "FieldFilled(SkuText) And DateRangesOverlap(Rows/RowSpan For SkuText, A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DynamicComp",
+            "name" : "DynamicComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Dynamic",
+              "commonPrecondition" : "DateRangesOverlap(Rows/RowSpan For SkuText, A)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DynamicDepComp",
+            "name" : "DynamicDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DynamicDep",
+              "computationAlternatives" : [ {
+                "operation" : "[Dynamic] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
