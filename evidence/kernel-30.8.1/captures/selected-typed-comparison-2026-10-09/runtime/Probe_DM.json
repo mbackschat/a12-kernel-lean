@@ -1,0 +1,910 @@
+{
+  "header" : {
+    "id" : "Probe_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Probe_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Probe/SkuText",
+            "name" : "SkuText",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Amount",
+            "name" : "Amount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Flag",
+            "name" : "Flag",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FiledOn",
+            "name" : "FiledOn",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/ClosedOn",
+            "name" : "ClosedOn",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "dd.MM.yyyy"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/CoverFrom",
+            "name" : "CoverFrom",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Sub",
+                "name" : "Sub",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Sub/Leaf",
+                    "name" : "Leaf",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowVal",
+                "name" : "RowVal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowDate",
+                "name" : "RowDate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowText",
+                "name" : "RowText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 3
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowScaled",
+                "name" : "RowScaled",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowFlag",
+                "name" : "RowFlag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowAgreed",
+                "name" : "RowAgreed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowChoice",
+                "name" : "RowChoice",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowClock",
+                "name" : "RowClock",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/RowSpan",
+                "name" : "RowSpan",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Probe/Rows/Ranges",
+                "name" : "Ranges",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Probe/Rows/Ranges/R",
+                    "name" : "R",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateRangeType",
+                        "DateRangeType" : {
+                          "format" : "yyyy-MM-dd",
+                          "rangeSeparator" : "/"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/Rows/Output",
+                "name" : "Output",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "RowText"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Other/OtherVal",
+                "name" : "OtherVal",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/DirectTrue",
+            "name" : "DirectTrue",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/DirectTrueRule",
+            "name" : "DirectTrueRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "DirectTrueRule",
+              "errorCondition" : "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == True",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DirectTrueComp",
+            "name" : "DirectTrueComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DirectTrue",
+              "commonPrecondition" : "[Rows/RowFlag For \"one\"] == True",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/DirectFalse",
+            "name" : "DirectFalse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/DirectFalseRule",
+            "name" : "DirectFalseRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "DirectFalseRule",
+              "errorCondition" : "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == False",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DirectFalseComp",
+            "name" : "DirectFalseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DirectFalse",
+              "commonPrecondition" : "[Rows/RowFlag For \"one\"] == False",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Reverse",
+            "name" : "Reverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/ReverseRule",
+            "name" : "ReverseRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "ReverseRule",
+              "errorCondition" : "FieldFilled(SkuText) And True == [Rows/RowFlag For \"one\"]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ReverseComp",
+            "name" : "ReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Reverse",
+              "commonPrecondition" : "True == [Rows/RowFlag For \"one\"]",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/DirectNe",
+            "name" : "DirectNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/DirectNeRule",
+            "name" : "DirectNeRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "DirectNeRule",
+              "errorCondition" : "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] != True",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/DirectNeComp",
+            "name" : "DirectNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DirectNe",
+              "commonPrecondition" : "[Rows/RowFlag For \"one\"] != True",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Fields",
+            "name" : "Fields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldsRule",
+            "name" : "FieldsRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FieldsRule",
+              "errorCondition" : "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == [Flag]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldsComp",
+            "name" : "FieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Fields",
+              "commonPrecondition" : "[Rows/RowFlag For \"one\"] == [Flag]",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/First",
+            "name" : "First",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FirstRule",
+            "name" : "FirstRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FirstRule",
+              "errorCondition" : "FieldFilled(SkuText) And FirstFilledValue(Rows/RowFlag For \"one\", Flag) == True",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FirstComp",
+            "name" : "FirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../First",
+              "commonPrecondition" : "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == True",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FirstFieldsLeft",
+            "name" : "FirstFieldsLeft",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FirstFieldsLeftRule",
+            "name" : "FirstFieldsLeftRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FirstFieldsLeftRule",
+              "errorCondition" : "FieldFilled(SkuText) And FirstFilledValue(Rows/RowFlag For \"one\", Flag) == [Flag]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FirstFieldsLeftComp",
+            "name" : "FirstFieldsLeftComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FirstFieldsLeft",
+              "commonPrecondition" : "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == [Flag]",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FirstFieldsRight",
+            "name" : "FirstFieldsRight",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FirstFieldsRightRule",
+            "name" : "FirstFieldsRightRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FirstFieldsRightRule",
+              "errorCondition" : "FieldFilled(SkuText) And [Flag] == FirstFilledValue(Rows/RowFlag For \"one\", Flag)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FirstFieldsRightComp",
+            "name" : "FirstFieldsRightComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FirstFieldsRight",
+              "commonPrecondition" : "[Flag] == FirstFilledValue(Rows/RowFlag For \"one\", Flag)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/Prefix",
+            "name" : "Prefix",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/PrefixRule",
+            "name" : "PrefixRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "PrefixRule",
+              "errorCondition" : "FieldFilled(SkuText) And FirstFilledValue(Flag, Rows/RowFlag For \"one\") == True",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/PrefixComp",
+            "name" : "PrefixComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Prefix",
+              "commonPrecondition" : "FirstFilledValue(Flag, Rows/RowFlag For \"one\") == True",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/ConfirmEq",
+            "name" : "ConfirmEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/ConfirmEqRule",
+            "name" : "ConfirmEqRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "ConfirmEqRule",
+              "errorCondition" : "FieldFilled(SkuText) And [Rows/RowAgreed For \"one\"] == True",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ConfirmEqComp",
+            "name" : "ConfirmEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ConfirmEq",
+              "commonPrecondition" : "[Rows/RowAgreed For \"one\"] == True",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/ConfirmNe",
+            "name" : "ConfirmNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/ConfirmNeRule",
+            "name" : "ConfirmNeRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "ConfirmNeRule",
+              "errorCondition" : "FieldFilled(SkuText) And [Rows/RowAgreed For \"one\"] != True",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/ConfirmNeComp",
+            "name" : "ConfirmNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ConfirmNe",
+              "commonPrecondition" : "[Rows/RowAgreed For \"one\"] != True",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/FieldKey",
+            "name" : "FieldKey",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/FieldKeyRule",
+            "name" : "FieldKeyRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "FieldKeyRule",
+              "errorCondition" : "FieldFilled(SkuText) And [Rows/RowFlag For SkuText] == True",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/FieldKeyComp",
+            "name" : "FieldKeyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FieldKey",
+              "commonPrecondition" : "[Rows/RowFlag For SkuText] == True",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/RangeEq",
+            "name" : "RangeEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/RangeEqRule",
+            "name" : "RangeEqRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "RangeEqRule",
+              "errorCondition" : "FieldFilled(SkuText) And [Rows/RowSpan For \"one\"] == [Rows/RowSpan For \"two\"]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/RangeEqComp",
+            "name" : "RangeEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RangeEq",
+              "commonPrecondition" : "[Rows/RowSpan For \"one\"] == [Rows/RowSpan For \"two\"]",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/RangeNe",
+            "name" : "RangeNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/RangeNeRule",
+            "name" : "RangeNeRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "RangeNeRule",
+              "errorCondition" : "FieldFilled(SkuText) And [Rows/RowSpan For \"one\"] != [Rows/RowSpan For \"two\"]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/RangeNeComp",
+            "name" : "RangeNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RangeNe",
+              "commonPrecondition" : "[Rows/RowSpan For \"one\"] != [Rows/RowSpan For \"two\"]",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/RangeFirst",
+            "name" : "RangeFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/RangeFirstRule",
+            "name" : "RangeFirstRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../SkuText",
+              "errorCode" : "RangeFirstRule",
+              "errorCondition" : "FieldFilled(SkuText) And FirstFilledValue(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\") == [Rows/RowSpan For \"two\"]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Probe/RangeFirstComp",
+            "name" : "RangeFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RangeFirst",
+              "commonPrecondition" : "FirstFilledValue(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\") == [Rows/RowSpan For \"two\"]",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

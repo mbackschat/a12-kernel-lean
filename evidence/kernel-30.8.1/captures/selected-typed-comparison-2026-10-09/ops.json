@@ -1,0 +1,730 @@
+[
+  {
+    "id": "vBool0",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBool0",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBool0",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBool0.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBool1",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBool1",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And True == [Rows/RowFlag For \"one\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBool1",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBool1.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBool2",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBool2",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == False",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBool2",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBool2.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBool3",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBool3",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And False == [Rows/RowFlag For \"one\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBool3",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBool3.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBool4",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBool4",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] != True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBool4",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBool4.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBool5",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBool5",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And True != [Rows/RowFlag For \"one\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBool5",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBool5.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBool6",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBool6",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] != False",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBool6",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBool6.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBool7",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBool7",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And False != [Rows/RowFlag For \"one\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBool7",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBool7.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vConfirm8",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vConfirm8",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowAgreed For \"one\"] == True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cConfirm8",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cConfirm8.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vConfirm9",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vConfirm9",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And True == [Rows/RowAgreed For \"one\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cConfirm9",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cConfirm9.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vConfirm10",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vConfirm10",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowAgreed For \"one\"] == False",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cConfirm10",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cConfirm10.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vConfirm11",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vConfirm11",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And False == [Rows/RowAgreed For \"one\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cConfirm11",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cConfirm11.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vConfirm12",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vConfirm12",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowAgreed For \"one\"] != True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cConfirm12",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cConfirm12.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vConfirm13",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vConfirm13",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And True != [Rows/RowAgreed For \"one\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cConfirm13",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cConfirm13.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vConfirm14",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vConfirm14",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowAgreed For \"one\"] != False",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cConfirm14",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cConfirm14.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vConfirm15",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vConfirm15",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And False != [Rows/RowAgreed For \"one\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cConfirm15",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cConfirm15.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFields16",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFields16",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == [Flag]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFields16",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFields16.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirst17",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirst17",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And FirstFilledValue(Rows/RowFlag For \"one\", Flag) == True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirst17",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirst17.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFields18",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFields18",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Flag] == [Rows/RowFlag For \"one\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFields18",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFields18.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirst19",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirst19",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And True == FirstFilledValue(Rows/RowFlag For \"one\", Flag)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirst19",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirst19.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFields20",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFields20",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] != [Flag]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFields20",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFields20.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirst21",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirst21",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And FirstFilledValue(Rows/RowFlag For \"one\", Flag) != True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirst21",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirst21.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFields22",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFields22",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Flag] != [Rows/RowFlag For \"one\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFields22",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFields22.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFirst23",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFirst23",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And True != FirstFilledValue(Rows/RowFlag For \"one\", Flag)",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFirst23",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFirst23.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vPrefix",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vPrefix",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And FirstFilledValue(Flag, Rows/RowFlag For \"one\") == True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cPrefix",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cPrefix.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vFieldKey",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vFieldKey",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowFlag For SkuText] == True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cFieldKey",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cFieldKey.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vConfirmFirst",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vConfirmFirst",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And FirstFilledValue(Rows/RowAgreed For \"one\", Flag) == True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cConfirmFirst",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cConfirmFirst.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBoolOrder",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBoolOrder",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] > True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBoolOrder",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBoolOrder.json",
+      "--dry-run"
+    ]
+  }
+]

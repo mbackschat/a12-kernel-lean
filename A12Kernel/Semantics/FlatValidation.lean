@@ -324,16 +324,22 @@ def FlatContext.resolveNumberComparisonOperand (context : FlatContext)
     (field : FlatNumberField) : NumericOperand :=
   context.resolveNumberComparisonOperandAt .validation field
 
+/-- Boolean absence suppresses comparison; Confirm absence substitutes false (spec/02 §A.3).
+The same projection serves direct and selected reads in either phase. -/
+def CellObservation.asBooleanComparisonOperand (observation : CellObservation)
+    (confirm : Bool := false) : SimpleComparisonOperand Bool :=
+  match observation with
+  | .empty => if confirm then .value false false else .notEvaluated
+  | .value (.bool flag) => if confirm then .unknown .malformed else .value flag true
+  | .value (.conf true) => if confirm then .value true true else .unknown .malformed
+  | .value _ => .unknown .malformed
+  | .unknown cause | .poison cause => .unknown cause
+
 /-- Resolve a Boolean field for direct comparison. Empty Boolean is not evaluated. -/
 def FlatContext.resolveBooleanComparisonOperandAt
     (context : FlatContext) (phase : Phase) (field : FlatBooleanField) :
     SimpleComparisonOperand Bool :=
-  match observeCell phase (context.read field.id) with
-  | .empty => .notEvaluated
-  | .value (.bool value) => .value value true
-  | .value _ => .unknown .malformed
-  | .unknown cause => .unknown cause
-  | .poison cause => .unknown cause
+  (observeCell phase (context.read field.id)).asBooleanComparisonOperand
 
 def FlatContext.resolveBooleanComparisonOperand (context : FlatContext)
     (field : FlatBooleanField) : SimpleComparisonOperand Bool :=
@@ -343,12 +349,7 @@ def FlatContext.resolveBooleanComparisonOperand (context : FlatContext)
 def FlatContext.resolveConfirmComparisonOperandAt
     (context : FlatContext) (phase : Phase) (field : FlatConfirmField) :
     SimpleComparisonOperand Bool :=
-  match observeCell phase (context.read field.id) with
-  | .empty => .value false false
-  | .value (.conf true) => .value true true
-  | .value _ => .unknown .malformed
-  | .unknown cause => .unknown cause
-  | .poison cause => .unknown cause
+  (observeCell phase (context.read field.id)).asBooleanComparisonOperand true
 
 def FlatContext.resolveConfirmComparisonOperand (context : FlatContext)
     (field : FlatConfirmField) : SimpleComparisonOperand Bool :=

@@ -1,0 +1,114 @@
+[
+  [
+    "Bool0",
+    "[Rows/RowFlag For \"one\"] == True"
+  ],
+  [
+    "Bool1",
+    "True == [Rows/RowFlag For \"one\"]"
+  ],
+  [
+    "Bool2",
+    "[Rows/RowFlag For \"one\"] == False"
+  ],
+  [
+    "Bool3",
+    "False == [Rows/RowFlag For \"one\"]"
+  ],
+  [
+    "Bool4",
+    "[Rows/RowFlag For \"one\"] != True"
+  ],
+  [
+    "Bool5",
+    "True != [Rows/RowFlag For \"one\"]"
+  ],
+  [
+    "Bool6",
+    "[Rows/RowFlag For \"one\"] != False"
+  ],
+  [
+    "Bool7",
+    "False != [Rows/RowFlag For \"one\"]"
+  ],
+  [
+    "Confirm8",
+    "[Rows/RowAgreed For \"one\"] == True"
+  ],
+  [
+    "Confirm9",
+    "True == [Rows/RowAgreed For \"one\"]"
+  ],
+  [
+    "Confirm10",
+    "[Rows/RowAgreed For \"one\"] == False"
+  ],
+  [
+    "Confirm11",
+    "False == [Rows/RowAgreed For \"one\"]"
+  ],
+  [
+    "Confirm12",
+    "[Rows/RowAgreed For \"one\"] != True"
+  ],
+  [
+    "Confirm13",
+    "True != [Rows/RowAgreed For \"one\"]"
+  ],
+  [
+    "Confirm14",
+    "[Rows/RowAgreed For \"one\"] != False"
+  ],
+  [
+    "Confirm15",
+    "False != [Rows/RowAgreed For \"one\"]"
+  ],
+  [
+    "Fields16",
+    "[Rows/RowFlag For \"one\"] == [Flag]"
+  ],
+  [
+    "First17",
+    "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == True"
+  ],
+  [
+    "Fields18",
+    "[Flag] == [Rows/RowFlag For \"one\"]"
+  ],
+  [
+    "First19",
+    "True == FirstFilledValue(Rows/RowFlag For \"one\", Flag)"
+  ],
+  [
+    "Fields20",
+    "[Rows/RowFlag For \"one\"] != [Flag]"
+  ],
+  [
+    "First21",
+    "FirstFilledValue(Rows/RowFlag For \"one\", Flag) != True"
+  ],
+  [
+    "Fields22",
+    "[Flag] != [Rows/RowFlag For \"one\"]"
+  ],
+  [
+    "First23",
+    "True != FirstFilledValue(Rows/RowFlag For \"one\", Flag)"
+  ],
+  [
+    "Prefix",
+    "FirstFilledValue(Flag, Rows/RowFlag For \"one\") == True"
+  ],
+  [
+    "FieldKey",
+    "[Rows/RowFlag For SkuText] == True"
+  ],
+  [
+    "ConfirmFirst",
+    "FirstFilledValue(Rows/RowAgreed For \"one\", Flag) == True"
+  ],
+  [
+    "BoolOrder",
+    "[Rows/RowFlag For \"one\"] > True"
+  ]
+]

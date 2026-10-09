@@ -14,6 +14,7 @@ namespace A12Kernel
 
 inductive FirstFilledComparisonProfile where
   | boolean
+  | confirm
   | temporal (format : String) (components : TemporalComponents)
   | dateRange (format : DateRangeInputFormat)
   deriving Repr, DecidableEq
@@ -21,6 +22,7 @@ inductive FirstFilledComparisonProfile where
 private def firstFilledProfile? (declaration : FlatFieldDecl) : Option FirstFilledComparisonProfile :=
   match declaration.policy.kind with
   | .boolean => some .boolean
+  | .confirm => some .confirm
   | .temporal _ components => do
       let policy ← declaration.toTemporalTargetPolicy?
       if policy.partialMode != .full then none else pure (.temporal policy.format components)
@@ -32,6 +34,7 @@ private def firstFilledProfile? (declaration : FlatFieldDecl) : Option FirstFill
 inductive SurfaceFirstFilledComparisonOperand where
   | firstFilled (source : SurfaceFieldEntitySource)
   | field (reference : SurfaceFieldPath)
+  | indexed (source : SurfaceSemanticIndex)
   | boolean (value : Bool)
   | temporal (expression : SurfaceScalarTemporalExpression)
 
@@ -40,15 +43,18 @@ inductive FirstFilledComparisonElabError where
   | shape (cause : FieldEntityShapeElabError)
   | source (cause : FieldFillListElabError)
   | temporal (cause : ScalarTemporalExpressionError)
+  | semanticIndex (cause : SemanticIndexElabError)
+  | admission (diagnostic : KernelStaticDiagnostic)
   | unsupportedSource
   | confirmOperand (path : List String)
   | varyingProfiles
   | incompatibleComparison
   | noSelection
-  deriving Repr
+  deriving Repr, DecidableEq
 
 def FirstFilledComparisonElabError.diagnostic? : FirstFilledComparisonElabError → Option KernelStaticDiagnostic
   | .shape cause => cause.diagnostic?
+  | .admission diagnostic => some diagnostic
   | .confirmOperand _ => some .noBoolyAllowed
   | .varyingProfiles => some .varyingTypesNotAllowed
   | _ => none
@@ -62,6 +68,7 @@ structure CheckedTypedFirstFilledSource (model : FlatModel) where
 inductive CheckedFirstFilledComparisonOperand (model : FlatModel) where
   | firstFilled (source : CheckedTypedFirstFilledSource model)
   | field (declaration : FlatFieldDecl) (profile : FirstFilledComparisonProfile)
+  | indexed (source : CheckedSemanticIndexSource model) (profile : FirstFilledComparisonProfile)
   | boolean (value : Bool)
   | temporal (expression : CheckedScalarTemporalExpression model)
 
@@ -70,12 +77,15 @@ namespace CheckedFirstFilledComparisonOperand
 def profile : CheckedFirstFilledComparisonOperand model → FirstFilledComparisonProfile
   | .firstFilled source => source.profile
   | .field _ profile => profile
+  | .indexed _ profile => profile
   | .boolean _ => .boolean
   | .temporal expression => .temporal "" expression.components
 
 def fieldIds : CheckedFirstFilledComparisonOperand model → List FieldId
   | .firstFilled source => source.source.declarations.map (·.id)
   | .field declaration _ => [declaration.id]
+  | .indexed source _ => [source.targetDeclaration.id, source.indexDeclaration.id] ++
+      (match source.key with | .field declaration => [declaration.id] | .literal _ _ => [])
   | .boolean _ => []
   | .temporal expression => expression.fieldIds
 
@@ -88,11 +98,13 @@ def referencesField (operand : CheckedFirstFilledComparisonOperand model) (field
     (filterReads : CorrelatedHaving → FieldId → Bool) : Bool :=
   match operand with
   | .firstFilled source => source.source.operands.any (·.referencesField field filterReads)
+  | .indexed source _ => source.referencesField field
   | _ => operand.fieldIds.contains field
 
 def bindingScopes : CheckedFirstFilledComparisonOperand model → List (List RepeatableLevel)
   | .firstFilled source => source.source.operands.flatMap (·.bindingScopes)
   | .field declaration _ => [declaration.repeatableScope]
+  | .indexed source _ => source.bindingScopes
   | .boolean _ => []
   | .temporal expression => expression.bindingScopes
 
@@ -112,6 +124,12 @@ private def checkFirstFilledComparisonOperand (model : FlatModel) (declaringGrou
       let declaration ← (model.resolveFieldDeclarationUnchecked declaringGroup reference).mapError .model
       let some profile := firstFilledProfile? declaration | throw .unsupportedSource
       pure (.field declaration profile)
+  | .indexed source => do
+      let source ← (elaborateSemanticIndexSource model declaringGroup source
+        (some (model.repeatableScopeForGroupPath bindingGroup))).mapError .semanticIndex
+      let some profile := firstFilledProfile? source.targetDeclaration | throw .unsupportedSource
+      if let .temporal _ _ := profile then throw .unsupportedSource
+      pure (.indexed source profile)
   | .temporal expression => do
       let checked ← (elaborateScalarTemporalExpression model declaringGroup expression (some bindingGroup)).mapError .temporal
       pure (.temporal checked)
@@ -137,11 +155,22 @@ def elaborateFirstFilledComparison (model : FlatModel) (declaringGroup bindingGr
   | .ok () =>
       let left ← checkFirstFilledComparisonOperand model declaringGroup bindingGroup left
       let right ← checkFirstFilledComparisonOperand model declaringGroup bindingGroup right
-      if !(match left, right with | .firstFilled _, _ | _, .firstFilled _ => true | _, _ => false) then
+      if !(match left, right with
+          | .firstFilled _, _ | _, .firstFilled _ | .indexed _ _, _ | _, .indexed _ _ => true
+          | _, _ => false) then
         throw .noSelection
       let equality := operator == .equal || operator == .notEqual
+      if !equality && (left.profile == .boolean || left.profile == .confirm ||
+          right.profile == .boolean || right.profile == .confirm) then
+        throw (.admission .invalidTypeForComparison)
+      if left.profile == .confirm || right.profile == .confirm then
+        let admitted := match left, right with
+          | .boolean true, other | other, .boolean true => other.profile == .confirm
+          | left, right => left.profile == .confirm && right.profile == .confirm && operator == .notEqual
+        if !admitted then throw (.admission .invalidCompareToYes)
       let compatible := match left.profile, right.profile with
         | .boolean, .boolean => equality
+        | .confirm, .boolean | .boolean, .confirm | .confirm, .confirm => equality
         | .dateRange a, .dateRange b => equality && a.components == b.components
         | .temporal _ a, .temporal _ b => operator.admitsFormats model.hasBaseYear a b
         | _, _ => false
@@ -175,11 +204,13 @@ private def mapFirstFilledOperand (wrap : α → β) : SimpleComparisonOperand �
   | .unknown cause => .unknown cause
   | .value value given => .value (wrap value) given
 
-private def projectFirstFilledValue (model : FlatModel) (declaration : FlatFieldDecl) :
+/-- Preserve first-filled omission provenance while projecting the admitted typed value. -/
+def projectFirstFilledValue (model : FlatModel) (declaration : FlatFieldDecl) :
     SimpleComparisonOperand Value → SimpleComparisonOperand FirstFilledComparisonValue
   | .notEvaluated => .notEvaluated
   | .unknown cause => .unknown cause
   | .value (.bool value) given => .value (.boolean value) given
+  | .value (.conf true) given => .value (.boolean true) given
   | .value (.dateRange value) given => .value (.dateRange value) given
   | .value value given =>
       match declaration.toTemporalField? with
@@ -189,6 +220,14 @@ private def projectFirstFilledValue (model : FlatModel) (declaration : FlatField
           | .value value _ => .value (.temporal value) given
           | .notEvaluated => .notEvaluated
           | .unknown cause => .unknown cause
+
+/-- Direct Confirm absence substitutes false; other typed absence suppresses comparison (spec/02 §A.3). -/
+def projectComparisonObservation (model : FlatModel) (declaration : FlatFieldDecl)
+    (observation : CellObservation) : SimpleComparisonOperand FirstFilledComparisonValue :=
+  match declaration.policy.kind with
+  | .boolean | .confirm => mapFirstFilledOperand .boolean
+      (observation.asBooleanComparisonOperand (declaration.policy.kind == .confirm))
+  | _ => projectFirstFilledValue model declaration observation.asValidationSimpleOperand
 
 private def CheckedFirstFilledComparisonOperand.evaluate
     (document : CheckedDocument model) (outer : Env) (context : FlatContext) :
@@ -206,7 +245,10 @@ private def CheckedFirstFilledComparisonOperand.evaluate
         (some document.indexedComputationFillContext) outer).mapError ScalarTemporalEvaluationFault.separateAddressing
   | .field declaration _ => do
       let addressed ← (document.fullValidationAddressedCell outer declaration.id).mapError Sum.inl
-      pure (projectFirstFilledValue model declaration (observeCell .validation addressed.cell).asValidationSimpleOperand)
+      pure (projectComparisonObservation model declaration (observeCell .validation addressed.cell))
+  | .indexed source _ => do
+      let observation ← (source.observeDocument document outer .validation).mapError Sum.inl
+      pure (projectComparisonObservation model source.targetDeclaration observation)
   | .firstFilled source => do
       let result ← (scanTypedFirstFilled (world := context.world) document outer source.source.operands {}).mapError Sum.inl
       pure (projectFirstFilledValue model source.first result)
@@ -273,8 +315,10 @@ private def CheckedFirstFilledComparisonOperand.evaluatePartial
   | .field declaration _ => do
       if !scope.coversCell model declaration.path outer then return none
       let cell ← (read outer declaration.id).mapError Sum.inl
-      pure (cell.map fun cell => projectFirstFilledValue model declaration
-        (observeCell .validation cell).asValidationSimpleOperand)
+      pure (cell.map fun cell => projectComparisonObservation model declaration (observeCell .validation cell))
+  | .indexed source _ => do
+      let observation ← (source.observePartialDocument document scope outer read).mapError Sum.inl
+      pure (observation.map (projectComparisonObservation model source.targetDeclaration))
   | .firstFilled source => do
       let value ← (scanPartialTypedFirstFilled document outer scope read source.source.operands {}).mapError Sum.inl
       pure (value.map (projectFirstFilledValue model source.first))
@@ -296,7 +340,8 @@ def referencesField (comparison : CheckedFirstFilledComparison model) (field : F
     (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=
   comparison.left.referencesField field filterReads || comparison.right.referencesField field filterReads
 
-private def holds (operator : TemporalComparisonOp) : FirstFilledComparisonValue → FirstFilledComparisonValue → Bool
+/-- Compare values after profile admission; DateRange equality uses stored component identity. -/
+def holds (operator : TemporalComparisonOp) : FirstFilledComparisonValue → FirstFilledComparisonValue → Bool
   | .boolean a, .boolean b => if operator == .equal then a == b else a != b
   | .dateRange a, .dateRange b => if operator == .equal then a.sameIdentity b else !(a.sameIdentity b)
   | .temporal (.date a), .temporal (.instant b) => operator.holdsInstant a.instant b

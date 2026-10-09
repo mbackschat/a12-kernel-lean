@@ -462,6 +462,7 @@ private def firstFilledComparisonPointers (operand : CheckedFirstFilledCompariso
   match operand with
   | .firstFilled source => source.source.referencePointers environment inputs
   | .field declaration _ => (concreteFieldPointer declaration environment).map ([·])
+  | .indexed source _ => source.referencePointers environment inputs
   | .boolean _ => pure []
   | .temporal source => temporalExpressionPointers source.core environment inputs
 

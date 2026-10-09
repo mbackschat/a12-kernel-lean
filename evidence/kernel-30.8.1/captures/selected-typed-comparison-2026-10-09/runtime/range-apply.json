@@ -1,0 +1,128 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "RangeEq",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "RangeEqRule",
+    "condition": "FieldFilled(SkuText) And [Rows/RowSpan For \"one\"] == [Rows/RowSpan For \"two\"]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/RangeEq",
+    "commonPrecondition": "[Rows/RowSpan For \"one\"] == [Rows/RowSpan For \"two\"]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "RangeNe",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "RangeNeRule",
+    "condition": "FieldFilled(SkuText) And [Rows/RowSpan For \"one\"] != [Rows/RowSpan For \"two\"]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/RangeNe",
+    "commonPrecondition": "[Rows/RowSpan For \"one\"] != [Rows/RowSpan For \"two\"]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "RangeFirst",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "RangeFirstRule",
+    "condition": "FieldFilled(SkuText) And FirstFilledValue(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\") == [Rows/RowSpan For \"two\"]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/RangeFirst",
+    "commonPrecondition": "FirstFilledValue(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\") == [Rows/RowSpan For \"two\"]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  }
+]

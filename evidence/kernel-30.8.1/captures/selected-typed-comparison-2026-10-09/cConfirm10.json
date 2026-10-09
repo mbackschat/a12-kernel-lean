@@ -1,0 +1,16 @@
+{
+  "group": "/Probe",
+  "computedField": "/Probe/Rows/Output",
+  "commonPrecondition": "[Rows/RowAgreed For \"one\"] == False",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ]
+}

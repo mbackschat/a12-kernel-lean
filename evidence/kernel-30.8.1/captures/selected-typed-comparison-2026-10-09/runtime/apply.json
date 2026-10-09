@@ -1,0 +1,516 @@
+[
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Probe/Rows",
+    "name": "RowText",
+    "string": {
+      "maxLength": 3
+    },
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "DirectTrue",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "DirectTrueRule",
+    "condition": "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == True",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/DirectTrue",
+    "commonPrecondition": "[Rows/RowFlag For \"one\"] == True",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "DirectFalse",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "DirectFalseRule",
+    "condition": "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == False",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/DirectFalse",
+    "commonPrecondition": "[Rows/RowFlag For \"one\"] == False",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "Reverse",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "ReverseRule",
+    "condition": "FieldFilled(SkuText) And True == [Rows/RowFlag For \"one\"]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Reverse",
+    "commonPrecondition": "True == [Rows/RowFlag For \"one\"]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "DirectNe",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "DirectNeRule",
+    "condition": "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] != True",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/DirectNe",
+    "commonPrecondition": "[Rows/RowFlag For \"one\"] != True",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "Fields",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FieldsRule",
+    "condition": "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == [Flag]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Fields",
+    "commonPrecondition": "[Rows/RowFlag For \"one\"] == [Flag]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "First",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FirstRule",
+    "condition": "FieldFilled(SkuText) And FirstFilledValue(Rows/RowFlag For \"one\", Flag) == True",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/First",
+    "commonPrecondition": "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == True",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "FirstFieldsLeft",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FirstFieldsLeftRule",
+    "condition": "FieldFilled(SkuText) And FirstFilledValue(Rows/RowFlag For \"one\", Flag) == [Flag]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/FirstFieldsLeft",
+    "commonPrecondition": "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == [Flag]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "FirstFieldsRight",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FirstFieldsRightRule",
+    "condition": "FieldFilled(SkuText) And [Flag] == FirstFilledValue(Rows/RowFlag For \"one\", Flag)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/FirstFieldsRight",
+    "commonPrecondition": "[Flag] == FirstFilledValue(Rows/RowFlag For \"one\", Flag)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "Prefix",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "PrefixRule",
+    "condition": "FieldFilled(SkuText) And FirstFilledValue(Flag, Rows/RowFlag For \"one\") == True",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/Prefix",
+    "commonPrecondition": "FirstFilledValue(Flag, Rows/RowFlag For \"one\") == True",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "ConfirmEq",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "ConfirmEqRule",
+    "condition": "FieldFilled(SkuText) And [Rows/RowAgreed For \"one\"] == True",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/ConfirmEq",
+    "commonPrecondition": "[Rows/RowAgreed For \"one\"] == True",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "ConfirmNe",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "ConfirmNeRule",
+    "condition": "FieldFilled(SkuText) And [Rows/RowAgreed For \"one\"] != True",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/ConfirmNe",
+    "commonPrecondition": "[Rows/RowAgreed For \"one\"] != True",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Probe",
+    "name": "FieldKey",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe",
+    "field": "/Probe/SkuText",
+    "code": "FieldKeyRule",
+    "condition": "FieldFilled(SkuText) And [Rows/RowFlag For SkuText] == True",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe",
+    "computedField": "/Probe/FieldKey",
+    "commonPrecondition": "[Rows/RowFlag For SkuText] == True",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  }
+]

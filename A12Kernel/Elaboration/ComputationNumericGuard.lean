@@ -27,6 +27,7 @@ def CheckedComputationConditionError.toNumericFault :
   | .predicate (.fieldKindMismatch field) => .fieldKindMismatch field
   | .predicate (.fieldFill error) => .guardBinding (.fieldFill error)
   | .predicate .contextRequired => .repeatableContextRequired
+  | .predicate .unsupportedSelectedComparisonOperand => .unsupportedGuardPredicate
   | .predicate (.addressing error) => .repeatableAddressing error
 
 /-- Every target handler distinguishes a reached value failure from inherited operand poison;

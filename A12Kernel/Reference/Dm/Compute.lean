@@ -201,6 +201,15 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
           let right ← (lowerTokenComparisonOperand model group filterBinding? right).toOption
           let _ ← (elaborateTokenComparison model group operator left right (targetGroup?.getD group)).toOption
           some (SurfaceComputationConditionOf.predicate (.tokenComparison operator left right))
+      let selectedSurface := do
+        let operator ← match op with | .eq => some EqualityOp.equal | .ne => some .notEqual | _ => none
+        let left ← (lowerFirstFilledComparisonOperand model group filterBinding? left).toOption
+        let right ← (lowerFirstFilledComparisonOperand model group filterBinding? right).toOption
+        let checked ← (elaborateFirstFilledComparison model group (targetGroup?.getD group)
+          (if operator == .equal then .equal else .notEqual) left right).toOption
+        if checked.hasHaving || [checked.left.profile, checked.right.profile].any
+            (fun | .temporal _ _ => true | _ => false) then none
+        else some (SurfaceComputationConditionOf.predicate (.selectedComparison operator left right))
       let temporalSurface := do
         let operator ← op.toSurface?
         let left ← (lowerScalarTemporalExpression model group left).toOption
@@ -209,7 +218,8 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
         | .error (.nonTemporal _) | .error (.extremum (.firstNotTemporal _ _)) => none
         | _ => some (SurfaceComputationConditionOf.predicate
             (SurfaceComputationPredicate.temporal operator.toTemporal left right))
-      match ((textSurface.orElse (fun _ => stringSurface)).orElse (fun _ => tokenSurface)).orElse (fun _ => temporalSurface) with
+      match (((textSurface.orElse (fun _ => stringSurface)).orElse (fun _ => tokenSurface)).orElse
+          (fun _ => selectedSurface)).orElse (fun _ => temporalSurface) with
       | some surface => pure surface
       | none => do
           let some operator := op.toNumeric? | refuse "Comparison" "operator"

@@ -119,6 +119,12 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 
 ### §8 — enumerations and value lists
 
+<a id="cap-selected-typed-comparisons"></a>
+#### Selected typed comparisons
+
+- `selected-comparisons`: The typed carrier also admits direct indexed Boolean/Confirm/DateRange operands. Boolean absence suppresses comparison; Confirm absence substitutes false with omission provenance. Confirm retains its True-only literal gate and first-filled exclusion. Comparison-field companions require brackets. Both arms reuse selected observations and ordinary comparison owners; computation first-filled excludes Having and leaves temporal evaluation with its existing carrier.
+- `selected-assurance`: [Reader locks](../../A12Kernel/Reference/Dm/IndexedComparisonLocks.lean) cover both operand positions, Boolean truth/absence, Confirm refusals, DateRange identity, phase-specific malformed columns, reached poison/prefix bypass, fresh key/value producers, repeated-target caller binding with unbound refusal twins, partial payload reads, generated validation and structural references. [Kernel checkpoint](../sources/inbound-group-operand-batches.md#src-selected-typed-comparisons) owns the finite calibration and its limits; all 450 new rule/computation instances match through the ordinary reader-to-evaluator replay.
+
 <a id="resolved-firstfilledvalue"></a>
 
 <a id="cap-first-filled-value"></a>

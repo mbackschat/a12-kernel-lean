@@ -84,18 +84,20 @@ def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
       | some field => pure (.field field)
       | none => refuse "TokenComparison" expression.construct
 
-private def lowerFirstFilledComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
+def lowerFirstFilledComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
     (bindingGroup? : Option GroupPath) (expression : Expr) : Lowering SurfaceFirstFilledComparisonOperand := do
   if let some bindingGroup := bindingGroup? then
     match expression with
     | .entity reference | .value reference => checkReferenceRead model rowGroup bindingGroup reference
     | _ => pure ()
   match expression with
+  | .value { path, index := some key, category := none, filter := none } =>
+      (.indexed ·) <$> lowerIndexedSource model rowGroup path key
   | .call "FirstFilledValue" arguments none none =>
       (.firstFilled ·) <$> lowerFirstFilledEntitySource model rowGroup arguments bindingGroup?
   | .constant "True" => pure (.boolean true)
   | .constant "False" => pure (.boolean false)
-  | expression => match expression.fieldEntity? with
+  | expression => match expression.fieldValue? with
       | some path => pure (.field path)
       | none => (.temporal ·) <$> lowerScalarTemporalExpression model rowGroup expression
 
@@ -160,7 +162,10 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
     | _ => []
   let firstFilled := match leaf with
     | .compare op left right =>
-        if !selected left && !selected right then [] else
+        let indexed : Expr → Bool
+          | .value { index := some _, .. } => true
+          | _ => false
+        if !selected left && !selected right && !indexed left && !indexed right then [] else
         match op.toSurface?, lowerFirstFilledComparisonOperand model rowGroup filterBinding? left,
             lowerFirstFilledComparisonOperand model rowGroup filterBinding? right with
         | some op, .ok left, .ok right => [do

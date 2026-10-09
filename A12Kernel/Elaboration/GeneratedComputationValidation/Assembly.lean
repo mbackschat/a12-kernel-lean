@@ -601,6 +601,7 @@ private def generatedGuardCondition (model : FlatModel) (world? : Option World) 
   | .leaf (.predicate (.overlap source)) => pure (.leaf (.iteratedDateRange source.toValidation))
   | .leaf (.predicate (.stringExpression source)) => pure (.leaf (.stringExpression source))
   | .leaf (.predicate (.tokenComparison source)) => pure (.leaf (.tokenComparison source))
+  | .leaf (.predicate (.selectedComparison source)) => pure (.leaf (.firstFilledComparison source))
   | .leaf (.predicate (.indexedPattern source)) => do
       let targetDeclaration ← (model.lookupUniqueId target).mapError GeneratedComputationValidationError.resolve
       if !source.bindingScopes.all (·.isPrefixOf targetDeclaration.repeatableScope) then throw .patternGuardScopeMismatch

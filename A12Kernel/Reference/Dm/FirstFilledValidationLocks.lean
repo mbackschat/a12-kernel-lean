@@ -109,12 +109,12 @@ example : run boolean "FirstFilledValue(Values) == False" (some "false") (some "
     run boolean "FirstFilledValue(Values, Fallback) == True" none none (some "true") =
       some (.fired .omission) := by native_decide
 
-example : run date "FirstFilledValue(Values) == Fallback" none (some "2024-03-05")
+example : run date "FirstFilledValue(Values) == [Fallback]" none (some "2024-03-05")
       (some "2024-03-05") = some (.fired .omission) ∧
     run date "FirstFilledValue(Values) == \"05.03.2024\"" (some "2024-03-05") (some "bad") =
       some (.fired .value) := by native_decide
 
-example : run range "FirstFilledValue(Values) == Fallback" none (some "2024-03-05/2024-04-06")
+example : run range "FirstFilledValue(Values) == [Fallback]" none (some "2024-03-05/2024-04-06")
       (some "2024-03-05/2024-04-06") = some (.fired .omission) := by native_decide
 
 private def time : FlatFieldDecl := {
@@ -132,21 +132,21 @@ private def fragment : FlatFieldDecl := {
   policy := { kind := .temporal .date (TemporalComponents.ofFormat "MM-dd") },
   temporalTargetPolicy := some { format := "MM-dd" } }
 
-example : run time "FirstFilledValue(Values) < Fallback" (some "03:04:05") (some "bad")
+example : run time "FirstFilledValue(Values) < [Fallback]" (some "03:04:05") (some "bad")
       (some "04:04:05") = some (.fired .value) ∧
-    run stamp "FirstFilledValue(Values) == Fallback" (some "2024-03-05T03:04:05") none
+    run stamp "FirstFilledValue(Values) == [Fallback]" (some "2024-03-05T03:04:05") none
       (some "2024-03-05T03:04:05") = some (.fired .value) ∧
-    run fragment "FirstFilledValue(Values) == Fallback" none (some "03-05")
+    run fragment "FirstFilledValue(Values) == [Fallback]" none (some "03-05")
       (some "03-05") = some (.fired .omission) := by native_decide
 
 example : [boolean, date, range, time, stamp, fragment].all (fun prototype =>
-    run prototype "FirstFilledValue(Values) == Fallback" none none none == some .notFired &&
-    run prototype "FirstFilledValue(Values) == Fallback" (some "bad") none none == some .unknown) := by
+    run prototype "FirstFilledValue(Values) == [Fallback]" none none none == some .notFired &&
+    run prototype "FirstFilledValue(Values) == [Fallback]" (some "bad") none none == some .unknown) := by
   native_decide
 
 example : run boolean "FirstFilledValue(Rows*) == False" none none none
       [(none, some "true"), (some "false", none)] = some (.fired .omission) ∧
-    run date "FirstFilledValue(A, B) == B" none none none
+    run date "FirstFilledValue(A, B) == [B]" none none none
       [(none, some "2024-03-05")] true = some (.fired .omission) ∧
     run range "FirstFilledValue(Rows*, Fallback) == FirstFilledValue(Values)" (some "2024-03-05/2024-04-06") none
       (some "2024-03-05/2024-04-06") = some (.fired .omission) := by native_decide
@@ -174,9 +174,9 @@ example : (typedAdmission boolean boolean).isOk ∧
 
 example : run boolean "FirstFilledValue(Rows*/A Having FieldFilled(Rows/B)) == False" none none none
       [(some "true", none), (some "false", some "true")] = some (.fired .omission) ∧
-    run date "FirstFilledValue(Values) != Fallback" (some "2024-03-05") none (some "2024-03-06") =
+    run date "FirstFilledValue(Values) != [Fallback]" (some "2024-03-05") none (some "2024-03-06") =
       some (.fired .value) ∧
-    run range "FirstFilledValue(Values) != Fallback" (some "2024-03-05/2024-04-06") none
+    run range "FirstFilledValue(Values) != [Fallback]" (some "2024-03-05/2024-04-06") none
       (some "2024-03-05/2024-04-07") = some (.fired .value) := by native_decide
 
 example : run stamp "FirstFilledValue(Values) < \"31.03.2024T02:30:00\"" (some "bad") none =
@@ -198,9 +198,9 @@ example : runOutcomes boolean "FirstFilledValue(Values) == True" (some "true") n
     runOutcomes boolean "FirstFilledValue(Values) == True" none (some "true")
       (partialScope := some .full) = some [.fired .omission] := by native_decide
 
-example : runOutcomes date "FirstFilledValue(Values) == Fallback" none (some "2024-03-05") (some "2024-03-05")
+example : runOutcomes date "FirstFilledValue(Values) == [Fallback]" none (some "2024-03-05") (some "2024-03-05")
       (partialScope := some .full) = some [.fired .omission] ∧
-    runOutcomes range "FirstFilledValue(Values) == Fallback" none (some "2024-03-05/2024-04-06")
+    runOutcomes range "FirstFilledValue(Values) == [Fallback]" none (some "2024-03-05/2024-04-06")
       (some "2024-03-05/2024-04-06") (partialScope := some .full) = some [.fired .omission] := by native_decide
 
 private def localRead (unavailable : Bool) : Option Verdict := do
@@ -281,8 +281,7 @@ private def custom : FlatFieldDecl := { text with customType := some { name := "
 example : [(number, "7"), (text, "selected"), (enumeration, "A"), (custom, "code"),
     (boolean, "false"), (date, "2024-03-05"), (fragment, "03-05"), (time, "03:04:05"),
     (stamp, "2024-03-05T03:04:05"), (range, "2024-03-05/2024-04-06")].all (fun (prototype, value) => [none, some ValidationRelevanceScope.full].all fun partialScope =>
-      runOutcomes prototype (if [.number, .string, .enumeration].contains prototype.policy.kind.surfaceKind then
-        "FirstFilledValue(A, B) == [B]" else "FirstFilledValue(A, B) == B") none none none
+      runOutcomes prototype "FirstFilledValue(A, B) == [B]" none none none
         [(none, some value), (some value, some value)] true (partialScope := partialScope) ==
           some [.fired .omission, .fired .value]) := by native_decide
 
@@ -321,7 +320,7 @@ private def selectedOutcome (prototype : FlatFieldDecl) (value : String) (operan
       ("Rows", .arr #[Json.mkObj [("Code", .str "R1"), ("Body", Json.mkObj [("A", .str first), ("B", .str "bad")])]])])])).toOption
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
-  let parsed ← (parseText .english ("FieldFilled(Error) And FirstFilledValue(" ++ operand ++ ") == Fallback")).toOption
+  let parsed ← (parseText .english ("FieldFilled(Error) And FirstFilledValue(" ++ operand ++ ") == [Fallback]")).toOption
   let condition ← (lowerCondition model ["Form"] false parsed.body).toOption
   let rule ← (assembleResolvedValidationRule model condition 1 "PARTIAL_FIRST" .error { parts := [] }).toOption
   if !partialRun then

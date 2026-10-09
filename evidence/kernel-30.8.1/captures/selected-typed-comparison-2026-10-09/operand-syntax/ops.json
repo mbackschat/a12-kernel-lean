@@ -1,0 +1,158 @@
+[
+  {
+    "id": "vBool0",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBool0",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And FirstFilledValue(Rows/RowFlag For \"one\", Flag) == Flag",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBool0",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBool0.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBool1",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBool1",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And FirstFilledValue(Rows/RowFlag For \"one\", Flag) == [Flag]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBool1",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBool1.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDate0",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDate0",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And FirstFilledValue(Rows/RowDate For \"one\", FiledOn) == FiledOn",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDate0",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDate0.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vDate1",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vDate1",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And FirstFilledValue(Rows/RowDate For \"one\", FiledOn) == [FiledOn]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cDate1",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cDate1.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangeEq",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangeEq",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowSpan For \"one\"] == [Rows/RowSpan For \"two\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangeEq",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangeEq.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vRangeNe",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vRangeNe",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/SkuText",
+      "--condition",
+      "FieldFilled(SkuText) And [Rows/RowSpan For \"one\"] != [Rows/RowSpan For \"two\"]",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cRangeNe",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cRangeNe.json",
+      "--dry-run"
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  [
+    "Bool0",
+    "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == Flag"
+  ],
+  [
+    "Bool1",
+    "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == [Flag]"
+  ],
+  [
+    "Date0",
+    "FirstFilledValue(Rows/RowDate For \"one\", FiledOn) == FiledOn"
+  ],
+  [
+    "Date1",
+    "FirstFilledValue(Rows/RowDate For \"one\", FiledOn) == [FiledOn]"
+  ],
+  [
+    "RangeEq",
+    "[Rows/RowSpan For \"one\"] == [Rows/RowSpan For \"two\"]"
+  ],
+  [
+    "RangeNe",
+    "[Rows/RowSpan For \"one\"] != [Rows/RowSpan For \"two\"]"
+  ]
+]

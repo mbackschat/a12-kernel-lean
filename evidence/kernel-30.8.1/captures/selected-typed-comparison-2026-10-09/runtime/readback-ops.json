@@ -1,0 +1,249 @@
+[
+  {
+    "id": "check",
+    "verb": "model",
+    "args": [
+      "check"
+    ]
+  },
+  {
+    "id": "DirectTrueRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/DirectTrueRule"
+    ]
+  },
+  {
+    "id": "DirectTrueComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/DirectTrueComp"
+    ]
+  },
+  {
+    "id": "DirectFalseRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/DirectFalseRule"
+    ]
+  },
+  {
+    "id": "DirectFalseComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/DirectFalseComp"
+    ]
+  },
+  {
+    "id": "ReverseRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/ReverseRule"
+    ]
+  },
+  {
+    "id": "ReverseComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/ReverseComp"
+    ]
+  },
+  {
+    "id": "DirectNeRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/DirectNeRule"
+    ]
+  },
+  {
+    "id": "DirectNeComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/DirectNeComp"
+    ]
+  },
+  {
+    "id": "FieldsRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/FieldsRule"
+    ]
+  },
+  {
+    "id": "FieldsComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/FieldsComp"
+    ]
+  },
+  {
+    "id": "FirstRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/FirstRule"
+    ]
+  },
+  {
+    "id": "FirstComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/FirstComp"
+    ]
+  },
+  {
+    "id": "FirstFieldsLeftRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/FirstFieldsLeftRule"
+    ]
+  },
+  {
+    "id": "FirstFieldsLeftComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/FirstFieldsLeftComp"
+    ]
+  },
+  {
+    "id": "FirstFieldsRightRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/FirstFieldsRightRule"
+    ]
+  },
+  {
+    "id": "FirstFieldsRightComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/FirstFieldsRightComp"
+    ]
+  },
+  {
+    "id": "PrefixRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/PrefixRule"
+    ]
+  },
+  {
+    "id": "PrefixComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/PrefixComp"
+    ]
+  },
+  {
+    "id": "ConfirmEqRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/ConfirmEqRule"
+    ]
+  },
+  {
+    "id": "ConfirmEqComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/ConfirmEqComp"
+    ]
+  },
+  {
+    "id": "ConfirmNeRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/ConfirmNeRule"
+    ]
+  },
+  {
+    "id": "ConfirmNeComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/ConfirmNeComp"
+    ]
+  },
+  {
+    "id": "FieldKeyRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/FieldKeyRule"
+    ]
+  },
+  {
+    "id": "FieldKeyComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/FieldKeyComp"
+    ]
+  },
+  {
+    "id": "RangeEqRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/RangeEqRule"
+    ]
+  },
+  {
+    "id": "RangeEqComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/RangeEqComp"
+    ]
+  },
+  {
+    "id": "RangeNeRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/RangeNeRule"
+    ]
+  },
+  {
+    "id": "RangeNeComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/RangeNeComp"
+    ]
+  },
+  {
+    "id": "RangeFirstRule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/RangeFirstRule"
+    ]
+  },
+  {
+    "id": "RangeFirstComp",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/RangeFirstComp"
+    ]
+  }
+]

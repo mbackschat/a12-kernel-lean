@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 2,
+  "dmtool": "0.13.0",
+  "kernelBuilt": "30.8.1",
+  "kernelRuntime": "30.8.1",
+  "source": {
+    "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state": "CLEAN"
+  },
+  "model": "9ab3c4c5a90f12a81ece7abd816a0d8181efe3f9b15719ad6696d27b4946c615",
+  "observations": [
+    {
+      "id": "vBool0",
+      "inputHash": "fd73f838ded1bbb4524b036499c23cfc5cf88820c9011885d3540bf0a4a83856",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_UNEXPECTED_TOKEN"
+      ]
+    },
+    {
+      "id": "cBool0",
+      "inputHash": "05573f7a61a7cc4f930dcd992fa185b3ebc984d904fd7cff9a76aa2b786af85c",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_UNEXPECTED_TOKEN"
+      ]
+    },
+    {
+      "id": "vBool1",
+      "inputHash": "9fb47b715f8a6098e148dfca4998087fe11dbd5cdaa99fb1aea9f53af36b22f7",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cBool1",
+      "inputHash": "7065446c4680c3d1063db6ab1834b3a5e1029721bd5a41b8c93c9af91a36d9de",
+      "ok": true,
+      "codes": []
+    },
+    {
+      "id": "vDate0",
+      "inputHash": "0f87884f76459d2efed56d1408bdcee815eabf91b880a65830d57164caedf475",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_UNEXPECTED_TOKEN"
+      ]
+    },
+    {
+      "id": "cDate0",
+      "inputHash": "1c680df1f5e759ef3558535d8f40a9bfbe5caaa73f2cfba18dcbf36c0c77f36e",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_UNEXPECTED_TOKEN"
+      ]
+    },
+    {
+      "id": "vDate1",
+      "inputHash": "f0e7437df1f45006e231956e6071809ef0f6162158de736c9f856e3a69cfd709",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cDate1",
+      "inputHash": "31c458671d03c26c6a94c8c3eeafa3e33e6f607fe3db5c6b1230cd728ee5aa81",
+      "ok": true,
+      "codes": []
+    },
+    {
+      "id": "vRangeEq",
+      "inputHash": "7a49dcddaf100b2fc8f61137c91e523baee2c6b4d522bd6471b4af4d12ee3942",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cRangeEq",
+      "inputHash": "d6403223005e25312f7857d4684437b4fa7813557d995d1b45d03360276313f5",
+      "ok": true,
+      "codes": []
+    },
+    {
+      "id": "vRangeNe",
+      "inputHash": "22d6a255144914122075471c7da6c01a3982c61666a96770594068b2f4853f74",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cRangeNe",
+      "inputHash": "7b0904b19f6b1167cd7dfddd774e054e3525004fe417f4c199cd10d84a671a99",
+      "ok": true,
+      "codes": []
+    }
+  ]
+}

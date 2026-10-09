@@ -255,6 +255,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [String computation execution](implementation/strings-and-enumerations.md#cap-string-computation-execution)
 <a id="resolved-firstfilledvalue"></a>
 - [Resolved `FirstFilledValue`](implementation/strings-and-enumerations.md#resolved-firstfilledvalue)
+<a id="cap-selected-typed-comparisons"></a>
+- [Selected typed comparisons](implementation/strings-and-enumerations.md#cap-selected-typed-comparisons): Boolean, Confirm and DateRange indexed operands and computation guards.
 <a id="cap-first-filled-value"></a>
 - [Resolved `FirstFilledValue`](implementation/strings-and-enumerations.md#cap-first-filled-value)
 <a id="cap-first-filled-value-assurance"></a>

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.TokenComparison
+import A12Kernel.Elaboration.FirstFilledComparison
 import A12Kernel.Elaboration.KeyedGroupPresence
 import A12Kernel.Elaboration.StringExpression
 import A12Kernel.Elaboration.ValueListCondition
@@ -31,6 +32,7 @@ inductive SurfaceComputationPredicate where
   | stringExpression (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath String)
   | selectedStringExpression (operator : EqualityOp) (left right : SurfaceSelectedStringExpression)
   | tokenComparison (operator : EqualityOp) (left right : SurfaceTokenComparisonOperand)
+  | selectedComparison (operator : EqualityOp) (left right : SurfaceFirstFilledComparisonOperand)
   | temporal (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression)
   | fieldComparison (operator : SurfaceComparisonOp) (left right : SurfaceFieldPath)
   | scalarMembership (operator : ValueListMembershipOp) (subject : SurfaceTextFieldOperand)
@@ -52,6 +54,7 @@ inductive ComputationPredicateElabError where
   | indexedTypeOperand (error : IndexedCustomFieldValidityElabError)
   | stringExpression (error : StringComputationElabError)
   | tokenComparison (error : TokenComparisonElabError)
+  | selectedComparison (error : FirstFilledComparisonElabError)
   | temporal (error : ScalarTemporalExpressionError)
   | comparison (error : ScalarFieldComparisonElabError)
   | read (error : ResolveError)
@@ -80,6 +83,7 @@ inductive ComputationPredicateError where
   | fieldFill (error : ComputationFillError)
   | fieldKindMismatch (field : FieldId)
   | contextRequired
+  | unsupportedSelectedComparisonOperand
   | addressing (error : StarAddressingError)
   deriving Repr, DecidableEq
 
@@ -97,6 +101,7 @@ inductive CheckedComputationPredicate (model : FlatModel) where
       (source : CheckedIndexedCustomFieldValidityOperand model) (name : String)
   | stringExpression (source : CheckedStringExpressionComparison model)
   | tokenComparison (source : CheckedTokenComparison model)
+  | selectedComparison (source : CheckedFirstFilledComparison model)
   | temporal (source : CheckedScalarTemporalComparison model)
   | fieldComparison (source : CheckedScalarFieldComparison model)
   | valueList (source : CheckedValueListCondition model)
@@ -119,6 +124,7 @@ def referencesWith (predicate : CheckedComputationPredicate model) (field : Fiel
   | .indexedTypeValidity _ source _ => source.selection.referencesField field
   | .stringExpression source => source.referencesField field
   | .tokenComparison source => source.referencesField field (fun having _ => filterReads having)
+  | .selectedComparison source => source.referencesField field (fun having _ => filterReads having)
   | .temporal source => source.referencesWith field filterReads
   | .fieldComparison source => source.referencesField field
   | .valueList source | .scalarValueList _ source => source.referencesField field (fun having _ => filterReads having)
@@ -169,6 +175,7 @@ def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List R
   | .indexedTypeValidity _ source _ => source.bindingScopes.all (·.isPrefixOf scope)
   | .stringExpression source => source.bindingScopes.all (·.isPrefixOf scope)
   | .tokenComparison source => source.bindingScopes.all (·.isPrefixOf scope)
+  | .selectedComparison source => source.bindingScopes.all (·.isPrefixOf scope)
   | .temporal source => (source.left.bindingScopes ++ source.right.bindingScopes).all (·.isPrefixOf scope)
   | .fieldComparison source => source.rowBoundBool scope
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
@@ -288,6 +295,52 @@ private def readTokenComparisonOperand (context : ScalarComputationContext)
   | .exhausted _ => pure .notEvaluated
   | .terminated result => pure result
   | .poison cause => pure (.unknown cause)
+
+private def selectedComparisonCells (context : ScalarComputationContext) :
+    CheckedFieldFillOperand model → Except ComputationPredicateError (List CellObservation)
+  | .field declaration => pure [observeCell .computation (context.read declaration.id)]
+  | .indexed source => List.singleton <$>
+      (source.observeColumnWith .computation context.semanticIndexColumnReader context.row
+        context.read context.storedText).mapError .indexSelection
+  | .keyed source => do
+      let addressed ← addressed context
+      let selected ← (source.selectWith .computation context.semanticIndexColumnReader context.row
+        context.read context.storedText).mapError .indexSelection
+      (source.observationsWith .computation addressed.document selected addressed.read).mapError .indexSelection
+  | .star source => do
+      if source.hasHaving then throw .unsupportedSelectedComparisonOperand
+      let addressed ← addressed context
+      let rows ← (source.source.path.resolveInCapacity addressed.document context.row).mapError .addressing
+      pure (rows.environments.map fun row => observeCell .computation (addressed.read row source.source.declaration.id))
+  | .group source => do
+      let addressed ← addressed context
+      let (fields, _) ← (model.groupOperandReads addressed.document context.row
+        source.source.boundLevelCount source.declarations (·.repeatableScope)).mapError .addressing
+      pure (fields.map fun (field, row) => observeCell .computation (addressed.read row field.id))
+
+private def firstSelectedComparison (context : ScalarComputationContext) :
+    List (CheckedFieldFillOperand model) → FirstFilledScanState →
+      Except ComputationPredicateError (SimpleComparisonOperand Value)
+  | [], _ => pure .notEvaluated
+  | operand :: rest, state => do
+      let cells ← selectedComparisonCells context operand
+      match scanFirstFilledObservations cells (state.enterSelection cells.isEmpty false false) with
+      | .inl next => firstSelectedComparison context rest next
+      | .inr result => pure result
+
+private def readSelectedComparisonOperand (context : ScalarComputationContext) :
+    CheckedFirstFilledComparisonOperand model →
+      Except ComputationPredicateError (SimpleComparisonOperand FirstFilledComparisonValue)
+  | .boolean value => pure (.value (.boolean value) true)
+  | .field declaration _ => pure (projectComparisonObservation model declaration
+      (observeCell .computation (context.read declaration.id)))
+  | .indexed source _ => do
+      let observation ← (source.observeColumnWith .computation context.semanticIndexColumnReader
+        context.row context.read context.storedText).mapError .indexSelection
+      pure (projectComparisonObservation model source.targetDeclaration observation)
+  | .firstFilled source => do
+      projectFirstFilledValue model source.first <$> firstSelectedComparison context source.source.operands {}
+  | .temporal _ => throw .unsupportedSelectedComparisonOperand
 
 private def temporalIdentity (field : FieldId) (cell : CheckedCell) (stored : Option String) :
     Except ComputationPredicateError (ValueListCell .token) :=
@@ -508,6 +561,11 @@ def evalChecked (predicate : CheckedComputationPredicate model)
       evalComputationComparisonExcept (fun left right => source.operator.holds (left == right))
         (readTokenComparisonOperand context filterRead filterStoredText filterNumberText source.left)
         (fun _ => readTokenComparisonOperand context filterRead filterStoredText filterNumberText source.right)
+  | .selectedComparison source =>
+      evalComputationComparisonExcept
+        (CheckedFirstFilledComparison.holds source.operator)
+        (readSelectedComparisonOperand context source.left)
+        (fun _ => readSelectedComparisonOperand context source.right)
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError (fun
       | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure
       | .addressing .worldUnavailable => .contextRequired
@@ -634,6 +692,12 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
           | .error _ => throw (.overlap (.pluralOverlap exactError))
   | .tokenComparison op left right => .tokenComparison <$>
       (elaborateTokenComparison model declaringGroup op left right targetGroup).mapError .tokenComparison
+  | .selectedComparison op left right => do
+      let checked ← (elaborateFirstFilledComparison model declaringGroup targetGroup
+        (if op == .equal then .equal else .notEqual) left right).mapError .selectedComparison
+      if checked.hasHaving || [checked.left.profile, checked.right.profile].any
+          (fun | .temporal _ _ => true | _ => false) then throw .incoherent
+      pure (.selectedComparison checked)
   | .selectedStringExpression op left right => .stringExpression <$>
       (elaborateSelectedStringExpressionComparison model declaringGroup targetGroup op left right).mapError .stringExpression
   | .stringExpression op left right => .stringExpression <$>

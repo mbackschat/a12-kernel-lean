@@ -1,0 +1,62 @@
+[
+  [
+    "DirectTrue",
+    "[Rows/RowFlag For \"one\"] == True"
+  ],
+  [
+    "DirectFalse",
+    "[Rows/RowFlag For \"one\"] == False"
+  ],
+  [
+    "Reverse",
+    "True == [Rows/RowFlag For \"one\"]"
+  ],
+  [
+    "DirectNe",
+    "[Rows/RowFlag For \"one\"] != True"
+  ],
+  [
+    "Fields",
+    "[Rows/RowFlag For \"one\"] == [Flag]"
+  ],
+  [
+    "First",
+    "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == True"
+  ],
+  [
+    "FirstFieldsLeft",
+    "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == [Flag]"
+  ],
+  [
+    "FirstFieldsRight",
+    "[Flag] == FirstFilledValue(Rows/RowFlag For \"one\", Flag)"
+  ],
+  [
+    "Prefix",
+    "FirstFilledValue(Flag, Rows/RowFlag For \"one\") == True"
+  ],
+  [
+    "ConfirmEq",
+    "[Rows/RowAgreed For \"one\"] == True"
+  ],
+  [
+    "ConfirmNe",
+    "[Rows/RowAgreed For \"one\"] != True"
+  ],
+  [
+    "FieldKey",
+    "[Rows/RowFlag For SkuText] == True"
+  ],
+  [
+    "RangeEq",
+    "[Rows/RowSpan For \"one\"] == [Rows/RowSpan For \"two\"]"
+  ],
+  [
+    "RangeNe",
+    "[Rows/RowSpan For \"one\"] != [Rows/RowSpan For \"two\"]"
+  ],
+  [
+    "RangeFirst",
+    "FirstFilledValue(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\") == [Rows/RowSpan For \"two\"]"
+  ]
+]

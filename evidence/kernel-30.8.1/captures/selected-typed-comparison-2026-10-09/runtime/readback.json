@@ -1,0 +1,1046 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": true,
+  "summary": "dispatched 31 ops; all children exited zero",
+  "data": {
+    "ops": 31,
+    "dispatched": true,
+    "allExitedZero": true,
+    "results": [
+      {
+        "op": 0,
+        "id": "check",
+        "verb": "model",
+        "args": [
+          "check"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "model",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "model is valid",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "DirectTrueRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/DirectTrueRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/DirectTrueRule (Opaque)",
+          "data": {
+            "rule": "/Probe/DirectTrueRule",
+            "severity": "ERROR",
+            "errorCode": "DirectTrueRule",
+            "errorField": "/Probe/SkuText",
+            "converted": false,
+            "canonicalText": "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == True",
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a BOOLEAN field [kernel node: IComparisonCondition]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "DirectTrueComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/DirectTrueComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/DirectTrueComp",
+          "data": {
+            "computation": "/Probe/DirectTrueComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": false,
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a BOOLEAN field [kernel node: IComparisonCondition]"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "DirectFalseRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/DirectFalseRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/DirectFalseRule (Opaque)",
+          "data": {
+            "rule": "/Probe/DirectFalseRule",
+            "severity": "ERROR",
+            "errorCode": "DirectFalseRule",
+            "errorField": "/Probe/SkuText",
+            "converted": false,
+            "canonicalText": "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == False",
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a BOOLEAN field [kernel node: IComparisonCondition]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "DirectFalseComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/DirectFalseComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/DirectFalseComp",
+          "data": {
+            "computation": "/Probe/DirectFalseComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": false,
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a BOOLEAN field [kernel node: IComparisonCondition]"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "ReverseRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/ReverseRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/ReverseRule (Opaque)",
+          "data": {
+            "rule": "/Probe/ReverseRule",
+            "severity": "ERROR",
+            "errorCode": "ReverseRule",
+            "errorField": "/Probe/SkuText",
+            "converted": false,
+            "canonicalText": "FieldFilled(SkuText) And True == [Rows/RowFlag For \"one\"]",
+            "reason": "F10 converter does not yet handle comparison whose left side is not a plain field value or an aggregate [kernel node: IComparisonCondition]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "ReverseComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/ReverseComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/ReverseComp",
+          "data": {
+            "computation": "/Probe/ReverseComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": false,
+            "reason": "F10 converter does not yet handle comparison whose left side is not a plain field value or an aggregate [kernel node: IComparisonCondition]"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "DirectNeRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/DirectNeRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/DirectNeRule (Opaque)",
+          "data": {
+            "rule": "/Probe/DirectNeRule",
+            "severity": "ERROR",
+            "errorCode": "DirectNeRule",
+            "errorField": "/Probe/SkuText",
+            "converted": false,
+            "canonicalText": "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] != True",
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a BOOLEAN field [kernel node: IComparisonCondition]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 8,
+        "id": "DirectNeComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/DirectNeComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/DirectNeComp",
+          "data": {
+            "computation": "/Probe/DirectNeComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": false,
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a BOOLEAN field [kernel node: IComparisonCondition]"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 9,
+        "id": "FieldsRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/FieldsRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/FieldsRule (Opaque)",
+          "data": {
+            "rule": "/Probe/FieldsRule",
+            "severity": "ERROR",
+            "errorCode": "FieldsRule",
+            "errorField": "/Probe/SkuText",
+            "converted": false,
+            "canonicalText": "FieldFilled(SkuText) And [Rows/RowFlag For \"one\"] == [Flag]",
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a BOOLEAN field [kernel node: IComparisonCondition]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 10,
+        "id": "FieldsComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/FieldsComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/FieldsComp",
+          "data": {
+            "computation": "/Probe/FieldsComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": false,
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a BOOLEAN field [kernel node: IComparisonCondition]"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 11,
+        "id": "FirstRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/FirstRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/FirstRule",
+          "data": {
+            "rule": "/Probe/FirstRule",
+            "severity": "ERROR",
+            "errorCode": "FirstRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And FirstFilledValue(/Probe/Rows/RowFlag For \"one\", /Probe/Flag) == True",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 12,
+        "id": "FirstComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/FirstComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/FirstComp",
+          "data": {
+            "computation": "/Probe/FirstComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/First",
+            "alternatives": [
+              {
+                "precondition": "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == True",
+                "operation": "1"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 13,
+        "id": "FirstFieldsLeftRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/FirstFieldsLeftRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/FirstFieldsLeftRule",
+          "data": {
+            "rule": "/Probe/FirstFieldsLeftRule",
+            "severity": "ERROR",
+            "errorCode": "FirstFieldsLeftRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And FirstFilledValue(/Probe/Rows/RowFlag For \"one\", /Probe/Flag) == [/Probe/Flag]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 14,
+        "id": "FirstFieldsLeftComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/FirstFieldsLeftComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/FirstFieldsLeftComp",
+          "data": {
+            "computation": "/Probe/FirstFieldsLeftComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/FirstFieldsLeft",
+            "alternatives": [
+              {
+                "precondition": "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == [Flag]",
+                "operation": "1"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 15,
+        "id": "FirstFieldsRightRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/FirstFieldsRightRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/FirstFieldsRightRule",
+          "data": {
+            "rule": "/Probe/FirstFieldsRightRule",
+            "severity": "ERROR",
+            "errorCode": "FirstFieldsRightRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And [/Probe/Flag] == FirstFilledValue(/Probe/Rows/RowFlag For \"one\", /Probe/Flag)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 16,
+        "id": "FirstFieldsRightComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/FirstFieldsRightComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/FirstFieldsRightComp",
+          "data": {
+            "computation": "/Probe/FirstFieldsRightComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/FirstFieldsRight",
+            "alternatives": [
+              {
+                "precondition": "[Flag] == FirstFilledValue(Rows/RowFlag For \"one\", Flag)",
+                "operation": "1"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 17,
+        "id": "PrefixRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/PrefixRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/PrefixRule",
+          "data": {
+            "rule": "/Probe/PrefixRule",
+            "severity": "ERROR",
+            "errorCode": "PrefixRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And FirstFilledValue(/Probe/Flag, /Probe/Rows/RowFlag For \"one\") == True",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 18,
+        "id": "PrefixComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/PrefixComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/PrefixComp",
+          "data": {
+            "computation": "/Probe/PrefixComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/Prefix",
+            "alternatives": [
+              {
+                "precondition": "FirstFilledValue(Flag, Rows/RowFlag For \"one\") == True",
+                "operation": "1"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 19,
+        "id": "ConfirmEqRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/ConfirmEqRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/ConfirmEqRule (Opaque)",
+          "data": {
+            "rule": "/Probe/ConfirmEqRule",
+            "severity": "ERROR",
+            "errorCode": "ConfirmEqRule",
+            "errorField": "/Probe/SkuText",
+            "converted": false,
+            "canonicalText": "FieldFilled(SkuText) And [Rows/RowAgreed For \"one\"] == True",
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a CONFIRM field [kernel node: IComparisonCondition]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 20,
+        "id": "ConfirmEqComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/ConfirmEqComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/ConfirmEqComp",
+          "data": {
+            "computation": "/Probe/ConfirmEqComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": false,
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a CONFIRM field [kernel node: IComparisonCondition]"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 21,
+        "id": "ConfirmNeRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/ConfirmNeRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/ConfirmNeRule (Opaque)",
+          "data": {
+            "rule": "/Probe/ConfirmNeRule",
+            "severity": "ERROR",
+            "errorCode": "ConfirmNeRule",
+            "errorField": "/Probe/SkuText",
+            "converted": false,
+            "canonicalText": "FieldFilled(SkuText) And [Rows/RowAgreed For \"one\"] != True",
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a CONFIRM field [kernel node: IComparisonCondition]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 22,
+        "id": "ConfirmNeComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/ConfirmNeComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/ConfirmNeComp",
+          "data": {
+            "computation": "/Probe/ConfirmNeComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": false,
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a CONFIRM field [kernel node: IComparisonCondition]"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 23,
+        "id": "FieldKeyRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/FieldKeyRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/FieldKeyRule (Opaque)",
+          "data": {
+            "rule": "/Probe/FieldKeyRule",
+            "severity": "ERROR",
+            "errorCode": "FieldKeyRule",
+            "errorField": "/Probe/SkuText",
+            "converted": false,
+            "canonicalText": "FieldFilled(SkuText) And [Rows/RowFlag For SkuText] == True",
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a BOOLEAN field [kernel node: IComparisonCondition]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 24,
+        "id": "FieldKeyComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/FieldKeyComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/FieldKeyComp",
+          "data": {
+            "computation": "/Probe/FieldKeyComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": false,
+            "reason": "F10 converter does not yet handle semantic index ([field For …]) on a BOOLEAN field [kernel node: IComparisonCondition]"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 25,
+        "id": "RangeEqRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/RangeEqRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangeEqRule",
+          "data": {
+            "rule": "/Probe/RangeEqRule",
+            "severity": "ERROR",
+            "errorCode": "RangeEqRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And [/Probe/Rows/RowSpan For \"one\"] == [/Probe/Rows/RowSpan For \"two\"]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 26,
+        "id": "RangeEqComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/RangeEqComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangeEqComp",
+          "data": {
+            "computation": "/Probe/RangeEqComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/RangeEq",
+            "alternatives": [
+              {
+                "precondition": "[Rows/RowSpan For \"one\"] == [Rows/RowSpan For \"two\"]",
+                "operation": "1"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 27,
+        "id": "RangeNeRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/RangeNeRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangeNeRule",
+          "data": {
+            "rule": "/Probe/RangeNeRule",
+            "severity": "ERROR",
+            "errorCode": "RangeNeRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And [/Probe/Rows/RowSpan For \"one\"] != [/Probe/Rows/RowSpan For \"two\"]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 28,
+        "id": "RangeNeComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/RangeNeComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangeNeComp",
+          "data": {
+            "computation": "/Probe/RangeNeComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/RangeNe",
+            "alternatives": [
+              {
+                "precondition": "[Rows/RowSpan For \"one\"] != [Rows/RowSpan For \"two\"]",
+                "operation": "1"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 29,
+        "id": "RangeFirstRule",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Probe/RangeFirstRule"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangeFirstRule",
+          "data": {
+            "rule": "/Probe/RangeFirstRule",
+            "severity": "ERROR",
+            "errorCode": "RangeFirstRule",
+            "errorField": "/Probe/SkuText",
+            "converted": true,
+            "condition": "FieldFilled(/Probe/SkuText) And FirstFilledValue(/Probe/Rows/RowSpan For \"one\", /Probe/Rows/RowSpan For \"two\") == [/Probe/Rows/RowSpan For \"two\"]",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 30,
+        "id": "RangeFirstComp",
+        "verb": "computation",
+        "args": [
+          "read",
+          "/Probe/RangeFirstComp"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "read /Probe/RangeFirstComp",
+          "data": {
+            "computation": "/Probe/RangeFirstComp",
+            "group": "/Probe",
+            "errorCodesToSuppress": [],
+            "converted": true,
+            "calculatedField": "/Probe/RangeFirst",
+            "alternatives": [
+              {
+                "precondition": "FirstFilledValue(Rows/RowSpan For \"one\", Rows/RowSpan For \"two\") == [Rows/RowSpan For \"two\"]",
+                "operation": "1"
+              }
+            ],
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Probe"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}
