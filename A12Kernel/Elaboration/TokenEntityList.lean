@@ -38,8 +38,8 @@ def FlatTextFieldOperand.projectionRef? :
   | .string _ => none
   | .enumeration operand => some operand.projectionRef
 
-/-- One direct String or stored/category Enumeration declaration. The list's shape decided which reading
-scope binds its levels: none on a rule, its target's on a computation. -/
+/-- One direct String or stored/category Enumeration declaration. Scope admission belongs to the list
+shape, because this declaration certificate is reused by row-bound validation and computation-target reads. -/
 structure CheckedTokenField (model : FlatModel) where
   declaration : FlatFieldDecl
   projectionRef : EnumerationProjectionRef
