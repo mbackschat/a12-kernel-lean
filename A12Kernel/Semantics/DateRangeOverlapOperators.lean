@@ -5,10 +5,21 @@ import A12Kernel.Semantics.Observation
 
 /-! # Resolved Date-range overlap operators
 
-This capsule begins after authored operands have been expanded and filtered in order. A slot records only whether one resulting cell supplies a filled range; every empty, unavailable, or filter-dropped cell is already classified as skipped. Operand boundaries remain because the two overlap operators derive firing polarity from different filter provenance.
+Static agreement preserves authored reference boundaries: formats agree within each expansion, and year presence agrees across references unless Base Year is configured. The runtime account begins after authored operands have been expanded and filtered in order. A slot records only whether one resulting cell supplies a filled range; every empty, unavailable, or filter-dropped cell is already classified as skipped. Operand boundaries remain because the two overlap operators derive firing polarity from different filter provenance.
 -/
 
 namespace A12Kernel
+
+/-- One reference must contribute one format spelling; separate references need only agree on
+year presence. Base Year bypasses this agreement, not the preceding field walk (spec/05 §8). -/
+def dateRangeFormatAgreement (hasBaseYear : Bool) (expansions : List (List String)) : Bool :=
+  if hasBaseYear then true else
+    expansions.all (fun formats => match formats with
+      | [] => true
+      | first :: rest => rest.all (· == first)) &&
+      match expansions.flatten with
+      | [] => true
+      | first :: rest => rest.all (fun format => format.contains 'y' == first.contains 'y')
 
 /-- One expanded position after formal checking and filter selection, over whichever interval domain the operand's declarations denote. -/
 inductive OverlapSlot (α : Type) where

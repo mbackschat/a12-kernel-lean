@@ -10,7 +10,7 @@ manufacture a year.
 
 Every field an operand reaches must be declared yearless, and a list mixing a year-bearing
 operand with a yearless one is refused here because the Kernel refuses it statically: with no
-Base Year to complete the yearless side, the uniform-year gate in
+Base Year to complete the yearless side, the format/year agreement gate in
 `A12Kernel.Elaboration.DateRangeOverlap` rejects the whole list. A configured model completes the
 value instead, so a mixed list there is admitted and belongs to the exact route. The singular
 operator refuses every group carrier, while the plural list admits one by its expansion.
@@ -323,8 +323,8 @@ end CheckedYearlessDateRangesOverlapSource
 /-- Apply the shared shape gates first, then the singular operator's group refusal and the shared field
 walk, then certify every operand as unconfigured yearless. `scope` is the reading rule's iteration
 scope, so an unstarred operand inside a level the rule iterates is admitted; every other gate is the
-shared checker's and is unaware of the scope. The uniform-year gate is not applied here, because an
-admitted source is uniformly yearless by construction. -/
+shared checker's and is unaware of the scope. The agreement gate remains necessary before yearless certification: one expanded
+reference can contain different spellings even when all of them omit the year. -/
 def elaborateYearlessDateRangesOverlapSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup)
@@ -337,6 +337,8 @@ def elaborateYearlessDateRangesOverlapSourceIn (model : FlatModel)
   if let some path := firstDateRangesOverlapGroup? (shape.first :: shape.rest) then
     throw (.groupsNotAllowed path)
   (walkDateRangeOverlapFields (shape.first :: shape.rest)).mapError .source
+  if !dateRangeOverlapFormatAgreement model (shape.first :: shape.rest) then
+    throw (.source .dateWithAndWithoutYear)
   let first ← certifyYearlessDateRangeOverlapOperand model declaringGroup
     shape.first (fixedTargetGroup?.getD declaringGroup)
   let rest ← shape.rest.mapM

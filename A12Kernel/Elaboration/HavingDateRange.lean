@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.HavingEntityList
 import A12Kernel.Elaboration.DateRangeConstructionComparison
+import A12Kernel.Semantics.DateRangeOverlapOperators
 
 namespace A12Kernel
 
@@ -13,15 +14,17 @@ def checkHavingOverlapDeclarations (model : FlatModel) (expansions : List (List 
     if declaration.toDateRangeDeclarationPolicy?.any (·.interpretationOfYear.isSome) then
       throw (.dateRange .invalidDateRangeFormat)
   if model.hasBaseYear then return
-  let mut year : Option Bool := none
+  let mut previousFormat : Option String := none
   for declarations in expansions do
-    let first :: rest := declarations | throw .incoherentCore
+    let first :: rest := declarations | throw CorrelationElabError.incoherentCore
     let some policy := first.toDateRangeDeclarationPolicy? | throw .incoherentCore
-    if rest.any (fun declaration => declaration.toDateRangeDeclarationPolicy?.all (·.format != policy.format)) then
+    let rest ← rest.mapM fun declaration => do
+      let some policy := declaration.toDateRangeDeclarationPolicy?
+        | throw (.dateRange .dateWithAndWithoutYear)
+      pure policy.format
+    if !dateRangeFormatAgreement false [previousFormat.toList, policy.format :: rest] then
       throw (.dateRange .dateWithAndWithoutYear)
-    let hasYear := policy.format.contains 'y'
-    if year.any (· != hasYear) then throw (.dateRange .dateWithAndWithoutYear)
-    year := some hasYear
+    previousFormat := some policy.format
 
 private def rangeFormat (model : FlatModel) (reference : HavingPresenceRef) : Option DateRangeInputFormat := do
   let declaration ← (model.lookupUniqueId reference.field).toOption

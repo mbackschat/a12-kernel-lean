@@ -6,7 +6,7 @@ This boundary owns static admission and checked-document assembly for `AtLeastOn
 the genuinely scalar-versus-list overlap operator. It is separate from the any-pair singular operator
 because the two retain different sources, different refusal classes, and a different scan: the scalar
 is resolved first and an unusable scalar leaves every list operand unread. Shared certification,
-the uniform-year gate, and pure overlap truth stay with their owners in
+the format/year agreement gate, and pure overlap truth stay with their owners in
 `A12Kernel.Elaboration.DateRangeOverlap` and `A12Kernel.Semantics.DateRangeOverlapOperators`.
 -/
 
@@ -285,7 +285,7 @@ private def checkAtLeastOneDateRangeOverlapValueList (model : FlatModel)
     throw (.rootGroupOperand root)
   pure (shape.first :: shape.rest)
 
-/-- Read every operand, then ask the scalar's root, base-type and slot gates, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Then walk every field for its kind and year interpretation, ask the uniform-year gate, and finally certify the supported DateRange policies. -/
+/-- Read every operand, then ask the scalar's root, base-type and slot gates, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Then walk every field for its kind and year interpretation, ask the format/year agreement gate, and finally certify the supported DateRange policies. -/
 def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
     (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup)
@@ -333,11 +333,11 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
                 throw (.measuredNumberPairNotDateRange
                   scalarDeclaration.path listed.path)
           | _, _ => pure ()
-          -- The shared field walk answers ahead of the uniform-year gate; the scalar's own
+          -- The shared field walk answers ahead of the format/year agreement gate; the scalar's own
           -- certification below never asks the year interpretation, so the walk is its only refusal.
           (walkDateRangeOverlapFields [shape.first]).mapError (pluralOperandError .scalar)
           (walkDateRangeOverlapFields shape.rest).mapError (pluralOperandError .list)
-          if mixesDateRangeYearInclusion model (shape.first :: shape.rest) then
+          if !dateRangeOverlapFormatAgreement model (shape.first :: shape.rest) then
             throw .dateWithAndWithoutYear
           let scalar ← certifyPluralScalar model scalarDeclaration
           let first ← certifyAtLeastOneDateRangeOverlapsListOperand model
@@ -422,6 +422,8 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
   -- this route's own yearless refusal
   -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)).
   (walkDateRangeOverlapFields (shape.first :: shape.rest)).mapError .source
+  if !dateRangeOverlapFormatAgreement model (shape.first :: shape.rest) then
+    throw (.source .dateWithAndWithoutYear)
   let scalar ← certifyYearlessDateRangeOverlapField model scalarDeclaration
   match shape.rest with
   | [] => throw (.source .incoherentCore)

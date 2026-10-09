@@ -1,62 +1,26 @@
-import A12Kernel.Elaboration.DateRangeOverlap
-
-/-! # DateRange overlap admission laws
-
-These laws characterize the Kernel's uniform-year gate over an authored overlap operand list.
-They say when the gate cannot fire; they do not claim that the gate is the only refusal a list
-can meet, nor anything about the compared values themselves. Resolved-endpoint overlap truth
-remains in `A12Kernel.Proofs.DateRangeOverlap`.
--/
+import A12Kernel.Semantics.DateRangeOverlapOperators
 
 namespace A12Kernel
 
-private theorem contains_eq_false_of_forall_ne {l : List Bool} {b : Bool}
-    (h : ∀ x ∈ l, x ≠ b) : l.contains b = false := by
-  simp only [List.contains, List.elem_eq_mem, decide_eq_false_iff_not]
-  intro hMem
-  exact h b hMem rfl
+/-- Base Year disables the complete agreement test; field legality is a separate earlier gate. -/
+theorem dateRangeFormatAgreement_of_baseYear (expansions : List (List String)) :
+    dateRangeFormatAgreement true expansions = true := by
+  rfl
 
-/-- A configured Base Year completes every yearless declaration, so no operand list mixes year
-inclusion and the gate cannot fire in a configured model whatever the authored operands are. -/
-theorem mixesDateRangeYearInclusion_eq_false_of_baseYear (model : FlatModel)
-    (configured : model.baseYear.isSome = true)
-    (operands : List (ResolvedFieldEntityOperand model)) :
-    mixesDateRangeYearInclusion model operands = false := by
-  have hFalse : ∀ value ∈ operands.flatMap (dateRangeOperandYearInclusions model),
-      value ≠ false := by
-    intro value hValue
-    rw [List.mem_flatMap] at hValue
-    obtain ⟨operand, _, hOperand⟩ := hValue
-    cases operand with
-    | field declaration form =>
-        cases form <;>
-          simp_all [dateRangeOperandYearInclusions, dateRangeOperandIncludesYear?,
-            dateRangeProfileIncludesYear]
-    | keyed source =>
-        simp_all [dateRangeOperandYearInclusions, dateRangeOperandIncludesYear?,
-          dateRangeProfileIncludesYear]
-        obtain ⟨_, _, _, hYear⟩ := hOperand
-        exact hYear
-    | _ => simp_all [dateRangeOperandYearInclusions, dateRangeOperandIncludesYear?,
-        dateRangeProfileIncludesYear]
-  simp only [mixesDateRangeYearInclusion,
-    contains_eq_false_of_forall_ne hFalse, Bool.and_false]
+/-- A single expansion compares spellings even when both formats carry the same year class. -/
+theorem dateRangeFormatAgreement_one_reference (left right : String) :
+    dateRangeFormatAgreement false [[left, right]] = (left == right) := by
+  by_cases h : left = right
+  · subst right; simp [dateRangeFormatAgreement]
+  · simp [dateRangeFormatAgreement, beq_eq_false_iff_ne.mpr h,
+      beq_eq_false_iff_ne.mpr (Ne.symm h)]
 
-/-- A uniformly yearless list never mixes either, which is what lets the unconfigured yearless
-route own that shape without contradicting this gate. -/
-theorem mixesDateRangeYearInclusion_eq_false_of_no_year (model : FlatModel)
-    (operands : List (ResolvedFieldEntityOperand model))
-    (yearless : ∀ operand ∈ operands,
-      true ∉ dateRangeOperandYearInclusions model operand) :
-    mixesDateRangeYearInclusion model operands = false := by
-  have hTrue : ∀ value ∈ operands.flatMap (dateRangeOperandYearInclusions model),
-      value ≠ true := by
-    intro value hValue
-    rw [List.mem_flatMap] at hValue
-    obtain ⟨operand, hMember, hOperand⟩ := hValue
-    intro hEq
-    exact yearless operand hMember (hEq ▸ hOperand)
-  simp only [mixesDateRangeYearInclusion,
-    contains_eq_false_of_forall_ne hTrue, Bool.false_and]
+/-- Naming fields separately compares year classes rather than their format spellings. -/
+theorem dateRangeFormatAgreement_two_references (left right : String) :
+    dateRangeFormatAgreement false [[left], [right]] = (left.contains 'y' == right.contains 'y') := by
+  simp only [dateRangeFormatAgreement, Bool.false_eq_true, ↓reduceIte, List.all_cons,
+    List.all_nil, List.flatten_cons, List.flatten_nil, List.cons_append, List.nil_append,
+    Bool.and_true, Bool.true_and]
+  exact Bool.beq_comm
 
 end A12Kernel

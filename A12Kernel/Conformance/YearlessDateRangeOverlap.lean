@@ -368,7 +368,8 @@ private def interpretedSingular? (first : SurfaceFieldEntityOperand)
    list that also holds an interpreted one is no reason to stop, as a year mix is none on the Kernel's
    one checker
    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)).
-   On the plural list a group is admitted, so a group this route cannot certify claims no class. -/
+   On the plural list the expansion also passes format agreement before profile certification
+   (spec/05 §8), so this mixed group has the agreement class. -/
 example :
     let direct (field : String) : SurfaceFieldEntityOperand :=
       .field { base := .relative 0, groups := [], field }
@@ -381,7 +382,7 @@ example :
         scalar := direct "MonthSlash"
         list := { first := group "Mixed", rest := [] } } with
       | .ok _ => none
-      | .error error => some error.diagnostic?) = some none := by
+      | .error error => some error.diagnostic?) = some (some .dateWithAndWithoutYear) := by
   native_decide
 
 end A12Kernel.Conformance.YearlessDateRangeOverlap
