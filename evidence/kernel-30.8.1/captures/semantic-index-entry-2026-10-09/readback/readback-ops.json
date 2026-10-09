@@ -1,0 +1,25 @@
+[
+  {
+    "id": "rule",
+    "verb": "rule",
+    "args": [
+      "read",
+      "/Probe/Rows/AliasRule"
+    ]
+  },
+  {
+    "id": "computation",
+    "verb": "computation",
+    "args": [
+      "read",
+      "/Probe/Rows/OutputComp"
+    ]
+  },
+  {
+    "id": "check",
+    "verb": "model",
+    "args": [
+      "check"
+    ]
+  }
+]

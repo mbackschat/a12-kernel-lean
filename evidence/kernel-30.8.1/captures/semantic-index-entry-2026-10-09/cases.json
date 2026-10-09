@@ -1,0 +1,104 @@
+[
+  [
+    "GroupFilledAlias",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "GroupFilled(RuleGroup For \"one\")"
+  ],
+  [
+    "GroupNotFilledAlias",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "GroupNotFilled(RuleGroup For \"one\")"
+  ],
+  [
+    "AllFieldsFilledAlias",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "AllFieldsFilled(RuleGroup For \"one\")"
+  ],
+  [
+    "NoFieldFilledAlias",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "NoFieldFilled(RuleGroup For \"one\")"
+  ],
+  [
+    "AllGroupsFilledAlias",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "AllGroupsFilled(RuleGroup For \"one\")"
+  ],
+  [
+    "NumberOfFilledFieldsAlias",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "NumberOfFilledFields(RuleGroup For \"one\") > 0"
+  ],
+  [
+    "NumberOfFilledGroupsAlias",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "NumberOfFilledGroups(RuleGroup For \"one\") > 0"
+  ],
+  [
+    "GroupFilledExplicit",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "GroupFilled(/Probe/Rows For \"one\")"
+  ],
+  [
+    "GroupNotFilledExplicit",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "GroupNotFilled(/Probe/Rows For \"one\")"
+  ],
+  [
+    "AllFieldsFilledExplicit",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "AllFieldsFilled(/Probe/Rows For \"one\")"
+  ],
+  [
+    "NoFieldFilledExplicit",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "NoFieldFilled(/Probe/Rows For \"one\")"
+  ],
+  [
+    "AllGroupsFilledExplicit",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "AllGroupsFilled(/Probe/Rows For \"one\")"
+  ],
+  [
+    "NumberOfFilledFieldsExplicit",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "NumberOfFilledFields(/Probe/Rows For \"one\") > 0"
+  ],
+  [
+    "NumberOfFilledGroupsExplicit",
+    "/Probe/Rows",
+    "/Probe/Rows/RowVal",
+    "NumberOfFilledGroups(/Probe/Rows For \"one\") > 0"
+  ],
+  [
+    "IndexedBool",
+    "/Probe",
+    "/Probe/Rows/RowFlag",
+    "[Rows/RowFlag For \"one\"] == True"
+  ],
+  [
+    "BooleanControl",
+    "/Probe",
+    "/Probe/Flag",
+    "[Flag] == True"
+  ],
+  [
+    "IndexedFirstBool",
+    "/Probe",
+    "/Probe/Rows/RowFlag",
+    "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == True"
+  ]
+]

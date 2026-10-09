@@ -1,0 +1,444 @@
+[
+  {
+    "id": "vGroupFilledAlias",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupFilledAlias",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "GroupFilled(RuleGroup For \"one\")",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupFilledAlias",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupFilledAlias.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupNotFilledAlias",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupNotFilledAlias",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "GroupNotFilled(RuleGroup For \"one\")",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupNotFilledAlias",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupNotFilledAlias.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAllFieldsFilledAlias",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllFieldsFilledAlias",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "AllFieldsFilled(RuleGroup For \"one\")",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllFieldsFilledAlias",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllFieldsFilledAlias.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNoFieldFilledAlias",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNoFieldFilledAlias",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "NoFieldFilled(RuleGroup For \"one\")",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNoFieldFilledAlias",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNoFieldFilledAlias.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAllGroupsFilledAlias",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllGroupsFilledAlias",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "AllGroupsFilled(RuleGroup For \"one\")",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllGroupsFilledAlias",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllGroupsFilledAlias.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberOfFilledFieldsAlias",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberOfFilledFieldsAlias",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "NumberOfFilledFields(RuleGroup For \"one\") > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberOfFilledFieldsAlias",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberOfFilledFieldsAlias.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberOfFilledGroupsAlias",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberOfFilledGroupsAlias",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "NumberOfFilledGroups(RuleGroup For \"one\") > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberOfFilledGroupsAlias",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberOfFilledGroupsAlias.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupFilledExplicit",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupFilledExplicit",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "GroupFilled(/Probe/Rows For \"one\")",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupFilledExplicit",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupFilledExplicit.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vGroupNotFilledExplicit",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vGroupNotFilledExplicit",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "GroupNotFilled(/Probe/Rows For \"one\")",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cGroupNotFilledExplicit",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cGroupNotFilledExplicit.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAllFieldsFilledExplicit",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllFieldsFilledExplicit",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "AllFieldsFilled(/Probe/Rows For \"one\")",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllFieldsFilledExplicit",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllFieldsFilledExplicit.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNoFieldFilledExplicit",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNoFieldFilledExplicit",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "NoFieldFilled(/Probe/Rows For \"one\")",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNoFieldFilledExplicit",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNoFieldFilledExplicit.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vAllGroupsFilledExplicit",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vAllGroupsFilledExplicit",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "AllGroupsFilled(/Probe/Rows For \"one\")",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cAllGroupsFilledExplicit",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cAllGroupsFilledExplicit.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberOfFilledFieldsExplicit",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberOfFilledFieldsExplicit",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "NumberOfFilledFields(/Probe/Rows For \"one\") > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberOfFilledFieldsExplicit",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberOfFilledFieldsExplicit.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vNumberOfFilledGroupsExplicit",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vNumberOfFilledGroupsExplicit",
+      "--group",
+      "/Probe/Rows",
+      "--field",
+      "/Probe/Rows/RowVal",
+      "--condition",
+      "NumberOfFilledGroups(/Probe/Rows For \"one\") > 0",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cNumberOfFilledGroupsExplicit",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cNumberOfFilledGroupsExplicit.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vIndexedBool",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vIndexedBool",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/Rows/RowFlag",
+      "--condition",
+      "[Rows/RowFlag For \"one\"] == True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cIndexedBool",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cIndexedBool.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vBooleanControl",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vBooleanControl",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/Flag",
+      "--condition",
+      "[Flag] == True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cBooleanControl",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cBooleanControl.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "vIndexedFirstBool",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "vIndexedFirstBool",
+      "--group",
+      "/Probe",
+      "--field",
+      "/Probe/Rows/RowFlag",
+      "--condition",
+      "FirstFilledValue(Rows/RowFlag For \"one\", Flag) == True",
+      "--message",
+      "en_US=Probe"
+    ]
+  },
+  {
+    "id": "cIndexedFirstBool",
+    "verb": "computation",
+    "args": [
+      "add",
+      "cIndexedFirstBool.json",
+      "--dry-run"
+    ]
+  }
+]

@@ -109,4 +109,10 @@ example :
      !legal "Max(([A] > 1), 2) > 0"].all id := by
   native_decide
 
+example : english "GroupFilled(RuleGroup For \"one\")" == some (.call "GroupFilled"
+    [.mk (.entity { path := { segments := [] }, index := some (.literal "one") }) none] none none) ∧
+    ((parseText .german "KontextAngegeben(RegelKontext Fuer \"one\")").toOption.map (·.body)) ==
+      english "GroupFilled(RuleGroup For \"one\")" ∧
+    (parseText .english "GroupFilled(RuleGroup*)").toOption.isNone := by native_decide
+
 end A12Kernel.Dm.ParserLocks

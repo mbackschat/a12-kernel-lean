@@ -99,6 +99,13 @@ private def path : P Path := do
   return { correlated, absolute, ups, turningPoint, segments }
 
 mutual
+private partial def indexSuffix : P (Option IndexKey) := do
+  if ← acceptKeyword "For" then
+    match ← peek with
+    | some (.string text) => advance; pure (some (.literal text))
+    | _ => pure (some (.reference (← reference)))
+  else pure none
+
 private partial def reference : P Reference := do
   let target ← path
   let category ← if ← acceptSymbol "->" then
@@ -106,11 +113,7 @@ private partial def reference : P Reference := do
       | some (.name name _) => advance; pure (some name)
       | _ => failHere .expectedTokenNotFound
     else pure none
-  let index ← if ← acceptKeyword "For" then
-      match ← peek with
-      | some (.string text) => advance; pure (some (IndexKey.literal text))
-      | _ => pure (some (.reference (← reference)))
-    else pure none
+  let index ← indexSuffix
   let filter ← if ← acceptKeyword "Having" then pure (some (← condition false)) else pure none
   return { path := target, index, category, filter }
 
@@ -197,6 +200,13 @@ private partial def atom : P Expr := do
           if name.toList.all (fun c => '0' ≤ c && c ≤ '9') then advance; return .custom name
           else failHere .expectedTokenNotFound
       | _ => failHere .expectedTokenNotFound
+  | some (.keyword "RuleGroup") =>
+      advance
+      match ← indexSuffix with
+      | none => return .constant "RuleGroup"
+      | some key =>
+          -- The empty relative group path preserves the declaring group (spec/08 §1).
+          return .entity { path := { segments := [] }, index := some key }
   | some (.keyword id) =>
       if separatorKeywords.contains id then failHere .incompleteInput
       advance

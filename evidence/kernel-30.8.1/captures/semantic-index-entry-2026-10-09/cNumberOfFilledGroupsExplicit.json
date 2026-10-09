@@ -1,0 +1,16 @@
+{
+  "group": "/Probe/Rows",
+  "computedField": "/Probe/Rows/Output",
+  "commonPrecondition": "NumberOfFilledGroups(/Probe/Rows For \"one\") > 0",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ]
+}

@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 2,
+  "dmtool": "0.13.0",
+  "kernelBuilt": "30.8.1",
+  "kernelRuntime": "30.8.1",
+  "source": {
+    "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state": "CLEAN"
+  },
+  "model": "9ab3c4c5a90f12a81ece7abd816a0d8181efe3f9b15719ad6696d27b4946c615",
+  "observations": [
+    {
+      "id": "vGroupFilledAlias",
+      "inputHash": "18321cf7092311dd2ca9bd0e03bf54ac03d4c5702eb8441db640950538565616",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cGroupFilledAlias",
+      "inputHash": "aee1dd9160c76c09c584b35e0fd7f4060361c83ec68aab3d897e1a2f8b43f28e",
+      "ok": true,
+      "codes": []
+    },
+    {
+      "id": "vGroupNotFilledAlias",
+      "inputHash": "22eb452f8d64396ef88e51622f9c491e88a18f5f8ce2bf37f6b2693c22cb5e0f",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cGroupNotFilledAlias",
+      "inputHash": "9133c19757fa4a9b990e081a0fbc8dca442d463509eae37ffa91c4f061d80d2a",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+      ]
+    },
+    {
+      "id": "vAllFieldsFilledAlias",
+      "inputHash": "4f7162fc9f55f8c65a9cbe923d4b2f61de21ca49882dd45bf092149307516c6c",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cAllFieldsFilledAlias",
+      "inputHash": "9b1bddfef46665dbdab89167f3621e47d0af359e2b963c768f93f4e72e31487a",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+      ]
+    },
+    {
+      "id": "vNoFieldFilledAlias",
+      "inputHash": "9ead3d3c1bb35e4bba5e09483707e2f2ce6ca19c339e2eef46dbb771291b4f6e",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cNoFieldFilledAlias",
+      "inputHash": "d3e0b04cf468ee184bdeeabb0207955cf6200d0cbd96564522c7d93a2dd47532",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+      ]
+    },
+    {
+      "id": "vAllGroupsFilledAlias",
+      "inputHash": "d3cb20e371db26c42f5d26e3ac9c570cdf99281d1f8630ce6beb53e08e8a859a",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_PARAMSIZE_INVALID2"
+      ]
+    },
+    {
+      "id": "cAllGroupsFilledAlias",
+      "inputHash": "90a07cf9d7b59a0d5d0095f905263d3a178ad7cd9df9240f16fe37c246ae5c17",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_PARAMSIZE_INVALID2"
+      ]
+    },
+    {
+      "id": "vNumberOfFilledFieldsAlias",
+      "inputHash": "dd595557a8ea07b5a1be6f6582509793614755f4364d3db0486bf2cbd5cd1cc7",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cNumberOfFilledFieldsAlias",
+      "inputHash": "d9fee9c97d192e195223bd5d51ef09047a767963c1f727e5c67208edcd1c5371",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+      ]
+    },
+    {
+      "id": "vNumberOfFilledGroupsAlias",
+      "inputHash": "3233bd22aaf684e61ba7b4f19036bdd85dd5660b07fd4f657f040f94ccea0db4",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
+      ]
+    },
+    {
+      "id": "cNumberOfFilledGroupsAlias",
+      "inputHash": "8ddd225f38e6733265d2efb8acf62177489d8d88780bcf41dfa8fb2840575e06",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
+      ]
+    },
+    {
+      "id": "vGroupFilledExplicit",
+      "inputHash": "3de5be263a01d68c0acd43caf57237d57573df65b22bd54579f1acdda5f3bac8",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cGroupFilledExplicit",
+      "inputHash": "15680c9fb11b4b5b6b04f06a5f9377e01fb981f598fd749e8897f6f2d2c1c430",
+      "ok": true,
+      "codes": []
+    },
+    {
+      "id": "vGroupNotFilledExplicit",
+      "inputHash": "1daf1f6ace89ab138764f85baf7d0cbe4383dca9b069bb9afb6a5867ec4374a7",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cGroupNotFilledExplicit",
+      "inputHash": "b9247834ae2b51f6c88e1edf3fa7f575e9c5a5e25dc42fdf684720b45f20f051",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+      ]
+    },
+    {
+      "id": "vAllFieldsFilledExplicit",
+      "inputHash": "7a03795f30a48546602cacf5e582125cdfef099ebb131e03c76da8fa15fbe48a",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cAllFieldsFilledExplicit",
+      "inputHash": "e444f5d5f4b6736c70271e22e3171e930656df0495a6a87eb6ba6e30c0373879",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+      ]
+    },
+    {
+      "id": "vNoFieldFilledExplicit",
+      "inputHash": "42a953f26e1b2bdadb90c92a4512aac09bf7b208217040623ab7c8584e4ae472",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cNoFieldFilledExplicit",
+      "inputHash": "72e2ac1eb1b80dc2ab52f8015565d549509dc18cd29582e3cce23ac81968cc34",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+      ]
+    },
+    {
+      "id": "vAllGroupsFilledExplicit",
+      "inputHash": "02e21bcdbe6219d67d756d9e44b87f517982b1995bc6792215cd3c98fc76d8c2",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_PARAMSIZE_INVALID2"
+      ]
+    },
+    {
+      "id": "cAllGroupsFilledExplicit",
+      "inputHash": "a63588fdf1c5db2b116cf18ba2f705b866d435e450d2f78ae57f484ba806e1ba",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_PARAMSIZE_INVALID2"
+      ]
+    },
+    {
+      "id": "vNumberOfFilledFieldsExplicit",
+      "inputHash": "291906d75c134ba81e20103505fd6861b579f7a210049a4a67226bd5ae0ff4a4",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cNumberOfFilledFieldsExplicit",
+      "inputHash": "2031122d58bfa2b177aef0ad399446e8d2f356dc4583945e703ab4e209321c57",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+      ]
+    },
+    {
+      "id": "vNumberOfFilledGroupsExplicit",
+      "inputHash": "b4390dbfdf998a90e72a9a47d945601589b323593699e4e7cc7eff8a0ca85e3c",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
+      ]
+    },
+    {
+      "id": "cNumberOfFilledGroupsExplicit",
+      "inputHash": "d13efbab6827d95f0781e7c589acc0fc02b34b06a340e58665062cafc3cdfa40",
+      "ok": false,
+      "valid": false,
+      "codes": [
+        "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
+      ]
+    },
+    {
+      "id": "vIndexedBool",
+      "inputHash": "df9a242e1a67bf825f8673d36ea541c16f4d255e7c243e039d2e876e0b1604ff",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cIndexedBool",
+      "inputHash": "f8899037aab5c93b6dcc0cdd05e6bfc8a43c501dd565be32198153f8827b4d5b",
+      "ok": true,
+      "codes": []
+    },
+    {
+      "id": "vBooleanControl",
+      "inputHash": "5dd2f384d0ba2aa1a8f1074273009e8fb7b425f71d7cc3ce02f173960d0b5c03",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cBooleanControl",
+      "inputHash": "8f808dacef6b2d3eb76cd618f82e382d282c3eb6d6f483b32d81af70940de933",
+      "ok": true,
+      "codes": []
+    },
+    {
+      "id": "vIndexedFirstBool",
+      "inputHash": "5a14ef47a95cac748e581d4e0c55cb9c5d62f7c5de6d38a2f2c1296ba57a46a5",
+      "ok": true,
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "cIndexedFirstBool",
+      "inputHash": "3f9a6edb7c70e8b3f90642a4c98fa4475cd451005afe4873400fad870c00ba41",
+      "ok": true,
+      "codes": []
+    }
+  ]
+}

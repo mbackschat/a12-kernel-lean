@@ -7,7 +7,8 @@ namespace A12Kernel.Dm.IndexedGroupLocks
 
 private def model : FlatModel := {
   fields := [
-    { id := 1, name := "Code", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } },
+    { id := 1, name := "Code", groupPath := ["Form", "Rows"], repeatableScope := [10],
+      policy := { kind := .string }, stringPolicy := { maxLength := some 2 } },
     { id := 2, name := "A", groupPath := ["Form", "Rows", "Body"], repeatableScope := [10], policy := { kind := .number { scale := 0, signed := true } } },
     { id := 3, name := "B", groupPath := ["Form", "Rows", "Body"], repeatableScope := [10], policy := { kind := .number { scale := 0, signed := true } } },
     { id := 4, name := "C", groupPath := ["Form", "Rows", "Children"], repeatableScope := [10,20], policy := { kind := .number { scale := 0, signed := true } } },
@@ -30,23 +31,25 @@ private def input (key : String) (firstA : String := "bad") (duplicate : Bool :=
   (checkDocument prepared "en_US" document.data).toOption
 
 private def validation (expression : String) (key : String := "R1") (firstA : String := "bad")
-    (duplicate : Bool := false) (secondCode : String := "R2") : Option Verdict := do
+    (duplicate : Bool := false) (secondCode : String := "R2")
+    (declaringGroup : GroupPath := ["Form"]) : Option Verdict := do
   let document ← input key firstA duplicate secondCode
   let parsed ← (parseText .english expression).toOption
-  let condition ← (lowerCondition model ["Form"] false parsed.body).toOption
+  let condition ← (lowerCondition model declaringGroup false parsed.body).toOption
   (condition.core.evalAddressed {
     scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable },
     outer := [], input := .checked document }).toOption
 
 private def computation (guard : String) (key : String := "R1") (firstA : String := "bad")
     (duplicate : Bool := false) (secondCode : String := "R2")
-    (producer : Option (String × String) := none) (target : String := "Out") (firstB : String := "") (suppressScale : Bool := false) : Option String := do
+    (producer : Option (String × String) := none) (target : String := "Out") (firstB : String := "") (suppressScale : Bool := false)
+    (declaringGroup : GroupPath := ["Form"]) : Option String := do
   let document ← input key firstA duplicate secondCode firstB
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let lower (target operation : String) (guard : Option String) :=
     (lowerComputation model .english {
-      name := target, group := ["Form"], targetRelPath := "../" ++ target, commonPrecondition := guard,
+      name := target, group := declaringGroup, targetRelPath := "../" ++ target, commonPrecondition := guard,
       alternatives := [{ precondition := none, operation }],
       errorCodesToSuppress := if suppressScale then ["MVK_INVALID_COMPARE_DEC_PLACES"] else [] }).toOption
   let consumer ← lower target "1" (some guard)
@@ -201,5 +204,70 @@ example : generatedGuard "GroupFilled(Rows/Body For Key)" "R1" = some false ∧
     generatedGuard "GroupFilled(Rows/Body For Key)" "R2" = some true ∧
     generatedGuard "AtLeastOneGroupFilled(Rows/Children* For Key)" "R1" = some false ∧
     generatedGuard "AtLeastOneGroupFilled(Rows/Children* For Key)" "R2" = some true := by native_decide
+
+private def ruleGroupCondition (operator key : String) (alias : Bool) : String :=
+  operator ++ "(" ++ (if alias then "RuleGroup" else "/Form/Rows/Body") ++ " For " ++ key ++ ")"
+
+example : ["GroupFilled", "GroupNotFilled", "AllFieldsFilled", "NoFieldFilled"].all (fun operator =>
+    ["\"R1\"", "/Form/Key"].all fun key =>
+      let explicit := validation (ruleGroupCondition operator key false) "R1" "7"
+        (declaringGroup := ["Form", "Rows", "Body"])
+      explicit.isSome && validation (ruleGroupCondition operator key true) "R1" "7"
+        (declaringGroup := ["Form", "Rows", "Body"]) == explicit) = true := by native_decide
+
+example : [false, true].all (fun alias =>
+    computation (ruleGroupCondition "GroupFilled" "\"R1\"" alias) "R2" "7"
+      (target := "A") (firstB := "7") (declaringGroup := ["Form", "Rows", "Body"]) == some "value 1" &&
+    computation (ruleGroupCondition "GroupFilled" "/Form/Key" alias) "R1" "7"
+      (target := "A") (firstB := "7") (declaringGroup := ["Form", "Rows", "Body"]) == some "value 1" &&
+    computation (ruleGroupCondition "GroupFilled" "/Form/Key" alias) "R1" "7"
+      (target := "A") (declaringGroup := ["Form", "Rows", "Body"]) == some "cleared" &&
+    computation (ruleGroupCondition "GroupFilled" "/Form/Key" alias) "missing" "7"
+      (target := "A") (firstB := "7") (declaringGroup := ["Form", "Rows", "Body"]) == some "cleared" &&
+    computation (ruleGroupCondition "GroupFilled" "/Form/Key" alias) "R1" "7" true
+      (target := "A") (firstB := "7") (declaringGroup := ["Form", "Rows", "Body"]) == some "cleared" &&
+    computation (ruleGroupCondition "GroupNotFilled" "/Form/Key" alias) "R1" "7"
+      (target := "A") (declaringGroup := ["Form", "Rows", "Body"]) == none) = true := by native_decide
+
+example : [false, true].all (fun alias =>
+    validation (ruleGroupCondition "GroupFilled" "/Form/Key" alias) "missing" "7"
+      (declaringGroup := ["Form", "Rows", "Body"]) == some .notFired &&
+    validation (ruleGroupCondition "GroupFilled" "/Form/Key" alias) "R1" "7" true
+      (declaringGroup := ["Form", "Rows", "Body"]) == some .unknown &&
+    validation (ruleGroupCondition "GroupFilled" "/Form/Key" alias) "R1" "7" false "bad"
+      (declaringGroup := ["Form", "Rows", "Body"]) == some (.fired .value) &&
+    computation (ruleGroupCondition "GroupFilled" "/Form/Key" alias) "R1" "7" false "bad"
+      (target := "A") (firstB := "7") (declaringGroup := ["Form", "Rows", "Body"]) == some "cleared" &&
+    validation (ruleGroupCondition "NumberOfFilledFields" "/Form/Key" alias ++ " == 1") "R1" "7"
+      (declaringGroup := ["Form", "Rows", "Body"]) == some (.fired .omission) &&
+    computation (ruleGroupCondition "GroupFilled" "/Form/Key" alias) "R1" "7"
+      (target := "../../Out") (declaringGroup := ["Form", "Rows", "Body"]) == some "value 1") = true := by native_decide
+
+example : validation "GroupFilled(RuleGroup For \"R1\")" = none ∧
+    computation "GroupFilled(RuleGroup For \"R1\")" = none ∧
+    ["AllGroupsFilled", "NumberOfFilledGroups"].all (fun operator =>
+      [false, true].all fun alias =>
+        let expression := ruleGroupCondition operator "/Form/Key" alias ++
+          (if operator == "NumberOfFilledGroups" then " > 0" else "")
+        validation expression (declaringGroup := ["Form", "Rows", "Body"]) == none &&
+        computation expression (target := "../../Out") (declaringGroup := ["Form", "Rows", "Body"]) == none) = true := by native_decide
+
+example : [
+    ("GroupNotFilled", "R1", "", "cleared"),
+    ("GroupNotFilled", "missing", "", "value 1"),
+    ("AllFieldsFilled", "R1", "", "cleared"),
+    ("AllFieldsFilled", "R1", "7", "value 1"),
+    ("NoFieldFilled", "R1", "", "cleared"),
+    ("NoFieldFilled", "missing", "", "value 1"),
+    ("NumberOfFilledFields", "R1", "", "value 1")].all (fun (operator, key, firstB, expected) =>
+      [false, true].all fun alias =>
+        let expression := ruleGroupCondition operator "/Form/Key" alias ++
+          (if operator == "NumberOfFilledFields" then " > 0" else "")
+        computation expression key "7" (target := "../../Out") (firstB := firstB)
+          (declaringGroup := ["Form", "Rows", "Body"]) == some expected) = true ∧
+    computation "AllGroupsFilled(RuleGroup For /Form/Key, /Form/Key)" "R1" "7"
+      (target := "../../Out") (declaringGroup := ["Form", "Rows", "Body"]) = some "value 1" ∧
+    computation "NumberOfFilledGroups(/Form/Rows*) > 0" "R1" "7"
+      (target := "../../Out") (declaringGroup := ["Form", "Rows", "Body"]) = some "value 1" := by native_decide
 
 end A12Kernel.Dm.IndexedGroupLocks

@@ -1,0 +1,94 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : true,
+  "summary" : "dispatched 3 ops; all children exited zero",
+  "data" : {
+    "ops" : 3,
+    "dispatched" : true,
+    "allExitedZero" : true,
+    "results" : [ {
+      "op" : 0,
+      "id" : "rule",
+      "verb" : "rule",
+      "args" : [ "read", "/Probe/Rows/AliasRule" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "rule",
+        "op" : "read",
+        "outcome" : "read",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "read /Probe/Rows/AliasRule",
+        "data" : {
+          "rule" : "/Probe/Rows/AliasRule",
+          "severity" : "ERROR",
+          "errorCode" : "AliasRule",
+          "errorField" : "/Probe/Rows/RowVal",
+          "converted" : true,
+          "condition" : "GroupFilled(/Probe/Rows For \"one\")",
+          "messages" : [ {
+            "locale" : "en_US",
+            "text" : "Probe"
+          } ]
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "computation",
+      "verb" : "computation",
+      "args" : [ "read", "/Probe/Rows/OutputComp" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "read",
+        "outcome" : "read",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "read /Probe/Rows/OutputComp",
+        "data" : {
+          "computation" : "/Probe/Rows/OutputComp",
+          "group" : "/Probe/Rows",
+          "errorCodesToSuppress" : [ ],
+          "converted" : true,
+          "calculatedField" : "/Probe/Rows/Output",
+          "alternatives" : [ {
+            "precondition" : "GroupFilled(/Probe/Rows For \"one\")",
+            "operation" : "1"
+          } ],
+          "messages" : [ {
+            "locale" : "en_US",
+            "text" : "Probe"
+          } ]
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "check",
+      "verb" : "model",
+      "args" : [ "check" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "model",
+        "op" : "check",
+        "outcome" : "read",
+        "ok" : true,
+        "valid" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "engineRequested" : "A12_KERNEL",
+        "engineExecuted" : "A12_KERNEL",
+        "engineVersion" : "30.8.1",
+        "summary" : "model is valid",
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

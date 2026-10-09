@@ -1,0 +1,34 @@
+[
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "field": "/Probe/Rows/RowVal",
+    "code": "AliasRule",
+    "condition": "GroupFilled(RuleGroup For \"one\")",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Probe/Rows",
+    "computedField": "/Probe/Rows/Output",
+    "commonPrecondition": "GroupFilled(RuleGroup For \"one\")",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe"
+      }
+    ]
+  }
+]

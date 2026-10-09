@@ -1,0 +1,16 @@
+{
+  "group": "/Probe/Rows",
+  "computedField": "/Probe/Rows/Output",
+  "commonPrecondition": "GroupNotFilled(RuleGroup For \"one\")",
+  "alternatives": [
+    {
+      "operation": "1"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe"
+    }
+  ]
+}
