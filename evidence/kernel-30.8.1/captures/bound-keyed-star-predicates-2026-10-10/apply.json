@@ -1,0 +1,880 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Batches",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Batches",
+    "name": "Anchor",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Batches",
+    "name": "Key",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Batches",
+    "name": "Fixed"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Batches/Fixed",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Batches",
+    "name": "Rows",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Batches/Rows",
+    "name": "Code",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Form/Batches/Rows",
+    "index-field": "Code"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Batches/Rows",
+    "name": "Items",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Batches/Rows/Items",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Batches/Rows/Items",
+    "name": "Seal"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Batches/Rows/Items/Seal",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Batches/Rows/Items/Seal",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Batches/Rows/Items",
+    "name": "Parts",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Batches/Rows/Items/Parts",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Batches/Rows/Items/Parts",
+    "name": "Seal"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Batches/Rows/Items/Parts/Seal",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Batches",
+    "name": "Tail",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Batches/Tail",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items* For Key)",
+    "code": "TNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items* For Key)",
+    "code": "TSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items* For Key, Fixed)",
+    "code": "TFNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items* For Key, Fixed)",
+    "code": "TFSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Fixed, Rows/Items* For Key)",
+    "code": "FTNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed, Rows/Items* For Key)",
+    "code": "FTSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items* For \"missing\")",
+    "code": "TMNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items* For \"missing\")",
+    "code": "TMSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Seal For Key)",
+    "code": "SNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Seal For Key)",
+    "code": "SSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Seal For Key, Fixed)",
+    "code": "SFNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Seal For Key, Fixed)",
+    "code": "SFSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Fixed, Rows/Items*/Seal For Key)",
+    "code": "FSNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed, Rows/Items*/Seal For Key)",
+    "code": "FSSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Seal For \"missing\")",
+    "code": "SMNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Seal For \"missing\")",
+    "code": "SMSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Parts* For Key)",
+    "code": "NNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Parts* For Key)",
+    "code": "NSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Parts* For Key, Fixed)",
+    "code": "NFNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Parts* For Key, Fixed)",
+    "code": "NFSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Fixed, Rows/Items*/Parts* For Key)",
+    "code": "FNNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed, Rows/Items*/Parts* For Key)",
+    "code": "FNSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Parts* For \"missing\")",
+    "code": "NMNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Parts* For \"missing\")",
+    "code": "NMSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Parts*/Seal For Key)",
+    "code": "BNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Parts*/Seal For Key)",
+    "code": "BSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Parts*/Seal For Key, Fixed)",
+    "code": "BFNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Parts*/Seal For Key, Fixed)",
+    "code": "BFSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Fixed, Rows/Items*/Parts*/Seal For Key)",
+    "code": "FBNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed, Rows/Items*/Parts*/Seal For Key)",
+    "code": "FBSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Parts*/Seal For \"missing\")",
+    "code": "BMNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Parts*/Seal For \"missing\")",
+    "code": "BMSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items* For Key, Tail*)",
+    "code": "TXNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items* For Key, Tail*)",
+    "code": "TXSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Tail*, Rows/Items* For Key)",
+    "code": "XTNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Tail*, Rows/Items* For Key)",
+    "code": "XTSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Seal For Key, Tail*)",
+    "code": "SXNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Seal For Key, Tail*)",
+    "code": "SXSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Tail*, Rows/Items*/Seal For Key)",
+    "code": "XSNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Tail*, Rows/Items*/Seal For Key)",
+    "code": "XSSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Parts* For Key, Tail*)",
+    "code": "NXNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Parts* For Key, Tail*)",
+    "code": "NXSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Tail*, Rows/Items*/Parts* For Key)",
+    "code": "XNNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Tail*, Rows/Items*/Parts* For Key)",
+    "code": "XNSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Items*/Parts*/Seal For Key, Tail*)",
+    "code": "BXNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Items*/Parts*/Seal For Key, Tail*)",
+    "code": "BXSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Tail*, Rows/Items*/Parts*/Seal For Key)",
+    "code": "XBNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Tail*, Rows/Items*/Parts*/Seal For Key)",
+    "code": "XBSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Fixed)",
+    "code": "ControlNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed)",
+    "code": "ControlSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Tail*)",
+    "code": "LiveNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Batches/Anchor",
+    "group": "/Form/Batches",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Tail*)",
+    "code": "LiveSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

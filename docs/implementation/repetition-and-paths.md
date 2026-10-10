@@ -487,10 +487,10 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `assurance`: Laws and cases cover repeated stars, zero-row polarity, bound prefixes and fixed terminals; no independent consumer qualification.
 - `admission`: The [empty-terminal separator](../sources/group-and-iteration-probes.md#src-empty-declared-group) settles `MVK_GROUP_IS_EMPTY`. Its diagnostic covers entity lists, five predicates and counts on both arms, before the predicate star gate ([matrix](../sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)); [SG9](../gaps/paths-and-groups.md#gap-sg9) owns unmapped shapes.
 - `partial`: All five predicates accept direct fields, fixed groups and selected fields/fixed groups. The two star-admitting predicates also combine ordinary or keyed lower stars. Missing positions stay unavailable without coverage; descendant relevance exposes structural terminal content.
-- `assurance`: The [keyed-star matrix and adjacent baselines](../sources/group-count-topology.md#src-keyed-star-predicates) calibrate full/partial validation. [Partial locks](../../A12Kernel/Conformance/PartialGroupList.lean) and the delegation theorem cover the shared route; [SG13](../gaps/paths-and-groups.md#gap-sg13) owns exclusions.
-
+- `assurance`: The [keyed-star](../sources/group-count-topology.md#src-keyed-star-predicates) and [outer-bound](../sources/group-count-topology.md#src-bound-keyed-star-predicates) matrices calibrate full/partial validation, including nested independent-star mixtures. [Partial locks](../../A12Kernel/Conformance/PartialGroupList.lean) and the delegation theorem cover the shared route; [SG13](../gaps/paths-and-groups.md#gap-sg13) owns exclusions.
 
 ### §10 — paths and references
+
 
 <a id="cap-flat-resolution"></a>
 #### Flat resolution

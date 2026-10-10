@@ -1,0 +1,16 @@
+{
+  "target": "model",
+  "op": "new",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "created model BoundKeyedStars_DM",
+  "changed": {
+    "id": "BoundKeyedStars_DM",
+    "root": "Form",
+    "locale": "en_US"
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "BoundKeyedStars_DM.json"
+}

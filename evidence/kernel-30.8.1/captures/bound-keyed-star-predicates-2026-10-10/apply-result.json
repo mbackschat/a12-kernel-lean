@@ -1,0 +1,886 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "71 op(s) committed, written to BoundKeyedStars_DM.json",
+  "data": {
+    "ops": 71,
+    "committed": true,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Batches"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Batches/Anchor",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Batches/Key",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "added": "/Form/Batches/Fixed"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Batches/Fixed/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Batches/Rows"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Batches/Rows/Code",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "modify",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group modify",
+        "changed": {
+          "group": "/Form/Batches/Rows",
+          "indexField": "Code"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Batches/Rows/Items"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Batches/Rows/Items/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "added": "/Form/Batches/Rows/Items/Seal"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Batches/Rows/Items/Seal/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Batches/Rows/Items/Seal/M",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Batches/Rows/Items/Parts"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Batches/Rows/Items/Parts/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "added": "/Form/Batches/Rows/Items/Parts/Seal"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Batches/Rows/Items/Parts/Seal/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Batches/Tail"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Batches/Tail/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/TNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/TSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/TFNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/TFSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/FTNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/FTSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/TMNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/TMSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/SNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/SSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/SFNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/SFSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/FSNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/FSSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/SMNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/SMSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/NNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/NSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/NFNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/NFSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/FNNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/FNSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/NMNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/NMSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/BNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/BSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/BFNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/BFSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/FBNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/FBSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/BMNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/BMSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/TXNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/TXSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/XTNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/XTSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/SXNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/SXSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/XSNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/XSSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/NXNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/NXSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/XNNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/XNSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/BXNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/BXSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/XBNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/XBSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/ControlNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/ControlSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/LiveNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/Batches/LiveSome"
+        },
+        "diagnostics": [],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "BoundKeyedStars_DM.json"
+}
