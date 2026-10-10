@@ -24,11 +24,20 @@ private def model (capacity : Nat) : FlatModel :=
       { id := 10, groupPath := ["Form", "Rows", "Children"], name := "N",
         policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [20, 30] },
       { id := 11, groupPath := ["Form"], name := "Direct",
-        policy := { kind := .number { scale := 0, signed := false } } }]
+        policy := { kind := .number { scale := 0, signed := false } } },
+      { id := 12, groupPath := ["Form", "Rows", "Children", "Seal"], name := "N",
+        policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [20, 30] },
+      { id := 13, groupPath := ["Form", "Rows", "Children", "Seal"], name := "M",
+        policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [20, 30] },
+      { id := 14, groupPath := ["Form", "Rows", "Children", "Parts"], name := "N",
+        policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [20, 30, 40] },
+      { id := 15, groupPath := ["Form", "Rows", "Children", "Parts", "Seal"], name := "N",
+        policy := { kind := .number { scale := 0, signed := false } }, repeatableScope := [20, 30, 40] }]
     repeatableGroups := [
       { level := 10, path := ["Form", "Left"], repeatability := some capacity },
       { level := 20, path := ["Form", "Rows"], repeatability := some 2, indexField := some 6 },
-      { level := 30, path := ["Form", "Rows", "Children"], repeatability := some 2 }] }
+      { level := 30, path := ["Form", "Rows", "Children"], repeatability := some 2 },
+      { level := 40, path := ["Form", "Rows", "Children", "Parts"], repeatability := some 2 }] }
 
 private def fixed : SurfaceGroupListOperand :=
   .group (.path { base := .absolute, groups := ["Form", "Fixed"] })
@@ -163,12 +172,16 @@ private def indexed (key : SurfaceSemanticIndexKey := fieldKey) : SurfaceGroupLi
 private def keyedFixed (key : SurfaceSemanticIndexKey := fieldKey) : SurfaceGroupListOperand :=
   .keyed { target := .group { base := .absolute, groups := ["Form", "Rows", "Details"] }, key }
 
-private def keyedStar : SurfaceGroupListOperand :=
+private def keyedLowerStar (nested terminal : Bool) : SurfaceGroupListOperand :=
   .keyed { target := .starredGroup { base := .absolute, groups :=
-    [{ name := "Form" }, { name := "Rows" }, { name := "Children", starred := true }] }, key := fieldKey }
+    [{ name := "Form" }, { name := "Rows" }, { name := "Children", starred := true }] ++
+      (if nested then [{ name := "Parts", starred := true }] else []) ++
+      (if terminal then [] else [{ name := "Seal" }]) }, key := fieldKey }
+
+private def keyedStar := keyedLowerStar false true
 
 private def textCell (field : FieldId) (path : List Nat) (value : String) : ClassifiedCellInput :=
-  { address := { field, path }, stored := value, raw := .parsed (.str value) }
+  { address := { field, path }, stored := value, raw := if value.isEmpty then .presentEmpty else .parsed (.str value) }
 
 private def selectedDocument (keys : List String) (cells : List ClassifiedCellInput)
     (key : String := "A") : DocumentData :=
@@ -299,13 +312,11 @@ example : [indexed (.literal (.text "A")), keyedFixed (.literal (.text "A"))].ma
       [indexRelevant, targetRelevant, detailsRelevant, fixedRelevant]) =
         [[mixed, mixed], [mixed, mixed]] := by native_decide
 
-example : [.atLeastOneGroupFilled, .noGroupFilled].map (fun operator =>
-    (evaluateOutcomeAtCapacity 2 operator [keyedStar, fixed]
-      (selectedDocument ["A"] [numberCell 8 [1] false]) [every ["Form"]]).map
-      (fun result => match result with | .error .unsupportedCondition => true | _ => false)) =
-        [some true, some true] ∧
-    both [keyedFixed, fixed] (selectedDocument ["A"] [numberCell 8 [1] false]) [every ["Form"]] =
-      filledPair := by native_decide
+example : both [keyedStar, fixed] (selectedDocument ["A"] []) [every ["Form"]] =
+    emptyPair := by native_decide
+
+example : both [keyedStar, fixed] (selectedDocument ["A"] []) [keyRelevant, indexRelevant] =
+    unknownPair := by native_decide
 
 example : [indexed, keyedFixed].map (fun operand =>
     [[operand, starred true], [starred true, operand]].map fun operands =>
@@ -355,5 +366,179 @@ example : ValidationConditionLeaf.evalPartialGroupReaders .groupsNotCollectively
       .error (.checkedDocumentRequired []) ∧
     ValidationConditionLeaf.evalPartialGroupReaders .groupsNotCollectivelyFilled
       [fun () => .ok [.unavailable], fun () => .ok [.empty]] = .ok .unknown := by exact ⟨rfl, rfl⟩
+
+example : ((ValidationRelevanceScope.partialSet [every ["Form"]]).coversDeclaredFieldExtent
+    (model 1999999999) ["Form", "Left", "Seal", "N"] [10] []).toOption = some true := by native_decide
+
+private def coveragePatterns : List RelevantEntityPattern :=
+  [RelevanceIndex.all, .concrete 1, .concrete 2].flatMap fun parent =>
+    [RelevanceIndex.all, .concrete 1, .concrete 2].map fun child =>
+      { path := ["Form", "Rows", "Children"], indices := [.all, parent, child] }
+
+private def coverageSubsets : List (List RelevantEntityPattern) :=
+  coveragePatterns.foldl (fun subsets pattern => subsets ++ subsets.map (pattern :: ·)) [[]]
+
+example : coverageSubsets.all (fun entities =>
+    ((ValidationRelevanceScope.partialSet entities).coversDeclaredFieldExtent
+        (model 2) ["Form", "Rows", "Children", "N"] [20, 30] []).toOption ==
+      some ([1, 2].all fun parent => [1, 2].all fun child => entities.any fun entity =>
+        (entity.projectOntoTarget? ["Form", "Rows", "Children", "N"]).any fun projected =>
+          projected.encompasses { path := ["Form", "Rows", "Children", "N"], indices := [.concrete 1, .concrete parent, .concrete child, .concrete 1] })) = true := by native_decide
+
+private def lowerStars : List SurfaceGroupListOperand :=
+  [keyedStar, keyedLowerStar false false, keyedLowerStar true true, keyedLowerStar true false]
+
+private def lowerDocument (keys : List String) (children parts : List (List Nat))
+    (cells : List ClassifiedCellInput) (key : String := "A") (leftRows : Nat := 0) : DocumentData :=
+  let data := selectedDocument keys cells key
+  { data with instantiatedRows := data.instantiatedRows ++
+      children.map (fun path => { group := 30, path }) ++
+      parts.map (fun path => { group := 40, path }) ++
+      (List.range leftRows).map (fun i => { group := 10, path := [i + 1] }) }
+
+private def childPattern (parent : RelevanceIndex) (child : Nat) : RelevantEntityPattern :=
+  { path := ["Form", "Rows", "Children"], indices := [.all, parent, .concrete child] }
+
+private def completeChildren (parent : RelevanceIndex) : List RelevantEntityPattern :=
+  [1, 2].map (childPattern parent)
+
+example : lowerStars.map (fun operand => both [operand]
+    (lowerDocument ["A"] [[1, 1]] [] []) [every ["Form"]]) =
+      [filledPair, emptyPair, emptyPair, emptyPair] := by native_decide
+
+example : lowerStars.map (fun operand => both [operand]
+    (lowerDocument ["A"] [[1, 1]] [[1, 1, 1]]
+      [numberCell 12 [1, 1] false, numberCell 15 [1, 1, 1] false]) [every ["Form"]]) =
+      [filledPair, filledPair, filledPair, filledPair] := by native_decide
+
+example : lowerStars.map (fun operand => both [operand]
+    (lowerDocument ["A", "B"] [[2, 1]] [[2, 1, 1]]
+      [numberCell 12 [2, 1] false, numberCell 15 [2, 1, 1] false]) [every ["Form"]]) =
+      [emptyPair, emptyPair, emptyPair, emptyPair] ∧
+    lowerStars.map (fun operand => both [operand]
+      (lowerDocument ["A", "B"] [[2, 1]] [[2, 1, 1]]
+        [numberCell 12 [2, 1] false, numberCell 15 [2, 1, 1] false] "B") [every ["Form"]]) =
+      [filledPair, filledPair, filledPair, filledPair] := by native_decide
+
+example : lowerStars.map (fun operand => both [operand]
+    (lowerDocument ["A"] [[1, 1], [1, 2]] [[1, 2, 1], [1, 2, 2]]
+      [numberCell 12 [1, 2] false, numberCell 15 [1, 2, 2] false])
+    [keyRelevant, indexRelevant, childPattern (.concrete 1) 1]) =
+      [filledPair, unknownPair, unknownPair, unknownPair] ∧
+    lowerStars.map (fun operand => both [operand]
+      (lowerDocument ["A"] [[1, 1], [1, 2]] [[1, 2, 1], [1, 2, 2]]
+        [numberCell 12 [1, 2] false, numberCell 15 [1, 2, 2] false])
+      (keyRelevant :: indexRelevant :: completeChildren (.concrete 1))) =
+      [filledPair, filledPair, filledPair, filledPair] := by native_decide
+
+example : lowerStars.map (fun operand => both [operand]
+    (lowerDocument ["A"] [] [] [])
+    [keyRelevant, indexRelevant, childPattern (.concrete 1) 1]) =
+      [unknownPair, unknownPair, unknownPair, unknownPair] ∧
+    lowerStars.map (fun operand => both [operand]
+      (lowerDocument ["A"] [] [] [])
+      (keyRelevant :: indexRelevant :: completeChildren (.concrete 1))) =
+      [emptyPair, emptyPair, emptyPair, emptyPair] := by native_decide
+
+example : ["C", ""].map (fun key => lowerStars.map (fun operand => both [operand]
+    (lowerDocument ["A"] [[1, 1]] [[1, 1, 1]]
+      [numberCell 12 [1, 1] false, numberCell 15 [1, 1, 1] false] key) [every ["Form"]])) =
+      [[emptyPair, emptyPair, emptyPair, emptyPair],
+        [emptyPair, emptyPair, emptyPair, emptyPair]] := by native_decide
+
+example : lowerStars.map (fun operand => both [operand]
+    (lowerDocument ["A", "A"] [[1, 1]] [[1, 1, 1]]
+      [numberCell 12 [1, 1] false, numberCell 15 [1, 1, 1] false]) [every ["Form"]]) =
+      [unknownPair, unknownPair, unknownPair, unknownPair] := by native_decide
+
+example : lowerStars.map (fun operand => both [operand]
+    (lowerDocument ["A"] [[1, 1]] [[1, 1, 1]] [] "C")
+    (keyRelevant :: indexRelevant :: completeChildren .all)) =
+      [emptyPair, emptyPair, emptyPair, emptyPair] ∧
+    lowerStars.map (fun operand => both [operand]
+      (lowerDocument ["A"] [[1, 1]] [[1, 1, 1]] [] "C")
+      (keyRelevant :: indexRelevant :: completeChildren (.concrete 1))) =
+      [unknownPair, unknownPair, unknownPair, unknownPair] ∧
+    lowerStars.map (fun operand => both [operand]
+      (lowerDocument ["A"] [[1, 1]] [[1, 1, 1]] [] "C")
+      [keyRelevant, indexRelevant, childPattern .all 1]) =
+      [unknownPair, unknownPair, unknownPair, unknownPair] := by native_decide
+
+example : lowerStars.map (fun operand => both [operand]
+    (lowerDocument ["A"] [[1, 1]] [[1, 1, 1]]
+      [numberCell 10 [1, 1] true, numberCell 12 [1, 1] true,
+        numberCell 14 [1, 1, 1] true, numberCell 15 [1, 1, 1] true]) [every ["Form"]]) =
+      [filledPair, unknownPair, filledPair, unknownPair] ∧
+    lowerStars.map (fun operand => both [operand]
+      (lowerDocument ["A"] [[1, 1]] [[1, 1, 1]]
+        [numberCell 10 [1, 1] true, numberCell 12 [1, 1] true, numberCell 13 [1, 1] false,
+          numberCell 14 [1, 1, 1] true, numberCell 15 [1, 1, 1] false]) [every ["Form"]]) =
+      [filledPair, filledPair, filledPair, filledPair] := by native_decide
+
+example : lowerStars.map (fun operand => [[operand, fixed], [fixed, operand]].map (fun operands =>
+    [both operands (lowerDocument ["A"] [] [] [numberCell 2 [] false]) [every ["Form"]],
+      both operands (lowerDocument ["A"] [[1, 1]] [[1, 1, 1]]
+        [numberCell 12 [1, 1] false, numberCell 15 [1, 1, 1] false]) [every ["Form"]],
+      both operands (lowerDocument ["A"] [] [] []) [every ["Form"]],
+      both operands (lowerDocument ["A"] [] [] [numberCell 2 [] false]) [fixedRelevant]])) =
+      List.replicate 4 [[filledPair, filledPair, emptyPair, filledPair],
+        [filledPair, filledPair, emptyPair, filledPair]] := by native_decide
+
+example : lowerStars.map (fun operand => [[operand, starred true], [starred true, operand]].map
+    (fun operands =>
+      [both operands (lowerDocument ["A"] [] [] [] "A" 1) [every ["Form"]],
+        both operands (lowerDocument ["A"] [[1, 1]] [[1, 1, 1]]
+          [numberCell 12 [1, 1] false, numberCell 15 [1, 1, 1] false])
+          [keyRelevant, indexRelevant, every ["Form", "Rows", "Children"]],
+        both operands (lowerDocument ["A"] [] [] []) [every ["Form"]],
+        both operands (lowerDocument ["A"] [] [] [] "C") [keyRelevant, indexRelevant]])) =
+      List.replicate 4 [[filledPair, filledPair, emptyPair, unknownPair],
+        [filledPair, filledPair, emptyPair, unknownPair]] := by native_decide
+
+example : lowerStars.map (fun operand => both [operand]
+    (lowerDocument ["A", "B", "C"] [[3, 1]] [] [numberCell 12 [3, 1] false] "C")
+    [every ["Form"]]) = [emptyPair, emptyPair, emptyPair, emptyPair] ∧
+    lowerStars.map (fun operand => both [operand]
+      (lowerDocument ["A"] [[1, 1], [1, 2], [1, 3]] [[1, 3, 1]]
+        [numberCell 12 [1, 3] false, numberCell 15 [1, 3, 1] false]) [every ["Form"]]) =
+      [filledPair, emptyPair, emptyPair, emptyPair] ∧
+    lowerStars.map (fun operand => both [operand]
+      (lowerDocument ["A"] [[1, 1]] [[1, 1, 1], [1, 1, 2], [1, 1, 3]]
+        [numberCell 15 [1, 1, 3] false]) [every ["Form"]]) =
+      [filledPair, emptyPair, filledPair, emptyPair] := by native_decide
+
+example : [GroupFillQuantifier.allGroupsFilled, .notAllGroupsFilled, .groupsNotCollectivelyFilled].all
+    (fun operator => lowerStars.all (fun operand =>
+      match CheckedValidationCondition.fromGroupList (model 2) ["Form"] operator [operand, fixed] with
+      | .error (.starredGroupNotAllowed refused) => refused == operator
+      | _ => false)) = true ∧
+    lowerStars.map (fun operand => both [operand]
+      (lowerDocument ["A"] [] [] []) [every ["Form"]]) =
+      [emptyPair, emptyPair, emptyPair, emptyPair] := by native_decide
+
+example : ((ValidationRelevanceScope.partialSet (completeChildren .all)).coversDeclaredFieldExtent
+    (model 2) ["Form", "Rows", "Children", "N"] [20, 30] [] (some 20)).toOption = some true ∧
+    ((ValidationRelevanceScope.partialSet
+      (completeChildren (.concrete 1) ++ completeChildren (.concrete 2))).coversDeclaredFieldExtent
+      (model 2) ["Form", "Rows", "Children", "N"] [20, 30] [] (some 20)).toOption = some false := by native_decide
+
+example : [1, 2].map (fun parent =>
+    ((ValidationRelevanceScope.partialSet (completeChildren (.concrete 1))).coversDeclaredFieldExtent
+      (model 2) ["Form", "Rows", "Children", "N"] [30] [(20, parent)]).toOption) =
+      [some true, some false] := by native_decide
+
+example :
+    let unbounded := { model 2 with repeatableGroups := (model 2).repeatableGroups.map fun group =>
+      if group.level == 30 then { group with repeatability := none } else group }
+    [completeChildren (.concrete 1), [selectedRow ["Form", "Rows", "Children"]]].map
+      (fun entities => ((ValidationRelevanceScope.partialSet entities).coversDeclaredFieldExtent
+        unbounded ["Form", "Rows", "Children", "N"] [30] [(20, 1)]).toOption) =
+      [some false, some true] := by native_decide
+
+example :
+    let maximum := { model 2 with repeatableGroups := (model 2).repeatableGroups.map fun group =>
+      if group.level == 30 then { group with repeatability := some 1999999999 } else group }
+    ((ValidationRelevanceScope.partialSet (completeChildren (.concrete 1))).coversDeclaredFieldExtent
+      maximum ["Form", "Rows", "Children", "N"] [30] [(20, 1)]).toOption = some false := by native_decide
 
 end A12Kernel.Conformance.PartialGroupList

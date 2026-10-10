@@ -482,12 +482,12 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 <a id="cap-group-list-count-terminals"></a>
 #### Group-list/count terminals
 
-- `boundary`: Repeatable terminals count structural rows; fixed terminals below stars read each selected ancestor environment. The certificate requires a field anywhere in the terminal's subtree, including a descendant-only witness.
+- `boundary`: Repeatable terminals count structural rows; fixed below-star terminals read descendant content at each selected ancestor. Certificates require a field somewhere in the terminal subtree.
 - `owner`: [`StarGroup.lean`](../../A12Kernel/Elaboration/StarGroup.lean), [`ValidationCondition/`](../../A12Kernel/Elaboration/ValidationCondition/).
-- `assurance`: Bounded terminal laws and cases cover repeated-star occurrence, zero-row polarity, bound-prefix admission and fixed-terminal composition; no independent consumer qualification.
-- `admission`: The [empty-terminal separator](../sources/group-and-iteration-probes.md#src-empty-declared-group) settles `MVK_GROUP_IS_EMPTY`. `StarredGroupElabError.emptyGroupDiagnostic?` covers entity lists, five group-list predicates and group counts on both arms, before the predicate star gate ([matrix](../sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)). [SG9](../gaps/paths-and-groups.md#gap-sg9) owns unmapped shapes; provenance retains the outbound reconciliation.
-- `partial`: All five predicates accept direct fields, fixed groups, selected fields and selected fixed groups. The two star-admitting predicates also combine independent terminal/below-star operands through declared-position presence. Keyed stars remain unsupported. Uncovered missing positions stay unavailable; descendant relevance exposes structural row content.
-- `assurance`: [Mixed lists](../sources/group-count-topology.md#src-mixed-group-predicates) and [selected operands](../sources/group-count-topology.md#src-selected-group-predicates) match full/partial validation. [Partial locks](../../A12Kernel/Conformance/PartialGroupList.lean) and the delegation theorem cover this route; [SG13](../gaps/paths-and-groups.md#gap-sg13) owns exclusions.
+- `assurance`: Laws and cases cover repeated stars, zero-row polarity, bound prefixes and fixed terminals; no independent consumer qualification.
+- `admission`: The [empty-terminal separator](../sources/group-and-iteration-probes.md#src-empty-declared-group) settles `MVK_GROUP_IS_EMPTY`. Its diagnostic covers entity lists, five predicates and counts on both arms, before the predicate star gate ([matrix](../sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers)); [SG9](../gaps/paths-and-groups.md#gap-sg9) owns unmapped shapes.
+- `partial`: All five predicates accept direct fields, fixed groups and selected fields/fixed groups. The two star-admitting predicates also combine ordinary or keyed lower stars. Missing positions stay unavailable without coverage; descendant relevance exposes structural terminal content.
+- `assurance`: The [keyed-star matrix and adjacent baselines](../sources/group-count-topology.md#src-keyed-star-predicates) calibrate full/partial validation. [Partial locks](../../A12Kernel/Conformance/PartialGroupList.lean) and the delegation theorem cover the shared route; [SG13](../gaps/paths-and-groups.md#gap-sg13) owns exclusions.
 
 
 ### §10 — paths and references

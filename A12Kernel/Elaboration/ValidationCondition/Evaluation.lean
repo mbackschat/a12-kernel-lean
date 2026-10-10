@@ -76,7 +76,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .groupList operator operands =>
       operands.all fun
         | .field _ | .indexed _ | .group _ => true
-        | .keyed source => source.isGroup && !source.isStarredGroup
+        | .keyed source => source.isGroup && (!source.isStarredGroup || operator.toStarredGroupFillQuantifier?.isSome)
         | .starredGroup _ | .starredGroupPresence _ => operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
   | .stringExpression _ => true
@@ -242,8 +242,33 @@ private def partialStarredGroupStates (operator : StarredGroupFillQuantifier)
         return true
   pure [if ← allEmpty (path.axes.drop path.firstStar) bound then .empty else .unavailable]
 
+/-- A selected parent binds only the indexed level; lower group stars keep their declared
+positions. A missing parent needs wildcard coverage there and complete lower-slot coverage
+(keyed-star predicate matrix, spec/10 §5). -/
+private def partialKeyedStarStates (operator : StarredGroupFillQuantifier)
+    (source : CheckedKeyedEntityExtent model) (document : CheckedDocument model)
+    (scope : ValidationRelevanceScope) (outer : Env)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
+    (resolveGroup : PartialGroupResolver) : Except CheckedAddressingError (List GroupListPresenceState) := do
+  let view ← document.applyPartialGeneratedPreliminaryForScope scope |>.mapError .indexPreliminary
+  match ← source.selection.indexSource.selectPartial view outer read with
+  | none | some (.unknown _) | some (.poison _) => pure [.unavailable]
+  | some .empty =>
+      if operator == .atLeastOneGroupFilled then return []
+      let bound := source.selection.indexDeclaration.repeatableScope.dropLast
+      let complete ← source.declarations.allM fun declaration =>
+        view.relevance.coversDeclaredFieldExtent model declaration.path
+          (declaration.repeatableScope.drop bound.length) outer
+          (some source.selection.indexSource.group.level) |>.mapError .addressing
+      pure [if complete then .empty else .unavailable]
+  | some (.value environment) =>
+      let some axes := model.repeatableAxesForScope? (model.repeatableScopeForGroupPath source.groupPath)
+        | throw (.addressing (.unsupportedGroupOperand source.groupPath))
+      partialStarredGroupStates operator { axes, firstStar := source.boundLevelCount }
+        source.groupPath document.source.toDocument environment resolveGroup
+
 /-- Delay presence reads until the predicate reaches their authored position. Selected fixed
-groups share the scalar group-state query; keyed stars need a separate extent interpretation. -/
+groups share the scalar state query; selected stars retain the lower declared extent. -/
 def partialGroupOperandStates? (operator : GroupFillQuantifier)
     (context : AddressedValidationEvaluationContext model) (scope : ValidationRelevanceScope)
     (isRelevant : FlatRelevance) (resolveGroup : PartialGroupResolver)
@@ -264,12 +289,17 @@ def partialGroupOperandStates? (operator : GroupFillQuantifier)
           let observation ← source.observePartialDocument checked scope context.outer context.readPartialCell
           pure [observation.map CellObservation.asGroupListPresence |>.getD .unavailable]
   | .keyed source =>
-      if !source.isGroup || source.isStarredGroup then none else
+      if !source.isGroup then none else
       match context.input with
       | .legacy _ _ => none
-      | .checked checked | .partialView checked _ => some fun () => do
-          let state ← source.partialGroupState checked scope context.outer context.readPartialCell
-          pure [state.map GroupPresenceState.asGroupListPresence |>.getD .unavailable]
+      | .checked checked | .partialView checked _ =>
+          if source.isStarredGroup then do
+            let selected ← operator.toStarredGroupFillQuantifier?
+            pure fun () => partialKeyedStarStates selected source checked scope context.outer
+              context.readPartialCell resolveGroup
+          else some fun () => do
+            let state ← source.partialGroupState checked scope context.outer context.readPartialCell
+            pure [state.map GroupPresenceState.asGroupListPresence |>.getD .unavailable]
   | .group reference => some fun () => do
       pure [(← resolveGroup reference.path context.outer).derive.asGroupListPresence]
   | .starredGroup source => do

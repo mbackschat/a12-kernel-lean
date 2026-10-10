@@ -27,6 +27,8 @@ Dependencies point downward through that list. A semantic module never imports e
 
 [`A12Kernel.lean`](../A12Kernel.lean), [`A12Kernel/Proofs.lean`](../A12Kernel/Proofs.lean), and [`A12Kernel/Conformance.lean`](../A12Kernel/Conformance.lean) are import-only roots and the authoritative import inventories. Feature-to-module navigation belongs in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), not here.
 
+[`ValidationRelevance.lean`](../A12Kernel/Elaboration/ValidationRelevance.lean) owns relevance patterns, coordinate coverage and group relevance independently of authored star-path lowering. [`StarPath.lean`](../A12Kernel/Elaboration/StarPath.lean) consumes that boundary; declared-slot coverage partitions the input patterns while runtime group traversal retains its separate topology and short-circuit policy.
+
 Every semantic meaning is version-scoped. [`Basic.lean`](../A12Kernel/Basic.lean) records kernel 30.8.1; the reference adapter advertises its separate normalized semantics identity. Before a second kernel behavior version or stable multi-version library API makes the current unversioned meaning ambiguous, migrate the semantic namespace to the reserved `A12Kernel.V30_8_1` shape rather than hiding a parallel evaluator behind the current names.
 
 ## Core representation decisions

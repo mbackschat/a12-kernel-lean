@@ -247,3 +247,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: The two starred group predicates combine relevance-selected presence over declared positions, including missing rows. Uncovered absence cannot prove `NoGroupFilled`. A covered descendant exposes an instantiated terminal row as structural content even when the descendant is empty; fixed below-star groups still need admitted content.
 - `basis`: [Mixed group-predicate matrix](sources/group-count-topology.md#src-mixed-group-predicates), both Kernel strategies on 99 rows. Lean's full route agreed; its partial route refused mixtures and could emit a negative message for an uncovered absent group. No peer defect is claimed.
 - `acceptance`: Reconcile declared-coordinate uncertainty, descendant relevance, repeated operands, independent mixtures and operand-order controls. Preserve capacity filtering, group-count first-instance strictness and computation's distinct semantics. Reuse retained observations; return an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.
+
+
+<a id="spec-2026-10-10-21"></a>
+### SPEC-2026-10-10-21 — keyed lower-star group predicates retain declared coverage
+
+- `status`: pending
+- `canonical`: [Selected-parent partial group predicates](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
+- `delta`: The two star-admitting group predicates bind the indexed parent and retain each lower declared group position. A missing parent needs wildcard coverage at the indexed level and complete lower-slot coverage; concrete lower coordinates can jointly cover finite capacity, while concrete parent coordinates cannot replace the wildcard. Terminal structural content and fixed-child content remain distinct.
+- `basis`: [Keyed-star predicate matrix](sources/group-count-topology.md#src-keyed-star-predicates), both Kernel strategies agreeing on 159 rows across one and two reopened levels, fixed and independent-star mixtures, key failure/absence and capacity controls. No peer defect is claimed.
+- `acceptance`: Reconcile selected-parent identity and missing-parent/lower-slot coverage for both predicates. Preserve the ordinary star-admission gates, duplicate-key unavailability and count/computation distinctions. Return an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.

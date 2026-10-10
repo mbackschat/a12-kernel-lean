@@ -1,0 +1,16 @@
+{
+  "target": "model",
+  "op": "new",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "created model KeyedStars_DM",
+  "changed": {
+    "id": "KeyedStars_DM",
+    "root": "Form",
+    "locale": "en_US"
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "KeyedStars_DM.json"
+}
