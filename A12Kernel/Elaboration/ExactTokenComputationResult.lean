@@ -1,6 +1,6 @@
 import A12Kernel.Semantics.FirstFilledValue
-import A12Kernel.Semantics.StringComputation
-import A12Kernel.Elaboration.StringComputationRunResult
+import A12Kernel.Semantics.StringComputationRunResult
+import A12Kernel.Elaboration.StringComputationSourceTarget
 
 /-! # Exact-token computation target projection
 

@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.EnumerationComputation
-import A12Kernel.Elaboration.StringComputationRunApplication
+import A12Kernel.Semantics.StringComputationApplicationFold
 
 /-! # Ordinary Enumeration computation result and application
 

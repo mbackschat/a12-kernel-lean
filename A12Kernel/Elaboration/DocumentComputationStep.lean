@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.StringCascade
 import A12Kernel.Elaboration.ComputationNumericGuard
 import A12Kernel.Elaboration.BooleanConstantComputation
 import A12Kernel.Elaboration.BooleanFirstFilledComputation

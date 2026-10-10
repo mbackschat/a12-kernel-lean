@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.EnumerationComputationResult
 import A12Kernel.Proofs.ExactTokenComputationResult
-import A12Kernel.Proofs.StringComputationRunApplication
+import A12Kernel.Proofs.StringComputationApplicationFold
 
 /-! # Ordinary Enumeration computation result and application laws -/
 

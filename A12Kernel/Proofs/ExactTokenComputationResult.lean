@@ -1,6 +1,5 @@
 import A12Kernel.Elaboration.ExactTokenComputationResult
-import A12Kernel.Elaboration.StringComputationRunResult
-import A12Kernel.Proofs.StringComputationRunApplication
+import A12Kernel.Proofs.StringComputationApplicationFold
 
 /-! # Exact-token computation target projection laws -/
 
