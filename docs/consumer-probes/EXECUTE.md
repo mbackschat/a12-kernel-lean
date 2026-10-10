@@ -318,3 +318,37 @@ Bounded Execute transport works across exact-address application, the admitted g
 - `wrong-accounts`: The answers reject eager filtering, payload-first evaluation, unavailable fall-through, a global sparse policy, sparse-at-100, blank-as-absent occupancy and inventory-derived dependency graphs. Positive and negative group predicates retain different static consequences.
 - `questions-and-guesses`: No semantic guess or unresolved in-scope decision. Individual candidate identities omitted from Q3 and graph construction after an authoring rejection were correctly left unspecified.
 - `exclusions`: The frozen task exclusions apply. This establishes bounded knowledge transport, not an executable consumer, additional Kernel correspondence, partial-validation support, shipment or general qualification.
+
+
+<a id="task-message-cache-context-readback"></a>
+## Message-cache context — frozen Execute/Explain task
+
+- `task`: Recover post-admission pointer lookup and structural reference decisions from [spec/08 §4.3](../../spec/08-paths-and-references.md#43-selected-references-in-validation-messages). No model parsing, admission or host-order generation is requested.
+- `allowlist`: The complete canonical §4.3 excerpt and Q1–Q6 below, with links treated as provenance only. Lean, expected answers, evidence and source checkpoints are withheld.
+
+Coordinates are identified by (group, parent, normalized key). A supplied ordered association sequence is actual cache insertion order, not document order. All numbered rows and parent coordinates are positive.
+
+Q1. Exact supplied insertions, in order: (G,[1],"b",2), (G,[1],"b",1), (G,[2],"b",4), (H,[1],"b",5). Resolve (G,[1],"b"), (G,[2],"b"), (H,[1],"b"), (G,[1],"z"), (G,[1],absent key), (G,[1],empty text). An independent branch fired the message; the duplicate payload read is unavailable. Does that change reference membership or the three concrete coordinates?
+
+Q2. The model has one eligible singleton Enumeration index with a nonempty declared default "a". Its authored cell is formally invalid and contributes no admitted original index association. Compare full and partial pointer lookup for "a"; say whether either result permits treating the authored value as available. All default eligibility preconditions besides this invalid cell are supplied as satisfied.
+
+Q3. One cache population contains a host-sensitive association (G,[1],"b") with two possible winners and an independently determined association (H,[1],"s") at row3. No actual host order is supplied. Resolve each query and an absent key in G. May the consumer discard all G entries before deriving H? Explain the required information it must retain.
+
+Q4. Repeat Q3 with two alternate exact supplied cache states: first contains (G,[1],"b",1), second contains (G,[1],"b",2); both also contain (H,[1],"s",3). What may an evaluator return for G? Is choosing row1 as a stable universal fallback justified when neither state is supplied?
+
+Q5. A selected group sits inside parent [7], has an index-field pointer, and includes a payload field beneath one further repeated level selected by star. Resolve payload/index coordinates when the selected lookup yields row2, then when it yields no association. The key is a literal. Which key-field reference is required?
+
+Q6. State the refusal/unknown distinction and the retained information needed by an independent evaluator or explainer. What does success on this task establish, and which earlier phases or wider correctness claims does it leave untested?
+
+<a id="run-message-cache-context-readback-01"></a>
+### Message-cache context — `message-cache-context-readback-01`
+
+- `task`: [Frozen task](#task-message-cache-context-readback)
+- `status`: green, 2026-10-10
+- `semantic-basis`: `f692fa64`
+- `consumer-access`: Fresh MEDIUM context, one scratch packet containing only the task and verbatim canonical clause; no repository, linked sources, Lean, evidence, Kernel, network, edits or delegation.
+- `oracle`: HIGH compared 15 consumer decisions with the compiled `MessageIndexContext.lookup` and normal parser/lowerer/reference-projection APIs using a disposable stdin program. All agree. Q1's membership/read distinction and Q2's authored-invalid distinction additionally agree with the retained selected-reference and default controls; those are distinct from the 15 cache/projection checks.
+- `result`: Exact overwrite order resolves Q1 to rows 1, 4 and 5 in their separate namespaces; missing, empty and absent keys remain unknown. Full-only defaults supply a pointer without curing authored invalidity. Q3 preserves stable H/row3 despite unresolved G, retaining all population contributions. Both supplied G winners in Q4 are admissible context results. Q5 retains parent 7, selected row or unknown, a lower wildcard and no literal-key field pointer.
+- `limit`: Missing host information is underdetermination, not Kernel UNKNOWN or an observed Kernel refusal. The reader correctly noted that the clause does not prescribe an API error representation; Lean's explicit host-order error is its reference-API response to insufficient context. This task does not exercise population construction, exact host ordering, all partial profiles, model admission, firing, public transport or general consumer correctness.
+- `economy`: One isolated readback and one cached stdin execution, with no implementation, dependency, permanent runner or population replay. HIGH reviewed the answers and actual API comparison. Token and elapsed-time savings were not measured.
+- `disposition`: No semantic correction found. The bounded context boundary transports; remaining producer and profile obligations stay in the [cache matrix](../gaps/paths-and-groups.md#gap-sg29-cache-order).
