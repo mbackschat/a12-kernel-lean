@@ -54,13 +54,7 @@ def resolveSelectedOverlapCore (source : CheckedSemanticIndexSource model)
   let preliminary ← document.applySelectedFullIndexPreliminary [source.indexDeclaration.id]
     |>.mapError .indexPreliminary
   let column ← source.resolvePreliminaryColumn preliminary outer |>.mapError .semanticIndex
-  let keyCell ← match source.key with
-    | .literal .. => pure (checkAdmittedRawCell .empty)
-    | .field declaration => do
-        let address ← document.cellAddress outer declaration.id
-        preliminary.readAuthoredValidation address |>.mapError .document
-  let key ← source.observeCurrentKey .validation (fun _ => keyCell)
-    (document.storedTextIn outer) |>.mapError .semanticIndex
+  let key ← source.observePreparedKey preliminary outer .validation
   match column.lookupEnvironment .validation source.numericIndex key with
   | .empty => pure (.selected .empty)
   | .unknown cause => pure (.selected (.unknown cause))

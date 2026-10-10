@@ -341,4 +341,57 @@ example : admission selectedGroup = some "accepted" ∧ admission selectedLower 
     admission "AtLeastOneDateRangeOverlaps(A In Rows/Ranges For \"one\", Rows/Ranges For \"one\")" =
       some "MVK_DUPLICATE_PARAM1" := by native_decide
 
+private def implicitModel (format : String) : FlatModel := {
+  fields := [
+    { rangeField 1 "A" with dateRangePolicy := some { format, separator := "/" } },
+    { id := 2, name := "Key", groupPath := ["Form", "Parents"], repeatableScope := [1], policy := { kind := .string } },
+    { id := 3, name := "Code", groupPath := ["Form", "Parents", "Rows"], repeatableScope := [1, 10], policy := { kind := .string } },
+    { rangeField 4 "Span" with groupPath := ["Form", "Parents", "Rows"], repeatableScope := [1, 10], dateRangePolicy := some { format, separator := "/" } }]
+  repeatableGroups := [
+    { level := 1, path := ["Form", "Parents"], repeatability := some 2 },
+    { level := 10, path := ["Form", "Parents", "Rows"], repeatability := some 2, indexField := some 3 }] }
+
+private def implicitOverlap (format span expression : String) (row : Nat) :
+    Option (Except CheckedAddressingError Verdict) := do
+  let testModel := implicitModel format
+  let dm : DmModel := { flat := testModel, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
+  let data := Lean.Json.mkObj [("Form", .mkObj [
+    ("A", .str span), ("Parents", .arr #[.mkObj [
+      ("Key", .str "one"), ("Rows", .arr #[.mkObj [("Code", .str "one"), ("Span", .str span)]])]])])]
+  let raw ← (readDocument dm data).toOption
+  if !raw.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler testModel).toOption
+  let document ← (checkDocument prepared "en_US" raw.data).toOption
+  let parsed ← (parseText .english expression).toOption
+  let condition ← (lowerCondition testModel ["Form", "Parents"] false parsed.body).toOption
+  pure (condition.core.evalAddressed {
+    scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }
+    outer := [(1, row)], input := .checked document })
+
+private def implicitExpressions := [
+  "DateRangesOverlap(Rows/Span For Key, ../A)",
+  "DateRangesOverlap(../A, Rows/Span For Key)",
+  "AtLeastOneDateRangeOverlaps(Rows/Span For Key In ../A)",
+  "AtLeastOneDateRangeOverlaps(../A In Rows/Span For Key)"]
+
+private def implicitMatches (format span expression : String) (row : Nat)
+    (expected : Except CheckedAddressingError Verdict) : Bool :=
+  match implicitOverlap format span expression row, expected with
+  | some (.ok actual), .ok expected => actual == expected
+  | some (.error actual), .error expected => actual == expected
+  | _, _ => false
+
+example : [("yyyy-MM-dd", january), ("MM", "01/02")].all (fun (format, span) =>
+    implicitExpressions.all (fun expression =>
+      implicitMatches format span expression 1 (.ok (.fired .value)))) = true := by native_decide
+
+example : [("yyyy-MM-dd", january), ("MM", "01/02")].all (fun (format, span) =>
+    implicitExpressions.all (fun expression =>
+      implicitMatches format span expression 2 (.ok .notFired))) = true := by native_decide
+
+example : [("yyyy-MM-dd", january), ("MM", "01/02")].all (fun (format, span) =>
+    implicitExpressions.all (fun expression =>
+      implicitMatches format span expression 3
+        (.error (.document (.missingRow { group := 1, path := [3] }))))) = true := by native_decide
+
 end A12Kernel.Dm.IndexedOverlapLocks

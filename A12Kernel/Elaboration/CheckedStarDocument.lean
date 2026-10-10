@@ -571,6 +571,27 @@ def resolveCheckedGroupEntityOperandCore
 
 end CheckedDocument
 
+/-- Observe a selected key in its phase's coordinate domain, preserving preliminary overlays.
+Full validation may supply implicit coordinates; computation retains physical addressing
+(spec/07 §1 and spec/08 §4.1–4.2). -/
+def CheckedSemanticIndexSource.observePreparedKey (source : CheckedSemanticIndexSource model)
+    (preliminary : CheckedIndexPreliminary model) (outer : Env) (phase : Phase) :
+    Except CheckedAddressingError CellObservation := do
+  let keyCell ← match source.key with
+    | .literal .. => pure (checkAdmittedRawCell .empty)
+    | .field declaration =>
+        match phase with
+        | .validation => do
+            -- Full-rule coordinates can be implicit; retain the existing validation domain and preliminary overlays (spec/07 §1, spec/08 §4.1).
+            let addressed ← preliminary.base.fullValidationAddressedCell outer declaration.id
+            pure (preliminary.annotateCell addressed.address
+              (preliminary.stagedCell addressed.address addressed.cell))
+        | .computation => do
+            let address ← preliminary.base.cellAddress outer declaration.id
+            preliminary.readAuthoredValidation address |>.mapError .document
+  source.observeCurrentKey phase (fun _ => keyCell)
+    (preliminary.base.storedTextIn outer) |>.mapError .semanticIndex
+
 /-- Full validation reads the selected target through the same checked preliminary column as counts.
 The index owns generated findings; the document owns the current key spelling (`spec/08` §4.2). -/
 def CheckedSemanticIndexSource.observeDocument (source : CheckedSemanticIndexSource model)
@@ -579,20 +600,7 @@ def CheckedSemanticIndexSource.observeDocument (source : CheckedSemanticIndexSou
   let preliminary ← document.applySelectedFullIndexPreliminary [source.indexDeclaration.id]
     |>.mapError .indexPreliminary
   let column ← source.resolvePreliminaryColumn preliminary outer |>.mapError .semanticIndex
-  let keyCell ← match source.key with
-    | .literal .. => pure (checkAdmittedRawCell .empty)
-    | .field declaration =>
-        match phase with
-        | .validation => do
-            -- Full-rule coordinates can be implicit; retain the existing validation domain and preliminary overlays (spec/07 §1, spec/08 §4.1).
-            let addressed ← document.fullValidationAddressedCell outer declaration.id
-            pure (preliminary.annotateCell addressed.address
-              (preliminary.stagedCell addressed.address addressed.cell))
-        | .computation => do
-            let address ← document.cellAddress outer declaration.id
-            preliminary.readAuthoredValidation address |>.mapError .document
-  let key ← source.observeCurrentKey phase (fun _ => keyCell)
-    (document.storedTextIn outer) |>.mapError .semanticIndex
+  let key ← source.observePreparedKey preliminary outer phase
   pure (column.lookupObservationForIndex phase source.numericIndex key)
 
 
