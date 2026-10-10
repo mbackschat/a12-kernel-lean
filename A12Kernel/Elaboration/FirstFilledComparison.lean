@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.PartialSemanticIndex
+import A12Kernel.Elaboration.DeclaredPartialFields
 import A12Kernel.Elaboration.FieldFillList
 import A12Kernel.Elaboration.TemporalExpression
 import A12Kernel.Semantics.DateRangeComparison
@@ -263,28 +263,25 @@ private def CheckedFirstFilledComparisonOperand.evaluate
       let result ← (scanTypedFirstFilled (world := context.world) document outer source.source.operands {}).mapError Sum.inl
       pure (projectFirstFilledValue model source.first result)
 
-private def partialFirstFilledAddresses (document : CheckedDocument model) (outer : Env) :
-    CheckedFieldFillOperand model → Except CheckedAddressingError (List (FlatFieldDecl × Env))
-  | .field declaration => pure [(declaration, outer)]
-  | .star source => do
-      let resolved ← (source.source.path.resolveInCapacity document.source.toDocument outer).mapError .addressing
-      pure (resolved.environments.map (source.source.declaration, ·))
-  | .group source => do
-      let (reads, _) ← (model.groupOperandReads document.source.toDocument outer
-        source.source.boundLevelCount source.declarations (·.repeatableScope)).mapError .addressing
-      pure reads
+private def partialFirstFilledFields? (outer : Env) :
+    CheckedFieldFillOperand model → Except CheckedAddressingError (Option DeclaredPartialFields)
+  | .field declaration => pure (some { addresses := [(declaration, outer)] })
+  | .star source => declaredPartialFields? model [source.source.declaration]
+      source.source.path.firstStar outer
+  | .group source => declaredPartialFields? model source.declarations
+      source.source.boundLevelCount outer
   | .indexed _ | .keyed _ => throw .unsupportedIndexedFillQuantifier
 
 private def scanPartialFirstFilledCells {model : FlatModel} (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
+    (fields : DeclaredPartialFields) :
     List (FlatFieldDecl × Env) → FirstFilledScanState →
       Except CheckedAddressingError (FirstFilledScanState ⊕ Option (SimpleComparisonOperand Value))
   | [], state => pure (.inl state)
   | (declaration, row) :: rest, state => do
-      if !scope.coversCell model declaration.path row then return .inr none
-      let some cell ← read row declaration.id | return .inr none
+      let some cell ← fields.readCell? model scope read declaration row | return .inr none
       match scanFirstFilledObservations [observeCell .validation cell] state with
-      | .inl next => scanPartialFirstFilledCells (model := model) scope read rest next
+      | .inl next => scanPartialFirstFilledCells (model := model) scope read fields rest next
       | .inr result => pure (.inr (some result))
 
 private def scanPartialTypedFirstFilled (document : CheckedDocument model) (outer : Env)
@@ -300,17 +297,19 @@ private def scanPartialTypedFirstFilled (document : CheckedDocument model) (oute
         | _ => none
       let step ← match selected with
         | some source => do
-            match ← resolvePartialSelectedAddresses source document scope outer read with
+            match ← resolveDeclaredPartialSelected source document scope outer read with
             | none => pure (.inr none)
             | some (.unknown cause) | some (.poison cause) => pure (.inr (some (.unknown cause)))
             | some .empty => pure (.inl (state.enterSelection true false false))
-            | some (.value (cells, hasTail)) =>
-                scanPartialFirstFilledCells (model := model) scope read cells
-                  (state.enterSelection cells.isEmpty hasTail false)
+            | some (.value fields) =>
+                scanPartialFirstFilledCells (model := model) scope read fields fields.addresses
+                  (state.enterSelection fields.addresses.isEmpty false false)
         | none => do
-            let cells ← partialFirstFilledAddresses document outer operand
-            scanPartialFirstFilledCells (model := model) scope read cells
-              (state.enterSelection cells.isEmpty false false)
+            match ← partialFirstFilledFields? outer operand with
+            | none => pure (.inr none)
+            | some fields =>
+                scanPartialFirstFilledCells (model := model) scope read fields fields.addresses
+                  (state.enterSelection fields.addresses.isEmpty false false)
       match step with
       | .inl next => scanPartialTypedFirstFilled document outer scope read rest next
       | .inr result => pure result

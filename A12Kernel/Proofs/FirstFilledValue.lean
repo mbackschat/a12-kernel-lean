@@ -8,6 +8,19 @@ These laws characterize the ordered resolved Number scan, its two projections, c
 
 namespace A12Kernel
 
+/-- Once an empty prefix is observed, an additional empty coordinate cannot change selection or
+its provenance. This is the local rewrite used when expanding uniformly relevant omitted tails
+in finite unfiltered partial walks (RuntimeController.combineFeldListe; spec/10 §5). -/
+theorem scanFirstFilledItems_repeated_empty_prefix
+    (cells : List (ValueListCell kind)) (state : FirstFilledScanState) :
+    scanFirstFilledItems id (.empty :: .empty :: cells) state =
+      scanFirstFilledItems id (.empty :: cells) state := by rfl
+
+theorem scanFirstFilledObservations_repeated_empty_prefix
+    (cells : List (CellObservation α)) (state : FirstFilledScanState) :
+    scanFirstFilledObservations (.empty :: .empty :: cells) state =
+      scanFirstFilledObservations (.empty :: cells) state := by rfl
+
 /-- Once typed selection reaches a value or formal cause, appending any suffix preserves its
 result, including missing-prefix provenance. This is the selection-order law consumers need
 before deciding whether a list rewrite can expose additional reads (spec/07). -/

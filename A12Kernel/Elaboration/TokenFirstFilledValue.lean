@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.PartialSemanticIndex
+import A12Kernel.Elaboration.DeclaredPartialFields
 import A12Kernel.Elaboration.TokenEntityList
 import A12Kernel.Semantics.FirstFilledValue
 
@@ -304,28 +304,38 @@ def evaluateCheckedFirstFilledValidation?
   else
     pure none
 
-private def checkedPartialTokenAddresses (document : CheckedDocument model) (outer : Env) :
+private def checkedPartialTokenFields? (outer : Env) :
     CheckedTokenEntityOperand model →
-      Except CheckedAddressingError (List (FlatFieldDecl × FlatTextFieldOperand × Env))
+      Except CheckedAddressingError
+        (Option (DeclaredPartialFields × List (FlatFieldDecl × FlatTextFieldOperand × Env)))
   | .selected source => throw (.addressing (.unsupportedGroupOperand source.path))
-  | .field source => pure [(source.declaration, source.operand, outer)]
+  | .field source => pure (some
+      ({ addresses := [(source.declaration, outer)] }, [(source.declaration, source.operand, outer)]))
   | .star source => do
-      let resolved ← (source.source.path.resolveInCapacity document.readDocument outer).mapError .addressing
-      pure (resolved.environments.map (source.source.declaration, source.operand, ·))
+      let some fields ← declaredPartialFields? model [source.source.declaration]
+          source.source.path.firstStar outer | return none
+      pure (some (fields, fields.addresses.map fun (declaration, row) =>
+        (declaration, source.operand, row)))
   | .group source => do
-      let (reads, _) ← (model.groupOperandReads document.readDocument outer
-        source.source.boundLevelCount source.slots (·.declaration.repeatableScope)).mapError .addressing
-      pure (reads.map fun (slot, row) => (slot.declaration, slot.operand, row))
+      let some fields ← declaredPartialFields? model (source.slots.map (·.declaration))
+          source.source.boundLevelCount outer | return none
+      let cells ← fields.addresses.mapM fun (declaration, row) => do
+        let some slot := source.slots.find? (·.declaration.id == declaration.id)
+          | throw (.checkedDocumentRequired source.groupPath)
+        pure (declaration, slot.operand, row)
+      pure (some (fields, cells))
 
 private def scanCheckedPartialTokenCells {model : FlatModel} (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell)
+    (fields : DeclaredPartialFields) :
     List (FlatFieldDecl × FlatTextFieldOperand × Env) → FirstFilledScanState →
       Except CheckedAddressingError (FirstFilledScanState ⊕ PartialValidationFirstFilledTokenResult)
   | [], state => pure (.inl state)
   | (declaration, operand, row) :: rest, state => do
-      if !scope.coversCell model declaration.path row then return .inr .nonRelevant
-      match state.step (operand.checkedValueListCellAt .validation (← read row declaration.id)) with
-      | .continue next => scanCheckedPartialTokenCells (model := model) scope read rest next
+      let some cell ← fields.readCell? model scope (fun row field => some <$> read row field) declaration row
+        | return .inr .nonRelevant
+      match state.step (operand.checkedValueListCellAt .validation cell) with
+      | .continue next => scanCheckedPartialTokenCells (model := model) scope read fields rest next
       | .done result => pure (.inr (.evaluated result.asToken))
 
 private def scanCheckedPartialTokenOperands (document : CheckedDocument model) (outer : Env)
@@ -336,21 +346,23 @@ private def scanCheckedPartialTokenOperands (document : CheckedDocument model) (
   | operand :: rest, state => do
       let step ← match operand with
         | .selected source => do
-            match ← resolvePartialSelectedAddresses source.source document scope outer (fun row field => some <$> read row field) with
+            match ← resolveDeclaredPartialSelected source.source document scope outer (fun row field => some <$> read row field) with
             | none => pure (.inr .nonRelevant)
             | some (.unknown cause) | some (.poison cause) => pure (.inr (.evaluated (.unavailable cause)))
             | some .empty => pure (.inl (state.enterSelection true false false))
-            | some (.value (addresses, hasTail)) =>
-                let cells ← addresses.mapM fun (declaration, row) => do
+            | some (.value fields) =>
+                let cells ← fields.addresses.mapM fun (declaration, row) => do
                   let some slot := source.slots.find? (·.declaration.id == declaration.id)
                     | throw (.checkedDocumentRequired source.path)
                   pure (declaration, slot.operand, row)
-                scanCheckedPartialTokenCells (model := model) scope read cells
-                  (state.enterSelection cells.isEmpty hasTail false)
+                scanCheckedPartialTokenCells (model := model) scope read fields cells
+                  (state.enterSelection fields.addresses.isEmpty false false)
         | _ => do
-            let cells ← checkedPartialTokenAddresses document outer operand
-            scanCheckedPartialTokenCells (model := model) scope read cells
-              (state.enterSelection cells.isEmpty false false)
+            match ← checkedPartialTokenFields? outer operand with
+            | none => pure (.inr .nonRelevant)
+            | some (fields, cells) =>
+                scanCheckedPartialTokenCells (model := model) scope read fields cells
+                  (state.enterSelection cells.isEmpty false false)
       match step with
       | .inl next => scanCheckedPartialTokenOperands document outer scope read rest next
       | .inr result => pure result
