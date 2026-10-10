@@ -6,6 +6,13 @@ The exact-address repeatable half of §11. Scalar, fixed, and nonrepeatable comp
 
 ### §11 — calculations and formal checking
 
+<a id="cap-captured-filter-scopes"></a>
+#### Caller-scope preservation in checked filters
+
+- `boundary`: Temporal uniqueness retains each filter's caller scopes when certifying guard reuse. Date, Time and DateTime guards reject root/sibling reuse but admit the captured row and descendants; candidate-only filters remain root-reusable. Number/token controls and leading-direct compositions use the same scope criterion.
+- `boundary`: Projected token lists preserve explicit binding scope through path admission and use explicit binding, target, then written scope for filter certification. A written path alone supplies no missing caller binding. Root-declared row targets and row declarations retain identical category-filter evaluation.
+- `assurance`: [Captured-scope locks](../../A12Kernel/Reference/Dm/CapturedFilterScopeLocks.lean) cover reuse decisions, binding precedence and validation/computation counts. These are internal API corrections under the [captured-row account](../sources/having-filter-probes.md#src-correlated-filter-runtime); their new carrier/profile combinations remain externally uncalibrated. Analyze/Transform must retain caller scope when relocating a guard.
+
 <a id="cap-repeatable-string-constant-computation"></a>
 #### Repeatable ordinary String constant
 

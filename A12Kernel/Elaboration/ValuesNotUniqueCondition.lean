@@ -44,7 +44,11 @@ def referencesField (source : CheckedValuesNotUniqueCondition model) (field : Fi
 def bindingScopes : CheckedValuesNotUniqueCondition model → List (List RepeatableLevel)
   | .number source => source.bindingScopes
   | .token source => source.source.bindingScopes
-  | .temporal source => source.shape.operands.map (·.bindingScope)
+  | .temporal source => source.shape.operands.map (·.bindingScope) ++
+      source.operands.flatMap fun
+        | .star _ _ filter => filter.toList.flatMap fun having =>
+            (CorrelatedHaving.outerIterationScopes model having).filterMap id
+        | _ => []
 
 /-- The Number certificate is shared with sole-field value lists; uniqueness keeps the
 many-required rule that its owning elaborator checks. Token and temporal certificates are sealed. -/

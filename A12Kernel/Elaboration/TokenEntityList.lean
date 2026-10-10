@@ -461,7 +461,9 @@ private def resolveProjectedTokenEntityOperand (model : FlatModel)
   | .starHaving source projectionRef having => do
       let checked ← star source
       if fixedTargetGroup?.isNone then
-        if let some (path, unbound) := having.unboundOuterReference? model declaringGroup writtenGroup then
+        if let some (path, unbound) := having.unboundOuterReference? model declaringGroup writtenGroup
+            (model.repeatableScopeForGroupPath declaringGroup ++
+              (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])) then
           throw (.shape (.resolve (.unboundOperandLevel path unbound)))
       pure (.star checked projectionRef (some having))
 where
@@ -519,10 +521,11 @@ def elaborateProjectedTokenEntitySource (model : FlatModel)
       | some field => throw (.shape (.duplicateOperand field))
       | none =>
           if arity.allowsSole || first.isStar || !rest.isEmpty then
+            let bindingGroup := (bindingGroup?.or fixedTargetGroup?).getD writtenGroup
             let checkedFirst ←
-              certifyProjectedTokenEntityOperand model declaringGroup (bindingGroup?.getD declaringGroup) first
+              certifyProjectedTokenEntityOperand model declaringGroup bindingGroup first
             let checkedRest ← rest.mapM fun operand =>
-              certifyProjectedTokenEntityOperand model declaringGroup (bindingGroup?.getD declaringGroup) operand
+              certifyProjectedTokenEntityOperand model declaringGroup bindingGroup operand
             assembleTokenEntitySource (by rw [hModel]; rfl)
               checkedFirst checkedRest arity
           else

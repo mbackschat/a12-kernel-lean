@@ -420,6 +420,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Computation conditions](implementation/computations.md#11-computations)
 <a id="cap-computation-conditions"></a>
 - [Computation conditions](implementation/computations.md#cap-computation-conditions)
+<a id="cap-captured-filter-scopes"></a>
+- [Caller-scope preservation in checked filters](implementation/repeatable-computations.md#cap-captured-filter-scopes)
 <a id="cap-constant-assignment-diagnostic-ladder"></a>
 - [The wrong-kind constant assignment's diagnostic ladder](implementation/computations.md#cap-constant-assignment-diagnostic-ladder)
 <a id="cap-field-copy-comparison"></a>
