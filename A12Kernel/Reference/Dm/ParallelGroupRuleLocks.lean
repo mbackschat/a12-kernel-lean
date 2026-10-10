@@ -143,10 +143,15 @@ private def runFailure (condition : String) (roots : List Json)
 example :
     let expected := some ((repr (ParallelPresenceRuleEvaluationError.join
       (.unresolvedDuplicatePointer 2 ["Et", "Rows"]))).pretty)
-    runFailure leftOr [root [("1", "left"), ("1", "again")] [("1", "right")]] = expected ∧
-    runFailure leftOr [root [("0", "other"), ("2", "left"), ("2", "again")] [("2", "right")]] = expected := by native_decide
+    runFailure leftOr [root [("1", "left"), ("1", "again")] [("1", "right")]] (some { insertions := [] }) = expected ∧
+    runFailure leftOr [root [("0", "other"), ("2", "left"), ("2", "again")] [("2", "right")]] (some { insertions := [] }) = expected := by native_decide
 
 private def duplicateRoot := root [("1", "left"), ("1", "again")] [("1", "right")]
+
+example : run leftOr [duplicateRoot, root [] [], root [] [], root [] []] =
+    some [("Et/Rows[2]/Note", "VALUE_ERROR")] ∧
+    run leftOr [duplicateRoot, root [] [], root [] [], root [] [], root [] []] =
+    some [("Et/Rows/Note", "VALUE_ERROR")] := by native_decide
 
 private def hostCache (parent : Nat) (rows : List Nat) : MessageIndexCache := {
   insertions := rows.map fun row =>

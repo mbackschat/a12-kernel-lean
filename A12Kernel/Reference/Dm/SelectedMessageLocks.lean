@@ -2,6 +2,7 @@ import A12Kernel.Reference.Dm.LowerValidation
 import A12Kernel.Reference.Dm.Parser
 import A12Kernel.Elaboration.ValidationCondition.Reference
 import A12Kernel.Semantics.MessageIndex
+import A12Kernel.Reference.Dm.Document
 
 namespace A12Kernel.Dm.SelectedMessageLocks
 
@@ -178,5 +179,45 @@ example : ["N", "Text"].all (fun field =>
     hasPointers ("FieldValuesNotUnique(Rows/" ++ field ++ " For \"a\",Rows/" ++ field ++ " For \"b\")")
       (selected [if field == "N" then 4 else 5] 1 (.concrete 1) false ++
        selected [if field == "N" then 4 else 5] 1 (.concrete 2) false)) = true := by native_decide
+
+private def populationModel : FlatModel := {
+  fields := (model.fields.filter fun field => [1, 3, 4].contains field.id) ++
+    (List.range 20).map (fun index => {
+      id := 100 + index, name := s!"F{index}", groupPath := ["Form"],
+      policy := { kind := .number { scale := 0, signed := true } } })
+  repeatableGroups := model.repeatableGroups.take 2 }
+
+private def populationDocument (last : String) : Lean.Json :=
+  let rows := [Lean.Json.mkObj [("Id", .str "b")], Lean.Json.mkObj [("Id", .str "b")]]
+  Lean.Json.mkObj [("Form", .mkObj (
+    [("Parents", .arr #[.mkObj [("Key", .str "b"),
+      ("Rows", .arr rows.toArray)]])] ++
+    (List.range 20).map (fun index => (s!"F{index}", .str (if index == 19 then last else "1")))))]
+
+private def populationPreliminary (last : String) : Option (CheckedIndexPreliminary populationModel) := do
+  let dm : DmModel := {
+    flat := populationModel, rules := [], computations := [],
+    conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (populationDocument last)).toOption
+  if !input.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler populationModel).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  checked.applyFullIndexPreliminary.toOption
+
+private def derivedProjection (last : String) : Option (List MessagePointer) := do
+  let preliminary ← populationPreliminary last
+  let context ← preliminary.messageReferenceInputs.toOption
+  let expression ← (parseText .english "[Rows/N For Key] > 0").toOption
+  let condition ← (lowerCondition populationModel ["Form", "Parents"] false expression.body (world := world)).toOption
+  (condition.core.referencePointers [(1, 1)] (some context)).toOption
+
+example : derivedProjection "" = some (selected [4] 1 (.concrete 2)) ∧
+    derivedProjection "1" = some (selected [4] 1 (.concrete 1)) ∧
+    derivedProjection "bad" = derivedProjection "" := by native_decide
+
+example : (populationPreliminary "1").map (fun preliminary =>
+    (preliminary.base.messageKeyAt? { field := 3, path := [1, 1] },
+      preliminary.messageQueryKeyAt? { field := 3, path := [1, 1] })) =
+    some (some (.text "b"), none) := by native_decide
 
 end A12Kernel.Dm.SelectedMessageLocks

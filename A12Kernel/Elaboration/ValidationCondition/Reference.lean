@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.ValidationCondition.Evaluation
 import A12Kernel.Semantics.MessageIndex
+import A12Kernel.Elaboration.CheckedMessageCache
 
 /-! # A12Kernel.Elaboration.ValidationCondition.Reference — structural message references
 
@@ -26,10 +27,15 @@ inductive ReferenceProjectionError where
   | binding (error : EnvBindingError)
   deriving Repr, DecidableEq
 
-/-- Inputs owned by cache admission, independently of payload validity or evaluation phase. Cache population order is supplied rather than inferred from document rows. -/
+/-- Inputs owned by cache admission, independently of payload validity or evaluation phase. Associations are supplied explicitly or derived by the shared population producer; physical row order alone does not determine them. -/
 structure MessageReferenceInputs where
   cache : MessageIndexCache
   keyAt : CellAddr → Option SemanticIndexKey
+
+/-- Build structural-reference inputs from one full-validation preliminary view. Unsettled host ordering fails explicitly instead of becoming a missing association. -/
+def CheckedIndexPreliminary.messageReferenceInputs (preliminary : CheckedIndexPreliminary model) :
+    Except CheckedMessageCacheError MessageReferenceInputs := do
+  return { cache := ← preliminary.deriveMessageCache, keyAt := preliminary.messageQueryKeyAt? }
 
 /-- Every repeatable level of an unstarred reference is fixed by the rule's iteration scope, so its pointer is the concrete instance the rule is evaluating. -/
 def concreteFieldPointer (declaration : FlatFieldDecl) (environment : Env) :

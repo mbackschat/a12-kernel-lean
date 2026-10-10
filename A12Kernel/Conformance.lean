@@ -265,6 +265,7 @@ import A12Kernel.Conformance.LegalCharset
 import A12Kernel.Conformance.LegalCharsetElaboration
 import A12Kernel.Conformance.MessagePointer
 import A12Kernel.Conformance.MessageIndex
+import A12Kernel.Conformance.MessageCacheOrder
 import A12Kernel.Conformance.MandatoryInformation
 import A12Kernel.Conformance.MandatoryInformationBooleanFormula
 import A12Kernel.Conformance.MandatoryInformationCountChain

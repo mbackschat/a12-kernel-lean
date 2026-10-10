@@ -3,7 +3,7 @@ import A12Kernel.Semantics.MessagePointer
 
 /-! # Message-pointer semantic-index cache
 
-This is the message-coordinate boundary for [§10 paths and references](../../spec/08-paths-and-references.md). The input is the admitted cache insertion sequence, rather than physical document row order. The selected-reference checkpoint in [message and pointer sources](../../docs/sources/message-and-pointer-probes.md#src-selected-message-reference-resolution) establishes overwrite lookup independently of duplicate-excluding value selection. Cache population order, cell admission, payload reading, and phase policy belong outside this boundary.
+This is the message-coordinate boundary for [§10 paths and references](../../spec/08-paths-and-references.md). The input encodes admitted cache associations, rather than physical document row order. An actual insertion sequence or a lookup-equivalent reduction determines the same association state. The selected-reference checkpoint in [message and pointer sources](../../docs/sources/message-and-pointer-probes.md#src-selected-message-reference-resolution) establishes overwrite lookup independently of duplicate-excluding value selection. Cache population order, cell admission, payload reading, and phase policy belong outside this boundary.
 -/
 
 namespace A12Kernel
@@ -16,7 +16,7 @@ structure MessageIndexInsertion where
   row : Nat
   deriving Repr, DecidableEq
 
-/-- The actual admitted cache insertion sequence; its order must not be inferred from document rows. -/
+/-- Admitted association updates, either actual insertions or a lookup-equivalent reduction. Physical document row order alone does not determine this state. -/
 structure MessageIndexCache where
   insertions : List MessageIndexInsertion
   deriving Repr, DecidableEq

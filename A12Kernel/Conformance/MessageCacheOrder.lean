@@ -1,0 +1,182 @@
+import A12Kernel.Elaboration.CheckedMessageCache
+
+namespace A12Kernel.Conformance.MessageCacheOrder
+
+open A12Kernel
+
+example : messageCacheLoadCapacity 13 = 16 ∧ messageCacheLoadCapacity 14 = 32 ∧
+    messageCacheLoadCapacity 25 = 32 ∧ messageCacheLoadCapacity 26 = 64 ∧
+    messageCacheLoadCapacity 49 = 64 ∧ messageCacheLoadCapacity 50 = 128 := by
+  native_decide
+
+-- Independent weighted-word arithmetic at the [cache-population checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-cache-population-order) separates UTF-16 hashing from code-point hashing.
+example : (messageIdentifierHash "Id" [1, 1, 1, 1]).toNat = 917190150 ∧
+    (messageIdentifierHash "Id" [1, 1, 2, 1]).toNat = 917219941 ∧
+    (messageIdentifierHash "Key_0" [1, 1, 1]).toNat = 2273772656 ∧
+    (messageIdentifierHash "Key_0" [1, 2, 1]).toNat = 2273802447 ∧
+    (messageIdentifierHash "/Form/Rows" [1, 1]).toNat = 2298849708 ∧
+    (messageIdentifierHash "😀" [1, 2, 1]).toNat = 84602876 ∧
+    messageNameUnits "😀" = [55357, 56832] := by
+  native_decide
+
+example : messageCacheBucket 32 917190150 = 13 ∧
+    messageCacheBucket 32 917219941 = 14 ∧
+    messageCacheBucket 64 917190150 = 45 ∧
+    messageCacheBucket 64 917219941 = 14 ∧
+    messageCacheBucket 16 2273772656 = 7 ∧
+    messageCacheBucket 16 2273802447 = 8 ∧
+    messageCacheBucket 32 2273772656 = 23 ∧
+    messageCacheBucket 32 2273802447 = 8 := by
+  native_decide
+
+private def association (row : Nat) : MessageIndexInsertion :=
+  { group := 10, parentPath := [1], key := .text "same", row }
+
+private def indexed (hash : UInt32) (row : Nat) : MessageCachePopulationEntry :=
+  { hash, association := some (association row) }
+
+private def filler (hash : UInt32) : MessageCachePopulationEntry := { hash }
+
+private def lookupResult (population : List MessageCachePopulationEntry)
+    (group : RepeatableLevel) (parentPath : List Nat) (key : SemanticIndexKey) :
+    Option MessageRepetitionCoordinate := do
+  let cache ← (deriveMessageIndexCache population).toOption
+  pure (cache.lookup group parentPath (some key))
+
+private def errorResult (population : List MessageCachePopulationEntry) :
+    Option MessageCacheOrderError :=
+  match deriveMessageIndexCache population with
+  | .ok _ => none
+  | .error error => some error
+
+example : (deriveMessageIndexCache []).toOption = some { insertions := [] } := by
+  native_decide
+
+private def uniqueSameBucket : List MessageCachePopulationEntry :=
+  (List.range 8).map fun index =>
+    { hash := 0, association := some {
+        group := 10, parentPath := [1], key := .text s!"key{index}", row := index + 1 } }
+
+example : lookupResult uniqueSameBucket 10 [1] (.text "key0") = some (.concrete 1) ∧
+    lookupResult uniqueSameBucket.reverse 10 [1] (.text "key0") = some (.concrete 1) ∧
+    lookupResult uniqueSameBucket 10 [1] (.text "key7") = some (.concrete 8) ∧
+    (deriveMessageIndexCache uniqueSameBucket).toOption.map (·.insertions.length) = some 8 := by
+  native_decide
+
+private def distinctBuckets : List MessageCachePopulationEntry :=
+  [indexed 3 3, indexed 14 1, indexed 1 2]
+
+example : (deriveMessageIndexCache distinctBuckets).toOption = some { insertions := [association 1] } ∧
+    (deriveMessageIndexCache distinctBuckets.reverse).toOption = some { insertions := [association 1] } := by
+  native_decide
+
+private def lowerBucketTie : List MessageCachePopulationEntry :=
+  [indexed 1 2, indexed 17 3, indexed 14 1]
+
+example : (deriveMessageIndexCache lowerBucketTie).toOption = some { insertions := [association 1] } ∧
+    (deriveMessageIndexCache lowerBucketTie.reverse).toOption = some { insertions := [association 1] } := by
+  native_decide
+
+example : errorResult [indexed 1 1, indexed 17 2] =
+      some (.unresolvedBucket 10 [1] (.text "same")) ∧
+    (deriveMessageIndexCache [indexed 1 1, indexed 2 2]).toOption =
+      some { insertions := [association 2] } := by
+  native_decide
+
+private def separateNamespaces : List MessageCachePopulationEntry :=
+  [indexed 14 1, indexed 1 2,
+    { hash := 0, association := some { group := 11, parentPath := [1], key := .text "same", row := 3 } },
+    { hash := 0, association := some { group := 10, parentPath := [2], key := .text "same", row := 4 } },
+    { hash := 0, association := some { group := 10, parentPath := [1], key := .text "other", row := 5 } },
+    { hash := 0, association := some { group := 10, parentPath := [1], key := .number 1, row := 6 } }]
+
+example : lookupResult separateNamespaces 10 [1] (.text "same") = some (.concrete 1) ∧
+    lookupResult separateNamespaces 11 [1] (.text "same") = some (.concrete 3) ∧
+    lookupResult separateNamespaces 10 [2] (.text "same") = some (.concrete 4) ∧
+    lookupResult separateNamespaces 10 [1] (.text "other") = some (.concrete 5) ∧
+    lookupResult separateNamespaces 10 [1] (.number 1) = some (.concrete 6) ∧
+    (deriveMessageIndexCache separateNamespaces).toOption.map (·.insertions.length) = some 5 := by
+  native_decide
+
+private def capacityPair : List MessageCachePopulationEntry := [indexed 15 1, indexed 16 2]
+
+private def loadFillers : List MessageCachePopulationEntry :=
+  (List.range 12).map (filler ∘ UInt32.ofNat)
+
+example : (deriveMessageIndexCache capacityPair).toOption = some { insertions := [association 1] } ∧
+    (deriveMessageIndexCache (capacityPair ++ loadFillers)).toOption =
+      some { insertions := [association 2] } := by
+  native_decide
+
+private def earlyCollision : List MessageCachePopulationEntry :=
+  capacityPair ++ List.replicate 7 (filler 0)
+
+private def collisionControl : List MessageCachePopulationEntry :=
+  capacityPair ++ List.replicate 6 (filler 0) ++ [filler 2]
+
+example : errorResult earlyCollision = some .unresolvedCapacity ∧
+    (deriveMessageIndexCache collisionControl).toOption = some { insertions := [association 1] } := by
+  native_decide
+
+example : errorResult
+      ([indexed 0 1, indexed 16 2] ++ List.replicate 6 (filler 0)) =
+    some .unresolvedCapacity := by
+  native_decide
+
+private def settledCapacity : List MessageCachePopulationEntry :=
+  earlyCollision ++ (List.range 17).map fun index => filler (UInt32.ofNat (index + 32))
+
+example : messageCacheLoadCapacity settledCapacity.length = 64 ∧
+    (deriveMessageIndexCache settledCapacity).toOption = some { insertions := [association 2] } := by
+  native_decide
+
+private def nameField (id : FieldId) (group : String) (name : String) : FlatFieldDecl :=
+  { id, groupPath := ["Form", group], name, policy := { kind := .string } }
+
+private def reservedNames : FlatModel :=
+  { fields := [nameField 1 "Z" "Key", nameField 4 "C" "Unique",
+      nameField 3 "B" "Key_0", nameField 2 "A" "Key"] }
+
+example : reservedNames.messageFieldNames =
+      [(2, "Key_1"), (3, "Key_0"), (4, "Unique"), (1, "Key_2")] ∧
+    { reservedNames with fields := reservedNames.fields.reverse }.messageFieldNames =
+      reservedNames.messageFieldNames := by
+  native_decide
+
+private def utf16Names : FlatModel :=
+  { fields := [nameField 6 "" "Key", nameField 5 "😀" "Key"] }
+
+example : utf16Names.messageFieldNames = [(5, "Key_0"), (6, "Key_1")] := by
+  native_decide
+
+private def defaultModel : FlatModel := {
+  fields := [{
+    id := 1, groupPath := ["Form", "Rows"], name := "Key", repeatableScope := [10],
+    policy := { kind := .enumeration },
+    enumeration := some { storedTokens := ["A", "B"], defaultStoredToken := some "B" } }]
+  repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2, indexField := some 1 }] }
+
+private def preparedDefault (data : DocumentData) : Option (CheckedIndexPreliminary defaultModel) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler defaultModel).toOption
+  let checked ← (checkDocument prepared "en_US" data).toOption
+  checked.applyFullIndexPreliminary.toOption
+
+example : ((preparedDefault {
+    instantiatedRows := [{ group := 10, path := [1] }], cells := [] }).bind fun preliminary => do
+      let population ← preliminary.base.messageCachePopulation.toOption
+      let cache ← preliminary.deriveMessageCache.toOption
+      pure (population.length, cache.lookup 10 [] (some (.text "B")),
+        preliminary.messageQueryKeyAt? { field := 1, path := [1] })) =
+    some (1, .concrete 1, some (.text "B")) := by native_decide
+
+example : ((preparedDefault {
+    instantiatedRows := (List.range 3).map fun index => { group := 10, path := [index + 1] }
+    cells := [{ address := { field := 1, path := [3] }, stored := "A", raw := .parsed (.enum "A") }] }).bind
+    fun preliminary => do
+      let population ← preliminary.base.messageCachePopulation.toOption
+      let cache ← preliminary.deriveMessageCache.toOption
+      pure (population.length, cache.lookup 10 [] (some (.text "A")))) =
+    some (2, .unknown) := by native_decide
+
+end A12Kernel.Conformance.MessageCacheOrder

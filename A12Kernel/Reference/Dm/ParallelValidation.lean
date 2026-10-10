@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Elaboration.ParallelFieldRule
+import A12Kernel.Elaboration.CheckedMessageCache
 
 /-! # DM lowering for checked parallel field-pair validation -/
 
@@ -119,14 +120,21 @@ def checkValidationRule (model : DmModel) (language : Language) (rule : DmRule)
     | .error parallelRefusal =>
         if parallelRefusal.construct == "ParallelErrorTarget" then .error parallelRefusal else .error refusal
 
-/-- Execute a checked rule. An optional actual cache insertion sequence supplies duplicate parallel error coordinates; it does not change value reads. The caller owns cache admission and host ordering (spec/08 §4.3). Ordinary message-reference projection retains its separate API. -/
+/-- Execute a checked rule. Explicit cache context takes precedence; otherwise whole-population derivation supplies duplicate parallel error coordinates where its host profile settles them. Value reads are unchanged. A supplied cache remains caller-owned (spec/08 §4.3). Ordinary message-reference projection retains its separate API. -/
 def runValidationRule (world : World) (document : CheckedDocument model)
     (rule : CheckedDmValidationRule model) (messageCache : Option MessageIndexCache := none) :
     Except String (List FlatRuleMessage) := match rule with
   | .ordinary rule => runRule world document rule
   | .parallel rule => do
       let preliminary ← document.applyFullIndexPreliminary |>.mapError (fun error => (repr error).pretty)
-      let rows ← rule.evalDocument preliminary messageCache |>.mapError (fun error => (repr error).pretty)
+      let initial := rule.evalDocument preliminary messageCache
+      let evaluated := match messageCache, initial with
+        | none, .error (.join (.unresolvedDuplicatePointer _ _)) =>
+            match preliminary.deriveMessageCache with
+            | .ok cache => rule.evalDocument preliminary (some cache)
+            | .error _ => initial
+        | _, _ => initial
+      let rows ← evaluated.mapError (fun error => (repr error).pretty)
       pure (rows.filterMap (·.outcome.message?))
 
 end A12Kernel.Dm
