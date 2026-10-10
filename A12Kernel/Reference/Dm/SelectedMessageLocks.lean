@@ -220,4 +220,26 @@ example : (populationPreliminary "1").map (fun preliminary =>
       preliminary.messageQueryKeyAt? { field := 3, path := [1, 1] })) =
     some (some (.text "b"), none) := by native_decide
 
+private def listBinModel : FlatModel := {
+  fields := [
+    { id := 1, name := "K6270", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } },
+    { id := 2, name := "Anchor", groupPath := ["Form"], policy := { kind := .string } }]
+  repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2, indexField := some 1 }] }
+
+private def listBinProjection : Option (List MessagePointer) := do
+  let dm : DmModel := { flat := listBinModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Lean.Json.mkObj [("Form", .mkObj [
+    ("Anchor", .str "x"), ("Rows", .arr #[.mkObj [("K6270", .str "b")], .mkObj [("K6270", .str "b")]])])])).toOption
+  if !input.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler listBinModel).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let preliminary ← checked.applyFullIndexPreliminary.toOption
+  let context ← preliminary.messageReferenceInputs.toOption
+  let expression ← (parseText .english "FieldFilled(Anchor) Or FieldFilled(Rows/K6270 For \"b\")").toOption
+  let condition ← (lowerCondition listBinModel ["Form"] false expression.body (world := world)).toOption
+  (condition.core.referencePointers [] (some context)).toOption
+
+example : listBinProjection = some [
+    { field := 2, coordinates := [] }, { field := 1, coordinates := [.concrete 1] }] := by native_decide
+
 end A12Kernel.Dm.SelectedMessageLocks

@@ -43,9 +43,10 @@ private def lookupResult (population : List MessageCachePopulationEntry)
   let cache ← (deriveMessageIndexCache population).toOption
   pure (cache.lookup group parentPath (some key))
 
-private def errorResult (population : List MessageCachePopulationEntry) :
+private def errorResult (population : List MessageCachePopulationEntry)
+    (rowOrder : MessageCacheRowOrder := .unknown) :
     Option MessageCacheOrderError :=
-  match deriveMessageIndexCache population with
+  match deriveMessageIndexCache population rowOrder with
   | .ok _ => none
   | .error error => some error
 
@@ -83,6 +84,23 @@ example : errorResult [indexed 1 1, indexed 17 2] =
       some { insertions := [association 2] } := by
   native_decide
 
+private def listBinTie : List MessageCachePopulationEntry := [indexed 1 1, indexed 17 2]
+
+example : (deriveMessageIndexCache listBinTie .ascendingPhysical).toOption =
+      some { insertions := [association 1] } ∧
+    (deriveMessageIndexCache listBinTie.reverse .ascendingPhysical).toOption =
+      some { insertions := [association 1] } := by
+  native_decide
+
+private def highestBucketTie : List MessageCachePopulationEntry :=
+  [indexed 1 1, indexed 2 3, indexed 18 2]
+
+example : (deriveMessageIndexCache highestBucketTie .ascendingPhysical).toOption =
+      some { insertions := [association 2] } ∧
+    (deriveMessageIndexCache highestBucketTie.reverse .ascendingPhysical).toOption =
+      some { insertions := [association 2] } := by
+  native_decide
+
 private def separateNamespaces : List MessageCachePopulationEntry :=
   [indexed 14 1, indexed 1 2,
     { hash := 0, association := some { group := 11, parentPath := [1], key := .text "same", row := 3 } },
@@ -114,13 +132,38 @@ private def earlyCollision : List MessageCachePopulationEntry :=
 private def collisionControl : List MessageCachePopulationEntry :=
   capacityPair ++ List.replicate 6 (filler 0) ++ [filler 2]
 
-example : errorResult earlyCollision = some .unresolvedCapacity ∧
+example : messageCacheCapacities collisionControl = [16] ∧
+    messageCacheCapacities earlyCollision = [32] ∧
+    (deriveMessageIndexCache earlyCollision).toOption = some { insertions := [association 2] } ∧
     (deriveMessageIndexCache collisionControl).toOption = some { insertions := [association 1] } := by
   native_decide
 
-example : errorResult
-      ([indexed 0 1, indexed 16 2] ++ List.replicate 6 (filler 0)) =
-    some .unresolvedCapacity := by
+private def eightEntryGrowth : List MessageCachePopulationEntry :=
+  [indexed 0 1, indexed 16 2] ++ List.replicate 6 (filler 0)
+
+example : messageCacheCapacities eightEntryGrowth = [32] ∧
+    (deriveMessageIndexCache eightEntryGrowth).toOption = some { insertions := [association 2] } := by
+  native_decide
+
+example : messageCacheCapacities
+      (List.replicate 4 (filler 0) ++ List.replicate 4 (filler 16)) = [32] ∧
+    messageCacheCapacities (List.replicate 8 (filler 0)) = [32] ∧
+    messageCacheCapacities (List.replicate 9 (filler 0)) = [64] ∧
+    messageCacheCapacities ([filler 16] ++ List.replicate 8 (filler 0)) = [32, 64] ∧
+    messageCacheCapacities (List.replicate 8 (filler 0) ++ [filler 16]) = [32, 64] := by
+  native_decide
+
+private def capacityDependentWinner : List MessageCachePopulationEntry :=
+  [indexed 31 1, indexed 32 2] ++ List.replicate 7 (filler 0)
+
+private def capacityInvariantWinner : List MessageCachePopulationEntry :=
+  [indexed 1 1, indexed 2 2] ++ List.replicate 8 (filler 0) ++ [filler 16]
+
+example : messageCacheCapacities capacityDependentWinner = [32, 64] ∧
+    errorResult capacityDependentWinner = some .unresolvedCapacity ∧
+    messageCacheCapacities capacityInvariantWinner = [32, 64] ∧
+    (deriveMessageIndexCache capacityInvariantWinner).toOption =
+      some { insertions := [association 2] } := by
   native_decide
 
 private def settledCapacity : List MessageCachePopulationEntry :=
@@ -128,6 +171,31 @@ private def settledCapacity : List MessageCachePopulationEntry :=
 
 example : messageCacheLoadCapacity settledCapacity.length = 64 ∧
     (deriveMessageIndexCache settledCapacity).toOption = some { insertions := [association 2] } := by
+  native_decide
+
+private def splitFillers : List MessageCachePopulationEntry :=
+  (List.range 42).map fun index => filler (UInt32.ofNat (index + 2))
+
+private def treeHistory : List MessageCachePopulationEntry :=
+  [indexed 1 1, indexed 129 2] ++ List.replicate 6 (filler 65) ++ splitFillers
+
+private def neverTreeControl : List MessageCachePopulationEntry :=
+  [indexed 1 1, indexed 129 2] ++ List.replicate 5 (filler 65) ++ [filler 2] ++ splitFillers
+
+example : messageCacheCapacities treeHistory = [128] ∧
+    errorResult treeHistory .ascendingPhysical =
+      some (.unresolvedBucket 10 [1] (.text "same")) ∧
+    messageCacheCapacities neverTreeControl = [128] ∧
+    (deriveMessageIndexCache neverTreeControl .ascendingPhysical).toOption =
+      some { insertions := [association 1] } := by
+  native_decide
+
+private def unrelatedTree : List MessageCachePopulationEntry :=
+  [indexed 1 1, indexed 129 2] ++ List.replicate 30 (filler 0)
+
+example : messageCacheCapacities unrelatedTree = [64] ∧
+    (deriveMessageIndexCache unrelatedTree .ascendingPhysical).toOption =
+      some { insertions := [association 1] } := by
   native_decide
 
 private def nameField (id : FieldId) (group : String) (name : String) : FlatFieldDecl :=

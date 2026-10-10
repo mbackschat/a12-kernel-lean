@@ -101,11 +101,11 @@ def CheckedDocument.messageCachePopulation (checked : CheckedDocument model) :
         (associationAt model placement.address) }]
   return population
 
-/-- Derive a lookup-equivalent cache only where whole-population capacity and the winning buckets settle every association. Full-validation index defaults are appended after the original population, independently of its hash capacity. -/
+/-- Derive a lookup-equivalent cache where the capacity envelope and bucket history settle every association. Kernel document traversal visits each group’s physical rows in ascending order; unrelated field order remains unspecified. Full-validation index defaults are appended after the original population, independently of its hash capacity. -/
 def CheckedIndexPreliminary.deriveMessageCache (preliminary : CheckedIndexPreliminary model) :
     Except CheckedMessageCacheError MessageIndexCache := do
   let population ← preliminary.base.messageCachePopulation
-  let cache ← deriveMessageIndexCache population |>.mapError .hostOrder
+  let cache ← deriveMessageIndexCache population .ascendingPhysical |>.mapError .hostOrder
   let defaults := preliminary.defaulted.filterMap fun entry =>
     associationAt model entry.address (.text entry.stored)
   return { insertions := cache.insertions ++ defaults }

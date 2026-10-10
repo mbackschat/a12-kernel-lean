@@ -44,21 +44,37 @@ inductive MessageCacheOrderError where
   | unresolvedBucket (group : RepeatableLevel) (parentPath : List Nat) (key : SemanticIndexKey)
   deriving Repr, DecidableEq
 
+/-- The caller's established relative insertion order within one indexed group and parent. -/
+inductive MessageCacheRowOrder where
+  | unknown
+  | ascendingPhysical
+  deriving Repr, DecidableEq
+
+private def bucketOccupancy (population : List MessageCachePopulationEntry)
+    (capacity : Nat) (hash : UInt32) : Nat :=
+  (population.filter fun entry =>
+    messageCacheBucket capacity entry.hash == messageCacheBucket capacity hash).length
+
+private def peakOccupancy (population : List MessageCachePopulationEntry) (capacity : Nat) : Nat :=
+  population.foldl (fun peak entry => max peak (bucketOccupancy population capacity entry.hash)) 0
+
+/-- Capacity possibilities for the observed compute-if-absent profile. Eight colliding insertions force the first growth; nine in one 32-bucket bin force the second. With exactly eight in that bin, insertion timing may distinguish 32 from 64. This envelope never assumes an order among unrelated fields. -/
+def messageCacheCapacities (population : List MessageCachePopulationEntry) : List Nat :=
+  let load := messageCacheLoadCapacity population.length
+  if load ≥ 64 || peakOccupancy population 16 < 8 then [load]
+  else
+    let peak32 := peakOccupancy population 32
+    if population.length ≤ 8 || peak32 < 8 then [32]
+    else if peak32 ≥ 9 then [64]
+    else [32, 64]
+
 private def sameAssociation (left right : MessageIndexInsertion) : Bool :=
   left.group == right.group && left.parentPath == right.parentPath && left.key == right.key
 
-/-- Retain one association per key where the highest bucket has exactly one candidate. Tree/list ordering in lower buckets is immaterial. Equal highest buckets and possible collision-induced early capacity changes require actual host context; neither is guessed. -/
-def deriveMessageIndexCache (population : List MessageCachePopulationEntry) :
+private def cacheAtCapacity (population : List MessageCachePopulationEntry)
+    (capacity : Nat) (rowOrder : MessageCacheRowOrder) :
     Except MessageCacheOrderError MessageIndexCache := do
   let indexed := population.filterMap fun entry => entry.association.map (entry.hash, ·)
-  let unique := indexed.all fun (_, association) =>
-    (indexed.filter fun (_, other) => sameAssociation association other).length == 1
-  if unique then return { insertions := indexed.map Prod.snd }
-  let capacity := messageCacheLoadCapacity population.length
-  if capacity < 64 && population.any (fun entry =>
-      (population.filter fun other => messageCacheBucket 16 entry.hash ==
-        messageCacheBucket 16 other.hash).length ≥ 8) then
-    throw .unresolvedCapacity
   let mut chosen : List MessageIndexInsertion := []
   for (_, association) in indexed do
     if chosen.any (sameAssociation association) then continue
@@ -66,8 +82,34 @@ def deriveMessageIndexCache (population : List MessageCachePopulationEntry) :
     let highest := matching.foldl (fun bucket candidate =>
       max bucket (messageCacheBucket capacity candidate.1)) 0
     match matching.filter (fun candidate => messageCacheBucket capacity candidate.1 == highest) with
-    | [(_, winner)] => chosen := chosen ++ [winner]
-    | _ => throw (.unresolvedBucket association.group association.parentPath association.key)
+    | [] => throw (.unresolvedBucket association.group association.parentPath association.key)
+    | (hash, first) :: rest =>
+        let neverTree := capacity < 64 || bucketOccupancy population 64 hash < 8
+        if !rest.isEmpty && !(rowOrder == .ascendingPhysical && neverTree) then
+          throw (.unresolvedBucket association.group association.parentPath association.key)
+        -- The host prepends list entries and preserves their relative order through resize; ascending physical insertion therefore leaves the earliest row last ([whole-cache checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-cache-population-order)).
+        let winner := rest.foldl (fun selected candidate =>
+          if candidate.2.row < selected.row then candidate.2 else selected) first
+        chosen := chosen ++ [winner]
   return { insertions := chosen }
+
+/-- Derive only associations that agree across the capacity envelope. A unique highest-bucket candidate needs no row-order premise. A tied list bin can use established physical insertion order only when its entire history excludes treeification; other ties require host context. -/
+def deriveMessageIndexCache (population : List MessageCachePopulationEntry)
+    (rowOrder : MessageCacheRowOrder := .unknown) :
+    Except MessageCacheOrderError MessageIndexCache := do
+  let indexed := population.filterMap fun entry => entry.association.map (entry.hash, ·)
+  let unique := indexed.all fun (_, association) =>
+    (indexed.filter fun (_, other) => sameAssociation association other).length == 1
+  if unique then return { insertions := indexed.map Prod.snd }
+  match messageCacheCapacities population with
+  | [] => throw .unresolvedCapacity
+  | [capacity] => cacheAtCapacity population capacity rowOrder
+  | capacity :: rest =>
+      match cacheAtCapacity population capacity rowOrder with
+      | .error _ => throw .unresolvedCapacity
+      | .ok candidate =>
+          if rest.all (fun other => decide ((cacheAtCapacity population other rowOrder).toOption = some candidate)) then
+            pure candidate
+          else throw .unresolvedCapacity
 
 end A12Kernel
