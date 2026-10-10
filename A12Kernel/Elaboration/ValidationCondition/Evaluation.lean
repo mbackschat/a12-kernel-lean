@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.ValidationCondition.Core
 import A12Kernel.Elaboration.PartialEntityValueList
+import A12Kernel.Elaboration.PartialFieldFill
 import A12Kernel.Elaboration.StringExpression.Partial
 
 /-! # Checked validation-leaf evaluation
@@ -64,6 +65,7 @@ def evalSelected (context : ValidationEvaluationContext)
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
+  | .fieldFill _ source => !source.hasHaving
   | .valuesNotUnique _ => true
   | .indexedFieldPresence _ _ | .keyedGroupPresence _ _ | .valueList _ => true
   | .firstFilledComparison comparison => !comparison.hasHaving
@@ -223,6 +225,11 @@ def evalAddressedPartial?
     (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult) :
     ValidationConditionLeaf model →
       Option (Except CheckedAddressingError Verdict)
+  | .fieldFill operator source =>
+      match context.input with
+      | .legacy _ _ => none
+      | .checked document | .partialView document _ =>
+          some (source.evaluatePartialFill operator document scope context.outer context.readPartialCell)
   | .valuesNotUnique source =>
       match context.input with
       | .legacy _ _ => none

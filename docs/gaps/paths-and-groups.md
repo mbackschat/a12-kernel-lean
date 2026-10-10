@@ -115,7 +115,8 @@ The selected-overlap implementation and assurance now live in the [shared overla
 <a id="gap-sg13"></a>
 ### SG13 — group-list and group-count completion
 
-- `inbound-partial`: [KF527](../sources/inbound-handbacks.md#inbound-2026-10-09-extensions) adds declared-missing-slot relevance for fill quantifiers and first-filled on starred/keyed fields and groups. Reconcile existing per-slot and extent gates against complete versus stored-only coverage and an absent selected parent; do not generalize the product gate to wildcard-only aggregates.
+- `inbound-partial`: [KF527](../sources/inbound-handbacks.md#inbound-2026-10-09-extensions) leaves declared-missing-slot relevance in `FirstFilledValue` on starred/keyed fields and groups. The [fill-quantifier owner](../implementation/validation-messages-and-custom.md#cap-fill-group-quantifiers) records the shared seven-operator implementation; retain its separate wildcard-only aggregate controls.
+- `prefix-matrix`: P1 — exhausted empty field extents: complete declared versus stored-only coverage, unkeyed and selected; P2 — prefix witnesses: covered filled, uncovered/malformed before it, and hidden suffix; P3 — missing selection: parent wildcard with complete versus incomplete concrete child coverage, never borrowing an existing parent; P4 — Number, token and typed/group carriers preserve their own exhaustion and omission provenance. Reconcile P4 with source-owned depth trimming before implementation; KF527 settles relevance, not every polarity consequence.
 
 
 - `state`: open

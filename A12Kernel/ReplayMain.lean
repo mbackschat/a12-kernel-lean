@@ -82,6 +82,7 @@ import A12Kernel.Reference.Dm.IndexedGroupLocks
 import A12Kernel.Reference.Dm.TemporalExtractorPrecisionLocks
 import A12Kernel.Reference.Dm.IndexedTemporalLocks
 import A12Kernel.Reference.Dm.PartialTemporalLocks
+import A12Kernel.Reference.Dm.PartialFieldListLocks
 import A12Kernel.Reference.Dm.PartialStringExpressionLocks
 import A12Kernel.Reference.Dm.IndexedTimeComponentLocks
 import A12Kernel.Reference.Dm.DateComponentLocks

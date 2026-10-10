@@ -139,6 +139,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Evaluation and application](sources/evaluation-and-application-routes.md)
 - [Messages and pointers](sources/message-and-pointer-probes.md)
 - [Inbound handbacks and historical Git stubs](sources/inbound-handbacks.md), including [2026-10-09 reconciliation and additional observations](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation)
+- [Partial declared-slot walks (KF527)](sources/inbound-handbacks.md#inbound-2026-10-09-extensions): inbound `f641cc24f`, `PartialFillWalkRelevanceDiffTest` and `PartialProductCapacityDiffTest`; the route for fill, prefix and product relevance distinctions adopted in spec/10 §5.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route

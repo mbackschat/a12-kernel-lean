@@ -364,13 +364,15 @@ def supportsOrdinaryRepeatablePartial
   rule.condition.core.allLeaves
     ValidationConditionLeaf.supportsAddressedPartial
 
-/-- Resolve one partial-validation field through the validation-only row projection, then apply the relevance-scoped generated findings. `none` is call-local silent unavailability and therefore semantic UNKNOWN, not a fabricated formal cause. -/
+/-- Partial operand walks can reach missing declared coordinates (KF527, spec/10 §5).
+Read those slots without materializing rows, then apply the relevance-scoped generated findings.
+`none` retains call-local silent unavailability rather than inventing a formal cause. -/
 private def partialValidationAddressedCell?
     (preliminary : CheckedPartialPreliminary model)
     (environment : Env) (field : FieldId) :
     Except CheckedAddressingError (Option CheckedCell) := do
   let addressed ←
-    preliminary.index.base.validationAddressedCell environment field
+    preliminary.index.base.addressedCellWithRead preliminary.index.base.readDeclared environment field
   if !preliminary.isAddressRelevant addressed.address ||
       preliminary.silentlyUnavailable.contains addressed.address then
     pure none
