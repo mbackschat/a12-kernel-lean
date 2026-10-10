@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C04. C01–C03 are closed; proceed in the frozen order.
+The autonomous goal is active at C05. C01–C04 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -53,9 +53,11 @@ C01–C12 are the required sequence. This checkpoint is a bounded consumer-relia
 
 ### C04 — retain reached validator failures through ordinary conditions
 
-- [ ] Resolve the remaining complete-caller boundary for named-validator failures. [Evaluation](../A12Kernel/Elaboration/ValidationCondition/Evaluation.lean) already transports failures from direct/indexed validity leaves.
+- [x] Resolve the remaining complete-caller boundary for named-validator failures. [Evaluation](../A12Kernel/Elaboration/ValidationCondition/Evaluation.lean) already transports failures from direct/indexed validity leaves.
 - Matrix: failing leaf before/after a false And sibling and true Or sibling; direct/indexed twins; covered/uncovered partial input; missing registration versus normal validator rejection.
 - Done: full/partial checked rules distinguish reached whole-call failure, bypassed callback and normal invalid verdict. Existing complete evidence closes this task without code changes. [SG7](gaps/strings-and-messages.md#gap-sg7), [SG11](gaps/strings-and-messages.md#gap-sg11).
+
+- Accepted from existing work: [NV1–NV4 reader and complete-rule controls](../A12Kernel/Reference/Dm/BoundTypeValidityLocks.lean) at `ff47896e` cover ordered And/Or, direct/indexed twins, covered/uncovered partial inputs and registered rejection versus missing lookup. [The capability owner](implementation/validation-messages-and-custom.md#cap-explicit-validity-predicates) distinguishes retained direct/indexed observations from source-grounded/internal Boolean-order, registered and partial controls. Its fresh HIGH review and gates are already discharged; C03 integration retains these locks. Removed the stale SG7 propagation obligation; no executable changes or new capture.
 
 ### C05 — preserve categories through the shared entity reader
 
@@ -208,7 +210,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C04. Inspect complete checked-rule callers and retained validator controls against the [frozen matrix](#c04--retain-reached-validator-failures-through-ordinary-conditions): ordered And/Or bypass, direct/indexed validity, covered/uncovered partial input, missing registration versus normal rejection. Close from existing evidence where sufficient; build or measure only an unresolved distinction. Start no other batch in parallel.
+- Active: C05. Reconcile the [frozen category matrix](#c05--preserve-categories-through-the-shared-entity-reader) against LowerEntity and the dedicated token routes, then repair category admission/projection at the shared owner. Keep plain-group, category-on-group and projected field twins otherwise admissible; use existing retained evidence and narrow targets.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
 - C01 closed: [risk-boundary implementation](../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [reconciled eight-scenario consumer run](consumer-probes/EXECUTE.md#run-c01-execute-03). Integration (2,166 jobs), retained evidence (51 projections), trust (3,026 roots) and HIGH review passed; the review’s documentation correction is incorporated. Code is committed at `0e302b8d`; the accepted consumer basis is `9fe99116`. No remaining C01 blocker.
 - The latest [cache-context probe](consumer-probes/EXECUTE.md#run-message-cache-context-readback-01) passed its narrow task; it does not discharge C01/C12. C01’s broader probe is closed; the next bounded probe is C12. C22 uses those results and the subsequent evidence; it does not automatically trigger another consumer programme.
@@ -224,5 +226,5 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
 - Latest verified boundary: C03 fixed Enumeration routing and typed application matrix; 2,172-job integration, 51-projection evidence, 320-entry family replay and 3,026-root trust audit passed. Fresh HIGH review found no new findings. Fixed literal/direct-copy reader controls went red before the shared-table repair and green afterward. No full-population replay was triggered.
 - Last full replay: 59,766 matches; zero divergence/fault/unattributed; 3,052 rows, 217 without matching artifacts, six preparation refusals. The outer-bound capture is checked separately; one evidence-only family has closed since replay.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Final C03 plan recording requires documentation checks only; it does not invalidate the executable gates.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. C04 closes from previously reviewed and currently integrated evidence; its documentation recording requires documentation checks only; it does not invalidate the executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.
