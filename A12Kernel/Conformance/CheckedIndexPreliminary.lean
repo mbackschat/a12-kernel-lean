@@ -379,7 +379,7 @@ example :
       some (some (.nonRelevantAddress { field := 1, path := [1, 3] }), false) := by
   native_decide
 
-/- A concrete selector beyond declared capacity is ignored rather than turning an over-limit physical row into a partial generated finding. -/
+/- A concrete selector beyond declared capacity creates no partial generated finding for the over-limit row; retaining its ancestor relevance does not admit that row. -/
 example :
     (partialFor model emptyAndInvalidData [relevantKey 1 4]).map
         (fun view => view.index.findings.isEmpty) = some true := by

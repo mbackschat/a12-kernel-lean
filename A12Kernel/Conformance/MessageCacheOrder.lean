@@ -454,4 +454,48 @@ example : customPopulationResult none = some (.inr 0) ∧
     customPopulationResult (some "TEST") 2 false = some (.inr 0) := by
   native_decide
 
+private def topologyModel : FlatModel := {
+  fields := [{
+    id := 1, groupPath := ["Form", "Rows", "Items"], name := "N",
+    repeatableScope := [10, 20], policy := { kind := .number { scale := 0, signed := true } } }]
+  repeatableGroups := [
+    { level := 10, path := ["Form", "Rows"], repeatability := some 2 },
+    { level := 20, path := ["Form", "Rows", "Items"], repeatability := some 2 }] }
+
+private def topologyData : DocumentData := {
+  instantiatedRows := [
+    { group := 10, path := [1] }, { group := 20, path := [1, 1] },
+    { group := 20, path := [1, 2] }, { group := 20, path := [1, 3] },
+    { group := 10, path := [2] }, { group := 20, path := [2, 1] },
+    { group := 10, path := [3] }, { group := 20, path := [3, 1] }]
+  cells := [[1, 1], [1, 3], [2, 1], [3, 1]].map fun path =>
+    { address := { field := 1, path }, stored := "1", raw := .parsed (.num 1) } }
+
+private def topologyPopulationSize (relevant : Option (List RelevantEntityPattern)) :
+    Option Nat := do
+  let full ← preparedDefault topologyData topologyModel
+  let population ← match relevant with
+    | none => full.base.messageCachePopulation.toOption
+    | some entities => do
+        let part ← (full.base.applyPartialGeneratedPreliminary entities).toOption
+        part.messageCachePopulation.toOption
+  pure population.length
+
+private def relevantTopologyLeaf (parent child : Nat) : List RelevantEntityPattern := [{
+  path := ["Form", "Rows", "Items", "N"],
+  indices := [.concrete 1, .concrete parent, .concrete child, .concrete 1] }]
+
+-- CheckCommand.checkGroup admits relevant in-capacity physical placeholders even when the selected leaf is absent; over-limit ancestry excludes the entire subtree.
+example : [
+    topologyPopulationSize none,
+    topologyPopulationSize (some [.allInstances ["Form"]]),
+    topologyPopulationSize (some []),
+    topologyPopulationSize (some (relevantTopologyLeaf 1 1)),
+    topologyPopulationSize (some (relevantTopologyLeaf 1 2)),
+    topologyPopulationSize (some (relevantTopologyLeaf 2 2)),
+    topologyPopulationSize (some (relevantTopologyLeaf 1 3)),
+    topologyPopulationSize (some (relevantTopologyLeaf 3 1))] =
+      [some 7, some 7, some 0, some 3, some 2, some 1, some 1, some 0] := by
+  native_decide
+
 end A12Kernel.Conformance.MessageCacheOrder

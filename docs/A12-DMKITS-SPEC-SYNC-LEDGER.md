@@ -130,6 +130,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `canonical`: [Selected message references](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
 - `delta`: Partial relevance filters admitted fields and touched ancestor-group placeholders before host ordering. Excluding one unrelated field changes the selected duplicate pointer; retaining just one index row selects that row.
 - `basis`: [Seven-row, two-strategy capture and source](sources/message-cache-probes.md#src-message-cache-partial-population), with unchanged full-validation controls.
+- `selector extension`: [Topology and excess-selector controls](sources/message-cache-probes.md#src-message-cache-partial-topology) show that an excess descendant selector can retain a valid ancestor cache contribution. Do not discard the entire selector before ancestor projection; capacity gates actual groups/cells. Two nesting depths each have excluded, valid-descendant and excess-descendant controls.
 - `request`: Reconcile partial reference-cache production against the filtered population; reuse the retained observations. Keep cache associations separate from duplicate-invalid value reads and from rule-firing gates.
 - `acceptance`: An exact peer revision adopts this population boundary or supplies contrary Kernel evidence for the measured carrier; preserve explicit host context where ordering remains unsettled.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

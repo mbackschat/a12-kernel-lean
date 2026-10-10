@@ -342,36 +342,15 @@ private def FlatModel.hasRelevantEntityPath (model : FlatModel)
   model.hasGroupPath path ||
     model.fields.any fun declaration => declaration.path == path
 
-private def FlatModel.maximumAtRelevantSegment? (model : FlatModel)
-    (path : GroupPath) : Option Nat :=
-  match model.repeatableGroups.find? fun group => group.path == path with
-  | some group => group.repeatability
-  | none => some 1
-
-private def RelevantEntityPattern.indicesOverLimit
-    (entity : RelevantEntityPattern) (model : FlatModel) :
-    Except CheckedIndexPreliminaryError Bool :=
-  let rec go (pathPrefix : GroupPath) (position : Nat) :
-      List String → List RelevanceIndex →
-        Except CheckedIndexPreliminaryError Bool
-    | [], [] => pure false
-    | segment :: segments, index :: indices => do
-        let path := pathPrefix ++ [segment]
-        let current ← match index with
-          | .all => pure false
-          | .concrete 0 => throw (.zeroRelevantIndex entity.path position)
-          | .concrete actual =>
-              pure (match model.maximumAtRelevantSegment? path with
-                | some maximum => actual > maximum
-                | none => false)
-        pure (current || (← go path (position + 1) segments indices))
-    | _, _ => throw (.relevantIndexArity entity.path
-        entity.path.length entity.indices.length)
+private def RelevantEntityPattern.validateIndices
+    (entity : RelevantEntityPattern) : Except CheckedIndexPreliminaryError Unit := do
   if entity.path.length != entity.indices.length then
-    throw (.relevantIndexArity entity.path
-      entity.path.length entity.indices.length)
-  else
-    go [] 0 entity.path entity.indices
+    throw (.relevantIndexArity entity.path entity.path.length entity.indices.length)
+  match entity.indices.zipIdx.find? (fun (index, _) => match index with
+      | .concrete 0 => true
+      | _ => false) with
+  | some (_, position) => throw (.zeroRelevantIndex entity.path position)
+  | none => pure ()
 
 private def FlatModel.normalizeRelevantEntities (model : FlatModel) :
     List RelevantEntityPattern →
@@ -380,9 +359,9 @@ private def FlatModel.normalizeRelevantEntities (model : FlatModel) :
   | entity :: entities => do
       if !model.hasRelevantEntityPath entity.path then
         throw (.unknownRelevantEntity entity.path)
-      let ignored ← entity.indicesOverLimit model
+      entity.validateIndices
       let rest ← model.normalizeRelevantEntities entities
-      if ignored then pure rest else pure (entity :: rest)
+      pure (entity :: rest)
 
 structure PartialRequiredEvaluation where
   address : CellAddr
@@ -545,7 +524,7 @@ private def applyPartialGeneratedPreliminaryNormalized
       simpa using (List.mem_filter.mp member).2
   }
 
-/-- Build the no-default partial generated-preliminary view from a relevance scope. Caller entities are normalized, over-capacity concrete selectors are ignored, and model-owned globals are added before any row, cell, requiredness, or group projection is selected. -/
+/-- Build the no-default partial generated-preliminary view from a relevance scope. Caller paths and coordinate shapes are checked and model-owned globals are added before projection. Retain excess selectors: CheckCommand.addAllParentGroups can still make their in-capacity ancestors relevant; actual row and cell admission own capacity exclusion. -/
 def applyPartialGeneratedPreliminaryForScope
     (checked : CheckedDocument model)
     (scope : ValidationRelevanceScope) :

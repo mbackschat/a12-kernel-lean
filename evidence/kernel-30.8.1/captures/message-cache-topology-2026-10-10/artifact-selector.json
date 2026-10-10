@@ -1,0 +1,1778 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "../selected-message-references/model.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "parent-ancestor-excluded",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Rows[2]/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Body/A",
+                "Form/Parents/Rows[2]/Body/B",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[2]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Rows[2]/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Body/A",
+                "Form/Parents/Rows[2]/Body/B",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[2]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "parent-ancestor-valid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "parent-ancestor-excess",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "row-ancestor-excluded",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mandatoryField",
+              "field": "Form/Parents/Rows[3]/Id",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[3]/Id"
+              ],
+              "fillToFix": [
+                "Form/Parents/Rows[3]/Id"
+              ]
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Rows[2]/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Body/A",
+                "Form/Parents/Rows[2]/Body/B",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[2]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mandatoryField",
+              "field": "Form/Parents/Rows[3]/Id",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[3]/Id"
+              ],
+              "fillToFix": [
+                "Form/Parents/Rows[3]/Id"
+              ]
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Rows[2]/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Body/A",
+                "Form/Parents/Rows[2]/Body/B",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[2]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows[2]/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "row-ancestor-valid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mandatoryField",
+              "field": "Form/Parents/Rows[3]/Id",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[3]/Id"
+              ],
+              "fillToFix": [
+                "Form/Parents/Rows[3]/Id"
+              ]
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mandatoryField",
+              "field": "Form/Parents/Rows[3]/Id",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[3]/Id"
+              ],
+              "fillToFix": [
+                "Form/Parents/Rows[3]/Id"
+              ]
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "row-ancestor-excess",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mandatoryField",
+              "field": "Form/Parents/Rows[3]/Id",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[3]/Id"
+              ],
+              "fillToFix": [
+                "Form/Parents/Rows[3]/Id"
+              ]
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mandatoryField",
+              "field": "Form/Parents/Rows[3]/Id",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[3]/Id"
+              ],
+              "fillToFix": [
+                "Form/Parents/Rows[3]/Id"
+              ]
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "RefUnreached",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Rows/N",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedGroup",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Body/A",
+                "Form/Parents/Rows/Body/B",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefUnreachedStar",
+              "field": "Form/Parents/Scalar",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Parents[1]/Rows[1]/Items[0]/N",
+                "Form/Parents/Key",
+                "Form/Parents/Rows/Id",
+                "Form/Parents/Scalar"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Parents/Rows[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Parents/Rows[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
