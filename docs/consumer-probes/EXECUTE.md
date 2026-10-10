@@ -301,3 +301,20 @@ Bounded Execute transport works across exact-address application, the admitted g
 - `acceptance`: HIGH reconciles every answer against [first-filled reader locks](../../A12Kernel/Reference/Dm/FirstFilledValidationLocks.lean), [field-fill reader locks](../../A12Kernel/Reference/Dm/FieldFillGuardLocks.lean), [group dependency locks](../../A12Kernel/Reference/Dm/HavingGroupLocks.lean), the shared scan definitions and [resolving scan laws](../../A12Kernel/Proofs/Correlation.lean). No new build is required where the committed equalities and definitions settle the answer.
 - `wrong-accounts`: Eager filter materialization; payload before successor search; stopping only on present values; one global sparse policy; sparse traversal at product 100; treating blank rows as absent; deriving target/dependency edges from the complete reference inventory; treating GroupFilled and GroupNotFilled alike. Withhold this list from the reader.
 - `exclusions`: Partial-validation behavior, message polarity and pointers, unsupported profiles or syntax, complete dependency-graph scheduling, direct result-assignment admission, new Kernel correspondence, executable consumer, Rust/SMT integration, shipment and general qualification.
+
+<a id="run-filter-traversal-readback-01"></a>
+### Filter traversal — `filter-traversal-readback-01`
+
+- `task`: [Filter traversal](#task-filter-traversal-readback)
+- `status`: green
+- `started-at`: 2026-10-10T02:17:47+00:00
+- `finished-at`: 2026-10-10T02:19:46+00:00
+- `duration-seconds`: 119
+- `semantic-basis`: `82a4f5062db5d46f021b52418d42138c6da08e49`
+- `oracle`: HIGH reconciled Q1–Q3 with the shared resolving-scan terminal/successor laws, first-filled scan and reader locks; Q4 with the field-fill threshold/blank-occupancy matrix and dense first-filled route; Q5 with both temporal-extremum dependency matrices; Q6 with the frozen exclusions. All bounded answers agree. No build or replay was needed.
+- `consumer-access`: Fresh MEDIUM context read one scratch packet containing the frozen task and verbatim canonical excerpts. No repository, Lean, evidence, Kernel, sibling, linked-source or external access; no edits or delegation.
+- `cost`: 119 seconds, one packet read, zero implementation/test lines, dependencies or runners. HIGH reconciliation inspected existing definitions, proved laws and checked matrices. Token usage was not measured.
+- `result`: The reader reconstructed successor search before payload reads, terminal suffix hiding, unavailable-versus-empty behavior, dense first-filled versus sparse-enabled presence, the strict 100 threshold and blank-row occupancy. It kept complete inventory separate from target prohibition and conditional producer edges. All six query groups were recovered.
+- `wrong-accounts`: The answers reject eager filtering, payload-first evaluation, unavailable fall-through, a global sparse policy, sparse-at-100, blank-as-absent occupancy and inventory-derived dependency graphs. Positive and negative group predicates retain different static consequences.
+- `questions-and-guesses`: No semantic guess or unresolved in-scope decision. Individual candidate identities omitted from Q3 and graph construction after an authoring rejection were correctly left unspecified.
+- `exclusions`: The frozen task exclusions apply. This establishes bounded knowledge transport, not an executable consumer, additional Kernel correspondence, partial-validation support, shipment or general qualification.
