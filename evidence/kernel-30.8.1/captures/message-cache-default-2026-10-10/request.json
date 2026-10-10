@@ -1,0 +1,267 @@
+{
+  "model": "model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "singleton-absent",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "N": "2"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "singleton-empty",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "",
+                  "N": "2"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "singleton-explicit",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "2"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "singleton-invalid",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "z",
+                  "N": "2"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "two-empty",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "zero-rows",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Scalar": "99",
+              "Rows": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "default-after-population",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "Key": "a",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "N": "2"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "explicit-in-population",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            },
+            {
+              "Key": "a",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "N": "2",
+                  "Id": "a"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    }
+  ]
+}

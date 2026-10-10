@@ -127,16 +127,21 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
   | "BooleanType" => pure { base with policy := { kind := .boolean } }
   | "ConfirmType" => pure { base with policy := { kind := .confirm } }
   | "EnumerationType" =>
-      if (body.getObjVal? "sValue").isOk then throw "EnumerationType sValue"
+      let defaultStoredToken ← match (body.getObjVal? "sValue").toOption with
+        | none | some .null => pure none
+        | some (.str value) => pure (if value.isEmpty then none else some value)
+        | some _ => throw "EnumerationType sValue must be a string"
       let values ← (← body.getObjValAs? (Array Json) "values").toList.mapM (·.getObjValAs? String "value")
       let categories ← ((body.getObjValAs? (Array Json) "categories").toOption.getD #[]).toList.mapM
         fun category => do
           let name ← category.getObjValAs? String "name"
           let tokens ← category.getObjValAs? (Array String) "values"
           pure ({ name, tokens := tokens.toList } : EnumerationCategoryDeclaration)
+      let enumeration : EnumerationDeclaration := { storedTokens := values, categories, defaultStoredToken }
+      let _ ← enumeration.validate.mapError (fun error => s!"EnumerationType {repr error}")
       pure { base with
         policy := { kind := .enumeration }
-        enumeration := some { storedTokens := values, categories } }
+        enumeration := some enumeration }
   | "DateType" | "TimeType" | "DateTimeType" | "DateFragmentType" =>
       let format ← body.getObjValAs? String (if typeName == "DateFragmentType" then "formatOfFragment" else "format")
       let kind : TemporalKind := match typeName with

@@ -133,3 +133,14 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: An exact peer revision adopts this population boundary or supplies contrary Kernel evidence for the measured carrier; preserve explicit host context where ordering remains unsettled.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: pending.
+
+### SPEC-2026-10-10-09 — default cache associations survive index formal invalidity
+
+- `status`: pending
+- `canonical`: [Selected message references](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
+- `delta`: Full calls append singleton defaults after original-population ordering. A formally invalid singleton index may acquire a default message association while its authored read remains UNKNOWN and its formal error persists. Partial calls append none. Empty declared S-value means no default.
+- `basis`: [Fourteen-row, two-strategy capture and source](sources/message-cache-probes.md#src-message-cache-default-and-names) cover default staging/capacity and renamed/reserved identifier controls on Kernel 30.8.1.
+- `request`: Reconcile message-cache default eligibility separately from evaluation availability; preserve the original population boundary and model-wide name reservations. Reuse the retained observations.
+- `acceptance`: An exact peer revision adopts the independent cache/read boundary and name effects or supplies contrary Kernel evidence; no change to invalid-cell authored availability is requested.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: pending.

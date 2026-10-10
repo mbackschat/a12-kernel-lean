@@ -188,4 +188,21 @@ example : nestedRows.map (fun input =>
       [{ field := 0, path := [2, 1] }, { field := 0, path := [3, 1] },
         { field := 0, path := [3, 2] }], 0) := by native_decide
 
+private def readEnumDefault (value : Option Json) : Except String (Option String) := do
+  let body := Json.mkObj ([("values", .arr #[Json.mkObj [("value", "a")],
+    Json.mkObj [("value", "b")]])] ++ value.toList.map ("sValue", ·))
+  let field ← readFieldType 0 ["Form"] "Key" [] (Json.mkObj [("fieldType",
+    Json.mkObj [("type", "EnumerationType"), ("EnumerationType", body)])])
+  pure (field.enumeration.bind (·.defaultStoredToken))
+
+example : (readEnumDefault (some "a")).toOption = some (some "a") ∧
+    (readEnumDefault (some "b")).toOption = some (some "b") ∧
+    (readEnumDefault none).toOption = some none ∧
+    (readEnumDefault (some .null)).toOption = some none ∧
+    (readEnumDefault (some "")).toOption = some none := by native_decide
+
+example : [Json.str "outside", toJson (1 : Nat), Json.bool true,
+    Json.arr #[], Json.mkObj []].all (fun value => !(readEnumDefault (some value)).isOk) := by
+  native_decide
+
 end A12Kernel.Dm.ReaderLocks

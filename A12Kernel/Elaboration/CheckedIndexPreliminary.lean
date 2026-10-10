@@ -138,9 +138,10 @@ private def FlatFieldDecl.indexDefaultStored? (declaration : FlatFieldDecl) :
       checked.declaration.defaultStoredToken
   | _, _, _ => none
 
-/-- Derive eligible validation-stage defaults from physical row cardinality and evaluation-empty index cells. Both absent and present-empty cells are eligible; an admitted or formally unavailable cell is not. -/
+/-- Share singleton and declaration eligibility while keeping cache admission separate from authored readability (spec/08 §4.3). -/
 private def CheckedDocument.indexDefaultsForGroup
-    (checked : CheckedDocument model) (group : RepeatableGroupDecl) :
+    (checked : CheckedDocument model) (group : RepeatableGroupDecl)
+    (accepts : CheckedCell → Bool) :
     List CheckedIndexDefault :=
   match group.indexField with
   | none => []
@@ -160,7 +161,7 @@ private def CheckedDocument.indexDefaultsForGroup
                       { field := declaration.id, path := row.path }
                     match checked.read address with
                     | .ok cell =>
-                        if observeCell .validation cell == .empty then
+                        if accepts cell then
                           some { address, stored }
                         else
                           none
@@ -172,7 +173,17 @@ private def CheckedDocument.indexDefaults
     List RepeatableGroupDecl → List CheckedIndexDefault
   | [] => []
   | group :: groups =>
-      checked.indexDefaultsForGroup group ++ checked.indexDefaults groups
+      checked.indexDefaultsForGroup group (fun cell => observeCell .validation cell == .empty) ++
+        checked.indexDefaults groups
+
+/-- Full message associations receive singleton defaults even when formal invalidity keeps the index unavailable to authored rules. The original population and the immutable document remain unchanged (spec/08 §4.3). -/
+def CheckedDocument.indexCacheDefaults (checked : CheckedDocument model) : List CheckedIndexDefault :=
+  model.repeatableGroups.flatMap fun group =>
+    checked.indexDefaultsForGroup group fun cell =>
+      match observeCell .validation cell with
+      | .unknown .overRepetition => false
+      | .empty | .unknown _ => true
+      | _ => false
 
 private def indexFindingsForParent
     (candidates : List CheckedIndexCandidate) (parent : List Nat) :

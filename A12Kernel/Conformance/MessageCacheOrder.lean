@@ -221,12 +221,15 @@ private def defaultModel : FlatModel := {
   fields := [{
     id := 1, groupPath := ["Form", "Rows"], name := "Key", repeatableScope := [10],
     policy := { kind := .enumeration },
-    enumeration := some { storedTokens := ["A", "B"], defaultStoredToken := some "B" } }]
+    enumeration := some { storedTokens := ["A", "B"], defaultStoredToken := some "B" } },
+    { id := 2, groupPath := ["Form", "Rows"], name := "Payload", repeatableScope := [10],
+      policy := { kind := .string } }]
   repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2, indexField := some 1 }] }
 
-private def preparedDefault (data : DocumentData) : Option (CheckedIndexPreliminary defaultModel) := do
+private def preparedDefault (data : DocumentData) (candidate : FlatModel := defaultModel) :
+    Option (CheckedIndexPreliminary candidate) := do
   let world : World := { now := { epochMillis := 0 } }
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler defaultModel).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler candidate).toOption
   let checked ← (checkDocument prepared "en_US" data).toOption
   checked.applyFullIndexPreliminary.toOption
 
@@ -268,5 +271,61 @@ private def physicalDefaultB : DocumentData := {
 example : partialDefaultSummary physicalDefaultB [RelevantEntityPattern.allInstances ["Form"]] =
     some (2, 1, .concrete 1, some (.text "B")) ∧
     partialDefaultSummary physicalDefaultB [] = some (0, 0, .unknown, none) := by native_decide
+
+private def defaultRows (tokens : List (Option String)) : DocumentData := {
+  instantiatedRows := tokens.zipIdx.map fun (_, index) => { group := 10, path := [index + 1] }
+  cells := tokens.zipIdx.filterMap fun (token, index) => token.map fun stored => {
+    address := { field := 1, path := [index + 1] }, stored
+    raw := if stored.isEmpty then .presentEmpty else .parsed (.enum stored) } }
+
+private def defaultCacheTwins (data : DocumentData) (candidate : FlatModel := defaultModel) :
+    Option (List (Nat × MessageRepetitionCoordinate × Option SemanticIndexKey)) := do
+  let full ← preparedDefault data candidate
+  let fullPopulation ← full.base.messageCachePopulation.toOption
+  let fullCache ← full.deriveMessageCache.toOption
+  let view ← (full.base.applyPartialGeneratedPreliminary [RelevantEntityPattern.allInstances ["Form"]]).toOption
+  let partialPopulation ← view.messageCachePopulation.toOption
+  let partialCache ← view.deriveMessageCache.toOption
+  let address : CellAddr := { field := 1, path := [1] }
+  pure [
+    (fullPopulation.length, fullCache.lookup 10 [] (some (.text "B")), full.messageQueryKeyAt? address),
+    (partialPopulation.length, partialCache.lookup 10 [] (some (.text "B")), view.messageQueryKeyAt? address)]
+
+example : [none, some ""].all (fun token => defaultCacheTwins (defaultRows [token]) ==
+    some [(1, .concrete 1, some (.text "B")), (1, .unknown, none)]) = true ∧
+    defaultCacheTwins (defaultRows [some "B"]) =
+      some [(2, .concrete 1, some (.text "B")), (2, .concrete 1, some (.text "B"))] := by native_decide
+
+example : defaultCacheTwins (defaultRows []) = some [(0, .unknown, none), (0, .unknown, none)] ∧
+    defaultCacheTwins (defaultRows [none, none]) = some [(2, .unknown, none), (2, .unknown, none)] := by native_decide
+
+private def mandatoryDefaultModel : FlatModel := {
+  defaultModel with fields := defaultModel.fields.map fun field =>
+    if field.id == 1 then { field with requiredness := some .absoluteOrNearestRepeatableAncestor } else field }
+
+example : defaultCacheTwins (defaultRows [none]) mandatoryDefaultModel =
+    some [(1, .unknown, none), (1, .unknown, none)] := by native_decide
+
+private def invalidDefaultWithPayload : DocumentData := {
+  defaultRows [some "Z"] with cells := (defaultRows [some "Z"]).cells ++ [
+    { address := { field := 2, path := [1] }, stored := "x", raw := .parsed (.str "x") }] }
+
+example : defaultCacheTwins (defaultRows [some "Z"]) =
+    some [(1, .concrete 1, none), (1, .unknown, none)] := by native_decide
+
+example : defaultCacheTwins invalidDefaultWithPayload =
+    some [(2, .concrete 1, none), (2, .unknown, none)] := by native_decide
+
+private def parentedDefaultModel : FlatModel := { defaultModel with
+  fields := defaultModel.fields.map fun field => { field with repeatableScope := [5, 10] }
+  repeatableGroups := { level := 5, path := ["Form"], repeatability := some 2 } ::
+    defaultModel.repeatableGroups }
+
+example : ((preparedDefault {
+    instantiatedRows := [{ group := 5, path := [1] }, { group := 5, path := [2] },
+      { group := 5, path := [3] }, { group := 10, path := [3, 1] }], cells := [] }
+      parentedDefaultModel).bind fun preliminary =>
+      preliminary.deriveMessageCache.toOption.map (·.lookup 10 [3] (some (.text "B")))) =
+    some .unknown := by native_decide
 
 end A12Kernel.Conformance.MessageCacheOrder

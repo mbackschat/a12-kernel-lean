@@ -188,20 +188,24 @@ private def populationModel : FlatModel := {
       policy := { kind := .number { scale := 0, signed := true } } })
   repeatableGroups := model.repeatableGroups.take 2 }
 
-private def populationDocument (last : String) : Lean.Json :=
-  let rows := [Lean.Json.mkObj [("Id", .str "b")], Lean.Json.mkObj [("Id", .str "b")]]
+private def populationDocument (last : String) (indexName : String := "Id")
+    (firstIndex : String := "b") (firstFiller : String := "F0") : Lean.Json :=
+  let rows := [Lean.Json.mkObj [(indexName, .str firstIndex)], Lean.Json.mkObj [(indexName, .str "b")]]
   Lean.Json.mkObj [("Form", .mkObj (
     [("Parents", .arr #[.mkObj [("Key", .str "b"),
       ("Rows", .arr rows.toArray)]])] ++
-    (List.range 20).map (fun index => (s!"F{index}", .str (if index == 19 then last else "1")))))]
+    (List.range 20).map (fun index => (if index == 0 then firstFiller else s!"F{index}",
+      .str (if index == 19 then last else "1")))))]
 
-private def populationPreliminary (last : String) : Option (CheckedIndexPreliminary populationModel) := do
+private def populationPreliminary (last : String) (candidate : FlatModel := populationModel)
+    (indexName : String := "Id") (firstIndex : String := "b") (firstFiller : String := "F0") :
+    Option (CheckedIndexPreliminary candidate) := do
   let dm : DmModel := {
-    flat := populationModel, rules := [], computations := [],
+    flat := candidate, rules := [], computations := [],
     conditionLanguage := "en_US", refusals := [] }
-  let input ← (readDocument dm (populationDocument last)).toOption
+  let input ← (readDocument dm (populationDocument last indexName firstIndex firstFiller)).toOption
   if !input.refusals.isEmpty then none
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler populationModel).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler candidate).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
   checked.applyFullIndexPreliminary.toOption
 
@@ -220,6 +224,41 @@ example : (populationPreliminary "1").map (fun preliminary =>
     (preliminary.base.messageKeyAt? { field := 3, path := [1, 1] },
       preliminary.messageQueryKeyAt? { field := 3, path := [1, 1] })) =
     some (some (.text "b"), none) := by native_decide
+
+private def renamedPopulationModel : FlatModel := {
+  populationModel with fields := populationModel.fields.map fun field =>
+    if field.id == 3 then { field with name := "Key" } else field }
+
+private def reservedPopulationModel : FlatModel := {
+  renamedPopulationModel with fields := renamedPopulationModel.fields.map fun field =>
+    if field.id == 100 then { field with name := "Key_0" } else field }
+
+example : (renamedPopulationModel.messageFieldNames.filter fun entry => [1, 3, 100].contains entry.1) =
+    [(100, "F0"), (1, "Key_0"), (3, "Key_1")] ∧
+    (reservedPopulationModel.messageFieldNames.filter fun entry => [1, 3, 100].contains entry.1) =
+      [(100, "Key_0"), (1, "Key_1"), (3, "Key_2")] := by native_decide
+
+private def namedPopulationResult (candidate : FlatModel) (last : String) (indexName : String)
+    (firstFiller : String := "F0") (firstIndex : String := "b") :
+    Option (Nat × MessageRepetitionCoordinate × List MessagePointer) := do
+  let preliminary ← populationPreliminary last candidate indexName firstIndex firstFiller
+  let population ← preliminary.base.messageCachePopulation.toOption
+  let context ← preliminary.messageReferenceInputs.toOption
+  let expression ← (parseText .english "[Rows/N For Key] > 0").toOption
+  let condition ← (lowerCondition candidate ["Form", "Parents"] false expression.body (world := world)).toOption
+  let pointers ← (condition.core.referencePointers [(1, 1)] (some context)).toOption
+  pure (population.length, context.cache.lookup 10 [1] (some (.text "b")), pointers)
+
+example : ["", "1"].all (fun last =>
+    (namedPopulationResult renamedPopulationModel last "Key").map (fun (_, row, pointers) => (row, pointers)) ==
+      some (.concrete 1, selected [4] 1 (.concrete 1)) &&
+    (namedPopulationResult reservedPopulationModel last "Key" "Key_0").map (fun (_, row, pointers) => (row, pointers)) ==
+      some (.concrete 2, selected [4] 1 (.concrete 2))) = true := by native_decide
+
+example : [(populationModel, "Id", "F0"), (renamedPopulationModel, "Key", "F0"),
+    (reservedPopulationModel, "Key", "Key_0")].all (fun (candidate, indexName, firstFiller) =>
+      (namedPopulationResult candidate "" indexName firstFiller "a").map (fun (_, row, pointers) => (row, pointers)) ==
+        some (.concrete 2, selected [4] 1 (.concrete 2))) = true := by native_decide
 
 private def populationPartial (entities : List RelevantEntityPattern) :
     Option (CheckedPartialPreliminary populationModel) := do

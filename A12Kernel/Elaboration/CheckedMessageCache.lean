@@ -123,7 +123,7 @@ def CheckedIndexPreliminary.deriveMessageCache (preliminary : CheckedIndexPrelim
     Except CheckedMessageCacheError MessageIndexCache := do
   let population ← preliminary.base.messageCachePopulation
   let cache ← deriveMessageIndexCache population .ascendingPhysical |>.mapError .hostOrder
-  let defaults := preliminary.defaulted.filterMap fun entry =>
+  let defaults := preliminary.base.indexCacheDefaults.filterMap fun entry =>
     associationAt model entry.address (.text entry.stored)
   return { insertions := cache.insertions ++ defaults }
 
