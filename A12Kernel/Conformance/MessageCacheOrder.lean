@@ -247,4 +247,26 @@ example : ((preparedDefault {
       pure (population.length, cache.lookup 10 [] (some (.text "A")))) =
     some (2, .unknown) := by native_decide
 
+private def partialDefaultSummary (data : DocumentData) (entities : List RelevantEntityPattern) :
+    Option (Nat × Nat × MessageRepetitionCoordinate × Option SemanticIndexKey) := do
+  let full ← preparedDefault data
+  let view ← (full.base.applyPartialGeneratedPreliminary entities).toOption
+  let population ← view.messageCachePopulation.toOption
+  let cache ← view.deriveMessageCache.toOption
+  pure (population.length, cache.insertions.length, cache.lookup 10 [] (some (.text "B")),
+    view.messageQueryKeyAt? { field := 1, path := [1] })
+
+example : partialDefaultSummary {
+    instantiatedRows := [{ group := 10, path := [1] }], cells := [] }
+    [RelevantEntityPattern.allInstances ["Form"]] =
+    some (1, 0, .unknown, none) := by native_decide
+
+private def physicalDefaultB : DocumentData := {
+  instantiatedRows := [{ group := 10, path := [1] }]
+  cells := [{ address := { field := 1, path := [1] }, stored := "B", raw := .parsed (.enum "B") }] }
+
+example : partialDefaultSummary physicalDefaultB [RelevantEntityPattern.allInstances ["Form"]] =
+    some (2, 1, .concrete 1, some (.text "B")) ∧
+    partialDefaultSummary physicalDefaultB [] = some (0, 0, .unknown, none) := by native_decide
+
 end A12Kernel.Conformance.MessageCacheOrder

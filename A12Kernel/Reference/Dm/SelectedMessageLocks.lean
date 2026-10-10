@@ -221,6 +221,58 @@ example : (populationPreliminary "1").map (fun preliminary =>
       preliminary.messageQueryKeyAt? { field := 3, path := [1, 1] })) =
     some (some (.text "b"), none) := by native_decide
 
+private def populationPartial (entities : List RelevantEntityPattern) :
+    Option (CheckedPartialPreliminary populationModel) := do
+  let full ← populationPreliminary "1"
+  (full.base.applyPartialGeneratedPreliminary entities).toOption
+
+private def partialProjection (entities : List RelevantEntityPattern) : Option (List MessagePointer) := do
+  let view ← populationPartial entities
+  let context ← view.messageReferenceInputs.toOption
+  let expression ← (parseText .english "[Rows/N For Key] > 0").toOption
+  let condition ← (lowerCondition populationModel ["Form", "Parents"] false expression.body (world := world)).toOption
+  (condition.core.referencePointers [(1, 1)] (some context)).toOption
+
+private def withoutLastFiller : List RelevantEntityPattern :=
+  RelevantEntityPattern.allInstances ["Form", "Parents"] ::
+    (List.range 19).map fun index => RelevantEntityPattern.allInstances ["Form", s!"F{index}"]
+
+example : partialProjection [RelevantEntityPattern.allInstances ["Form"]] =
+    some (selected [4] 1 (.concrete 1)) := by native_decide
+
+example : partialProjection withoutLastFiller =
+    some (selected [4] 1 (.concrete 2)) := by native_decide
+
+private def relevantIndexRow (row : Nat) : RelevantEntityPattern := {
+  path := ["Form", "Parents", "Rows", "Id"]
+  indices := [.all, .concrete 1, .concrete row, .all] }
+
+private def partialPopulationSummary (entities : List RelevantEntityPattern) :
+    Option (Nat × Nat × Nat × Option SemanticIndexKey) := do
+  let view ← populationPartial entities
+  let population ← view.messageCachePopulation.toOption
+  let cache ← view.deriveMessageCache.toOption
+  pure (population.length, (population.filterMap (·.association)).length,
+    cache.insertions.length, view.messageQueryKeyAt? { field := 1, path := [1] })
+
+example : [1, 2].all (fun row =>
+    partialProjection [RelevantEntityPattern.allInstances ["Form", "Parents", "Key"], relevantIndexRow row] ==
+      some (selected [4] 1 (.concrete row)) &&
+    partialPopulationSummary [RelevantEntityPattern.allInstances ["Form", "Parents", "Key"], relevantIndexRow row] ==
+      some (4, 1, 1, some (.text "b"))) = true := by native_decide
+
+example : [1, 2].all (fun row =>
+    partialProjection [relevantIndexRow row] == some (selected [4] 1 .unknown) &&
+    partialPopulationSummary [relevantIndexRow row] == some (3, 1, 1, none)) = true := by native_decide
+
+example : partialPopulationSummary [] = some (0, 0, 0, none) ∧
+    partialProjection [] = some (selected [4] 1 .unknown) := by native_decide
+
+example : (populationPartial [RelevantEntityPattern.allInstances ["Form"]]).map (fun view =>
+    (view.index.base.messageKeyAt? { field := 3, path := [1, 1] },
+      view.messageQueryKeyAt? { field := 3, path := [1, 1] })) =
+    some (some (.text "b"), none) := by native_decide
+
 private def listBinModel : FlatModel := {
   fields := [
     { id := 1, name := "K6270", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } },

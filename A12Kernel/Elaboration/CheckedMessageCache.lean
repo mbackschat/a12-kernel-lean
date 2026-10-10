@@ -70,8 +70,8 @@ private def associationAt (model : FlatModel) (address : CellAddr)
   let row ← address.path.getLast?
   pure { group := group.level, parentPath := address.path.dropLast, row, key }
 
-/-- Full-validation population before index defaults and generated findings. Unrelated admitted fields and physical in-capacity repeatable groups retain their hash contribution. Opaque custom admission requires caller-owned context. -/
-def CheckedDocument.messageCachePopulation (checked : CheckedDocument model) :
+private def populationForScope (checked : CheckedDocument model)
+    (relevance : ValidationRelevanceScope) :
     Except CheckedMessageCacheError (List MessageCachePopulationEntry) := do
   if let some declaration := model.fields.find? (·.customType.isSome) then
     throw (.customAdmission declaration.id)
@@ -84,11 +84,17 @@ def CheckedDocument.messageCachePopulation (checked : CheckedDocument model) :
     let scope := model.repeatableScopeForGroupPath group.path
     let some overLimit := model.addressOverLimit? scope row.path
       | throw (.missingCapacity group.path)
-    if maximum > 1 && !overLimit then
+    let environment := scope.zip row.path
+    let relevant := match relevance with
+      | .full => true
+      | .partialSet entities => entities.any (·.touchesGroup model group.path environment)
+    if maximum > 1 && !overLimit && relevant then
       let coordinates ← fullCoordinates model group.path (scope.zip row.path)
       population := population ++ [{ hash := messageIdentifierHash ("/" ++ String.intercalate "/" group.path) coordinates }]
   for placement in checked.checkedCells do
     let declaration ← model.lookupUniqueId placement.address.field |>.mapError .model
+    let environment := declaration.repeatableScope.zip placement.address.path
+    if !relevance.coversCell model declaration.path environment then continue
     if !placement.cell.findings.isEmpty || !placement.cell.rawPresent ||
         (placement.storedText.getD "").isEmpty then continue
     let some (_, name) := names.find? (·.1 == declaration.id)
@@ -101,6 +107,17 @@ def CheckedDocument.messageCachePopulation (checked : CheckedDocument model) :
         (associationAt model placement.address) }]
   return population
 
+/-- Full-validation population before index defaults and generated findings. Unrelated admitted fields and in-capacity group placeholders retain their hash contribution. -/
+def CheckedDocument.messageCachePopulation (checked : CheckedDocument model) :
+    Except CheckedMessageCacheError (List MessageCachePopulationEntry) :=
+  populationForScope checked .full
+
+/-- Partial population admits relevant cells and touched ancestor groups before host ordering.
+The checked view owns normalized relevance and globals (spec/10 §5). -/
+def CheckedPartialPreliminary.messageCachePopulation (view : CheckedPartialPreliminary model) :
+    Except CheckedMessageCacheError (List MessageCachePopulationEntry) :=
+  populationForScope view.index.base view.relevance
+
 /-- Derive a lookup-equivalent cache where the capacity envelope and bucket history settle every association. Kernel document traversal visits each group’s physical rows in ascending order; unrelated field order remains unspecified. Full-validation index defaults are appended after the original population, independently of its hash capacity. -/
 def CheckedIndexPreliminary.deriveMessageCache (preliminary : CheckedIndexPreliminary model) :
     Except CheckedMessageCacheError MessageIndexCache := do
@@ -109,5 +126,21 @@ def CheckedIndexPreliminary.deriveMessageCache (preliminary : CheckedIndexPrelim
   let defaults := preliminary.defaulted.filterMap fun entry =>
     associationAt model entry.address (.text entry.stored)
   return { insertions := cache.insertions ++ defaults }
+
+/-- Partial calls never append full-validation index defaults; duplicate associations still
+come from base formal admission before generated findings (spec/04 and spec/10). -/
+def CheckedPartialPreliminary.deriveMessageCache (view : CheckedPartialPreliminary model) :
+    Except CheckedMessageCacheError MessageIndexCache := do
+  let population ← view.messageCachePopulation
+  deriveMessageIndexCache population .ascendingPhysical |>.mapError .hostOrder
+
+/-- Structural queries retain partial unavailability independently of the admitted cache. -/
+def CheckedPartialPreliminary.messageQueryKeyAt? (view : CheckedPartialPreliminary model)
+    (address : CellAddr) : Option SemanticIndexKey := do
+  let declaration ← (model.lookupUniqueId address.field).toOption
+  let read ← (view.readAuthoredValidation address).toOption
+  match read with
+  | .silentlyUnavailable => none
+  | .checked cell => messageKey declaration cell (view.index.base.storedTextAt address)
 
 end A12Kernel

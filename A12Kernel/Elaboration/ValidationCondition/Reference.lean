@@ -37,6 +37,11 @@ def CheckedIndexPreliminary.messageReferenceInputs (preliminary : CheckedIndexPr
     Except CheckedMessageCacheError MessageReferenceInputs := do
   return { cache := ← preliminary.deriveMessageCache, keyAt := preliminary.messageQueryKeyAt? }
 
+/-- Build structural-reference inputs from the same partial view used by rule evaluation. -/
+def CheckedPartialPreliminary.messageReferenceInputs (view : CheckedPartialPreliminary model) :
+    Except CheckedMessageCacheError MessageReferenceInputs := do
+  return { cache := ← view.deriveMessageCache, keyAt := view.messageQueryKeyAt? }
+
 /-- Every repeatable level of an unstarred reference is fixed by the rule's iteration scope, so its pointer is the concrete instance the rule is evaluating. -/
 def concreteFieldPointer (declaration : FlatFieldDecl) (environment : Env) :
     Except ReferenceProjectionError MessagePointer :=
