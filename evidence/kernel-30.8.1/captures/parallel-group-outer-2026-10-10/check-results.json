@@ -1,0 +1,406 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "",
+  "data": {
+    "ops": 12,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "ROOTONLY",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "GroupFilled(/Et) And FieldFilled(/Et/Side/Val)",
+          "--code",
+          "ROOTONLY"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_ERROR_FIELDGROUP_ITERATION5_INVALID",
+              "summary": "",
+              "where": {
+                "rule": "/Et/Rows/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "DIRECT",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+          "--code",
+          "DIRECT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "ROOTDIRECT",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "GroupFilled(/Et) And FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+          "--code",
+          "ROOTDIRECT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "LEFTGROUP",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "GroupFilled(/Et/Rows) And FieldFilled(/Et/Side/Val)",
+          "--code",
+          "LEFTGROUP"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "RIGHTGROUP",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "FieldFilled(/Et/Rows/Note) And GroupFilled(/Et/Side)",
+          "--code",
+          "RIGHTGROUP"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "BOTHGROUP",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "GroupFilled(/Et/Rows) And GroupFilled(/Et/Side)",
+          "--code",
+          "BOTHGROUP"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "MISSLEFT",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "GroupNotFilled(/Et/Rows) And FieldFilled(/Et/Side/Val)",
+          "--code",
+          "MISSLEFT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "MISSRIGHT",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "FieldFilled(/Et/Rows/Note) And GroupNotFilled(/Et/Side)",
+          "--code",
+          "MISSRIGHT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 8,
+        "id": "LEFTOR",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "GroupFilled(/Et/Rows) Or FieldFilled(/Et/Side/Val)",
+          "--code",
+          "LEFTOR"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": true,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 9,
+        "id": "ROOTOR",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "GroupFilled(/Et) Or FieldFilled(/Et/Side/Val)",
+          "--code",
+          "ROOTOR"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_ERROR_FIELDGROUP_ITERATION5_INVALID",
+              "summary": "",
+              "where": {
+                "rule": "/Et/Rows/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 10,
+        "id": "UNNAMED",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "FieldFilled(/Et/Side/Val)",
+          "--code",
+          "UNNAMED"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_ERROR_FIELD_NOT_REFERENCED",
+              "summary": "",
+              "where": {
+                "rule": "/Et/Rows/CheckRule"
+              },
+              "fix": "",
+              "explain": ""
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 11,
+        "id": "NEGATIVE",
+        "verb": "rule",
+        "args": [
+          "check",
+          "--field",
+          "/Et/Rows/Note",
+          "--condition",
+          "GroupNotFilled(/Et/Rows) And GroupNotFilled(/Et/Side)",
+          "--code",
+          "NEGATIVE"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "rule",
+          "op": "check",
+          "outcome": "read",
+          "ok": true,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "engineRequested": "A12_KERNEL",
+          "engineExecuted": "A12_KERNEL",
+          "engineVersion": "30.8.1",
+          "summary": "",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_PARALLEL_ITERATION_INVALID",
+              "summary": "",
+              "where": {
+                "rule": "/Et/Rows/CheckRule"
+              }
+            }
+          ],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

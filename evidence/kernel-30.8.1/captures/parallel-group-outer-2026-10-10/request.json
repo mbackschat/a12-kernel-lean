@@ -1,0 +1,239 @@
+{
+  "model": "ErrTgtPar_DM.json",
+  "locale": "en_US",
+  "rows": [
+    {
+      "name": "matched",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "left"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "right"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "two-roots",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "left"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "right"
+              }
+            ]
+          },
+          {
+            "Rows": [
+              {
+                "Key": "2",
+                "Note": "left"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "2",
+                "Val": "right"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "cross-parent-no-match",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "left"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "2",
+                "Val": "right"
+              }
+            ]
+          },
+          {
+            "Rows": [
+              {
+                "Key": "2",
+                "Note": "left"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "right"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-payloads",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": ""
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": ""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "left-index-invalid",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "bad",
+                "Note": "left"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "right"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "left-index-duplicate",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "left"
+              },
+              {
+                "Key": "1",
+                "Note": "again"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "right"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-root",
+      "documentInline": {
+        "Et": [
+          {}
+        ]
+      }
+    },
+    {
+      "name": "absent-root",
+      "documentInline": {
+        "Et": []
+      }
+    },
+    {
+      "name": "sparse-outer",
+      "documentInline": {
+        "Et": [
+          {},
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "left"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "right"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "over-limit-outer",
+      "documentInline": {
+        "Et": [
+          {},
+          {},
+          {},
+          {},
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "fifth"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "right"
+              }
+            ]
+          },
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "sixth"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "right"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

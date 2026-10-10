@@ -24,6 +24,7 @@ inductive CheckedIndexColumnError where
   | fieldOutsideGroup (field : FieldId) (group : GroupPath)
   | fieldOutsideParallelGroups (field : FieldId)
       (left right : GroupPath)
+  | unresolvedDuplicatePointer (field : FieldId) (group : GroupPath)
   | incompatibleGroups (left right : GroupPath)
   | incompatibleIndexFields (left right : List String)
   deriving Repr, DecidableEq
@@ -48,6 +49,8 @@ structure ResolvedParallelIndexSide where
   group : RepeatableGroupDecl
   environment : Option Env
   unavailableKey : Option FormalCause
+  /-- Duplicate value selection is unavailable, but its message address requires the separate cache insertion order (spec/08 §4.3). -/
+  duplicatePointer : Bool := false
   deriving Repr, DecidableEq
 
 structure ResolvedParallelIndexRow where
@@ -478,6 +481,7 @@ private def parallelSide (column : ResolvedCheckedIndexColumn model)
   group := column.group
   environment := (column.selectableEntryFor? key).map (·.environment)
   unavailableKey := column.unavailableKey
+  duplicatePointer := column.duplicateKeys.contains key
 }
 
 private def resolveCheckedParallelIndexJoinAt
@@ -544,6 +548,7 @@ def messagePointer (side : ResolvedParallelIndexSide) (model : FlatModel)
   let declaration ← model.lookupUniqueId field |>.mapError .model
   if !side.group.path.isPrefixOf declaration.groupPath then
     throw (.fieldOutsideGroup field side.group.path)
+  if side.duplicatePointer then throw (.unresolvedDuplicatePointer field side.group.path)
   let coordinates ← match side.environment with
     | some environment => do
         let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment

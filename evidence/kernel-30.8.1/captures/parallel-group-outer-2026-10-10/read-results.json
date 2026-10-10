@@ -1,0 +1,288 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": true,
+  "summary": "",
+  "data": {
+    "ops": 8,
+    "dispatched": true,
+    "allExitedZero": true,
+    "results": [
+      {
+        "op": 0,
+        "id": "/Et/Rows/DIRECT",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Et/Rows/DIRECT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "",
+          "data": {
+            "rule": "/Et/Rows/DIRECT",
+            "severity": "ERROR",
+            "errorCode": "DIRECT",
+            "errorField": "/Et/Rows/Note",
+            "converted": true,
+            "condition": "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Parallel group discriminator."
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "/Et/Rows/ROOTDIRECT",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Et/Rows/ROOTDIRECT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "",
+          "data": {
+            "rule": "/Et/Rows/ROOTDIRECT",
+            "severity": "ERROR",
+            "errorCode": "ROOTDIRECT",
+            "errorField": "/Et/Rows/Note",
+            "converted": true,
+            "condition": "GroupFilled(/Et) And FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Parallel group discriminator."
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "/Et/Rows/LEFTGROUP",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Et/Rows/LEFTGROUP"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "",
+          "data": {
+            "rule": "/Et/Rows/LEFTGROUP",
+            "severity": "ERROR",
+            "errorCode": "LEFTGROUP",
+            "errorField": "/Et/Rows/Note",
+            "converted": true,
+            "condition": "GroupFilled(/Et/Rows) And FieldFilled(/Et/Side/Val)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Parallel group discriminator."
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "/Et/Rows/RIGHTGROUP",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Et/Rows/RIGHTGROUP"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "",
+          "data": {
+            "rule": "/Et/Rows/RIGHTGROUP",
+            "severity": "ERROR",
+            "errorCode": "RIGHTGROUP",
+            "errorField": "/Et/Rows/Note",
+            "converted": true,
+            "condition": "FieldFilled(/Et/Rows/Note) And GroupFilled(/Et/Side)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Parallel group discriminator."
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "/Et/Rows/BOTHGROUP",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Et/Rows/BOTHGROUP"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "",
+          "data": {
+            "rule": "/Et/Rows/BOTHGROUP",
+            "severity": "ERROR",
+            "errorCode": "BOTHGROUP",
+            "errorField": "/Et/Rows/Note",
+            "converted": true,
+            "condition": "GroupFilled(/Et/Rows) And GroupFilled(/Et/Side)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Parallel group discriminator."
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "/Et/Rows/MISSLEFT",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Et/Rows/MISSLEFT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "",
+          "data": {
+            "rule": "/Et/Rows/MISSLEFT",
+            "severity": "ERROR",
+            "errorCode": "MISSLEFT",
+            "errorField": "/Et/Rows/Note",
+            "converted": true,
+            "condition": "GroupNotFilled(/Et/Rows) And FieldFilled(/Et/Side/Val)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Parallel group discriminator."
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "/Et/Rows/MISSRIGHT",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Et/Rows/MISSRIGHT"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "",
+          "data": {
+            "rule": "/Et/Rows/MISSRIGHT",
+            "severity": "ERROR",
+            "errorCode": "MISSRIGHT",
+            "errorField": "/Et/Rows/Note",
+            "converted": true,
+            "condition": "FieldFilled(/Et/Rows/Note) And GroupNotFilled(/Et/Side)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Parallel group discriminator."
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "/Et/Rows/LEFTOR",
+        "verb": "rule",
+        "args": [
+          "read",
+          "/Et/Rows/LEFTOR"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "rule",
+          "op": "read",
+          "outcome": "read",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "",
+          "data": {
+            "rule": "/Et/Rows/LEFTOR",
+            "severity": "ERROR",
+            "errorCode": "LEFTOR",
+            "errorField": "/Et/Rows/Note",
+            "converted": true,
+            "condition": "GroupFilled(/Et/Rows) Or FieldFilled(/Et/Side/Val)",
+            "messages": [
+              {
+                "locale": "en_US",
+                "text": "Parallel group discriminator."
+              }
+            ]
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

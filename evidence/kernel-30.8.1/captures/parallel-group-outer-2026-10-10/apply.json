@@ -1,0 +1,114 @@
+[
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "DIRECT",
+    "condition": "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Parallel group discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "ROOTDIRECT",
+    "condition": "GroupFilled(/Et) And FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Parallel group discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "LEFTGROUP",
+    "condition": "GroupFilled(/Et/Rows) And FieldFilled(/Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Parallel group discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "RIGHTGROUP",
+    "condition": "FieldFilled(/Et/Rows/Note) And GroupFilled(/Et/Side)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Parallel group discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "BOTHGROUP",
+    "condition": "GroupFilled(/Et/Rows) And GroupFilled(/Et/Side)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Parallel group discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "MISSLEFT",
+    "condition": "GroupNotFilled(/Et/Rows) And FieldFilled(/Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Parallel group discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "MISSRIGHT",
+    "condition": "FieldFilled(/Et/Rows/Note) And GroupNotFilled(/Et/Side)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Parallel group discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "LEFTOR",
+    "condition": "GroupFilled(/Et/Rows) Or FieldFilled(/Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Parallel group discriminator."
+      }
+    ]
+  }
+]

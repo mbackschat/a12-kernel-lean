@@ -1,0 +1,158 @@
+[
+  {
+    "id": "ROOTONLY",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "GroupFilled(/Et) And FieldFilled(/Et/Side/Val)",
+      "--code",
+      "ROOTONLY"
+    ]
+  },
+  {
+    "id": "DIRECT",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+      "--code",
+      "DIRECT"
+    ]
+  },
+  {
+    "id": "ROOTDIRECT",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "GroupFilled(/Et) And FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+      "--code",
+      "ROOTDIRECT"
+    ]
+  },
+  {
+    "id": "LEFTGROUP",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "GroupFilled(/Et/Rows) And FieldFilled(/Et/Side/Val)",
+      "--code",
+      "LEFTGROUP"
+    ]
+  },
+  {
+    "id": "RIGHTGROUP",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "FieldFilled(/Et/Rows/Note) And GroupFilled(/Et/Side)",
+      "--code",
+      "RIGHTGROUP"
+    ]
+  },
+  {
+    "id": "BOTHGROUP",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "GroupFilled(/Et/Rows) And GroupFilled(/Et/Side)",
+      "--code",
+      "BOTHGROUP"
+    ]
+  },
+  {
+    "id": "MISSLEFT",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "GroupNotFilled(/Et/Rows) And FieldFilled(/Et/Side/Val)",
+      "--code",
+      "MISSLEFT"
+    ]
+  },
+  {
+    "id": "MISSRIGHT",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "FieldFilled(/Et/Rows/Note) And GroupNotFilled(/Et/Side)",
+      "--code",
+      "MISSRIGHT"
+    ]
+  },
+  {
+    "id": "LEFTOR",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "GroupFilled(/Et/Rows) Or FieldFilled(/Et/Side/Val)",
+      "--code",
+      "LEFTOR"
+    ]
+  },
+  {
+    "id": "ROOTOR",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "GroupFilled(/Et) Or FieldFilled(/Et/Side/Val)",
+      "--code",
+      "ROOTOR"
+    ]
+  },
+  {
+    "id": "UNNAMED",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "FieldFilled(/Et/Side/Val)",
+      "--code",
+      "UNNAMED"
+    ]
+  },
+  {
+    "id": "NEGATIVE",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Et/Rows/Note",
+      "--condition",
+      "GroupNotFilled(/Et/Rows) And GroupNotFilled(/Et/Side)",
+      "--code",
+      "NEGATIVE"
+    ]
+  }
+]

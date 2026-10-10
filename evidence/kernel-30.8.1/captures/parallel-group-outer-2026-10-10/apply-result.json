@@ -1,0 +1,114 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "",
+  "data": {
+    "ops": 8,
+    "committed": true,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "",
+        "changed": {
+          "rule": "/Et/Rows/DIRECT"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "",
+        "changed": {
+          "rule": "/Et/Rows/ROOTDIRECT"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "",
+        "changed": {
+          "rule": "/Et/Rows/LEFTGROUP"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "",
+        "changed": {
+          "rule": "/Et/Rows/RIGHTGROUP"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "",
+        "changed": {
+          "rule": "/Et/Rows/BOTHGROUP"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "",
+        "changed": {
+          "rule": "/Et/Rows/MISSLEFT"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "",
+        "changed": {
+          "rule": "/Et/Rows/MISSRIGHT"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "",
+        "changed": {
+          "rule": "/Et/Rows/LEFTOR"
+        },
+        "diagnostics": [],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "ErrTgtPar_DM.json"
+}

@@ -1,0 +1,1596 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "ErrTgtPar_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "matched",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BOTHGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DIRECT",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RIGHTGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ROOTDIRECT",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BOTHGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DIRECT",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RIGHTGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ROOTDIRECT",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two-roots",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BOTHGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BOTHGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DIRECT",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DIRECT",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RIGHTGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RIGHTGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ROOTDIRECT",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ROOTDIRECT",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BOTHGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BOTHGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DIRECT",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DIRECT",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RIGHTGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RIGHTGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ROOTDIRECT",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ROOTDIRECT",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cross-parent-no-match",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "LEFTOR",
+              "field": "/Et[1]/Rows[-5]/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[1]/Rows[-5]/Key",
+                "/Et[1]/Rows[-5]/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "/Et[2]/Rows[-5]/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[2]/Rows[-5]/Key",
+                "/Et[2]/Rows[-5]/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[1]/Side[-5]/Key",
+                "/Et[1]/Side[-5]/Val",
+                "Et/Rows/Key",
+                "Et/Rows/Note"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[2]/Side[-5]/Key",
+                "/Et[2]/Side[-5]/Val",
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MISSLEFT",
+              "field": "/Et[1]/Rows[-5]/Note",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[1]/Rows[-5]/Key",
+                "/Et[1]/Rows[-5]/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": [
+                "/Et[1]/Rows[-5]/Key",
+                "/Et[1]/Rows[-5]/Note"
+              ]
+            },
+            {
+              "code": "MISSLEFT",
+              "field": "/Et[2]/Rows[-5]/Note",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[2]/Rows[-5]/Key",
+                "/Et[2]/Rows[-5]/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": [
+                "/Et[2]/Rows[-5]/Key",
+                "/Et[2]/Rows[-5]/Note"
+              ]
+            },
+            {
+              "code": "MISSRIGHT",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[1]/Side[-5]/Key",
+                "/Et[1]/Side[-5]/Val",
+                "Et/Rows/Key",
+                "Et/Rows/Note"
+              ],
+              "fillToFix": [
+                "/Et[1]/Side[-5]/Key",
+                "/Et[1]/Side[-5]/Val"
+              ]
+            },
+            {
+              "code": "MISSRIGHT",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[2]/Side[-5]/Key",
+                "/Et[2]/Side[-5]/Val",
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note"
+              ],
+              "fillToFix": [
+                "/Et[2]/Side[-5]/Key",
+                "/Et[2]/Side[-5]/Val"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "LEFTOR",
+              "field": "/Et[1]/Rows[-5]/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[1]/Rows[-5]/Key",
+                "/Et[1]/Rows[-5]/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "/Et[2]/Rows[-5]/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[2]/Rows[-5]/Key",
+                "/Et[2]/Rows[-5]/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[1]/Side[-5]/Key",
+                "/Et[1]/Side[-5]/Val",
+                "Et/Rows/Key",
+                "Et/Rows/Note"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[2]/Side[-5]/Key",
+                "/Et[2]/Side[-5]/Val",
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MISSLEFT",
+              "field": "/Et[1]/Rows[-5]/Note",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[1]/Rows[-5]/Key",
+                "/Et[1]/Rows[-5]/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": [
+                "/Et[1]/Rows[-5]/Key",
+                "/Et[1]/Rows[-5]/Note"
+              ]
+            },
+            {
+              "code": "MISSLEFT",
+              "field": "/Et[2]/Rows[-5]/Note",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[2]/Rows[-5]/Key",
+                "/Et[2]/Rows[-5]/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": [
+                "/Et[2]/Rows[-5]/Key",
+                "/Et[2]/Rows[-5]/Note"
+              ]
+            },
+            {
+              "code": "MISSRIGHT",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[1]/Side[-5]/Key",
+                "/Et[1]/Side[-5]/Val",
+                "Et/Rows/Key",
+                "Et/Rows/Note"
+              ],
+              "fillToFix": [
+                "/Et[1]/Side[-5]/Key",
+                "/Et[1]/Side[-5]/Val"
+              ]
+            },
+            {
+              "code": "MISSRIGHT",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[2]/Side[-5]/Key",
+                "/Et[2]/Side[-5]/Val",
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note"
+              ],
+              "fillToFix": [
+                "/Et[2]/Side[-5]/Key",
+                "/Et[2]/Side[-5]/Val"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-payloads",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BOTHGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BOTHGROUP",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "left-index-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "LEFTOR",
+              "field": "/Et[1]/Rows[-5]/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[1]/Rows[-5]/Key",
+                "/Et[1]/Rows[-5]/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Et/Rows/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "LEFTOR",
+              "field": "/Et[1]/Rows[-5]/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/Et[1]/Rows[-5]/Key",
+                "/Et[1]/Rows[-5]/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Et/Rows/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "left-index-duplicate",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows[2]/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows[2]/Key",
+                "Et/Rows[2]/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows[2]/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows[2]/Key"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows[2]/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows[2]/Key",
+                "Et/Rows[2]/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows[2]/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et/Rows[2]/Key"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-root",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "absent-root",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "sparse-outer",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BOTHGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DIRECT",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RIGHTGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ROOTDIRECT",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BOTHGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DIRECT",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RIGHTGROUP",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ROOTDIRECT",
+              "field": "Et[2]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[2]/Rows/Key",
+                "Et[2]/Rows/Note",
+                "Et[2]/Side/Key",
+                "Et[2]/Side/Val"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "over-limit-outer",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BOTHGROUP",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DIRECT",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTGROUP",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RIGHTGROUP",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ROOTDIRECT",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Rows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Rows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Rows/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Rows/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Rows/Note"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Side",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Side"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Side/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Side/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Side/Val",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Side/Val"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BOTHGROUP",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DIRECT",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTGROUP",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LEFTOR",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RIGHTGROUP",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ROOTDIRECT",
+              "field": "Et[5]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[5]/Rows/Key",
+                "Et[5]/Rows/Note",
+                "Et[5]/Side/Key",
+                "Et[5]/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Rows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Rows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Rows/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Rows/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Rows/Note"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Side",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Side"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Side/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Side/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseLfdNummer",
+              "field": "Et[6]/Side/Val",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Et[6]/Side/Val"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

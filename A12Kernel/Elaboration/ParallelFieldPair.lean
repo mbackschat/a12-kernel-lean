@@ -11,6 +11,7 @@ namespace A12Kernel
 inductive ParallelPresenceRuleAssemblyError where
   | model (error : ResolveError)
   | join (error : CheckedIndexColumnError)
+  | static (diagnostic : KernelStaticDiagnostic)
   | incoherentCondition
   | incoherentOperandGroup (field : FieldId) (group : GroupPath)
   | missingIndexedOperandGroup (field : FieldId)
@@ -22,6 +23,8 @@ inductive ParallelPresenceRuleAssemblyError where
 
 inductive ParallelPresenceRuleEvaluationError where
   | join (error : CheckedIndexColumnError)
+  | group (error : CheckedGroupPresenceError)
+  | rows (error : ActualRowEnvironmentError)
   | unsupportedCondition
   deriving Repr, DecidableEq
 
@@ -33,7 +36,7 @@ structure ParallelRuleRowOutcome where
   outcome : FlatRuleOutcome
   deriving Repr, DecidableEq
 
-/-- Two payload declarations share a checked join and an error side with complete outer coordinates. -/
+/-- Two anchor declarations share a checked join and an error side with complete outer coordinates. Group-only conditions may use an index declaration as a topology anchor; authored reference membership remains the condition’s responsibility. -/
 structure CheckedParallelFieldPair (model : FlatModel) where
   private mk ::
   groups : CheckedParallelIndexGroups model

@@ -52,13 +52,14 @@ remains the only possible reason to lift the gate (spec/03 A.4). -/
 /-- The executable parallel certificate retains both joined sides, typed leaves and a structurally valid guard. -/
 theorem checkedParallelFieldRule_wellFormed (rule : CheckedParallelFieldRule model) :
     rule.pair.groups.WellFormed ∧ model.validate.isOk = true ∧
+    rule.condition.errorTargetRefusal rule.pair = none ∧
     rule.condition.allLeaves (ParallelFieldLeaf.admitted rule.pair rule.suppressExactScaleWarning) = true ∧
-    rule.condition.anyLeaf (ParallelFieldLeaf.uses .left) = true ∧
-    rule.condition.anyLeaf (ParallelFieldLeaf.uses .right) = true ∧
-    rule.condition.guarded = true ∧
+    rule.condition.anyLeaf (ParallelFieldLeaf.uses rule.pair .left) = true ∧
+    rule.condition.anyLeaf (ParallelFieldLeaf.uses rule.pair .right) = true ∧
+    rule.condition.guarded rule.pair = true ∧
     ParallelFieldCondition.framesGuarded rule.pair rule.condition = true := by
   refine ⟨checkedParallelIndexGroups_wellFormed rule.pair.groups,
-    rule.pair.groups.modelWellFormed, ?_⟩
+    rule.pair.groups.modelWellFormed, rule.errorTargetAllowed, ?_⟩
   simpa only [ParallelFieldCondition.admitted, Bool.and_eq_true, and_assoc] using rule.admitted
 
 end A12Kernel

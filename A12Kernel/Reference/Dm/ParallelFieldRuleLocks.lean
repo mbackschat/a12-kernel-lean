@@ -22,26 +22,33 @@ private def rule (condition : String) : DmRule := {
   group := ["Form"], name := "Pair", errorCode := "PAIR", severity := "ERROR",
   errorEntityRelPath := "../L/N", condition }
 
-private def documentJson (left right : List (String × String)) : Json :=
-  .mkObj [("Form", .mkObj [
+private def groupJson (left right : List (String × String)) : Json :=
+  .mkObj [
     ("L", .arr (left.map fun (key, number) => Json.mkObj [("Key", .str key), ("N", .str number)]).toArray),
-    ("R", .arr (right.map fun (key, number) => Json.mkObj [("Key", .str key), ("N", .str number)]).toArray)])]
+    ("R", .arr (right.map fun (key, number) => Json.mkObj [("Key", .str key), ("N", .str number)]).toArray)]
+
+private def documentJson (left right : List (String × String)) : Json :=
+  .mkObj [("Form", groupJson left right)]
 
 private def world : World := { now := { epochMillis := 0 } }
 
-private def run (condition : String) (candidate : FlatModel := model)
-    (left : List (String × String) := [("Zulu", "7"), ("Alpha", "3")])
-    (right : List (String × String) := [("Alpha", "8"), ("Beta", "2")]) :
+private def runDefinition (definition : DmRule) (candidate : FlatModel) (document : Json) :
     Option (List (String × String)) := do
-  let input ← (readDocument (dm candidate) (documentJson left right)).toOption
+  let input ← (readDocument (dm candidate) document).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler candidate).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let plan ← (checkValidationRule (dm candidate) .english (rule condition)).toOption
+  let plan ← (checkValidationRule (dm candidate) .english definition).toOption
   let messages ← (runValidationRule world checked plan).toOption
   pure (messages.map fun message =>
     let observed := observe candidate message
     (observed.pointer, observed.messageType))
+
+private def run (condition : String) (candidate : FlatModel := model)
+    (left : List (String × String) := [("Zulu", "7"), ("Alpha", "3")])
+    (right : List (String × String) := [("Alpha", "8"), ("Beta", "2")]) :
+    Option (List (String × String)) :=
+  runDefinition (rule condition) candidate (documentJson left right)
 
 private def admitted (condition : String) (candidate : FlatModel := model) : Bool :=
   (checkParallelRule (dm candidate) .english (rule condition)).isOk
@@ -100,11 +107,14 @@ example : ["FieldsNotCollectivelyFilled([L/N], R/N)", "[L/N] > R/N",
     "@SuppressWarning(MVK_NO_NUMBER) [L/N] > [R/N]"].all
     (fun text => !admitted text) = true := by native_decide
 
-example : !(checkParallelRule dm .english
-    { (rule "[L/N] > [R/N]") with
-      group := ["Form", "L"]
-      errorEntityRelPath := "../N"
-      condition := "[N] > [/Form/R/N]" }).isOk := by native_decide
+private def leftDeclaredRule : DmRule := {
+  (rule "[L/N] > [R/N]") with
+  group := ["Form", "L"], errorEntityRelPath := "../N", condition := "[N] > [/Form/R/N]" }
+
+example : (checkParallelRule dm .english leftDeclaredRule).isOk = true ∧
+    runDefinition leftDeclaredRule model
+      (documentJson [("Zulu", "7"), ("Alpha", "3")] [("Alpha", "8"), ("Beta", "2")]) =
+      some [("Form/L/N", "OMISSION_ERROR")] := by native_decide
 
 example : run "FieldsNotCollectivelyFilled(L/N, R/N)" model
     [("Zulu", "7"), ("Alpha", "3")] [("Alpha", "8"), ("Beta", "2"), ("Alpha", "4")] =
@@ -143,7 +153,16 @@ private def commonOuterModel : FlatModel :=
 
 example : commonOuterModel.validate.isOk = true ∧
     admitted "[L/N] > [R/N]" = true ∧
-    admitted "[L/N] > [R/N]" commonOuterModel = false := by native_decide
+    admitted "[L/N] > [R/N]" commonOuterModel = true := by native_decide
+
+private def commonOuterDocument : Json := .mkObj [("Form", .arr #[
+  groupJson [("Alpha", "3")] [("Alpha", "8")],
+  groupJson [("Alpha", "9")] [("Alpha", "4")]])]
+
+example : runDefinition (rule "[L/N] > [R/N]") commonOuterModel commonOuterDocument =
+    some [("Form[2]/L/N", "VALUE_ERROR")] ∧
+    runDefinition (rule "[L/N] < [R/N]") commonOuterModel commonOuterDocument =
+      some [("Form/L/N", "VALUE_ERROR")] := by native_decide
 
 example : !(checkParallelRule dm .english
     { (rule "[L/N] > [R/N]") with errorEntityRelPath := "../L/Key" }).isOk := by native_decide

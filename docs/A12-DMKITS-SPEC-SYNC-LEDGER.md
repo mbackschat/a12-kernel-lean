@@ -84,3 +84,14 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: Reproduce one-versus-two matched visits for equal/different minimum scales, one visit when natural fractional precision aligns both renderings, and unchanged unmatched/duplicate controls. State uncalibrated profiles explicitly.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: pending.
+
+<a id="spec-2026-10-10-05"></a>
+### SPEC-2026-10-10-05 — parallel group operands and duplicate error pointers
+
+- `status`: pending
+- `canonical`: [parallel iteration](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key) distinguishes group content, parent-local joins and duplicate pointer lookup from value admission.
+- `delta`: Group predicates read joined group content after index availability. Common outer coordinates partition key unions. Duplicate value unavailability does not force an unknown error coordinate when another branch fires; pointer lookup retains its separate cache association.
+- `evidence`: [Twelve static checks and ten runtime documents](sources/model-structure-and-declaration-probes.md#src-parallel-group-outer), both Kernel strategies. The existing selected-message checkpoint already establishes that physical first/last duplicate order is insufficient.
+- `request`: Reconcile the canonical parallel clause and consumer treatment of group references, outer dispatch and duplicate error addresses. No repeated capture is requested.
+- `acceptance`: An exact peer revision adopts the distinctions or supplies contrary Kernel evidence. Exact document-to-cache insertion order remains an explicit implementation obligation here.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
