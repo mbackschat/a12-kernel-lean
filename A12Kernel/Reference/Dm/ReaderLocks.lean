@@ -135,4 +135,57 @@ example : (repeatedClocks.map fun (cells : List (CellAddr × RawCell)) =>
     | [.parsed (.temporal (.time _ clock)), .rejected .dateFormat] => clock.hour == 12
     | _ => false) = some true := by native_decide
 
+private def rowModel : DmModel := {
+  flat := {
+    fields := [{ id := 0, name := "Value", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } }],
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
+  rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+
+private def rowInput (rows : Array Json) : Option DmDocument :=
+  (readDocument rowModel (Json.mkObj [("Form", Json.mkObj [("Rows", Json.arr rows)])])).toOption
+
+example : (rowInput #[.null, Json.mkObj [("Value", .str "kept")], .null]).map
+    (fun input => (input.data.instantiatedRows, input.data.cells.map (·.address), input.refusals.length)) =
+    some ([{ group := 10, path := [1] }], [{ field := 0, path := [1] }], 0) := by
+  native_decide
+
+private def rowShape (rows : Array Json) : Option (List RowAddr × List CellAddr × Nat) :=
+  (rowInput rows).map fun input =>
+    (input.data.instantiatedRows, input.data.cells.map (·.address), input.refusals.length)
+
+example : rowShape #[] = some ([], [], 0) ∧
+    rowShape #[.null, .bool false, toJson (7 : Nat), .str "x", .arr #[]] = some ([], [], 0) ∧
+    rowShape #[.null, .bool true, Json.mkObj [("Value", .str "a")], .arr #[],
+      Json.mkObj [("Value", .str "b")], .null] =
+      some ([{ group := 10, path := [1] }, { group := 10, path := [2] }],
+        [{ field := 0, path := [1] }, { field := 0, path := [2] }], 0) := by native_decide
+
+example : rowShape #[Json.mkObj [], .null, Json.mkObj [("Value", .null)]] =
+      some ([{ group := 10, path := [1] }, { group := 10, path := [2] }],
+        [{ field := 0, path := [2] }], 0) ∧
+    (rowInput #[Json.mkObj [("Value", .null)]]).map (·.data.cells.map (·.raw)) =
+      some [.presentEmpty] ∧
+    (rowInput #[Json.mkObj [("Unknown", .str "x")]]).map (·.refusals.length) = some 1 := by
+  native_decide
+
+private def nestedRowModel : DmModel := { rowModel with flat := {
+  fields := [{ id := 0, name := "Value", groupPath := ["Form", "Rows", "Children"], repeatableScope := [10, 20], policy := { kind := .string } }]
+  repeatableGroups := [
+    { level := 10, path := ["Form", "Rows"], repeatability := some 3 },
+    { level := 20, path := ["Form", "Rows", "Children"], repeatability := some 3 }] } }
+
+private def nestedRows : Option DmDocument :=
+  let child := Json.mkObj [("Value", .str "kept")]
+  (readDocument nestedRowModel (Json.mkObj [("Form", Json.mkObj [("Rows", Json.arr #[
+    .null, Json.mkObj [], Json.mkObj [("Children", .arr #[.null, child])],
+    .null, Json.mkObj [("Children", .arr #[child, .null, child, .null])]])])])).toOption
+
+example : nestedRows.map (fun input =>
+    (input.data.instantiatedRows, input.data.cells.map (·.address), input.refusals.length)) =
+    some ([{ group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [2, 1] }, { group := 10, path := [3] },
+      { group := 20, path := [3, 1] }, { group := 20, path := [3, 2] }],
+      [{ field := 0, path := [2, 1] }, { field := 0, path := [3, 1] },
+        { field := 0, path := [3, 2] }], 0) := by native_decide
+
 end A12Kernel.Dm.ReaderLocks

@@ -173,3 +173,6 @@ Edit the source shard when its provenance or drill route changes; change this hu
 
 - [Selected Boolean, Confirm and DateRange comparisons](sources/inbound-group-operand-batches.md#src-selected-typed-comparisons): static admission, comparison spelling, phase observations and first-filled prefix behavior.
 - [Selected overlap streams](sources/date-range-construction.md#src-selected-overlap-streams): both-arm admission, selected scalar/list roles and reached-versus-bypassed poison.
+
+<a id="src-json-row-normalization"></a>
+- [Document JSON row normalization](sources/evaluation-and-application-routes.md#src-json-row-normalization): non-object removal, dense surviving coordinates, nested parent scope and the separate V1 placement route.

@@ -186,12 +186,14 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
     | none =>
         match model.flat.repeatableGroups.find? (·.path == childPath), value with
         | some repeatable, .arr instances =>
-            for (row, index) in instances.toList.zipIdx do
+            -- JSON conversion discards non-object rows before assigning coordinates; V1 placement padding is a separate route (spec/07 §1).
+            let objects := instances.toList.filterMap fun
+              | .obj members => some members.toList
+              | _ => none
+            for (members, index) in objects.zipIdx do
               let rowPath := path ++ [index + 1]
               modify fun state => { state with rows := state.rows.push { group := repeatable.level, path := rowPath } }
-              match row with
-              | .obj members => readInstance model childPath rowPath members.toList
-              | _ => refuse childPath "repeatable row is no object"
+              readInstance model childPath rowPath members
         | none, .obj members =>
             if model.refusals.any (·.1 == childPath) then refuse childPath "declaration refused by the model reader"
             -- A nonrepeatable group is known by the fields declared below it.

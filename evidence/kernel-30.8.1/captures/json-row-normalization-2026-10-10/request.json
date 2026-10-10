@@ -1,0 +1,282 @@
+{
+  "model": "../selected-message-references/model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "object-control",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-control",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "null-only",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                null,
+                null,
+                null
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "null-prefix",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                null,
+                null,
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "null-suffix",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                null,
+                null
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "mixed-nonobjects",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                false,
+                7,
+                "x",
+                [],
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "explicit-empty",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {},
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "two-survivors",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                null,
+                {
+                  "Id": "a",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                null,
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                null
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "nested-null-prefix",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            null,
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                null,
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

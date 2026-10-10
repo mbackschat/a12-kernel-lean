@@ -110,3 +110,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: An exact peer revision adopts the distinctions or supplies contrary Kernel evidence; preserve the measured host-dependent collision boundary and retain default, partial-call and other host-profile limits until settled.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: pending.
+
+<a id="spec-2026-10-10-07"></a>
+### SPEC-2026-10-10-07 — Document JSON compacts surviving object repetitions
+
+- `status`: pending
+- `canonical`: [Runtime repetition topology](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) distinguishes JSON conversion from sparse V1 placement padding.
+- `delta`: Non-object repetition elements are discarded before assigning consecutive coordinates, independently within each surviving parent. Empty objects remain rows; field-null remains present-empty.
+- `basis`: [Nine-document, two-strategy Kernel matrix and source](sources/evaluation-and-application-routes.md#src-json-row-normalization) distinguish null prefix/suffix, mixed non-object kinds, explicit empty rows, two survivors and nested scope.
+- `request`: Reconcile consumer JSON ingestion and topology claims against this conversion. No repeated measurement is requested; deserializer diagnostic payloads remain outside this runtime projection.
+- `acceptance`: An exact peer revision adopts dense survivor coordinates or supplies contrary Kernel evidence for this route, preserving the separate V1 contract.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: pending.

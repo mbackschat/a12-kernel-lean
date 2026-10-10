@@ -10,6 +10,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `boundary`: Finite model-relative rows and placed raw cells; contiguous 1-based repetition identity; scope, proof-retained duplicate-placement, raw-classification, and over-repetition checks
 - `owner`: [`Document.lean`](../../A12Kernel/Document.lean), [checked-document elaboration](../../A12Kernel/Elaboration/CheckedDocument.lean), [checked-document proofs](../../A12Kernel/Proofs/CheckedDocument.lean)
 - `assurance`: E/P closed; L/C none; Q Analyze/Explain probe
+- `json-ingestion`: The [document reader](../../A12Kernel/Reference/Dm/Document.lean) discards non-object repetition entries before assigning dense coordinates, independently within each parent. [Reader locks](../../A12Kernel/Reference/Dm/ReaderLocks.lean) preserve empty objects and field-null presence; the [nine-document Kernel matrix](../sources/evaluation-and-application-routes.md#src-json-row-normalization) calibrates the conversion through selected message pointers. Deserializer notifications are outside this runtime projection.
 - `remains`: SG1 closed; family ingestion stays with its clause
 
 <a id="cap-checked-addressed-reads"></a>
