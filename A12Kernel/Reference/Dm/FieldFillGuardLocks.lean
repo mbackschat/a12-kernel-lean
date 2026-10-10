@@ -19,13 +19,14 @@ private def operators := ["AllFieldsFilled", "NoFieldFilled", "AtLeastOneFieldFi
 
 private def run (operator operands : String) (rows : List (String × String))
     (a : String := "") (b : String := "") (stringTarget : Bool := false)
-    (rowTarget : Bool := false) (producer : Bool := false) : Option Char := do
-  let model := if stringTarget then { model with fields := model.fields.map fun field =>
-    if field.id == 3 then { field with policy := { kind := .string } } else field } else model
+    (rowTarget : Bool := false) (producer : Bool := false)
+    (fixture : FlatModel := model) (extra : List (String × Lean.Json) := []) : Option Char := do
+  let model := if stringTarget then { fixture with fields := fixture.fields.map fun field =>
+    if field.id == 3 then { field with policy := { kind := .string } } else field } else fixture
   let dm : DmModel := { flat := model, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
-  let data := Lean.Json.mkObj [("Form", Lean.Json.mkObj [
+  let data := Lean.Json.mkObj [("Form", Lean.Json.mkObj ([
     ("A", .str a), ("B", .str b), ("Out", .str "99"), ("Dependent", .str "99"),
-    ("Rows", .arr (rows.map fun (n,g) => Lean.Json.mkObj [("N", .str n), ("Gate", .str g), ("Out", .str "99"), ("Dependent", .str "99")]).toArray)])]
+    ("Rows", .arr (rows.map fun (n,g) => Lean.Json.mkObj [("N", .str n), ("Gate", .str g), ("Out", .str "99"), ("Dependent", .str "99")]).toArray)] ++ extra))]
   let input ← (readDocument dm data).toOption
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
@@ -91,5 +92,41 @@ example : run "AtLeastOneFieldFilled" "Rows*/N Having [$Out] > 0" [("1", "1")] =
 
 example : run "AtLeastOneFieldFilled" "Rows*/N Having [Rows/N] == [$Rows/N]"
     [("1", "1"), ("", "1")] "" "" false true = some 'R' := by native_decide
+
+
+private def nestedModel : FlatModel := { model with
+  timeZoneId := "Europe/Berlin"
+  fields := model.fields.map fun field =>
+    let field := if field.repeatableScope == [10] then
+      { field with groupPath := ["Form", "Parents", "Rows"], repeatableScope := [20, 10] }
+      else field
+    if field.id == 6 then { field with
+      policy := { kind := .temporal .dateTime (TemporalComponents.ofFormat "yyyy-MM-dd'T'HH:mm:ss") }
+      temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } } else field
+  repeatableGroups := [
+    { level := 20, path := ["Form", "Parents"], repeatability := some 2 },
+    { level := 10, path := ["Form", "Parents", "Rows"], repeatability := some 51 }] }
+
+private def nestedRun (operator : String) (firstRows : Nat) (blankTail : Bool := false)
+    (earlyWitness : Bool := false) : Option Char :=
+  let row (value : String) := Lean.Json.mkObj [
+    ("N", .str value), ("Gate", .str "2024-03-31T01:30:00")]
+  let parent (rows : Array Lean.Json) := Lean.Json.mkObj [("Rows", .arr rows)]
+  let first := List.replicate firstRows (row (if earlyWitness then "1" else ""))
+  let second := #[row "1"] ++ if blankTail then #[Lean.Json.mkObj []] else #[]
+  run operator
+    "Parents*/Rows*/N Having (FieldFilled(Parents/Rows/Gate) Or [Parents/Rows/Gate] == \"31.03.2024T02:30:00\")"
+    [] (fixture := nestedModel)
+    (extra := [("Parents", .arr #[parent first.toArray, parent second])])
+
+example : operators.mapM (nestedRun · 1) = some ['P', 'F', 'T', 'F', 'P', 'F', 'P'] := by native_decide
+
+example : operators.mapM (nestedRun · 51) = some ['F', 'P', 'T', 'P', 'T', 'P', 'T'] := by native_decide
+
+example : nestedRun "AtLeastOneFieldFilled" 50 = some 'P' ∧
+    nestedRun "AtLeastOneFieldFilled" 51 true = some 'P' ∧
+    nestedRun "FieldsNotCollectivelyFilled" 50 = some 'P' ∧
+    nestedRun "NoFieldFilled" 51 false true = some 'F' ∧
+    nestedRun "MoreThanOneFieldFilled" 51 false true = some 'T' := by native_decide
 
 end A12Kernel.Dm.FieldFillGuardLocks

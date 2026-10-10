@@ -63,7 +63,7 @@ private def scanExpanded (kind : ScanKind) (context : ScalarComputationContext)
       if omitted then pure (scanValues kind id [.uninstantiated] next) else pure (.exhausted next)
   | result => pure result
 
-private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
+private def scanStar (traversalMode : FilterTraversalMode) (kind : ScanKind) (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
     (filterStoredText filterNumberText : Env → FieldId → Option String) (source : CheckedFilledFieldStarSource model) (seen : Bool) :
     Except ComputationFillError SearchResult := do
@@ -73,12 +73,13 @@ private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
   | none => scanExpanded kind context field path.axes path.firstStar seen
   | some filter =>
       let addressed ← addressed context
-      let candidates ← match kind with
+      let traversal : FilterTraversal ← match kind with
         | .anyDeclaredEmpty => do
             let some rows ← (path.declaredEnvironments? context.row).mapError .addressing
               | throw .declaredCapacityRequired
-            pure rows
-        | _ => (model.filterEnvironments path (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row true).mapError .addressing
+            pure { candidates := rows }
+        | _ => (model.filterTraversal path
+            (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row traversalMode).mapError .addressing
       let read := model.filterRead addressed.document
       filter.condition.scanComputationResolving
         (({
@@ -95,9 +96,9 @@ private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
           groupUnavailable := ComputationFillError.addressing ∘ StarAddressingError.unsupportedGroupOperand
           bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withModelComputationGroups model addressed.document)
         context.row (fun seen row => pure (step kind seen (observe (read addressed.read row field))))
-        candidates seen
+        traversal.candidates seen traversal.occupancy
 
-private def scanOperand (kind : ScanKind) (context : ScalarComputationContext)
+private def scanOperand (traversalMode : FilterTraversalMode) (kind : ScanKind) (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
     (filterStoredText filterNumberText : Env → FieldId → Option String) :
     CheckedFieldFillOperand model → Bool → Except ComputationFillError SearchResult
@@ -105,7 +106,7 @@ private def scanOperand (kind : ScanKind) (context : ScalarComputationContext)
   | .field declaration, seen =>
       if (context.read declaration.id).findings.contains .overRepetition then pure (.exhausted seen)
       else pure (scanValues kind (fun _ => observe (context.read declaration.id)) [()] seen)
-  | .star source, seen => scanStar kind context filterRead filterStoredText filterNumberText source seen
+  | .star source, seen => scanStar traversalMode kind context filterRead filterStoredText filterNumberText source seen
   | .group source, seen => scanSources (fun (declaration : FlatFieldDecl) seen => do
       if declaration.repeatableScope.isEmpty then
         pure (scanValues kind (fun _ => observe (context.read declaration.id)) [()] seen)
@@ -126,13 +127,18 @@ def evalCheckedWith (source : CheckedComputationFieldFill model) (operator : Fie
     (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     Except Error ComputationConditionResult :=
   operator.evalComputationUsing fun kind => do
+    -- RuntimeController's positive presence search opts in; its negative presence and
+    -- second-witness searches do not (30.8.1, internMindestensEinFeldAngegeben et al.).
+    let traversalMode : FilterTraversalMode := match operator, kind with
+      | .atLeastOneFieldFilled, .anyFilled | .fieldsNotCollectivelyFilled, .anyFilled => .sparse
+      | _, _ => .dense
     let consume operand seen := match operand with
       | .indexed indexed => do
           let observation ← indexedRead indexed
           pure (scanValues kind id [observation.asComputationFillSlot] seen)
       | .keyed keyed => do
           pure (scanValues kind id (← keyedRead keyed) seen)
-      | operand => (scanOperand kind context filterRead filterStoredText filterNumberText operand seen).mapError liftError
+      | operand => (scanOperand traversalMode kind context filterRead filterStoredText filterNumberText operand seen).mapError liftError
     match ← scanSources consume source.source.operands false with
     | .exhausted _ => pure .exhausted
     | .terminated result => pure result
