@@ -86,6 +86,7 @@ import A12Kernel.Reference.Dm.PartialFieldListLocks
 import A12Kernel.Reference.Dm.SelectedReferenceAdmissionLocks
 import A12Kernel.Reference.Dm.RootReferenceAdmissionLocks
 import A12Kernel.Reference.Dm.TemporalReferenceAdmissionLocks
+import A12Kernel.Reference.Dm.RemainingReferenceAdmissionLocks
 import A12Kernel.Reference.Dm.PartialStringExpressionLocks
 import A12Kernel.Reference.Dm.IndexedTimeComponentLocks
 import A12Kernel.Reference.Dm.DateComponentLocks

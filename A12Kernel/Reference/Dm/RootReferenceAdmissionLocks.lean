@@ -73,6 +73,6 @@ example : (do
     let parsed ← (parseText .english "GroupFilled(/Et) And FieldFilled(Note)").toOption
     let checked ← (lowerCondition fixed ["Et", "Rows"] false parsed.body).toOption
     pure (checked.core.authoredErrorReference? 2, checked.core.formOnlyErrorReference? 2)) =
-    some (some true, none) := by native_decide
+    some (some true, some false) := by native_decide
 
 end A12Kernel.Dm.RootReferenceAdmissionLocks

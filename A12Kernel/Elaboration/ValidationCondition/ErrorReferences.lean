@@ -160,6 +160,14 @@ private def typedOperandReferenceAt? (field : FieldId) (query : ReferenceQuery) 
   | .boolean _ => some false
   | .temporal source => temporalReferenceAt? field query source.core
 
+private def ordinaryNumericAtomReferenceAt? (model : FlatModel) (field : FieldId)
+    (query : ReferenceQuery) (atom : NumericValidationAtom) : Option Bool :=
+  if !atom.referencesField model field then some false else
+  match atom with
+  | .filledGroupCount groups => some (groups.any fun reference =>
+      reference.referencesField model field && query.binds reference.boundRepeatableScope reference.isRoot)
+  | _ => some (query.binds (model.fieldRepeatableScope field))
+
 private def numericAtomReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (atom : OrderedNumericValidationAtom model) : Option Bool :=
   if !atom.referencesErrorField field then some false else
@@ -185,13 +193,20 @@ private def numericAtomReferenceAt? (field : FieldId) (query : ReferenceQuery)
             (numeric := fun atom => [temporalNumericReferenceAt? field query atom]))
   | .indexed source => some (selectedReferenceAt field query (.inl source.toCheckedSemanticIndexSource))
   | .indexedString source => some (selectedReferenceAt field query (.inl source.selection))
-  | .ordinary (.field source) => some (source.id == field && query.binds (model.fieldRepeatableScope field))
-  | _ => unresolvedReference query true
+  | .sumOfProducts (.selected source) => some (
+      selectedReferenceAt field query (.inr source.left.source) ||
+      selectedReferenceAt field query (.inr source.right.source))
+  | .sumOfProducts (.row source) => some (
+      (source.left.field.id == field && query.binds source.left.source.bindingScope) ||
+      (source.right.field.id == field && query.binds source.right.source.bindingScope))
+  | .filledGroupCountMixed operands => some (operands.any fun operand =>
+      operand.referencesField model field && query.binds operand.bindingScope operand.isRoot)
+  | .ordinary source => ordinaryNumericAtomReferenceAt? model field query source
 
-private def numericExpressionReferenceAt? (field : FieldId) (query : ReferenceQuery)
-    (expression : AuthoredNumericExpr (OrderedNumericValidationAtom model)) : Option Bool :=
-  if expression.anyAtom (fun atom => numericAtomReferenceAt? field query atom == some true) then some true
-  else if expression.anyAtom (fun atom => (numericAtomReferenceAt? field query atom).isNone) then none
+private def numericExpressionReferenceAt? (referenceAt : Atom → Option Bool)
+    (expression : AuthoredNumericExpr Atom) : Option Bool :=
+  if expression.anyAtom (fun atom => referenceAt atom == some true) then some true
+  else if expression.anyAtom (fun atom => (referenceAt atom).isNone) then none
   else some false
 
 private def tokenOperandReferenceAt? (field : FieldId) (query : ReferenceQuery) :
@@ -214,6 +229,9 @@ private def leafErrorReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (leaf : ValidationConditionLeaf model) : Option Bool :=
   if !leaf.referencesErrorField field then some false else
   match leaf with
+  | .customCondition _ => some false
+  | .flat _ | .customFieldValidity _ | .stringPattern _ =>
+      some (query.binds (model.fieldRepeatableScope field))
   | .indexedStringPattern source => some (selectedReferenceAt field query (.inl source.selection))
   | .indexedCustomFieldValidity source => some (selectedReferenceAt field query (.inl source.source.selection))
   | .stringExpression comparison =>
@@ -248,9 +266,12 @@ private def leafErrorReferenceAt? (field : FieldId) (query : ReferenceQuery)
       shapeReferenceAt? field query source.shape (source.operands.filterMap fun
         | .star _ _ filter => filter
         | _ => none)
+  | .numeric _ comparison => anyReference [
+      numericExpressionReferenceAt? (ordinaryNumericAtomReferenceAt? model field query) comparison.left,
+      numericExpressionReferenceAt? (ordinaryNumericAtomReferenceAt? model field query) comparison.right]
   | .orderedNumeric _ comparison => anyReference [
-      numericExpressionReferenceAt? field query comparison.left,
-      numericExpressionReferenceAt? field query comparison.right]
+      numericExpressionReferenceAt? (numericAtomReferenceAt? field query) comparison.left,
+      numericExpressionReferenceAt? (numericAtomReferenceAt? field query) comparison.right]
   | .firstFilledComparison comparison => anyReference [
       typedOperandReferenceAt? field query comparison.left,
       typedOperandReferenceAt? field query comparison.right]
@@ -262,7 +283,7 @@ private def leafErrorReferenceAt? (field : FieldId) (query : ReferenceQuery)
       temporalReferenceAt? field query comparison.right.core]
   | .constructedDateValidity _ source => temporalReferenceAt? field query source.scalarCore
   | .iteratedDateRange condition => overlapReferenceAt? field query condition
-  | _ => unresolvedReference query true
+  | .repetitionNotUnique _ => unresolvedReference query true
 
 private def errorReferenceFor? (condition : ValidationCondition model)
     (field : FieldId) (query : ReferenceQuery) : Option Bool :=

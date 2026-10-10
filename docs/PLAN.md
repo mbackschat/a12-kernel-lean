@@ -17,11 +17,11 @@ Resume the active family through its owner links. Update this file only when the
 <a id="active-unit"></a>
 ## Selected work
 
-- `milestone`: Admitted recursive temporal numeric references in [H10-R1](gaps/paths-and-groups.md#gap-sg17-closure-matrix) now retain their own membership, role and binding through the [caller boundary](implementation/data-and-core.md#cap-having-caller-capabilities). Continue the remaining reference classifications without conflating broad cells with complete conformance.
+- `milestone`: Remaining direct-field, numeric, group-count and product reference classifications in [H10-R1](gaps/paths-and-groups.md#gap-sg17-closure-matrix) are accepted through the [caller boundary](implementation/data-and-core.md#cap-having-caller-capabilities). Continue with RepetitionNotUnique inferred/default versus authored From references.
 - `oracle`: The [authored-reference account](sources/having-filter-probes.md#src-having-reference-scope) settles entity identity and ordinary binding. The [retained error-target controls](sources/model-structure-and-declaration-probes.md#src-error-target-declaration) remain the discriminator for the separate root-only parallel extension.
-- `working-tree`: Recursive temporal projection and its finite reader matrix are accepted; fresh HIGH cold review found no findings and all landing gates pass. No implementation, build or review process remains live.
+- `working-tree`: The remaining adapter batch and HIGH review controls pass. Fresh cold review found two missing positive controls; right product payload/key and mixed fixed-group members now have guards that fail under branch-omission mutants. Affected integration, compact evidence, full replay and final trust/hygiene pass. No implementation, build or review process remains live.
 - `state`: Broad coverage remains 217/217; this closes previously unresolved reference classifications, not another broad cell or a measured replay gain.
-- `next`: Inventory the remaining explicit fallback cases in [ErrorReferences](../A12Kernel/Elaboration/ValidationCondition/ErrorReferences.lean) against admitted carriers and select a settled shared batch. Root-only parallel work needs the [recorded reader extension](gaps/paths-and-groups.md#gap-sg17-closure-matrix); expanded temporal amounts remain a separate row-set obligation.
+- `next`: Audit RepetitionNotUnique inferred/default versus authored From references against admitted carriers. Root-only parallel work needs the [recorded reader extension](gaps/paths-and-groups.md#gap-sg17-closure-matrix); expanded temporal amounts remain a separate row-set obligation.
 - `consumer`: The [traversal readback](consumer-probes/EXECUTE.md#run-filter-traversal-readback-01) closes the due Execute/Analyze knowledge-transport probe. Resume missing semantics; another independent probe is due only at a materially different capability milestone or compatibility risk.
 - `blocker`: No verified hard blocker.
 - `stop-condition`: An unresolved source distinction stops dependent implementation, not discovery. Settle a finite acceptance matrix before widening the next family.
@@ -29,11 +29,11 @@ Resume the active family through its owner links. Update this file only when the
 
 ## Verified family boundary
 
-- `accepted`: The [caller boundary](implementation/data-and-core.md#cap-having-caller-capabilities) owns selected, ordinary root-only and admitted recursive temporal reference classifications; prior scan/traversal boundaries remain accepted.
-- `focused`: Recursive direct, Sum, first-filled, filled-count and nested Date/DateTime references pass with absent-reference/admitted twins, root-only composition and independent temporal-base/amount scopes. Existing root and selected reader matrices pass.
-- `review-boundary`: Fresh HIGH cold review of the recursive temporal slice returned no findings. The previous root-only review corrections and assembly-error module extraction remain accepted.
-- `replay-boundary`: The [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) remains the full replay after selected-caller scope propagation. Ordinary root-only and recursive temporal classification are two completed families toward the three-family interval; neither changes parsing, scope resolution or evaluation.
-- `remaining-gates`: Focused and integrated checks, all 51 compact evidence projections, cold review and final trust/hygiene pass. Final handoff edits require documentation hygiene only. No independent consumer probe or full population replay is due.
+- `accepted`: The [caller boundary](implementation/data-and-core.md#cap-having-caller-capabilities) owns selected, ordinary root-only, admitted recursive temporal and remaining numeric/direct-field classifications; prior scan/traversal boundaries remain accepted.
+- `focused`: Direct leaves, ordinary arithmetic/aggregates, scalar temporal fields, fixed/mixed group counts and both row/selected product operands pass their finite matrix with absent-field and exact refusal controls. Existing root, selected and temporal matrices pass.
+- `review-boundary`: Fresh HIGH cold review of the remaining adapters found only missing right-product and mixed fixed-group controls. Both are now retained, and deliberate branch omissions fail their new assertions. Semantic implementation is unchanged by review disposition.
+- `replay-boundary`: The [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) includes the ordinary root-only, recursive temporal and remaining adapter batches. The unchanged retained population still has 34,237 matches with no divergence, unattributed instance or fault. This is regression preservation, not a measured gain; the three-family interval resets here.
+- `remaining-gates`: Focused and integrated checks, all 51 compact evidence projections and cold-review disposition pass. Full replay and final trust/hygiene pass. Final handoff edits require documentation hygiene only; no independent consumer probe or additional replay is due.
 - `commands`: The [command ladder](TESTING.md#command-ladder) and [review disposition rules](TESTING.md#review-convergence-and-landing-gate) own gates. Documentation-only finalization triggers no additional build or review.
 
 ## Consumer and evidence triggers
