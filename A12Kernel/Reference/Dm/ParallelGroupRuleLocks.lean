@@ -29,17 +29,23 @@ private def root (left right : List (String × String)) : Json :=
 
 private def world : World := { now := { epochMillis := 0 } }
 
-private def runOutcome (condition : String) (roots : List Json) :
+private def runOutcome (condition : String) (roots : List Json)
+    (cache : Option MessageIndexCache := none) (rightError : Bool := false) :
     Option (Except String (List FlatRuleMessage)) := do
   let input ← (readDocument dm (.mkObj [("Et", .arr roots.toArray)])).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let plan ← (checkValidationRule dm .english (rule condition)).toOption
-  pure (runValidationRule world checked plan)
+  let sourceRule := if rightError then
+    { (rule condition) with group := ["Et", "Side"], errorEntityRelPath := "../Val" }
+    else rule condition
+  let plan ← (checkValidationRule dm .english sourceRule).toOption
+  pure (runValidationRule world checked plan (messageCache := cache))
 
-private def run (condition : String) (roots : List Json) : Option (List (String × String)) := do
-  let outcome ← runOutcome condition roots
+private def run (condition : String) (roots : List Json)
+    (cache : Option MessageIndexCache := none) (rightError : Bool := false) :
+    Option (List (String × String)) := do
+  let outcome ← runOutcome condition roots cache rightError
   let messages ← outcome.toOption
   pure (messages.map fun message =>
     let observed := observe model message
@@ -127,16 +133,59 @@ example : !admitted "FieldFilled(/Et/Side/Val)" = true ∧
     !admitted "GroupFilled(/Et) And FieldNotFilled(/Et/Rows/Note) And GroupNotFilled(/Et/Side)" = true ∧
     admitted "GroupFilled(/Et) And FieldFilled(/Et/Rows/Note) And GroupNotFilled(/Et/Side)" = true := by native_decide
 
-private def runFailure (condition : String) (roots : List Json) : Option String :=
-  match runOutcome condition roots with
+private def runFailure (condition : String) (roots : List Json)
+    (cache : Option MessageIndexCache := none) : Option String :=
+  match runOutcome condition roots cache with
   | some (.error reason) => some reason
   | _ => none
 
-/-- Cache-selected duplicate error coordinates remain outside the document reader's supported profile; returning -5 would falsely claim that no matching key exists. -/
+/-- Without the actual cache association, -5 would falsely claim that no matching key exists (spec/08 §4.3). -/
 example :
     let expected := some ((repr (ParallelPresenceRuleEvaluationError.join
       (.unresolvedDuplicatePointer 2 ["Et", "Rows"]))).pretty)
     runFailure leftOr [root [("1", "left"), ("1", "again")] [("1", "right")]] = expected ∧
     runFailure leftOr [root [("0", "other"), ("2", "left"), ("2", "again")] [("2", "right")]] = expected := by native_decide
+
+private def duplicateRoot := root [("1", "left"), ("1", "again")] [("1", "right")]
+
+private def hostCache (parent : Nat) (rows : List Nat) : MessageIndexCache := {
+  insertions := rows.map fun row =>
+    { group := 10, parentPath := [parent], key := .number 1, row } }
+
+-- The cache-collision checkpoint in docs/sources/message-and-pointer-probes.md establishes that identical document inputs can yield both coordinates.
+example : run leftOr [duplicateRoot] (some (hostCache 1 [1, 2])) =
+    some [("Et/Rows[2]/Note", "VALUE_ERROR")] ∧
+    run leftOr [duplicateRoot] (some (hostCache 1 [2, 1])) =
+    some [("Et/Rows/Note", "VALUE_ERROR")] := by native_decide
+
+example : run groups [duplicateRoot] (some (hostCache 1 [1, 2])) = some [] ∧
+    run direct [duplicateRoot] (some (hostCache 1 [2, 1])) = some [] := by native_decide
+
+example : run leftOr [duplicateRoot, duplicateRoot]
+    (some { insertions := (hostCache 1 [1, 2]).insertions ++
+      (hostCache 2 [2, 1]).insertions }) =
+    some [("Et/Rows[2]/Note", "VALUE_ERROR"), ("Et[2]/Rows/Note", "VALUE_ERROR")] := by native_decide
+
+example : run leftOr [matched] (some (hostCache 1 [2])) =
+    run leftOr [matched] := by native_decide
+
+example :
+    let expected := some ((repr (ParallelPresenceRuleEvaluationError.join
+      (.unresolvedDuplicatePointer 2 ["Et", "Rows"]))).pretty)
+    runFailure leftOr [duplicateRoot] (some { insertions := [] }) = expected ∧
+    runFailure leftOr [duplicateRoot] (some (hostCache 2 [2])) = expected ∧
+    runFailure leftOr [duplicateRoot] (some { insertions := [
+      { group := 20, parentPath := [1], key := .number 1, row := 2 },
+      { group := 10, parentPath := [1], key := .text "1", row := 2 }] }) = expected := by native_decide
+
+example :
+    let rightCache : MessageIndexCache := { insertions := [
+      { group := 20, parentPath := [1], key := .number 1, row := 1 },
+      { group := 20, parentPath := [1], key := .number 1, row := 2 }] }
+    let rightDuplicate := root [("1", "left")] [("1", "right"), ("1", "again")]
+    run leftOr [rightDuplicate] (some rightCache) true =
+      some [("Et/Side[2]/Val", "VALUE_ERROR")] ∧
+    run leftOr [rightDuplicate] (some { insertions := rightCache.insertions.reverse }) true =
+      some [("Et/Side/Val", "VALUE_ERROR")] := by native_decide
 
 end A12Kernel.Dm.ParallelGroupRuleLocks

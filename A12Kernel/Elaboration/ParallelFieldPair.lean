@@ -81,12 +81,14 @@ private def evalRow (pair : CheckedParallelFieldPair model) (condition : Conditi
     (evaluate : ResolvedParallelIndexRow → CheckedIndexPreliminary model →
       Except ParallelPresenceRuleEvaluationError Verdict)
     (preliminary : CheckedIndexPreliminary model)
-    (outerEnvironment : Env) (row : ResolvedParallelIndexRow) :
+    (outerEnvironment : Env) (messageCache : Option MessageIndexCache)
+    (row : ResolvedParallelIndexRow) :
     Except ParallelPresenceRuleEvaluationError ParallelRuleRowOutcome := do
   let verdict ← evaluate row preliminary
   let outcome ← match verdict with
     | .fired _ => do
         let pointer ← (pair.errorSide row).messagePointer model outerEnvironment pair.errorField
+          (messageCache.map fun cache => (cache, row.key))
           |>.mapError .join
         pure ((pair.core condition).emitAtCoordinates pointer.coordinates verdict)
     | .notFired | .unknown => pure ((pair.core condition).emitAt [] verdict)
@@ -96,10 +98,11 @@ private def evalRow (pair : CheckedParallelFieldPair model) (condition : Conditi
 def evalFullWith (pair : CheckedParallelFieldPair model) (condition : Condition)
     (evaluate : ResolvedParallelIndexRow → CheckedIndexPreliminary model →
       Except ParallelPresenceRuleEvaluationError Verdict)
-    (preliminary : CheckedIndexPreliminary model) (outer : Env := []) :
+    (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
+    (messageCache : Option MessageIndexCache := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
   let runJoin := fun frameOuter (join : ResolvedParallelIndexJoin) =>
-    join.rows.mapM (pair.evalRow condition evaluate preliminary frameOuter)
+    join.rows.mapM (pair.evalRow condition evaluate preliminary frameOuter messageCache)
   match pair.groups.outerScopePlan with
   | .common _ =>
       let join ← preliminary.resolveCheckedParallelIndexJoin pair.groups outer |>.mapError .join

@@ -1,0 +1,158 @@
+{
+  "target" : "model",
+  "op" : "describe",
+  "outcome" : "read",
+  "ok" : true,
+  "verification" : "KERNEL_CONFIRMED",
+  "summary" : "model card",
+  "data" : {
+    "fields" : [ {
+      "path" : "/Form/Rows/K6270",
+      "name" : "K6270",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/Anchor",
+      "name" : "Anchor",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMAaAaAaAa",
+      "name" : "CEFRZTCKMAaAaAaAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMAaAaAaBB",
+      "name" : "CEFRZTCKMAaAaAaBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMAaAaBBAa",
+      "name" : "CEFRZTCKMAaAaBBAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMAaAaBBBB",
+      "name" : "CEFRZTCKMAaAaBBBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMAaBBAaAa",
+      "name" : "CEFRZTCKMAaBBAaAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMAaBBAaBB",
+      "name" : "CEFRZTCKMAaBBAaBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMAaBBBBAa",
+      "name" : "CEFRZTCKMAaBBBBAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMAaBBBBBB",
+      "name" : "CEFRZTCKMAaBBBBBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMBBAaAaAa",
+      "name" : "CEFRZTCKMBBAaAaAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMBBAaAaBB",
+      "name" : "CEFRZTCKMBBAaAaBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMBBAaBBAa",
+      "name" : "CEFRZTCKMBBAaBBAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMBBAaBBBB",
+      "name" : "CEFRZTCKMBBAaBBBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMBBBBAaAa",
+      "name" : "CEFRZTCKMBBBBAaAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMBBBBAaBB",
+      "name" : "CEFRZTCKMBBBBAaBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMBBBBBBAa",
+      "name" : "CEFRZTCKMBBBBBBAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CEFRZTCKMBBBBBBBB",
+      "name" : "CEFRZTCKMBBBBBBBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCAaAaAaAa",
+      "name" : "CHQRBUERCAaAaAaAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCAaAaAaBB",
+      "name" : "CHQRBUERCAaAaAaBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCAaAaBBAa",
+      "name" : "CHQRBUERCAaAaBBAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCAaAaBBBB",
+      "name" : "CHQRBUERCAaAaBBBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCAaBBAaAa",
+      "name" : "CHQRBUERCAaBBAaAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCAaBBAaBB",
+      "name" : "CHQRBUERCAaBBAaBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCAaBBBBAa",
+      "name" : "CHQRBUERCAaBBBBAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCAaBBBBBB",
+      "name" : "CHQRBUERCAaBBBBBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCBBAaAaAa",
+      "name" : "CHQRBUERCBBAaAaAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCBBAaAaBB",
+      "name" : "CHQRBUERCBBAaAaBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCBBAaBBAa",
+      "name" : "CHQRBUERCBBAaBBAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCBBAaBBBB",
+      "name" : "CHQRBUERCBBAaBBBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCBBBBAaAa",
+      "name" : "CHQRBUERCBBBBAaAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCBBBBAaBB",
+      "name" : "CHQRBUERCBBBBAaBB",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCBBBBBBAa",
+      "name" : "CHQRBUERCBBBBBBAa",
+      "kind" : "STRING"
+    }, {
+      "path" : "/Form/CHQRBUERCBBBBBBBB",
+      "name" : "CHQRBUERCBBBBBBBB",
+      "kind" : "STRING"
+    } ],
+    "groups" : [ {
+      "path" : "/Form",
+      "repeatable" : false
+    }, {
+      "path" : "/Form/Rows",
+      "repeatable" : true,
+      "maxRepetitions" : 2
+    } ],
+    "locales" : [ "en_US" ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

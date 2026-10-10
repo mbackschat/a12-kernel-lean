@@ -203,20 +203,22 @@ def checkParallelFieldRule (model : FlatModel)
 
 /-- Execute the certified tree on the shared lexical join/frame traversal. Structural failures stay separate from semantic UNKNOWN. -/
 def CheckedParallelFieldRule.evalFull (rule : CheckedParallelFieldRule model)
-    (preliminary : CheckedIndexPreliminary model) (outer : Env := []) :
+    (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
+    (messageCache : Option MessageIndexCache := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) :=
   rule.pair.evalFullWith rule.condition
     (fun row view => rule.condition.evalVerdictExcept (ParallelFieldLeaf.eval rule.pair row view))
-    preliminary outer
+    preliminary outer messageCache
 
 /-- Parallel unions are local to each in-capacity common outer row. An implicit outer row has no child index entries, hence no parallel evaluation to fabricate. -/
 def CheckedParallelFieldRule.evalDocument (rule : CheckedParallelFieldRule model)
-    (preliminary : CheckedIndexPreliminary model) :
+    (preliminary : CheckedIndexPreliminary model)
+    (messageCache : Option MessageIndexCache := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
   let scope := match rule.pair.groups.outerScopePlan with
     | .common shared | .framed _ shared _ => shared
   let environments ← if scope.isEmpty then pure [[]]
     else preliminary.base.inCapacityRowEnvironments scope |>.mapError .rows
-  pure (← environments.mapM (fun outer => rule.evalFull preliminary outer)).flatten
+  pure (← environments.mapM (fun outer => rule.evalFull preliminary outer messageCache)).flatten
 
 end A12Kernel

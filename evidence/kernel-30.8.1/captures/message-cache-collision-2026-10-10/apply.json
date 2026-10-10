@@ -1,0 +1,267 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Rows",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "K6270",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Form/Rows",
+    "index-field": "K6270"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMAaAaAaAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMAaAaAaBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMAaAaBBAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMAaAaBBBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMAaBBAaAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMAaBBAaBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMAaBBBBAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMAaBBBBBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMBBAaAaAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMBBAaAaBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMBBAaBBAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMBBAaBBBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMBBBBAaAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMBBBBAaBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMBBBBBBAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CEFRZTCKMBBBBBBBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCAaAaAaAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCAaAaAaBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCAaAaBBAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCAaAaBBBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCAaBBAaAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCAaBBAaBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCAaBBBBAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCAaBBBBBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCBBAaAaAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCBBAaAaBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCBBAaBBAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCBBAaBBBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCBBBBAaAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCBBBBAaBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCBBBBBBAa",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CHQRBUERCBBBBBBBB",
+    "kind": "STRING"
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "code": "CacheSelected",
+    "condition": "FieldFilled(Anchor) Or FieldFilled(Rows/K6270 For \"b\")",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Selected cache association."
+      }
+    ]
+  }
+]

@@ -1,0 +1,498 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "37 op(s) committed, written to CacheCollision_DM.json",
+  "data": {
+    "ops": 37,
+    "committed": true,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Rows"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Rows/K6270",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "modify",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group modify",
+        "changed": {
+          "group": "/Form/Rows",
+          "indexField": "K6270"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Anchor",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMAaAaAaAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMAaAaAaBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMAaAaBBAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMAaAaBBBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMAaBBAaAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMAaBBAaBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMAaBBBBAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMAaBBBBBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMBBAaAaAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMBBAaAaBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMBBAaBBAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMBBAaBBBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMBBBBAaAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMBBBBAaBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMBBBBBBAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CEFRZTCKMBBBBBBBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCAaAaAaAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCAaAaAaBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCAaAaBBAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCAaAaBBBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCAaBBAaAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCAaBBAaBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCAaBBBBAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCAaBBBBBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCBBAaAaAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCBBAaAaBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCBBAaBBAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCBBAaBBBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCBBBBAaAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCBBBBAaBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCBBBBBBAa",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/CHQRBUERCBBBBBBBB",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/CacheSelected"
+        },
+        "diagnostics": [],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "CacheCollision_DM.json"
+}

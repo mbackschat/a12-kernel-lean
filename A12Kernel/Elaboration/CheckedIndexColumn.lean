@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.MessageIndex
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Semantics.SemanticIndex
 import A12Kernel.Semantics.MessagePointer
@@ -542,18 +543,31 @@ namespace ResolvedParallelIndexSide
 
 /-- A missing joined row contributes an unknown coordinate while its outer frame stays concrete
 (`spec/07` §2). Index-column invalidity changes the read, not this address. Missing outer bindings
-remain structural errors rather than being widened into more unknown coordinates. -/
+remain structural errors rather than being widened into more unknown coordinates. A duplicate requires the actual cache association supplied by its caller: document bytes alone need not determine its host-dependent winner (spec/08 §4.3). -/
 def messagePointer (side : ResolvedParallelIndexSide) (model : FlatModel)
-    (outer : Env) (field : FieldId) : Except CheckedIndexColumnError MessagePointer := do
+    (outer : Env) (field : FieldId)
+    (cacheQuery : Option (MessageIndexCache × SemanticIndexKey) := none) :
+    Except CheckedIndexColumnError MessagePointer := do
   let declaration ← model.lookupUniqueId field |>.mapError .model
   if !side.group.path.isPrefixOf declaration.groupPath then
     throw (.fieldOutsideGroup field side.group.path)
-  if side.duplicatePointer then throw (.unresolvedDuplicatePointer field side.group.path)
-  let coordinates ← match side.environment with
-    | some environment => do
+  let selected ← if side.duplicatePointer then do
+      let some (cache, key) := cacheQuery
+        | throw (.unresolvedDuplicatePointer field side.group.path)
+      let parentScope := (model.repeatableScopeForGroupPath side.group.path).dropLast
+      let parentPath ← outer.pathForScope parentScope |>.mapError .environment
+      match cache.lookup side.group.level parentPath (some key) with
+      | .concrete row => pure (some row)
+      | _ => throw (.unresolvedDuplicatePointer field side.group.path)
+    else pure none
+  let coordinates ← match selected, side.environment with
+    | some row, _ => declaration.repeatableScope.mapM fun level =>
+        if level == side.group.level then pure (.concrete row)
+        else (outer.bindingAt level).map MessageRepetitionCoordinate.concrete |>.mapError .environment
+    | none, some environment => do
         let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment
         pure (path.map MessageRepetitionCoordinate.concrete)
-    | none => declaration.repeatableScope.mapM fun level =>
+    | none, none => declaration.repeatableScope.mapM fun level =>
         if level == side.group.level then pure .unknown
         else (outer.bindingAt level).map MessageRepetitionCoordinate.concrete |>.mapError .environment
   pure { field, coordinates }

@@ -1,0 +1,369 @@
+{
+  "header" : {
+    "id" : "CacheCollision_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "CacheCollision_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/K6270",
+                "name" : "K6270",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "K6270"
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMAaAaAaAa",
+            "name" : "CEFRZTCKMAaAaAaAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMAaAaAaBB",
+            "name" : "CEFRZTCKMAaAaAaBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMAaAaBBAa",
+            "name" : "CEFRZTCKMAaAaBBAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMAaAaBBBB",
+            "name" : "CEFRZTCKMAaAaBBBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMAaBBAaAa",
+            "name" : "CEFRZTCKMAaBBAaAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMAaBBAaBB",
+            "name" : "CEFRZTCKMAaBBAaBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMAaBBBBAa",
+            "name" : "CEFRZTCKMAaBBBBAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMAaBBBBBB",
+            "name" : "CEFRZTCKMAaBBBBBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMBBAaAaAa",
+            "name" : "CEFRZTCKMBBAaAaAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMBBAaAaBB",
+            "name" : "CEFRZTCKMBBAaAaBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMBBAaBBAa",
+            "name" : "CEFRZTCKMBBAaBBAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMBBAaBBBB",
+            "name" : "CEFRZTCKMBBAaBBBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMBBBBAaAa",
+            "name" : "CEFRZTCKMBBBBAaAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMBBBBAaBB",
+            "name" : "CEFRZTCKMBBBBAaBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMBBBBBBAa",
+            "name" : "CEFRZTCKMBBBBBBAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CEFRZTCKMBBBBBBBB",
+            "name" : "CEFRZTCKMBBBBBBBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCAaAaAaAa",
+            "name" : "CHQRBUERCAaAaAaAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCAaAaAaBB",
+            "name" : "CHQRBUERCAaAaAaBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCAaAaBBAa",
+            "name" : "CHQRBUERCAaAaBBAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCAaAaBBBB",
+            "name" : "CHQRBUERCAaAaBBBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCAaBBAaAa",
+            "name" : "CHQRBUERCAaBBAaAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCAaBBAaBB",
+            "name" : "CHQRBUERCAaBBAaBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCAaBBBBAa",
+            "name" : "CHQRBUERCAaBBBBAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCAaBBBBBB",
+            "name" : "CHQRBUERCAaBBBBBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCBBAaAaAa",
+            "name" : "CHQRBUERCBBAaAaAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCBBAaAaBB",
+            "name" : "CHQRBUERCBBAaAaBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCBBAaBBAa",
+            "name" : "CHQRBUERCBBAaBBAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCBBAaBBBB",
+            "name" : "CHQRBUERCBBAaBBBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCBBBBAaAa",
+            "name" : "CHQRBUERCBBBBAaAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCBBBBAaBB",
+            "name" : "CHQRBUERCBBBBAaBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCBBBBBBAa",
+            "name" : "CHQRBUERCBBBBBBAa",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CHQRBUERCBBBBBBBB",
+            "name" : "CHQRBUERCBBBBBBBB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CacheSelected",
+            "name" : "CacheSelected",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "CacheSelected",
+              "errorCondition" : "FieldFilled(Anchor) Or FieldFilled(Rows/K6270 For \"b\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Selected cache association."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

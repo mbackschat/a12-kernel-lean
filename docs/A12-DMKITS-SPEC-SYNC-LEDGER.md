@@ -104,7 +104,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `canonical`: [Selected message coordinates](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages) separate parent-local association identity from whole-cache population order.
 - `delta`: An unrelated valid field or empty repeatable group can change the selected duplicate coordinate; empty and malformed field controls do not. An added outer parent can change a parallel error address within another parent. Physical-row order and an index-column-only fold cannot reproduce these observations.
 - `basis`: [Ten-document, two-strategy Kernel 30.8.1 matrix and producer source](sources/message-and-pointer-probes.md#src-message-cache-population-order), reusing existing admitted models. Hash-bucket capacity predictions match the selected-reference and parallel-error separators.
+- `collision extension`: [Repeated identical inputs](sources/message-and-pointer-probes.md#src-message-cache-collision) produce both duplicate rows within each strategy. Do not require a universally deterministic model/document-only selector; preserve actual host cache order/association. This does not make every duplicate ambiguous.
 - `request`: Reconcile duplicate-address semantics for both consumers; preserve the separate unavailable value read. No repeated capture is requested.
-- `acceptance`: An exact peer revision adopts the distinctions or supplies contrary Kernel evidence; retain collision ordering, defaults, partial calls and other host profiles as explicit limits until settled.
+- `acceptance`: An exact peer revision adopts the distinctions or supplies contrary Kernel evidence; preserve the measured host-dependent collision boundary and retain default, partial-call and other host-profile limits until settled.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: pending.
