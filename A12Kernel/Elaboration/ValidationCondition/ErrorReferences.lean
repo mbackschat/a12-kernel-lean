@@ -46,6 +46,11 @@ private def anyReference (answers : List (Option Bool)) : Option Bool :=
   if answers.contains (some true) then some true
   else if answers.contains none then none else some false
 
+private def isFormSlot : HavingFieldListSlot HavingPresenceRef → Bool
+  | .extent (.group reference) _ => reference.isRoot
+  | .extent (.starredGroup path _) _ => path.length == 1
+  | _ => false
+
 /-- Marking preserves the authored extent's scope; group membership does not bind its descendants
 (IterationChecker.checkIteration4NotOnlyVRefs; spec/07 §1). -/
 private def markedReferenceAt (model : FlatModel) (field : FieldId) (query : ReferenceQuery) :
@@ -73,10 +78,7 @@ private def markedReferenceAt (model : FlatModel) (field : FieldId) (query : Ref
         slot.references.any (fun reference => reference.origin == .outer && reference.field == field) &&
           match query with
           | .membership => true
-          | .nonFormMembership => match slot with
-              | .extent (.group reference) _ => !reference.isRoot
-              | .extent (.starredGroup path _) _ => path.length != 1
-              | _ => true
+          | .nonFormMembership => !isFormSlot slot
           | .iteration level => (slot.outerIterationScope? model).any (·.contains level)
 
 private def rawOperandReferenceAt? (field : FieldId) (query : ReferenceQuery)
@@ -131,15 +133,24 @@ private def fillReferenceAt? (field : FieldId) (query : ReferenceQuery)
     | .indexed source => some (selectedReferenceAt field query (.inl source))
     | .keyed source => some (selectedReferenceAt field query (.inr source)))
 
+/-- Recursive amounts retain authored slots separately from their temporal children. Use the
+slot's binding scope, rather than the surrounding temporal operand's scope (spec/07 §1). -/
+private def temporalNumericReferenceAt? (field : FieldId) (query : ReferenceQuery)
+    (atom : HavingNumericAtomOf (ScalarTemporalExpression model)) : Option Bool :=
+  anyReference ((atom.presenceSlotsWith (fun _ _ => [])).map fun slot =>
+    if !slot.references.any (fun reference => reference.field == field) then some false else
+    match query with
+    | .membership => some true
+    | .nonFormMembership => some (!isFormSlot slot)
+    | .iteration level => (slot.bindingScope? model).map (·.contains level))
+
 private def temporalReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (source : ScalarTemporalExpression model) : Option Bool :=
   anyReference (source.dependenciesWith
     (fun candidate => [some (candidate == field && query.binds (model.fieldRepeatableScope candidate))])
     (fun source => [shapeReferenceAt? field query source.shape (source.filters.filterMap id)])
     (fun source => [some (selectedReferenceAt field query (.inl source))])
-    (numeric := fun atom =>
-      if (atom.fieldOriginsWith (fun _ => [])).any (fun reference => reference.2 == field)
-      then [unresolvedReference query true] else [some false]))
+    (numeric := fun atom => [temporalNumericReferenceAt? field query atom]))
 
 private def typedOperandReferenceAt? (field : FieldId) (query : ReferenceQuery) :
     CheckedFirstFilledComparisonOperand model → Option Bool
@@ -171,8 +182,7 @@ private def numericAtomReferenceAt? (field : FieldId) (query : ReferenceQuery)
             (fun candidate => [some (candidate == field && query.binds (model.fieldRepeatableScope candidate))])
             (fun source => [shapeReferenceAt? field query source.shape (source.filters.filterMap id)])
             (fun source => [some (selectedReferenceAt field query (.inl source))])
-            (numeric := fun atom => (atom.fieldOriginsWith (fun _ => [])).map fun (_, candidate) =>
-              some (candidate == field && query.binds (model.fieldRepeatableScope candidate))))
+            (numeric := fun atom => [temporalNumericReferenceAt? field query atom]))
   | .indexed source => some (selectedReferenceAt field query (.inl source.toCheckedSemanticIndexSource))
   | .indexedString source => some (selectedReferenceAt field query (.inl source.selection))
   | .ordinary (.field source) => some (source.id == field && query.binds (model.fieldRepeatableScope field))
