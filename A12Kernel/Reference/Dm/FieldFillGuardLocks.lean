@@ -1,5 +1,5 @@
 import A12Kernel.Reference.Dm.Compute
-import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.HavingFixture
 
 namespace A12Kernel.Dm.FieldFillGuardLocks
 
@@ -20,7 +20,8 @@ private def operators := ["AllFieldsFilled", "NoFieldFilled", "AtLeastOneFieldFi
 private def run (operator operands : String) (rows : List (String × String))
     (a : String := "") (b : String := "") (stringTarget : Bool := false)
     (rowTarget : Bool := false) (producer : Bool := false)
-    (fixture : FlatModel := model) (extra : List (String × Lean.Json) := []) : Option Char := do
+    (fixture : FlatModel := model) (extra : List (String × Lean.Json) := [])
+    (validation : Bool := false) : Option Char := do
   let model := if stringTarget then { fixture with fields := fixture.fields.map fun field =>
     if field.id == 3 then { field with policy := { kind := .string } } else field } else fixture
   let dm : DmModel := { flat := model, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
@@ -31,6 +32,18 @@ private def run (operator operands : String) (rows : List (String × String))
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
+  if validation then
+    let rule ← (checkRule dm .english {
+      group := ["Form"], name := "FillRule", errorCode := "FILL", errorEntityRelPath := "../A",
+      condition := "FieldFilled(A) And " ++ operator ++ "(" ++ operands ++ ")", severity := "ERROR" }).toOption
+    let context : AddressedValidationEvaluationContext model := {
+      scalar := { fields := checked.flatContext.withWorld world, groups := GroupPresenceContext.unavailable }
+      outer := [], input := .checked checked }
+    let result ← (rule.evalAddressedFull context true).toOption
+    return match result.verdict with
+      | .fired .omission => 'T'
+      | .fired .value => 'P'
+      | _ => 'F'
   let consumer : DmComputation := {
     name := "Consumer", group := ["Form"], targetRelPath := if rowTarget then "../Rows/Out" else "../Out"
     commonPrecondition := some (operator ++ "(" ++ operands ++ ")")
@@ -108,7 +121,7 @@ private def nestedModel : FlatModel := { model with
     { level := 10, path := ["Form", "Parents", "Rows"], repeatability := some 51 }] }
 
 private def nestedRun (operator : String) (firstRows : Nat) (blankTail : Bool := false)
-    (earlyWitness : Bool := false) : Option Char :=
+    (earlyWitness : Bool := false) (validation : Bool := false) : Option Char :=
   let row (value : String) := Lean.Json.mkObj [
     ("N", .str value), ("Gate", .str "2024-03-31T01:30:00")]
   let parent (rows : Array Lean.Json) := Lean.Json.mkObj [("Rows", .arr rows)]
@@ -116,7 +129,7 @@ private def nestedRun (operator : String) (firstRows : Nat) (blankTail : Bool :=
   let second := #[row "1"] ++ if blankTail then #[Lean.Json.mkObj []] else #[]
   run operator
     "Parents*/Rows*/N Having (FieldFilled(Parents/Rows/Gate) Or [Parents/Rows/Gate] == \"31.03.2024T02:30:00\")"
-    [] (fixture := nestedModel)
+    [] (a := "1") (fixture := nestedModel) (validation := validation)
     (extra := [("Parents", .arr #[parent first.toArray, parent second])])
 
 example : operators.mapM (nestedRun · 1) = some ['P', 'F', 'T', 'F', 'P', 'F', 'P'] := by native_decide
@@ -128,5 +141,18 @@ example : nestedRun "AtLeastOneFieldFilled" 50 = some 'P' ∧
     nestedRun "FieldsNotCollectivelyFilled" 50 = some 'P' ∧
     nestedRun "NoFieldFilled" 51 false true = some 'F' ∧
     nestedRun "MoreThanOneFieldFilled" 51 false true = some 'T' := by native_decide
+
+example : operators.mapM (fun op => nestedRun op 1 false false true) =
+    some ['P', 'F', 'T', 'F', 'P', 'F', 'P'] := by native_decide
+
+example : operators.mapM (fun op => nestedRun op 50 false false true) =
+    some ['F', 'P', 'P', 'P', 'T', 'P', 'P'] ∧
+    operators.mapM (fun op => nestedRun op 51 false false true) =
+    some ['F', 'P', 'T', 'P', 'T', 'P', 'T'] := by native_decide
+
+example : operators.mapM (fun op => nestedRun op 50 false true true) =
+    some ['P', 'F', 'T', 'T', 'P', 'T', 'P'] ∧
+    operators.mapM (fun op => nestedRun op 51 true false true) =
+    some ['F', 'P', 'P', 'P', 'T', 'P', 'P'] := by native_decide
 
 end A12Kernel.Dm.FieldFillGuardLocks

@@ -1,0 +1,693 @@
+{
+  "header": {
+    "id": "TemporalSparse_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "TemporalSparse_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Group",
+                "id": "/Form/Outer",
+                "name": "Outer",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Group",
+                      "id": "/Form/Outer/Inner",
+                      "name": "Inner",
+                      "Group": {
+                        "repeatability": 51,
+                        "elements": [
+                          {
+                            "type": "Field",
+                            "id": "/Form/Outer/Inner/N",
+                            "name": "N",
+                            "Field": {
+                              "fieldType": {
+                                "type": "NumberType",
+                                "NumberType": {
+                                  "maxFractionalDigits": 0
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Form/Outer/Inner/V",
+                            "name": "V",
+                            "Field": {
+                              "fieldType": {
+                                "type": "NumberType",
+                                "NumberType": {
+                                  "maxFractionalDigits": 0
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Form/Outer/Inner/Stamp",
+                            "name": "Stamp",
+                            "Field": {
+                              "fieldType": {
+                                "type": "DateTimeType",
+                                "DateTimeType": {
+                                  "format": "yyyy-MM-dd'T'HH:mm:ss"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Outer/RowSum",
+                      "name": "RowSum",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Outer/RowSumComp",
+                      "name": "RowSumComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../RowSum",
+                        "computationAlternatives": [
+                          {
+                            "operation": "Sum(Inner*/V Having FieldFilled(Inner/N) Or ([Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Sparse traversal witness."
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Form/Other",
+                "name": "Other",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Group",
+                      "id": "/Form/Other/Items",
+                      "name": "Items",
+                      "Group": {
+                        "repeatability": 51,
+                        "elements": [
+                          {
+                            "type": "Field",
+                            "id": "/Form/Other/Items/Note",
+                            "name": "Note",
+                            "Field": {
+                              "fieldType": {
+                                "type": "StringType"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Sum",
+                "name": "Sum",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/First",
+                "name": "First",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Count",
+                "name": "Count",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Reset",
+                "name": "Reset",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OtherCount",
+                "name": "OtherCount",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/SumComp",
+                "name": "SumComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Sum",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Sum(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N) Or ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Sparse traversal witness."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/FirstComp",
+                "name": "FirstComp",
+                "Computation": {
+                  "computedFieldRelPath": "../First",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N) Or ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Sparse traversal witness."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/CountComp",
+                "name": "CountComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Count",
+                  "computationAlternatives": [
+                    {
+                      "operation": "NumberOfFilledFields(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N) Or ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Sparse traversal witness."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/ResetComp",
+                "name": "ResetComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Reset",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Sum(Outer*/Inner*/V Having [Outer/Inner/N] == 1 Or (FieldNotFilled(Outer/Inner/N) And ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Sparse traversal witness."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OtherCountComp",
+                "name": "OtherCountComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OtherCount",
+                  "computationAlternatives": [
+                    {
+                      "operation": "NumberOfFilledFields(Other*/Items*/Note)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Sparse traversal witness."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Error",
+                "name": "Error",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Fill0",
+                "name": "Fill0",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "minFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/RuleFill0",
+                "name": "RuleFill0",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FILL0",
+                  "errorCondition": "FieldFilled(Error) And AllFieldsFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/Fill0Comp",
+                "name": "Fill0Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../Fill0",
+                  "commonPrecondition": "AllFieldsFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Fill1",
+                "name": "Fill1",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "minFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/RuleFill1",
+                "name": "RuleFill1",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FILL1",
+                  "errorCondition": "FieldFilled(Error) And NoFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/Fill1Comp",
+                "name": "Fill1Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../Fill1",
+                  "commonPrecondition": "NoFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Fill2",
+                "name": "Fill2",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "minFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/RuleFill2",
+                "name": "RuleFill2",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FILL2",
+                  "errorCondition": "FieldFilled(Error) And AtLeastOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/Fill2Comp",
+                "name": "Fill2Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../Fill2",
+                  "commonPrecondition": "AtLeastOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Fill3",
+                "name": "Fill3",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "minFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/RuleFill3",
+                "name": "RuleFill3",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FILL3",
+                  "errorCondition": "FieldFilled(Error) And MoreThanOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/Fill3Comp",
+                "name": "Fill3Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../Fill3",
+                  "commonPrecondition": "MoreThanOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Fill4",
+                "name": "Fill4",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "minFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/RuleFill4",
+                "name": "RuleFill4",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FILL4",
+                  "errorCondition": "FieldFilled(Error) And NotAllFieldsFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/Fill4Comp",
+                "name": "Fill4Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../Fill4",
+                  "commonPrecondition": "NotAllFieldsFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Fill5",
+                "name": "Fill5",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "minFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/RuleFill5",
+                "name": "RuleFill5",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FILL5",
+                  "errorCondition": "FieldFilled(Error) And NotExactlyOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/Fill5Comp",
+                "name": "Fill5Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../Fill5",
+                  "commonPrecondition": "NotExactlyOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Fill6",
+                "name": "Fill6",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "minFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/RuleFill6",
+                "name": "RuleFill6",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FILL6",
+                  "errorCondition": "FieldFilled(Error) And FieldsNotCollectivelyFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/Fill6Comp",
+                "name": "Fill6Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../Fill6",
+                  "commonPrecondition": "FieldsNotCollectivelyFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Fill traversal control."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

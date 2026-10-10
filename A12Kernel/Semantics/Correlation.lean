@@ -503,7 +503,7 @@ def CorrelatedHaving.selectEnvironments (condition : CorrelatedHaving)
     (candidates : List Env) : List Env :=
   candidates.filter (condition.keepsEnvironment context outerEnv)
 
-/-- Select validation candidates in encounter order while preserving every reached addressed failure outside semantic UNKNOWN. Unlike computation, validation evaluates every traversal-eligible candidate before the target consumer starts. -/
+/-- Select validation candidates in encounter order while preserving every reached addressed failure outside semantic UNKNOWN. Materialized consumers evaluate every traversal-eligible candidate here; prefix consumers use the resolving scan instead. -/
 def CorrelatedHaving.selectEnvironmentsResolving
     (condition : CorrelatedHaving)
     (context : ResolvingCorrelationContext Error) (outerEnv : Env)
@@ -519,7 +519,7 @@ def CorrelatedHaving.selectEnvironmentsResolving
         (if occupancy.isSome && truth == .tru then some candidate else previous)
       pure (if truth == .tru then candidate :: selected else selected)
 
-/-- Result of a computation-phase filtered scan. The consumer may terminate on a selected target, exhaust with accumulated state, or abort at the first filter poison. -/
+/-- Result of a filtered scan. A consumer may terminate or exhaust; computation filters can additionally abort with formal poison. Validation filters drop semantic UNKNOWN and preserve structural failure outside this result. -/
 inductive ComputationHavingScanResult (State Result : Type) where
   | exhausted (state : State)
   | terminated (result : Result)
@@ -570,10 +570,9 @@ def CorrelatedHaving.scanComputation (condition : CorrelatedHaving)
   condition.scanComputationCandidates context outerEnv consume
     candidates none initial occupancy
 
-/-- Addressed computation scan with the established one-kept-successor order. Structural failures from either a reached filter or target consumer remain outside formal poison, and a terminal target still hides filters after its prefetched successor. -/
-def CorrelatedHaving.scanComputationCandidatesResolving
-    (condition : CorrelatedHaving)
-    (context : ResolvingCorrelationContext Error) (outerEnv : Env)
+/-- Share the iterator continuation across phase-specific filter evaluators. Kernel `EbenenIterator.next` searches for a kept successor before the pending payload is consumed. -/
+def CorrelatedHaving.scanCandidatesResolving
+    (evaluate : Env → Except Error ComputationConditionResult)
     (consume : State → Env → Except Error (State ⊕ Result))
     (candidates : List Env) (pending : Option Env) (state : State)
     (occupancy : Option FilterOccupancy := none) :
@@ -586,24 +585,49 @@ def CorrelatedHaving.scanComputationCandidatesResolving
       | .inr result => pure (.terminated result)
   | candidate :: remaining, pending, state => do
       if !(occupancy.map (·.allowsAfter pending candidate)).getD true then
-        return ← condition.scanComputationCandidatesResolving context outerEnv consume remaining pending state occupancy
-      match ← condition.evalComputationInResolving context
-          { innerEnv := candidate, outerEnv } with
+        return ← CorrelatedHaving.scanCandidatesResolving evaluate consume remaining pending state occupancy
+      match ← evaluate candidate with
       | .notTrue =>
-          condition.scanComputationCandidatesResolving context outerEnv consume
+          CorrelatedHaving.scanCandidatesResolving evaluate consume
             remaining pending state occupancy
       | .poison cause => pure (.poison cause)
       | .holds =>
           match pending with
           | none =>
-              condition.scanComputationCandidatesResolving context outerEnv
+              CorrelatedHaving.scanCandidatesResolving evaluate
                 consume remaining (some candidate) state occupancy
           | some current =>
               match ← consume state current with
               | .inr result => pure (.terminated result)
               | .inl next =>
-                  condition.scanComputationCandidatesResolving context outerEnv
+                  CorrelatedHaving.scanCandidatesResolving evaluate
                     consume remaining (some candidate) next occupancy
+
+/-- Computation filters retain reached poison separately from structural failure. -/
+def CorrelatedHaving.scanComputationCandidatesResolving
+    (condition : CorrelatedHaving)
+    (context : ResolvingCorrelationContext Error) (outerEnv : Env)
+    (consume : State → Env → Except Error (State ⊕ Result))
+    (candidates : List Env) (pending : Option Env) (state : State)
+    (occupancy : Option FilterOccupancy := none) :
+    Except Error (ComputationHavingScanResult State Result) :=
+  CorrelatedHaving.scanCandidatesResolving
+    (fun candidate => condition.evalComputationInResolving context { innerEnv := candidate, outerEnv })
+    consume candidates pending state occupancy
+
+/-- Validation drops semantic UNKNOWN but preserves reached failures and successor lookahead;
+field-fill runtime controls distinguish this from eager list materialization (2026-10-10). -/
+def CorrelatedHaving.scanValidationResolving
+    (condition : CorrelatedHaving)
+    (context : ResolvingCorrelationContext Error) (outerEnv : Env)
+    (consume : State → Env → Except Error (State ⊕ Result))
+    (candidates : List Env) (initial : State)
+    (occupancy : Option FilterOccupancy := none) :
+    Except Error (ComputationHavingScanResult State Result) :=
+  CorrelatedHaving.scanCandidatesResolving (fun candidate => do
+    let truth ← condition.evalTruthInResolving context { innerEnv := candidate, outerEnv }
+    pure (if truth == .tru then .holds else .notTrue))
+    consume candidates none initial occupancy
 
 /-- Start one addressed computation scan with no prefetched candidate. -/
 def CorrelatedHaving.scanComputationResolving

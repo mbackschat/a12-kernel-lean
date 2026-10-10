@@ -1,0 +1,303 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Error",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Fill0",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And AllFieldsFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "FILL0",
+    "name": "RuleFill0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Fill0",
+    "commonPrecondition": "AllFieldsFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Fill1",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NoFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "FILL1",
+    "name": "RuleFill1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Fill1",
+    "commonPrecondition": "NoFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Fill2",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And AtLeastOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "FILL2",
+    "name": "RuleFill2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Fill2",
+    "commonPrecondition": "AtLeastOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Fill3",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And MoreThanOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "FILL3",
+    "name": "RuleFill3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Fill3",
+    "commonPrecondition": "MoreThanOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Fill4",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NotAllFieldsFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "FILL4",
+    "name": "RuleFill4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Fill4",
+    "commonPrecondition": "NotAllFieldsFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Fill5",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NotExactlyOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "FILL5",
+    "name": "RuleFill5",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Fill5",
+    "commonPrecondition": "NotExactlyOneFieldFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Fill6",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And FieldsNotCollectivelyFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "FILL6",
+    "name": "RuleFill6",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Fill6",
+    "commonPrecondition": "FieldsNotCollectivelyFilled(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Fill traversal control."
+      }
+    ]
+  }
+]

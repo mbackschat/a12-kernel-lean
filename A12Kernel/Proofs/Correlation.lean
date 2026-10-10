@@ -653,40 +653,49 @@ theorem computationHavingScan_failedSuccessor_precedesCurrent
   simp [CorrelatedHaving.scanComputation, CorrelatedHaving.scanComputationCandidates,
     firstHolds, secondFails, bind, Except.bind, pure, Except.pure]
 
-/-- Addressed computation preserves a structural failure found while prefetching the successor before it can consume the current target. -/
-theorem computationHavingResolvingScan_failedSuccessor_precedesCurrent
-    (condition : CorrelatedHaving)
-    (context : ResolvingCorrelationContext Error)
-    (outer first second : Env)
+/-- A structural failure during successor lookahead wins before the shared scan can consume the pending payload. -/
+theorem havingResolvingScan_failedSuccessor_precedesCurrent
+    (evaluate : Env → Except Error ComputationConditionResult)
     (consume : State → Env → Except Error (State ⊕ Result))
-    (initial : State) (cause : Error)
-    (firstHolds : condition.evalComputationInResolving context
-      { innerEnv := first, outerEnv := outer } = .ok .holds)
-    (secondFails : condition.evalComputationInResolving context
-      { innerEnv := second, outerEnv := outer } = .error cause) :
-    condition.scanComputationResolving context outer consume
-        [first, second] initial = .error cause := by
-  simp [CorrelatedHaving.scanComputationResolving,
-    CorrelatedHaving.scanComputationCandidatesResolving, firstHolds, secondFails,
+    (first second : Env) (initial : State) (cause : Error)
+    (firstHolds : evaluate first = .ok .holds)
+    (secondFails : evaluate second = .error cause) :
+    CorrelatedHaving.scanCandidatesResolving evaluate consume
+        [first, second] none initial = .error cause := by
+  simp [CorrelatedHaving.scanCandidatesResolving, firstHolds, secondFails,
+    bind, Except.bind]
+
+/-- A clean successor is prefetched before a terminal payload hides the later filter, separating the shared scan from eager whole-selection filtering. -/
+theorem havingResolvingScan_terminalCurrent_hidesAfterSuccessor
+    (evaluate : Env → Except Error ComputationConditionResult)
+    (consume : State → Env → Except Error (State ⊕ Result))
+    (first second third : Env) (initial : State) (result : Result)
+    (firstHolds : evaluate first = .ok .holds)
+    (secondHolds : evaluate second = .ok .holds)
+    (currentTerminates : consume initial first = .ok (.inr result)) :
+    CorrelatedHaving.scanCandidatesResolving evaluate consume
+        [first, second, third] none initial = .ok (.terminated result) := by
+  simp [CorrelatedHaving.scanCandidatesResolving, firstHolds, secondHolds, currentTerminates,
     bind, Except.bind, pure, Except.pure]
 
-/-- After a clean successor is prefetched, a terminal addressed target hides all later filters and structural failures. -/
-theorem computationHavingResolvingScan_terminalCurrent_hidesAfterSuccessor
-    (condition : CorrelatedHaving)
-    (context : ResolvingCorrelationContext Error)
+/-- Validation's true-only filter specialization preserves the shared scan's one-successor terminal boundary. -/
+theorem validationHavingResolvingScan_terminalCurrent_hidesAfterSuccessor
+    (condition : CorrelatedHaving) (context : ResolvingCorrelationContext Error)
     (outer first second third : Env)
     (consume : State → Env → Except Error (State ⊕ Result))
     (initial : State) (result : Result)
-    (firstHolds : condition.evalComputationInResolving context
-      { innerEnv := first, outerEnv := outer } = .ok .holds)
-    (secondHolds : condition.evalComputationInResolving context
-      { innerEnv := second, outerEnv := outer } = .ok .holds)
+    (firstHolds : condition.evalTruthInResolving context
+      { innerEnv := first, outerEnv := outer } = .ok .tru)
+    (secondHolds : condition.evalTruthInResolving context
+      { innerEnv := second, outerEnv := outer } = .ok .tru)
     (currentTerminates : consume initial first = .ok (.inr result)) :
-    condition.scanComputationResolving context outer consume
+    condition.scanValidationResolving context outer consume
         [first, second, third] initial = .ok (.terminated result) := by
-  simp [CorrelatedHaving.scanComputationResolving,
-    CorrelatedHaving.scanComputationCandidatesResolving, firstHolds, secondHolds, currentTerminates,
-    bind, Except.bind, pure, Except.pure]
+  unfold CorrelatedHaving.scanValidationResolving
+  apply havingResolvingScan_terminalCurrent_hidesAfterSuccessor
+      _ consume first second third initial result _ _ currentTerminates
+  · simp [firstHolds, bind, Except.bind, pure, Except.pure]
+  · simp [secondHolds, bind, Except.bind, pure, Except.pure]
 
 /-- Adding explicit repetition inequality in front of any rest condition removes the
     captured outer row from the executable selection. -/
@@ -819,17 +828,17 @@ theorem correlatedHaving_selectEnvironments_all_or_none
         rw [candidateInvariant candidate first]
         exact hFirst
 
-/-- An unoccupied successor is skipped before either its filter or target is read. -/
-theorem computationHavingResolvingScan_skippedCandidate_isUnread
-    (condition : CorrelatedHaving) (context : ResolvingCorrelationContext Error)
-    (outer candidate : Env) (remaining : List Env) (previous : Option Env)
+/-- Occupancy skips a candidate before the shared scan evaluates its filter or consumes its payload. -/
+theorem havingResolvingScan_skippedCandidate_isUnread
+    (evaluate : Env → Except Error ComputationConditionResult)
     (consume : State → Env → Except Error (State ⊕ Result)) (state : State)
+    (candidate : Env) (remaining : List Env) (previous : Option Env)
     (occupancy : FilterOccupancy)
     (skipped : occupancy.allowsAfter previous candidate = false) :
-    condition.scanComputationCandidatesResolving context outer consume
+    CorrelatedHaving.scanCandidatesResolving evaluate consume
         (candidate :: remaining) previous state (some occupancy) =
-      condition.scanComputationCandidatesResolving context outer consume
+      CorrelatedHaving.scanCandidatesResolving evaluate consume
         remaining previous state (some occupancy) := by
-  simp [CorrelatedHaving.scanComputationCandidatesResolving, skipped]
+  simp [CorrelatedHaving.scanCandidatesResolving, skipped]
 
 end A12Kernel

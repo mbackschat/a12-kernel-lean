@@ -344,6 +344,80 @@ def validationFillTally (list : CheckedFieldFillList model) (document : CheckedD
     (init := ({ filled := 0, empty := 0, unknown := 0, uninstantiated := 0 } : ValidationFillTally))
     fun tally observation => tally.combine observation.asValidationFillTally)
 
+private def fillScanDecided (operator : FieldFillQuantifier) (ranges : List ValidationFillRange) : Bool :=
+  let tally := ValidationFillRange.total ranges
+  match operator with
+  | .allFieldsFilled => 0 < tally.empty + tally.uninstantiated + tally.unknown
+  | .noFieldFilled => 0 < tally.filled + tally.unknown
+  | .atLeastOneFieldFilled => 0 < tally.filled
+  | .moreThanOneFieldFilled => 1 < tally.filled
+  | .notAllFieldsFilled => 0 < tally.empty + tally.uninstantiated
+  | .notExactlyOneFieldFilled | .fieldsNotCollectivelyFilled => false
+
+private def scanValidationFill (operator : FieldFillQuantifier)
+    (document : CheckedDocument model) (outer : Env) (world : Option World)
+    (operands : List (CheckedFieldFillOperand model)) (ranges : List ValidationFillRange) :
+    Except CheckedAddressingError (Option ValidationFillOutcome) := do
+  match operands with
+  | [] => pure (some (operator.evalValidationRanges ranges.reverse))
+  | operand :: rest =>
+      let declared := operator == .allFieldsFilled || operator == .notAllFieldsFilled
+      let done ranges := if fillScanDecided operator ranges then
+        Sum.inr (operator.evalValidationRanges ranges.reverse) else Sum.inl ranges
+      let ordinary (_ : Unit) : Except CheckedAddressingError
+          (Option (ComputationHavingScanResult (List ValidationFillRange) ValidationFillOutcome)) := do
+        let some range ← operand.validationRange? (world := world) declared document outer | return none
+        pure (some (match done (range :: ranges) with
+          | .inl next => .exhausted next
+          | .inr result => .terminated result))
+      let result? ← match operand with
+        | .star source => match source.filter with
+          | some filter => do
+              let traversal? : Option FilterTraversal ← if declared then do
+                pure ((← source.source.declaredEnvironments? document outer).map fun candidates => { candidates })
+              else some <$> source.source.filterTraversal document outer (if operator == .atLeastOneFieldFilled then .sparse else .dense)
+              let some traversal := traversal? | return none
+              let initial : ValidationFillRange := {
+                tally := { filled := 0, empty := 0, unknown := 0, uninstantiated := 0 }
+                hasHaving := true }
+              let result ← filter.condition.scanValidationResolving
+                (document.resolvingCorrelationContextWithRead document.readDeclared world) outer
+                (fun (current : ValidationFillRange) row => do
+                  let cell ← document.addressedCellWithRead document.readDeclared row source.source.declaration.id
+                  let next := { current with
+                    tally := current.tally.combine (observeCell .validation cell.cell).asValidationFillTally }
+                  pure (if fillScanDecided operator (next :: ranges) then
+                    .inr (operator.evalValidationRanges (next :: ranges).reverse) else .inl next))
+                traversal.candidates initial traversal.occupancy
+              pure (some (match result with
+                | .exhausted current => .exhausted (current :: ranges)
+                | .terminated result => .terminated result
+                | .poison cause => .poison cause))
+          | none => ordinary ()
+        | _ => ordinary ()
+      let some result := result? | return none
+      match result with
+      | .exhausted next => scanValidationFill operator document outer world rest next
+      | .terminated result => pure (some result)
+      | .poison _ => pure none
+
+private def evaluateFilteredFill (list : CheckedFieldFillList model) (operator : FieldFillQuantifier)
+    (document : CheckedDocument model) (outer : Env) (world : Option World) :
+    Except CheckedAddressingError (Option ValidationFillOutcome) := do
+  let scan op := scanValidationFill op document outer world list.operands []
+  match operator with
+  | .notExactlyOneFieldFilled =>
+      match ← scan .noFieldFilled with
+      | none => pure none
+      | some (.fired polarity) => pure (some (.fired polarity))
+      | some .falseOrUnknown => scan .moreThanOneFieldFilled
+  | .fieldsNotCollectivelyFilled =>
+      match ← scan .atLeastOneFieldFilled with
+      | none => pure none
+      | some .falseOrUnknown => pure (some .falseOrUnknown)
+      | some (.fired _) => scan .notAllFieldsFilled
+  | operator => scan operator
+
 /-- A field-fill quantifier over the list's in-capacity extent and declared tail.
 
 This is not a projection of the count: the count is unavailable as soon as one cell is formally
@@ -355,11 +429,7 @@ def evaluateFill? (list : CheckedFieldFillList model) (operator : FieldFillQuant
     (world : Option World := none) :
     Except CheckedAddressingError (Option ValidationFillOutcome) := do
   if list.hasHaving then
-    let declared := match operator with
-      | .allFieldsFilled | .notAllFieldsFilled | .fieldsNotCollectivelyFilled => true
-      | _ => false
-    let ranges ← list.operands.mapM (·.validationRange? (world := world) declared document outer)
-    pure ((ranges.mapM id).map operator.evalValidationRanges)
+    evaluateFilteredFill list operator document outer world
   else do
     let tally ← list.validationFillTally (world := world) document outer
     match operator with
