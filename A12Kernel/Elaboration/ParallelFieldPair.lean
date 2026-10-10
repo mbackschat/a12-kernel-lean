@@ -25,6 +25,7 @@ inductive ParallelPresenceRuleEvaluationError where
   | join (error : CheckedIndexColumnError)
   | group (error : CheckedGroupPresenceError)
   | rows (error : ActualRowEnvironmentError)
+  | preliminary (error : CheckedIndexPreliminaryError)
   | unsupportedCondition
   deriving Repr, DecidableEq
 
@@ -94,25 +95,36 @@ private def evalRow (pair : CheckedParallelFieldPair model) (condition : Conditi
     | .notFired | .unknown => pure ((pair.core condition).emitAt [] verdict)
   pure { outerEnvironment, iterationToken := row.iterationToken, key := row.key, outcome }
 
-/-- Traverse the certified key union in lexical order, within each actual one-sided frame when present. The supplied condition evaluator consumes the same resolved rows used for error projection. -/
+/-- Traverse the certified key union in lexical order, within each declared-domain one-sided frame when present. The supplied condition evaluator consumes the same resolved rows used for error projection. -/
+def evalWith (pair : CheckedParallelFieldPair model) (condition : Condition)
+    (evaluate : Env → ResolvedParallelIndexRow → CheckedIndexPreliminary model →
+      Except ParallelPresenceRuleEvaluationError Verdict)
+    (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
+    (messageCache : Option MessageIndexCache := none)
+    (includeAddress : CellAddr → Bool := fun _ => true)
+    (admitOuter : Env → Bool := fun _ => true) :
+    Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
+  let runJoin := fun frameOuter (join : ResolvedParallelIndexJoin) =>
+    if !admitOuter frameOuter then pure [] else join.rows.mapM (pair.evalRow condition (evaluate frameOuter) preliminary frameOuter messageCache)
+  match pair.groups.outerScopePlan with
+  | .common _ =>
+      let join ← preliminary.resolveCheckedParallelIndexJoin pair.groups outer includeAddress |>.mapError .join
+      runJoin outer join
+  | .framed _ _ _ =>
+      let frames ← preliminary.resolveCheckedParallelFrameEnvironments pair.groups outer |>.mapError .join
+      let rows ← frames.mapM fun frame => do
+        let join ← preliminary.resolveCheckedParallelIndexJoinInFrame pair.groups frame outer includeAddress |>.mapError .join
+        runJoin frame join
+      pure rows.flatten
+
+/-- Full validation instantiates the shared traversal with unrestricted key admission and dispatch. -/
 def evalFullWith (pair : CheckedParallelFieldPair model) (condition : Condition)
     (evaluate : ResolvedParallelIndexRow → CheckedIndexPreliminary model →
       Except ParallelPresenceRuleEvaluationError Verdict)
     (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
     (messageCache : Option MessageIndexCache := none) :
-    Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
-  let runJoin := fun frameOuter (join : ResolvedParallelIndexJoin) =>
-    join.rows.mapM (pair.evalRow condition evaluate preliminary frameOuter messageCache)
-  match pair.groups.outerScopePlan with
-  | .common _ =>
-      let join ← preliminary.resolveCheckedParallelIndexJoin pair.groups outer |>.mapError .join
-      runJoin outer join
-  | .framed _ _ _ =>
-      let frames ← preliminary.resolveCheckedParallelFrameEnvironments pair.groups outer |>.mapError .join
-      let rows ← frames.mapM fun frame => do
-        let join ← preliminary.resolveCheckedParallelIndexJoinInFrame pair.groups frame outer |>.mapError .join
-        runJoin frame join
-      pure rows.flatten
+    Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) :=
+  pair.evalWith condition (fun _ => evaluate) preliminary outer messageCache
 
 end CheckedParallelFieldPair
 

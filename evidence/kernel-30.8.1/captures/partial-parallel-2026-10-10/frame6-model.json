@@ -1,0 +1,144 @@
+{
+  "header" : {
+    "id" : "ErrTgtPar_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "ErrTgtPar_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Et",
+        "name" : "Et",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Et/Side",
+            "name" : "Side",
+            "Group" : {
+              "repeatability" : 5,
+              "indexFieldName" : "Key",
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Et/Side/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Et/Side/Val",
+                "name" : "Val",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Et/Frame",
+            "name" : "Frame",
+            "Group" : {
+              "repeatability" : 6,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Et/Frame/Rows",
+                "name" : "Rows",
+                "Group" : {
+                  "repeatability" : 5,
+                  "indexFieldName" : "Key",
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Et/Frame/Rows/Key",
+                    "name" : "Key",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Et/Frame/Rows/Note",
+                    "name" : "Note",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType"
+                      }
+                    }
+                  }, {
+                    "type" : "Rule",
+                    "id" : "/Et/Frame/Rows/LT",
+                    "name" : "LT",
+                    "Rule" : {
+                      "errorEntityRelPath" : "../Note",
+                      "errorCode" : "LT",
+                      "errorCondition" : "[/Et/Frame/Rows/Note] < [/Et/Side/Val]",
+                      "severity" : "ERROR",
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Framed partial discriminator."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Rule",
+                    "id" : "/Et/Frame/Rows/DIRECT",
+                    "name" : "DIRECT",
+                    "Rule" : {
+                      "errorEntityRelPath" : "../Note",
+                      "errorCode" : "DIRECT",
+                      "errorCondition" : "FieldFilled(/Et/Frame/Rows/Note) And FieldFilled(/Et/Side/Val)",
+                      "severity" : "ERROR",
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Framed partial discriminator."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Rule",
+                    "id" : "/Et/Frame/Rows/GROUP",
+                    "name" : "GROUP",
+                    "Rule" : {
+                      "errorEntityRelPath" : "../Note",
+                      "errorCode" : "GROUP",
+                      "errorCondition" : "GroupFilled(/Et/Frame/Rows) And FieldFilled(/Et/Side/Val)",
+                      "severity" : "ERROR",
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Framed partial discriminator."
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

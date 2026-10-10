@@ -1,0 +1,475 @@
+{
+  "model": "root-model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "error-outer-one-row-wild",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Key"
+        },
+        {
+          "path": "/Et/Side/Key"
+        },
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    },
+    {
+      "name": "error-outer-wild-row-one",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Key"
+        },
+        {
+          "path": "/Et/Side/Key"
+        },
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    },
+    {
+      "name": "error-two-concrete-rows",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Key"
+        },
+        {
+          "path": "/Et/Side/Key"
+        },
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    },
+    {
+      "name": "error-two-groups",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Rows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "error-distinct-outer-same-row",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          },
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Key"
+        },
+        {
+          "path": "/Et/Side/Key"
+        },
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    },
+    {
+      "name": "error-distinct-outer-and-row",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          },
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Key"
+        },
+        {
+          "path": "/Et/Side/Key"
+        },
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            2,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    },
+    {
+      "name": "all-left-keys-concrete",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Key",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Rows/Key",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Rows/Note"
+        },
+        {
+          "path": "/Et/Side/Key"
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    },
+    {
+      "name": "all-right-keys-concrete",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Key"
+        },
+        {
+          "path": "/Et/Rows/Note"
+        },
+        {
+          "path": "/Et/Side/Key",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Key",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    }
+  ]
+}

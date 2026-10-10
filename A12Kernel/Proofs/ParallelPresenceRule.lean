@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.ParallelPresenceRule
-import A12Kernel.Elaboration.ParallelFieldRule
+import A12Kernel.Elaboration.PartialParallelFieldRule
 import A12Kernel.Proofs.CheckedIndexColumn
 
 /-! # Bounded checked parallel presence-rule laws -/
@@ -61,5 +61,23 @@ theorem checkedParallelFieldRule_wellFormed (rule : CheckedParallelFieldRule mod
   refine ⟨checkedParallelIndexGroups_wellFormed rule.pair.groups,
     rule.pair.groups.modelWellFormed, rule.errorTargetAllowed, ?_⟩
   simpa only [ParallelFieldCondition.admitted, Bool.and_eq_true, and_assoc] using rule.admitted
+
+/-- Full relevance admits every outer dispatch, independently of the selected error side. -/
+theorem checkedParallelFieldPair_fullRelevance (pair : CheckedParallelFieldPair model) (outer : Env) :
+    pair.admitsPartialOuter .full outer = true := rfl
+
+/-- An absent error-field projection suppresses dispatch even when the other side supplies join keys. -/
+theorem checkedParallelFieldPair_noRelevantError (pair : CheckedParallelFieldPair model) (outer : Env) :
+    pair.admitsPartialOuter (.partialSet []) outer = false := rfl
+
+/-- Silent partial unavailability reaches both presence operators without inventing a formal cause. -/
+theorem parallelFieldPresence_silentUnavailable (pair : CheckedParallelFieldPair model)
+    (read : ParallelFieldSide → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
+    (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState)
+    (side : ParallelFieldSide) (op : RepeatableFieldPresenceOperator)
+    (unavailable : read side = .ok none) :
+    ParallelFieldLeaf.evalWith pair read readGroup (.presence side op) = .ok .unknown := by
+  simp [ParallelFieldLeaf.evalWith, unavailable]
+  rfl
 
 end A12Kernel

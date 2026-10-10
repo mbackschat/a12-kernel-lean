@@ -1,0 +1,232 @@
+[
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Et/Rows",
+    "name": "Note",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Et/Side",
+    "name": "Val",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "POSITIVE",
+    "condition": "FieldFilled(/Et/Rows/Note) Or FieldFilled(/Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "NEGATIVE",
+    "condition": "FieldNotFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "EQ",
+    "condition": "[/Et/Rows/Note] == [/Et/Side/Val]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "NE",
+    "condition": "[/Et/Rows/Note] != [/Et/Side/Val]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "LT",
+    "condition": "[/Et/Rows/Note] < [/Et/Side/Val]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "LE",
+    "condition": "[/Et/Rows/Note] <= [/Et/Side/Val]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "GT",
+    "condition": "[/Et/Rows/Note] > [/Et/Side/Val]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "GE",
+    "condition": "[/Et/Rows/Note] >= [/Et/Side/Val]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "AllFieldsFilled",
+    "condition": "AllFieldsFilled(/Et/Rows/Note, /Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "AtLeastOneFieldFilled",
+    "condition": "AtLeastOneFieldFilled(/Et/Rows/Note, /Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "MoreThanOneFieldFilled",
+    "condition": "MoreThanOneFieldFilled(/Et/Rows/Note, /Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "FieldsNotCollectivelyFilled",
+    "condition": "FieldsNotCollectivelyFilled(/Et/Rows/Note, /Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "NoFieldFilled",
+    "condition": "([/Et/Rows/Note] == [/Et/Side/Val]) And NoFieldFilled(/Et/Rows/Note, /Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "NotAllFieldsFilled",
+    "condition": "([/Et/Rows/Note] == [/Et/Side/Val]) And NotAllFieldsFilled(/Et/Rows/Note, /Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Et/Rows",
+    "field": "/Et/Rows/Note",
+    "code": "NotExactlyOneFieldFilled",
+    "condition": "([/Et/Rows/Note] == [/Et/Side/Val]) And NotExactlyOneFieldFilled(/Et/Rows/Note, /Et/Side/Val)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Partial parallel discriminator."
+      }
+    ]
+  }
+]

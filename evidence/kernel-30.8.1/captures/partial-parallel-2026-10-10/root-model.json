@@ -1,0 +1,470 @@
+{
+  "header" : {
+    "id" : "ErrTgtPar_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "ErrTgtPar_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Et",
+        "name" : "Et",
+        "Group" : {
+          "repeatability" : 5,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Et/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Et/Rows/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Et/Rows/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/DIRECT",
+                "name" : "DIRECT",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "DIRECT",
+                  "errorCondition" : "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Parallel group discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/ROOTDIRECT",
+                "name" : "ROOTDIRECT",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "ROOTDIRECT",
+                  "errorCondition" : "GroupFilled(/Et) And FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Parallel group discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/LEFTGROUP",
+                "name" : "LEFTGROUP",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "LEFTGROUP",
+                  "errorCondition" : "GroupFilled(/Et/Rows) And FieldFilled(/Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Parallel group discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/RIGHTGROUP",
+                "name" : "RIGHTGROUP",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "RIGHTGROUP",
+                  "errorCondition" : "FieldFilled(/Et/Rows/Note) And GroupFilled(/Et/Side)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Parallel group discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/BOTHGROUP",
+                "name" : "BOTHGROUP",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "BOTHGROUP",
+                  "errorCondition" : "GroupFilled(/Et/Rows) And GroupFilled(/Et/Side)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Parallel group discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/MISSLEFT",
+                "name" : "MISSLEFT",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "MISSLEFT",
+                  "errorCondition" : "GroupNotFilled(/Et/Rows) And FieldFilled(/Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Parallel group discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/MISSRIGHT",
+                "name" : "MISSRIGHT",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "MISSRIGHT",
+                  "errorCondition" : "FieldFilled(/Et/Rows/Note) And GroupNotFilled(/Et/Side)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Parallel group discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/LEFTOR",
+                "name" : "LEFTOR",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "LEFTOR",
+                  "errorCondition" : "GroupFilled(/Et/Rows) Or FieldFilled(/Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Parallel group discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/POSITIVE",
+                "name" : "POSITIVE",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "POSITIVE",
+                  "errorCondition" : "FieldFilled(/Et/Rows/Note) Or FieldFilled(/Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/NEGATIVE",
+                "name" : "NEGATIVE",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "NEGATIVE",
+                  "errorCondition" : "FieldNotFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/EQ",
+                "name" : "EQ",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "EQ",
+                  "errorCondition" : "[/Et/Rows/Note] == [/Et/Side/Val]",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/NE",
+                "name" : "NE",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "NE",
+                  "errorCondition" : "[/Et/Rows/Note] != [/Et/Side/Val]",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/LT",
+                "name" : "LT",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "LT",
+                  "errorCondition" : "[/Et/Rows/Note] < [/Et/Side/Val]",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/LE",
+                "name" : "LE",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "LE",
+                  "errorCondition" : "[/Et/Rows/Note] <= [/Et/Side/Val]",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/GT",
+                "name" : "GT",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "GT",
+                  "errorCondition" : "[/Et/Rows/Note] > [/Et/Side/Val]",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/GE",
+                "name" : "GE",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "GE",
+                  "errorCondition" : "[/Et/Rows/Note] >= [/Et/Side/Val]",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/AllFieldsFilled",
+                "name" : "AllFieldsFilled",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "AllFieldsFilled",
+                  "errorCondition" : "AllFieldsFilled(/Et/Rows/Note, /Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/AtLeastOneFieldFilled",
+                "name" : "AtLeastOneFieldFilled",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "AtLeastOneFieldFilled",
+                  "errorCondition" : "AtLeastOneFieldFilled(/Et/Rows/Note, /Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/MoreThanOneFieldFilled",
+                "name" : "MoreThanOneFieldFilled",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "MoreThanOneFieldFilled",
+                  "errorCondition" : "MoreThanOneFieldFilled(/Et/Rows/Note, /Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/FieldsNotCollectivelyFilled",
+                "name" : "FieldsNotCollectivelyFilled",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "FieldsNotCollectivelyFilled",
+                  "errorCondition" : "FieldsNotCollectivelyFilled(/Et/Rows/Note, /Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/NoFieldFilled",
+                "name" : "NoFieldFilled",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "NoFieldFilled",
+                  "errorCondition" : "([/Et/Rows/Note] == [/Et/Side/Val]) And NoFieldFilled(/Et/Rows/Note, /Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/NotAllFieldsFilled",
+                "name" : "NotAllFieldsFilled",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "NotAllFieldsFilled",
+                  "errorCondition" : "([/Et/Rows/Note] == [/Et/Side/Val]) And NotAllFieldsFilled(/Et/Rows/Note, /Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Et/Rows/NotExactlyOneFieldFilled",
+                "name" : "NotExactlyOneFieldFilled",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Note",
+                  "errorCode" : "NotExactlyOneFieldFilled",
+                  "errorCondition" : "([/Et/Rows/Note] == [/Et/Side/Val]) And NotExactlyOneFieldFilled(/Et/Rows/Note, /Et/Side/Val)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Partial parallel discriminator."
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Et/Side",
+            "name" : "Side",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Et/Side/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Et/Side/Val",
+                "name" : "Val",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Et/ROOTPOS",
+            "name" : "ROOTPOS",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/Note",
+              "errorCode" : "ROOTPOS",
+              "errorCondition" : "FieldFilled(/Et/Rows/Note) Or FieldFilled(/Et/Side/Val)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Partial origin discriminator."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Et/ROOTNEG",
+            "name" : "ROOTNEG",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/Note",
+              "errorCode" : "ROOTNEG",
+              "errorCondition" : "FieldsNotCollectivelyFilled(/Et/Rows/Note, /Et/Side/Val)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Partial origin discriminator."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Et/ROOTBOTH",
+            "name" : "ROOTBOTH",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rows/Note",
+              "errorCode" : "ROOTBOTH",
+              "errorCondition" : "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Partial origin discriminator."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

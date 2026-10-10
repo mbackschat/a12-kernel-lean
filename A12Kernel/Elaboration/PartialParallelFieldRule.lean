@@ -1,0 +1,124 @@
+import A12Kernel.Elaboration.ParallelFieldRule
+
+namespace A12Kernel
+
+namespace CheckedParallelFieldPair
+
+/-- Partial dispatch compresses the error field's selectors before ordinary iteration bounds are checked. Concrete joined-row selectors conflict with a parallel bound; differing selectors compress to a wildcard. This is a dispatch envelope, not the leaf relevance set (Kernel partial-parallel gate capture, 2026-10-10). -/
+def admitsPartialOuter (pair : CheckedParallelFieldPair model)
+    (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
+  match scope with
+  | .full => true
+  | .partialSet entities =>
+      let declaration := if pair.errorField == pair.leftDeclaration.id then
+        pair.leftDeclaration else pair.rightDeclaration
+      let patterns := entities.filterMap (·.projectOntoTarget? declaration.path)
+      match patterns with
+      | [] => false
+      | first :: rest =>
+          let bounds := declaration.repeatableScope.dropLast
+          let ordinary := bounds.any fun level => model.repeatableGroups.any fun group =>
+            group.level == level && group.repeatability != some 1
+          if !ordinary then true else
+            let compressed := rest.foldl (fun acc next =>
+              { acc with indices := acc.indices.zipWith (fun a b => if a == b then a else .all) next.indices }) first
+            compressed.matchesBoundSubtree model bounds outer &&
+              compressed.wildcardsLevels model [if pair.errorField == pair.leftDeclaration.id then
+                pair.groups.leftGroup.level else pair.groups.rightGroup.level]
+
+end CheckedParallelFieldPair
+
+namespace CheckedPartialPreliminary
+
+/-- An unmatched reference requires wildcard relevance at the missing indexed level. Enumerating every current row is insufficient because it does not cover an unknown row (spec/10 partial parallel semantics). -/
+def coversUnmatchedParallel (view : CheckedPartialPreliminary model)
+    (group : RepeatableGroupDecl) (path : List String) (outer : Env) : Bool :=
+  match view.relevance with
+  | .full => true
+  | .partialSet entities => entities.any fun entity =>
+      match entity.projectOntoTarget? path with
+      | none => false
+      | some projected =>
+          projected.matchesBoundSubtree model
+            (model.repeatableScopeForGroupPath group.path).dropLast outer &&
+          projected.wildcardsLevels model ((model.repeatableScopeForGroupPath path).filter fun level =>
+            !(model.repeatableScopeForGroupPath group.path).dropLast.contains level)
+
+private def missingParallelAvailable (view : CheckedPartialPreliminary model)
+    (side : ResolvedParallelIndexSide) (outer : Env) : Bool :=
+  match side.group.indexField.bind (fun id => (model.lookupUniqueId id).toOption) with
+  | none => false
+  | some index =>
+      view.coversUnmatchedParallel side.group index.path outer &&
+        !view.silentlyUnavailable.any (fun address =>
+          address.field == index.id &&
+            some address.path.dropLast == (outer.pathForScope index.repeatableScope.dropLast).toOption)
+
+/-- Read matched rows through the call-local checked view; missing rows preserve formal column errors and separate silent relevance unavailability. No sentinel or invented formal finding enters the physical document. -/
+private def readParallelField (view : CheckedPartialPreliminary model)
+    (side : ResolvedParallelIndexSide) (outer : Env) (declaration : FlatFieldDecl) :
+    Except ParallelPresenceRuleEvaluationError (Option CellObservation) := do
+  match side.environment with
+  | some environment =>
+      let path ← environment.pathForScope declaration.repeatableScope |>.mapError (fun e => .join (.environment e))
+      let address : CellAddr := { field := declaration.id, path }
+      if !view.isAddressRelevant address then pure none else
+        match ← view.readAuthoredValidation address |>.mapError .preliminary with
+        | .silentlyUnavailable => pure none
+        | .checked cell => pure (some (observeCell .validation cell))
+  | none =>
+      if !view.missingParallelAvailable side outer ||
+          !view.coversUnmatchedParallel side.group declaration.path outer then pure none
+      else pure (some side.missingObservation)
+
+private def unmatchedGroupRelevance (view : CheckedPartialPreliminary model)
+    (group : RepeatableGroupDecl) (path : GroupPath) (outer : Env) : GroupRelevance :=
+  if view.coversUnmatchedParallel group path outer then .fullyRelevant else
+    let descendants := model.fields.filter (path.isPrefixOf ·.groupPath)
+    let covered := fun declaration => view.coversUnmatchedParallel group declaration.path outer
+    if !descendants.isEmpty && descendants.all covered then .fullyRelevant
+    else if descendants.any covered then .partlyRelevant else .noneRelevant
+
+/-- Group reads retain the same partial group-content account as ordinary validation after resolving the joined side. An unavailable missing column cannot establish group absence. -/
+private def parallelGroupState (view : CheckedPartialPreliminary model)
+    (row : ResolvedParallelIndexRow) (outer : Env) (reference : ResolvedGroupReference) :
+    Except ParallelPresenceRuleEvaluationError GroupPresenceState := do
+  let side := if row.left.group.path.isPrefixOf reference.path then some row.left
+    else if row.right.group.path.isPrefixOf reference.path then some row.right else none
+  match side with
+  | none => pure (← view.groupPresenceInput reference.path outer false |>.mapError .group).derive
+  | some selected =>
+      match selected.environment with
+      | some environment =>
+          pure (← view.groupPresenceInput reference.path environment false |>.mapError .group).derive
+      | none =>
+          let unavailable := selected.unavailableKey.isSome ||
+            !view.missingParallelAvailable selected outer
+          pure {
+            content := false
+            erroneous := false
+            relevance := if unavailable then .noneRelevant else
+              view.unmatchedGroupRelevance selected.group reference.path outer }
+
+end CheckedPartialPreliminary
+
+/-- Partial calls use the same checked join and condition tree, selecting keys from relevant index addresses while preserving the uncompressed relevance set for leaf reads. -/
+def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRule model)
+    (view : CheckedPartialPreliminary model) (messageCache : Option MessageIndexCache := none) :
+    Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
+  let common := match rule.pair.groups.outerScopePlan with
+    | .common shared | .framed _ shared _ => shared
+  let environments ← if common.isEmpty then pure [[]]
+    else view.index.base.inCapacityRowEnvironments common |>.mapError .rows
+  pure (← environments.mapM (fun outer =>
+    rule.pair.evalWith rule.condition
+      (fun rowOuter row _ =>
+        rule.condition.evalVerdictExcept (ParallelFieldLeaf.evalWith rule.pair
+          (fun side => view.readParallelField
+            (match side with | .left => row.left | .right => row.right)
+            rowOuter (rule.pair.declaration side))
+          (view.parallelGroupState row rowOuter)))
+      view.index outer messageCache view.isAddressRelevant
+      (rule.pair.admitsPartialOuter view.relevance))).flatten
+
+end A12Kernel

@@ -1,0 +1,130 @@
+{
+  "model": "frame6-model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "whole",
+      "documentInline": {
+        "Et": {
+          "Frame": [
+            {
+              "Rows": [
+                {
+                  "Key": "1",
+                  "Note": "10"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Key": "2",
+                  "Note": "20"
+                }
+              ]
+            }
+          ],
+          "Side": [
+            {
+              "Key": "1",
+              "Val": "30"
+            },
+            {
+              "Key": "3",
+              "Val": "40"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Et"
+        }
+      ]
+    },
+    {
+      "name": "frame-first",
+      "documentInline": {
+        "Et": {
+          "Frame": [
+            {
+              "Rows": [
+                {
+                  "Key": "1",
+                  "Note": "10"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Key": "2",
+                  "Note": "20"
+                }
+              ]
+            }
+          ],
+          "Side": [
+            {
+              "Key": "1",
+              "Val": "30"
+            },
+            {
+              "Key": "3",
+              "Val": "40"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Et/Frame",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side"
+        }
+      ]
+    },
+    {
+      "name": "empty-first-frame",
+      "documentInline": {
+        "Et": {
+          "Frame": [
+            {},
+            {
+              "Rows": [
+                {
+                  "Key": "2",
+                  "Note": "20"
+                }
+              ]
+            }
+          ],
+          "Side": [
+            {
+              "Key": "1",
+              "Val": "30"
+            },
+            {
+              "Key": "3",
+              "Val": "40"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Et"
+        }
+      ]
+    }
+  ]
+}

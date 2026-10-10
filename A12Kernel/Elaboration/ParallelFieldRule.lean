@@ -109,27 +109,39 @@ private def groupState (row : ResolvedParallelIndexRow)
         erroneous := false
         relevance := if side.any (·.unavailableKey.isSome) then .noneRelevant else .fullyRelevant }
 
-/-- Missing and invalid joined sides enter the same scalar observation consumers as physical reads. -/
-def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
-    (preliminary : CheckedIndexPreliminary model) : ParallelFieldLeaf →
-    Except ParallelPresenceRuleEvaluationError Verdict
+/-- Full and partial calls share scalar consumers; absent observations mean call-local unavailability without an invented formal cause. -/
+def evalWith (pair : CheckedParallelFieldPair model)
+    (read : ParallelFieldSide → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
+    (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState) :
+    ParallelFieldLeaf → Except ParallelPresenceRuleEvaluationError Verdict
   | .groupPresence op reference => do
-      pure (op.eval (← groupState row preliminary reference))
+      pure (op.eval (← readGroup reference))
   | .presence side op => do
-      let observation ← row.readValidation preliminary (pair.declaration side).id |>.mapError .join
-      pure (op.eval observation)
+      pure ((← read side).map op.eval |>.getD .unknown)
   | .numeric op lhs rhs => do
       let some a := (pair.declaration lhs).toNumberField? | throw .unsupportedCondition
       let some b := (pair.declaration rhs).toNumberField? | throw .unsupportedCondition
-      let leftValue ← row.readValidation preliminary a.id |>.mapError .join
-      let rightValue ← row.readValidation preliminary b.id |>.mapError .join
-      pure (op.eval (leftValue.asDirectNumericComparisonOperand a.info)
-        (rightValue.asDirectNumericComparisonOperand b.info))
+      let leftValue ← read lhs
+      let rightValue ← read rhs
+      match leftValue, rightValue with
+      | some left, some right =>
+          pure (op.eval (left.asDirectNumericComparisonOperand a.info)
+            (right.asDirectNumericComparisonOperand b.info))
+      | _, _ => pure .unknown
   | .fill op lhs rhs => do
-      let leftValue ← row.readValidation preliminary (pair.declaration lhs).id |>.mapError .join
-      let rightValue ← row.readValidation preliminary (pair.declaration rhs).id |>.mapError .join
-      pure ((op.evalValidation (leftValue.asValidationFillTally.combine
-        rightValue.asValidationFillTally)).asConservativeVerdict)
+      let unknown : ValidationFillTally := { filled := 0, empty := 0, unknown := 1, uninstantiated := 0 }
+      let left ← read lhs
+      let right ← read rhs
+      pure ((op.evalValidation ((left.map (·.asValidationFillTally) |>.getD unknown).combine
+        (right.map (·.asValidationFillTally) |>.getD unknown))).asConservativeVerdict)
+
+/-- Missing and invalid joined sides enter the same scalar observation consumers as physical reads. -/
+def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
+    (preliminary : CheckedIndexPreliminary model) : ParallelFieldLeaf →
+    Except ParallelPresenceRuleEvaluationError Verdict :=
+  evalWith pair
+    (fun side => (row.readValidation preliminary (pair.declaration side).id).map some |>.mapError .join)
+    (groupState row preliminary)
 
 end ParallelFieldLeaf
 

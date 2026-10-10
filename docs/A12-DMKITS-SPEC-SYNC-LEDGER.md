@@ -144,3 +144,14 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: An exact peer revision adopts the independent cache/read boundary and name effects or supplies contrary Kernel evidence; no change to invalid-cell authored availability is requested.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: pending.
+
+### SPEC-2026-10-10-10 — partial parallel dispatch and frame traversal
+
+- `status`: pending
+- `canonical`: [Partial validation](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
+- `delta`: Parallel dispatch uses compressed error-field selectors, independently of leaf relevance. Concrete joined-row selectors suppress rules with ordinary outer iteration; differing selectors can restore dispatch. Unmatched reads require wildcard index/leaf coverage, and complete descendant coverage can establish group absence. One-sided frames reuse declared-product/occupied-prefix traversal on full and partial calls.
+- `basis`: [56-row, two-strategy capture and source](sources/model-structure-and-declaration-probes.md#src-partial-parallel), Kernel 30.8.1; root-repeatability, declaration-location, selector-union, negative-group, duplicate-cache and frame-bound 3/6 twins.
+- `request`: Reconcile the parallel dispatch gate separately from key membership and condition visibility; exercise empty frame slots before reusing physical-only traversal. Reuse the retained captures.
+- `acceptance`: An exact peer revision adopts these independently measured stages or supplies contrary Kernel evidence. Existing payload-only and excluded-index behavior must remain unchanged.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: pending.

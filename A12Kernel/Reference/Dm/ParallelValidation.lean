@@ -1,5 +1,5 @@
 import A12Kernel.Reference.Dm.Validate
-import A12Kernel.Elaboration.ParallelFieldRule
+import A12Kernel.Elaboration.PartialParallelFieldRule
 import A12Kernel.Elaboration.CheckedMessageCache
 
 /-! # DM lowering for checked parallel field-pair validation -/
@@ -136,5 +136,20 @@ def runValidationRule (world : World) (document : CheckedDocument model)
         | _, _ => initial
       let rows ← evaluated.mapError (fun error => (repr error).pretty)
       pure (rows.filterMap (·.outcome.message?))
+
+/-- Execute a checked parallel rule for one normalized partial call. Duplicate message coordinates share the partial cache producer while value reads retain partial unavailability. -/
+def runPartialParallelRule (document : CheckedDocument model)
+    (rule : CheckedParallelFieldRule model) (relevant : List RelevantEntityPattern)
+    (messageCache : Option MessageIndexCache := none) : Except String (List FlatRuleMessage) := do
+  let view ← document.applyPartialGeneratedPreliminary relevant |>.mapError (fun error => (repr error).pretty)
+  let initial := rule.evalPartialDocument view messageCache
+  let evaluated := match messageCache, initial with
+    | none, .error (.join (.unresolvedDuplicatePointer _ _)) =>
+        match view.deriveMessageCache with
+        | .ok cache => rule.evalPartialDocument view (some cache)
+        | .error _ => initial
+    | _, _ => initial
+  let rows ← evaluated.mapError (fun error => (repr error).pretty)
+  pure (rows.filterMap (·.outcome.message?))
 
 end A12Kernel.Dm

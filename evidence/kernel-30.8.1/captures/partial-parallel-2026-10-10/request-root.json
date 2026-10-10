@@ -1,0 +1,296 @@
+{
+  "model": "root-model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "whole",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et"
+        }
+      ]
+    },
+    {
+      "name": "left-group-first",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "left-index-one",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Key",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Rows/Note"
+        },
+        {
+          "path": "/Et/Side/Key"
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    },
+    {
+      "name": "error-payload-first",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Key"
+        },
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Key"
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    },
+    {
+      "name": "both-first-key",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Key",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Key",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Val",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "far-key-local-payload",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "10"
+              },
+              {
+                "Key": "2",
+                "Note": "20"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "30"
+              },
+              {
+                "Key": "3",
+                "Val": "40"
+              }
+            ]
+          }
+        ]
+      },
+      "relevant": [
+        {
+          "path": "/Et/Rows/Note",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Key",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side/Val",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        }
+      ]
+    }
+  ]
+}

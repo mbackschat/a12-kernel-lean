@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.MessageIndex
 import A12Kernel.Elaboration.CheckedIndexPreliminary
+import A12Kernel.Elaboration.RuleIterationDomain
 import A12Kernel.Semantics.SemanticIndex
 import A12Kernel.Semantics.MessagePointer
 
@@ -14,6 +15,7 @@ inductive CheckedIndexColumnError where
   | model (error : ResolveError)
   | document (error : CheckedDocumentError)
   | environment (error : EnvBindingError)
+  | rows (error : ActualRowEnvironmentError)
   | groupNotOwned (path : GroupPath)
   | missingIndexField (path : GroupPath)
   | incoherentScope (path : GroupPath)
@@ -407,27 +409,7 @@ def resolveIndexColumn (preliminary : CheckedIndexPreliminary model)
   else
     throw (.groupNotOwned group.path)
 
-private def collectParallelFrameEnvironments
-    (preliminary : CheckedIndexPreliminary model)
-    (scope : List RepeatableLevel) (commonPath : List Nat) :
-    List RowAddr → List Env →
-      Except CheckedIndexColumnError (List Env)
-  | [], reversed => pure reversed.reverse
-  | row :: rows, reversed => do
-      if row.path.length != scope.length then
-        throw (.incoherentRow row scope.length)
-      let overLimit ← match model.addressOverLimit? scope row.path with
-        | some result => pure result
-        | none => throw (.incoherentFrameScope scope)
-      let belongsToOuter :=
-        row.path.take commonPath.length == commonPath
-      let next :=
-        if overLimit || !belongsToOuter then reversed
-        else scope.zip row.path :: reversed
-      preliminary.collectParallelFrameEnvironments
-        scope commonPath rows next
-
-/-- Enumerate the actual deepest rows of one certified non-indexed frame in immutable document order. The caller supplies only the common outer bindings; over-limit frame rows are excluded before any keyed join is constructed. -/
+/-- One-sided frames use the shared declared-product/occupied-prefix validation domain. The parallel key slot contributes no numeric bound. Empty declared frames can still join keys supplied by the other side (partial-parallel frame controls, 2026-10-10). -/
 def resolveCheckedParallelFrameEnvironments
     (preliminary : CheckedIndexPreliminary model)
     (groups : CheckedParallelIndexGroups model)
@@ -436,16 +418,11 @@ def resolveCheckedParallelFrameEnvironments
   match groups.outerScopePlan with
   | .common scope => .error (.incoherentFrameScope scope)
   | .framed _ commonScope frameScope => do
-      let scope := commonScope ++ frameScope
-      let deepest ← match frameScope.getLast? with
-        | some level => pure level
-        | none => throw (.incoherentFrameScope frameScope)
-      let commonPath ←
-        outer.pathForScope commonScope |>.mapError .environment
-      let rows := preliminary.base.source.instantiatedRows.filter fun row =>
-        row.group == deepest
-      preliminary.collectParallelFrameEnvironments
-        scope commonPath rows []
+      let commonPath ← outer.pathForScope commonScope |>.mapError .environment
+      let frames ← preliminary.base.fullValidationRowEnvironments (commonScope ++ frameScope)
+        |>.mapError .rows
+      pure (frames.filter fun frame =>
+        (frame.pathForScope commonScope).toOption == some commonPath)
 
 /-- The index cache normalizes Number storage even in the String-valued input regime.
 The parsed fractional scale reconstructs the exact decimal without computed-result rounding. -/
@@ -488,12 +465,12 @@ private def parallelSide (column : ResolvedCheckedIndexColumn model)
 private def resolveCheckedParallelIndexJoinAt
     (preliminary : CheckedIndexPreliminary model)
     (groups : CheckedParallelIndexGroups model)
-    (leftOuter rightOuter : Env) :
+    (leftOuter rightOuter : Env) (includeAddress : CellAddr → Bool) :
     Except CheckedIndexColumnError ResolvedParallelIndexJoin := do
   let leftColumn ←
-    preliminary.resolveIndexColumn groups.leftGroup leftOuter
+    preliminary.resolveIndexColumn groups.leftGroup leftOuter includeAddress
   let rightColumn ←
-    preliminary.resolveIndexColumn groups.rightGroup rightOuter
+    preliminary.resolveIndexColumn groups.rightGroup rightOuter includeAddress
   let leftKeys ← preliminary.parallelKeys leftColumn
   let rightKeys ← preliminary.parallelKeys rightColumn
   let keys := (leftKeys ++ rightKeys).eraseDups.mergeSort fun first second =>
@@ -512,24 +489,25 @@ private def resolveCheckedParallelIndexJoinAt
 /-- Resolve document rows for a common-scope certified pair without repeating its static compatibility decision. -/
 def resolveCheckedParallelIndexJoin
     (preliminary : CheckedIndexPreliminary model)
-    (groups : CheckedParallelIndexGroups model) (outer : Env := []) :
+    (groups : CheckedParallelIndexGroups model) (outer : Env := [])
+    (includeAddress : CellAddr → Bool := fun _ => true) :
     Except CheckedIndexColumnError ResolvedParallelIndexJoin :=
-  preliminary.resolveCheckedParallelIndexJoinAt groups outer outer
+  preliminary.resolveCheckedParallelIndexJoinAt groups outer outer includeAddress
 
 /-- Resolve one certified framed join. The checked plan, not the caller, decides which column receives the complete frame environment. -/
 def resolveCheckedParallelIndexJoinInFrame
     (preliminary : CheckedIndexPreliminary model)
     (groups : CheckedParallelIndexGroups model)
-    (frameOuter commonOuter : Env) :
+    (frameOuter commonOuter : Env) (includeAddress : CellAddr → Bool := fun _ => true) :
     Except CheckedIndexColumnError ResolvedParallelIndexJoin :=
   match groups.outerScopePlan with
   | .common scope => .error (.incoherentFrameScope scope)
   | .framed .left _ _ =>
       preliminary.resolveCheckedParallelIndexJoinAt
-        groups frameOuter commonOuter
+        groups frameOuter commonOuter includeAddress
   | .framed .right _ _ =>
       preliminary.resolveCheckedParallelIndexJoinAt
-        groups commonOuter frameOuter
+        groups commonOuter frameOuter includeAddress
 
 def resolveParallelIndexJoin (preliminary : CheckedIndexPreliminary model)
     (left right : RepeatableGroupDecl) (outer : Env := []) :

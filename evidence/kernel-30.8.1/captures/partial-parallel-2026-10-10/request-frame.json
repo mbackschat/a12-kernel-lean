@@ -1,0 +1,317 @@
+{
+  "model": "frame-model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "whole",
+      "documentInline": {
+        "Et": {
+          "Frame": [
+            {
+              "Rows": [
+                {
+                  "Key": "1",
+                  "Note": "10"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Key": "2",
+                  "Note": "20"
+                }
+              ]
+            }
+          ],
+          "Side": [
+            {
+              "Key": "1",
+              "Val": "30"
+            },
+            {
+              "Key": "3",
+              "Val": "40"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Et"
+        }
+      ]
+    },
+    {
+      "name": "frame-first",
+      "documentInline": {
+        "Et": {
+          "Frame": [
+            {
+              "Rows": [
+                {
+                  "Key": "1",
+                  "Note": "10"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Key": "2",
+                  "Note": "20"
+                }
+              ]
+            }
+          ],
+          "Side": [
+            {
+              "Key": "1",
+              "Val": "30"
+            },
+            {
+              "Key": "3",
+              "Val": "40"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Et/Frame",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Side"
+        }
+      ]
+    },
+    {
+      "name": "frame-concrete-error",
+      "documentInline": {
+        "Et": {
+          "Frame": [
+            {
+              "Rows": [
+                {
+                  "Key": "1",
+                  "Note": "10"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Key": "2",
+                  "Note": "20"
+                }
+              ]
+            }
+          ],
+          "Side": [
+            {
+              "Key": "1",
+              "Val": "30"
+            },
+            {
+              "Key": "3",
+              "Val": "40"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Et/Frame/Rows/Note",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Et/Frame/Rows/Key"
+        },
+        {
+          "path": "/Et/Side"
+        }
+      ]
+    },
+    {
+      "name": "left-index-excluded",
+      "documentInline": {
+        "Et": {
+          "Frame": [
+            {
+              "Rows": [
+                {
+                  "Key": "1",
+                  "Note": "10"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Key": "2",
+                  "Note": "20"
+                }
+              ]
+            }
+          ],
+          "Side": [
+            {
+              "Key": "1",
+              "Val": "30"
+            },
+            {
+              "Key": "3",
+              "Val": "40"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Et/Frame/Rows/Note"
+        },
+        {
+          "path": "/Et/Side"
+        }
+      ]
+    },
+    {
+      "name": "far-index-excluded",
+      "documentInline": {
+        "Et": {
+          "Frame": [
+            {
+              "Rows": [
+                {
+                  "Key": "1",
+                  "Note": "10"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Key": "2",
+                  "Note": "20"
+                }
+              ]
+            }
+          ],
+          "Side": [
+            {
+              "Key": "1",
+              "Val": "30"
+            },
+            {
+              "Key": "3",
+              "Val": "40"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Et/Frame"
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    },
+    {
+      "name": "all-individual-fields",
+      "documentInline": {
+        "Et": {
+          "Frame": [
+            {
+              "Rows": [
+                {
+                  "Key": "1",
+                  "Note": "10"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Key": "2",
+                  "Note": "20"
+                }
+              ]
+            }
+          ],
+          "Side": [
+            {
+              "Key": "1",
+              "Val": "30"
+            },
+            {
+              "Key": "3",
+              "Val": "40"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Et/Frame/Rows/Key"
+        },
+        {
+          "path": "/Et/Frame/Rows/Note"
+        },
+        {
+          "path": "/Et/Side/Key"
+        },
+        {
+          "path": "/Et/Side/Val"
+        }
+      ]
+    },
+    {
+      "name": "empty-first-frame",
+      "documentInline": {
+        "Et": {
+          "Frame": [
+            {},
+            {
+              "Rows": [
+                {
+                  "Key": "2",
+                  "Note": "20"
+                }
+              ]
+            }
+          ],
+          "Side": [
+            {
+              "Key": "1",
+              "Val": "30"
+            },
+            {
+              "Key": "3",
+              "Val": "40"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Et"
+        }
+      ]
+    }
+  ]
+}
