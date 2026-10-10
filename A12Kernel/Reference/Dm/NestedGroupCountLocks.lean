@@ -24,10 +24,11 @@ private def model : FlatModel :=
 
 private def dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
 private def world : World := { now := { epochMillis := 0 } }
-private def item (bad : Bool := false) : Json := Json.mkObj [
+private def item (bad : Bool := false) (extraDesc : Bool := false) (badExtra : Bool := false) : Json := Json.mkObj [
   ("N", .str (if bad then "bad" else "1")), ("M", .str "2"),
   ("Detail", Json.mkObj [("N", .str "3"), ("M", .str "4")]),
-  ("Desc", .arr #[Json.mkObj [("N", .str "5")], Json.mkObj [("N", .str "6")]])]
+  ("Desc", .arr (#[Json.mkObj [("N", .str "5")], Json.mkObj [("N", .str "6")]] ++
+    if extraDesc then #[Json.mkObj [("N", .str (if badExtra then "bad" else "7"))]] else #[]))]
 private def row (items : Array Json) : Json := Json.mkObj [("N", .str "1"), ("M", .str "2"), ("Items", .arr items)]
 private def full : Array Json := #[row #[item, item], row #[item, item]]
 private def emptyPrefix : Array Json := #[row #[], row #[item, item]]
@@ -90,5 +91,14 @@ example : compute full = some (4, .fired .value) := by native_decide
 example : compute emptyPrefix = some (2, .fired .omission) := by native_decide
 example : compute suffix = some (2, .fired .omission) := by native_decide
 example : compute missing = some (2, .fired .omission) := by native_decide
+
+private def extraDescRows (bad : Bool) : Array Json :=
+  #[row #[item false true bad, item], row #[item, item]]
+
+example : validate (extraDescRows false) false "Rows*/Items*" 4 = some [.value] := by native_decide
+example : validate (extraDescRows false) true "Rows*/Items*" 4 = some [.value] := by native_decide
+example : validate (extraDescRows true) true "Rows*/Items*" 4 = some [.value] := by native_decide
+example : validate (extraDescRows false) true "Rows*" 2 = some [.value] := by native_decide
+example : validate (extraDescRows true) true "Rows*" 2 = some [.value] := by native_decide
 
 end A12Kernel.Dm.NestedGroupCountLocks

@@ -220,3 +220,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: A starred group count's extent is the product of reopened capacities, not just its terminal group's maximum. Bound ancestors and descendants below the operand do not contribute. Full/partial rule polarity and implicit computation messages use the same extent.
 - `basis`: [Two-axis matrix](sources/group-count-topology.md#src-nested-group-count), both Kernel 30.8.1 strategies agreeing. Empty prefix/suffix and missing-parent controls count two against extent four; full capacity counts four. This corrects Lean's shared extent projection and does not assert an existing peer defect.
 - `acceptance`: Reconcile nested starred and below-star count growth with the retained rules, seeded computation values and implicit messages. Preserve partial first-instance gates and distinguish structural rows from fixed-group content. Report the adopted exact revision or contrary evidence; wider topology remains explicitly uncalibrated. Introducing revision is the first commit containing this ID.
+
+<a id="spec-2026-10-10-18"></a>
+### SPEC-2026-10-10-18 — excess descendant rows do not poison ancestor partial counts
+
+- `status`: pending
+- `canonical`: [Partial group-count first-instance errors](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
+- `delta`: Capacity-invalid descendants report structural findings but are skipped before invalid-field-cache admission. They therefore do not mark ancestor groups erroneous or suppress an otherwise-decided partial count. In-capacity malformed descendants retain their error effect.
+- `basis`: [Bound/nested count matrix](sources/group-count-topology.md#src-bound-nested-count), both Kernel 30.8.1 strategies. Root and bound counts separate error propagation at two depths; excess-row and malformed-excess twins agree. This corrects Lean's shared group projection, not a demonstrated peer defect.
+- `acceptance`: Reconcile structural diagnostics separately from ancestor group-error state, preserving parent-local counting, declared capacities, in-capacity formal errors and excess-target clearing. Reuse retained observations; report an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.

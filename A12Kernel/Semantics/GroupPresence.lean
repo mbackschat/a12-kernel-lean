@@ -32,7 +32,8 @@ structure GroupPresenceState where
 
 /-- A resolved group slice. `hasInstantiatedRow` includes the concrete group row itself
     when repeatable and any instantiated repeatable descendant row that supplies content
-    to an ancestor. `structuralError` includes over-limit row diagnostics. -/
+    to an ancestor. `structuralError` is an independent caller-supplied group error;
+    capacity-rejected descendants do not supply it (spec/10 §5). -/
 structure ResolvedGroupPresenceInput where
   descendantCells : List CheckedCell
   hasInstantiatedRow : Bool

@@ -259,13 +259,13 @@ example : ((checked? overLimitRows).bind fun checked => do
       .poison .overRepetition) := by
   native_decide
 
-/- An over-limit row remains immutable structural content even without a placed descendant cell, while its structural error is derived rather than supplied by the caller. -/
+/- An over-limit row retains physical content and its direct read diagnostic, without entering ancestor cache-error state (spec/10 §5). -/
 example : ((checked? { overLimitRows with cells := [] }).bind fun checked =>
     (checked.groupPresenceInput ["Order", "Items"] [(10, 3)]
       .fullyRelevant false).toOption.bind fun presence =>
         (checked.read { field := 3, path := [3] }).toOption.map fun cell =>
           (presence.derive, observeCell .validation cell)) =
-    some ({ content := true, erroneous := true, relevance := .fullyRelevant },
+    some ({ content := true, erroneous := false, relevance := .fullyRelevant },
       .unknown .overRepetition) := by
   native_decide
 

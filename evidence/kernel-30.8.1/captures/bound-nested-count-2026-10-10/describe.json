@@ -1,0 +1,118 @@
+{
+  "target": "model",
+  "op": "describe",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "fields": [
+      {
+        "path": "/Form/Rows/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/M",
+        "name": "M",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Items/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Items/M",
+        "name": "M",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Items/Desc/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Items/Desc/M",
+        "name": "M",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Items/Desc/Seal/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Items/Desc/Seal/M",
+        "name": "M",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Anchor",
+        "name": "Anchor",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Form/Rows/OUTCount",
+        "name": "OUTCount",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/NESTCount",
+        "name": "NESTCount",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/FIXCount",
+        "name": "FIXCount",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/RootAnchor",
+        "name": "RootAnchor",
+        "kind": "STRING"
+      }
+    ],
+    "groups": [
+      {
+        "path": "/Form",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Rows",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Form/Rows/Items",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Form/Rows/Items/Desc",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Form/Rows/Items/Desc/Seal",
+        "repeatable": false
+      }
+    ],
+    "locales": [
+      "en_US"
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

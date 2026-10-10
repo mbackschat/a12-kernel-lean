@@ -64,32 +64,11 @@ def rowWithinGroup (model : FlatModel) (groupPath : GroupPath)
   | some group =>
       groupPath.isPrefixOf group.path && addressPrefix.isPrefixOf row.path
 
-private def hasOverLimitRowWithin (model : FlatModel) (groupPath : GroupPath)
-    (addressPrefix : List Nat) : List RowAddr →
-    Except CheckedGroupPresenceError Bool
-  | [] => pure false
-  | row :: rows =>
-      if rowWithinGroup model groupPath addressPrefix row then
-        match model.repeatableGroupAtLevel? row.group with
-        | none => throw (.incoherentRepeatableScope [row.group])
-        | some group =>
-            let scope := model.repeatableScopeForGroupPath group.path
-            match model.addressOverLimit? scope row.path with
-            | none => throw (.incoherentRepeatableScope scope)
-            | some true => pure true
-            | some false => hasOverLimitRowWithin model groupPath addressPrefix rows
-      else
-        hasOverLimitRowWithin model groupPath addressPrefix rows
-
 private def resolveGroupPresenceScope (model : FlatModel)
-    (rows : List RowAddr) (groupPath : GroupPath) (environment : Env) :
-    Except CheckedGroupPresenceError (List Nat × Bool) := do
-  let addressPrefix ←
-    (environment.pathForScope (model.repeatableScopeForGroupPath groupPath))
-      |>.mapError CheckedGroupPresenceError.ofEnvBinding
-  let overLimitRow ← hasOverLimitRowWithin model groupPath addressPrefix
-    rows
-  pure (addressPrefix, overLimitRow)
+    (groupPath : GroupPath) (environment : Env) :
+    Except CheckedGroupPresenceError (List Nat) :=
+  (environment.pathForScope (model.repeatableScopeForGroupPath groupPath))
+    |>.mapError CheckedGroupPresenceError.ofEnvBinding
 
 end CheckedDocument
 
@@ -103,14 +82,17 @@ def FlatModel.groupPresenceInputFromSlice (model : FlatModel)
   if !model.hasGroupPath groupPath then
     .error (.unknownGroup groupPath)
   else
-    match CheckedDocument.resolveGroupPresenceScope model rows groupPath environment with
+    match CheckedDocument.resolveGroupPresenceScope model groupPath environment with
     | .error error => .error error
-    | .ok (addressPrefix, overLimitRow) =>
+    | .ok addressPrefix =>
         let descendantCells := cells.filterMap fun placement =>
           match model.lookupUniqueId placement.address.field with
           | .ok declaration =>
+              -- Capacity-invalid entries report structural findings before cache admission;
+              -- they do not mark ancestor groups erroneous (CheckCommand's index-admission gate, spec/10 §5).
               if groupPath.isPrefixOf declaration.groupPath &&
-                  addressPrefix.isPrefixOf placement.address.path then
+                  addressPrefix.isPrefixOf placement.address.path &&
+                  model.addressOverLimit? declaration.repeatableScope placement.address.path == some false then
                 some placement.cell
               else
                 none
@@ -119,13 +101,14 @@ def FlatModel.groupPresenceInputFromSlice (model : FlatModel)
           match model.lookupUniqueId address.field with
           | .ok declaration =>
               groupPath.isPrefixOf declaration.groupPath &&
-                addressPrefix.isPrefixOf address.path
+                addressPrefix.isPrefixOf address.path &&
+                model.addressOverLimit? declaration.repeatableScope address.path == some false
           | .error _ => false
         .ok {
           descendantCells
           hasInstantiatedRow := rows.any
             (CheckedDocument.rowWithinGroup model groupPath addressPrefix)
-          structuralError := structuralError || overLimitRow
+          structuralError
           silentError
           relevance
         }
@@ -150,7 +133,7 @@ def groupPresenceInputFromCells (checked : CheckedDocument model)
   checked.groupPresenceInputFromSlice checked.source.instantiatedRows cells
     groupPath environment relevance structuralError
 
-/-- Derive one resolved validation-group slice from the base checked document. Relevance and later structural findings remain explicit phase inputs; base over-repetition is derived from immutable row topology. -/
+/-- Derive one resolved validation-group slice from the base checked document. Relevance and caller-supplied group errors remain explicit phase inputs; excess-row diagnostics do not enter ancestor cache-error state (spec/10 §5). -/
 def groupPresenceInput (checked : CheckedDocument model)
     (groupPath : GroupPath) (environment : Env)
     (relevance : GroupRelevance) (structuralError : Bool) :

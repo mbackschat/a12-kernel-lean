@@ -1,0 +1,466 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "ops": 36,
+    "committed": true,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Rows"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/M",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Rows/Items"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/Items/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/Items/M",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Rows/Items/Desc"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/Items/Desc/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/Items/Desc/M",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/Items/Desc/Seal"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/Items/Desc/Seal/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/Items/Desc/Seal/M",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/Anchor",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/OUT0"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/OUT1"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/OUT2"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/OUTCount",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "computation",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "computation": "/Form/Rows/OUTCountComp"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/NEST0"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/NEST1"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/NEST2"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/NEST3"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/NEST4"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/NESTCount",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "computation",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "computation": "/Form/Rows/NESTCountComp"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/FIX0"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/FIX1"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/FIX2"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/FIX3"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Rows/FIX4"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Rows/FIXCount",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "computation",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "computation": "/Form/Rows/FIXCountComp"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/RootAnchor",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/ROOT0"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/ROOT1"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/ROOT2"
+        },
+        "diagnostics": [],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "Counts_DM.json"
+}
