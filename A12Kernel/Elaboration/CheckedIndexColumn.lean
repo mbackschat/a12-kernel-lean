@@ -6,7 +6,7 @@ import A12Kernel.Semantics.MessagePointer
 
 /-! # Checked index columns and bounded parallel joins
 
-This family-owned boundary resolves one generated-preliminary index column without inventing another document or address model. It retains every ordered key occurrence, duplicate identity for selection exclusion, and one column-unavailability cause. Semantic-index and parallel projections share only that admission relation while retaining their separate selection and missing-side policies. The checked parallel profile admits either one common outer repeatable scope or one non-indexed frame on exactly one side, across transparent nonrepeatable wrappers and exact non-Number stored keys or dot-decimal Number keys. Number iteration tokens retain declaration-specific minimum scale separately from numeric lookup identity (spec/07 §2).
+This family-owned boundary resolves one generated-preliminary index column without inventing another document or address model. It retains every ordered key occurrence, duplicate identity for selection exclusion, and one column-unavailability cause. Semantic-index and parallel projections share only that admission relation while retaining their separate selection and missing-side policies. The checked parallel profile admits either one common outer repeatable scope or one non-indexed frame on exactly one side, across transparent nonrepeatable wrappers and normalized non-Number cache keys (spec/02 §3) or dot-decimal Number keys. Number iteration tokens retain declaration-specific minimum scale separately from numeric lookup identity (spec/07 §2).
 -/
 
 namespace A12Kernel
@@ -239,7 +239,7 @@ private def CheckedIndexPreliminary.indexKey?
   | .number _, none => pure none
   | _, some _ =>
       match preliminary.storedAt? address with
-      | some stored => pure (some (.text stored))
+      | some stored => pure (some (.text (normalizeEvaluatedString stored)))
       | none => throw (.missingStoredValue address)
   | _, none => pure none
 

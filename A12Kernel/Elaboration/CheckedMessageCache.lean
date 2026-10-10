@@ -47,7 +47,7 @@ private def messageKey (declaration : FlatFieldDecl) (cell : CheckedCell)
   match declaration.policy.kind, observeCell .validation cell with
   | .number _, .value (.num value) => some (.number value)
   | .number _, _ => none
-  | _, .value _ => stored.map .text
+  | _, .value _ => stored.map (fun text => .text (normalizeEvaluatedString text))
   | _, _ => none
 
 /-- Base formal admission supplies keys before generated uniqueness findings hide duplicate values. -/

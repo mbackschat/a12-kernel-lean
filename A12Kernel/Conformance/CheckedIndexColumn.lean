@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.SemanticIndex
+import A12Kernel.Elaboration.PartialSemanticIndex
 
 /-! # Checked index-column and bounded parallel-join locks -/
 
@@ -342,6 +343,98 @@ example : (preliminaryFor numberParallelModel numberParallelData).bind
     (fun preliminary => (preliminary.resolveParallelIndexJoin demand supply).toOption.map
       fun joined => joined.rows.map (·.key)) =
     some [.number 5, .number 6] := by
+  native_decide
+
+private def multilineModel : FlatModel := {
+  keyedModel with fields := keyedModel.fields.map fun declaration =>
+    if declaration.policy.kind == .string then
+      { declaration with stringPolicy := { lineBreaksPermitted := true } }
+    else declaration }
+
+private def multilineData (left right : List String) (query : String) : DocumentData := {
+  instantiatedRows := left.zipIdx.map (fun (_, index) => row 10 (index + 1)) ++
+    right.zipIdx.map (fun (_, index) => row 20 (index + 1))
+  cells := left.zipIdx.flatMap (fun (token, index) => [
+      cell 1 (index + 1) token (.parsed (.str token)),
+      cell 2 (index + 1) "7" (.parsed (.num 7))]) ++
+    right.zipIdx.flatMap (fun (token, index) => [
+      cell 3 (index + 1) token (.parsed (.str token)),
+      cell 4 (index + 1) "8" (.parsed (.num 8))]) ++
+    [{ address := { field := 5, path := [] }, stored := query, raw := .parsed (.str query) }] }
+
+private def multilineSelector : Option (CheckedSemanticIndexSource multilineModel) :=
+  (elaborateSemanticIndexSource multilineModel ["Order"] {
+    target := { base := .absolute, groups := ["Order", "Supply"], field := "Headcount" }
+    key := .field { base := .absolute, groups := ["Order"], field := "Key" } }).toOption
+
+private def multilineLookup (keys : List String) (query : String) (phase : Phase) :
+    Option (CellObservation × Option String × Option String) := do
+  let preliminary ← preliminaryFor multilineModel (multilineData [] keys query)
+  let selector ← multilineSelector
+  let keyCell ← (preliminary.readAuthoredValidation { field := 5, path := [] }).toOption
+  let key ← (selector.observeCurrentKey phase (fun _ => keyCell)
+    (fun _ => preliminary.base.storedTextAt { field := 5, path := [] })).toOption
+  let value ← (selector.lookupPreliminaryValueWith preliminary preliminary.readAuthoredValidation
+    (fun _ => key) phase).toOption
+  pure (value, preliminary.base.storedTextAt { field := 3, path := [1] },
+    preliminary.base.storedTextAt { field := 5, path := [] })
+
+example : [
+    multilineLookup ["a\r\nb"] "a\nb" .computation,
+    multilineLookup ["a\nb"] "a\r\nb" .computation,
+    multilineLookup ["a\r\nb"] "a\r\nb" .validation,
+    multilineLookup ["a\rb"] "a\nb" .computation,
+    multilineLookup ["a\r\r\nb"] "a\r\nb" .computation,
+    multilineLookup ["a\r\nb", "a\nb"] "a\nb" .validation,
+    multilineLookup ["a\r\nb", "a\nb"] "a\r\nb" .computation] = [
+      some (.value (.num 8), some "a\r\nb", some "a\nb"),
+      some (.value (.num 8), some "a\nb", some "a\r\nb"),
+      some (.value (.num 8), some "a\r\nb", some "a\r\nb"),
+      some (.empty, some "a\rb", some "a\nb"),
+      some (.empty, some "a\r\r\nb", some "a\r\nb"),
+      some (.unknown .duplicateIndex, some "a\r\nb", some "a\nb"),
+      some (.poison .duplicateIndex, some "a\r\nb", some "a\r\nb")] := by
+  native_decide
+
+private def multilineJoin (left right : String) :
+    Option (List (String × SemanticIndexKey × Option Env × Option Env)) := do
+  let preliminary ← preliminaryFor multilineModel (multilineData [left] [right] "a\nb")
+  let joined ← (preliminary.resolveParallelIndexJoin demand supply).toOption
+  pure (joined.rows.map fun row =>
+    (row.iterationToken, row.key, row.left.environment, row.right.environment))
+
+example : [("a\r\nb", "a\nb"), ("a\nb", "a\r\nb"), ("a\r\nb", "a\r\nb")].all
+    (fun (left, right) => multilineJoin left right ==
+      some [("a\nb", .text "a\nb", some [(10, 1)], some [(20, 1)])]) = true ∧
+    (multilineJoin "a\rb" "a\nb" == some [
+      ("a\nb", .text "a\nb", none, some [(20, 1)]),
+      ("a\rb", .text "a\rb", some [(10, 1)], none)]) = true := by
+  native_decide
+
+private def currentMultilineKey (cell : CheckedCell) (phase : Phase) : Option CellObservation := do
+  let selector ← multilineSelector
+  (selector.observeCurrentKey phase (fun _ => cell) (fun _ => some "a\r\nb")).toOption
+
+example : [
+    currentMultilineKey { rawPresent := false, parsed := none, findings := [] } .computation,
+    currentMultilineKey { rawPresent := true, parsed := none, findings := [.computedDependency] }
+      .computation,
+    currentMultilineKey { rawPresent := true, parsed := some (.str "a\nb"), findings := [.malformed] }
+      .validation] = [some .empty, some (.poison .computedDependency), some (.unknown .malformed)] := by
+  native_decide
+
+private def changedPartialKeyLookup (indexRaw queryRaw : String) :
+    Option (Option (CellObservation Env)) := do
+  let preliminary ← preliminaryFor multilineModel (multilineData [] [indexRaw] "previous")
+  let view ← (preliminary.base.applyPartialGeneratedPreliminary
+    [RelevantEntityPattern.allInstances ["Order"]]).toOption
+  let selector ← multilineSelector
+  let changed := formalCheck { kind := .string } (.parsed (.str queryRaw))
+  (selector.selectPartial view [] (fun _ _ => pure (some changed))).toOption
+
+example : ["a\r\r\nb", "a\r\r\r\nb"].all (fun raw =>
+    changedPartialKeyLookup raw raw == some (some (.value [(20, 1)]))) = true ∧
+    (changedPartialKeyLookup "a\r\r\nb" "a\r\nb" == some (some .empty)) = true := by
   native_decide
 
 end A12Kernel.Conformance.CheckedIndexColumn

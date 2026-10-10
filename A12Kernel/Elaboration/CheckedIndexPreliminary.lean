@@ -92,7 +92,7 @@ private def CheckedDocument.indexComponentAt (checked : CheckedDocument model)
   | .number _, .value _ => throw (.incoherentValueKind address)
   | _, .value _ =>
       match storedAt? checked defaulted address with
-      | some stored => pure (.present (.token stored))
+      | some stored => pure (.present (.token (normalizeEvaluatedString stored)))
       | none => throw (.missingStoredValue address)
 
 private def CheckedDocument.indexCandidates

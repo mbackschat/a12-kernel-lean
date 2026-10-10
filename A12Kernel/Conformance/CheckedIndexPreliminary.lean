@@ -161,7 +161,7 @@ private def stringData (left right : String) : DocumentData :=
       cell [1, 2] right (.parsed (.str right))
     ] }
 
-/- Every non-Number index uses exact stored text: numeric-looking spellings remain distinct, while equal stored tokens mark both rows. -/
+/- Non-Number index identity uses normalized cache text: numeric-looking spellings remain distinct, while equal stored tokens mark both rows. -/
 example :
     (preliminaryFor stringModel (stringData "5" "5.00")).map
         (fun preliminary => preliminary.findings.isEmpty) = some true ∧
@@ -170,6 +170,17 @@ example :
           (preliminary.findingKindAt? { field := 1, path := [1, 1] },
             preliminary.findingKindAt? { field := 1, path := [1, 2] })) =
       some (some .unique, some .unique) := by
+  native_decide
+
+private def multilineStringModel : FlatModel :=
+  { model with fields := [{ stringKey with stringPolicy := { lineBreaksPermitted := true } }] }
+
+example :
+    (preliminaryFor multilineStringModel (stringData "a\r\nb" "a\nb")).map
+        (fun preliminary => preliminary.findings.map (·.kind)) =
+      some [.unique, .unique] ∧
+    (preliminaryFor multilineStringModel (stringData "a\rb" "a\nb")).map
+        (fun preliminary => preliminary.findings.isEmpty) = some true := by
   native_decide
 
 private def relevantKey (sectionIndex item : Nat) : RelevantEntityPattern :=

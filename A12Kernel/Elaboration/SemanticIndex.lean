@@ -11,7 +11,7 @@ A semantic index selects one row of a group by its declared index field's value.
 certifies that selection and hands it to the resolved evaluator, which owns the phase policy.
 
 The **index field's kind is not narrowed**: a Number index compares by numeric value and every other
-kind by exact stored text, and the shared checked column owner already decides that identity, so this
+kind by normalized cache text (spec/02 §3), and the shared checked column owner already decides that identity, so this
 certificate carries the declaration rather than a Number field. The measured Kernel rule is that the
 index kind and the selected target's kind are independent. The **reduced raw-context route** below
 stays a Number-index, Number-target instance, because it rebuilds the column from a one-group scan
@@ -710,8 +710,10 @@ private def NumberIndexCandidates.toColumn
 
 namespace CheckedSemanticIndexSource
 
-/-- Dynamic non-Number keys compare by exact stored text, as the column does; a checked Boolean,
-Enumeration or temporal payload cannot recover that identity. Preserve empty and formal failure
+/-- Dynamic non-Number keys compare by normalized cache text (spec/02 §3), as the column does; a checked Boolean,
+Enumeration or temporal payload cannot recover that identity. String observations already carry
+the one-pass evaluated value, including changed-cell readers; normalizing their spelling again
+would consume newly exposed CRLF pairs (spec/02 §3). Preserve empty and formal failure
 before consulting spelling, so failed producers retain their computation poison. -/
 def observeCurrentKey (checked : CheckedSemanticIndexSource model) (phase : Phase)
     (read : FieldId → CheckedCell) (stored : FieldId → Option String) :
@@ -719,9 +721,10 @@ def observeCurrentKey (checked : CheckedSemanticIndexSource model) (phase : Phas
   let observation := checked.key.observeWith fun declaration => observeCell phase (read declaration.id)
   if checked.numericIndex then return observation
   match checked.key, observation with
+  | .field _, .value (.str _) => pure observation
   | .field declaration, .value _ =>
       match stored declaration.id with
-      | some token => pure (.value (.str token))
+      | some token => pure (.value (.str (normalizeEvaluatedString token)))
       | none => throw (.checkedColumn (.missingStoredValue { field := declaration.id, path := [] }))
   | _, _ => pure observation
 

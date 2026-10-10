@@ -1,0 +1,570 @@
+{
+  "model": "model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "lf",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a\nb",
+          "Parents": [
+            {
+              "Key": "a\nb",
+              "RequestedKey": "a\nb",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a\nb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ],
+              "Peers": [
+                {
+                  "Id": "a\nb",
+                  "M": "3"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "crlf-index",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a\nb",
+          "Parents": [
+            {
+              "Key": "a\nb",
+              "RequestedKey": "a\nb",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a\r\nb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ],
+              "Peers": [
+                {
+                  "Id": "a\nb",
+                  "M": "3"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "crlf-query",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a\r\nb",
+          "Parents": [
+            {
+              "Key": "a\r\nb",
+              "RequestedKey": "a\r\nb",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a\nb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ],
+              "Peers": [
+                {
+                  "Id": "a\nb",
+                  "M": "3"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "crlf-both",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a\r\nb",
+          "Parents": [
+            {
+              "Key": "a\r\nb",
+              "RequestedKey": "a\r\nb",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a\r\nb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ],
+              "Peers": [
+                {
+                  "Id": "a\r\nb",
+                  "M": "3"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-aliases",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a\nb",
+          "Parents": [
+            {
+              "Key": "a\nb",
+              "RequestedKey": "a\nb",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a\r\nb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "a\nb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ],
+              "Peers": [
+                {
+                  "Id": "a\nb",
+                  "M": "3"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-aliases-relevant-1",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a\nb",
+          "Parents": [
+            {
+              "Key": "a\nb",
+              "RequestedKey": "a\nb",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a\r\nb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "a\nb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ],
+              "Peers": [
+                {
+                  "Id": "a\nb",
+                  "M": "3"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/RootKey"
+        },
+        {
+          "path": "/Form/Parents/Key"
+        },
+        {
+          "path": "/Form/Parents/Rows/N"
+        },
+        {
+          "path": "/Form/Parents/Rows/Body/A"
+        },
+        {
+          "path": "/Form/Parents/Rows/Body/B"
+        },
+        {
+          "path": "/Form/Parents/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Parents/Rows/Scalar"
+        },
+        {
+          "path": "/Form/Parents/Rows/GroupSum"
+        },
+        {
+          "path": "/Form/Parents/Rows/StarSum"
+        },
+        {
+          "path": "/Form/Parents/Rows/Count"
+        },
+        {
+          "path": "/Form/Parents/Rows/First"
+        },
+        {
+          "path": "/Form/Parents/Scalar"
+        },
+        {
+          "path": "/Form/Parents/GroupSum"
+        },
+        {
+          "path": "/Form/Parents/StarSum"
+        },
+        {
+          "path": "/Form/Parents/Count"
+        },
+        {
+          "path": "/Form/Parents/First"
+        },
+        {
+          "path": "/Form/Parents/RequestedKey"
+        },
+        {
+          "path": "/Form/Scalar"
+        },
+        {
+          "path": "/Form/GroupSum"
+        },
+        {
+          "path": "/Form/StarSum"
+        },
+        {
+          "path": "/Form/Count"
+        },
+        {
+          "path": "/Form/First"
+        },
+        {
+          "path": "/Form/Parents/Rows/Id",
+          "reps": [
+            1,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parents/Peers"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-aliases-relevant-2",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a\nb",
+          "Parents": [
+            {
+              "Key": "a\nb",
+              "RequestedKey": "a\nb",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a\r\nb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "a\nb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ],
+              "Peers": [
+                {
+                  "Id": "a\nb",
+                  "M": "3"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/RootKey"
+        },
+        {
+          "path": "/Form/Parents/Key"
+        },
+        {
+          "path": "/Form/Parents/Rows/N"
+        },
+        {
+          "path": "/Form/Parents/Rows/Body/A"
+        },
+        {
+          "path": "/Form/Parents/Rows/Body/B"
+        },
+        {
+          "path": "/Form/Parents/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Parents/Rows/Scalar"
+        },
+        {
+          "path": "/Form/Parents/Rows/GroupSum"
+        },
+        {
+          "path": "/Form/Parents/Rows/StarSum"
+        },
+        {
+          "path": "/Form/Parents/Rows/Count"
+        },
+        {
+          "path": "/Form/Parents/Rows/First"
+        },
+        {
+          "path": "/Form/Parents/Scalar"
+        },
+        {
+          "path": "/Form/Parents/GroupSum"
+        },
+        {
+          "path": "/Form/Parents/StarSum"
+        },
+        {
+          "path": "/Form/Parents/Count"
+        },
+        {
+          "path": "/Form/Parents/First"
+        },
+        {
+          "path": "/Form/Parents/RequestedKey"
+        },
+        {
+          "path": "/Form/Scalar"
+        },
+        {
+          "path": "/Form/GroupSum"
+        },
+        {
+          "path": "/Form/StarSum"
+        },
+        {
+          "path": "/Form/Count"
+        },
+        {
+          "path": "/Form/First"
+        },
+        {
+          "path": "/Form/Parents/Rows/Id",
+          "reps": [
+            1,
+            0,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parents/Peers"
+        }
+      ]
+    },
+    {
+      "name": "lone-cr-mismatch",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a\nb",
+          "Parents": [
+            {
+              "Key": "a\nb",
+              "RequestedKey": "a\nb",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a\rb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ],
+              "Peers": [
+                {
+                  "Id": "a\nb",
+                  "M": "3"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "lone-cr-match",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a\rb",
+          "Parents": [
+            {
+              "Key": "a\rb",
+              "RequestedKey": "a\rb",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a\rb",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ],
+              "Peers": [
+                {
+                  "Id": "a\rb",
+                  "M": "3"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    }
+  ]
+}

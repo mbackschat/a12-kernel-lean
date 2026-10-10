@@ -35,7 +35,7 @@ validation's per-lookup failure and computation's per-column failure (`spec/08` 
       | none => .empty
 
 /-- Decode an observed key without collapsing formal unavailability into a failed match. The
-index declaration chooses numeric identity or exact stored text (`spec/08` §4.1). -/
+index declaration chooses numeric identity or normalized cache text (`spec/08` §4.1). -/
 def semanticIndexObserved {α : Type} (phase : Phase) (numericIndex : Bool)
     (key : CellObservation) (lookup : SemanticIndexKey → CellObservation α)
     (noMatch : CellObservation α) : CellObservation α :=
@@ -109,7 +109,7 @@ def lookupNumberObservation (column : ResolvedSemanticIndexColumn)
   | .value _ => unavailableObservedKey phase .malformed
 
 /-- Read one phase-indexed key observation under the identity its **declared index field** uses:
-numeric value for a Number index, exact stored text for every other kind. This is the sole dispatch
+numeric value for a Number index, normalized cache text for every other kind. This is the sole dispatch
 between the two key domains, so no consumer chooses one by hand. -/
 def lookupObservationForIndex (column : ResolvedSemanticIndexColumn)
     (phase : Phase) (numericIndex : Bool) (key : CellObservation) :

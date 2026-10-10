@@ -1,0 +1,114 @@
+[
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Form",
+    "name": "RootKey",
+    "kind": "STRING",
+    "string": {
+      "lineBreaks": true
+    }
+  },
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Form/Parents",
+    "name": "Key",
+    "kind": "STRING",
+    "string": {
+      "lineBreaks": true
+    }
+  },
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Form/Parents",
+    "name": "RequestedKey",
+    "kind": "STRING",
+    "string": {
+      "lineBreaks": true
+    }
+  },
+  {
+    "target": "field",
+    "op": "modify",
+    "group": "/Form/Parents/Rows",
+    "name": "Id",
+    "kind": "STRING",
+    "string": {
+      "lineBreaks": true
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Parents",
+    "name": "Peers",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Parents/Peers",
+    "name": "Id",
+    "kind": "STRING",
+    "string": {
+      "lineBreaks": true
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Parents/Peers",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Form/Parents/Peers",
+    "index-field": "Id"
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Parents/Rows/N",
+    "code": "CacheParallelAny",
+    "condition": "AtLeastOneFieldFilled(/Form/Parents/Rows/N, /Form/Parents/Peers/M)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Parents/Rows/N",
+    "code": "CacheParallelAll",
+    "condition": "AllFieldsFilled(/Form/Parents/Rows/N, /Form/Parents/Peers/M)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Parents/Rows/N",
+    "code": "CacheParallelCompare",
+    "condition": "[/Form/Parents/Rows/N] < [/Form/Parents/Peers/M]",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  }
+]

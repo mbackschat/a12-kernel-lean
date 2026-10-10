@@ -364,6 +364,61 @@ example : ((preparedDefault {
       preliminary.deriveMessageCache.toOption.map (·.lookup 10 [3] (some (.text "B")))) =
     some .unknown := by native_decide
 
+private def multilineModel : FlatModel := {
+  defaultModel with fields := [{
+    id := 1, groupPath := ["Form", "Rows"], name := "Key", repeatableScope := [10],
+    policy := { kind := .string }, stringPolicy := { lineBreaksPermitted := true } }, {
+    id := 3, groupPath := ["Form"], name := "Query", policy := { kind := .string },
+    stringPolicy := { lineBreaksPermitted := true } }] }
+
+private def multilineData (keys : List String) (query : String) : DocumentData := {
+  instantiatedRows := keys.zipIdx.map fun (_, index) => { group := 10, path := [index + 1] }
+  cells := keys.zipIdx.map (fun (stored, index) => {
+    address := { field := 1, path := [index + 1] }, stored, raw := .parsed (.str stored) }) ++
+    [{ address := { field := 3, path := [] }, stored := query, raw := .parsed (.str query) }] }
+
+private def multilineCacheLookup (keys : List String) (query : String) :
+    Option (MessageRepetitionCoordinate × MessageRepetitionCoordinate × Option SemanticIndexKey) := do
+  let full ← preparedDefault (multilineData keys query) multilineModel
+  let fullCache ← full.deriveMessageCache.toOption
+  let part ← (full.base.applyPartialGeneratedPreliminary
+    [RelevantEntityPattern.allInstances ["Form"]]).toOption
+  let partialCache ← part.deriveMessageCache.toOption
+  let queryAddress : CellAddr := { field := 3, path := [] }
+  pure (fullCache.lookup 10 [] (full.messageQueryKeyAt? queryAddress),
+    partialCache.lookup 10 [] (part.messageQueryKeyAt? queryAddress),
+    full.messageQueryKeyAt? { field := 1, path := [1] })
+
+example : [
+    multilineCacheLookup ["a\r\nb"] "a\nb",
+    multilineCacheLookup ["a\nb"] "a\r\nb",
+    multilineCacheLookup ["a\r\nb"] "a\r\nb",
+    multilineCacheLookup ["a\rb"] "a\nb",
+    multilineCacheLookup ["a\r\nb", "a\nb"] "a\r\nb"] = [
+      some (.concrete 1, .concrete 1, some (.text "a\nb")),
+      some (.concrete 1, .concrete 1, some (.text "a\nb")),
+      some (.concrete 1, .concrete 1, some (.text "a\nb")),
+      some (.unknown, .unknown, some (.text "a\rb")),
+      some (.concrete 2, .concrete 2, none)] := by
+  native_decide
+
+private def partialMultilineAlias :
+    Option (MessageRepetitionCoordinate × Option SemanticIndexKey × Option SemanticIndexKey × CellObservation) := do
+  let full ← preparedDefault (multilineData ["a\r\nb", "a\nb"] "a\r\nb") multilineModel
+  let part ← (full.base.applyPartialGeneratedPreliminary [
+    RelevantEntityPattern.allInstances ["Form", "Query"], {
+      path := ["Form", "Rows", "Key"], indices := [.concrete 1, .concrete 2, .concrete 1] }]).toOption
+  let cache ← part.deriveMessageCache.toOption
+  let .checked selected ← (part.readAuthoredValidation { field := 1, path := [2] }).toOption
+    | none
+  pure (cache.lookup 10 [] (part.messageQueryKeyAt? { field := 3, path := [] }),
+    part.messageQueryKeyAt? { field := 1, path := [1] },
+    part.messageQueryKeyAt? { field := 1, path := [2] }, observeCell .validation selected)
+
+example : partialMultilineAlias =
+    some (.concrete 2, none, some (.text "a\nb"), .value (.str "a\nb")) := by
+  native_decide
+
 private def customPopulationModel : FlatModel := {
   fields := [
     { id := 1, name := "Custom", groupPath := ["Form"], policy := { kind := .string },

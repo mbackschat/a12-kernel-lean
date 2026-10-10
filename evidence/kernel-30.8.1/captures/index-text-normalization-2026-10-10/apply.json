@@ -1,0 +1,170 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "ops": 11,
+    "committed": true,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "field",
+        "op": "modify",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "modified": "/Form/RootKey",
+          "kind": "STRING",
+          "aspects": [
+            "type"
+          ]
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "modify",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "modified": "/Form/Parents/Key",
+          "kind": "STRING",
+          "aspects": [
+            "type"
+          ]
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "modify",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "modified": "/Form/Parents/RequestedKey",
+          "kind": "STRING",
+          "aspects": [
+            "type"
+          ]
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "modify",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "modified": "/Form/Parents/Rows/Id",
+          "kind": "STRING",
+          "aspects": [
+            "type"
+          ]
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Parents/Peers"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Parents/Peers/Id",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Parents/Peers/M",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "modify",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "group": "/Form/Parents/Peers",
+          "indexField": "Id"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Parents/Rows/CacheParallelAny"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Parents/Rows/CacheParallelAll"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/Parents/Rows/CacheParallelCompare"
+        },
+        "diagnostics": [],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "model.json"
+}
