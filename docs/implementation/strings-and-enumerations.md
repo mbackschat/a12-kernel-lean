@@ -249,6 +249,8 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 <a id="cap-typed-value-lists"></a>
 #### Typed value lists
 
+- `partial-direct-api`: The checked token partial-list API preserves the caller environment for direct-operand relevance and reads. [Bound-row controls](../../A12Kernel/Conformance/TokenEntityValueList.lean) cover String and stored Enumeration, both operand sides, all three quantifiers, two rows, full/matching coverage and disjoint relevance. The ordinary reader already delegates through the call-local partial evaluator; this fixes the separate lower-level adapter.
+
 - `boundary`: Scalar, multi-field, and direct/plain/filtered-star String/Enumeration/Number membership and quantifiers with typed operation-specific payloads. Partial starred entries filter concrete cells before reading and use their own existential covering-identifier extent gate per current iteration row, independent of the aggregate family's universal gate
 - `admission`: The three plural membership quantifiers retain the existing [kind-set gate](../sources/static-admission-and-class-probes.md#src-value-list-slot-kind-set) for selected operands. Temporal declarations are refused before either field-valued or literal-valued membership evaluation; they require no temporal membership runtime carrier. [Kind locks](../../A12Kernel/Conformance/ValueListQuantifierKindGate.lean) own the partition; indexed shapes reuse the declaration-preserving entity reader.
 - `owner`: [`ValueList.lean`](../../A12Kernel/Semantics/ValueList.lean), entity-list/value-list elaboration owners

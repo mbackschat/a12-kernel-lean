@@ -733,9 +733,9 @@ def resolveCheckedPartialValidationOperand
   match source with
   | .selected selection => throw (.addressing (.unsupportedGroupOperand selection.path))
   | .field direct =>
-      if scope.coversCell model direct.declaration.path [] then do
+      if scope.coversCell model direct.declaration.path outer then do
         let core ←
-          document.resolveCheckedDirectEntityOperandCore direct.operand.field.id
+          document.resolveCheckedDirectEntityOperandCoreAt outer direct.operand.field.id
         pure (.ofCore source direct.operand core)
       else
         pure (.ofCore source direct.operand .nonRelevant)

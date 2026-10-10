@@ -42,6 +42,8 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 #### Partial validation
 
 - `boundary`: Rule-wide filter skip, per-cell relevance masking, and one-sided soundness without an unrestricted full/partial `iff`
+- `filtered-boundary`: Kernel 30.8.1 partial-with-3VL skips filtered rules before relevance, support checks and row construction. Scalar, addressed, once and repeatable checked-rule boundaries retain this gate; the [registered skip laws](../../A12Kernel/Proofs/ValidationRule.lean) and typed reader controls cover it. Consumer-specific sparse/dense filtered traversal is unreachable through these partial-rule routes.
+- `filtered-source`: The [partial-coverage checkpoint](../sources/having-filter-probes.md#src-having-filter-nontrue-row) owns the three relevance controls and generated-rule routing. Unfiltered positional/extent relevance remains independently scoped.
 - `owner`: [`PartialValidation.lean`](../../A12Kernel/Semantics/PartialValidation.lean), partial rule owners
 - `assurance`: E/P closed for admitted rules; LF23 source-closed; selected C/X
 - `remains`: Wider addressed/custom leaves: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), [SG11](../SEMANTICS-GAPS.md#sg11--custom-condition-checked-orchestration)

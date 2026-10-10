@@ -667,4 +667,47 @@ example :
         .insufficientInformation := by
   native_decide
 
+private def boundPartialDirect (enumeration membersSide : Bool)
+    (quantifier : ValueListQuantifier) (row : Nat) (coveredRow : Option Nat) :
+    Option (Bool × Verdict) := do
+  let rootName := if enumeration then "Choice" else "Match"
+  let rowName := if enumeration then "RowChoice" else "OtherCode"
+  let root := entitySource (direct rootName) []
+  let bound := entitySource (.field {
+    base := .absolute, groups := ["Form", "Rows"], field := rowName }) []
+  let source := authored quantifier (if membersSide then root else bound)
+    (if membersSide then bound else root)
+  let checked ← (elaborateTokenEntityValueListSource model ["Form"] source
+    (bindingGroup? := some ["Form", "Rows"])).toOption
+  let document ← checkedDocument? multipleStarData
+  let scope := match coveredRow with
+    | none => ValidationRelevanceScope.full
+    | some covered => .partialSet [
+        { path := ["Form", rootName], indices := [.all, .all] },
+        { path := ["Form", "Rows", rowName], indices := [.all, .concrete covered, .all] }]
+  let outer := [(10, row)]
+  let operand := if membersSide then checked.values.first else checked.fields.first
+  let resolved ← (operand.resolveCheckedPartialValidationOperand document outer scope).toOption
+  let .evaluated result ← (checked.evaluatePartial document outer scope).toOption | none
+  pure (resolved.hasNonRelevant, result)
+
+example : boundPartialDirect false false .atLeastOne 1 none =
+    some (false, .fired .value) := by native_decide
+
+example : boundPartialDirect true true .atLeastOne 1 (some 1) =
+    some (false, .fired .value) := by native_decide
+
+example : [false, true].all (fun enumeration => [false, true].all fun membersSide =>
+    [.atLeastOne, .no, .notAll].all fun quantifier => [1, 2].all fun row =>
+      let matched := row == 1
+      let fires := if quantifier == .atLeastOne then matched else !matched
+      let expected := some (false, if fires then Verdict.fired .value else .notFired)
+      boundPartialDirect enumeration membersSide quantifier row none == expected &&
+      boundPartialDirect enumeration membersSide quantifier row (some row) == expected) = true := by native_decide
+
+example : [false, true].all (fun enumeration => [false, true].all fun membersSide =>
+    [.atLeastOne, .no, .notAll].all fun quantifier => [1, 2].all fun row =>
+      (boundPartialDirect enumeration membersSide quantifier row (some (3 - row))).map Prod.fst ==
+        some true) = true := by native_decide
+
 end A12Kernel.Conformance.TokenEntityValueList
