@@ -123,6 +123,29 @@ example : (let mixedGroups := "NumberOfFilledGroups(Head,Rows*) > 0"
     references mixedGroups "Rows/Code" 3 10 == some (some true, some false, some false)) := by native_decide
 
 example : references "RepetitionNotUnique(Rows/Code)" "Rows/Code" 3 10 =
-    some (some true, none, none) := by native_decide
+    some (some true, some false, some true) := by native_decide
+
+private def rnuFrom := "RepetitionNotUnique(Rows/Code @From Rows)"
+private def rnuNested := "RepetitionNotUnique(Rows/Items/N @From Rows)"
+
+example : references "RepetitionNotUnique(Rows/Code)" "Rows/Code" 6 10 =
+    some (some false, some false, some false) := by native_decide
+
+example : refusedAs "RepetitionNotUnique(Rows/Code)" "Rows/Other" (.errorFieldNotReferenced 6) ∧
+    references rnuFrom "Rows/Other" 6 10 = some (some true, some false, some true) ∧
+    references rnuFrom "Rows/Other" 4 10 = some (some true, some false, some true) ∧
+    references rnuFrom "Rows/Other" 4 20 = some (some true, some false, some false) ∧
+    references rnuFrom "Rows/Other" 2 10 = some (some false, some false, some false) := by native_decide
+
+example : references rnuNested "Rows/Items/N" 4 20 = some (some true, some false, some true) ∧
+    refusedAs rnuNested "Rows/Items/M" (.errorFieldIterationInvalid 5 20) ∧
+    refusedAs "RepetitionNotUnique(Rows/Items/N,Rows/Code @From Rows)" "Rows/Items/M"
+      (.errorFieldIterationInvalid 5 20) ∧
+    references "RepetitionNotUnique(Rows/Items/N,Rows/Items/M @From Rows)" "Rows/Items/M" 5 20 =
+      some (some true, some false, some true) := by native_decide
+
+example : [rnuNested ++ " And FieldFilled(Rows/Items/M)",
+    "FieldFilled(Rows/Items/M) Or " ++ rnuNested].all (fun condition =>
+      references condition "Rows/Items/M" 5 20 == some (some true, some false, some true)) := by native_decide
 
 end A12Kernel.Dm.RemainingReferenceAdmissionLocks

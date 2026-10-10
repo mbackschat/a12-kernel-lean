@@ -2,8 +2,8 @@ import A12Kernel.Elaboration.ValidationCondition.Core
 
 /-! Error-field membership and error-field iteration are distinct static obligations (spec/07 §1).
 A selected payload can name the error field without binding an ordinary iteration level. This
-projection retains that distinction across the checked callers; unresolved carriers return `none`
-rather than borrowing another operand's scope. -/
+projection retains that distinction across the checked callers without borrowing another
+operand's scope. -/
 
 namespace A12Kernel.ValidationCondition
 
@@ -17,12 +17,6 @@ private def ReferenceQuery.binds (query : ReferenceQuery) (scope : List Repeatab
   | .membership => true
   | .nonFormMembership => !isForm
   | .iteration level => scope.contains level
-
-private def unresolvedReference (query : ReferenceQuery) (member : Bool) : Option Bool :=
-  if !member then some false else
-  match query with
-  | .membership => some true
-  | .nonFormMembership | .iteration _ => none
 
 /-- Static error references follow authored entities, not implicit index-cache reads
 (EntityRefUtils.getDRefs/getGRefs; IterationChecker.checkIteration4NotOnlyVRefs).
@@ -283,7 +277,15 @@ private def leafErrorReferenceAt? (field : FieldId) (query : ReferenceQuery)
       temporalReferenceAt? field query comparison.right.core]
   | .constructedDateValidity _ source => temporalReferenceAt? field query source.scalarCore
   | .iteratedDateRange condition => overlapReferenceAt? field query condition
-  | .repetitionNotUnique _ => unresolvedReference query true
+  | .repetitionNotUnique source => some (
+      (source.keys.any (fun key => key.fieldId == field) &&
+        query.binds (model.fieldRepeatableScope field)) ||
+      match source.referenceOrigin with
+      | .inferredDefault => false
+      | .authoredFrom =>
+          let reference : ResolvedGroupReference := { path := source.referenceGroup.path, origin := .path }
+          reference.referencesField model field &&
+            query.binds (model.repeatableScopeForGroupPath reference.path) reference.isRoot)
 
 private def errorReferenceFor? (condition : ValidationCondition model)
     (field : FieldId) (query : ReferenceQuery) : Option Bool :=
@@ -292,8 +294,7 @@ private def errorReferenceFor? (condition : ValidationCondition model)
   | .and left right | .or left right =>
       anyReference [errorReferenceFor? left field query, errorReferenceFor? right field query]
 
-/-- Authored static references exclude implicit cache dependencies; unresolved carriers preserve
-legacy membership until their source-specific projection is known. -/
+/-- Authored static references exclude implicit cache dependencies (spec/07 §1). -/
 def authoredErrorReference? (condition : ValidationCondition model) (field : FieldId) : Option Bool :=
   errorReferenceFor? condition field .membership
 

@@ -75,4 +75,12 @@ example : (do
     pure (checked.core.authoredErrorReference? 2, checked.core.formOnlyErrorReference? 2)) =
     some (some true, some false) := by native_decide
 
+example : classification model "RepetitionNotUnique(Qty @From /Et)" =
+    some (some true, some false) ∧
+    admission "RepetitionNotUnique(Qty @From /Et)" =
+      (repr (FlatRuleAssemblyError.formOnlyIteration 2 20)).pretty ∧
+    classification model "RepetitionNotUnique(Note,Qty @From /Et)" =
+      some (some false, some true) ∧
+    admission "RepetitionNotUnique(Note,Qty @From /Et)" = "admitted" := by native_decide
+
 end A12Kernel.Dm.RootReferenceAdmissionLocks
