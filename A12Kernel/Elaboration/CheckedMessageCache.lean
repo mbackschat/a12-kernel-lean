@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Semantics.MessageCacheOrder
+import A12Kernel.Semantics.CustomFieldTypeVocabulary
 
 namespace A12Kernel
 
@@ -73,8 +74,6 @@ private def associationAt (model : FlatModel) (address : CellAddr)
 private def populationForScope (checked : CheckedDocument model)
     (relevance : ValidationRelevanceScope) :
     Except CheckedMessageCacheError (List MessageCachePopulationEntry) := do
-  if let some declaration := model.fields.find? (·.customType.isSome) then
-    throw (.customAdmission declaration.id)
   let names := model.messageFieldNames
   let mut population := []
   for row in checked.source.instantiatedRows do
@@ -95,8 +94,13 @@ private def populationForScope (checked : CheckedDocument model)
     let declaration ← model.lookupUniqueId placement.address.field |>.mapError .model
     let environment := declaration.repeatableScope.zip placement.address.path
     if !relevance.coversCell model declaration.path environment then continue
-    if !placement.cell.findings.isEmpty || !placement.cell.rawPresent ||
-        (placement.storedText.getD "").isEmpty then continue
+    if !placement.cell.rawPresent || (placement.storedText.getD "").isEmpty then continue
+    -- Cache admission of test-range findings differs from the registered checker's unavailable-cell result; collapsing them would discard a hash contribution (SG7).
+    if placement.cell.findings.any (fun cause => match cause with
+        | .registeredCustomValidation rejection => rejection.projectCode == CustomFieldType.testRangeCode
+        | _ => false) then
+      throw (.customAdmission declaration.id)
+    if !placement.cell.findings.isEmpty then continue
     let some (_, name) := names.find? (·.1 == declaration.id)
       | throw (.missingInternalName declaration.id)
     let coordinates ← fullCoordinates model declaration.path

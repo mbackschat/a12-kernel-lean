@@ -1,0 +1,417 @@
+{
+  "model": "model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "customFieldTypes": {
+    "CacheProbe": {
+      "pattern": "OK"
+    }
+  },
+  "rows": [
+    {
+      "name": "absent-whole",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "absent-excluded",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Parents"
+        },
+        {
+          "path": "/Form/RootKey"
+        }
+      ]
+    },
+    {
+      "name": "empty-whole",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "ProbeCustom": ""
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-excluded",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "ProbeCustom": ""
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Parents"
+        },
+        {
+          "path": "/Form/RootKey"
+        }
+      ]
+    },
+    {
+      "name": "accepted-whole",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "ProbeCustom": "OK"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "accepted-excluded",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "ProbeCustom": "OK"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Parents"
+        },
+        {
+          "path": "/Form/RootKey"
+        }
+      ]
+    },
+    {
+      "name": "rejected-whole",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "ProbeCustom": "BAD"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "rejected-excluded",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "ProbeCustom": "BAD"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Parents"
+        },
+        {
+          "path": "/Form/RootKey"
+        }
+      ]
+    }
+  ]
+}

@@ -364,4 +364,39 @@ example : ((preparedDefault {
       preliminary.deriveMessageCache.toOption.map (·.lookup 10 [3] (some (.text "B")))) =
     some .unknown := by native_decide
 
+private def customPopulationModel : FlatModel := {
+  fields := [
+    { id := 1, name := "Custom", groupPath := ["Form"], policy := { kind := .string },
+      customType := some { name := "CacheProbe" } },
+    { id := 2, name := "Other", groupPath := ["Form"], policy := { kind := .string },
+      customType := some { name := "CacheProbe" } }] }
+
+private def customPopulationResult (value : Option String) (field : FieldId := 1)
+    (relevant : Bool := true) : Option (CheckedMessageCacheError ⊕ Nat) := do
+  let world : World := {
+    now := { epochMillis := 0 }
+    customFieldValidator? := fun name => if name == "CacheProbe" then some (fun value _ =>
+      if value == "OK" then none else some {
+        projectCode := if value == "TEST" then "testIDNummer" else "cacheProbe.reject" }) else none }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler customPopulationModel).toOption
+  let checked ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := value.toList.map fun value => {
+      address := { field, path := [] }, stored := value,
+      raw := if value.isEmpty then .presentEmpty else .parsed (.str value) } }).toOption
+  let part ← (checked.applyPartialGeneratedPreliminary []).toOption
+  let result := if relevant then checked.messageCachePopulation else part.messageCachePopulation
+  pure (match result with | .ok population => .inr population.length | .error error => .inl error)
+
+example : customPopulationResult none = some (.inr 0) ∧
+    customPopulationResult (some "") = some (.inr 0) ∧
+    customPopulationResult (some "OK") = some (.inr 1) ∧
+    customPopulationResult (some "BAD") = some (.inr 0) ∧
+    customPopulationResult (some "OK") 2 = some (.inr 1) ∧
+    customPopulationResult (some "OK") 2 false = some (.inr 0) ∧
+    customPopulationResult (some "TEST") = some (.inl (.customAdmission 1)) ∧
+    customPopulationResult (some "TEST") 2 = some (.inl (.customAdmission 2)) ∧
+    customPopulationResult (some "TEST") 2 false = some (.inr 0) := by
+  native_decide
+
 end A12Kernel.Conformance.MessageCacheOrder
