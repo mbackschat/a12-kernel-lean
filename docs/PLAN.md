@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is paused. This planning change does not resume semantic implementation. On resumption start at C01, not at the former next group-topology capture.
+The autonomous goal is active at C01. The former group-topology follow-up remains C02; finish C01 first.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -30,7 +30,7 @@ C01–C12 are the required sequence. This checkpoint is a bounded consumer-relia
 
 ### C01 — risk boundary check and independent consumer baseline
 
-- [ ] First check the high-impact exclusion boundaries: partial-plan stale calculated fields; missing pattern compiler/custom validator; missing cache-order context; out-of-profile calendar inputs; omitted/cleared result application. Use existing code and failure controls to establish explicit refusal/context requirements or identify a dangerous admitted path. Any silent wrong result on these boundaries must be fixed under C01 before lower-risk work; it cannot be parked in a new list or left until the consumer run.
+- [x] First check the high-impact exclusion boundaries: partial-plan stale calculated fields; missing pattern compiler/custom validator; missing cache-order context; out-of-profile calendar inputs; omitted/cleared result application. Use existing code and failure controls to establish explicit refusal/context requirements or identify a dangerous admitted path. Any silent wrong result on these boundaries must be fixed under C01 before lower-risk work; it cannot be parked in a new list or left until the consumer run.
 - [ ] Freeze and run an Execute/Explain task with eight concrete scenarios: fresh computed producer replacing stale storage; false guard clearing a seeded target; reached versus bypassed poison; first matching alternative; identical keys in different parents; missing versus duplicate selected keys; partial coverage of a fixed group below a star; generated error after applying a result.
 - Supply only canonical clauses and concrete inputs to an isolated consumer. Require values/clears, firing, row identity and structured errors where defined; missing information must be identified, not guessed. HIGH compares answers with checked APIs and retained observations.
 - Done: record all eight dispositions and any representation/transport blocker in [Execute probes](consumer-probes/EXECUTE.md). Reuse the narrow [cache-context](consumer-probes/EXECUTE.md#run-message-cache-context-readback-01) and [traversal](consumer-probes/EXECUTE.md#run-filter-traversal-readback-01) boundaries. This is broader semantic transport, not qualification of an independent interpreter.
@@ -204,9 +204,9 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Next after explicit resumption: C01. Check the five named high-risk exclusion boundaries, then freeze the eight scenarios and clause packet in the existing Execute probe owner and run the isolated consumer. Start no other batch in parallel.
+- Active: C01. Check the five named high-risk exclusion boundaries, then freeze the eight scenarios and clause packet in the existing Execute probe owner and run the isolated consumer. Start no other batch in parallel.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) is committed and freshly reviewed. Its former computation follow-up is bounded inside C02.
-- Semantic implementation remains paused. Inspect Git status before resumption.
+- C01 risk boundaries checked: [complete-model admission](../A12Kernel/Reference/Dm/ModelComputationLocks.lean), [pattern preparation](../A12Kernel/Conformance/StringPatternElaboration.lean), [missing custom registration](../A12Kernel/Conformance/CustomFieldEvaluation.lean), [cache-context refusal](../A12Kernel/Conformance/MessageCacheOrder.lean), [calendar admission](../A12Kernel/Conformance/DateTimeInput.lean) and [clear/application validation](../A12Kernel/Conformance/GeneratedComputationValidation/AppliedValidation.lean). Focused locks and integration (2,166 jobs) pass. Fresh HIGH review found one documentation error, restored against its actual owner; no executable blocker. Freeze the [eight-scenario packet](consumer-probes/EXECUTE.md#task-c01-execute-explain), then run and reconcile the isolated consumer. C01 remains open until that result is accepted.
 - The latest [cache-context probe](consumer-probes/EXECUTE.md#run-message-cache-context-readback-01) passed its narrow task; it does not discharge C01/C12. C01 is due on resumption, with the second bounded probe at C12. C22 uses those results and the subsequent evidence; it does not automatically trigger another consumer programme.
 - One writer and sequential HIGH/MEDIUM work. HIGH settles the account and representative reader fixture; MEDIUM gets a complete bounded batch. Reuse warm context only for the same settled mechanism. HIGH acceptance does not replace triggered fresh cold review.
 - Verify admitted fixture controls, carrier phase and entry API before expanding a matrix. Never edit compiler inputs while a build is live; report refreshes never justify replay.

@@ -70,6 +70,7 @@ import A12Kernel.Reference.Dm.NegateLocks
 import A12Kernel.Reference.Dm.LowerLocks
 import A12Kernel.Reference.Dm.NumericFieldFormLocks
 import A12Kernel.Reference.Dm.ComputationGuardLocks
+import A12Kernel.Reference.Dm.ModelComputationLocks
 import A12Kernel.Reference.Dm.ComputationPredicateGuardLocks
 import A12Kernel.Reference.Dm.ComputationOverlapLocks
 import A12Kernel.Reference.Dm.UniquenessGuardLocks
@@ -281,7 +282,11 @@ private def replayComputations (line : String → String → String → String �
   let fedTargets := (List.range model.computations.length).foldl (init := refused) fun fed _ =>
     fed ++ model.computations.filter fun computation =>
       !(fed.map targetName).contains (targetName computation) && reads fed computation
-  match runComputations world prepared checked (admitted.map (·.2.2)) with
+  let result := if refused.isEmpty then
+      runModelComputations model language world prepared checked
+    else
+      runComputations world prepared checked (admitted.map (·.2.2))
+  match result with
   | .error refusal =>
       -- A plan Lean certified and then failed to run is a fault; an uncertified plan is a refusal.
       let tier := if refusal.construct == "ComputationRun" then "fault" else "tier2"
