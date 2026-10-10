@@ -1,0 +1,24 @@
+{
+  "target": "rule",
+  "op": "read",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "rule": "/Form/BOOLEAN",
+    "severity": "ERROR",
+    "errorCode": "BOOLEAN",
+    "errorField": "/Form/Anchor",
+    "converted": true,
+    "condition": "FieldFilled(/Form/Anchor) And FirstFilledValue(/Form/Parents*/Rows*/Flag) == True",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

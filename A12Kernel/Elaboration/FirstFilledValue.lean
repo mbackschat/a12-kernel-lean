@@ -301,7 +301,7 @@ private def scanCheckedDocumentValidationOperand
         (fun environment =>
           (fun cell => (observeCell .validation cell).asNumberValueListCell) <$> read environment source.field.id)
         resolved.environments
-        (state.enterSelection resolved.environments.isEmpty
+        (state.enterSelection (resolved.environments.isEmpty || resolved.domain.hasEmptyPrefix)
           resolved.domain.hasOpenTail false)
   | .starHaving source => do
       let resolved ←

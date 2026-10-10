@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ValueList
 This capsule starts at the first starred repeatable level after path checking and scope
 binding. It retains actual rows under their actual parent without materializing the
 declared Cartesian product. Cell classification remains in `ResolvedValueListSide`;
-this tree derives only the declared-but-uninstantiated tail bit.
+this tree retains both declared-but-uninstantiated tails and empty leading branches.
 -/
 
 namespace A12Kernel
@@ -78,6 +78,15 @@ mutual
 end
 
 namespace ReopenedStarDomain
+
+/-- Whether the walk begins with an absent coordinate before its first concrete leaf.
+The first-filled combiner retains this prefix even when physical-leaf flattening erases it
+(RuntimeController.combineFeldListe; nested first-filled prefix matrix, 2026-10-10).
+Later empty branches cannot affect a value already selected from an earlier leaf. -/
+def hasEmptyPrefix : ReopenedStarDomain → Bool
+  | .selectedLeaf => false
+  | .repeatable _ .nil => true
+  | .repeatable _ (.cons coordinate child _) => coordinate > 1 || child.hasEmptyPrefix
 
 /-- Bridge the hierarchical structural decision into the existing resolved operand
     boundary. Empty selected cells remain explicit cells and compose there. -/

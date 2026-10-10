@@ -78,6 +78,7 @@ import A12Kernel.Reference.Dm.TypeValidityGuardLocks
 import A12Kernel.Reference.Dm.IndexedTypeValidityLocks
 import A12Kernel.Reference.Dm.IndexedPatternLocks
 import A12Kernel.Reference.Dm.NestedFirstFilledLocks
+import A12Kernel.Reference.Dm.FirstFilledPrefixLocks
 import A12Kernel.Reference.Dm.EmptyPatternLocks
 import A12Kernel.Reference.Dm.GroupGuardLocks
 import A12Kernel.Reference.Dm.SemanticIndexLocks

@@ -274,7 +274,12 @@ private def scanCheckedFirstFilledValidationOperands
                   | .continue next => .inl next
                   | .done result => .inr result)
                 (state.enter resolved.domain.hasOpenTail true) .dense world
-          | none => ordinary ()
+          | none => do
+              let resolved ← operand.resolveCheckedValidationOperand document outer
+              let side := resolved.inCapacityValueListSideAt .validation
+              let emptyPrefix := side.cells.isEmpty || resolved.topology.any (·.domain.hasEmptyPrefix)
+              pure (scanFirstFilledItems id side.cells
+                (state.enterSelection emptyPrefix side.hasUninstantiatedTail false))
         | _ => ordinary ()
       match scanned with
       | .inl next =>

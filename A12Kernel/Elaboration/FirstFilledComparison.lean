@@ -198,7 +198,11 @@ private def scanTypedFirstFilled (document : CheckedDocument model) (outer : Env
               source.source.scanValidationCells having.condition document outer
                 (fun state cell => scanFirstFilledObservations [observeCell .validation cell.cell] state)
                 (state.enter false true) .dense world
-          | none => ordinary ()
+          | none => do
+              let resolved ← source.source.resolveCheckedValidationEntityOperandCore document outer none
+              let cells := resolved.inCapacityAddressedCells.map fun cell => observeCell .validation cell.cell
+              let emptyPrefix := cells.isEmpty || resolved.topology.any (·.domain.hasEmptyPrefix)
+              pure (scanFirstFilledObservations cells (state.enterSelection emptyPrefix false false))
         | _ => ordinary ()
       match scanned with
       | .inl next => scanTypedFirstFilled (world := world) document outer rest next

@@ -1,0 +1,37 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Parents/Rows",
+    "name": "Flag",
+    "kind": "BOOLEAN"
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And FirstFilledValue(/Form/Parents*/Rows*/Keep) == 1",
+    "code": "NUMBER",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And FirstFilledValue(/Form/Parents*/Rows*/Flag) == True",
+    "code": "BOOLEAN",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

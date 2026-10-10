@@ -1,0 +1,295 @@
+{
+  "model": "NestedFirst_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "empty-prefix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": [
+            {
+              "Rows": [],
+              "Limit": "1"
+            },
+            {
+              "Rows": [
+                {
+                  "Text": "A",
+                  "Keep": "1",
+                  "Flag": "true"
+                }
+              ],
+              "Limit": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "missing-prefix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": [
+            {},
+            {
+              "Rows": [
+                {
+                  "Text": "A",
+                  "Keep": "1",
+                  "Flag": "true"
+                }
+              ],
+              "Limit": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-suffix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "Text": "A",
+                  "Keep": "1",
+                  "Flag": "true"
+                }
+              ],
+              "Limit": "1"
+            },
+            {
+              "Rows": [],
+              "Limit": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "missing-suffix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "Text": "A",
+                  "Keep": "1",
+                  "Flag": "true"
+                }
+              ],
+              "Limit": "1"
+            },
+            {}
+          ]
+        }
+      }
+    },
+    {
+      "name": "filled-control",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "Text": "A",
+                  "Keep": "1",
+                  "Flag": "true"
+                }
+              ],
+              "Limit": "1"
+            },
+            {
+              "Rows": [
+                {
+                  "Text": "B",
+                  "Keep": "2",
+                  "Flag": "false"
+                }
+              ],
+              "Limit": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-cell-prefix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": [
+            {
+              "Rows": [
+                {}
+              ],
+              "Limit": "1"
+            },
+            {
+              "Rows": [
+                {
+                  "Text": "A",
+                  "Keep": "1",
+                  "Flag": "true"
+                }
+              ],
+              "Limit": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-cell-suffix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "Text": "A",
+                  "Keep": "1",
+                  "Flag": "true"
+                },
+                {}
+              ],
+              "Limit": "1"
+            },
+            {
+              "Rows": [
+                {
+                  "Text": "B",
+                  "Keep": "2",
+                  "Flag": "false"
+                }
+              ],
+              "Limit": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "all-empty",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": [
+            {
+              "Rows": [],
+              "Limit": "1"
+            },
+            {
+              "Rows": [],
+              "Limit": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-outer",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": []
+        }
+      }
+    },
+    {
+      "name": "nonmatching-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "Text": "B",
+                  "Keep": "2",
+                  "Flag": "false"
+                }
+              ],
+              "Limit": "1"
+            },
+            {
+              "Rows": [
+                {
+                  "Text": "A",
+                  "Keep": "1",
+                  "Flag": "true"
+                }
+              ],
+              "Limit": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unknown-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Head": "H",
+          "Tail": "T",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "Text": "B",
+                  "Keep": "bad",
+                  "Flag": "bad"
+                }
+              ],
+              "Limit": "1"
+            },
+            {
+              "Rows": [
+                {
+                  "Text": "A",
+                  "Keep": "1",
+                  "Flag": "true"
+                }
+              ],
+              "Limit": "1"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

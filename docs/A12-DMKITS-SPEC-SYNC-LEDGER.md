@@ -183,3 +183,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `change`: [Pattern execution](../spec/06-strings-and-enumerations.md#pattern-admission-and-execution) distinguishes an admitted empty authored pattern from an inactive empty declared pattern. A reached condition call fails before operand availability, escapes subsequent Boolean conditions and alternative tiers, and is caught by the enclosing validation/computation handler.
 - `evidence`: [Source and 56-row matrix](sources/computation-scheduling-probes.md#src-empty-pattern-execution), both strategies agreeing at the pinned clean producer. Direct and Having cases distinguish short circuit, formal-input prepass, partial relevance, empty/uninstantiated candidates, independent targets and nonempty controls. Indexed empty-source behavior is an internal specialization, not measured correspondence.
 - `request`: Reconcile consumer execution and canonical prose with this failure effect and its handler boundary. Preserve formal-input precheck precedence and inactive declared-empty policy; do not implement the authored case as a Boolean match result. Introducing revision is the first commit containing this ID.
+
+<a id="spec-2026-10-10-14"></a>
+### SPEC-2026-10-10-14 — nested first-filled scans retain empty leading branches
+
+- `status`: pending
+- `canonical`: [First-filled selection](../spec/03-empty-and-required.md) retains missing-prefix provenance across nested stars, including an empty or omitted inner group under an earlier parent.
+- `delta`: Flattening physical leaf rows loses an observable distinction: a later matching value emits OMISSION after an empty leading branch, while an empty suffix preserves VALUE. Keep visited-prefix missingness separate from omitted-tail metadata.
+- `basis`: [Eleven-document, three-carrier matrix](sources/computation-scheduling-probes.md#src-first-filled-empty-prefix) covers String, Number and Boolean full validation with a filtered control, both Kernel strategies agreeing. This corrects Lean's physical-leaf projection; it does not assert an existing peer defect.
+- `acceptance`: Reconcile nested first-filled traversal and polarity using the retained observations. Preserve terminal hiding and unavailable-value handling; distinguish the measured ordinary two-level route from group/keyed, partial and wider-profile limits. Introducing revision is the first commit containing this ID; no reviewed peer response yet.
