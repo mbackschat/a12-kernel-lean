@@ -17,11 +17,11 @@ Resume the active family through its owner links. Update this file only when the
 <a id="active-unit"></a>
 ## Selected work
 
-- `milestone`: Resume conformance selection after the accepted finite KF527 partial first-filled prefix family. The [first-filled owner](implementation/strings-and-enumerations.md#cap-first-filled-value) records the shared declared-slot boundary and scope; [SG13](gaps/paths-and-groups.md#gap-sg13) retains wider group-list obligations.
-- `oracle`: Use the [reviewed partial-relevance handback](sources/inbound-handbacks.md#inbound-2026-10-09-extensions), [partial-validation clause](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation) and existing checked relevance/extent owners. Separate whole-rule skip, per-cell masking and declared-slot extent relevance.
-- `working-tree`: The prefix family is accepted: fresh HIGH review is resolved, including clean-exhaustion field/group controls across all eight profiles. Focused and integrated checks, retained evidence and final trust/hygiene pass; no process remains live.
-- `state`: Broad coverage remains 217/217. The [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) owns the refreshed population and its remaining whole-row/evidence limits.
-- `next`: Reconcile the next settled [group-list](gaps/paths-and-groups.md#gap-sg13) or [Having residual](gaps/paths-and-groups.md#gap-sg17-closure-matrix) against code and retained evidence before selecting its finite matrix. Do not expand the current prefix denominator.
+- `milestone`: The selected-reference partition of [H10-R1](gaps/paths-and-groups.md#gap-sg17-closure-matrix) is internally closed for the [represented callers](implementation/data-and-core.md#cap-having-caller-capabilities). Continue its remaining selected-carrier, root-group-only and recursive numeric classifications through a finite source-settled matrix.
+- `oracle`: The [source-owned reference classification](sources/having-filter-probes.md#src-having-reference-scope) distinguishes authored entity-map entries, semantic-index coordinates and ordinary iteration. Existing retained Having reference grids remain regression controls; selected extensions have no fresh Kernel capture.
+- `working-tree`: Selected-reference implementation and review corrections are accepted for landing; no implementation process remains live.
+- `state`: Broad coverage remains 217/217; this is a conformance-composition closure, not another broad cell.
+- `next`: Reconcile H10-R1's remaining unknown classifications against code and source, select the largest settled shared-mechanism batch, and define its admitted/refused controls before implementation. Preserve the accepted selected-reference boundary; root-only and recursive-numeric behavior require their own settled matrix.
 - `consumer`: The [traversal readback](consumer-probes/EXECUTE.md#run-filter-traversal-readback-01) closes the due Execute/Analyze knowledge-transport probe. Resume missing semantics; another independent probe is due only at a materially different capability milestone or compatibility risk.
 - `blocker`: No verified hard blocker.
 - `stop-condition`: An unresolved source distinction stops dependent implementation, not discovery. Settle a finite acceptance matrix before widening the next family.
@@ -29,11 +29,11 @@ Resume the active family through its owner links. Update this file only when the
 
 ## Verified family boundary
 
-- `committed`: The accepted baseline includes [partial first-filled prefixes](implementation/strings-and-enumerations.md#cap-first-filled-value), [partial fill quantifiers](implementation/validation-messages-and-custom.md#cap-fill-group-quantifiers), token direct-operand binding and full first-filled traversal.
-- `focused`: P1 exhausted finite extents, P2 deciding/unavailable prefixes, P3 absent-parent coverage and P4 carrier/group provenance pass across eight payload profiles. Existing fill-quantifier and full/partial first-filled reader controls pass. The generic repeated-empty laws compile.
-- `review-boundary`: The preceding partial-fill family and token adapter checkpoint are accepted. Fresh HIGH cold review of the shared declared-slot/prefix diff is resolved: its sole finding was missing clean-exhaustion coverage. Ordinary HIGH review of MEDIUM's two adapters is complete.
+- `accepted`: The baseline includes [selected static error references](implementation/data-and-core.md#cap-having-caller-capabilities), [partial first-filled prefixes](implementation/strings-and-enumerations.md#cap-first-filled-value), [partial fill quantifiers](implementation/validation-messages-and-custom.md#cap-fill-group-quantifiers), token direct-operand binding and full first-filled traversal.
+- `focused`: S1 authored payload/key/index membership, S2 ordinary ancestor versus selected-level binding, S3 the represented carrier/profile matrix and S4 computation-admission twins pass. Literal-key payload and nonempty key-scope controls close both cold-review findings. Existing scope grids and the validation diagnostic-cascade theorem remain green.
+- `review-boundary`: Fresh HIGH cold review of the selected-reference slice found two missing controls and no implementation defect; both controls are added and pass. The preceding prefix review and HIGH acceptance of MEDIUM's adapters remain accepted.
 - `replay-boundary`: The seven-row [first-filled capture](sources/group-and-iteration-probes.md#src-sparse-filter-traversal) is manifest-verified and both Kernel strategies agree. Scoped Lean replay matches every admitted validation/computation instance. The [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) retains the last full-population boundary; no population refresh is due.
-- `remaining-gates`: None for the accepted prefix family: integrated build, 51 retained-evidence projections and final trust/hygiene pass. No full-population replay or independent consumer probe is due.
+- `remaining-gates`: Selected-reference focused and integrated checks, all 51 retained-evidence projections and trust audit pass after review corrections. No semantic gate, full-population replay or independent consumer probe is due; final handoff edits require documentation hygiene only.
 - `commands`: The [command ladder](TESTING.md#command-ladder) and [review disposition rules](TESTING.md#review-convergence-and-landing-gate) own gates. Reuse the accepted boundary; final documentation updates trigger no extra replay or reviewer.
 
 ## Consumer and evidence triggers

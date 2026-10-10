@@ -62,3 +62,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: Review the canonical account against the retained matrix and source, reconcile the peer's supported surfaces, and state remaining predicate/prepass, partial-validation and external-calibration limits explicitly.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: pending.
+
+<a id="spec-2026-10-10-03"></a>
+### SPEC-2026-10-10-03 — selected error references retain authored identity and scope
+
+- `status`: pending
+- `canonical`: [ordinary iteration and error references](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) distinguish selected payloads, authored keys and implicit index-cache dependencies.
+- `delta`: A selected payload does not bind its selected row level, but retains ordinary ancestor bindings. A field-valued key keeps its own scope. Merely consulting the index column does not name that field for static error-field admission; explicitly selecting or guarding it does.
+- `basis`: [Source checkpoint](sources/having-filter-probes.md#src-having-reference-scope), from authored entity-map insertion through semantic-index coordinate marking to error-reference classification. Local reader controls cover independent field/group callers and admitted twins; this extension has no new Kernel capture.
+- `acceptance`: Reconcile static membership and per-level iteration separately from runtime dependency/message sets. Check selected field and group payloads, literal/field keys, explicit-index twins, bound ancestors, sibling versus own-error guards and unchanged computation admission. Introducing revision is the first commit containing this ID; no peer response yet.

@@ -825,10 +825,13 @@ def assembleResolvedValidationRule (model : FlatModel)
     (severity : ValidationSeverity)
     (messagePlan : MessageRenderPlan) :
   Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
-  let assembled := assembleResolvedRule true model (fun checked => checked.core)
+  let assembled := (assembleResolvedRule true model (fun checked => checked.core)
     (fun core field => core.referencesErrorField field)
     ValidationCondition.ordinaryIterationScope
-    condition errorField errorCode severity messagePlan
+    condition errorField errorCode severity messagePlan).bind fun rule =>
+      if condition.core.authoredErrorReference? errorField == some false then
+        .error (.errorFieldNotReferenced errorField)
+      else .ok rule
   -- The walk's refusal answers ahead of the per-level negative-condition gate, which is measured only
   -- where the error field binds the level; every other refusal keeps its place behind that gate
   -- ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-group-operand-walk)).
