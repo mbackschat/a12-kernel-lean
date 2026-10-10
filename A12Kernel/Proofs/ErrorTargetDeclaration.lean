@@ -6,7 +6,7 @@ Four results carry the family. The declaration gate is asymmetric under a lenien
 before every condition-side class, so a rule missing its error field reports that and nothing else.
 The three reference roles overlap rather than partition, and the overlap is what decides which branch
 of the cascade runs. The cascade itself is split by model kind, so no single model produces all three
-of its classes, and within a model plain iteration decides before parallel. And the custom
+of its classes, and within an A12 model parallel iteration decides before plain. And the custom
 error-entity gate accumulates where every other gate here is first-match-wins, while still reporting
 at most once per slot.
 -/
