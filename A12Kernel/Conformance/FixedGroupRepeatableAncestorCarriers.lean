@@ -183,7 +183,7 @@ example :
       numericCount?.map fun checked =>
         checked.core.allLeaves ValidationConditionLeaf.supportsAddressedPartial) ==
         (some [10], some (some [10]), some (some [10]), some [[10], [10]],
-          some true, some false) &&
+          some true, some true) &&
       scalarScope? == some [] &&
       refusesAt ["Probe"] ["Probe", "Outer", "Flat"] &&
       refusesAt ["Probe", "Outer"] ["Probe", "Outer"] &&

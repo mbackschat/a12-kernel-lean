@@ -254,9 +254,9 @@ private def resolveAddressedOrdinary
         context.scalar with fields }
       pure (scalar.resolveNumericValidationAtom source)
 
-/-- Read every operand of a mixed filled-group count in authored order. A fixed member needs its
-    resolved presence state and answers `none` — semantic unavailability — when the checked-document
-    boundary omitted one. A starred member reads its in-capacity instantiated row count, whose
+/-- Read every operand of a mixed filled-group count in authored order. Checked fixed members derive
+    presence at the bound row, as fixed-only counts do; legacy inputs use supplied group state.
+    A starred member reads its in-capacity instantiated row count, whose
     failure is structural and stays in the addressing domain rather than collapsing to UNKNOWN.
 
     A fixed terminal below a starred ancestor reads one fixed-member state per in-capacity
@@ -272,7 +272,13 @@ private def readValidationGroupCountOperands
       let head : Option (List ValidationGroupCountOperand) ←
         match operand with
         | .fixed reference =>
-            pure ((context.scalar.groups reference.path).map ([.fixed ·]))
+            match context.input with
+            | .checked checked => do
+                let state ← (checked.groupPresenceInput reference.path context.outer
+                  .fullyRelevant false).mapError .group
+                pure (some [.fixed state.derive])
+            | .legacy _ _ | .partialView _ _ =>
+                pure ((context.scalar.groups reference.path).map ([.fixed ·]))
         | .starred source =>
             let rows ← (source.inCapacityRowCount document context.outer).mapError
               CheckedAddressingError.addressing
@@ -563,6 +569,26 @@ private def resolvePartialValueCount (context : AddressedValidationEvaluationCon
   | .ok .nonRelevant => pure (.error .nonRelevant)
   | .ok (.evaluated operand) => pure operand.toValidationArithmetic
 
+/-- Fixed and mixed group counts use the same partial walk and declared-extent polarity; a bound fixed member keeps its row coordinate (spec/10 §5). -/
+private def resolvePartialGroupCount (context : AddressedValidationEvaluationContext model)
+    (scope : ValidationRelevanceScope) (resolveGroup : PartialGroupResolver)
+    (operands : List (CheckedGroupCountOperand model)) :
+    Except CheckedAddressingError (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
+  match (operands.mapM CheckedGroupCountOperand.declaredExtent?).map List.sum with
+  | none => pure (.error .groupState)
+  | some extent =>
+      let document := match context.input with
+        | .legacy document _ => document
+        | .checked document | .partialView document _ =>
+            DocumentData.toDocument document.source
+      match ← CheckedGroupCountOperand.evaluatePartialWith operands scope resolveGroup
+          document context.outer with
+      | .nonRelevant => pure (.error .nonRelevant)
+      | .evaluated count =>
+          match count.availableWithFillability? extent with
+          | none => pure (.error .groupState)
+          | some available => pure (.ok (.value available.1 available.2))
+
 /-- Resolve one atom after the public support check. Unsupported branches make recursion total but are unreachable through `evalAddressedPartial?`; they cannot become public semantic UNKNOWN. -/
 private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
     (atom : OrderedNumericValidationAtom model)
@@ -587,6 +613,8 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
       match ← source.toCheckedSemanticIndexSource.observePartialDocument document scope context.outer context.readPartialCell with
       | none => pure (.error .nonRelevant)
       | some observation => pure ((observation.asDirectNumericComparisonOperand source.field.info).toValidationArithmetic)
+  | .ordinary (.filledGroupCount groups) =>
+      resolvePartialGroupCount context scope resolveGroup (groups.map CheckedGroupCountOperand.fixed)
   | .ordinary source =>
       if source.allRelevant isRelevant then
         resolveAddressedOrdinary source context
@@ -611,23 +639,7 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
           | .result .nonRelevant => pure (.error .nonRelevant)
           | .result (.evaluated operand) =>
               pure operand.toValidationArithmetic
-  | .filledGroupCountMixed operands =>
-      -- A decided count keeps the full arm's declared extent and fillability, as the partial
-      -- aggregates keep theirs; only whether the count is decided is partial-specific.
-      match (operands.mapM CheckedGroupCountOperand.declaredExtent?).map List.sum with
-      | none => pure (.error .groupState)
-      | some extent =>
-          let document := match context.input with
-            | .legacy document _ => document
-            | .checked document | .partialView document _ =>
-                DocumentData.toDocument document.source
-          match ← CheckedGroupCountOperand.evaluatePartialWith operands scope resolveGroup
-              document context.outer with
-          | .nonRelevant => pure (.error .nonRelevant)
-          | .evaluated count =>
-              match count.availableWithFillability? extent with
-              | none => pure (.error .groupState)
-              | some available => pure (.ok (.value available.1 available.2))
+  | .filledGroupCountMixed operands => resolvePartialGroupCount context scope resolveGroup operands
   | .filledFieldCount source =>
       match context.input with
       | .legacy _ _ => throw (.checkedDocumentRequired [])

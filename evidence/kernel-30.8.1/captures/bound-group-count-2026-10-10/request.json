@@ -1,0 +1,2096 @@
+{
+  "model": "Counts_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "healthy-root",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "healthy-row1",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "healthy-row2",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "healthy-anchor-only",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "healthy-fields",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/N"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B/N"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        }
+      ]
+    },
+    {
+      "name": "healthy-partial-A",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    },
+    {
+      "name": "empty-root",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {},
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-row1",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {},
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-row2",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {},
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-anchor-only",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {},
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "empty-fields",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {},
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/N"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B/N"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        }
+      ]
+    },
+    {
+      "name": "empty-partial-A",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {},
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    },
+    {
+      "name": "bad-only-root",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "bad-only-row1",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-only-row2",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-only-anchor-only",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "bad-only-fields",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/N"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B/N"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        }
+      ]
+    },
+    {
+      "name": "bad-only-partial-A",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    },
+    {
+      "name": "bad-with-content-root",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "bad-with-content-row1",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-with-content-row2",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-with-content-anchor-only",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "bad-with-content-fields",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/N"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B/N"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        }
+      ]
+    },
+    {
+      "name": "bad-with-content-partial-A",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "bad",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    },
+    {
+      "name": "both-filled-root",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": "2"
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "both-filled-row1",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": "2"
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "both-filled-row2",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": "2"
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "both-filled-anchor-only",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": "2"
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "both-filled-fields",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": "2"
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/N"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B/N"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        }
+      ]
+    },
+    {
+      "name": "both-filled-partial-A",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": "2"
+              },
+              "Items": [
+                {
+                  "N": "1"
+                },
+                {
+                  "N": ""
+                }
+              ]
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    },
+    {
+      "name": "missing-items-root",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": []
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "missing-items-row1",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": []
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-items-row2",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": []
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-items-anchor-only",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": []
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "missing-items-fields",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": []
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/N"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B/N"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        }
+      ]
+    },
+    {
+      "name": "missing-items-partial-A",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on",
+              "A": {
+                "N": "1",
+                "M": "2"
+              },
+              "B": {
+                "N": ""
+              },
+              "Items": []
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    },
+    {
+      "name": "empty-groups-root",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on"
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-groups-row1",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on"
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-groups-row2",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on"
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-groups-anchor-only",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on"
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "empty-groups-fields",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on"
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/N"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B/N"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        }
+      ]
+    },
+    {
+      "name": "empty-groups-partial-A",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Anchor": "on"
+            },
+            {
+              "Anchor": "on",
+              "A": {
+                "N": ""
+              },
+              "B": {
+                "N": "3"
+              },
+              "Items": [
+                {
+                  "N": "4"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    },
+    {
+      "name": "no-rows-root",
+      "documentInline": {
+        "Form": {
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "no-rows-row1",
+      "documentInline": {
+        "Form": {
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-rows-row2",
+      "documentInline": {
+        "Form": {
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-rows-anchor-only",
+      "documentInline": {
+        "Form": {
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "no-rows-fields",
+      "documentInline": {
+        "Form": {
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/N"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B/N"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        }
+      ]
+    },
+    {
+      "name": "no-rows-partial-A",
+      "documentInline": {
+        "Form": {
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Rows/Anchor"
+        },
+        {
+          "path": "/Form/Rows/A/M"
+        },
+        {
+          "path": "/Form/Rows/B"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    }
+  ]
+}

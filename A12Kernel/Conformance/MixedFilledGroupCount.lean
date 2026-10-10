@@ -51,8 +51,15 @@ private def fieldO : FlatFieldDecl := {
   repeatableScope := [13]
 }
 
+private def fieldE : FlatFieldDecl := {
+  id := 6
+  groupPath := ["Probe", "G1"]
+  name := "E"
+  policy := { kind := .number { scale := 0, signed := false } }
+}
+
 private def model : FlatModel := {
-  fields := [fieldA, fieldR, fieldN, fieldI, fieldO]
+  fields := [fieldA, fieldR, fieldN, fieldI, fieldO, fieldE]
   repeatableGroups := [
     { level := 10, path := ["Probe", "Rows"], repeatability := some 3 },
     { level := 11, path := ["Probe", "G1", "Nested"], repeatability := some 2 },
@@ -106,21 +113,6 @@ private def atomOf? (operands : List SurfaceGroupCountOperand) :
 private def atom? : Option (OrderedNumericValidationAtom model) :=
   atomOf? [fixedOperand, starredOperand]
 
-/-- The fixed member's own presence state, supplied the way the checked-document boundary supplies
-it. `errored` adds a malformed sibling beside the content cell, which is what the shared
-unavailability rule reads; nonrelevant coverage is not this carrier's subject. -/
-private def fixedState (content : Bool) (errored : Bool := false) : GroupPresenceState :=
-  ({ descendantCells :=
-       formalCheck { kind := .string }
-           (if content then .parsed (.str "a") else .empty) ::
-         (if errored then
-            [formalCheck { kind := .number { scale := 0, signed := false } }
-              (.rejected .malformed)]
-          else [])
-     hasInstantiatedRow := false
-     structuralError := false
-     relevance := .fullyRelevant } : ResolvedGroupPresenceInput).derive
-
 private def cell (path : List Nat) : ClassifiedCellInput :=
   { address := { field := fieldR.id, path }
     stored := "r"
@@ -133,12 +125,19 @@ private def countWith (source : Option (OrderedNumericValidationAtom model))
   let atom ← source
   let document ← (checkDocument prepared "en_US" {
     instantiatedRows := instantiated
-    cells := filled.map cell }).toOption
+    cells := filled.map cell ++
+      (if content then [{
+        address := { field := fieldA.id, path := [] }
+        stored := "a"
+        raw := .parsed (.str "a") }] else []) ++
+      (if errored then [{
+        address := { field := fieldE.id, path := [] }
+        stored := "bad"
+        raw := .rejected .malformed }] else []) }).toOption
   let context : AddressedValidationEvaluationContext model := {
     scalar := {
       fields := document.flatContext
-      groups := fun path =>
-        if path == ["Probe", "G1"] then some (fixedState content errored) else none }
+      groups := GroupPresenceContext.unavailable }
     outer := []
     input := .checked document }
   match atom.resolveAddressed context with

@@ -1,0 +1,227 @@
+{
+  "header" : {
+    "id" : "Counts_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Counts_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Anchor",
+                "name" : "Anchor",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/A",
+                "name" : "A",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/A/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/A/M",
+                    "name" : "M",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/B",
+                "name" : "B",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/B/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/ZERO",
+                "name" : "ZERO",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "ZERO",
+                  "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(A,B) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/ONE",
+                "name" : "ONE",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "ONE",
+                  "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(A,B) == 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/TWO",
+                "name" : "TWO",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "TWO",
+                  "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(A,B) == 2",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/LOW",
+                "name" : "LOW",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "LOW",
+                  "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(A,B) < 2",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/HIGH",
+                "name" : "HIGH",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "HIGH",
+                  "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(A,B) > 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/MIXONE",
+                "name" : "MIXONE",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "MIXONE",
+                  "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(A,Items*) == 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/MIXTHREE",
+                "name" : "MIXTHREE",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "MIXTHREE",
+                  "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(A,Items*) == 3",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

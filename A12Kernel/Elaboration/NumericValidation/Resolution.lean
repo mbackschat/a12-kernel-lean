@@ -61,7 +61,7 @@ def elaborateMixedFilledGroupCountComparison
   let checked ← operands.mapM fun operand =>
     match operand with
     | .fixed reference => do
-        let resolved ← model.resolveFixedGroupReference rowGroup reference (some writtenGroup)
+        let resolved ← model.resolveRuleBoundFixedGroupReference rowGroup reference (some writtenGroup)
           |>.mapError NumericValidationElabError.groupReference
         pure (CheckedGroupCountOperand.fixed resolved)
     | .starred path =>

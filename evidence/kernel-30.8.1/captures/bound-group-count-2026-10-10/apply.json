@@ -1,0 +1,173 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Rows",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Anchor",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Rows",
+    "name": "A"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/A",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/A",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Rows",
+    "name": "B"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/B",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Rows",
+    "name": "Items",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Items",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Rows/Anchor",
+    "group": "/Form/Rows",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(A,B) == 0",
+    "code": "ZERO",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Rows/Anchor",
+    "group": "/Form/Rows",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(A,B) == 1",
+    "code": "ONE",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Rows/Anchor",
+    "group": "/Form/Rows",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(A,B) == 2",
+    "code": "TWO",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Rows/Anchor",
+    "group": "/Form/Rows",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(A,B) < 2",
+    "code": "LOW",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Rows/Anchor",
+    "group": "/Form/Rows",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(A,B) > 0",
+    "code": "HIGH",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Rows/Anchor",
+    "group": "/Form/Rows",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(A,Items*) == 1",
+    "code": "MIXONE",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Rows/Anchor",
+    "group": "/Form/Rows",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(A,Items*) == 3",
+    "code": "MIXTHREE",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

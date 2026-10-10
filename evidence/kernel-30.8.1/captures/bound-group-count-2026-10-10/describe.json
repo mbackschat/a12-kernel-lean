@@ -1,0 +1,70 @@
+{
+  "target": "model",
+  "op": "describe",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "fields": [
+      {
+        "path": "/Form/Rows/Anchor",
+        "name": "Anchor",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Form/Rows/A/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/A/M",
+        "name": "M",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/B/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Items/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      }
+    ],
+    "groups": [
+      {
+        "path": "/Form",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Rows",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Form/Rows/A",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Rows/B",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Rows/Items",
+        "repeatable": true,
+        "maxRepetitions": 2
+      }
+    ],
+    "locales": [
+      "en_US"
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}
