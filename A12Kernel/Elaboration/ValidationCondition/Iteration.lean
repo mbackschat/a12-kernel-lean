@@ -618,14 +618,16 @@ def evalWithTemporalResult (condition : ValidationCondition model)
         condition.evalVerdictExcept fun leaf =>
           match readLeaf leaf with
           | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid)
-          | .error (.inr (.addressing .typeValidityValueFailure)) => .ok .unknown
+          | .error (.inr (.addressing .typeValidityValueFailure))
+          | .error (.inr (.addressing (.stringExpression .emptyPattern))) => .ok .unknown
           | result => result
   match result with
   | .ok verdict => .ok verdict
   | .error (.inl error) => .error error
   | .error (.inr fault@(.dateTimeLabelUnresolved))
   | .error (.inr fault@(.componentNumberInvalid))
-  | .error (.inr fault@(.addressing .typeValidityValueFailure)) => onTemporalValueFailure fault
+  | .error (.inr fault@(.addressing .typeValidityValueFailure))
+  | .error (.inr fault@(.addressing (.stringExpression .emptyPattern))) => onTemporalValueFailure fault
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported)
   | .error (.inr (.addressing _)) => onTemporalUnavailable
 
@@ -636,6 +638,10 @@ def evalSelected (condition : ValidationCondition model)
   match condition.evalWithTemporalResult context isRelevant
       (fun leaf => Except.ok (ε := Empty) (leaf.evalSelected context isRelevant))
       (temporalPartialResult? := fun
+        | .stringPattern leaf => some do
+            leaf.condition.pattern.checkExecution.mapError
+              (fun _ => .inr (.addressing (.stringExpression .emptyPattern)))
+            pure (if isRelevant leaf.condition.field.id then leaf.condition.evalSelected context.fields else .unknown)
         | .customFieldValidity leaf => some do
             if !isRelevant leaf.operand.source then return .unknown
             (leaf.evalValidationObservation (observeCell .validation
@@ -687,6 +693,7 @@ def addressedValueFailure? : CheckedAddressingError → Option ScalarTemporalEva
   | .constructedDate (.stringNotConvertible _ _) => some .componentNumberInvalid
   | .temporalValueFailure => some .dateTimeLabelUnresolved
   | .typeValidityValueFailure => some (.addressing .typeValidityValueFailure)
+  | .stringExpression .emptyPattern => some (.addressing (.stringExpression .emptyPattern))
   | _ => none
 
 /-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. Truth testing and conditional classification retain their separate failure boundaries. -/

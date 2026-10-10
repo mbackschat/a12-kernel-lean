@@ -87,7 +87,8 @@ inductive CheckedAddressingError where
   deriving Repr, DecidableEq
 
 def CheckedAddressingError.isFilterValueFailure : CheckedAddressingError → Bool
-  | .temporalValueFailure | .typeValidityValueFailure => true
+  | .temporalValueFailure | .typeValidityValueFailure
+  | .stringExpression .emptyPattern => true
   | .addressing error => error.isFilterValueFailure
   | _ => false
 

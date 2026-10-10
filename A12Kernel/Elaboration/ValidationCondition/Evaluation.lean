@@ -297,6 +297,7 @@ def evalAddressedPartial?
           | .checked document | .partialView document _ => pure document
           | .legacy _ _ => throw (.checkedDocumentRequired leaf.selection.group.path)
         let observation ← leaf.selection.observePartialDocument document scope context.outer context.readPartialCell
+        leaf.leaf.condition.pattern.checkExecution.mapError (fun _ => .stringExpression .emptyPattern)
         pure (observation.map leaf.evalObservation |>.getD .unknown)
   | .indexedCustomFieldValidity leaf =>
       some do
@@ -313,18 +314,14 @@ def evalAddressedPartial?
         match ← context.readPartialCell context.outer leaf.operand.source with
         | some cell => (leaf.evalValidationObservation (observeCell .validation cell)).mapError (fun _ => .typeValidityValueFailure)
         | none => pure .unknown
-  -- The covered cell replaces its own read in the scalar context, so both routes share the
-  -- condition's `evalSelected`.
-  | .stringPattern leaf =>
+  | .stringPattern leaf => some do
       let source := leaf.condition.field.id
-      some (if isRelevant source then
-        context.readPartialCell context.outer source |>.map fun cell? =>
-          match cell? with
-          | some cell => leaf.condition.evalSelected { context.scalar.fields with
-              read := fun field => if field == source then cell else context.scalar.fields.read field }
-          | none => .unknown
-      else
-        pure .unknown)
+      let cell? ← if isRelevant source then context.readPartialCell context.outer source else pure none
+      leaf.condition.pattern.checkExecution.mapError (fun _ => .stringExpression .emptyPattern)
+      match cell? with
+      | some cell => pure (leaf.condition.evalSelected { context.scalar.fields with
+          read := fun field => if field == source then cell else context.scalar.fields.read field })
+      | none => pure .unknown
   | .orderedNumeric _ comparison =>
       comparison.evalAddressedPartial? context scope isRelevant resolveGroup
   | .groupPresence operator reference =>
@@ -392,7 +389,9 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
       let document ← match context.input with
         | .checked document => pure document
         | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired leaf.selection.group.path)
-      pure (leaf.evalObservation (← leaf.selection.observeDocument document context.outer .validation))
+      let observation ← leaf.selection.observeDocument document context.outer .validation
+      leaf.leaf.condition.pattern.checkExecution.mapError (fun _ => .stringExpression .emptyPattern)
+      pure (leaf.evalObservation observation)
   | .indexedCustomFieldValidity leaf => do
       let document ← match context.input with
         | .checked document => pure document
@@ -407,8 +406,9 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
         (fun _ => .typeValidityValueFailure)
   | .stringPattern leaf => do
       let source := leaf.condition.field.id
-      if !context.directRelevant source then return .unknown
-      let cell ← context.readCell context.outer source
+      let cell? ← if context.directRelevant source then some <$> context.readCell context.outer source else pure none
+      leaf.condition.pattern.checkExecution.mapError (fun _ => .stringExpression .emptyPattern)
+      let some cell := cell? | return .unknown
       pure (leaf.condition.evalSelected { context.scalar.fields with
         read := fun field => if field == source then cell else context.scalar.fields.read field })
   | .stringExpression comparison =>

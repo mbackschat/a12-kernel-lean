@@ -18,7 +18,7 @@ private def compileExactSource (source : String) : Option (String → Bool) :=
   some fun value => value == source
 
 private def admittedVerdict? :
-    Except PatternAdmissionError Verdict → Option Verdict
+    Except (Sum PatternAdmissionError StringPatternRuntimeFault) Verdict → Option Verdict
   | .error _ => none
   | .ok verdict => some verdict
 
@@ -61,8 +61,13 @@ example : ["a+", "(?=a)a", "(?!a)b", "(?i)abc", "\\R", "\\h", "[a\\[b]", "[a][b]
    declared index-field pattern ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-30a-regex-operands)). -/
 example : classifyStringPattern compilePattern "[a\\][b]]" = .admitted := by native_decide
 
-/- The document-model branch admits the empty source; semantic empty input is still excluded by the resolved operand classifier. -/
+/- Admission of an empty authored source is distinct from its runtime failure. -/
 example : classifyStringPattern compilePattern "" = .admitted := by native_decide
+
+example : [StringPatternOp.matched, .violated].all (fun op =>
+    [SimpleComparisonOperand.value "A" true, .notEvaluated, .unknown .malformed].all
+      (fun operand => (evalAdmittedStringPattern compilePattern "" op operand).toOption.isNone)) = true := by
+  native_decide
 
 example : classifyStringPattern (fun _ => none) "a++" =
     .rejected .javaSyntax := by native_decide
@@ -72,7 +77,7 @@ example : evalAdmittedStringPattern compilePattern "A" .matched
     (.value "A" true) = .ok (.fired .value) := by rfl
 
 example : evalAdmittedStringPattern compilePattern "a++" .matched
-    (.value "A" true) = .error .kernelRestriction := by rfl
+    (.value "A" true) = .error (.inl .kernelRestriction) := by rfl
 
 /- A second source predicts the old caller-supplied-matcher failure class: each admitted value retains its own compiler result. -/
 example :

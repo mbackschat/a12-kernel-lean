@@ -25,12 +25,13 @@ theorem classifyStringPattern_admitted_iff (compilePattern : StringPatternCompil
       cases allowed : kernelPatternSourceAllowed source <;>
         simp [classifyStringPattern, compiled, allowed]
 
-/-- Once both admission facts hold, the convenience boundary delegates exactly to the existing resolved matcher semantics. -/
+/-- Once both admission facts hold for a nonempty source, the convenience boundary delegates exactly to the existing resolved matcher semantics. -/
 theorem evalAdmittedStringPattern_success (compilePattern : StringPatternCompiler)
     (source : String) (op : StringPatternOp) (wholeValueMatches : String → Bool)
     (operand : SimpleComparisonOperand String)
     (compiled : compilePattern source = some wholeValueMatches)
-    (allowed : kernelPatternSourceAllowed source = true) :
+    (allowed : kernelPatternSourceAllowed source = true)
+    (nonempty : source.isEmpty = false) :
     evalAdmittedStringPattern compilePattern source op operand =
       .ok (op.evalResolved wholeValueMatches operand) := by
   let admitted : AdmittedStringPattern compilePattern := {
@@ -50,18 +51,29 @@ theorem evalAdmittedStringPattern_success (compilePattern : StringPatternCompile
         Option.some.inj (hCompiled.symm.trans compiled)
       subst matcher
       simp [allowed, admitted]
-  simp [evalAdmittedStringPattern, admittedEq, admitted,
-    AdmittedStringPattern.evalResolved]
+  simp only [evalAdmittedStringPattern, admittedEq, admitted,
+    AdmittedStringPattern.evalResolved, AdmittedStringPattern.checkExecution, nonempty, Bool.false_eq_true, ↓reduceIte, Except.mapError]
 
 /-- Admission cannot introduce omission polarity; the admitted wrapper inherits the resolved consumer's stronger law. -/
 theorem admittedStringPattern_fired_is_value
     (admitted : AdmittedStringPattern compilePattern)
     (op : StringPatternOp)
     (operand : SimpleComparisonOperand String) (polarity : Polarity)
-    (fired : admitted.evalResolved op operand = .fired polarity) :
+    (fired : admitted.evalResolved op operand = .ok (.fired polarity)) :
     polarity = .value := by
-  exact stringPattern_evalResolved_fired_is_value op admitted.wholeValueMatches
-    operand polarity fired
+  unfold AdmittedStringPattern.evalResolved AdmittedStringPattern.checkExecution at fired
+  split at fired
+  next => simp at fired
+  next =>
+    simp at fired
+    exact stringPattern_evalResolved_fired_is_value op admitted.wholeValueMatches operand polarity fired
+
+/-- Formal-input failure suppresses a computation call even when the authored source is empty. -/
+@[simp]
+theorem admittedStringPattern_computation_formal_precedence
+    (admitted : AdmittedStringPattern compilePattern) (op : StringPatternOp) (cause : FormalCause) :
+    admitted.evalComputationResolved op (.unknown cause) = .ok (.poison cause) := by
+  rfl
 
 /-- Java rejection and the Kernel's additional source gate retain their local
 stage while projecting to the same measured external diagnostic class. -/

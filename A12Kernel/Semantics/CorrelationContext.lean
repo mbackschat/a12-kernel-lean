@@ -224,6 +224,7 @@ structure ResolvingCorrelationContext (Error : Type) where
   stringExpressionUnavailable : Error
   unsupportedDateCalendar : Error
   temporalValueFailure : Error
+  patternValueFailure : Error := temporalValueFailure
   worldUnavailable : Error
   typeValidityValueFailure : Error
   groupUnavailable : GroupPath → Error

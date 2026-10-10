@@ -106,8 +106,9 @@ theorem validationCondition_groupList_evalAddressed
       cases error <;> simp [ValidationCondition.groupList, ValidationCondition.evalAddressed,
         ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
         ValidationConditionLeaf.evalAddressed, result, Functor.map, Except.map, Except.mapError]
-      rename_i cause
-      cases cause <;> rfl
+      all_goals
+        rename_i cause
+        cases cause <;> rfl
 
 /-- A reached topology or document failure stays in the structural error channel and cannot become semantic UNKNOWN. -/
 theorem validationCondition_groupList_addressing_failure

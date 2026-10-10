@@ -41,4 +41,27 @@ example : (condition .matched).fieldIds = [1] ∧
     (condition .violated .outer).fieldIds = [1] ∧
     (condition .violated .outer).markedFieldIds = [1] := by native_decide
 
+private def emptyPattern : CompiledStringPattern := {
+  compilePattern := fun _ => some String.isEmpty
+  pattern := {
+    source := "", wholeValueMatches := String.isEmpty,
+    compiledSource := rfl, kernelSourceAllowed := by decide } }
+
+private def emptyCondition (op : StringPatternOp) : CorrelatedHaving :=
+  .leaf (.stringPattern op { origin := .inner, field := 1 } emptyPattern)
+
+example : [StringPatternOp.matched, .violated].all (fun op =>
+    [text "123", { rawPresent := false, parsed := none, findings := [] }].all (fun cell => decide (
+      ((emptyCondition op).evalTruthInResolving (context cell).asResolving frame).toOption = none ∧
+      computation (emptyCondition op) cell = .inl .valueFailure ∧
+      computation (.and falseLeaf (emptyCondition op)) cell = .inr .notTrue ∧
+      computation (.and (emptyCondition op) falseLeaf) cell = .inl .valueFailure))) = true := by
+  native_decide
+
+example : [StringPatternOp.matched, .violated].all (fun op => decide (
+    computation (emptyCondition op) { (text "123") with findings := [.malformed] } = .inr (.poison .malformed) ∧
+    ((emptyCondition op).evalTruthInResolving
+      (context { (text "123") with findings := [.malformed] }).asResolving frame).toOption = none)) = true := by
+  native_decide
+
 end A12Kernel.Conformance.HavingStringPattern

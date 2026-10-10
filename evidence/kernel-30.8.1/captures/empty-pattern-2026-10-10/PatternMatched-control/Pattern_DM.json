@@ -1,0 +1,304 @@
+{
+  "header" : {
+    "id" : "Pattern_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Pattern_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Gate",
+            "name" : "Gate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Text",
+            "name" : "Text",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Uppercase probe."
+                  } ],
+                  "pattern" : "[A-Z]+"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Out",
+            "name" : "Out",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Independent",
+            "name" : "Independent",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/PATTERN",
+            "name" : "PATTERN",
+            "Rule" : {
+              "errorEntityRelPath" : "../Text",
+              "errorCode" : "PATTERN",
+              "errorCondition" : "FieldFilled(Gate) And [Text] PatternMatched \"[A-Z]+\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OutComp",
+            "name" : "OutComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Out",
+              "commonPrecondition" : "FieldFilled(Gate) And [Text] PatternMatched \"[A-Z]+\"",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/IndependentComp",
+            "name" : "IndependentComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Independent",
+              "computationAlternatives" : [ {
+                "operation" : "2"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Tail",
+            "name" : "Tail",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Alternative",
+            "name" : "Alternative",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Filtered",
+            "name" : "Filtered",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Text",
+                "name" : "Text",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Uppercase probe."
+                      } ],
+                      "pattern" : "[A-Z]+"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/PATTERN_THEN_FALSE",
+            "name" : "PATTERN_THEN_FALSE",
+            "Rule" : {
+              "errorEntityRelPath" : "../Text",
+              "errorCode" : "PATTERN_THEN_FALSE",
+              "errorCondition" : "FieldFilled(Gate) And ([Text] PatternMatched \"[A-Z]+\") And FieldFilled(Tail)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FALSE_THEN_PATTERN",
+            "name" : "FALSE_THEN_PATTERN",
+            "Rule" : {
+              "errorEntityRelPath" : "../Text",
+              "errorCode" : "FALSE_THEN_PATTERN",
+              "errorCondition" : "FieldFilled(Tail) And ([Text] PatternMatched \"[A-Z]+\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/TRUE_OR_PATTERN",
+            "name" : "TRUE_OR_PATTERN",
+            "Rule" : {
+              "errorEntityRelPath" : "../Text",
+              "errorCode" : "TRUE_OR_PATTERN",
+              "errorCondition" : "FieldFilled(Gate) Or ([Text] PatternMatched \"[A-Z]+\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FILTER",
+            "name" : "FILTER",
+            "Rule" : {
+              "errorEntityRelPath" : "../Gate",
+              "errorCode" : "FILTER",
+              "errorCondition" : "FieldFilled(Gate) And Sum(Rows*/N Having [Rows/Text] PatternMatched \"[A-Z]+\") > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AlternativeComp",
+            "name" : "AlternativeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Alternative",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(Gate) And ([Text] PatternMatched \"[A-Z]+\")"
+              }, {
+                "operation" : "2",
+                "precondition" : "FieldFilled(Gate)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FilteredComp",
+            "name" : "FilteredComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Filtered",
+              "commonPrecondition" : "FieldFilled(Gate)",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/Text] PatternMatched \"[A-Z]+\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/PATTERN_GATE",
+            "name" : "PATTERN_GATE",
+            "Rule" : {
+              "errorEntityRelPath" : "../Gate",
+              "errorCode" : "PATTERN_GATE",
+              "errorCondition" : "FieldFilled(Gate) And [Text] PatternMatched \"[A-Z]+\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

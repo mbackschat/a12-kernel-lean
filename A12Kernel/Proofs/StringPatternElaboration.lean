@@ -81,8 +81,8 @@ theorem checkedStringPattern_evalSelected
     (checked : CheckedStringPatternCondition model compilePattern)
     (context : FlatContext) :
     checked.evalSelected context =
-      checked.op.evalResolved checked.pattern.wholeValueMatches
-        (context.resolveDirectStringComparisonOperand checked.field) := by
+      (checked.pattern.evalResolved checked.op
+        (context.resolveDirectStringComparisonOperand checked.field)).toOption.getD .unknown := by
   rfl
 
 /-- Pattern leaves never bypass the all-empty full-validation row gate. -/
@@ -110,8 +110,15 @@ theorem checkedStringPattern_fired_is_value
     (context : FlatContext) (polarity : Polarity)
     (fired : checked.evalSelected context = .fired polarity) :
     polarity = .value := by
-  exact admittedStringPattern_fired_is_value checked.pattern checked.op
-    (context.resolveDirectStringComparisonOperand checked.field) polarity fired
+  unfold CheckedStringPatternCondition.evalSelected at fired
+  cases result : checked.pattern.evalResolved checked.op
+      (context.resolveDirectStringComparisonOperand checked.field) with
+  | error error => simp [result, Except.toOption] at fired
+  | ok verdict =>
+      simp [result, Except.toOption] at fired
+      subst verdict
+      exact admittedStringPattern_fired_is_value checked.pattern checked.op
+        (context.resolveDirectStringComparisonOperand checked.field) polarity result
 
 /-- The checked direct field is the authored condition's sole reference. -/
 @[simp]

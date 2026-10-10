@@ -582,15 +582,17 @@ def evalChecked (predicate : CheckedComputationPredicate model)
       pure (match operator with
         | .filled => observation.evalComputationFilled
         | .notFilled => observation.evalComputationNotFilled)
-  | .pattern source => (source.eval { read := context.read }).mapError .stringExpression
+  | .pattern source => (source.eval { read := context.read }).mapError fun
+      | .emptyPattern => .valueFailure
+      | error => .stringExpression error
   | .indexedPattern source => do
       let some addressed := context.addressed | throw .contextRequired
       let selected ← source.selection.selectEnvironmentWith .computation context.semanticIndexColumnReader
         context.row context.read context.storedText |>.mapError .indexSelection
-      pure (source.evalComputationObservation (match selected with
+      (source.evalComputationObservation (match selected with
         | .empty => .empty
         | .unknown cause | .poison cause => .poison cause
-        | .value row => observeCell .computation (addressed.read row source.leaf.condition.field.id)))
+        | .value row => observeCell .computation (addressed.read row source.leaf.condition.field.id))).mapError (fun _ => .valueFailure)
   | .dateValidity operation source => do
       let observation ← match source.directComponents? with
         | some direct => (direct.evaluateComponentsWith (fun component =>

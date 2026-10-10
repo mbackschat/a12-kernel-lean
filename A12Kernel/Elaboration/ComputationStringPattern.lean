@@ -31,7 +31,7 @@ def elaborateComputationStringPattern (compilePattern : StringPatternCompiler)
 def CheckedComputationStringPattern.eval (checked : CheckedComputationStringPattern model)
     (context : FlatContext) : Except StringComputationFault ComputationConditionResult := do
   let value ← checked.source.eval .computation context (fun _ => none)
-  pure (checked.op.evalComputationResolved checked.pattern.wholeValueMatches value)
+  (checked.pattern.evalComputationResolved checked.op value).mapError (fun _ => .emptyPattern)
 
 /-- Preserve the admitted matcher when the validation row binds the source. -/
 def CheckedComputationStringPattern.toValidation?
@@ -47,8 +47,8 @@ def CheckedComputationStringPattern.toValidation?
   else none
 
 def CheckedIndexedStringPatternLeaf.evalComputationObservation
-    (checked : CheckedIndexedStringPatternLeaf model) (observation : CellObservation) : ComputationConditionResult :=
-  checked.leaf.condition.op.evalComputationResolved
-    checked.leaf.condition.pattern.wholeValueMatches observation.asStringComparisonOperand
+    (checked : CheckedIndexedStringPatternLeaf model) (observation : CellObservation) : Except StringPatternRuntimeFault ComputationConditionResult :=
+  checked.leaf.condition.pattern.evalComputationResolved
+    checked.leaf.condition.op observation.asStringComparisonOperand
 
 end A12Kernel

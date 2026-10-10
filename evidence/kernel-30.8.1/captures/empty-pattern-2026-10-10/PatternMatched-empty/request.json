@@ -1,0 +1,353 @@
+{
+  "model": "Pattern_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "reached-filled",
+      "documentInline": {
+        "Form": {
+          "Gate": "ON",
+          "Out": "99",
+          "Independent": "99",
+          "Text": "ABC",
+          "Tail": "",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "Text": "ABC"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "reached-empty",
+      "documentInline": {
+        "Form": {
+          "Gate": "ON",
+          "Out": "99",
+          "Independent": "99",
+          "Text": "",
+          "Tail": "",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "Text": ""
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "reached-absent",
+      "documentInline": {
+        "Form": {
+          "Gate": "ON",
+          "Out": "99",
+          "Independent": "99",
+          "Tail": "",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "N": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "reached-malformed",
+      "documentInline": {
+        "Form": {
+          "Gate": "ON",
+          "Out": "99",
+          "Independent": "99",
+          "Text": "123",
+          "Tail": "",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "Text": "123"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "hidden-filled",
+      "documentInline": {
+        "Form": {
+          "Gate": "",
+          "Out": "99",
+          "Independent": "99",
+          "Text": "ABC",
+          "Tail": "",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "Text": "ABC"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "hidden-empty",
+      "documentInline": {
+        "Form": {
+          "Gate": "",
+          "Out": "99",
+          "Independent": "99",
+          "Text": "",
+          "Tail": "",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "Text": ""
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "hidden-absent",
+      "documentInline": {
+        "Form": {
+          "Gate": "",
+          "Out": "99",
+          "Independent": "99",
+          "Tail": "",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "N": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "hidden-malformed",
+      "documentInline": {
+        "Form": {
+          "Gate": "",
+          "Out": "99",
+          "Independent": "99",
+          "Text": "123",
+          "Tail": "",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "Text": "123"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Form": {
+          "Gate": "ON",
+          "Tail": "",
+          "Text": "ABC",
+          "Out": "99",
+          "Independent": "99",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-row",
+      "documentInline": {
+        "Form": {
+          "Gate": "ON",
+          "Tail": "",
+          "Text": "ABC",
+          "Out": "99",
+          "Independent": "99",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {}
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-payload",
+      "documentInline": {
+        "Form": {
+          "Gate": "ON",
+          "Tail": "",
+          "Text": "ABC",
+          "Out": "99",
+          "Independent": "99",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "Text": "ABC"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "later-row",
+      "documentInline": {
+        "Form": {
+          "Gate": "ON",
+          "Tail": "",
+          "Text": "ABC",
+          "Out": "99",
+          "Independent": "99",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "Text": "ABC",
+              "N": "1"
+            },
+            {
+              "Text": "XYZ",
+              "N": "2"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "gate-only",
+      "documentInline": {
+        "Form": {
+          "Gate": "ON",
+          "Out": "99",
+          "Independent": "99",
+          "Text": "ABC",
+          "Tail": "",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "Text": "ABC"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Gate"
+        }
+      ]
+    },
+    {
+      "name": "text-only",
+      "documentInline": {
+        "Form": {
+          "Gate": "ON",
+          "Out": "99",
+          "Independent": "99",
+          "Text": "ABC",
+          "Tail": "",
+          "Alternative": "99",
+          "Filtered": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "Text": "ABC"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Text"
+        }
+      ]
+    }
+  ]
+}

@@ -349,8 +349,8 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
       CorrelatedHavingLeaf.verdictTruth
         (polarity.evalObservation (reference.observeInAt .validation context frame))
   | .stringPattern operation reference compiled =>
-      CorrelatedHavingLeaf.verdictTruth (operation.evalResolved compiled.pattern.wholeValueMatches
-        (reference.observeInAt .validation context frame).asStringComparisonOperand)
+      CorrelatedHavingLeaf.verdictTruth ((compiled.pattern.evalResolved operation
+        (reference.observeInAt .validation context frame).asStringComparisonOperand).toOption.getD .unknown)
   | .typeValidity operation reference name =>
       match evalHavingTypeValidityValidation operation reference name context.asResolving frame with
       | .ok verdict => CorrelatedHavingLeaf.verdictTruth verdict
@@ -405,8 +405,9 @@ def CorrelatedHavingLeaf.evalTruthInResolving
           (← reference.observeInAtResolving .validation context frame)))
   | .stringPattern operation reference compiled => do
       let observation ← reference.observeInAtResolving .validation context frame
-      pure (CorrelatedHavingLeaf.verdictTruth
-        (operation.evalResolved compiled.pattern.wholeValueMatches observation.asStringComparisonOperand))
+      CorrelatedHavingLeaf.verdictTruth <$>
+        (compiled.pattern.evalResolved operation observation.asStringComparisonOperand).mapError
+          (fun _ => context.patternValueFailure)
   | .typeValidity operation reference name =>
       CorrelatedHavingLeaf.verdictTruth <$> evalHavingTypeValidityValidation operation reference name context frame
   | .groupPresence operator origin source =>
@@ -464,7 +465,8 @@ def CorrelatedHavingLeaf.evalComputationInResolving
             | _ => .notTrue)
   | .stringPattern operation reference compiled => do
       let observation ← reference.observeInAtResolving .computation context frame
-      pure (operation.evalComputationResolved compiled.pattern.wholeValueMatches observation.asStringComparisonOperand)
+      (compiled.pattern.evalComputationResolved operation observation.asStringComparisonOperand).mapError
+        (fun _ => context.patternValueFailure)
   | .typeValidity operation reference name =>
       evalHavingTypeValidityComputation operation reference name context frame
   | .groupPresence operator origin source =>
@@ -675,8 +677,8 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
         polarity.evalObservation (reference.observeInAt .validation context frame)
           = .fired messagePolarity
   | .stringPattern operation reference compiled =>
-      ∃ messagePolarity, operation.evalResolved compiled.pattern.wholeValueMatches
-        (reference.observeInAt .validation context frame).asStringComparisonOperand = .fired messagePolarity
+      ∃ messagePolarity, compiled.pattern.evalResolved operation
+        (reference.observeInAt .validation context frame).asStringComparisonOperand = .ok (.fired messagePolarity)
   | .typeValidity operation reference name =>
       ∃ messagePolarity, evalHavingTypeValidityValidation operation reference name context.asResolving frame =
         .ok (.fired messagePolarity)

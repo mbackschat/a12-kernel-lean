@@ -327,4 +327,20 @@ example : variableGuards.all (fun guard =>
     (parseText .english ("[Rows/Enum ->Kind For Key] " ++ (if isMatched guard then "PatternMatched" else "PatternViolated") ++
       " \"[0-9]+\"")).isOk) = true := by native_decide
 
+private def emptyGuard (op : String) (source : String := "") : String :=
+  s!"[Rows/Text For Key] {op} \"{source}\""
+
+example : ["PatternMatched", "PatternViolated"].all (fun op =>
+    partialMatches (partialLeaf (emptyGuard op)) (.error (.stringExpression .emptyPattern)) &&
+    partialMatches (partialLeaf (emptyGuard op "[0-9]+")) (.ok (validationVerdict op .matched)) &&
+    [2, 4].all (fun field => ["", "[0-9]+"].all fun source =>
+      partialMatches (partialLeaf (emptyGuard op source) {} .full field .structural)
+        (.error (.checkedDocumentRequired ["injected"]))) &&
+    metadata (emptyGuard op) == some true &&
+    run (emptyGuard op) == some ["Form/After:cleared", "Form/Out:cleared"] &&
+    run (emptyGuard op) {} true == some ["Form/After:cleared", "Form/Out:cleared"] &&
+    partialMatches (partialLeaf (emptyGuard op) { firstId := "B" })
+      (.error (.stringExpression .emptyPattern)) &&
+    partialMatches (partialLeaf (emptyGuard op "[0-9]+") { firstId := "B" }) (.ok .unknown)) = true := by native_decide
+
 end A12Kernel.Dm.IndexedPatternLocks

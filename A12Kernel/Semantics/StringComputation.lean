@@ -38,13 +38,14 @@ def concat : StringTerm → StringTerm → StringTerm
 
 end StringTerm
 
-/-- A malformed low-level context is outside the computation language. Ordinary formal invalidity is not a fault: it is represented by `StringTerm.poison`. -/
+/-- String evaluation distinguishes runtime failures and missing host capabilities from ordinary formal invalidity, which is represented by `StringTerm.poison`. -/
 inductive StringComputationFault where
   | guardBinding (error : ComputationConditionError)
   | fieldKindMismatch (field : FieldId)
   | invalidRange (start finish : Nat)
   | unalignedUtf16Range (field : FieldId) (start finish : Nat)
   | indexedReadUnavailable
+  | emptyPattern
   | targetPatternUnavailable (field : FieldId)
   deriving Repr, DecidableEq
 

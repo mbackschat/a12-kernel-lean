@@ -45,6 +45,6 @@ def CheckedIndexedStringPatternLeaf.bindingScopes
 
 def CheckedIndexedStringPatternLeaf.evalObservation
     (source : CheckedIndexedStringPatternLeaf model) (observation : CellObservation) : Verdict :=
-  source.leaf.condition.pattern.evalResolved source.leaf.condition.op observation.asStringComparisonOperand
+  (source.leaf.condition.pattern.evalResolved source.leaf.condition.op observation.asStringComparisonOperand).toOption.getD .unknown
 
 end A12Kernel

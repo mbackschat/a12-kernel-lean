@@ -175,3 +175,11 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `instrument`: The maintained declarative kernelProbe registry exposes only fixed pattern/length error keys. Existing custom rejection-code tests also fix their keys. Use a source-owned differential or extend the maintained observation route; no local harness copy is requested or authorized.
 - `matrix`: Cross full/partial validation and computation; direct value/Length reads and seeded copies; unrelated computations; with/without unique entities; full versus abort-on-formal-error validation mode; relevant/excluded, absent and empty controls. Include repeated-CR text to distinguish original callback input from one-pass evaluated normalization.
 - `acceptance`: Report exact findings/pointers, available values, changed and unchanged computation outcomes, whole-call abort/fault behavior, and relevant cache membership, separately for both strategies. Pin the producer revision and evidence. Preserve distinctions between observed behavior and source predictions; introducing revision is the first commit containing this ID.
+
+<a id="spec-2026-10-10-13"></a>
+### SPEC-2026-10-10-13 — retain empty authored pattern execution failure
+
+- `status`: pending
+- `change`: [Pattern execution](../spec/06-strings-and-enumerations.md#pattern-admission-and-execution) distinguishes an admitted empty authored pattern from an inactive empty declared pattern. A reached condition call fails before operand availability, escapes subsequent Boolean conditions and alternative tiers, and is caught by the enclosing validation/computation handler.
+- `evidence`: [Source and 56-row matrix](sources/computation-scheduling-probes.md#src-empty-pattern-execution), both strategies agreeing at the pinned clean producer. Direct and Having cases distinguish short circuit, formal-input prepass, partial relevance, empty/uninstantiated candidates, independent targets and nonempty controls. Indexed empty-source behavior is an internal specialization, not measured correspondence.
+- `request`: Reconcile consumer execution and canonical prose with this failure effect and its handler boundary. Preserve formal-input precheck precedence and inactive declared-empty policy; do not implement the authored case as a Boolean match result. Introducing revision is the first commit containing this ID.

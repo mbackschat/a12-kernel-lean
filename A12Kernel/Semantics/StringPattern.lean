@@ -127,20 +127,45 @@ def admitStringPattern (compilePattern : StringPatternCompiler)
     else
       .error .kernelRestriction
 
-/-- Evaluate only after both admission stages have succeeded. Runtime truth remains owned by the existing resolved consumer. -/
+/-- An admitted empty authored source fails when called, before operand availability is tested
+(`RuntimeController.vergleichePatternSTRING`, kernel 30.8.1). Declaration-owned empty patterns
+remain inactive and do not enter this condition boundary. -/
+inductive StringPatternRuntimeFault where
+  | emptySource
+  deriving Repr, DecidableEq
+
+def AdmittedStringPattern.checkExecution
+    (admitted : AdmittedStringPattern compilePattern) : Except StringPatternRuntimeFault Unit :=
+  if admitted.source.isEmpty then .error .emptySource else .ok ()
+
+/-- Admission does not guarantee executable success; preserve failure until the enclosing handler. -/
 def AdmittedStringPattern.evalResolved
     (admitted : AdmittedStringPattern compilePattern)
     (op : StringPatternOp)
-    (operand : SimpleComparisonOperand String) : Verdict :=
-  op.evalResolved admitted.wholeValueMatches operand
+    (operand : SimpleComparisonOperand String) : Except StringPatternRuntimeFault Verdict :=
+  match admitted.checkExecution with
+  | .error fault => .error fault
+  | .ok () => .ok (op.evalResolved admitted.wholeValueMatches operand)
 
-/-- Convenience boundary for consumers that check and immediately evaluate one source. -/
+/-- Computation's formal-input precheck prevents the runtime call on unavailable input;
+empty/absent input still reaches it (empty-pattern computation grid, 2026-10-10). -/
+def AdmittedStringPattern.evalComputationResolved
+    (admitted : AdmittedStringPattern compilePattern)
+    (op : StringPatternOp)
+    (operand : SimpleComparisonOperand String) : Except StringPatternRuntimeFault ComputationConditionResult :=
+  match operand with
+  | .unknown cause => .ok (.poison cause)
+  | operand => match admitted.checkExecution with
+    | .error fault => .error fault
+    | .ok () => .ok (op.evalComputationResolved admitted.wholeValueMatches operand)
+
+/-- Keep static rejection and a reached execution failure distinct at the convenience boundary. -/
 def evalAdmittedStringPattern (compilePattern : StringPatternCompiler) (source : String)
     (op : StringPatternOp)
-    (operand : SimpleComparisonOperand String) : Except PatternAdmissionError Verdict :=
+    (operand : SimpleComparisonOperand String) : Except (Sum PatternAdmissionError StringPatternRuntimeFault) Verdict :=
   match admitStringPattern compilePattern source with
-  | .error error => .error error
-  | .ok admitted => .ok (admitted.evalResolved op operand)
+  | .error error => .error (.inl error)
+  | .ok admitted => (admitted.evalResolved op operand).mapError Sum.inr
 
 /-- A prepared pattern keeps the compiler and its exact source-indexed matcher together. -/
 structure CompiledStringPattern where

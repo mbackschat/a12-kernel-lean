@@ -1,0 +1,15 @@
+[
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Gate",
+    "condition": "FieldFilled(Gate) And [Text] PatternMatched \"[A-Z]+\"",
+    "code": "PATTERN_GATE",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

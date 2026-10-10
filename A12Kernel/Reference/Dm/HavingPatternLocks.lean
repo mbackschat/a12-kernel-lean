@@ -4,8 +4,8 @@ import A12Kernel.Reference.Dm.Validate
 namespace A12Kernel.Dm.HavingPatternLocks
 open A12Kernel Lean
 
-private def pattern (op : String) (field : String := "Rows/Tag") : String :=
-  "[" ++ field ++ "] " ++ op ++ " \"[0-9]+\""
+private def pattern (op : String) (field : String := "Rows/Tag") (source : String := "[0-9]+") : String :=
+  "[" ++ field ++ "] " ++ op ++ " \"" ++ source ++ "\""
 private def sum (filter : String) : String := "Sum(Rows*/N Having " ++ filter ++ ")"
 private def run (filter first second expected : String) : Option (Verdict × List String) :=
   HavingFixture.runModel HavingFixture.model filter false "unused" first second (ruleExpected := expected)
@@ -132,5 +132,19 @@ example : HavingFixture.runModel HavingFixture.model
     HavingFixture.runModel HavingFixture.model
       ("[Rows/N] > 0 And " ++ pattern "PatternMatched" "Expected") true "123" "unused" "unused"
       (ruleExpected := "14") = some (.fired .omission, ["value drop", "value 0"]) := by native_decide
+
+private def emptyRows : List (Array Json) := [#[],
+  #[Json.mkObj [("Tag", .str "123"), ("N", .str "")]],
+  #[Json.mkObj [("Tag", .str "123")]]]
+
+private def emptyRun (op source : String) (rows : Array Json) : Option (Verdict × List String) :=
+  HavingFixture.runModel HavingFixture.model (pattern op "Rows/Tag" source) false "unused" "123" "x"
+    (extra := [("Out", .str "99")]) (ruleExpected := "0") (rowsOverride := some rows)
+
+example : ["PatternMatched", "PatternViolated"].all (fun op =>
+    admission (pattern op "Rows/Tag" "") == .admitted &&
+    emptyRows.all (fun rows =>
+      emptyRun op "" rows == some (.fired .value, ["cleared"]) &&
+      emptyRun op "[0-9]+" rows == some (.fired .omission, ["value 0"]))) = true := by native_decide
 
 end A12Kernel.Dm.HavingPatternLocks

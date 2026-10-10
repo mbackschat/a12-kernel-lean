@@ -1,0 +1,5672 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Pattern_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "reached-filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "ABC"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "ABC"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "reached-empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": ""
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": ""
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "reached-absent",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Rows": [
+                  {
+                    "N": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Rows": [
+                  {
+                    "N": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "reached-malformed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Text"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Rows/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Text"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Text"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Text"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "123",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "123"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Text"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Rows/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Text"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Text"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Text"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "123",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "123"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hidden-filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "ABC"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "ABC"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hidden-empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": ""
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": ""
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hidden-absent",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Rows": [
+                  {
+                    "N": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Rows": [
+                  {
+                    "N": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hidden-malformed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Text"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Rows/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Text"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Text"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Text"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "123",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "123"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Text"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Rows/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/Text"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Text",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Text"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Text"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "123",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "123"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "no-rows",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-row",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {}
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {}
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-payload",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "Text": "ABC"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "Text": "ABC"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "later-row",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "ABC"
+                  },
+                  {
+                    "N": 2,
+                    "Text": "XYZ"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "ABC"
+                  },
+                  {
+                    "N": 2,
+                    "Text": "XYZ"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "gate-only",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "ABC"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "ABC"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "text-only",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "ABC"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AlternativeComp",
+              "field": "Form/Alternative",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FILTER",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredComp",
+              "field": "Form/Filtered",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "IndependentComp",
+              "field": "Form/Independent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Independent"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_GATE",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "PATTERN_THEN_FALSE",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Alternative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Filtered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Independent",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Alternative",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Alternative"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Filtered",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Filtered"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/Out",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Out"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "TRUE_OR_PATTERN",
+              "field": "Form/Text",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Independent",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Alternative": null,
+                "Filtered": null,
+                "Gate": "ON",
+                "Independent": 2,
+                "Out": null,
+                "Tail": "",
+                "Text": "ABC",
+                "Rows": [
+                  {
+                    "N": 1,
+                    "Text": "ABC"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

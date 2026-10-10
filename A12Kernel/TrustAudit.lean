@@ -2028,6 +2028,7 @@ run_cmd do
 #print axioms A12Kernel.classifyStringPattern_admitted_iff
 #print axioms A12Kernel.evalAdmittedStringPattern_success
 #print axioms A12Kernel.admittedStringPattern_fired_is_value
+#print axioms A12Kernel.admittedStringPattern_computation_formal_precedence
 #print axioms A12Kernel.stringPatternCondition_pattern_diagnostic
 #print axioms A12Kernel.stringPatternCondition_fieldKind_diagnostic
 #print axioms A12Kernel.preparedDeclaredStringField_checkRaw

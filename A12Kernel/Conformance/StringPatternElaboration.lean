@@ -610,4 +610,13 @@ example : (nestedPattern 2 .matched true false).map (fun (_, partialVerdict, _, 
 example : (nestedPattern 2 .matched true true true).map (fun (full, partialVerdict, _, _, _) => (full, partialVerdict)) =
       some (.unknown, .unknown) := by native_decide
 
+example : [StringPatternOp.matched, .violated].all (fun op =>
+    (match elaborateAndEvalStringPatternFull builtinStringPatternCompiler model ["Claim"]
+      (raw (.parsed (.str "ABC"))) true (condition "" op) with
+      | .error (.execution .emptySource) => true
+      | _ => false) &&
+    (elaborateAndEvalStringPatternFull builtinStringPatternCompiler model ["Claim"]
+      (raw .empty) false (condition "" op)).toOption == some .notFired) = true := by
+  native_decide
+
 end A12Kernel.Conformance.StringPatternElaboration

@@ -1,0 +1,147 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Tail",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Alternative",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Filtered",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Rows",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Text",
+    "kind": "STRING",
+    "string": {
+      "pattern": "[A-Z]+",
+      "patternMessage": "Uppercase probe."
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Text",
+    "condition": "FieldFilled(Gate) And ([Text] PatternMatched \"\") And FieldFilled(Tail)",
+    "code": "PATTERN_THEN_FALSE",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Text",
+    "condition": "FieldFilled(Tail) And ([Text] PatternMatched \"\")",
+    "code": "FALSE_THEN_PATTERN",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Text",
+    "condition": "FieldFilled(Gate) Or ([Text] PatternMatched \"\")",
+    "code": "TRUE_OR_PATTERN",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Gate",
+    "condition": "FieldFilled(Gate) And Sum(Rows*/N Having [Rows/Text] PatternMatched \"\") > 0",
+    "code": "FILTER",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Alternative",
+    "alternatives": [
+      {
+        "precondition": "FieldFilled(Gate) And ([Text] PatternMatched \"\")",
+        "operation": "1"
+      },
+      {
+        "precondition": "FieldFilled(Gate)",
+        "operation": "2"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Filtered",
+    "commonPrecondition": "FieldFilled(Gate)",
+    "alternatives": [
+      {
+        "operation": "Sum(Rows*/N Having [Rows/Text] PatternMatched \"\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

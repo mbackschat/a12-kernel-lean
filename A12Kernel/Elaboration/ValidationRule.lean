@@ -385,7 +385,8 @@ private def evalOrdinaryPartialAdmittedAt
   match result with
   | .ok verdict => pure (.next environment (rule.core.emitAt errorPath verdict))
   | .error (.inl error) => throw error
-  | .error (.inr (.addressing .typeValidityValueFailure)) =>
+  | .error (.inr (.addressing .typeValidityValueFailure))
+  | .error (.inr (.addressing (.stringExpression .emptyPattern))) =>
       pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
   | .error (.inr (.addressing error)) => throw (.conditionAddressing error)
   | .error (.inr _) => pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
@@ -504,7 +505,8 @@ private def evalOrdinaryRepeatableAt
       context repetitionNotUniqueResult? with
   | .ok verdict => pure (.next environment (rule.core.emitAt errorPath verdict))
   | .error (.inl error) => throw (.conditionAddressing error)
-  | .error (.inr (.addressing .typeValidityValueFailure)) =>
+  | .error (.inr (.addressing .typeValidityValueFailure))
+  | .error (.inr (.addressing (.stringExpression .emptyPattern))) =>
       pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
   | .error (.inr (.addressing error)) => throw (.conditionAddressing error)
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported) => throw (.conditionAddressing .temporalUnavailable)

@@ -293,11 +293,11 @@ def elaborateStringPatternCondition (compilePattern : StringPatternCompiler)
 
 namespace CheckedStringPatternCondition
 
-/-- Evaluate an already-selected checked row through the exact compiler-associated matcher. -/
+/-- Truth-only projection for an already-selected row; rule execution retains faults through the admitted pattern boundary. -/
 def evalSelected (checked : CheckedStringPatternCondition model compilePattern)
     (context : FlatContext) : Verdict :=
-  checked.pattern.evalResolved checked.op
-    (context.resolveDirectStringComparisonOperand checked.field)
+  (checked.pattern.evalResolved checked.op
+    (context.resolveDirectStringComparisonOperand checked.field)).toOption.getD .unknown
 
 /-- The direct field is the condition's only model reference. -/
 def referencesField (checked : CheckedStringPatternCondition model compilePattern)

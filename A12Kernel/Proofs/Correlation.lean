@@ -368,7 +368,12 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
       | presence polarity reference =>
           exact verdictTruth_eq_tru_iff_fired _
       | stringPattern operation reference compiled =>
-          exact verdictTruth_eq_tru_iff_fired _
+          simp only [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+            CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn, ConditionTree.evalK]
+          cases result : compiled.pattern.evalResolved operation
+              (reference.observeInAt .validation context frame).asStringComparisonOperand with
+          | error error => simp [Except.toOption, CorrelatedHavingLeaf.verdictTruth]
+          | ok verdict => simp [Except.toOption, verdictTruth_eq_tru_iff_fired]
       | typeValidity operation reference name =>
           cases result : evalHavingTypeValidityValidation operation reference name context.asResolving frame <;>
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,

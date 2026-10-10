@@ -78,7 +78,7 @@ def elaborateAndEvalFull
   pure (checked.core.evalFull
     ((prepared.checkContext locale raw).withWorld world) hasContent)
 
-/-- Apply the full-validation row gate, then use the model-complete prepared String context. Pattern leaves cannot fire on an all-empty row. -/
+/-- Truth-only leaf projection under the full-validation row gate. Use the effectful convenience boundary or mixed rule runner when runtime failure is observable. -/
 def CheckedStringPatternCondition.evalFull (checked : CheckedStringPatternCondition model compilePattern)
     (prepared : PreparedFlatStringContext model compilePattern)
     (raw : RawFlatContext) (hasContent : Bool) (locale : String := "en_US") : Verdict :=
@@ -90,6 +90,7 @@ def CheckedStringPatternCondition.evalFull (checked : CheckedStringPatternCondit
 inductive PreparedStringPatternEvaluationError where
   | preparation (error : FlatStringContextPreparationError)
   | condition (error : StringPatternConditionElabError)
+  | execution (fault : StringPatternRuntimeFault)
   deriving Repr, DecidableEq
 
 /-- Prepare every declared field pattern, elaborate the authored pattern leaf against the same model, and evaluate through that complete checked context. -/
@@ -104,6 +105,8 @@ def elaborateAndEvalStringPatternFull
   let checked ←
     (elaborateStringPatternCondition compilePattern model rowGroup surface)
       |>.mapError .condition
-  pure (checked.evalFull prepared raw hasContent locale)
+  if !hasContent then return .notFired
+  (checked.pattern.evalResolved checked.op
+    ((prepared.checkContext locale raw).resolveDirectStringComparisonOperand checked.field)).mapError .execution
 
 end A12Kernel

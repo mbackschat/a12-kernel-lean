@@ -386,8 +386,9 @@ theorem validationCondition_repeatablePresence_evalAddressed
       cases error <;> simp [ValidationCondition.repeatableFieldPresence, ValidationCondition.evalAddressed,
         ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
         ValidationConditionLeaf.evalAddressed, h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
-      rename_i cause
-      cases cause <;> rfl
+      all_goals
+        rename_i cause
+        cases cause <;> rfl
 
 
 /-- One non-starred repeatable field declaration is the sole source of its ordinary rule-iteration scope. -/

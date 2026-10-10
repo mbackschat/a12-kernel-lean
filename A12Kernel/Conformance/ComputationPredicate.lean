@@ -189,11 +189,15 @@ private def hostPattern (op : StringPatternOp) (source : String) :=
     (.pattern { op, field := path "A", source }) patternCompiler
 
 example : ((hostPattern .matched "x").toOption.bind fun checked =>
-    (checked.evalChecked (context .string (.parsed (.str "x")) .empty)).toOption) = some .holds ∧
-    ((hostPattern .violated "").toOption.bind fun checked =>
-      (checked.evalChecked (context .string (.parsed (.str "x")) .empty)).toOption) = some .holds ∧
-    ((hostPattern .violated "").toOption.bind fun checked =>
-      (checked.evalChecked (context .string .empty .empty)).toOption) = some .notTrue := by native_decide
+    (checked.evalChecked (context .string (.parsed (.str "x")) .empty)).toOption) = some .holds := by native_decide
+
+example : [StringPatternOp.matched, .violated].all (fun op =>
+    [RawCell.parsed (.str "x"), .empty].all fun cell =>
+      match hostPattern op "" with
+      | .ok checked => match checked.evalChecked (context .string cell .empty) with
+        | .error .valueFailure => true
+        | _ => false
+      | .error _ => false) = true := by native_decide
 
 example : ((match hostPattern .matched "*" with
     | .error (.pattern (.pattern .javaSyntax)) => true | _ => false) : Bool) = true ∧

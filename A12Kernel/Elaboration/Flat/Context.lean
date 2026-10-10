@@ -10,10 +10,12 @@ structure RawFlatContext where
 def malformedCheckedCell : CheckedCell :=
   { rawPresent := true, parsed := none, findings := [.malformed] }
 
-/-- Recognize only the closed ASCII profiles; wider sources require an injected host compiler. -/
+/-- Recognize the empty source and closed ASCII profiles; wider sources require an injected host compiler. -/
 def locallyExecutableStringPatternMatcher? (source : String) :
     Option (String → Bool) :=
-  if source == asciiDigitsPatternSource then
+  if source.isEmpty then
+    some String.isEmpty
+  else if source == asciiDigitsPatternSource then
     some matchesAsciiDigitsPattern
   else if source == asciiUppercasePatternSource then
     some matchesAsciiUppercasePattern
