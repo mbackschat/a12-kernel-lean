@@ -1,0 +1,23 @@
+# Group-count topology and declared extent
+
+<a id="src-bound-group-count"></a>
+#### Fixed and mixed group counts retain the bound parent on full and partial validation, measured locally 2026-10-10
+
+- `oracle`: [Capture manifest](../../evidence/kernel-30.8.1/captures/bound-group-count-2026-10-10/MANIFEST.sha256); both strategies agree. Producer `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, clean; dmtool 0.13.0, built/runtime Kernel 30.8.1.
+- `matrix`: A two-row parent contains fixed A/B and a capacity-two Items group. Seven rules compare fixed-only and fixed-plus-star counts; eight documents cross six relevance scopes (root, either parent, anchor only, all fields, partial fixed group). Empty, missing, malformed-only, malformed-with-content and asymmetric-row controls separate state, relevance and polarity.
+- `result`: A fixed member of a mixed list is admitted under the error field's bound row. Full validation derives its presence there; partial validation uses the same first-instance/declared-slot walk as mixed operands, preserving per-row error gating and count fillability.
+- `readback`: All 336 full and 336 partial rule pointer/type comparisons match. Baseline refused all 336 partial comparisons and 96 full mixed-count comparisons. The source-owned reader locks preserve the measured boundaries.
+- `scope`: One bound parent, fixed Number groups and one lower starred group. Deeper reopened axes, nested starred descendants, malformed starred first rows and computations are outside this capture. Existing group-count and partial-coverage clauses already state this account; no canonical correction or outbound request follows.
+
+<a id="src-nested-group-count"></a>
+#### Nested group counts use the product of reopened capacities, measured locally 2026-10-10
+
+- `oracle`: [Capture manifest](../../evidence/kernel-30.8.1/captures/nested-group-count-2026-10-10/MANIFEST.sha256). Both strategies agree on 80 rows; clean producer `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, dmtool 0.13.0, built/runtime Kernel 30.8.1.
+- `matrix`: Rows and Items each have capacity two; Items contains fixed Detail and a capacity-two Desc. Thirteen rules cover the outer, nested-star and below-star counts. Ten documents cross eight relevance scopes; three seeded computation targets retain values and implicit full-validation message types.
+- `separators`: Full capacity, empty leading/trailing inner lists, a missing outer parent, absent/empty descendants, descendant-only content, no outer rows and malformed first/last instances. Scopes include root, all fields, excluded malformed fields, first/last concrete item, all concrete items, outer fields only and descendant group only.
+- `result`: Rows*/Items* counts two with OMISSION on the empty-prefix, empty-suffix and missing-parent documents, and four with VALUE at full capacity. Its declared extent is four, not the terminal maximum of two. Both validation modes and the seeded computation share that distinction. Descendant repetition below Items does not multiply the counted extent.
+- `partial`: The existing four-step walk agrees throughout this matrix. Covered first-instance errors suppress the count; later errors do not impose that first-instance gate. Excluding the malformed fields leaves the same silence as healthy inputs under that incomplete first-instance coverage; these rows do not independently isolate error filtering from relevance.
+- `source`: Kernel `RuntimeController.anzahlAngegebenerEntities` asks iterator relevance before counting and derives growth from the iterator's declared size; `EntityIterator.getAnzahlFelder` delegates to `EbenenIterator.getAnzahlWiederholungen`. The latter multiplies the declared coordinate spans. The partial iterator checks identifier extent and its first instance separately. Runtime rows settle the cross-layer outcomes.
+- `readback`: Maintained reader paths match 1,040 full and 1,040 partial rule pointer/type comparisons, plus 240 computation value/type comparisons. The old terminal-capacity projection caused 24 full, six partial and 24 computation message-type mismatches; numeric values agreed. Computation values also run through the certified mixed plan; implicit types use the checked numeric operation's existing growth/decidability projection.
+- `limit`: Finite two-axis Number groups, seeded scalar computations and the named partial scopes. No claim about arbitrary depth, bound ancestors above two reopened axes, independent axes, indexed groups, filters, over-limit nested rows or unique-entity host profiles.
+- `sync`: [SPEC-2026-10-10-17](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-17) carries the canonical extent clarification.

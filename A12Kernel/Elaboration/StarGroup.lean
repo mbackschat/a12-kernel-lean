@@ -257,6 +257,11 @@ def StarredGroupFillQuantifier.evalCount (operator : StarredGroupFillQuantifier)
   operator.toGroupFillQuantifier.evalTally
     (GroupListPresenceTally.filledOnly count)
 
+/-- Each reopened level contributes declared slots; bound ancestors and descendants below the operand do not (spec/10 §4.1). -/
+private def groupCountDeclaredExtent? (path : StarPath) : Option Nat :=
+  (path.axes.drop path.firstStar).foldl (init := some 1)
+    fun product axis => product.bind fun total => axis.repeatability.map (· * total)
+
 namespace CheckedStarredGroupSource
 
 /-- Whether the normalized identifiers for this starred group establish its complete reduced-universal extent in the current rule-iteration row. The group path is deliberately the target, so descendant field identifiers do not project upward into coverage. -/
@@ -326,14 +331,14 @@ def numberOfFilledGroups (checked : CheckedStarredGroupSource model)
     (document : Document) (outer : Env) : Except StarAddressingError FilledGroupCount := do
   pure (.value (← checked.inCapacityRowCount document outer))
 
-/-- Compare the in-capacity structural row count against the terminal group's declared extent when that extent
+/-- Compare the in-capacity structural row count against the product of reopened declared capacities when that extent
     is retained by the checked model. A model without a finite retained extent yields `none` rather
     than acquiring an unmeasured movement rule. -/
 def numberOfFilledGroupsOperand? (checked : CheckedStarredGroupSource model)
     (document : Document) (outer : Env) :
     Except StarAddressingError (Option NumericOperand) := do
   let count ← checked.numberOfFilledGroups document outer
-  pure (checked.group.repeatability.bind fun extent =>
+  pure ((groupCountDeclaredExtent? checked.path).bind fun extent =>
     (count.availableWithFillability? extent).map fun available =>
       .value available.1 available.2)
 
@@ -404,20 +409,12 @@ def isRoot (operand : CheckedGroupCountOperand model) : Bool :=
   | .fixed reference => reference.isRoot
   | .starred _ | .starredPresence _ => operand.groupPath.length == 1
 
-/-- The operand's contribution to the count's declared extent: one slot for a fixed group, the
-    declared row maximum for a starred one, and for a fixed group below a star one slot per
-    environment the star reopens, the product of the reopened levels' maxima
-    ([`kf463`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf463)). `none` leaves the whole count
-    without a finite extent to reach rather than acquiring an unmeasured movement rule;
-    `RepeatableGroupDecl.repeatability` owns the measurement placing that branch outside the
-    Kernel's repeatability domain. -/
+/-- One slot for a fixed group, and the product of reopened capacities for either starred terminal form (spec/10 §4.1). An absent finite capacity leaves the count without a known extent; it does not invent a bound. -/
 def declaredExtent? (operand : CheckedGroupCountOperand model) : Option Nat :=
   match operand with
   | .fixed _ => some 1
-  | .starred source => source.group.repeatability
-  | .starredPresence source =>
-      (source.path.axes.drop source.path.firstStar).foldl (init := some 1)
-        fun product axis => product.bind fun total => axis.repeatability.map (· * total)
+  | .starred source => groupCountDeclaredExtent? source.path
+  | .starredPresence source => groupCountDeclaredExtent? source.path
 
 /-- Whether a list's length passes the count's arity law in this carrier: a lone operand is
     admitted when it carries a star, the arity class belonging to a lone fixed operand only. A lone

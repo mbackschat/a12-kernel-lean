@@ -211,3 +211,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: A matched key binds the selected parent; lower declared slots may be covered concretely. No selection requires a wildcard at the parent, but not every lower level. No and values-side NotAll preserve absent-list OMISSION on full and partial validation.
 - `basis`: [Two-carrier selected-list matrix](sources/group-list-and-capacity-probes.md#src-selected-list-declared-extent), both strategies agreeing; 552 full and 552 partial exact pointer/type comparisons. This corrects Lean's shared extent/polarity adapters and does not assert a peer defect.
 - `acceptance`: Reconcile Number/String lower field/starred-group lists, both sides and all three quantifiers against retained selected, absent and excluded controls. Keep counts/aggregates separate; wider profiles and deeper topology remain uncalibrated. Introducing revision is the first commit containing this ID; no peer response yet.
+
+<a id="spec-2026-10-10-17"></a>
+### SPEC-2026-10-10-17 — nested group-count growth uses all reopened capacities
+
+- `status`: pending
+- `canonical`: [Count extent and message polarity](../spec/10-validation-and-polarity.md#41-the-same-rule-fires-either-type).
+- `delta`: A starred group count's extent is the product of reopened capacities, not just its terminal group's maximum. Bound ancestors and descendants below the operand do not contribute. Full/partial rule polarity and implicit computation messages use the same extent.
+- `basis`: [Two-axis matrix](sources/group-count-topology.md#src-nested-group-count), both Kernel 30.8.1 strategies agreeing. Empty prefix/suffix and missing-parent controls count two against extent four; full capacity counts four. This corrects Lean's shared extent projection and does not assert an existing peer defect.
+- `acceptance`: Reconcile nested starred and below-star count growth with the retained rules, seeded computation values and implicit messages. Preserve partial first-instance gates and distinguish structural rows from fixed-group content. Report the adopted exact revision or contrary evidence; wider topology remains explicitly uncalibrated. Introducing revision is the first commit containing this ID.

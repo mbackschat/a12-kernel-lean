@@ -1,0 +1,376 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Rows",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Rows",
+    "name": "Items",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Items",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Items",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Rows/Items",
+    "name": "Detail"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Items/Detail",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Items/Detail",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Rows/Items",
+    "name": "Desc",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Items/Desc",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Items/Desc",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*) == 0",
+    "code": "OUT0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*) == 1",
+    "code": "OUT1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*) == 2",
+    "code": "OUT2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*) == 0",
+    "code": "NEST0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*) == 1",
+    "code": "NEST1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*) == 2",
+    "code": "NEST2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*) == 3",
+    "code": "NEST3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*) == 4",
+    "code": "NEST4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*/Detail) == 0",
+    "code": "FIX0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*/Detail) == 1",
+    "code": "FIX1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*/Detail) == 2",
+    "code": "FIX2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*/Detail) == 3",
+    "code": "FIX3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*/Detail) == 4",
+    "code": "FIX4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Rows*)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NestedCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NestedCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Rows*/Items*)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "FixedCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/FixedCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Rows*/Items*/Detail)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

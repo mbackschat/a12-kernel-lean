@@ -406,11 +406,8 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
             .validation document context.outer).map
               NumericOperand.toValidationArithmetic
   | .filledGroupCountMixed operands =>
-      -- The extent is the sum of each member's own capacity, one per fixed group, the declared row
-      -- maximum per star, and the product of the reopened levels' maxima per fixed group below a
-      -- star, so a below-capacity count still types OMISSION
-      -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-list-extent)). An unretained maximum
-      -- leaves no finite extent to reach and yields unavailability rather than an invented rule.
+      -- Reopened capacities multiply for each starred operand; fixed groups contribute one slot.
+      -- This preserves nested-count growth (spec/10 §4.1); an unknown capacity stays unavailable.
       match (operands.mapM CheckedGroupCountOperand.declaredExtent?).map List.sum with
       | none => pure (.error .groupState)
       | some extent =>

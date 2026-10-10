@@ -1,0 +1,437 @@
+{
+  "header" : {
+    "id" : "Counts_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Counts_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/M",
+                "name" : "M",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/M",
+                    "name" : "M",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Group",
+                    "id" : "/Form/Rows/Items/Detail",
+                    "name" : "Detail",
+                    "Group" : {
+                      "repeatability" : 1,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Rows/Items/Detail/N",
+                        "name" : "N",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      }, {
+                        "type" : "Field",
+                        "id" : "/Form/Rows/Items/Detail/M",
+                        "name" : "M",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Group",
+                    "id" : "/Form/Rows/Items/Desc",
+                    "name" : "Desc",
+                    "Group" : {
+                      "repeatability" : 2,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Rows/Items/Desc/N",
+                        "name" : "N",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      }, {
+                        "type" : "Field",
+                        "id" : "/Form/Rows/Items/Desc/M",
+                        "name" : "M",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/OUT0",
+            "name" : "OUT0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "OUT0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/OUT1",
+            "name" : "OUT1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "OUT1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/OUT2",
+            "name" : "OUT2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "OUT2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NEST0",
+            "name" : "NEST0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "NEST0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NEST1",
+            "name" : "NEST1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "NEST1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NEST2",
+            "name" : "NEST2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "NEST2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NEST3",
+            "name" : "NEST3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "NEST3",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NEST4",
+            "name" : "NEST4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "NEST4",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*) == 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIX0",
+            "name" : "FIX0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIX0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*/Detail) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIX1",
+            "name" : "FIX1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIX1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*/Detail) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIX2",
+            "name" : "FIX2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIX2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*/Detail) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIX3",
+            "name" : "FIX3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIX3",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*/Detail) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIX4",
+            "name" : "FIX4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIX4",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Rows*/Items*/Detail) == 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OutCount",
+            "name" : "OutCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OutCountComp",
+            "name" : "OutCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OutCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Rows*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NestedCount",
+            "name" : "NestedCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NestedCountComp",
+            "name" : "NestedCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NestedCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Rows*/Items*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FixedCount",
+            "name" : "FixedCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FixedCountComp",
+            "name" : "FixedCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FixedCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Rows*/Items*/Detail)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

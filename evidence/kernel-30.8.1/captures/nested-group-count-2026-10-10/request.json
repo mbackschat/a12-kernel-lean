@@ -1,0 +1,6687 @@
+{
+  "model": "Counts_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "healthy-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "healthy-all-fields",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "healthy-exclude-bad",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "healthy-first-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "healthy-last-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "healthy-concrete-items",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "healthy-outer-fields-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        }
+      ]
+    },
+    {
+      "name": "healthy-desc-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc"
+        }
+      ]
+    },
+    {
+      "name": "bad-first-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "bad-first-all-fields",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "bad-first-exclude-bad",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "bad-first-first-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-first-last-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-first-concrete-items",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-first-outer-fields-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        }
+      ]
+    },
+    {
+      "name": "bad-first-desc-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc"
+        }
+      ]
+    },
+    {
+      "name": "bad-last-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "bad-last-all-fields",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "bad-last-exclude-bad",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "bad-last-first-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-last-last-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-last-concrete-items",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-last-outer-fields-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        }
+      ]
+    },
+    {
+      "name": "bad-last-desc-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "bad",
+                  "M": "2",
+                  "Detail": {
+                    "N": "bad",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc"
+        }
+      ]
+    },
+    {
+      "name": "empty-prefix-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-prefix-all-fields",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-prefix-exclude-bad",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-prefix-first-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-prefix-last-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-prefix-concrete-items",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-prefix-outer-fields-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-prefix-desc-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc"
+        }
+      ]
+    },
+    {
+      "name": "empty-suffix-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-suffix-all-fields",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-suffix-exclude-bad",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-suffix-first-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-suffix-last-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-suffix-concrete-items",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-suffix-outer-fields-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-suffix-desc-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc"
+        }
+      ]
+    },
+    {
+      "name": "no-desc-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "no-desc-all-fields",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "no-desc-exclude-bad",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "no-desc-first-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-desc-last-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-desc-concrete-items",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-desc-outer-fields-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        }
+      ]
+    },
+    {
+      "name": "no-desc-desc-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc"
+        }
+      ]
+    },
+    {
+      "name": "empty-desc-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-desc-all-fields",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-desc-exclude-bad",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-desc-first-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-desc-last-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-desc-concrete-items",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-desc-outer-fields-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-desc-desc-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {},
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc"
+        }
+      ]
+    },
+    {
+      "name": "only-desc-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "only-desc-all-fields",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "only-desc-exclude-bad",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "only-desc-first-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "only-desc-last-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "only-desc-concrete-items",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "only-desc-outer-fields-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        }
+      ]
+    },
+    {
+      "name": "only-desc-desc-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            },
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "Desc": [
+                    {}
+                  ]
+                },
+                {
+                  "Desc": [
+                    {}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc"
+        }
+      ]
+    },
+    {
+      "name": "missing-parent-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "missing-parent-all-fields",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "missing-parent-exclude-bad",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "missing-parent-first-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-parent-last-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-parent-concrete-items",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-parent-outer-fields-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        }
+      ]
+    },
+    {
+      "name": "missing-parent-desc-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": [
+            {
+              "N": "1",
+              "M": "2",
+              "Items": [
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                },
+                {
+                  "N": "1",
+                  "M": "2",
+                  "Detail": {
+                    "N": "3",
+                    "M": "4"
+                  },
+                  "Desc": [
+                    {
+                      "N": "5",
+                      "M": "6"
+                    },
+                    {
+                      "N": "7",
+                      "M": "8"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc"
+        }
+      ]
+    },
+    {
+      "name": "empty-outer-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-outer-all-fields",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/N"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-outer-exclude-bad",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        },
+        {
+          "path": "/Form/Rows/Items/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Detail/M"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/N"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-outer-first-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-outer-last-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-outer-concrete-items",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-outer-outer-fields-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/M"
+        }
+      ]
+    },
+    {
+      "name": "empty-outer-desc-only",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "OutCount": "99",
+          "NestedCount": "99",
+          "FixedCount": "99",
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Rows/Items/Desc"
+        }
+      ]
+    }
+  ]
+}

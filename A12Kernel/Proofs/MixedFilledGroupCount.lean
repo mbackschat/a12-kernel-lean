@@ -52,8 +52,8 @@ private theorem sumOfOnes {α : Type} :
   | cons _ tail ih => simp only [List.map_cons, List.sum_cons, List.length_cons, ih]; omega
 
 /-- The declared extent is the operand list's length exactly on a fixed-only list. A starred member
-contributes its declared row maximum instead, so the two quantities part company as soon as one star
-carries a maximum above one — which is why the list length must not be reused as the extent once the
+contributes the product of its reopened capacities instead, so the two quantities part company
+when that product exceeds one — which is why the list length must not be reused as the extent once the
 carrier is widened. -/
 theorem mixedGroupCountExtent_fixed
     {model : FlatModel} (references : List ResolvedGroupReference) :

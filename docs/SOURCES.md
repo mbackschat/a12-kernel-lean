@@ -127,6 +127,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Having filters](sources/having-filter-probes.md)
 - [Groups and iteration](sources/group-and-iteration-probes.md), including [sparse filter traversal](sources/group-and-iteration-probes.md#src-sparse-filter-traversal) and [Number parallel tokens](sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens)
 - [Group lists and capacity](sources/group-list-and-capacity-probes.md)
+- [Group-count topology and declared extent](sources/group-count-topology.md)
 - [Group-operand inbound evidence](sources/inbound-group-operand-batches.md)
 - [Over-repetition](sources/over-repetition-probes.md)
 - [Path resolution](sources/path-resolution-class-probes.md)
