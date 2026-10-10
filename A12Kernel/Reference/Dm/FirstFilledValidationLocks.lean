@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.LowerDocument
+import A12Kernel.Reference.Dm.Compute
 
 namespace A12Kernel.Dm.FirstFilledValidationLocks
 
@@ -347,5 +348,95 @@ example : [(boolean, "false"), (date, "2024-03-05"), (time, "03:04:05"),
     selectedOutcome prototype value "Rows/Body For \"missing\",Fallback" value [] false == some (.fired .omission) &&
     selectedOutcome prototype value "Rows/Body For \"R1\"" "" [["Form", "Rows", "Body"]] == some .unknown &&
     selectedOutcome prototype value "Fallback,Rows/Body For \"missing\"" value [] == some (.fired .value)) = true := by native_decide
+
+
+private def traversalRun (prototype : FlatFieldDecl) (value : String) (width : Nat)
+    (early successorFailure invalid validation : Bool) (order : Nat := 0)
+    (counterpart : String := "[Expected]") : Option Char := do
+  let model : FlatModel := {
+    timeZoneId := "Europe/Berlin"
+    fields := [
+      { text with id := 1, groupPath := ["Form"], name := "Error" },
+      { prototype with id := 2, groupPath := ["Form"], name := "Expected" },
+      { number with id := 3, groupPath := ["Form"], name := "Out" },
+      { number with id := 4, groupPath := ["Form"], name := "After" },
+      { prototype with id := 5, groupPath := ["Form", "Outer", "Inner"], name := "V", repeatableScope := [10, 20] },
+      { stamp with id := 6, groupPath := ["Form", "Outer", "Inner"], name := "Stamp", repeatableScope := [10, 20] }]
+    repeatableGroups := [
+      { level := 10, path := ["Form", "Outer"], repeatability := some 2 },
+      { level := 20, path := ["Form", "Outer", "Inner"], repeatability := some 51 }] }
+  let row (payload : String) (keep : Bool := true) := Json.mkObj [
+    ("V", .str payload), ("Stamp", .str (if keep then "2024-03-31T01:30:00" else ""))]
+  let first := (List.range width).map fun i => row (if invalid && i == 0 then "bad" else if early then value else "")
+  let parent (rows : List Json) := Json.mkObj [("Inner", .arr rows.toArray)]
+  let first := first ++ if successorFailure then [row value false] else []
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Error", .str "ready"), ("Expected", .str value), ("Out", .str "99"), ("After", .str "99"),
+    ("Outer", .arr #[parent first, parent [row value]])])])).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let deciding := "Outer*/Inner*/V Having FieldFilled(Outer/Inner/Stamp)"
+  let failing := "Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\""
+  let source := match order with
+    | 0 => "Outer*/Inner*/V Having (FieldFilled(Outer/Inner/Stamp) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")"
+    | 1 => deciding ++ "," ++ failing
+    | _ => failing ++ "," ++ deciding
+  let condition := "FirstFilledValue(" ++ source ++ ") == " ++ counterpart
+  if validation then
+    let rule ← (checkRule dm .english {
+      group := ["Form"], name := "First", errorCode := "FIRST", errorEntityRelPath := "../Error"
+      condition := "FieldFilled(Error) And (" ++ condition ++ ")", severity := "ERROR" }).toOption
+    let result ← (rule.evalAddressedFull {
+      scalar := { fields := document.flatContext.withWorld world, groups := GroupPresenceContext.unavailable }
+      outer := [], input := .checked document } true).toOption
+    return match result.verdict with
+      | .fired .omission => 'T'
+      | .fired .value => 'P'
+      | _ => 'F'
+  let definitions : List DmComputation := [
+    { name := "Consumer", group := ["Form"], targetRelPath := "../Out", commonPrecondition := some condition
+      alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := [] },
+    { name := "Dependent", group := ["Form"], targetRelPath := "../After", commonPrecondition := none
+      alternatives := [{ precondition := none, operation := "[Out] + 1" }], errorCodesToSuppress := [] }]
+  let lowered ← definitions.mapM fun definition => (lowerComputation model .english definition).toOption
+  match (← (runComputations world prepared document (lowered.map (·.2))).toOption).map (·.outcome) with
+  | ["value 1", "value 2"] => pure 'T'
+  | ["cleared", "value 1"] => pure 'F'
+  | ["cleared", "cleared"] => pure 'P'
+  | _ => none
+
+private def traversalProfiles : List (FlatFieldDecl × String) := [
+  (number, "5"), ({ text with stringPolicy := { maxLength := some 1 } }, "x"),
+  ({ text with policy := { kind := .enumeration }, enumeration := some { storedTokens := ["x", "y"] } }, "x"),
+  (boolean, "true"), (date, "2024-03-01"), (time, "01:30:00"), (stamp, "2024-03-31T01:30:00"),
+  (fragment, "03-01"), (range, "2024-03-01/2024-03-02")]
+
+private def traversalCases : List (Nat × Bool × Bool × Bool × Char) := [
+  (2, true, false, false, 'T'), (1, true, true, false, 'P'),
+  (50, true, false, false, 'T'), (51, true, false, false, 'T'),
+  (50, false, false, false, 'P'), (51, false, false, false, 'P'),
+  (3, true, false, true, 'F')]
+
+example : traversalRun number "5" 1 true false false true = some 'T' := by native_decide
+
+example : traversalProfiles.all (fun (prototype, value) => [true, false].all fun validation =>
+    traversalCases.all fun (width, early, successorFailure, invalid, expected) =>
+      traversalRun prototype value width early successorFailure invalid validation ==
+        some (if invalid && !validation then 'P' else expected)) = true := by native_decide
+
+example : traversalProfiles.all (fun (prototype, value) => [true, false].all fun validation =>
+    traversalRun prototype value 3 true false false validation 1 == some 'T' &&
+    traversalRun prototype value 3 true false false validation 2 == some 'P') = true := by native_decide
+
+
+example : [true, false].all (fun validation =>
+    traversalRun boolean "true" 2 true false false validation (counterpart := "True") == some 'T' &&
+    traversalRun stamp "2024-03-31T01:30:00" 2 true false false validation
+      (counterpart := "\"31.03.2024T01:30:00\"") == some 'T' &&
+    traversalRun stamp "2024-03-31T01:30:00" 2 true false false validation
+      (counterpart := "\"31.03.2024T02:30:00\"") == some 'P') = true := by native_decide
 
 end A12Kernel.Dm.FirstFilledValidationLocks

@@ -1,0 +1,1199 @@
+{
+  "header": {
+    "id": "TemporalSparse_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "TemporalSparse_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Group",
+                "id": "/Form/Outer",
+                "name": "Outer",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Group",
+                      "id": "/Form/Outer/Inner",
+                      "name": "Inner",
+                      "Group": {
+                        "repeatability": 51,
+                        "elements": [
+                          {
+                            "type": "Field",
+                            "id": "/Form/Outer/Inner/N",
+                            "name": "N",
+                            "Field": {
+                              "fieldType": {
+                                "type": "NumberType",
+                                "NumberType": {
+                                  "maxFractionalDigits": 0
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Form/Outer/Inner/V",
+                            "name": "V",
+                            "Field": {
+                              "fieldType": {
+                                "type": "NumberType",
+                                "NumberType": {
+                                  "maxFractionalDigits": 0
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Form/Outer/Inner/Stamp",
+                            "name": "Stamp",
+                            "Field": {
+                              "fieldType": {
+                                "type": "DateTimeType",
+                                "DateTimeType": {
+                                  "format": "yyyy-MM-dd'T'HH:mm:ss"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Form/Outer/Inner/Text",
+                            "name": "Text",
+                            "Field": {
+                              "fieldType": {
+                                "type": "StringType",
+                                "StringType": {
+                                  "maxLength": 1
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Form/Outer/Inner/Flag",
+                            "name": "Flag",
+                            "Field": {
+                              "fieldType": {
+                                "type": "BooleanType"
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Form/Outer/Inner/Moment",
+                            "name": "Moment",
+                            "Field": {
+                              "fieldType": {
+                                "type": "DateTimeType",
+                                "DateTimeType": {
+                                  "format": "yyyy-MM-dd'T'HH:mm:ss"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Form/Outer/Inner/Range",
+                            "name": "Range",
+                            "Field": {
+                              "fieldType": {
+                                "type": "DateRangeType",
+                                "DateRangeType": {
+                                  "format": "yyyy-MM-dd",
+                                  "rangeSeparator": "/"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Outer/RowSum",
+                      "name": "RowSum",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Outer/RowSumComp",
+                      "name": "RowSumComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../RowSum",
+                        "computationAlternatives": [
+                          {
+                            "operation": "Sum(Inner*/V Having FieldFilled(Inner/N) Or ([Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Sparse traversal witness."
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Form/Other",
+                "name": "Other",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Group",
+                      "id": "/Form/Other/Items",
+                      "name": "Items",
+                      "Group": {
+                        "repeatability": 51,
+                        "elements": [
+                          {
+                            "type": "Field",
+                            "id": "/Form/Other/Items/Note",
+                            "name": "Note",
+                            "Field": {
+                              "fieldType": {
+                                "type": "StringType"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Sum",
+                "name": "Sum",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/First",
+                "name": "First",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Count",
+                "name": "Count",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Reset",
+                "name": "Reset",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OtherCount",
+                "name": "OtherCount",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/SumComp",
+                "name": "SumComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Sum",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Sum(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N) Or ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Sparse traversal witness."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/FirstComp",
+                "name": "FirstComp",
+                "Computation": {
+                  "computedFieldRelPath": "../First",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N) Or ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Sparse traversal witness."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/CountComp",
+                "name": "CountComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Count",
+                  "computationAlternatives": [
+                    {
+                      "operation": "NumberOfFilledFields(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N) Or ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Sparse traversal witness."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/ResetComp",
+                "name": "ResetComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Reset",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Sum(Outer*/Inner*/V Having [Outer/Inner/N] == 1 Or (FieldNotFilled(Outer/Inner/N) And ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Sparse traversal witness."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OtherCountComp",
+                "name": "OtherCountComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OtherCount",
+                  "computationAlternatives": [
+                    {
+                      "operation": "NumberOfFilledFields(Other*/Items*/Note)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Sparse traversal witness."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Error",
+                "name": "Error",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/NExpected",
+                "name": "NExpected",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutN0",
+                "name": "OutN0",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstN0",
+                "name": "FirstN0",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTN0",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [NExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutN0Comp",
+                "name": "OutN0Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutN0",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [NExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutN1",
+                "name": "OutN1",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstN1",
+                "name": "FirstN1",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTN1",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N), Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [NExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutN1Comp",
+                "name": "OutN1Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutN1",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N), Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [NExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutN2",
+                "name": "OutN2",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstN2",
+                "name": "FirstN2",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTN2",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/V Having FieldFilled(Outer/Inner/N)) == [NExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutN2Comp",
+                "name": "OutN2Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutN2",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/V Having FieldFilled(Outer/Inner/N)) == [NExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/TExpected",
+                "name": "TExpected",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 1
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutT0",
+                "name": "OutT0",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstT0",
+                "name": "FirstT0",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTT0",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [TExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutT0Comp",
+                "name": "OutT0Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutT0",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [TExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutT1",
+                "name": "OutT1",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstT1",
+                "name": "FirstT1",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTT1",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Text Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Text Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [TExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutT1Comp",
+                "name": "OutT1Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutT1",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Text Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Text Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [TExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutT2",
+                "name": "OutT2",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstT2",
+                "name": "FirstT2",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTT2",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Text Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Text Having FieldFilled(Outer/Inner/N)) == [TExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutT2Comp",
+                "name": "OutT2Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutT2",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Text Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Text Having FieldFilled(Outer/Inner/N)) == [TExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/BExpected",
+                "name": "BExpected",
+                "Field": {
+                  "fieldType": {
+                    "type": "BooleanType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutB0",
+                "name": "OutB0",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstB0",
+                "name": "FirstB0",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTB0",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Flag Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [BExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutB0Comp",
+                "name": "OutB0Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutB0",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Flag Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [BExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutB1",
+                "name": "OutB1",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstB1",
+                "name": "FirstB1",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTB1",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Flag Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Flag Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [BExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutB1Comp",
+                "name": "OutB1Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutB1",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Flag Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Flag Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [BExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutB2",
+                "name": "OutB2",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstB2",
+                "name": "FirstB2",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTB2",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Flag Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Flag Having FieldFilled(Outer/Inner/N)) == [BExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutB2Comp",
+                "name": "OutB2Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutB2",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Flag Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Flag Having FieldFilled(Outer/Inner/N)) == [BExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/SExpected",
+                "name": "SExpected",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutS0",
+                "name": "OutS0",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstS0",
+                "name": "FirstS0",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTS0",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Moment Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [SExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutS0Comp",
+                "name": "OutS0Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutS0",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Moment Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [SExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutS1",
+                "name": "OutS1",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstS1",
+                "name": "FirstS1",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTS1",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Moment Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Moment Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [SExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutS1Comp",
+                "name": "OutS1Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutS1",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Moment Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Moment Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [SExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutS2",
+                "name": "OutS2",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstS2",
+                "name": "FirstS2",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTS2",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Moment Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Moment Having FieldFilled(Outer/Inner/N)) == [SExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutS2Comp",
+                "name": "OutS2Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutS2",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Moment Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Moment Having FieldFilled(Outer/Inner/N)) == [SExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/RExpected",
+                "name": "RExpected",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy-MM-dd",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutR0",
+                "name": "OutR0",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstR0",
+                "name": "FirstR0",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTR0",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Range Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [RExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutR0Comp",
+                "name": "OutR0Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutR0",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Range Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [RExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutR1",
+                "name": "OutR1",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstR1",
+                "name": "FirstR1",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTR1",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Range Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Range Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [RExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutR1Comp",
+                "name": "OutR1Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutR1",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Range Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Range Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [RExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutR2",
+                "name": "OutR2",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstR2",
+                "name": "FirstR2",
+                "Rule": {
+                  "errorEntityRelPath": "../Error",
+                  "errorCode": "FIRSTR2",
+                  "errorCondition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Range Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Range Having FieldFilled(Outer/Inner/N)) == [RExpected])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/OutR2Comp",
+                "name": "OutR2Comp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutR2",
+                  "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Range Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Range Having FieldFilled(Outer/Inner/N)) == [RExpected]",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "First selection control."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

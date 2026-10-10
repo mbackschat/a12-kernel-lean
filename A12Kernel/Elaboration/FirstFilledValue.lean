@@ -301,12 +301,16 @@ private def scanCheckedDocumentValidationOperand
       let resolved ←
         (source.source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
-      let candidates ← if fullDomain then source.source.source.filterEnvironments document outer false
-        else pure resolved.environments
-      let filterContext := if fullDomain then document.resolvingCorrelationContextWithRead document.readDeclared world
-        else document.resolvingCorrelationContext world
+      if fullDomain then
+        let result ← source.source.source.scanValidationCells source.having document outer
+          (fun state cell => match state.step (observeCell .validation cell.cell).asNumberValueListCell with
+            | .continue next => .inl next
+            | .done result => .inr (.evaluated result.asNumber))
+          (state.enter resolved.domain.hasOpenTail true) .dense world
+        return result
+      let candidates := resolved.environments
+      let filterContext := document.resolvingCorrelationContext world
       let selected ← source.having.selectEnvironmentsResolving filterContext outer candidates
-      let read := if fullDomain then document.checkedCellWithRead document.readDeclared else read
       source.source.scanPartialValidationFirstFilledStateResolvingWith scope
         (fun environment =>
           (fun cell => (observeCell .validation cell).asNumberValueListCell) <$> read environment source.source.field.id)
@@ -336,7 +340,7 @@ private def scanCheckedDocumentValidationOperands
             remaining next
       | .inr result => pure result
 
-/-- Evaluate validation-phase `FirstFilledValue` against one immutable model-certified checked document. Target reads remain prefix-lazy, while validation filters retain their all-candidate structural footprint. Ordinary full rules select `fullDomain` for their implicit coordinates; partial callers supply their call-local availability-aware read. Without an override the existing physical read view is retained. -/
+/-- Evaluate validation-phase `FirstFilledValue` against one immutable model-certified checked document. Full-validation filters and payloads share dense successor lookahead and stop at the deciding prefix. Ordinary full rules select `fullDomain` for their implicit coordinates; partial callers supply their call-local availability-aware read. Without an override the existing physical read view is retained. -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedNumberEntitySource model)
     (document : CheckedDocument model) (outer : Env)

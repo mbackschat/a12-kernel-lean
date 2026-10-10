@@ -1,0 +1,710 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Error",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NExpected",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutN0",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [NExpected])",
+    "code": "FIRSTN0",
+    "name": "FirstN0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutN0",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [NExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutN1",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N), Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [NExpected])",
+    "code": "FIRSTN1",
+    "name": "FirstN1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutN1",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N), Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [NExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutN2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/V Having FieldFilled(Outer/Inner/N)) == [NExpected])",
+    "code": "FIRSTN2",
+    "name": "FirstN2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutN2",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/V Having FieldFilled(Outer/Inner/N)) == [NExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Outer/Inner",
+    "name": "Text",
+    "kind": "STRING",
+    "string": {
+      "maxLength": 1
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TExpected",
+    "kind": "STRING",
+    "string": {
+      "maxLength": 1
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutT0",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [TExpected])",
+    "code": "FIRSTT0",
+    "name": "FirstT0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutT0",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [TExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutT1",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Text Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Text Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [TExpected])",
+    "code": "FIRSTT1",
+    "name": "FirstT1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutT1",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Text Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Text Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [TExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutT2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Text Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Text Having FieldFilled(Outer/Inner/N)) == [TExpected])",
+    "code": "FIRSTT2",
+    "name": "FirstT2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutT2",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Text Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Text Having FieldFilled(Outer/Inner/N)) == [TExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Outer/Inner",
+    "name": "Flag",
+    "kind": "BOOLEAN"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "BExpected",
+    "kind": "BOOLEAN"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutB0",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Flag Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [BExpected])",
+    "code": "FIRSTB0",
+    "name": "FirstB0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutB0",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Flag Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [BExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutB1",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Flag Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Flag Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [BExpected])",
+    "code": "FIRSTB1",
+    "name": "FirstB1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutB1",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Flag Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Flag Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [BExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutB2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Flag Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Flag Having FieldFilled(Outer/Inner/N)) == [BExpected])",
+    "code": "FIRSTB2",
+    "name": "FirstB2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutB2",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Flag Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Flag Having FieldFilled(Outer/Inner/N)) == [BExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Outer/Inner",
+    "name": "Moment",
+    "kind": "DATETIME",
+    "dateTime": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "SExpected",
+    "kind": "DATETIME",
+    "dateTime": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutS0",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Moment Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [SExpected])",
+    "code": "FIRSTS0",
+    "name": "FirstS0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutS0",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Moment Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [SExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutS1",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Moment Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Moment Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [SExpected])",
+    "code": "FIRSTS1",
+    "name": "FirstS1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutS1",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Moment Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Moment Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [SExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutS2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Moment Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Moment Having FieldFilled(Outer/Inner/N)) == [SExpected])",
+    "code": "FIRSTS2",
+    "name": "FirstS2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutS2",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Moment Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Moment Having FieldFilled(Outer/Inner/N)) == [SExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Outer/Inner",
+    "name": "Range",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "RExpected",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutR0",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Range Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [RExpected])",
+    "code": "FIRSTR0",
+    "name": "FirstR0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutR0",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Range Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")) == [RExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutR1",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Range Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Range Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [RExpected])",
+    "code": "FIRSTR1",
+    "name": "FirstR1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutR1",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Range Having FieldFilled(Outer/Inner/N), Outer*/Inner*/Range Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") == [RExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "OutR2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And (FirstFilledValue(Outer*/Inner*/Range Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Range Having FieldFilled(Outer/Inner/N)) == [RExpected])",
+    "code": "FIRSTR2",
+    "name": "FirstR2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/OutR2",
+    "commonPrecondition": "FirstFilledValue(Outer*/Inner*/Range Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\", Outer*/Inner*/Range Having FieldFilled(Outer/Inner/N)) == [RExpected]",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "First selection control."
+      }
+    ]
+  }
+]

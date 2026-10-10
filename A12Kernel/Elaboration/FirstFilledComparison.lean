@@ -99,6 +99,7 @@ def referencesField (operand : CheckedFirstFilledComparisonOperand model) (field
   match operand with
   | .firstFilled source => source.source.operands.any (·.referencesField field filterReads)
   | .indexed source _ => source.referencesField field
+  | .temporal expression => expression.referencesWith field (fun having => filterReads having field)
   | _ => operand.fieldIds.contains field
 
 def bindingScopes : CheckedFirstFilledComparisonOperand model → List (List RepeatableLevel)
@@ -188,9 +189,18 @@ private def scanTypedFirstFilled (document : CheckedDocument model) (outer : Env
       Except CheckedAddressingError (SimpleComparisonOperand Value)
   | [], _ => pure .notEvaluated
   | operand :: rest, state => do
-      let cells ← operand.observations (world := world) (traversalMode := .dense) document outer
-      let state := state.enterSelection cells.isEmpty false operand.hasHaving
-      match scanFirstFilledObservations cells state with
+      let ordinary (_ : Unit) := do
+        let cells ← operand.observations (world := world) (traversalMode := .dense) document outer
+        pure (scanFirstFilledObservations cells (state.enterSelection cells.isEmpty false operand.hasHaving))
+      let scanned ← match operand with
+        | .star source => match source.filter with
+          | some having =>
+              source.source.scanValidationCells having.condition document outer
+                (fun state cell => scanFirstFilledObservations [observeCell .validation cell.cell] state)
+                (state.enter false true) .dense world
+          | none => ordinary ()
+        | _ => ordinary ()
+      match scanned with
       | .inl next => scanTypedFirstFilled (world := world) document outer rest next
       | .inr result => pure result
 

@@ -225,6 +225,39 @@ example : ["AllFieldsFilled", "FieldValuesNotUnique"].all (fun carrier =>
     guardDependencies carrier "GroupNotFilled(Info)" == some [true, true, true, true, true, true]) = true := by
   native_decide
 
+private def firstFilledTemporalDependencies (extremum predicate : String) : Option (List Bool) := do
+  let model := { groupedModel with
+    timeZoneId := "Europe/Berlin"
+    fields := (groupedModel.fields.map fun field =>
+      if field.id == 2 || field.id == 3 then { field with
+        policy := { kind := .temporal .date TemporalComponents.fullDate }
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" } } else field) ++ [
+      { id := 11, groupPath := ["Form", "Info"], name := "Producer",
+        policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 12, groupPath := ["Form"], name := "Fallback",
+        policy := { kind := .temporal .date TemporalComponents.fullDate },
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" } }] }
+  let parsed ← (parseText .english ("FirstFilledValue(Expected, Fallback) == " ++ extremum ++
+    "(Rows*/Tag Having [Rows/N] > 0 And " ++ predicate ++ ")")).toOption
+  let surface ← (lowerGuard model ["Form"] false parsed.body (some ["Form", "Info"])).toOption
+  let guard ← (model.elaborateCheckedComputationCondition ["Form"] ["Form", "Info"] surface).toOption
+  pure [guard.referencesField 6, guard.forbidsTarget 6,
+    guard.requiresProducer 6 6 (fun _ => false),
+    guard.requiresProducer 6 11 (fun _ => true),
+    guard.requiresProducer 6 11 (fun _ => false),
+    guard.requiresProducer 6 4 (fun _ => true)]
+
+example : firstFilledTemporalDependencies "MinValue" "GroupFilled(Info)" =
+    some [true, false, false, false, true, true] := by native_decide
+
+example : firstFilledTemporalDependencies "MaxValue" "GroupFilled(Info)" =
+    some [true, false, false, false, true, true] := by native_decide
+
+example : ["MinValue", "MaxValue"].all (fun extremum =>
+    firstFilledTemporalDependencies extremum "GroupNotFilled(Info)" ==
+      some [true, true, true, true, true, true]) = true := by native_decide
+
+
 private def temporalGroupRun (filter : String) (value : String) (otherValue : String := "") : Option (Verdict × List String) :=
   let dates := { groupedModel with fields := groupedModel.fields.map fun field =>
     if field.id == 2 || field.id == 3 then { field with

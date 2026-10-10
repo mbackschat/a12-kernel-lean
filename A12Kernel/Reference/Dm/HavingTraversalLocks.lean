@@ -243,12 +243,12 @@ example : [(enumTarget, "FirstFilledValue(Shipments*/Items*/Text", "\"keep\"", "
     (stampTarget, "FirstFilledValue(Shipments*/Items*/Tag", "\"31.03.2024T01:30:00\"", "value 2024-03-31T01:30:00")].all
     (fun (model, head, expected, output) =>
       runSparseTyped model head expected 1 == some (.fired .omission, [output]) &&
-      runSparseTyped model head expected 51 == some (.fired .value, [output])) = true := by native_decide
+      runSparseTyped model head expected 51 == some (.fired .omission, [output])) = true := by native_decide
 
 example : runSparseTyped typedFixture "FirstFilledValue(Shipments*/Items*/Text" "\"keep\"" 1 true =
     some (.fired .omission, ["value 1"]) ∧
     runSparseTyped typedFixture "FirstFilledValue(Shipments*/Items*/Text" "\"keep\"" 51 true =
-    some (.fired .value, ["value 1"]) := by native_decide
+    some (.fired .omission, ["value 1"]) := by native_decide
 
 private def runSparseOverlap (yearless : Bool) (firstRows : Nat) (scalar : Bool := false) : Option (Verdict × List String) :=
   let base := { typedFixture with fields := typedFixture.fields ++ [{

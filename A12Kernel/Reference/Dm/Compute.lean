@@ -207,11 +207,9 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
         let operator ← match op with | .eq => some EqualityOp.equal | .ne => some .notEqual | _ => none
         let left ← (lowerFirstFilledComparisonOperand model group filterBinding? left).toOption
         let right ← (lowerFirstFilledComparisonOperand model group filterBinding? right).toOption
-        let checked ← (elaborateFirstFilledComparison model group (targetGroup?.getD group)
+        let _ ← (elaborateFirstFilledComparison model group (targetGroup?.getD group)
           (if operator == .equal then .equal else .notEqual) left right).toOption
-        if checked.hasHaving || [checked.left.profile, checked.right.profile].any
-            (fun | .temporal _ _ => true | _ => false) then none
-        else some (SurfaceComputationConditionOf.predicate (.selectedComparison operator left right))
+        some (SurfaceComputationConditionOf.predicate (.selectedComparison operator left right))
       let temporalSurface := do
         let operator ← op.toSurface?
         let left ← (lowerScalarTemporalExpression model group left).toOption

@@ -204,6 +204,21 @@ private def scanCells (consume : State → ValueListCell kind → State ⊕ Resu
       | .inl next => scanCells consume rest next
       | .inr result => .terminated result
 
+private def correlationError : CorrelationRuntimeFault → ComputationPredicateError
+  | .calendarUnavailable => .temporalUnavailable
+  | .valueFailure | .typeValidityValueFailure => .valueFailure
+  | .worldUnavailable => .contextRequired
+  | .stringExpressionUnavailable => .addressing .stringExpressionUnavailable
+  | .storedTextUnavailable field => .addressing (.storedTextUnavailable field)
+  | .groupUnavailable path => .addressing (.unsupportedGroupOperand path)
+
+private def temporalError : ScalarTemporalEvaluationFault → ComputationPredicateError
+  | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure
+  | .addressing .worldUnavailable => .contextRequired
+  | .addressing (.addressing (.storedTextUnavailable field)) => .addressing (.storedTextUnavailable field)
+  | .addressing error => if error.isFilterValueFailure then .valueFailure else .temporalUnavailable
+  | .calendarUnavailable | .indexedOperandNotSupported => .temporalUnavailable
+
 private def scanNumber (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
     (filterStoredText filterNumberText : Env → FieldId → Option String)
@@ -235,14 +250,7 @@ private def scanNumber (context : ScalarComputationContext)
       (source.having.scanComputation (({ read := model.filterRead addressed.document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
         (fun state environment => consume state
           (source.source.checkedValueListCellAt .computation (model.filterRead addressed.document addressed.read) environment))
-        traversal.candidates state traversal.occupancy).mapError (fun
-          | .calendarUnavailable => .temporalUnavailable
-          | .valueFailure => .valueFailure
-          | .worldUnavailable => .contextRequired
-          | .typeValidityValueFailure => .valueFailure
-          | .stringExpressionUnavailable => .addressing (.stringExpressionUnavailable)
-          | .storedTextUnavailable fieldId => .addressing (.storedTextUnavailable fieldId)
-          | .groupUnavailable path => .addressing (.unsupportedGroupOperand path))
+        traversal.candidates state traversal.occupancy).mapError correlationError
 
 private def scanToken (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
@@ -272,14 +280,7 @@ private def scanToken (context : ScalarComputationContext)
           (having.condition.scanComputation (({ read := model.filterRead addressed.document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
           (fun state environment => consume state
             (source.valueListCellAt .computation (model.filterRead addressed.document addressed.read) environment))
-            traversal.candidates state traversal.occupancy).mapError (fun
-              | .calendarUnavailable => .temporalUnavailable
-              | .valueFailure => .valueFailure
-              | .worldUnavailable => .contextRequired
-              | .typeValidityValueFailure => .valueFailure
-              | .stringExpressionUnavailable => .addressing (.stringExpressionUnavailable)
-              | .storedTextUnavailable fieldId => .addressing (.storedTextUnavailable fieldId)
-              | .groupUnavailable path => .addressing (.unsupportedGroupOperand path))
+            traversal.candidates state traversal.occupancy).mapError correlationError
 
 private def scanOperands
     (scan : operand → State → Except error (ComputationHavingScanResult State Result)) :
@@ -304,7 +305,8 @@ private def readTokenComparisonOperand (context : ScalarComputationContext)
     | .literal value => return (if value.isEmpty then .notEvaluated else .value value true)
     | .field source => pure [CheckedTokenEntityOperand.field source]
     | .firstFilled source _ => pure source.operands
-  match ← scanOperands (scanToken context filterRead filterStoredText filterNumberText first) operands () with
+  match ← scanOperands (scanToken context filterRead filterStoredText filterNumberText first
+      (traversalMode := .dense)) operands () with
   | .exhausted _ => pure .notEvaluated
   | .terminated result => pure result
   | .poison cause => pure (.unknown cause)
@@ -331,17 +333,41 @@ private def selectedComparisonCells (context : ScalarComputationContext) :
         source.source.boundLevelCount source.declarations (·.repeatableScope)).mapError .addressing
       pure (fields.map fun (field, row) => observeCell .computation (addressed.read row field.id))
 
-private def firstSelectedComparison (context : ScalarComputationContext) :
+private def firstSelectedComparison (context : ScalarComputationContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (filterStoredText filterNumberText : Env → FieldId → Option String) :
     List (CheckedFieldFillOperand model) → FirstFilledScanState →
       Except ComputationPredicateError (SimpleComparisonOperand Value)
   | [], _ => pure .notEvaluated
   | operand :: rest, state => do
-      let cells ← selectedComparisonCells context operand
-      match scanFirstFilledObservations cells (state.enterSelection cells.isEmpty false false) with
-      | .inl next => firstSelectedComparison context rest next
+      let ordinary (_ : Unit) := do
+        let cells ← selectedComparisonCells context operand
+        pure (scanFirstFilledObservations cells (state.enterSelection cells.isEmpty false false))
+      let result ← match operand with
+        | .star source => match source.filter with
+          | none => ordinary ()
+          | some having => do
+              let addressed ← addressed context
+              let traversal ← (model.filterTraversal source.source.path
+                (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row .dense).mapError .addressing
+              let scanned ← (having.condition.scanComputation
+                (({ read := model.filterRead addressed.document filterRead, storedText := filterStoredText,
+                    numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
+                (fun state row => scanFirstFilledObservations
+                  [observeCell .computation (model.filterRead addressed.document addressed.read row source.source.declaration.id)] state)
+                traversal.candidates (state.enter false true) traversal.occupancy).mapError correlationError
+              pure (match scanned with
+                | .exhausted next => .inl next
+                | .terminated result => .inr result
+                | .poison cause => .inr (.unknown cause))
+        | _ => ordinary ()
+      match result with
+      | .inl next => firstSelectedComparison context filterRead filterStoredText filterNumberText rest next
       | .inr result => pure result
 
-private def readSelectedComparisonOperand (context : ScalarComputationContext) :
+private def readSelectedComparisonOperand (context : ScalarComputationContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (filterStoredText filterNumberText : Env → FieldId → Option String) :
     CheckedFirstFilledComparisonOperand model →
       Except ComputationPredicateError (SimpleComparisonOperand FirstFilledComparisonValue)
   | .boolean value => pure (.value (.boolean value) true)
@@ -352,8 +378,15 @@ private def readSelectedComparisonOperand (context : ScalarComputationContext) :
         context.row context.read context.storedText).mapError .indexSelection
       pure (projectComparisonObservation model source.targetDeclaration observation)
   | .firstFilled source => do
-      projectFirstFilledValue model source.first <$> firstSelectedComparison context source.source.operands {}
-  | .temporal _ => throw .unsupportedSelectedComparisonOperand
+      projectFirstFilledValue model source.first <$> firstSelectedComparison context filterRead filterStoredText filterNumberText source.source.operands {}
+  | .temporal expression => do
+      let result ← (expression.evalResult .computation
+        { read := context.read, storedText := context.storedText, world := context.world }
+        context.addressed context.row).mapError temporalError
+      pure (match result with
+        | .notEvaluated => .notEvaluated
+        | .unknown cause => .unknown cause
+        | .value value given => .value (.temporal value) given)
 
 private def temporalIdentity (field : FieldId) (cell : CheckedCell) (stored : Option String) :
     Except ComputationPredicateError (ValueListCell .token) :=
@@ -593,14 +626,9 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   | .selectedComparison source =>
       evalComputationComparisonExcept
         (CheckedFirstFilledComparison.holds source.operator)
-        (readSelectedComparisonOperand context source.left)
-        (fun _ => readSelectedComparisonOperand context source.right)
-  | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError (fun
-      | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure
-      | .addressing .worldUnavailable => .contextRequired
-      | .addressing (.addressing (.storedTextUnavailable field)) => .addressing (.storedTextUnavailable field)
-      | .addressing error => if error.isFilterValueFailure then .valueFailure else .temporalUnavailable
-      | .calendarUnavailable | .indexedOperandNotSupported => .temporalUnavailable)
+        (readSelectedComparisonOperand context filterRead filterStoredText filterNumberText source.left)
+        (fun _ => readSelectedComparisonOperand context filterRead filterStoredText filterNumberText source.right)
+  | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError temporalError
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
   | .dateRangeComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
   | .fieldFill operator source =>
@@ -726,8 +754,6 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
   | .selectedComparison op left right => do
       let checked ← (elaborateFirstFilledComparison model declaringGroup targetGroup
         (if op == .equal then .equal else .notEqual) left right).mapError .selectedComparison
-      if checked.hasHaving || [checked.left.profile, checked.right.profile].any
-          (fun | .temporal _ _ => true | _ => false) then throw .incoherent
       pure (.selectedComparison checked)
   | .selectedStringExpression op left right => .stringExpression <$>
       (elaborateSelectedStringExpressionComparison model declaringGroup targetGroup op left right).mapError .stringExpression

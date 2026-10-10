@@ -262,8 +262,21 @@ private def scanCheckedFirstFilledValidationOperands
       Except CheckedAddressingError FirstFilledTokenResult
   | [], _ => pure .noValue
   | operand :: remaining, state => do
-      let side ← resolveCheckedFirstFilledValidationSide (world := world) operand document outer
-      match scanFirstFilledItems id side.cells (state.enterOperand side) with
+      let ordinary (_ : Unit) := do
+        let side ← resolveCheckedFirstFilledValidationSide (world := world) operand document outer
+        pure (scanFirstFilledItems id side.cells (state.enterOperand side))
+      let scanned ← match operand with
+        | .star source => match source.filter with
+          | some having => do
+              let resolved ← (source.source.path.resolveInCapacity document.source.toDocument outer).mapError .addressing
+              source.source.scanValidationCells having.condition document outer
+                (fun state cell => match state.step (source.operand.checkedValueListCellAt .validation cell.cell) with
+                  | .continue next => .inl next
+                  | .done result => .inr result)
+                (state.enter resolved.domain.hasOpenTail true) .dense world
+          | none => ordinary ()
+        | _ => ordinary ()
+      match scanned with
       | .inl next =>
           scanCheckedFirstFilledValidationOperands (world := world) document outer remaining next
       | .inr result => pure result.asToken
