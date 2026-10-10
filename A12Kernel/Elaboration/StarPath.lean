@@ -212,7 +212,7 @@ def wildcardsLevels (entity : RelevantEntityPattern)
     (model : FlatModel) (levels : List RepeatableLevel) : Bool :=
   wildcardsLevelsAt entity model levels [] entity.path entity.indices
 
-/-- Project one caller identifier onto the operand field and test the starred value-list's existential extent gate in the current iteration subtree. -/
+/-- Project one caller identifier onto the operand field for the wildcard-only extent policy used by selected and legacy list adapters. Ordinary partial lists instead combine identifiers through `ValidationRelevanceScope.coversDeclaredFieldExtent` (spec/10 §5). -/
 def coversValueListExtent (entity : RelevantEntityPattern)
     (model : FlatModel) (targetPath : List String)
     (boundLevels reopenedLevels : List RepeatableLevel) (outer : Env) : Bool :=
@@ -331,7 +331,7 @@ def coversGroupCountExtent (scope : ValidationRelevanceScope) (model : FlatModel
       reducedUniversalCovers (groupCountPatterns entities model groupPath boundLevels outer)
         model reopenedLevels
 
-/-- A starred value-list entry uses its separate existential covering-identifier gate. Concrete siblings do not cancel a qualifying wildcard. -/
+/-- Wildcard-only extent policy for selected and legacy list adapters: concrete siblings do not cancel a qualifying wildcard. Ordinary partial lists use `coversDeclaredFieldExtent` to combine concrete coverage (spec/10 §5). -/
 def coversValueListExtent (scope : ValidationRelevanceScope) (model : FlatModel)
     (targetPath : List String) (boundLevels reopenedLevels : List RepeatableLevel)
     (outer : Env) : Bool :=
@@ -339,6 +339,34 @@ def coversValueListExtent (scope : ValidationRelevanceScope) (model : FlatModel)
   | .full => true
   | .partialSet entities => entities.any fun entity =>
       entity.coversValueListExtent model targetPath boundLevels reopenedLevels outer
+
+/-- Coverage of every declared slot by the union of relevant identifiers (spec/10 §5).
+Finite capacity permits concrete coverage; unbounded capacity and a missing selected parent
+still require wildcard coverage. This is independent of which document rows currently exist. -/
+def coversDeclaredFieldExtent (scope : ValidationRelevanceScope) (model : FlatModel)
+    (targetPath : List String) (reopenedLevels : List RepeatableLevel) (outer : Env)
+    (missingParent : Option RepeatableLevel := none) : Except StarAddressingError Bool := do
+  let .partialSet entities := scope | return true
+  let mut prefixes : List (List RelevanceIndex) := [[]]
+  let mut path : GroupPath := []
+  for segment in targetPath do
+    path := path ++ [segment]
+    let choices ← match model.repeatableGroups.find? (·.path == path) with
+      | none => pure [.concrete 1]
+      | some group =>
+          if missingParent == some group.level then pure [.all]
+          else if reopenedLevels.contains group.level then
+            pure (match group.repeatability with
+              | none => [.all]
+              | some capacity => (List.range capacity).map fun row => .concrete (row + 1))
+          else do
+            let coordinate ← (outer.bindingAt group.level).mapError EnvBindingError.toStarAddressingError
+            pure [.concrete coordinate]
+    prefixes := prefixes.flatMap fun coordinates => choices.map fun index => coordinates ++ [index]
+  pure (prefixes.all fun indices => entities.any fun entity =>
+    match entity.projectOntoTarget? targetPath with
+    | none => false
+    | some projected => projected.encompasses { path := targetPath, indices })
 
 /-- Per-cell relevance retains concrete row identity and ancestor descent. Unlike all-rows relevance, different concrete entities may cover different reached cells. -/
 def coversCell (scope : ValidationRelevanceScope) (model : FlatModel)

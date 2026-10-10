@@ -193,3 +193,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `basis`: [Eleven-document, three-carrier matrix](sources/computation-scheduling-probes.md#src-first-filled-empty-prefix) covers String, Number and Boolean full validation with a filtered control, both Kernel strategies agreeing. This corrects Lean's physical-leaf projection; it does not assert an existing peer defect.
 - `extent extension`: The same checkpoint now retains 33 documents across five group/keyed forms and three carriers. Empty/omitted leading branches differ from suffixes in every form; unavailable key controls preserve ordinary-group results. Reuse these captures for reconciliation.
 - `acceptance`: Reconcile nested first-filled traversal and polarity using the retained observations. Preserve terminal hiding and unavailable-value handling; include the measured ordinary group, starred group and keyed lower-star/group/starred-group controls across String, Number and Boolean. Partial validation and wider profiles remain separately bounded. Introducing revision is the first commit containing this ID; no reviewed peer response yet.
+
+<a id="spec-2026-10-10-15"></a>
+### SPEC-2026-10-10-15 — partial value lists accept complete concrete declared-slot coverage
+
+- `status`: pending
+- `canonical`: [Partial value-list extent](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation) separates declared-slot coverage from relevant concrete witnesses and the runtime's separate USB gate.
+- `delta`: Concrete selectors covering rows one and two establish an ordinary capacity-two extent; the same selectors leave a capacity-three extent unknown even when its third row is absent. Do not require a wildcard at every repeated group or infer completeness from physical rows alone. Preserve the three quantifiers' side-specific UNKNOWN policy.
+- `basis`: [Two-capacity Number/String matrix](sources/group-list-and-capacity-probes.md#src-partial-list-declared-extent), 28 documents, field/group operands and both sides, with both strategies agreeing. Maintained reader-to-evaluator readback matches all 672 partial pointer/type comparisons after correcting 54 divergences.
+- `acceptance`: Reconcile the wildcard-only account against the retained capacity controls and source; retain distinct count/aggregate gates. Report exact adopted revision or contrary evidence. Nested/keyed, wider profiles and separate USB-host behavior remain explicitly uncalibrated. Introducing revision is the first commit containing this ID.

@@ -1,0 +1,338 @@
+[
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(NRows*/V In Y)",
+    "code": "N_F_LEFT_ANY",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NoFieldValueIncludedInValueList(NRows*/V In Y)",
+    "code": "N_F_LEFT_NO",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(NRows*/V In Y)",
+    "code": "N_F_LEFT_NOTALL",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(Y In NRows*/V)",
+    "code": "N_F_RIGHT_ANY",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NoFieldValueIncludedInValueList(Y In NRows*/V)",
+    "code": "N_F_RIGHT_NO",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(Y In NRows*/V)",
+    "code": "N_F_RIGHT_NOTALL",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(NRows* In Y)",
+    "code": "N_G_LEFT_ANY",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NoFieldValueIncludedInValueList(NRows* In Y)",
+    "code": "N_G_LEFT_NO",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(NRows* In Y)",
+    "code": "N_G_LEFT_NOTALL",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(Y In NRows*)",
+    "code": "N_G_RIGHT_ANY",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NoFieldValueIncludedInValueList(Y In NRows*)",
+    "code": "N_G_RIGHT_NO",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(Y In NRows*)",
+    "code": "N_G_RIGHT_NOTALL",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(TRows*/T In X)",
+    "code": "T_F_LEFT_ANY",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NoFieldValueIncludedInValueList(TRows*/T In X)",
+    "code": "T_F_LEFT_NO",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(TRows*/T In X)",
+    "code": "T_F_LEFT_NOTALL",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(X In TRows*/T)",
+    "code": "T_F_RIGHT_ANY",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NoFieldValueIncludedInValueList(X In TRows*/T)",
+    "code": "T_F_RIGHT_NO",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(X In TRows*/T)",
+    "code": "T_F_RIGHT_NOTALL",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(TRows* In X)",
+    "code": "T_G_LEFT_ANY",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NoFieldValueIncludedInValueList(TRows* In X)",
+    "code": "T_G_LEFT_NO",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(TRows* In X)",
+    "code": "T_G_LEFT_NOTALL",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(X In TRows*)",
+    "code": "T_G_RIGHT_ANY",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NoFieldValueIncludedInValueList(X In TRows*)",
+    "code": "T_G_RIGHT_NO",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Rg/W",
+    "group": "/Rg",
+    "condition": "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(X In TRows*)",
+    "code": "T_G_RIGHT_NOTALL",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

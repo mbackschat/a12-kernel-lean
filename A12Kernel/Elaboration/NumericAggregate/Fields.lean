@@ -34,28 +34,8 @@ requires a wildcard there; finite lower capacity can be covered by concrete iden
 (spec/07 §4, partial-product capacity matrix, 2026-10-06). -/
 def CheckedStarFieldPath.productExtentRelevant (source : CheckedStarFieldPath model)
     (scope : ValidationRelevanceScope) (outer : Env)
-    (missingParent : Option RepeatableLevel := none) : Except StarAddressingError Bool := do
-  let .partialSet entities := scope | return true
-  let mut prefixes : List (List RelevanceIndex) := [[]]
-  let mut path : GroupPath := []
-  for segment in source.declaration.path do
-    path := path ++ [segment]
-    let choices ← match model.repeatableGroups.find? (·.path == path) with
-      | none => pure [.concrete 1]
-      | some group =>
-          if missingParent == some group.level then pure [.all]
-          else if source.reopenedScope.contains group.level then
-            pure (match group.repeatability with
-              | none => [.all]
-              | some capacity => (List.range capacity).map fun row => .concrete (row + 1))
-          else do
-            let coordinate ← (outer.bindingAt group.level).mapError EnvBindingError.toStarAddressingError
-            pure [.concrete coordinate]
-    prefixes := prefixes.flatMap fun coordinates => choices.map fun index => coordinates ++ [index]
-  pure (prefixes.all fun indices => entities.any fun entity =>
-    match entity.projectOntoTarget? source.declaration.path with
-    | none => false
-    | some projected => projected.encompasses { path := source.declaration.path, indices })
+    (missingParent : Option RepeatableLevel := none) : Except StarAddressingError Bool :=
+  scope.coversDeclaredFieldExtent model source.declaration.path source.reopenedScope outer missingParent
 
 /-- A parser-independent `SumOfProducts` pair. Each operand retains its authored wildcard path and an optional correlated filter; the checked carrier accepts only two unfiltered Number paths with the measured lowest-level star shape. Groups remain unrepresentable here. -/
 structure SurfaceNumericProductAggregate where

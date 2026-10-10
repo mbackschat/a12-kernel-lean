@@ -1,0 +1,772 @@
+{
+  "model": "Gcap_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "root",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            },
+            {}
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            },
+            {}
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg",
+          "reps": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "wildcard",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            },
+            {}
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            },
+            {}
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            0
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "all-concrete",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            },
+            {}
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            },
+            {}
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "all-concrete-wild-root",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            },
+            {}
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            },
+            {}
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            0,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            0,
+            2
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            0,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            0,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "first-only-empty-row",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            },
+            {}
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            },
+            {}
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "first-only-missing-row",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            }
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "first-only-empty-extent",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [],
+          "TRows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-selection",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            }
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        }
+      ]
+    },
+    {
+      "name": "second-only-match",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            },
+            {
+              "V": "100"
+            }
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            },
+            {
+              "T": "x"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "first-only-hidden-match",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            },
+            {
+              "V": "100"
+            }
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            },
+            {
+              "T": "x"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "both-match",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            },
+            {
+              "V": "100"
+            }
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            },
+            {
+              "T": "x"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-all",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [],
+          "TRows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "third-hidden",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            },
+            {},
+            {
+              "V": "100"
+            }
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            },
+            {},
+            {
+              "T": "x"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "formal-second",
+      "documentInline": {
+        "Rg": {
+          "W": "on",
+          "X": "x",
+          "Y": "100",
+          "F9": "9",
+          "NRows": [
+            {
+              "V": "5"
+            },
+            {
+              "V": "bad"
+            }
+          ],
+          "TRows": [
+            {
+              "T": "a"
+            },
+            {
+              "T": "bad"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Rg/W"
+        },
+        {
+          "path": "/Rg/X"
+        },
+        {
+          "path": "/Rg/Y"
+        },
+        {
+          "path": "/Rg/F9"
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/NRows",
+          "reps": [
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Rg/TRows",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    }
+  ]
+}

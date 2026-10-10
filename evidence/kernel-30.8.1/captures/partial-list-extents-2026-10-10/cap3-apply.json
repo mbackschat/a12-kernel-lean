@@ -1,0 +1,14 @@
+[
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Rg/NRows",
+    "repeatable": 3
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Rg/TRows",
+    "repeatable": 3
+  }
+]

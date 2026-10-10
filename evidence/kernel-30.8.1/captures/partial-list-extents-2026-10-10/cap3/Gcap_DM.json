@@ -1,0 +1,675 @@
+{
+  "header" : {
+    "id" : "Gcap_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Gcap_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Rg",
+        "name" : "Rg",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Rg/W",
+            "name" : "W",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Rg/X",
+            "name" : "X",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Rg/Y",
+            "name" : "Y",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Rg/F9",
+            "name" : "F9",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/DCG",
+            "name" : "DCG",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "DCG",
+              "errorCondition" : "NumberOfDifferentValues(DRows*) == 1 And FieldFilled(W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/DCF",
+            "name" : "DCF",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "DCF",
+              "errorCondition" : "NumberOfDifferentValues(DShell) == 1 And FieldFilled(W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/TVF",
+            "name" : "TVF",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "TVF",
+              "errorCondition" : "NoFieldValueIncludedInValueList(TRows*/T In X) And FieldFilled(W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/TVG",
+            "name" : "TVG",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "TVG",
+              "errorCondition" : "NoFieldValueIncludedInValueList(TRows* In X) And FieldFilled(W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/NVF",
+            "name" : "NVF",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NVF",
+              "errorCondition" : "NoFieldValueIncludedInValueList(NRows*/V In Y) And FieldFilled(W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/NVG",
+            "name" : "NVG",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "NVG",
+              "errorCondition" : "NoFieldValueIncludedInValueList(NRows* In Y) And FieldFilled(W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/FFH",
+            "name" : "FFH",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "FFH",
+              "errorCondition" : "FirstFilledValue(Rows*/M Having [Rows/Gate] > 0, F9) == 9 And FieldFilled(W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/SUM",
+            "name" : "SUM",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "SUM",
+              "errorCondition" : "Sum(Rows*/N) == 5 And FieldFilled(W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/CTRL",
+            "name" : "CTRL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "CTRL",
+              "errorCondition" : "FieldFilled(W) And FieldFilled(W)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "m"
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Rg/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Rg/Rows/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rg/Rows/M",
+                "name" : "M",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Rg/Rows/Gate",
+                "name" : "Gate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Rg/DRows",
+            "name" : "DRows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Rg/DRows/D",
+                "name" : "D",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd",
+                      "datePrecision" : "FULL"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Rg/DShell",
+            "name" : "DShell",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Rg/DShell/SRows",
+                "name" : "SRows",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Rg/DShell/SRows/S",
+                    "name" : "S",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateType",
+                        "DateType" : {
+                          "format" : "yyyy-MM-dd",
+                          "datePrecision" : "FULL"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Rg/TRows",
+            "name" : "TRows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Rg/TRows/T",
+                "name" : "T",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Rg/NRows",
+            "name" : "NRows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Rg/NRows/V",
+                "name" : "V",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_F_LEFT_ANY",
+            "name" : "N_F_LEFT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_F_LEFT_ANY",
+              "errorCondition" : "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(NRows*/V In Y)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_F_LEFT_NO",
+            "name" : "N_F_LEFT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_F_LEFT_NO",
+              "errorCondition" : "FieldFilled(W) And NoFieldValueIncludedInValueList(NRows*/V In Y)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_F_LEFT_NOTALL",
+            "name" : "N_F_LEFT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_F_LEFT_NOTALL",
+              "errorCondition" : "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(NRows*/V In Y)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_F_RIGHT_ANY",
+            "name" : "N_F_RIGHT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_F_RIGHT_ANY",
+              "errorCondition" : "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(Y In NRows*/V)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_F_RIGHT_NO",
+            "name" : "N_F_RIGHT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_F_RIGHT_NO",
+              "errorCondition" : "FieldFilled(W) And NoFieldValueIncludedInValueList(Y In NRows*/V)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_F_RIGHT_NOTALL",
+            "name" : "N_F_RIGHT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_F_RIGHT_NOTALL",
+              "errorCondition" : "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(Y In NRows*/V)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_G_LEFT_ANY",
+            "name" : "N_G_LEFT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_G_LEFT_ANY",
+              "errorCondition" : "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(NRows* In Y)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_G_LEFT_NO",
+            "name" : "N_G_LEFT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_G_LEFT_NO",
+              "errorCondition" : "FieldFilled(W) And NoFieldValueIncludedInValueList(NRows* In Y)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_G_LEFT_NOTALL",
+            "name" : "N_G_LEFT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_G_LEFT_NOTALL",
+              "errorCondition" : "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(NRows* In Y)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_G_RIGHT_ANY",
+            "name" : "N_G_RIGHT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_G_RIGHT_ANY",
+              "errorCondition" : "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(Y In NRows*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_G_RIGHT_NO",
+            "name" : "N_G_RIGHT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_G_RIGHT_NO",
+              "errorCondition" : "FieldFilled(W) And NoFieldValueIncludedInValueList(Y In NRows*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/N_G_RIGHT_NOTALL",
+            "name" : "N_G_RIGHT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "N_G_RIGHT_NOTALL",
+              "errorCondition" : "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(Y In NRows*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_F_LEFT_ANY",
+            "name" : "T_F_LEFT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_F_LEFT_ANY",
+              "errorCondition" : "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(TRows*/T In X)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_F_LEFT_NO",
+            "name" : "T_F_LEFT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_F_LEFT_NO",
+              "errorCondition" : "FieldFilled(W) And NoFieldValueIncludedInValueList(TRows*/T In X)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_F_LEFT_NOTALL",
+            "name" : "T_F_LEFT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_F_LEFT_NOTALL",
+              "errorCondition" : "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(TRows*/T In X)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_F_RIGHT_ANY",
+            "name" : "T_F_RIGHT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_F_RIGHT_ANY",
+              "errorCondition" : "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(X In TRows*/T)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_F_RIGHT_NO",
+            "name" : "T_F_RIGHT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_F_RIGHT_NO",
+              "errorCondition" : "FieldFilled(W) And NoFieldValueIncludedInValueList(X In TRows*/T)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_F_RIGHT_NOTALL",
+            "name" : "T_F_RIGHT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_F_RIGHT_NOTALL",
+              "errorCondition" : "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(X In TRows*/T)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_G_LEFT_ANY",
+            "name" : "T_G_LEFT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_G_LEFT_ANY",
+              "errorCondition" : "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(TRows* In X)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_G_LEFT_NO",
+            "name" : "T_G_LEFT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_G_LEFT_NO",
+              "errorCondition" : "FieldFilled(W) And NoFieldValueIncludedInValueList(TRows* In X)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_G_LEFT_NOTALL",
+            "name" : "T_G_LEFT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_G_LEFT_NOTALL",
+              "errorCondition" : "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(TRows* In X)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_G_RIGHT_ANY",
+            "name" : "T_G_RIGHT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_G_RIGHT_ANY",
+              "errorCondition" : "FieldFilled(W) And AtLeastOneFieldValueIncludedInValueList(X In TRows*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_G_RIGHT_NO",
+            "name" : "T_G_RIGHT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_G_RIGHT_NO",
+              "errorCondition" : "FieldFilled(W) And NoFieldValueIncludedInValueList(X In TRows*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Rg/T_G_RIGHT_NOTALL",
+            "name" : "T_G_RIGHT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../W",
+              "errorCode" : "T_G_RIGHT_NOTALL",
+              "errorCondition" : "FieldFilled(W) And NotAllFieldValuesIncludedInValueList(X In TRows*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

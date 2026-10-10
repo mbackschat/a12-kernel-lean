@@ -1,0 +1,113 @@
+{
+  "target": "model",
+  "op": "describe",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "fields": [
+      {
+        "path": "/Rg/W",
+        "name": "W",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Rg/X",
+        "name": "X",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Rg/Y",
+        "name": "Y",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Rg/F9",
+        "name": "F9",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Rg/Rows/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Rg/Rows/M",
+        "name": "M",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Rg/Rows/Gate",
+        "name": "Gate",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Rg/DRows/D",
+        "name": "D",
+        "kind": "DATE"
+      },
+      {
+        "path": "/Rg/DShell/SRows/S",
+        "name": "S",
+        "kind": "DATE"
+      },
+      {
+        "path": "/Rg/TRows/T",
+        "name": "T",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Rg/NRows/V",
+        "name": "V",
+        "kind": "NUMBER",
+        "scale": 0
+      }
+    ],
+    "groups": [
+      {
+        "path": "/Rg",
+        "repeatable": false
+      },
+      {
+        "path": "/Rg/Rows",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Rg/DRows",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Rg/DShell",
+        "repeatable": false
+      },
+      {
+        "path": "/Rg/DShell/SRows",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Rg/TRows",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Rg/NRows",
+        "repeatable": true,
+        "maxRepetitions": 2
+      }
+    ],
+    "locales": [
+      "en_US"
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

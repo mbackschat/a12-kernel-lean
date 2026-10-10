@@ -9,8 +9,9 @@ private def partialListExtent (document : CheckedDocument model) (outer : Env)
     Except CheckedAddressingError (Option (CellObservation PartialSelectedExtent)) := do
   let (addresses, tail) ← model.groupOperandReads document.source.toDocument outer bound declarations
     (·.repeatableScope) |>.mapError .addressing
-  let complete := declarations.all fun declaration => scope.coversValueListExtent model declaration.path
-    (declaration.repeatableScope.take bound) (declaration.repeatableScope.drop bound) outer
+  let complete ← declarations.allM fun declaration =>
+    scope.coversDeclaredFieldExtent model declaration.path
+      (declaration.repeatableScope.drop bound) outer |>.mapError .addressing
   pure (some (.value { addresses, hasUninstantiatedTail := tail, extentRelevant := complete }))
 
 /-- Partial list members retain available witnesses independently of operand-local extent
