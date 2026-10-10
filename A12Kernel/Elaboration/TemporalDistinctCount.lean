@@ -370,11 +370,7 @@ def firstPartialTemporalOperand? :
     certified here by `certifyDistinctCountGroup` rather than by the shared group certificate, which
     carries the neighbouring operator's format-equality gate and would refuse an expansion this
     operator admits — one component set in two spellings
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-group-operand-follows-its-own-operator)).
-
-    An earlier version of this comment said a group slot was *declined*. It was already wrong when
-    written and a conformance case locking the admitted expansion sat beside it, which is the shape
-    a stale comment takes: nothing executes prose, so only a reader loses. -/
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-group-operand-follows-its-own-operator)). -/
 def elaborateTemporalDistinctCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
     (writtenGroup : GroupPath := declaringGroup) (fixedTargetGroup? : Option GroupPath := none) :
@@ -407,8 +403,8 @@ def elaborateTemporalDistinctCountSource (model : FlatModel)
 namespace TemporalDistinctCountElabError
 
 /-- Project this operator's own gate and delegate the shared shape classes. The component-set
-    refusal is `MVK_DATEFORMATS_NOT_COMPATIBLE`, measured naming both formats; the declined group
-    slot claims nothing. -/
+    refusal is `MVK_DATEFORMATS_NOT_COMPATIBLE`, measured naming both formats
+    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-distinct-count-component-set-and-locus)). -/
 def diagnostic? : TemporalDistinctCountElabError → Option KernelStaticDiagnostic
   | .mixedComponentSets _ _ _ => some .dateFormatsNotCompatible
   | .partialDate _ _ => some .partialDateNotAllowed
