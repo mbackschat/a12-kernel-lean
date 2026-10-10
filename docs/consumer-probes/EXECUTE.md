@@ -407,3 +407,31 @@ All declarations and authored expressions are statically admitted. Number fields
 - `wrong-accounts`: Retained stale inputs, poisoned clean clears, unread poison, last-match selection, cross-parent collisions, missing/duplicate collapse, partial absence and selected-only generated validation were rejected. Scheduling was explicitly left unresolved.
 - `questions-and-guesses`: Producer ordering and S6 seed value were identified as insufficient information, without guesses. Supply the missing existing clause and seed 9 before rerunning.
 - `exclusions`: The [task exclusions](#task-c01-execute-explain) remain; no C01 closure from this run.
+
+<a id="run-c01-execute-03"></a>
+### C01 corrected packet — `c01-execute-03`
+
+- `task`: [C01 Execute/Explain](#task-c01-execute-explain)
+- `status`: green
+- `started-at`: 2026-10-11T00:14:00+02:00
+- `finished-at`: 2026-10-11T00:14:34+02:00
+- `duration-seconds`: 34
+- `semantic-basis`: `9fe9911627efc367508ce2b8a39d380add0699a5`
+- `oracle`: HIGH reconciled all eight families against the checked owners below. The integrated 2,166-job build, 51 retained evidence projections and 3,026-root trust audit passed on the unchanged executable basis. A cached stdin query through `runModelComputations` additionally returned `value ok/value ok` and `cleared/cleared` for the two String contrasts. Correspondence remains bounded by the owners' retained observations; this is no new Kernel capture.
+- `consumer-access`: The isolated MEDIUM from run 02 reused its canonical-only context and read one supplement containing the updated task, S6 seed 9 and the existing spec/09 topological-order and ordinary-dependency paragraphs. It received no expected answers or implementation feedback, and accessed no repository, Lean, evidence, sibling, web or linked sources. This is a warm correction run, not a second cold consumer.
+- `cost`: 34 seconds; zero implementation/test lines or dependencies. The three runs total 276 seconds of isolated consumer time; root preparation/reconciliation is additional and tokens were not measured. The first two runs exposed handover defects, not a need for a different semantic implementation.
+- `result`: All S1–S8 contrasts below agree. C01's bounded Execute/Explain transport requirement is satisfied.
+- `wrong-accounts`: Each of the task's eight listed wrong-account families is distinguished, including clean empty versus poison, missing versus duplicate key, complete versus partial absence and first-match execution versus all-holding generated validation.
+- `questions-and-guesses`: None remain for the supplied contrasts. The earlier missing scheduling clause and seed were supplied explicitly rather than guessed.
+- `exclusions`: The [task exclusions](#task-c01-execute-explain) remain. No independent interpreter, public shipment, wider topology or universal Kernel correspondence is qualified.
+
+| Scenario | Reconciled disposition | Checked owner |
+|---|---|---|
+| S1 | Producer and consumer both 7, overriding stored 90/99 | [Complete-model locks](../../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [mixed plan](../../A12Kernel/Elaboration/MixedComputationPlan.lean) |
+| S2 | Producer clears; dependent reads zero and writes 1; presence does not fire after application | [Guarded plans](../../A12Kernel/Conformance/ScalarComputationPlanGuarded.lean) and [application controls](../../A12Kernel/Conformance/GeneratedComputationValidation/AppliedValidation.lean) |
+| S3 | Good-first writes `ok` twice; bad-first clears both through poison; eager formal-input inventory remains separate | [String first-filled](../../A12Kernel/Conformance/StringFirstFilledComputation.lean), [mixed read states](../../A12Kernel/Conformance/ScalarComputationRun.lean) and the direct model-run query |
+| S4 | Both guards true selects 1; neither clears; only second true selects 2 | [First-selected table](../../A12Kernel/Elaboration/NumericComputation/Table.lean) and [generated alternatives controls](../../A12Kernel/Conformance/GeneratedComputationValidation/Alternatives.lean) |
+| S5 | Values 11/22 at [1,1]/[2,1]; equal keys in different parents do not collide | [Parent-column resolution](../../A12Kernel/Elaboration/CheckedIndexColumn.lean) and [nested reader controls](../../A12Kernel/Reference/Dm/NestedSemanticIndexLocks.lean) |
+| S6 | Missing key fires both validation conditions as OMISSION and changes 9 to 0; duplicate key suppresses both and poisons the seeded computation | [Phase-specific index reads](../../A12Kernel/Conformance/SemanticIndex.lean) and [checked index elaboration](../../A12Kernel/Conformance/SemanticIndexElaboration.lean) |
+| S7 | Partial empty gives unknown/unknown; fully covered empty gives false/true; partial observed content gives true/false | [Partial group products](../../A12Kernel/Conformance/PartialGroupList.lean) |
+| S8 | Applied value 1; overlapping alternatives fire VALUE at `/Form/Out` with code `computedTarget`; singleton agrees and does not fire | [Applied generated-validation controls](../../A12Kernel/Conformance/GeneratedComputationValidation/AppliedValidation.lean) |
