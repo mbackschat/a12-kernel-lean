@@ -8,6 +8,16 @@ These laws characterize the ordered resolved Number scan, its two projections, c
 
 namespace A12Kernel
 
+/-- Prefix metadata has exactly the scan effect of an explicit leading empty cell (spec/03).
+This justifies compressing missing branches without changing the terminal result or exhausted state. -/
+theorem scanFirstFilledItems_emptyPrefix_compression
+    (side : ResolvedValueListSide kind) (state : FirstFilledScanState) :
+    scanFirstFilledItems id side.cells (state.enterOperand { side with hasEmptyPrefix := true }) =
+      scanFirstFilledItems id (.empty :: side.cells)
+        (state.enterOperand { side with hasEmptyPrefix := false }) := by
+  simp [FirstFilledScanState.enterOperand, FirstFilledScanState.enterSelection,
+    FirstFilledScanState.enter, scanFirstFilledItems, FirstFilledScanState.step]
+
 /-- Once an empty prefix is observed, an additional empty coordinate cannot change selection or
 its provenance. This is the local rewrite used when expanding uniformly relevant omitted tails
 in finite unfiltered partial walks (RuntimeController.combineFeldListe; spec/10 §5). -/

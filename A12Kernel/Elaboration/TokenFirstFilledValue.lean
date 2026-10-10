@@ -241,7 +241,12 @@ private def resolveCheckedFirstFilledValidationSide
       let addressed ← document.fullValidationAddressedCell outer direct.declaration.id
       pure { cells := [direct.operand.checkedValueListCellAt .validation addressed.cell]
              hasUninstantiatedTail := false, hasHaving := false }
-  | .star _ | .group _ => do
+  | .group group => do
+      let resolved ← source.resolveCheckedValidationOperand document outer
+      let hasEmptyPrefix ← model.groupOperandEmptyPrefix document.source.toDocument outer
+        group.source.boundLevelCount (group.slots.map (·.declaration.repeatableScope)) |>.mapError .addressing
+      pure { resolved.inCapacityValueListSideAt .validation with hasEmptyPrefix }
+  | .star _ => do
       pure ((← source.resolveCheckedValidationOperand (world := world) (traversalMode := .dense) document outer)
         |>.inCapacityValueListSideAt .validation)
 

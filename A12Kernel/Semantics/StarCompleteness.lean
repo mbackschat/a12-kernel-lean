@@ -95,7 +95,8 @@ def toResolvedSide (domain : ReopenedStarDomain)
     ResolvedValueListSide kind :=
   { cells
     hasUninstantiatedTail := domain.hasOpenTail
-    hasHaving }
+    hasHaving
+    hasEmptyPrefix := domain.hasEmptyPrefix }
 
 end ReopenedStarDomain
 

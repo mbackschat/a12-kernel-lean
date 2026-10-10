@@ -17,11 +17,11 @@ Resume the active family through its owner links. Update this file only when the
 <a id="active-unit"></a>
 ## Selected work
 
-- `milestone`: Close nested first-filled empty-prefix provenance in full validation across Number, stored-token and typed bare stars. P1–P5 distinguish empty/omitted leading branches, terminal suffixes, present-empty cells, unavailable/nonmatching terminals and cross-carrier reader composition.
-- `oracle`: The [eleven-document prefix checkpoint](sources/computation-scheduling-probes.md#src-first-filled-empty-prefix) agrees across both Kernel strategies. Exact actual-model rule pointer/type readback passes 44/44. Existing scan laws preserve repeated emptiness and terminal hiding; group/keyed sources, partial validation and broader calibration remain separate.
-- `working-tree`: Prefix correction is accepted and all required gates pass. No next-family source edits are active.
+- `milestone`: Preserve empty-prefix provenance across group and keyed FirstFilled extents in full validation. The finite matrix is five operand forms × String/Number/Boolean × eleven documents: ordinary group, starred group, keyed lower star, keyed group and keyed starred group.
+- `oracle`: The [extent-prefix checkpoint](sources/computation-scheduling-probes.md#src-first-filled-empty-prefix) retains both agreeing Kernel strategies. Focused locks and 165/165 actual-model pointer/type comparisons pass; the shared compression law is checked. Partial validation and wider-profile/depth calibration remain separate.
+- `working-tree`: The extent-prefix family is accepted and all required gates pass. No next-family source edits are active.
 - `state`: Broad coverage remains 217/217. Pattern computation calibration is now recorded for both operators; the accepted population report has 205 calibrated cells and 12 pending, with no claim that static calibration establishes runtime completeness.
-- `next`: Reconcile remaining group/keyed first-filled topology/provenance against existing code and evidence before selecting another finite batch.
+- `next`: Select the next remaining conformance family from the gap owners, reconciling its actual code/evidence boundary before implementation. The reserved custom-validator measurement remains an external dependency, not a global blocker.
 - `consumer`: The [cache-context readback](consumer-probes/EXECUTE.md#run-message-cache-context-readback-01) is the latest independent probe. It checks post-admission Execute/Explain decisions; population generation and wider host profiles remain outside. Use same-context adequacy until another material capability boundary.
 - `blocker`: The reserved custom test-range matrix depends on a source-owned observation that can emit the reserved callback key; the pinned and primary declarative probes cannot. Existing fixed-key differential tests provide no alternate input route. This blocks that matrix only; other families remain ready.
 - `stop-condition`: An unresolved source distinction stops dependent implementation, not discovery. Preserve the existing separate value-admission and message-address contracts.
@@ -30,11 +30,11 @@ Resume the active family through its owner links. Update this file only when the
 
 ## Verified family boundary
 
-- `accepted`: [First-filled prefix preservation](implementation/strings-and-enumerations.md#cap-first-filled-value-assurance) closes the nested empty/omitted-branch validation divergences through one topology fact shared by Number, stored-token and typed scans. Group/keyed projections and broader calibration remain independently bounded.
-- `focused`: P1–P5 pass on eleven documents with String, Number and Boolean plus a filtered control. Actual-model readback passes 44/44 exact rule pointer/type comparisons. The existing repeated-empty and terminal-prefix laws support compression; no universal topology/kernel equivalence is claimed.
-- `review-boundary`: Fresh read-only HIGH review found no actionable issue. Integration passes with 2,130 jobs; all 51 compact evidence projections agree.
-- `replay-boundary`: Full replay passes with 36,883 matches, zero divergence, unattributed instances or faults: 2,184 retained rows, 217 without matching artifacts and six preparation refusals. The prior population is preserved, both nested divergences are closed, and the two new captures add 161 matching instances. The replay interval resets.
-- `remaining-gates`: Prefix family gates are complete. Trust passes with 3,025 theorem roots, 110,061 declarations and 868 modules. No independent consumer probe is due; same-context Explain adequacy preserves VALUE versus OMISSION without reconstructing discarded topology.
+- `accepted`: [First-filled extent-prefix preservation](implementation/strings-and-enumerations.md#cap-first-filled-value-assurance) passes fresh HIGH review and disposition. Group and keyed flattening now retain leading structural emptiness across Number, stored-token and typed scans; the general topology adapter preserves the same fact.
+- `focused`: Five forms × three carriers × eleven documents pass, including exact actual-model readback: 165/165. The 30 former prefix divergences are closed. Bare-star controls remain green, and two pure topology adapter regressions plus the suffix control pass. The generic compression proof preserves the exact terminal result and exhausted state; it claims no universal Kernel correspondence.
+- `review-boundary`: The reviewer found one omitted metadata propagation in the general topology adapter; its correction passed the narrow disposition review. Integration passes with 2,132 jobs; all 51 compact evidence projections agree.
+- `replay-boundary`: Full replay passes with 37,048 matches, zero divergence, unattributed instances or faults: 2,217 retained rows, 217 without matching artifacts and six preparation refusals. The prior population is preserved; the new captures add 165 matching instances. The replay interval resets.
+- `remaining-gates`: Family gates are complete. Trust passes with 3,026 theorem roots, 110,072 declarations and 868 modules; documentation hygiene passes. No independent consumer probe is due; same-context Explain adequacy preserves VALUE versus OMISSION without reconstructing discarded topology.
 - `commands`: The [command ladder](TESTING.md#command-ladder) and [review disposition rules](TESTING.md#review-convergence-and-landing-gate) own gates. Documentation-only finalization triggers no additional build or review.
 
 ## Consumer and evidence triggers

@@ -55,6 +55,8 @@ structure ResolvedValueListSide (kind : ValueListKind) where
   hasUninstantiatedTail : Bool
   hasHaving : Bool
   hasNonRelevant : Bool := false
+  /-- Empty structural branches before the first physical cell, retained for ordered consumers (spec/03 FirstFilledValue). -/
+  hasEmptyPrefix : Bool := false
 
 namespace ResolvedValueListSide
 
@@ -119,7 +121,8 @@ def append (left right : ResolvedValueListSide kind) :
     hasUninstantiatedTail :=
       left.hasUninstantiatedTail || right.hasUninstantiatedTail
     hasHaving := left.hasHaving || right.hasHaving
-    hasNonRelevant := left.hasNonRelevant || right.hasNonRelevant }
+    hasNonRelevant := left.hasNonRelevant || right.hasNonRelevant
+    hasEmptyPrefix := left.hasEmptyPrefix || (left.cells.isEmpty && right.hasEmptyPrefix) }
 
 /-- Check whether every reached cell is available, stopping at the first formal cause. -/
 def available (side : ResolvedValueListSide kind) : Except FormalCause Unit :=

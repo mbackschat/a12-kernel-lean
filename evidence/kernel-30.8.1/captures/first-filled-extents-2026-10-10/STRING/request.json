@@ -1,0 +1,714 @@
+{
+  "model": "Extents_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "empty-prefix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "First": [],
+            "Second": [
+              {
+                "Y": "A"
+              }
+            ]
+          },
+          "Groups": [
+            {
+              "Rows": []
+            },
+            {
+              "Rows": [
+                {
+                  "Z": "A"
+                }
+              ]
+            }
+          ],
+          "Buckets": [
+            {
+              "Id": "p",
+              "Block": {
+                "First": [],
+                "Second": [
+                  {
+                    "Y": "A"
+                  }
+                ]
+              },
+              "Inner": [
+                {
+                  "Rows": []
+                },
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "missing-prefix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "Second": [
+              {
+                "Y": "A"
+              }
+            ]
+          },
+          "Groups": [
+            {},
+            {
+              "Rows": [
+                {
+                  "Z": "A"
+                }
+              ]
+            }
+          ],
+          "Buckets": [
+            {
+              "Id": "p",
+              "Block": {
+                "Second": [
+                  {
+                    "Y": "A"
+                  }
+                ]
+              },
+              "Inner": [
+                {},
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-suffix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "First": [
+              {
+                "X": "A"
+              }
+            ],
+            "Second": []
+          },
+          "Groups": [
+            {
+              "Rows": [
+                {
+                  "Z": "A"
+                }
+              ]
+            },
+            {
+              "Rows": []
+            }
+          ],
+          "Buckets": [
+            {
+              "Id": "p",
+              "Block": {
+                "First": [
+                  {
+                    "X": "A"
+                  }
+                ],
+                "Second": []
+              },
+              "Inner": [
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    }
+                  ]
+                },
+                {
+                  "Rows": []
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "missing-suffix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "First": [
+              {
+                "X": "A"
+              }
+            ]
+          },
+          "Groups": [
+            {
+              "Rows": [
+                {
+                  "Z": "A"
+                }
+              ]
+            },
+            {}
+          ],
+          "Buckets": [
+            {
+              "Id": "p",
+              "Block": {
+                "First": [
+                  {
+                    "X": "A"
+                  }
+                ]
+              },
+              "Inner": [
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    }
+                  ]
+                },
+                {}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "filled-control",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "First": [
+              {
+                "X": "A"
+              }
+            ],
+            "Second": [
+              {
+                "Y": "B"
+              }
+            ]
+          },
+          "Groups": [
+            {
+              "Rows": [
+                {
+                  "Z": "A"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Z": "B"
+                }
+              ]
+            }
+          ],
+          "Buckets": [
+            {
+              "Id": "p",
+              "Block": {
+                "First": [
+                  {
+                    "X": "A"
+                  }
+                ],
+                "Second": [
+                  {
+                    "Y": "B"
+                  }
+                ]
+              },
+              "Inner": [
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    }
+                  ]
+                },
+                {
+                  "Rows": [
+                    {
+                      "Z": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-cell-prefix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "First": [
+              {
+                "X": ""
+              }
+            ],
+            "Second": [
+              {
+                "Y": "A"
+              }
+            ]
+          },
+          "Groups": [
+            {
+              "Rows": [
+                {
+                  "Z": ""
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Z": "A"
+                }
+              ]
+            }
+          ],
+          "Buckets": [
+            {
+              "Id": "p",
+              "Block": {
+                "First": [
+                  {
+                    "X": ""
+                  }
+                ],
+                "Second": [
+                  {
+                    "Y": "A"
+                  }
+                ]
+              },
+              "Inner": [
+                {
+                  "Rows": [
+                    {
+                      "Z": ""
+                    }
+                  ]
+                },
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-cell-suffix",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "First": [
+              {
+                "X": "A"
+              },
+              {
+                "X": ""
+              }
+            ],
+            "Second": [
+              {
+                "Y": "B"
+              }
+            ]
+          },
+          "Groups": [
+            {
+              "Rows": [
+                {
+                  "Z": "A"
+                },
+                {
+                  "Z": ""
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Z": "B"
+                }
+              ]
+            }
+          ],
+          "Buckets": [
+            {
+              "Id": "p",
+              "Block": {
+                "First": [
+                  {
+                    "X": "A"
+                  },
+                  {
+                    "X": ""
+                  }
+                ],
+                "Second": [
+                  {
+                    "Y": "B"
+                  }
+                ]
+              },
+              "Inner": [
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    },
+                    {
+                      "Z": ""
+                    }
+                  ]
+                },
+                {
+                  "Rows": [
+                    {
+                      "Z": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "all-empty",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "First": [],
+            "Second": []
+          },
+          "Groups": [
+            {
+              "Rows": []
+            },
+            {
+              "Rows": []
+            }
+          ],
+          "Buckets": [
+            {
+              "Id": "p",
+              "Block": {
+                "First": [],
+                "Second": []
+              },
+              "Inner": [
+                {
+                  "Rows": []
+                },
+                {
+                  "Rows": []
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "nonmatching-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "First": [
+              {
+                "X": "B"
+              }
+            ],
+            "Second": [
+              {
+                "Y": "A"
+              }
+            ]
+          },
+          "Groups": [
+            {
+              "Rows": [
+                {
+                  "Z": "B"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Z": "A"
+                }
+              ]
+            }
+          ],
+          "Buckets": [
+            {
+              "Id": "p",
+              "Block": {
+                "First": [
+                  {
+                    "X": "B"
+                  }
+                ],
+                "Second": [
+                  {
+                    "Y": "A"
+                  }
+                ]
+              },
+              "Inner": [
+                {
+                  "Rows": [
+                    {
+                      "Z": "B"
+                    }
+                  ]
+                },
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "absent-key",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "First": [
+              {
+                "X": "A"
+              }
+            ],
+            "Second": [
+              {
+                "Y": "B"
+              }
+            ]
+          },
+          "Groups": [
+            {
+              "Rows": [
+                {
+                  "Z": "A"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Z": "B"
+                }
+              ]
+            }
+          ],
+          "Buckets": [
+            {
+              "Id": "q",
+              "Block": {
+                "First": [
+                  {
+                    "X": "A"
+                  }
+                ],
+                "Second": [
+                  {
+                    "Y": "B"
+                  }
+                ]
+              },
+              "Inner": [
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    }
+                  ]
+                },
+                {
+                  "Rows": [
+                    {
+                      "Z": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "duplicate-key",
+      "documentInline": {
+        "Form": {
+          "Anchor": "ON",
+          "Key": "p",
+          "Block": {
+            "First": [
+              {
+                "X": "A"
+              }
+            ],
+            "Second": [
+              {
+                "Y": "B"
+              }
+            ]
+          },
+          "Groups": [
+            {
+              "Rows": [
+                {
+                  "Z": "A"
+                }
+              ]
+            },
+            {
+              "Rows": [
+                {
+                  "Z": "B"
+                }
+              ]
+            }
+          ],
+          "Buckets": [
+            {
+              "Id": "p",
+              "Block": {
+                "First": [
+                  {
+                    "X": "A"
+                  }
+                ],
+                "Second": [
+                  {
+                    "Y": "B"
+                  }
+                ]
+              },
+              "Inner": [
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    }
+                  ]
+                },
+                {
+                  "Rows": [
+                    {
+                      "Z": "B"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Id": "p",
+              "Block": {
+                "First": [
+                  {
+                    "X": "A"
+                  }
+                ],
+                "Second": [
+                  {
+                    "Y": "B"
+                  }
+                ]
+              },
+              "Inner": [
+                {
+                  "Rows": [
+                    {
+                      "Z": "A"
+                    }
+                  ]
+                },
+                {
+                  "Rows": [
+                    {
+                      "Z": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

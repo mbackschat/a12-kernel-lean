@@ -71,7 +71,7 @@ def enterSelection (state : FirstFilledScanState)
 /-- Enter one resolved operand before inspecting its cells. -/
 def enterOperand (state : FirstFilledScanState)
     (side : ResolvedValueListSide kind) : FirstFilledScanState :=
-  state.enterSelection side.cells.isEmpty
+  state.enterSelection (side.cells.isEmpty || side.hasEmptyPrefix)
     side.hasUninstantiatedTail side.hasHaving
 
 /-- Consume one reached, relevant cell. Later consumers may place their own gates before invoking this step. -/

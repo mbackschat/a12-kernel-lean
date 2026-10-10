@@ -193,6 +193,21 @@ private def scanTypedFirstFilled (document : CheckedDocument model) (outer : Env
         let cells ← operand.observations (world := world) (traversalMode := .dense) document outer
         pure (scanFirstFilledObservations cells (state.enterSelection cells.isEmpty false operand.hasHaving))
       let scanned ← match operand with
+        | .group source => do
+            let cells ← source.observations document outer
+            let emptyPrefix ← model.groupOperandEmptyPrefix document.source.toDocument outer
+              source.source.boundLevelCount (source.declarations.map (·.repeatableScope)) |>.mapError .addressing
+            pure (scanFirstFilledObservations cells (state.enterSelection (cells.isEmpty || emptyPrefix) false false))
+        | .keyed source => do
+            let context := document.computationContextAt outer
+            let selected ← source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read)
+              outer context.read context.storedText
+            let cells ← source.observationsWith .validation document.source.toDocument selected document.computationFillContext.read
+            let emptyPrefix ← (match selected with
+              | .value environment => model.groupOperandEmptyPrefix document.source.toDocument environment
+                  source.boundLevelCount (source.declarations.map (·.repeatableScope)) |>.mapError .addressing
+              | _ => pure false)
+            pure (scanFirstFilledObservations cells (state.enterSelection (cells.isEmpty || emptyPrefix) false false))
         | .star source => match source.filter with
           | some having =>
               source.source.scanValidationCells having.condition document outer

@@ -217,6 +217,18 @@ def FlatModel.groupOperandUninstantiatedTail (model : FlatModel) (document : Doc
     return (← ({ axes, firstStar := boundCount } : StarPath).resolveTopology document outer).domain.hasOpenTail
   return tails.any id
 
+/-- Preserve leading structural emptiness before declaration-major flattening (spec/03 FirstFilledValue).
+Only the first declaration can precede every physical cell: once a cell is reached, an empty cell
+records missingness itself and a value or unavailable cell terminates the first-filled scan. -/
+def FlatModel.groupOperandEmptyPrefix (model : FlatModel) (document : Document) (outer : Env)
+    (boundCount : Nat) (scopes : List (List RepeatableLevel)) : Except StarAddressingError Bool := do
+  let scope :: _ := scopes | return true
+  if scope.length ≤ boundCount then
+    return (← model.groupOperandEnvironments document outer boundCount scope).isEmpty
+  let some axes := model.repeatableAxesForScope? scope
+    | throw (.invalidRepeatability (scope.getLast?.getD 0))
+  return (← ({ axes, firstStar := boundCount } : StarPath).resolveInCapacity document outer).domain.hasEmptyPrefix
+
 /-- Every row a group operand's declarations reach, declaration-major: each declaration paired with
 each of its environments, so a consumer reads each cell through the declaration that stored it. The
 checked document's walk and the reader route's both take their rows from here. -/

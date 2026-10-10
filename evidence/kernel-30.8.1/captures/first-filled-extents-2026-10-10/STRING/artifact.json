@@ -1,0 +1,1396 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Extents_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "empty-prefix",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y"
+              ]
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Groups[0]/Rows[0]/Z"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y"
+              ]
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Groups[0]/Rows[0]/Z"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-prefix",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y"
+              ]
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Groups[0]/Rows[0]/Z"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y"
+              ]
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Groups[0]/Rows[0]/Z"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-suffix",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-suffix",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "filled-control",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-cell-prefix",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y"
+              ]
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Groups[0]/Rows[0]/Z"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y"
+              ]
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ]
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": [
+                "/Form[1]/Groups[0]/Rows[0]/Z"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-cell-suffix",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Block[1]/First[0]/X",
+                "/Form[1]/Buckets[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "KEY_STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Buckets[1]/Inner[0]/Rows[0]/Z",
+                "Form/Anchor",
+                "Form/Buckets/Id",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "all-empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "nonmatching-first",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "absent-key",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "duplicate-key",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Buckets/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Buckets/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Buckets[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Buckets[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Block[1]/First[0]/X",
+                "/Form[1]/Block[1]/Second[0]/Y",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "STAR_GROUP",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Groups[0]/Rows[0]/Z",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Buckets/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Buckets/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Buckets[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Buckets[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,280 @@
+{
+  "header" : {
+    "id" : "Extents_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Extents_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Block",
+            "name" : "Block",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Block/First",
+                "name" : "First",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Block/First/X",
+                    "name" : "X",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Block/Second",
+                "name" : "Second",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Block/Second/Y",
+                    "name" : "Y",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Groups",
+            "name" : "Groups",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Groups/Rows",
+                "name" : "Rows",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Groups/Rows/Z",
+                    "name" : "Z",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Buckets",
+            "name" : "Buckets",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Buckets/Id",
+                "name" : "Id",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Buckets/Block",
+                "name" : "Block",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Group",
+                    "id" : "/Form/Buckets/Block/First",
+                    "name" : "First",
+                    "Group" : {
+                      "repeatability" : 3,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Buckets/Block/First/X",
+                        "name" : "X",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "StringType"
+                          }
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Group",
+                    "id" : "/Form/Buckets/Block/Second",
+                    "name" : "Second",
+                    "Group" : {
+                      "repeatability" : 3,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Buckets/Block/Second/Y",
+                        "name" : "Y",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "StringType"
+                          }
+                        }
+                      } ]
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Buckets/Inner",
+                "name" : "Inner",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Group",
+                    "id" : "/Form/Buckets/Inner/Rows",
+                    "name" : "Rows",
+                    "Group" : {
+                      "repeatability" : 3,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Buckets/Inner/Rows/Z",
+                        "name" : "Z",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "StringType"
+                          }
+                        }
+                      } ]
+                    }
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "Id"
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GROUP",
+            "name" : "GROUP",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "GROUP",
+              "errorCondition" : "FieldFilled(Anchor) And FirstFilledValue(Block) == \"A\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/STAR_GROUP",
+            "name" : "STAR_GROUP",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "STAR_GROUP",
+              "errorCondition" : "FieldFilled(Anchor) And FirstFilledValue(Groups*/Rows*) == \"A\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/KEY_STAR",
+            "name" : "KEY_STAR",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "KEY_STAR",
+              "errorCondition" : "FieldFilled(Anchor) And FirstFilledValue(Buckets/Inner*/Rows*/Z For Key) == \"A\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/KEY_GROUP",
+            "name" : "KEY_GROUP",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "KEY_GROUP",
+              "errorCondition" : "FieldFilled(Anchor) And FirstFilledValue(Buckets/Block For Key) == \"A\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/KEY_STAR_GROUP",
+            "name" : "KEY_STAR_GROUP",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "KEY_STAR_GROUP",
+              "errorCondition" : "FieldFilled(Anchor) And FirstFilledValue(Buckets/Inner*/Rows* For Key) == \"A\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

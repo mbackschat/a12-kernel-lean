@@ -146,7 +146,9 @@ def selectedValueListSideWith {kind : ValueListKind}
           let rows ← selected.rows document environment |>.mapError .addressing
           let cells ← rows.flatMapM fun (declaration, environments, _) =>
             environments.mapM fun row => classify declaration (observeCell phase (read row declaration.id))
-          pure { cells, hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false }
+          let hasEmptyPrefix ← model.groupOperandEmptyPrefix document environment
+            selected.boundLevelCount (selected.declarations.map (·.repeatableScope)) |>.mapError .addressing
+          pure { cells, hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false, hasEmptyPrefix }
 
 /-- Bind the innermost declared index before checking the remaining unbound extent. A group
 without its own star may retain only nonrepeatable steps below the selected level (`spec/08` §4). -/

@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.StarCompleteness
 import A12Kernel.Semantics.NumericAggregate
+import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Reopened-star completeness executable locks
 
@@ -75,6 +76,18 @@ example :
     evalNumericSumAggregate false
         (fullA.toResolvedSide (kind := .number) [.present 8]) =
       .value (NumericArithmeticOp.add.eval 0 8) .fixed := by
+  native_decide
+
+example : evalFirstFilledNumber
+    ((finiteTwo (two (finiteTwo .nil) fullC)).toResolvedSide [.present 1]) = .value 1 true := by
+  native_decide
+
+example : evalFirstFilledNumber
+    ((finiteTwo (.cons 2 leaf .nil)).toResolvedSide [.present 1]) = .value 1 true := by
+  native_decide
+
+example : evalFirstFilledNumber
+    ((finiteTwo (two fullC (finiteTwo .nil))).toResolvedSide [.present 1]) = .value 1 false := by
   native_decide
 
 end A12Kernel.Conformance.StarCompleteness

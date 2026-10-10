@@ -332,8 +332,11 @@ private def scanCheckedDocumentValidationOperand
         let (reads, hasTail) ← model.groupOperandReads document.source.toDocument outer
           slot.source.boundLevelCount (model.groupSubtreeFields slot.groupPath) (·.repeatableScope)
           |>.mapError .addressing
+        let emptyPrefix ← model.groupOperandEmptyPrefix document.source.toDocument outer
+          slot.source.boundLevelCount ((model.groupSubtreeFields slot.groupPath).map (·.repeatableScope))
+          |>.mapError .addressing
         scanDeclaredValidationFirstFilled (model := model) scope read { addresses := reads } reads
-          (state.enterSelection reads.isEmpty hasTail false)
+          (state.enterSelection (reads.isEmpty || emptyPrefix) hasTail false)
 
 private def scanCheckedDocumentValidationOperands
     (document : CheckedDocument model) (outer : Env)

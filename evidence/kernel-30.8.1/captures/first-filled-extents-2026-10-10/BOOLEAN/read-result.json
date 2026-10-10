@@ -1,0 +1,25 @@
+{
+  "target": "rule",
+  "op": "read",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "rule": "/Form/KEY_STAR_GROUP",
+    "severity": "ERROR",
+    "errorCode": "KEY_STAR_GROUP",
+    "errorField": "/Form/Anchor",
+    "converted": false,
+    "canonicalText": "FieldFilled(Anchor) And FirstFilledValue(Buckets/Inner*/Rows* For Key) == True",
+    "reason": "the kernel could not parse the stored condition against this model",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

@@ -1893,6 +1893,7 @@ run_cmd do
 #print axioms A12Kernel.valueList_evalClassified_noNonRelevant
 #print axioms A12Kernel.valueList_classified_fired_implies_resolved_fired
 #print axioms A12Kernel.scanFirstFilledObservations_append_terminal
+#print axioms A12Kernel.scanFirstFilledItems_emptyPrefix_compression
 #print axioms A12Kernel.scanFirstFilledItems_repeated_empty_prefix
 #print axioms A12Kernel.scanFirstFilledObservations_repeated_empty_prefix
 #print axioms A12Kernel.scanFirstFilledItems_present_head

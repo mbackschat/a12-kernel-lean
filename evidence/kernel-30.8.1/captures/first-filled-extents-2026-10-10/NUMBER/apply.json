@@ -1,0 +1,234 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Key",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Block"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Block",
+    "name": "First",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Block/First",
+    "name": "X",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Block",
+    "name": "Second",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Block/Second",
+    "name": "Y",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Groups",
+    "repeatable": 3
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Groups",
+    "name": "Rows",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Groups/Rows",
+    "name": "Z",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Buckets",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Buckets",
+    "name": "Id",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Form/Buckets",
+    "index-field": "Id"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Buckets",
+    "name": "Block"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Buckets/Block",
+    "name": "First",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Buckets/Block/First",
+    "name": "X",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Buckets/Block",
+    "name": "Second",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Buckets/Block/Second",
+    "name": "Y",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Buckets",
+    "name": "Inner",
+    "repeatable": 3
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Buckets/Inner",
+    "name": "Rows",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Buckets/Inner/Rows",
+    "name": "Z",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And FirstFilledValue(Block) == 1",
+    "code": "GROUP",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And FirstFilledValue(Groups*/Rows*) == 1",
+    "code": "STAR_GROUP",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And FirstFilledValue(Buckets/Inner*/Rows*/Z For Key) == 1",
+    "code": "KEY_STAR",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And FirstFilledValue(Buckets/Block For Key) == 1",
+    "code": "KEY_GROUP",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And FirstFilledValue(Buckets/Inner*/Rows* For Key) == 1",
+    "code": "KEY_STAR_GROUP",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]
