@@ -257,3 +257,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: The two star-admitting group predicates bind the indexed parent and retain each lower declared group position. A missing parent needs wildcard coverage at the indexed level and complete lower-slot coverage; concrete lower coordinates can jointly cover finite capacity, while concrete parent coordinates cannot replace the wildcard. Terminal structural content and fixed-child content remain distinct.
 - `basis`: [Keyed-star predicate matrix](sources/group-count-topology.md#src-keyed-star-predicates), both Kernel strategies agreeing on 159 rows across one and two reopened levels, fixed and independent-star mixtures, key failure/absence and capacity controls. No peer defect is claimed.
 - `acceptance`: Reconcile selected-parent identity and missing-parent/lower-slot coverage for both predicates. Preserve the ordinary star-admission gates, duplicate-key unavailability and count/computation distinctions. Return an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.
+
+<a id="spec-2026-10-10-22"></a>
+### SPEC-2026-10-10-22 — full group relevance combines concrete descendant coverage
+
+- `status`: pending
+- `canonical`: [Partial group relevance](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
+- `delta`: Complete concrete coverage of finite repeatable children supplies full parent-group relevance, including coverage assembled from descendant fields across nested levels. Duplicate coordinates, out-of-capacity substitutes, missing fields and incomplete nested combinations do not suffice. Declared capacity, rather than held rows, sets the denominator.
+- `basis`: [Group relevance union matrix](sources/group-count-topology.md#src-group-relevance-union), both Kernel strategies agreeing on 126 rows across group presence, all five list predicates and fixed-list group counts. No peer defect is claimed.
+- `acceptance`: Reconcile the shared full-relevance product while preserving positive-content witnesses, malformed-input treatment, the count’s separate extent/first-instance gates and computation semantics. Return an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.

@@ -258,6 +258,7 @@ import A12Kernel.Conformance.GroupOperandCapacity
 import A12Kernel.Conformance.GroupPresence
 import A12Kernel.Conformance.GroupPresenceInput
 import A12Kernel.Conformance.GroupPresenceRepeatableDescendant
+import A12Kernel.Conformance.GroupRelevance
 import A12Kernel.Conformance.IndexedDateRangeConstructionComputation
 import A12Kernel.Conformance.IteratedDateRangeCondition
 import A12Kernel.Conformance.IteratedYearlessDateRangeCondition

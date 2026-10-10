@@ -1,0 +1,16 @@
+{
+  "target": "model",
+  "op": "new",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "created model GroupCoverage_DM",
+  "changed": {
+    "id": "GroupCoverage_DM",
+    "root": "Form",
+    "locale": "en_US"
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "GroupCoverage_DM.json"
+}

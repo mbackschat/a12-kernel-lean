@@ -4,7 +4,7 @@ import A12Kernel.Semantics.StarAddressing
 
 namespace A12Kernel
 
-/-- One path-segment selector from the partial-validation relevant-entity set. `all` is the public wildcard; a concrete selector cannot establish all-rows knowledge at a repeatable level. -/
+/-- One path-segment selector from the partial-validation relevant-entity set. `all` is the public wildcard; `concrete` selects one coordinate. Each consumer defines how several selectors combine into extent coverage. -/
 inductive RelevanceIndex where
   | all
   | concrete (index : Nat)
@@ -166,20 +166,6 @@ def touchesGroup (entity : RelevantEntityPattern) (model : FlatModel)
   else
     false
 
-private def coversDescendantCompletely
-    (entity : RelevantEntityPattern) (model : FlatModel)
-    (groupPath : GroupPath) (environment : Env)
-    (fieldPath : List String) : Bool :=
-  entity.touchesGroup model groupPath environment &&
-    entity.path.isPrefixOf fieldPath &&
-    model.repeatableGroups.all fun group =>
-      if groupPath.length < group.path.length &&
-          group.path.isPrefixOf entity.path then
-        entity.indices[group.path.length - 1]? ==
-          some RelevanceIndex.all
-      else
-        true
-
 end RelevantEntityPattern
 
 namespace ValidationRelevanceScope
@@ -340,7 +326,7 @@ def coversFieldAtBoundLevels (scope : ValidationRelevanceScope)
           | some projected =>
               projected.matchesBoundSubtree model boundLevels environment
 
-/-- Derive the kernel's three-level relevance for one concrete group instance. Any intersecting selection supplies partial visibility; definite absence additionally requires an ancestor group selection or complete coverage of every declared descendant, wildcarded across every deeper repeatable level. -/
+/-- Derive the kernel's three-level relevance for one concrete group instance. Any intersecting selection supplies partial visibility; definite absence additionally requires an ancestor group selection or complete union coverage of every declared descendant. Finite deeper levels accept all concrete positions; unbounded levels require a wildcard (spec/10 §5). -/
 def groupRelevance (scope : ValidationRelevanceScope) (model : FlatModel)
     (groupPath : GroupPath) (environment : Env) : GroupRelevance :=
   match scope with
@@ -354,9 +340,9 @@ def groupRelevance (scope : ValidationRelevanceScope) (model : FlatModel)
         .fullyRelevant
       else if (model.fields.filter fun declaration =>
           groupPath.isPrefixOf declaration.groupPath).all fun declaration =>
-          entities.any fun entity =>
-            entity.coversDescendantCompletely model groupPath environment
-              declaration.path then
+          let reopened := (model.repeatableGroups.filter fun group =>
+            groupPath.length < group.path.length && groupPath.isPrefixOf group.path).map (·.level)
+          (scope.coversDeclaredFieldExtent model declaration.path reopened environment).toOption.getD false then
         .fullyRelevant
       else
         .partlyRelevant

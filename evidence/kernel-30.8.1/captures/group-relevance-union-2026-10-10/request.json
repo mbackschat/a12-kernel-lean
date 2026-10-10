@@ -1,0 +1,6794 @@
+{
+  "model": "GroupCoverage_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "absent-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "absent-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children"
+        }
+      ]
+    },
+    {
+      "name": "absent-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absent-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absent-duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absent-excess",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absent-fields-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/M"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K"
+        }
+      ]
+    },
+    {
+      "name": "absent-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absent-fields-diagonal",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absent-parts-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absent-missing-field",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts"
+        }
+      ]
+    },
+    {
+      "name": "absent-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        }
+      ]
+    },
+    {
+      "name": "empty-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children"
+        }
+      ]
+    },
+    {
+      "name": "empty-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-excess",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-fields-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/M"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K"
+        }
+      ]
+    },
+    {
+      "name": "empty-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-fields-diagonal",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-parts-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-missing-field",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts"
+        }
+      ]
+    },
+    {
+      "name": "empty-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        }
+      ]
+    },
+    {
+      "name": "two-empty-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "two-empty-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children"
+        }
+      ]
+    },
+    {
+      "name": "two-empty-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two-empty-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two-empty-duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two-empty-excess",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two-empty-fields-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/M"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K"
+        }
+      ]
+    },
+    {
+      "name": "two-empty-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two-empty-fields-diagonal",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two-empty-parts-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two-empty-missing-field",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts"
+        }
+      ]
+    },
+    {
+      "name": "two-empty-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        }
+      ]
+    },
+    {
+      "name": "filled-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "filled-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children"
+        }
+      ]
+    },
+    {
+      "name": "filled-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "filled-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "filled-duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "filled-excess",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "filled-fields-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/M"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K"
+        }
+      ]
+    },
+    {
+      "name": "filled-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "filled-fields-diagonal",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "filled-parts-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "filled-missing-field",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts"
+        }
+      ]
+    },
+    {
+      "name": "filled-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "1",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        }
+      ]
+    },
+    {
+      "name": "later-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "later-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children"
+        }
+      ]
+    },
+    {
+      "name": "later-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "later-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "later-duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "later-excess",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "later-fields-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/M"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K"
+        }
+      ]
+    },
+    {
+      "name": "later-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "later-fields-diagonal",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "later-parts-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "later-missing-field",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts"
+        }
+      ]
+    },
+    {
+      "name": "later-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "2",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        }
+      ]
+    },
+    {
+      "name": "malformed-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "malformed-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children"
+        }
+      ]
+    },
+    {
+      "name": "malformed-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-excess",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-fields-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/M"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K"
+        }
+      ]
+    },
+    {
+      "name": "malformed-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-fields-diagonal",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-parts-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-missing-field",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts"
+        }
+      ]
+    },
+    {
+      "name": "malformed-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children"
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-excess",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-fields-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/M"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K"
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-fields-diagonal",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-parts-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-missing-field",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts"
+        }
+      ]
+    },
+    {
+      "name": "malformed-good-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "2",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        }
+      ]
+    },
+    {
+      "name": "nested-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "nested-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children"
+        }
+      ]
+    },
+    {
+      "name": "nested-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-excess",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-fields-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/M"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K"
+        }
+      ]
+    },
+    {
+      "name": "nested-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-fields-diagonal",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-parts-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-missing-field",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts"
+        }
+      ]
+    },
+    {
+      "name": "nested-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children"
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-excess",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-fields-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/M"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K"
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-fields-diagonal",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-parts-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-missing-field",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts"
+        }
+      ]
+    },
+    {
+      "name": "nested-empty-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": [
+                  {
+                    "K": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        }
+      ]
+    },
+    {
+      "name": "excess-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "excess-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children"
+        }
+      ]
+    },
+    {
+      "name": "excess-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "excess-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "excess-duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "excess-excess",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "excess-fields-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/M"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K"
+        }
+      ]
+    },
+    {
+      "name": "excess-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "excess-fields-diagonal",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "excess-parts-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts",
+          "reps": [
+            1,
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "excess-missing-field",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N"
+        },
+        {
+          "path": "/Form/Parent/Children/Parts"
+        }
+      ]
+    },
+    {
+      "name": "excess-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": ""
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "",
+                "M": "",
+                "Parts": []
+              },
+              {
+                "N": "3",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        }
+      ]
+    },
+    {
+      "name": "absent-peer-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": "1"
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absent-peer-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": "1"
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absent-peer-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": "1"
+          },
+          "Parent": {
+            "Children": []
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-peer-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": "1"
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-peer-incomplete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": "1"
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-peer-fields-complete",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Other": {
+            "N": "1"
+          },
+          "Parent": {
+            "Children": [
+              {
+                "N": "bad",
+                "M": "",
+                "Parts": []
+              }
+            ]
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Other"
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/M",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Parent/Children/Parts/K",
+          "reps": [
+            1,
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "target": "model",
+  "op": "describe",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "model card",
+  "data": {
+    "fields": [
+      {
+        "path": "/Form/Anchor",
+        "name": "Anchor",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Form/Other/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Parent/Children/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Parent/Children/M",
+        "name": "M",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Parent/Children/Parts/K",
+        "name": "K",
+        "kind": "NUMBER",
+        "scale": 0
+      }
+    ],
+    "groups": [
+      {
+        "path": "/Form",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Other",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Parent",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Parent/Children",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Form/Parent/Children/Parts",
+        "repeatable": true,
+        "maxRepetitions": 2
+      }
+    ],
+    "locales": [
+      "en_US"
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

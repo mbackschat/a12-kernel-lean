@@ -1,0 +1,255 @@
+{
+  "header" : {
+    "id" : "GroupCoverage_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "GroupCoverage_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Other/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Parent",
+            "name" : "Parent",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Parent/Children",
+                "name" : "Children",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Parent/Children/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Parent/Children/M",
+                    "name" : "M",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Group",
+                    "id" : "/Form/Parent/Children/Parts",
+                    "name" : "Parts",
+                    "Group" : {
+                      "repeatability" : 2,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Parent/Children/Parts/K",
+                        "name" : "K",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Filled",
+            "name" : "Filled",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "Filled",
+              "errorCondition" : "FieldFilled(Anchor) And GroupFilled(Parent)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Empty",
+            "name" : "Empty",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "Empty",
+              "errorCondition" : "FieldFilled(Anchor) And GroupNotFilled(Parent)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/AllGroupsFilled",
+            "name" : "AllGroupsFilled",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "AllGroupsFilled",
+              "errorCondition" : "FieldFilled(Anchor) And AllGroupsFilled(Parent, Other)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NoGroupFilled",
+            "name" : "NoGroupFilled",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "NoGroupFilled",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Parent, Other)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/AtLeastOneGroupFilled",
+            "name" : "AtLeastOneGroupFilled",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "AtLeastOneGroupFilled",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Parent, Other)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NotAllGroupsFilled",
+            "name" : "NotAllGroupsFilled",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "NotAllGroupsFilled",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllGroupsFilled(Parent, Other)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GroupsNotCollectivelyFilled",
+            "name" : "GroupsNotCollectivelyFilled",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "GroupsNotCollectivelyFilled",
+              "errorCondition" : "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Parent, Other)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CountZero",
+            "name" : "CountZero",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "CountZero",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Parent, Other) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CountOne",
+            "name" : "CountOne",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "CountOne",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Parent, Other) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
