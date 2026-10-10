@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.NumericComputation.Evaluation
 import A12Kernel.Elaboration.NumericComputation.RunApplication
 
 /-! # Shared repeatable numeric-leaf placement

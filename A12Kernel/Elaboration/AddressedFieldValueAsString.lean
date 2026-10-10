@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Elaboration.StringComputationRunApplication
 
 /-! # Repeatable `FieldValueAsString`

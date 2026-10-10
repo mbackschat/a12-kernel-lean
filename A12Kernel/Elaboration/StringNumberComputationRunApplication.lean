@@ -1,5 +1,5 @@
-import A12Kernel.Elaboration.NumericComputation.RunApplication
-import A12Kernel.Elaboration.StringComputationRunApplication
+import A12Kernel.Semantics.NumericComputationApplicationFold
+import A12Kernel.Semantics.StringComputationApplicationFold
 import A12Kernel.Elaboration.StringNumberComputationRunView
 
 /-! # Family-separated String and Number application

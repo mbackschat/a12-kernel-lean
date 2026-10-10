@@ -1,60 +1,9 @@
 import A12Kernel.Elaboration.NumericComputation.RunApplication
-import A12Kernel.Proofs.NumericApplication
+import A12Kernel.Proofs.NumericComputationApplicationFold
 
 /-! # Number whole-run application laws -/
 
 namespace A12Kernel
-
-theorem numericComputationDestination_update_same
-    {Target : Type} [DecidableEq Target]
-    (destination : NumericComputationDestination Target)
-    (target : Target) (state : NumericTargetState) :
-    destination.update target state target = state := by
-  simp [NumericComputationDestination.update]
-
-/-- One action delegates exactly to the one-target Number transition. -/
-theorem numericComputationDestination_applyOutcome_same
-    {Target : Type} [DecidableEq Target]
-    (destination : NumericComputationDestination Target)
-    (target : Target) (outcome : NumericTargetOutcome) :
-    destination.applyOutcome target outcome target =
-      outcome.applyTo (destination target) := by
-  simp [NumericComputationDestination.applyOutcome,
-    numericComputationDestination_update_same]
-
-/-- A retained clear creates a present-empty destination target even when that target was absent. -/
-theorem numericComputationDestination_applyRetainedClear_same
-    {Target : Type} [DecidableEq Target]
-    (destination : NumericComputationDestination Target)
-    (target : Target) :
-    destination.applyRetainedClear target target = .presentEmpty := by
-  rw [NumericComputationDestination.applyRetainedClear,
-    numericComputationDestination_update_same]
-  cases destination target <;> rfl
-
-/-- One action preserves every other destination projection. -/
-theorem numericComputationDestination_applyOutcome_other
-    {Target : Type} [DecidableEq Target]
-    (destination : NumericComputationDestination Target)
-    (target other : Target) (outcome : NumericTargetOutcome)
-    (different : other ≠ target) :
-    destination.applyOutcome target outcome other = destination other := by
-  simp [NumericComputationDestination.applyOutcome,
-    NumericComputationDestination.update, different]
-
-/-- Unchanged successes and residual messages alone cannot mutate the destination. -/
-theorem numericComputationRun_applyTo_noActions
-    {Target : Type} [DecidableEq Target]
-    (view : NumericComputationRunView ResidualMessage Target)
-    (destination : NumericComputationDestination Target)
-    (noChanges : view.withChanges = [])
-    (noErrors : view.withErrors = [])
-    (noClears : view.cleared = []) :
-    view.applyTo destination = .ok destination := by
-  simp [NumericComputationRunView.applyTo,
-    NumericComputationRunView.firstDuplicateActionTarget?,
-    NumericComputationRunView.firstDuplicateActionTarget?.firstDuplicate?,
-    NumericComputationRunView.actionTargets, noChanges, noErrors, noClears]
 
 /-- A retained result with no actions preserves the separately supplied checked destination projection exactly. -/
 theorem numericComputationRun_applyToChecked_noActions
@@ -116,27 +65,5 @@ theorem numericComputationTwoLevelApplication_leafRows_scopedPrefix
     NumericComputationTwoLevelApplicationProjection.outerRows,
     NumericComputationTwoLevelApplicationProjection.innerRowsAt,
     NumericComputationTwoLevelApplicationProjection.levels, List.flatMap_map]
-
-/-- Duplicate action targets fail before destination state participates. -/
-theorem numericComputationRun_applyTo_duplicateTarget
-    {Target : Type} [DecidableEq Target]
-    (view : NumericComputationRunView ResidualMessage Target)
-    (destination : NumericComputationDestination Target) (target : Target)
-    (duplicate : view.firstDuplicateActionTarget? = some target) :
-    view.applyTo destination =
-      .error (.duplicateActionTarget target) := by
-  simp [NumericComputationRunView.applyTo, duplicate]
-
-/-- Residual messages affect result status but never the application plan. -/
-theorem numericComputationRun_residualMessages_doNotAffectApplication
-    {Target : Type} [DecidableEq Target]
-    (firstMessages secondMessages : List ResidualMessage)
-    (entries : List (SourcedNumericTargetOutcome Target))
-    (destination : NumericComputationDestination Target) :
-    (NumericComputationRunView.fromPartitionedSourceOutcomes
-      firstMessages entries).applyTo destination =
-    (NumericComputationRunView.fromPartitionedSourceOutcomes
-      secondMessages entries).applyTo destination := by
-  rfl
 
 end A12Kernel

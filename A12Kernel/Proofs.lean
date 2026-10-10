@@ -199,6 +199,7 @@ import A12Kernel.Proofs.NumericComputationGroupCount
 import A12Kernel.Proofs.NumericComputationFormalInput
 import A12Kernel.Proofs.NumericComputationLaterValidation
 import A12Kernel.Proofs.NumericComputationRun
+import A12Kernel.Proofs.NumericComputationApplicationFold
 import A12Kernel.Proofs.NumericComputationRunApplication
 import A12Kernel.Proofs.NumericComputationRunPlan
 import A12Kernel.Proofs.NumericComputationRunRelation
@@ -276,6 +277,7 @@ import A12Kernel.Proofs.StringComputation
 import A12Kernel.Proofs.StringComputationElaboration
 import A12Kernel.Proofs.StringComputationLaterValidation
 import A12Kernel.Proofs.StringComputationRun
+import A12Kernel.Proofs.StringComputationApplicationFold
 import A12Kernel.Proofs.StringComputationRunApplication
 import A12Kernel.Proofs.StringComputationRunPlan
 import A12Kernel.Proofs.StringComputationRunRelation
