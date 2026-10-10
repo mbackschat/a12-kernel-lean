@@ -1,0 +1,787 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Left",
+    "repeatable": 2
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Left",
+    "name": "Seal"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Left/Seal",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Left/Seal",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Right",
+    "repeatable": 2
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Right",
+    "name": "Seal"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Right/Seal",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Right/Seal",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal) == 0",
+    "code": "L0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal) == 1",
+    "code": "L1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal) == 2",
+    "code": "L2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "LCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/LCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Left*/Seal)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal) == 0",
+    "code": "R0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal) == 1",
+    "code": "R1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal) == 2",
+    "code": "R2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "RCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/RCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Right*/Seal)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Left*/Seal) == 0",
+    "code": "D0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Left*/Seal) == 1",
+    "code": "D1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Left*/Seal) == 2",
+    "code": "D2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Left*/Seal) == 3",
+    "code": "D3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Left*/Seal) == 4",
+    "code": "D4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "DCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/DCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Left*/Seal, Left*/Seal)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*, Left*) == 0",
+    "code": "T0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*, Left*) == 1",
+    "code": "T1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*, Left*) == 2",
+    "code": "T2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*, Left*) == 3",
+    "code": "T3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*, Left*) == 4",
+    "code": "T4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/TCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Left*, Left*)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*/Seal) == 0",
+    "code": "LR0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*/Seal) == 1",
+    "code": "LR1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*/Seal) == 2",
+    "code": "LR2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*/Seal) == 3",
+    "code": "LR3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*/Seal) == 4",
+    "code": "LR4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "LRCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/LRCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Left*/Seal, Right*/Seal)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal, Left*/Seal) == 0",
+    "code": "RL0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal, Left*/Seal) == 1",
+    "code": "RL1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal, Left*/Seal) == 2",
+    "code": "RL2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal, Left*/Seal) == 3",
+    "code": "RL3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal, Left*/Seal) == 4",
+    "code": "RL4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "RLCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/RLCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Right*/Seal, Left*/Seal)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*) == 0",
+    "code": "M0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*) == 1",
+    "code": "M1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*) == 2",
+    "code": "M2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*) == 3",
+    "code": "M3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*) == 4",
+    "code": "M4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "MCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/MCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Left*/Seal, Right*)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*, Left*/Seal) == 0",
+    "code": "MR0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*, Left*/Seal) == 1",
+    "code": "MR1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*, Left*/Seal) == 2",
+    "code": "MR2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*, Left*/Seal) == 3",
+    "code": "MR3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NumberOfFilledGroups(Right*, Left*/Seal) == 4",
+    "code": "MR4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "MRCount",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/MRCount",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledGroups(Right*, Left*/Seal)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

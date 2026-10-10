@@ -1,0 +1,118 @@
+{
+  "target": "model",
+  "op": "describe",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "fields": [
+      {
+        "path": "/Form/Anchor",
+        "name": "Anchor",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Form/Left/Seal/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Left/Seal/M",
+        "name": "M",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Right/Seal/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Right/Seal/M",
+        "name": "M",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/LCount",
+        "name": "LCount",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/RCount",
+        "name": "RCount",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/DCount",
+        "name": "DCount",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/TCount",
+        "name": "TCount",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/LRCount",
+        "name": "LRCount",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/RLCount",
+        "name": "RLCount",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/MCount",
+        "name": "MCount",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/MRCount",
+        "name": "MRCount",
+        "kind": "NUMBER",
+        "scale": 0
+      }
+    ],
+    "groups": [
+      {
+        "path": "/Form",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Left",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Form/Left/Seal",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Right",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Form/Right/Seal",
+        "repeatable": false
+      }
+    ],
+    "locales": [
+      "en_US"
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

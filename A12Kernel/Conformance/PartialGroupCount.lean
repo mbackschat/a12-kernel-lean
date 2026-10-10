@@ -2,13 +2,15 @@ import A12Kernel.Elaboration.ValidationRule
 
 /-! # `NumberOfFilledGroups` under partial validation
 
-The count is decided on the counted group's own instances by the four-step walk. Every coverage
-below is a row of the peer's second `kf464` table, on its three group-count carriers: a starred
+The count is decided on the counted group's own instances by the four-step walk. The peer's second
+`kf464` table supplies coverage rows on three group-count carriers: a starred
 repeatable terminal, a fixed group below that star, and a fixed-only list; the second and third also
 run as whole rules on their partial routes. A second fixture replays
 `KF209`'s nine selections and three controls, which the walk reproduces because that fixture's group
 holds a second field no selection names
 ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf464-partial-group-count)).
+The [local multiplicity matrix](../../docs/sources/group-count-topology.md#src-group-count-multiplicity)
+distinguishes later unavailable presence from empty and filled presence, including repeated operands.
 -/
 
 namespace A12Kernel.Conformance.PartialGroupCount
@@ -33,9 +35,8 @@ private def model (capacity : Nat) : FlatModel :=
       { id := 6, groupPath := ["Item", "Stamp"], name := "Mark", policy := { kind := .string } }]
     repeatableGroups := [{ level := 10, path := ["Item", "Batches"], repeatability := some capacity }] }
 
-/-- Which one covered value is malformed, if any. -/
 private inductive Fault where
-  | none | weightRow1 | weightRow2 | grade
+  | none | weightRow1 | weightRow2 | weightRow2Only | withoutCodeRow2 | grade
   deriving DecidableEq
 
 private def text (field : FieldId) (path : List Nat) : ClassifiedCellInput :=
@@ -45,11 +46,13 @@ private def amount (field : FieldId) (path : List Nat) (malformed : Bool) : Clas
   if malformed then { address := { field, path }, stored := "bad", raw := .rejected .malformed }
   else { address := { field, path }, stored := "1", raw := .parsed (.num 1) }
 
-/-- Two batches, each with all three fields, and every fixed field. -/
 private def cells (fault : Fault) : List ClassifiedCellInput :=
-  [text 1 [1], text 1 [2], text 2 [1], text 2 [2],
-    amount 3 [1] (fault == .weightRow1), amount 3 [2] (fault == .weightRow2),
+  let populated := [text 1 [1], text 1 [2], text 2 [1], text 2 [2],
+    amount 3 [1] (fault == .weightRow1), amount 3 [2] (fault == .weightRow2 || fault == .weightRow2Only),
     text 4 [], amount 5 [] (fault == .grade), text 6 []]
+  if fault == .weightRow2Only || fault == .withoutCodeRow2 then
+    populated.filter fun cell => cell.address != { field := 2, path := [2] }
+  else populated
 
 private def batches : SurfaceStarGroupPath :=
   { base := .absolute, groups := [{ name := "Item" }, { name := "Batches", starred := true }] }
@@ -305,5 +308,34 @@ example :
       itemsCount 2 none wildcard = some (decided 2) ∧
       itemsCount 0 none wildcard = some (decided 0) := by
   native_decide
+
+private def laterInstanceCounts (fault : Fault) : Option (List PartialValidationFilledGroupCountResult) := do
+  let (_, preliminary) ← setup 2 fault (everyField.map every)
+  let lists ← carriers (model 2)
+  let single ← lists[1]?
+  let fixed ← lists[2]?
+  [single, single ++ single, single ++ fixed, fixed ++ single].mapM fun operands =>
+    (CheckedGroupCountOperand.evaluatePartial operands preliminary []).toOption
+
+example : counts 2 .weightRow2Only (everyField.map every) =
+    some [decided 2, .nonRelevant, decided 2] := by native_decide
+
+example : laterInstanceCounts .weightRow2Only =
+    some [.nonRelevant, .nonRelevant, .nonRelevant, .nonRelevant] := by native_decide
+
+example : laterInstanceCounts .weightRow2 =
+    some [decided 2, decided 4, decided 4, decided 4] := by native_decide
+
+private def laterPartialCoverage : List RelevantEntityPattern :=
+  [every lot, every code, every ["Item", "Label"], every ["Item", "Stamp"]] ++ atRows weight [1]
+
+example : counts 2 .withoutCodeRow2 laterPartialCoverage =
+    some [decided 2, .nonRelevant, decided 2] := by native_decide
+
+example : counts 2 .none laterPartialCoverage =
+    some [decided 2, decided 2, decided 2] := by native_decide
+
+example : counts 2 .withoutCodeRow2 (everyField.map every) =
+    some [decided 2, decided 2, decided 2] := by native_decide
 
 end A12Kernel.Conformance.PartialGroupCount

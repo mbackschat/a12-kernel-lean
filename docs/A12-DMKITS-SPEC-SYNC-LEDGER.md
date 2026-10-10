@@ -229,3 +229,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: Capacity-invalid descendants report structural findings but are skipped before invalid-field-cache admission. They therefore do not mark ancestor groups erroneous or suppress an otherwise-decided partial count. In-capacity malformed descendants retain their error effect.
 - `basis`: [Bound/nested count matrix](sources/group-count-topology.md#src-bound-nested-count), both Kernel 30.8.1 strategies. Root and bound counts separate error propagation at two depths; excess-row and malformed-excess twins agree. This corrects Lean's shared group projection, not a demonstrated peer defect.
 - `acceptance`: Reconcile structural diagnostics separately from ancestor group-error state, preserving parent-local counting, declared capacities, in-capacity formal errors and excess-target clearing. Reuse retained observations; report an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.
+
+<a id="spec-2026-10-10-19"></a>
+### SPEC-2026-10-10-19 — later unavailable groups block partial counts
+
+- `status`: pending
+- `canonical`: [Partial group-count walk](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
+- `delta`: After the stricter first-instance gate, every held instance still requires decided presence. A later malformed-only group or partly covered group without visible admitted content makes the count UNKNOWN. Admitted content beside an independent error still counts; clean fully covered absence contributes zero.
+- `basis`: [Operand multiplicity and independent-axis matrix](sources/group-count-topology.md#src-group-count-multiplicity), both Kernel 30.8.1 strategies agreeing. This corrects Lean's later-instance Boolean projection, not a demonstrated peer defect.
+- `acceptance`: Reconcile the later-instance rule while preserving first-instance strictness, repeated-operand multiplicity, structural row counts, capacity filtering and the computation arm. Reuse the retained controls; report an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.

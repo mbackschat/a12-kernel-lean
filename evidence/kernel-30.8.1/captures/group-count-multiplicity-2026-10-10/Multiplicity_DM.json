@@ -1,0 +1,841 @@
+{
+  "header" : {
+    "id" : "Multiplicity_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Multiplicity_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Left",
+            "name" : "Left",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Left/Seal",
+                "name" : "Seal",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Left/Seal/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Left/Seal/M",
+                    "name" : "M",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Right",
+            "name" : "Right",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Right/Seal",
+                "name" : "Seal",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Right/Seal/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Right/Seal/M",
+                    "name" : "M",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/L0",
+            "name" : "L0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "L0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/L1",
+            "name" : "L1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "L1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/L2",
+            "name" : "L2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "L2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/LCount",
+            "name" : "LCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/LCountComp",
+            "name" : "LCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../LCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Left*/Seal)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R0",
+            "name" : "R0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R1",
+            "name" : "R1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/R2",
+            "name" : "R2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "R2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RCount",
+            "name" : "RCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RCountComp",
+            "name" : "RCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Right*/Seal)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/D0",
+            "name" : "D0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "D0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Left*/Seal) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/D1",
+            "name" : "D1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "D1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Left*/Seal) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/D2",
+            "name" : "D2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "D2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Left*/Seal) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/D3",
+            "name" : "D3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "D3",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Left*/Seal) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/D4",
+            "name" : "D4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "D4",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Left*/Seal) == 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DCount",
+            "name" : "DCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DCountComp",
+            "name" : "DCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Left*/Seal, Left*/Seal)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/T0",
+            "name" : "T0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "T0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*, Left*) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/T1",
+            "name" : "T1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "T1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*, Left*) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/T2",
+            "name" : "T2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "T2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*, Left*) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/T3",
+            "name" : "T3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "T3",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*, Left*) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/T4",
+            "name" : "T4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "T4",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*, Left*) == 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TCount",
+            "name" : "TCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TCountComp",
+            "name" : "TCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Left*, Left*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LR0",
+            "name" : "LR0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "LR0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*/Seal) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LR1",
+            "name" : "LR1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "LR1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*/Seal) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LR2",
+            "name" : "LR2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "LR2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*/Seal) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LR3",
+            "name" : "LR3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "LR3",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*/Seal) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LR4",
+            "name" : "LR4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "LR4",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*/Seal) == 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/LRCount",
+            "name" : "LRCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/LRCountComp",
+            "name" : "LRCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../LRCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Left*/Seal, Right*/Seal)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RL0",
+            "name" : "RL0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "RL0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal, Left*/Seal) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RL1",
+            "name" : "RL1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "RL1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal, Left*/Seal) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RL2",
+            "name" : "RL2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "RL2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal, Left*/Seal) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RL3",
+            "name" : "RL3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "RL3",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal, Left*/Seal) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RL4",
+            "name" : "RL4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "RL4",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*/Seal, Left*/Seal) == 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RLCount",
+            "name" : "RLCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RLCountComp",
+            "name" : "RLCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RLCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Right*/Seal, Left*/Seal)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/M0",
+            "name" : "M0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "M0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/M1",
+            "name" : "M1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "M1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/M2",
+            "name" : "M2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "M2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/M3",
+            "name" : "M3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "M3",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/M4",
+            "name" : "M4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "M4",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Left*/Seal, Right*) == 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MCount",
+            "name" : "MCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MCountComp",
+            "name" : "MCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Left*/Seal, Right*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MR0",
+            "name" : "MR0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MR0",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*, Left*/Seal) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MR1",
+            "name" : "MR1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MR1",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*, Left*/Seal) == 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MR2",
+            "name" : "MR2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MR2",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*, Left*/Seal) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MR3",
+            "name" : "MR3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MR3",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*, Left*/Seal) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MR4",
+            "name" : "MR4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MR4",
+              "errorCondition" : "FieldFilled(Anchor) And NumberOfFilledGroups(Right*, Left*/Seal) == 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MRCount",
+            "name" : "MRCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MRCountComp",
+            "name" : "MRCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MRCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledGroups(Right*, Left*/Seal)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

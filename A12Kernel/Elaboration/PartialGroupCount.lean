@@ -12,13 +12,15 @@ neighbouring coverage separates:
 2. The first declared instance must be fully relevant and free of errors.
 3. Every declared instance the document lacks must be fully relevant: the walk covers declared
    rows, not held ones.
-4. A held instance counts by its admitted content, and one no identifier reaches leaves the count
-   undecidable.
+4. Every held instance uses decided presence: admitted content counts, clean fully relevant
+   absence does not, and an unavailable instance leaves the count undecidable.
 
 A fixed group is its own first instance. A list is decided when every operand is, and counts their
 sum. Each step reads the partial preliminary, so relevance and admitted content come from the same
-owner the rule evaluator uses. Every step and its separating coverage are the peer's second `kf464`
-table ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf464-partial-group-count)).
+owner the rule evaluator uses. The first three gates are separated by the peer's second `kf464`
+table ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf464-partial-group-count));
+[operand multiplicity](../../docs/sources/group-count-topology.md#src-group-count-multiplicity)
+separates later malformed-only absence from admitted content beside an error.
 -/
 
 namespace A12Kernel
@@ -63,8 +65,10 @@ private def walkGroupCount (model : FlatModel) (scope : ValidationRelevanceScope
         if held.contains environment then
           let state := (← resolveGroup groupPath environment).derive
           if isFirst && !state.decidesPartialCount then return none
-          if state.relevance == .noneRelevant then return none
-          visit false (if state.content then count + 1 else count) remaining
+          match state.asGroupListPresence with
+          | .unavailable => return none
+          | .filled => visit false (count + 1) remaining
+          | .empty => visit false count remaining
         else if scope.groupRelevance model groupPath environment != .fullyRelevant then
           return none
         else
