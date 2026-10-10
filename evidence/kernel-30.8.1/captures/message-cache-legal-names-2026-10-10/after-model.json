@@ -1,0 +1,535 @@
+{
+  "header" : {
+    "id" : "NestedIndex_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "NestedIndex_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "UTC",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/RootKey",
+            "name" : "RootKey",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Parents",
+            "name" : "Parents",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Parents/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Parents/Gä",
+                "name" : "Gä",
+                "Group" : {
+                  "repeatability" : 3,
+                  "indexFieldName" : "Id",
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Parents/Gä/Id",
+                    "name" : "Id",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Parents/Gä/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType"
+                      }
+                    }
+                  }, {
+                    "type" : "Group",
+                    "id" : "/Form/Parents/Gä/Body",
+                    "name" : "Body",
+                    "Group" : {
+                      "repeatability" : 1,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Parents/Gä/Body/A",
+                        "name" : "A",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType"
+                          }
+                        }
+                      }, {
+                        "type" : "Field",
+                        "id" : "/Form/Parents/Gä/Body/B",
+                        "name" : "B",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType"
+                          }
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Group",
+                    "id" : "/Form/Parents/Gä/Items",
+                    "name" : "Items",
+                    "Group" : {
+                      "repeatability" : 3,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Parents/Gä/Items/N",
+                        "name" : "N",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType"
+                          }
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Parents/Gä/Scalar",
+                    "name" : "Scalar",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Parents/Gä/GroupSum",
+                    "name" : "GroupSum",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Parents/Gä/StarSum",
+                    "name" : "StarSum",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Parents/Gä/Count",
+                    "name" : "Count",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Parents/Gä/First",
+                    "name" : "First",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType"
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Parents/Gä/ScalarComp",
+                    "name" : "ScalarComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../Scalar",
+                      "computationAlternatives" : [ {
+                        "operation" : "[/Form/Parents/Gä/N For /Form/Parents/Key]"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Parents/Gä/GroupSumComp",
+                    "name" : "GroupSumComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../GroupSum",
+                      "computationAlternatives" : [ {
+                        "operation" : "Sum(/Form/Parents/Gä/Body For /Form/Parents/Key)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Parents/Gä/StarSumComp",
+                    "name" : "StarSumComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../StarSum",
+                      "computationAlternatives" : [ {
+                        "operation" : "Sum(/Form/Parents/Gä/Items*/N For /Form/Parents/Key)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Parents/Gä/CountComp",
+                    "name" : "CountComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../Count",
+                      "computationAlternatives" : [ {
+                        "operation" : "NumberOfFilledFields(/Form/Parents/Gä/Body For /Form/Parents/Key)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Parents/Gä/FirstComp",
+                    "name" : "FirstComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../First",
+                      "computationAlternatives" : [ {
+                        "operation" : "FirstFilledValue(/Form/Parents/Gä/Body For /Form/Parents/Key)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ]
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Parents/Scalar",
+                "name" : "Scalar",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Parents/GroupSum",
+                "name" : "GroupSum",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Parents/StarSum",
+                "name" : "StarSum",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Parents/Count",
+                "name" : "Count",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Parents/First",
+                "name" : "First",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Parents/RequestedKey",
+                "name" : "RequestedKey",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Parents/ScalarComp",
+                "name" : "ScalarComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Scalar",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Parents/Gä/N For /Form/Parents/Key]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Parents/GroupSumComp",
+                "name" : "GroupSumComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../GroupSum",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/Form/Parents/Gä/Body For /Form/Parents/Key)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Parents/StarSumComp",
+                "name" : "StarSumComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../StarSum",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/Form/Parents/Gä/Items*/N For /Form/Parents/Key)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Parents/CountComp",
+                "name" : "CountComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Count",
+                  "computationAlternatives" : [ {
+                    "operation" : "NumberOfFilledFields(/Form/Parents/Gä/Body For /Form/Parents/Key)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Parents/FirstComp",
+                "name" : "FirstComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../First",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(/Form/Parents/Gä/Body For /Form/Parents/Key)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Parents/KeyComp",
+                "name" : "KeyComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Key",
+                  "computationAlternatives" : [ {
+                    "operation" : "[RequestedKey]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Parents/RefDynamic",
+                "name" : "RefDynamic",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Scalar",
+                  "errorCode" : "RefDynamic",
+                  "errorCondition" : "FieldFilled(Scalar) And [Gä/N For Key] >= 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Parents/RefLiteral",
+                "name" : "RefLiteral",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Scalar",
+                  "errorCode" : "RefLiteral",
+                  "errorCondition" : "FieldFilled(Scalar) And [Gä/N For \"b\"] >= 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Parents/RefGroup",
+                "name" : "RefGroup",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Scalar",
+                  "errorCode" : "RefGroup",
+                  "errorCondition" : "FieldFilled(Scalar) And Sum(Gä/Body For Key) >= 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Parents/RefUnreached",
+                "name" : "RefUnreached",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Scalar",
+                  "errorCode" : "RefUnreached",
+                  "errorCondition" : "FieldFilled(Scalar) Or [Gä/N For Key] > 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Parents/RefUnreachedGroup",
+                "name" : "RefUnreachedGroup",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Scalar",
+                  "errorCode" : "RefUnreachedGroup",
+                  "errorCondition" : "FieldFilled(Scalar) Or Sum(Gä/Body For Key) > 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Parents/RefUnreachedStar",
+                "name" : "RefUnreachedStar",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Scalar",
+                  "errorCode" : "RefUnreachedStar",
+                  "errorCondition" : "FieldFilled(Scalar) Or Sum(Gä/Items*/N For Key) > 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Parents/Gz",
+                "name" : "Gz",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Parents/Gz/Id",
+                    "name" : "Id",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Scalar",
+            "name" : "Scalar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GroupSum",
+            "name" : "GroupSum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/StarSum",
+            "name" : "StarSum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Count",
+            "name" : "Count",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/First",
+            "name" : "First",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

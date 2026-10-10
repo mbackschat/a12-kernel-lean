@@ -1,0 +1,63 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "rejected",
+  "ok": false,
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "ops": 1,
+    "committed": false,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "field",
+        "op": "rename",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "renamed": "/Form/Parents/Rows/Id",
+          "to": "/Form/Parents/Rows/𐐀",
+          "rewroteReferences": []
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "model",
+        "op": "validate",
+        "outcome": "rejected",
+        "ok": false,
+        "valid": false,
+        "verification": "KERNEL_CONFIRMED",
+        "summary": "[redacted]",
+        "diagnostics": [
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_PATH_INVALID",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          }
+        ],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

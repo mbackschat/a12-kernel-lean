@@ -1,0 +1,462 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "rejected",
+  "ok": false,
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "ops": 3,
+    "committed": false,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "group",
+        "op": "rename",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "renamed": "/Form/Parents/Rows",
+          "to": "/Form/Parents/𐐀",
+          "rewroteReferences": [
+            "/Form/Parents/CountComp",
+            "/Form/Parents/FirstComp",
+            "/Form/Parents/GroupSumComp",
+            "/Form/Parents/RefDynamic",
+            "/Form/Parents/RefGroup",
+            "/Form/Parents/RefLiteral",
+            "/Form/Parents/RefUnreached",
+            "/Form/Parents/RefUnreachedGroup",
+            "/Form/Parents/RefUnreachedStar",
+            "/Form/Parents/Rows/CountComp",
+            "/Form/Parents/Rows/FirstComp",
+            "/Form/Parents/Rows/GroupSumComp",
+            "/Form/Parents/Rows/ScalarComp",
+            "/Form/Parents/Rows/StarSumComp",
+            "/Form/Parents/ScalarComp",
+            "/Form/Parents/StarSumComp"
+          ]
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Parents/Ｚ"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Parents/Ｚ/Id",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "model",
+        "op": "validate",
+        "outcome": "rejected",
+        "ok": false,
+        "valid": false,
+        "verification": "KERNEL_CONFIRMED",
+        "summary": "[redacted]",
+        "diagnostics": [
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/StarSumComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/𐐀/FirstComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/𐐀/GroupSumComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/FirstComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/𐐀/StarSumComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/𐐀/ScalarComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/GroupSumComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/𐐀/CountComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/CountComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/ScalarComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_PATH_INVALID",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_PATH_INVALID",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/𐐀/GroupSumComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/𐐀/ScalarComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/𐐀/CountComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/𐐀/FirstComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/𐐀/StarSumComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefDynamic"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefLiteral"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefGroup"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/FirstComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/StarSumComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/CountComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/ScalarComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/GroupSumComp"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefUnreachedStar"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {}
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefUnreached"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefUnreachedGroup"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefDynamic"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefLiteral"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefGroup"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefUnreached"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefUnreachedGroup"
+            }
+          },
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_LEXER_STANDARD_ERROR",
+            "summary": "[redacted]",
+            "where": {
+              "rule": "/Form/Parents/RefUnreachedStar"
+            }
+          }
+        ],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

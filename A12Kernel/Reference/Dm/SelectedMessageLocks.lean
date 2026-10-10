@@ -189,21 +189,23 @@ private def populationModel : FlatModel := {
   repeatableGroups := model.repeatableGroups.take 2 }
 
 private def populationDocument (last : String) (indexName : String := "Id")
-    (firstIndex : String := "b") (firstFiller : String := "F0") : Lean.Json :=
+    (firstIndex : String := "b") (firstFiller : String := "F0")
+    (rowGroup : String := "Rows") : Lean.Json :=
   let rows := [Lean.Json.mkObj [(indexName, .str firstIndex)], Lean.Json.mkObj [(indexName, .str "b")]]
   Lean.Json.mkObj [("Form", .mkObj (
     [("Parents", .arr #[.mkObj [("Key", .str "b"),
-      ("Rows", .arr rows.toArray)]])] ++
+      (rowGroup, .arr rows.toArray)]])] ++
     (List.range 20).map (fun index => (if index == 0 then firstFiller else s!"F{index}",
       .str (if index == 19 then last else "1")))))]
 
 private def populationPreliminary (last : String) (candidate : FlatModel := populationModel)
-    (indexName : String := "Id") (firstIndex : String := "b") (firstFiller : String := "F0") :
+    (indexName : String := "Id") (firstIndex : String := "b") (firstFiller : String := "F0")
+    (rowGroup : String := "Rows") :
     Option (CheckedIndexPreliminary candidate) := do
   let dm : DmModel := {
     flat := candidate, rules := [], computations := [],
     conditionLanguage := "en_US", refusals := [] }
-  let input ← (readDocument dm (populationDocument last indexName firstIndex firstFiller)).toOption
+  let input ← (readDocument dm (populationDocument last indexName firstIndex firstFiller rowGroup)).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler candidate).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
@@ -259,6 +261,39 @@ example : [(populationModel, "Id", "F0"), (renamedPopulationModel, "Key", "F0"),
     (reservedPopulationModel, "Key", "Key_0")].all (fun (candidate, indexName, firstFiller) =>
       (namedPopulationResult candidate "" indexName firstFiller "a").map (fun (_, row, pointers) => (row, pointers)) ==
         some (.concrete 2, selected [4] 1 (.concrete 2))) = true := by native_decide
+
+private def namedGroupPopulation (rowGroup otherGroup : String) : FlatModel := {
+  populationModel with
+    fields := (populationModel.fields.map fun field =>
+      if field.groupPath == ["Form", "Parents", "Rows"] then
+        { field with groupPath := ["Form", "Parents", rowGroup] } else field) ++
+      [{ id := 200, name := "Id", groupPath := ["Form", "Parents", otherGroup],
+         repeatableScope := [1], policy := { kind := .string } }]
+    repeatableGroups := populationModel.repeatableGroups.map fun group =>
+      if group.level == 10 then { group with path := ["Form", "Parents", rowGroup] } else group }
+
+private def namedGroupProjection (rowGroup otherGroup last : String) (partialCall : Bool)
+    (firstIndex : String := "b") : Option (List MessagePointer) := do
+  let candidate := namedGroupPopulation rowGroup otherGroup
+  let preliminary ← populationPreliminary last candidate "Id" firstIndex "F0" rowGroup
+  let context ← if partialCall then do
+    let view ← (preliminary.base.applyPartialGeneratedPreliminary
+      [RelevantEntityPattern.allInstances ["Form"]]).toOption
+    view.messageReferenceInputs.toOption
+    else preliminary.messageReferenceInputs.toOption
+  let expression ← (parseText .english ("[" ++ rowGroup ++ "/N For Key] > 0")).toOption
+  let condition ← (lowerCondition candidate ["Form", "Parents"] false expression.body
+    (world := world)).toOption
+  (condition.core.referencePointers [(1, 1)] (some context)).toOption
+
+-- The legal-name cache checkpoint distinguishes UTF-16 lexical order from declaration or locale order (docs/sources/message-cache-probes.md#src-message-cache-legal-names).
+example : [false, true].all (fun partialCall =>
+    namedGroupProjection "Gä" "Gz" "" partialCall == some (selected [4] 1 (.concrete 2)) &&
+    namedGroupProjection "Gä" "Gz" "1" partialCall == some (selected [4] 1 (.concrete 2)) &&
+    namedGroupProjection "Gz" "Gä" "" partialCall == some (selected [4] 1 (.concrete 2)) &&
+    namedGroupProjection "Gz" "Gä" "1" partialCall == some (selected [4] 1 (.concrete 1)) &&
+    namedGroupProjection "Gä" "Gz" "1" partialCall "a" == some (selected [4] 1 (.concrete 2)) &&
+    namedGroupProjection "Gz" "Gä" "1" partialCall "a" == some (selected [4] 1 (.concrete 2))) = true := by native_decide
 
 private def populationPartial (entities : List RelevantEntityPattern) :
     Option (CheckedPartialPreliminary populationModel) := do

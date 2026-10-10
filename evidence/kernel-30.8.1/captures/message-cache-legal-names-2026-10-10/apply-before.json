@@ -1,0 +1,74 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "ops": 3,
+    "committed": true,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "group",
+        "op": "rename",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "renamed": "/Form/Parents/Rows",
+          "to": "/Form/Parents/Gz",
+          "rewroteReferences": [
+            "/Form/Parents/CountComp",
+            "/Form/Parents/FirstComp",
+            "/Form/Parents/GroupSumComp",
+            "/Form/Parents/RefDynamic",
+            "/Form/Parents/RefGroup",
+            "/Form/Parents/RefLiteral",
+            "/Form/Parents/RefUnreached",
+            "/Form/Parents/RefUnreachedGroup",
+            "/Form/Parents/RefUnreachedStar",
+            "/Form/Parents/Rows/CountComp",
+            "/Form/Parents/Rows/FirstComp",
+            "/Form/Parents/Rows/GroupSumComp",
+            "/Form/Parents/Rows/ScalarComp",
+            "/Form/Parents/Rows/StarSumComp",
+            "/Form/Parents/ScalarComp",
+            "/Form/Parents/StarSumComp"
+          ]
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Parents/Gä"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Parents/Gä/Id",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "./before-model.json"
+}

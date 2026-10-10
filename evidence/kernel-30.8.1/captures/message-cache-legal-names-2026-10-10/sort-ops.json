@@ -1,0 +1,21 @@
+[
+  {
+    "target": "group",
+    "op": "rename",
+    "groupPathInModel": "/Form/Parents/Rows",
+    "to": "𐐀"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Parents",
+    "name": "Ｚ"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Parents/Ｚ",
+    "name": "Id",
+    "kind": "STRING"
+  }
+]
