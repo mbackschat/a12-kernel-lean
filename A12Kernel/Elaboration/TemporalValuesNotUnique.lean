@@ -436,23 +436,22 @@ def evaluateCheckedDocumentValuesNotUnique
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
     Except CheckedAddressingError Verdict := do
-  let tagged ← collectTaggedValueListCells
-    (fun operand => do
-      match operand with
-      | .selected source _ =>
-          source.sideWith .validation document.source.toDocument outer (document.computationContextAt outer).read
-            (document.computationContextAt outer).storedText document.computationFillContext.read document.storedTextIn
-            (document.resolveSemanticIndexColumnWith document.read)
-            (fun _ cell stored => pure (temporalUniquenessCell cell stored))
-      | _ =>
-          let core ← operand.resolveValidationCore (world := world) document outer
-          pure {
-            cells := core.addressedCells.map (fun addressed => temporalUniquenessCell addressed.cell addressed.stored)
-            hasUninstantiatedTail := core.hasUninstantiatedTail
-            hasHaving := core.hasHaving
-            hasNonRelevant := core.hasNonRelevant })
-    checked.operands
-  pure (evalValuesNotUniqueVerdict tagged)
+  evaluateValidationUniqueness (fun operand state => do
+    match operand with
+    | .star path _ (some having) =>
+        path.scanValidationUniqueness having document outer
+          (fun addressed => temporalUniquenessCell addressed.cell addressed.stored) state world
+    | .selected source _ =>
+        let side ← source.sideWith .validation document.source.toDocument outer (document.computationContextAt outer).read
+          (document.computationContextAt outer).storedText document.computationFillContext.read document.storedTextIn
+          (document.resolveSemanticIndexColumnWith document.read)
+          (fun _ cell stored => pure (temporalUniquenessCell cell stored))
+        pure (scanValidationUniquenessCells side.hasHaving side.cells state)
+    | _ =>
+        let core ← operand.resolveValidationCore (world := world) (traversalMode := .dense) document outer
+        pure (scanValidationUniquenessCells core.hasHaving
+          (core.addressedCells.map fun addressed => temporalUniquenessCell addressed.cell addressed.stored)
+          state)) checked.operands
 
 end CheckedTemporalValuesNotUniqueSource
 

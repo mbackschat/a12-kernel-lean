@@ -208,7 +208,8 @@ private def scanNumber (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
     (filterStoredText filterNumberText : Env → FieldId → Option String)
     (consume : State → ValueListCell .number → State ⊕ Result)
-    (source : CheckedNumberEntityOperand model) (state : State) :
+    (source : CheckedNumberEntityOperand model) (state : State)
+    (requireSmall : Bool := true) :
     Except ComputationPredicateError (ComputationHavingScanResult State Result) := do
   match source with
   | .selected source =>
@@ -230,7 +231,7 @@ private def scanNumber (context : ScalarComputationContext)
   | .starHaving source =>
       let addressed ← addressed context
       let candidates ← (model.filterEnvironments source.source.source.path
-        (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row true).mapError .addressing
+        (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row requireSmall).mapError .addressing
       (source.having.scanComputation (({ read := model.filterRead addressed.document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
         (fun state environment => consume state
           (source.source.checkedValueListCellAt .computation (model.filterRead addressed.document addressed.read) environment))
@@ -247,7 +248,8 @@ private def scanToken (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
     (filterStoredText filterNumberText : Env → FieldId → Option String)
     (consume : State → ValueListCell .token → State ⊕ Result)
-    (source : CheckedTokenEntityOperand model) (state : State) :
+    (source : CheckedTokenEntityOperand model) (state : State)
+    (requireSmall : Bool := true) :
     Except ComputationPredicateError (ComputationHavingScanResult State Result) := do
   match source with
   | .selected source => do
@@ -266,7 +268,7 @@ private def scanToken (context : ScalarComputationContext)
           (resolved.toResolvedSide (source.valueListCellAt .computation addressed.read)).cells state)
       | some having => do
           let candidates ← (model.filterEnvironments source.source.path
-            (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row true).mapError .addressing
+            (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row requireSmall).mapError .addressing
           (having.condition.scanComputation (({ read := model.filterRead addressed.document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
           (fun state environment => consume state
             (source.valueListCellAt .computation (model.filterRead addressed.document addressed.read) environment)) candidates state).mapError (fun
@@ -374,7 +376,8 @@ private def scanTemporalSlots
 private def scanTemporal (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
     (filterStoredText filterNumberText : Env → FieldId → Option String)
-    (source : CheckedTemporalUniquenessOperand model) (seen : List String) :
+    (source : CheckedTemporalUniquenessOperand model) (seen : List String)
+    (requireSmall : Bool := true) :
     Except ComputationPredicateError
       (ComputationHavingScanResult (List String) (Except FormalCause Unit)) := do
   let direct := fun (declaration : FlatFieldDecl) => temporalIdentity declaration.id
@@ -400,7 +403,7 @@ private def scanTemporal (context : ScalarComputationContext)
       | none => scanTemporalSlots read resolved.environments seen
       | some having => do
           let candidates ← (model.filterEnvironments path.path
-            (contextRead.document.filterRows.getD contextRead.document.instantiatedRows) context.row true).mapError .addressing
+            (contextRead.document.filterRows.getD contextRead.document.instantiatedRows) context.row requireSmall).mapError .addressing
           let read := fun row => temporalIdentity source.declaration.id
             (model.filterRead contextRead.document contextRead.read row source.declaration.id) (contextRead.storedText row source.declaration.id)
           having.scanComputationResolving
@@ -443,13 +446,15 @@ private def evalUniqueness (source : CheckedValuesNotUniqueCondition model)
   match source with
   | .number source =>
       uniquenessResult <$> scanOperands
-        (scanNumber context filterRead filterStoredText filterNumberText ValueListCell.duplicateComputationStep) source.operands []
+        (scanNumber context filterRead filterStoredText filterNumberText ValueListCell.duplicateComputationStep
+          (requireSmall := false)) source.operands []
   | .token source =>
       uniquenessResult <$> scanOperands
-        (scanToken context filterRead filterStoredText filterNumberText ValueListCell.duplicateComputationStep) source.source.operands []
+        (scanToken context filterRead filterStoredText filterNumberText ValueListCell.duplicateComputationStep
+          (requireSmall := false)) source.source.operands []
   | .temporal source =>
       uniquenessResult <$> scanOperands
-        (scanTemporal context filterRead filterStoredText filterNumberText) source.operands []
+        (scanTemporal context filterRead filterStoredText filterNumberText (requireSmall := false)) source.operands []
 
 private def collectStep (values : List (ValueListAtom kind)) :
     ValueListCell kind → List (ValueListAtom kind) ⊕ FormalCause

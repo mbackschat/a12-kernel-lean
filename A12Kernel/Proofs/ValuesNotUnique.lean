@@ -19,7 +19,7 @@ theorem numberValuesNotUnique_route_never_unknown
     (document : CheckedDocument model) (outer : Env) :
     CheckedNumberValuesNotUniqueSource.evaluateCheckedDocumentValuesNotUnique
       checked document outer ≠ .ok .unknown :=
-  collectTaggedValueListCells_valuesNotUnique_never_unknown _ _
+  evaluateValidationUniqueness_never_unknown _ _
 
 /-- The String/stored-Enumeration overload's checked route, by the same mechanism law. -/
 theorem tokenValuesNotUnique_route_never_unknown
@@ -27,7 +27,7 @@ theorem tokenValuesNotUnique_route_never_unknown
     (document : CheckedDocument model) (outer : Env) :
     CheckedTokenValuesNotUniqueSource.evaluateCheckedDocumentValuesNotUnique
       checked document outer ≠ .ok .unknown :=
-  collectTaggedValueListCells_valuesNotUnique_never_unknown _ _
+  evaluateValidationUniqueness_never_unknown _ _
 
 /-- The temporal overload's checked route, by the same mechanism law. A formally unavailable temporal cell is skipped like an empty one here too, so no reachable temporal input makes this route answer UNKNOWN. -/
 theorem temporalValuesNotUnique_route_never_unknown
@@ -35,7 +35,7 @@ theorem temporalValuesNotUnique_route_never_unknown
     (document : CheckedDocument model) (outer : Env) :
     CheckedTemporalValuesNotUniqueSource.evaluateCheckedDocumentValuesNotUnique
       checked document outer ≠ .ok .unknown :=
-  collectTaggedValueListCells_valuesNotUnique_never_unknown _ _
+  evaluateValidationUniqueness_never_unknown _ _
 
 /-- The shared condition adapter preserves the checked overloads' unavailable-cell skip. -/
 theorem valuesNotUniqueCondition_never_unknown

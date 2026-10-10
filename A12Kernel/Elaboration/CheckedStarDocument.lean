@@ -5,6 +5,7 @@ import A12Kernel.Semantics.CustomCondition
 import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.Correlation
+import A12Kernel.Semantics.NumericAggregate
 
 /-! # Checked-document projection over one resolved starred field
 
@@ -639,6 +640,23 @@ def filterTraversal (source : CheckedStarFieldPath model)
     Except CheckedAddressingError FilterTraversal :=
   model.filterTraversal source.path
     (checked.filterRows.getD checked.source.instantiatedRows) outer mode |>.mapError .addressing
+
+/-- Kernel `feldWerteNichtEindeutig` uses dense successor lookahead and stops at a duplicate. The carrier supplies only its checked comparison identity (spec/07 §5). -/
+def scanValidationUniqueness (source : CheckedStarFieldPath model)
+    (having : CorrelatedHaving) (document : CheckedDocument model) (outer : Env)
+    (classify : CheckedAddressedCell → ValueListCell kind)
+    (state : ValuesNotUniqueScanState kind) (world : Option World := none) :
+    Except CheckedAddressingError (ValuesNotUniqueScanState kind ⊕ Polarity) := do
+  let traversal ← source.filterTraversal document outer .dense
+  let result ← having.scanValidationResolving
+    (document.resolvingCorrelationContextWithRead document.readDeclared world) outer
+    (fun state row => do
+      let cell ← document.addressedCellWithRead document.readDeclared row source.declaration.id
+      pure (state.step true (classify cell))) traversal.candidates state
+  match result with
+  | .exhausted next => pure (.inl next)
+  | .terminated polarity => pure (.inr polarity)
+  | .poison _ => throw (.checkedDocumentRequired source.declaration.path)
 
 /-- Resolve one full-validation starred entity-list occurrence. Optional checked-filter ownership remains with the typed caller; this function owns the common filter-before-addressing projection and preserves reached failures structurally. -/
 def resolveCheckedValidationEntityOperandCore

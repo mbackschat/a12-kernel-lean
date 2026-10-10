@@ -190,7 +190,7 @@ def scanResolvedValueListOperands {operand state terminal error : Type}
 
 This is the deliberate opposite of `scanResolvedValueListOperands` on one axis: it applies **no** availability gate, so a formally unavailable cell stays in the stream and the consuming operator decides for itself whether to skip it or go non-evaluable. Use it only for an operator whose kernel counterpart owns its own loop rather than the shared all-cells combiner, which yields its non-relevant value for such a cell wherever in the selection that cell sits. That combiner's gate is what this collector deliberately omits; **where** the combiner stops is a source-level reading with no runtime witness, so no clause may depend on it ([`spec/02`](../../spec/02-logic-and-formal-errors.md)).
 
-Resolution is total rather than lazy. A consumer that answers at an earlier cell still resolves every later operand; that is unobservable because resolution is pure and a checked model precludes its structural failures. -/
+Resolution is eager. Use this collector only when the consuming route requires every operand: addressed filters can fail structurally, so prefix consumers must scan incrementally. -/
 def collectTaggedValueListCells {operand error : Type} {kind : ValueListKind}
     (resolve : operand → Except error (ResolvedValueListSide kind)) :
     List operand → Except error (List (ValueListCell kind × Bool))

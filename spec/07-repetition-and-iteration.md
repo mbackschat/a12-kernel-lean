@@ -272,6 +272,8 @@ Under partial validation, any relevant descendant gives each ancestor group at l
 
 ---
 
+`FieldValuesNotUnique` scans filtered operands densely on both phases, including above the 100-candidate optimization threshold. It preserves the iterator's one-kept-successor lookahead: the successor filter runs before the current selected payload is compared, but a deciding duplicate hides filters beyond that successor and all later authored operands. Full validation therefore must not materialize the entire filtered selection before comparing values. Empty and formally unavailable validation payloads still leave the comparison prefix and its filter-derived polarity unchanged. This traversal extension is [source-derived](../docs/sources/group-and-iteration-probes.md#src-sparse-filter-traversal); the existing computation observations below calibrate their stated narrower cases.
+
 In a computation precondition, `FieldValuesNotUnique` instead propagates a reached formally-invalid or calculation-invalid operand. The ordered scan still skips empties and stops at its first duplicate: a duplicate before an invalid operand selects the alternative without reading that operand, while the opposite order poisons the target. A filtered operand retains iterator lookahead, so a duplicate in row two can still reach an invalid row-three filter; a row-four failure beyond that lookahead remains unread. [The computation-phase observations](../docs/sources/computation-scheduling-probes.md#src-uniqueness-computation-guards) include dependent targets to distinguish poison from clean clearing.
 
 ## 6. `RepetitionNotUnique`, precisely ⚠

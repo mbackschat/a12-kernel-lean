@@ -36,15 +36,15 @@ theorem scanValuesNotUnique_never_unknown {kind : ValueListKind}
       obtain ⟨cell, filtered⟩ := head
       cases cell with
       | present value =>
-          simp only [scanValuesNotUnique]
+          simp only [scanValuesNotUnique, ValuesNotUniqueScanState.step]
           split
-          · simp
           · exact inductionHypothesis _ _
+          · simp
       | empty =>
-          simp only [scanValuesNotUnique]
+          simp only [scanValuesNotUnique, ValuesNotUniqueScanState.step]
           exact inductionHypothesis _ _
       | unknown cause =>
-          simp only [scanValuesNotUnique]
+          simp only [scanValuesNotUnique, ValuesNotUniqueScanState.step]
           exact inductionHypothesis _ _
 
 theorem evalValuesNotUniqueVerdict_never_unknown {kind : ValueListKind}
@@ -55,7 +55,7 @@ theorem evalValuesNotUniqueVerdict_never_unknown {kind : ValueListKind}
 /-- The same guarantee at the **consumer** boundary, for any resolver whatever. A checked route that
     collects its operands without an availability gate and then answers with the uniqueness verdict
     cannot return UNKNOWN, so a suppressing gate reintroduced anywhere on that path becomes a proof
-    failure rather than a silent regression. Every overload's route theorem specializes this. -/
+    failure rather than a silent regression. -/
 theorem collectTaggedValueListCells_valuesNotUnique_never_unknown
     {operand error : Type} {kind : ValueListKind}
     (resolve : operand → Except error (ResolvedValueListSide kind))
@@ -68,6 +68,25 @@ theorem collectTaggedValueListCells_valuesNotUnique_never_unknown
       simp only [bind, Except.bind, pure, Except.pure, ne_eq, Except.ok.injEq]
       exact evalValuesNotUniqueVerdict_never_unknown tagged
 
+/-- The incremental checked routes cannot manufacture semantic UNKNOWN; failures from operand resolution remain structural. -/
+theorem evaluateValidationUniqueness_never_unknown
+    {operand error : Type} {kind : ValueListKind}
+    (scan : operand → ValuesNotUniqueScanState kind → Except error (ValuesNotUniqueScanState kind ⊕ Polarity))
+    (operands : List operand) :
+    evaluateValidationUniqueness scan operands ≠ .ok .unknown := by
+  unfold evaluateValidationUniqueness
+  cases resolved : scanValidationUniquenessOperands scan operands {} with
+  | error cause => simp [bind, Except.bind]
+  | ok result => cases result <;> simp [bind, Except.bind, pure, Except.pure]
+
+/-- A deciding authored operand hides later resolvers, regardless of the effects those resolvers would produce. -/
+theorem scanValidationUniquenessOperands_terminalPrefix
+    (scan : operand → ValuesNotUniqueScanState kind → Except error (ValuesNotUniqueScanState kind ⊕ Polarity))
+    (first : operand) (remaining : List operand) (state : ValuesNotUniqueScanState kind)
+    (polarity : Polarity) (terminal : scan first state = .ok (.inr polarity)) :
+    scanValidationUniquenessOperands scan (first :: remaining) state = .ok (some polarity) := by
+  simp [scanValidationUniquenessOperands, terminal, bind, Except.bind, pure, Except.pure]
+
 /-- A uniformly unfiltered list can never reach a filter, so its firing is value-typed whatever its
     cells are. -/
 theorem scanValuesNotUnique_unfiltered_never_omission {kind : ValueListKind}
@@ -78,11 +97,14 @@ theorem scanValuesNotUnique_unfiltered_never_omission {kind : ValueListKind}
   | nil => intro seen; simp [scanValuesNotUnique]
   | cons cell remaining inductionHypothesis =>
       intro seen
-      cases cell <;> simp only [List.map_cons, scanValuesNotUnique] <;>
-        try exact inductionHypothesis _
-      split
-      · simp
-      · exact inductionHypothesis _
+      cases cell with
+      | present value =>
+          by_cases duplicate : (seen.any fun candidate => ValueListAtom.equal candidate value) = true
+          · simp [scanValuesNotUnique, ValuesNotUniqueScanState.step, duplicate]
+          · simpa [scanValuesNotUnique, ValuesNotUniqueScanState.step, duplicate] using
+              inductionHypothesis (insertDistinctValue seen value)
+      | empty => simpa [scanValuesNotUnique, ValuesNotUniqueScanState.step] using inductionHypothesis seen
+      | unknown _ => simpa [scanValuesNotUnique, ValuesNotUniqueScanState.step] using inductionHypothesis seen
 
 /-- A uniformly filtered list is the mirror end: every compared value marks the filter before the
     duplicate check reads it, so its firing is omission-typed. Together with the law above this bounds
@@ -96,11 +118,14 @@ theorem scanValuesNotUnique_allFiltered_never_value {kind : ValueListKind}
   | nil => intro seen filterReached; simp [scanValuesNotUnique]
   | cons cell remaining inductionHypothesis =>
       intro seen filterReached
-      cases cell <;> simp only [List.map_cons, scanValuesNotUnique] <;>
-        try exact inductionHypothesis _ _
-      split
-      · simp
-      · exact inductionHypothesis _ _
+      cases cell with
+      | present value =>
+          by_cases duplicate : (seen.any fun candidate => ValueListAtom.equal candidate value) = true
+          · simp [scanValuesNotUnique, ValuesNotUniqueScanState.step, duplicate]
+          · simpa [scanValuesNotUnique, ValuesNotUniqueScanState.step, duplicate] using
+              inductionHypothesis (insertDistinctValue seen value) true
+      | empty => simpa [scanValuesNotUnique, ValuesNotUniqueScanState.step] using inductionHypothesis seen filterReached
+      | unknown _ => simpa [scanValuesNotUnique, ValuesNotUniqueScanState.step] using inductionHypothesis seen filterReached
 
 /-- Every authored all-empty Number aggregate identity is zero and both-directionally fillable. This is the kernel's conservative classification even when the selected field is unsigned. -/
 theorem numericExtremumAggregate_allEmpty

@@ -70,10 +70,14 @@ def evaluateCheckedDocumentValuesNotUnique
     (checked : CheckedNumberEntitySource model)
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) : Except CheckedAddressingError Verdict := do
-  let tagged ← collectTaggedValueListCells
-    (fun operand => operand.checkedValidationSide (world := world) document outer)
-    checked.operands
-  pure (evalValuesNotUniqueVerdict tagged)
+  evaluateValidationUniqueness (fun operand state => do
+    match operand with
+    | .starHaving source =>
+        source.source.source.scanValidationUniqueness source.having document outer
+          (fun cell => (observeCell .validation cell.cell).asNumberValueListCell) state world
+    | _ =>
+        let side ← operand.checkedValidationSide (world := world) (traversalMode := .dense) document outer
+        pure (scanValidationUniquenessCells side.hasHaving side.cells state)) checked.operands
 
 end CheckedNumberValuesNotUniqueSource
 

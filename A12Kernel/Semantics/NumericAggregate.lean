@@ -132,6 +132,46 @@ def scanDistinctCells {kind : ValueListKind}
     Except FormalCause (List (ValueListAtom kind)) :=
   ValueListCell.scanPresent insertDistinctValue cells []
 
+/-- The uniqueness prefix retains comparison identities and whether a compared value came from a filter. Empty and unavailable cells leave both unchanged (spec/07 §5). -/
+structure ValuesNotUniqueScanState (kind : ValueListKind) where
+  seen : List (ValueListAtom kind) := []
+  filterReached : Bool := false
+
+/-- Decide at the first duplicate, before any later operand is resolved. -/
+def ValuesNotUniqueScanState.step (state : ValuesNotUniqueScanState kind)
+    (filtered : Bool) : ValueListCell kind → ValuesNotUniqueScanState kind ⊕ Polarity
+  | .present value =>
+      let reached := state.filterReached || filtered
+      if state.seen.any fun candidate => ValueListAtom.equal candidate value then
+        .inr (if reached then .omission else .value)
+      else .inl { seen := insertDistinctValue state.seen value, filterReached := reached }
+  | .empty | .unknown _ => .inl state
+
+/-- Consume an already materialized operand with the same prefix transition as an incremental star. -/
+def scanValidationUniquenessCells (filtered : Bool) :
+    List (ValueListCell kind) → ValuesNotUniqueScanState kind → ValuesNotUniqueScanState kind ⊕ Polarity
+  | [], state => .inl state
+  | cell :: rest, state => match state.step filtered cell with
+      | .inl next => scanValidationUniquenessCells filtered rest next
+      | .inr polarity => .inr polarity
+
+/-- Later authored operands are resolved only while the uniqueness prefix has no duplicate. -/
+def scanValidationUniquenessOperands
+    (scan : Operand → ValuesNotUniqueScanState kind → Except Error (ValuesNotUniqueScanState kind ⊕ Polarity)) :
+    List Operand → ValuesNotUniqueScanState kind → Except Error (Option Polarity)
+  | [], _ => pure none
+  | operand :: rest, state => do
+      match ← scan operand state with
+      | .inl next => scanValidationUniquenessOperands scan rest next
+      | .inr polarity => pure (some polarity)
+
+/-- Validation uniqueness has only firing and non-firing results; structural failures remain in `Except`. -/
+def evaluateValidationUniqueness
+    (scan : Operand → ValuesNotUniqueScanState kind → Except Error (ValuesNotUniqueScanState kind ⊕ Polarity))
+    (operands : List Operand) : Except Error Verdict := do
+  let result ← scanValidationUniquenessOperands scan operands {}
+  pure (match result with | none => .notFired | some polarity => .fired polarity)
+
 /-- One ordered `FieldValuesNotUnique` scan over authored operand order, each cell tagged with
     whether its own operand carries a filter. Truth and polarity are decided together because the
     engine answers at the duplicate it finds, so the polarity depends on how far the scan got.
@@ -162,14 +202,10 @@ def scanValuesNotUnique {kind : ValueListKind}
     (seen : List (ValueListAtom kind)) (filterReached : Bool) :
     List (ValueListCell kind × Bool) → Verdict
   | [] => .notFired
-  | (.present value, filtered) :: remaining =>
-      let reached := filterReached || filtered
-      if seen.any fun candidate => ValueListAtom.equal candidate value then
-        .fired (if reached then .omission else .value)
-      else
-        scanValuesNotUnique (insertDistinctValue seen value) reached remaining
-  | (.empty, _) :: remaining | (.unknown _, _) :: remaining =>
-      scanValuesNotUnique seen filterReached remaining
+  | (cell, filtered) :: remaining =>
+      match (ValuesNotUniqueScanState.mk seen filterReached).step filtered cell with
+      | .inl next => scanValuesNotUnique next.seen next.filterReached remaining
+      | .inr polarity => .fired polarity
 
 /-- Evaluate one `FieldValuesNotUnique` operand list from the neutral scan state. -/
 def evalValuesNotUniqueVerdict {kind : ValueListKind}

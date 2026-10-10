@@ -111,11 +111,15 @@ def evaluateCheckedDocumentValuesNotUnique
     (checked : CheckedTokenValuesNotUniqueSource model)
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) : Except CheckedAddressingError Verdict := do
-  let tagged ← collectTaggedValueListCells
-    (fun operand => do
-      operand.checkedValidationSide (world := world) document outer)
-    checked.source.operands
-  pure (evalValuesNotUniqueVerdict tagged)
+  evaluateValidationUniqueness (fun operand state => do
+    match operand with
+    | .star source =>
+        if let some having := source.filter then
+          return ← source.source.scanValidationUniqueness having.condition document outer
+            (fun addressed => source.operand.checkedValueListCellAt .validation addressed.cell) state world
+    | _ => pure ()
+    let side ← operand.checkedValidationSide (world := world) (traversalMode := .dense) document outer
+    pure (scanValidationUniquenessCells side.hasHaving side.cells state)) checked.source.operands
 
 end CheckedTokenValuesNotUniqueSource
 
