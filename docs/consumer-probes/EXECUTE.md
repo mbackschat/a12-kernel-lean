@@ -367,9 +367,43 @@ All declarations and authored expressions are statically admitted. Number fields
 3. **S3 — reached versus bypassed poison.** String `Good` contains `"ok"`, `Bad` is malformed, and `Out` and its dependent `Copy` store `"old"`. Compare `Out = FirstFilledValue(Good, Bad)` with `Out = FirstFilledValue(Bad, Good)`; `Copy = [Out]` in each complete programme. Give outcomes, whether `Bad` is reached, and whether the dependent observes clean empty or poison when no value is produced.
 4. **S4 — first alternative.** Number `Gate` is 7 and `Out` stores 9. Both ordered alternatives have precondition `FieldFilled(Gate)`: first operation 1, second operation 2. Give the computed result. Repeat with an empty Gate, and with only the first precondition changed to `FieldNotFilled(Gate)` while Gate remains 7. Do not run generated validation in this scenario.
 5. **S5 — parent-local identity.** There are two instantiated outer parents, [1] and [2]. Under each, indexed `Rows` has local physical row 1 with String key `"k"`; Number payloads are 11 and 22 respectively. Resolve `Payload For "k"` separately in each bound parent, preserving complete physical coordinates. State whether the repeated key across parents is a duplicate.
-6. **S6 — missing versus duplicate key.** Under one bound parent, compare two fully relevant String-index columns: (a) one row keyed `"other"` with payload 8; (b) two rows keyed `"k"` with payloads 8 and 9. In full validation evaluate `[Payload For "k"] == 0` and `FieldNotFilled(Payload For "k")`; give firing and VALUE/OMISSION type where they fire. Then give the outcome of a seeded Number computation `Out = [Payload For "k"]` under each column and distinguish clean empty from poison.
+6. **S6 — missing versus duplicate key.** Under one bound parent, compare two fully relevant String-index columns: (a) one row keyed `"other"` with payload 8; (b) two rows keyed `"k"` with payloads 8 and 9. In full validation evaluate `[Payload For "k"] == 0` and `FieldNotFilled(Payload For "k")`; give firing and VALUE/OMISSION type where they fire. Then give the outcome of Number computation `Out = [Payload For "k"]`, with Out initially storing 9, under each column and distinguish clean empty from poison.
 7. **S7 — fixed group below a star.** A repeatable `Parents*` ancestor has instantiated row [1]. Its fixed child `Detail` declares exactly two Number fields A and B, both empty. At that selected environment evaluate `GroupFilled(Detail)` and `GroupNotFilled(Detail)` under partial validation with only A covered, then with both fields covered. Repeat with only A covered and A holding 4. Return truth/unknown and final firing; explain whether the ancestor's instantiated row is itself Detail content. No other descendants or relevance marks exist.
 8. **S8 — generated error after application.** Use S4's two simultaneously holding alternatives, computation name `computedTarget`, target `/Form/Out`, Gate=7 and initial Out=9. Compute, apply to the same document, then run the generated validation. Give applied value and firing, error code, VALUE/OMISSION type and target address. Repeat with just the first alternative retained. No rendered catalog text or unspecified cache coordinates are requested.
 
 - `wrong-accounts`: Stored producer wins; clean clear retains stale data or poisons; unread poison aborts; computation tries every holding alternative; equal keys collide across parents; missing and duplicate keys collapse; an ancestor row fills its fixed child or partial emptiness proves absence; generated validation only checks the selected computation alternative or reads the pre-application target.
 - `exclusions`: General model parsing/admission, partial computation plans, unspecified host cache order, additional calendar/regex profiles, arbitrary nesting, exact rendered catalog text, independent evaluator qualification and downstream product readiness.
+
+<a id="run-c01-execute-01"></a>
+### C01 baseline — `c01-execute-01`
+
+- `task`: [C01 Execute/Explain](#task-c01-execute-explain)
+- `status`: amber
+- `started-at`: 2026-10-11T00:07:33+02:00
+- `finished-at`: 2026-10-11T00:09:53+02:00
+- `duration-seconds`: 140
+- `semantic-basis`: `0e302b8dcb5f641bf7bd07c4fef2a9ba6cd09cdd`
+- `oracle`: Nominal answers are consistent with the checked scheduling, selection, group-presence and generated-validation accounts; this run is not accepted as strict-allowlist evidence.
+- `consumer-access`: Fresh MEDIUM read the task and canonical sections via shell/Python, but its heading extractor also displayed the unallowed spec/09 checklist. No Lean, evidence, source checkpoints, sibling, web, expected answers or implementation access.
+- `cost`: 140 seconds; zero implementation/test lines or new dependencies; no token measurement.
+- `result`: Eight scenario families answered, but the access deviation prevents qualification.
+- `wrong-accounts`: Nominal answers rejected the listed unsafe accounts; no strict-allowlist claim follows.
+- `questions-and-guesses`: Consumer reported no semantic uncertainty; S6's source-relative delta nevertheless needed the unspecified seed qualification identified in the next run.
+- `exclusions`: The [task exclusions](#task-c01-execute-explain) remain; no C01 closure from this run.
+
+<a id="run-c01-execute-02"></a>
+### C01 exact packet — `c01-execute-02`
+
+- `task`: [C01 Execute/Explain](#task-c01-execute-explain), before the S6 seed was concretized
+- `status`: amber
+- `started-at`: 2026-10-11T00:10:49+02:00
+- `finished-at`: 2026-10-11T00:12:31+02:00
+- `duration-seconds`: 102
+- `semantic-basis`: `0e302b8dcb5f641bf7bd07c4fef2a9ba6cd09cdd`
+- `oracle`: Root reconciliation found a handover defect: the subset packet omitted spec/09's existing topological-order paragraph. S6 also omitted its seed value, needed for exact change classification. The consumer correctly withheld those conclusions.
+- `consumer-access`: Fresh MEDIUM read only the root-extracted canonical packet using three bounded shell reads; no repository files, links, Lean, evidence, web, edits, code or dependencies.
+- `cost`: 102 seconds; zero implementation/test lines or new dependencies; no token measurement.
+- `result`: S2 and S4–S8 were recovered, with S6's successful zero distinguished from an unknowable changed/unchanged delta. S1 and S3's dependent results were conditional on the missing scheduling clause.
+- `wrong-accounts`: Retained stale inputs, poisoned clean clears, unread poison, last-match selection, cross-parent collisions, missing/duplicate collapse, partial absence and selected-only generated validation were rejected. Scheduling was explicitly left unresolved.
+- `questions-and-guesses`: Producer ordering and S6 seed value were identified as insufficient information, without guesses. Supply the missing existing clause and seed 9 before rerunning.
+- `exclusions`: The [task exclusions](#task-c01-execute-explain) remain; no C01 closure from this run.
