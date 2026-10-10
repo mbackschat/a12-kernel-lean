@@ -1,0 +1,66 @@
+{
+  "model": "../parallel-group-outer-2026-10-10/ErrTgtPar_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "outer-rows-4",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "left"
+              },
+              {
+                "Key": "1",
+                "Note": "again"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "right"
+              }
+            ]
+          },
+          {},
+          {},
+          {}
+        ]
+      }
+    },
+    {
+      "name": "outer-rows-5",
+      "documentInline": {
+        "Et": [
+          {
+            "Rows": [
+              {
+                "Key": "1",
+                "Note": "left"
+              },
+              {
+                "Key": "1",
+                "Note": "again"
+              }
+            ],
+            "Side": [
+              {
+                "Key": "1",
+                "Val": "right"
+              }
+            ]
+          },
+          {},
+          {},
+          {},
+          {}
+        ]
+      }
+    }
+  ]
+}

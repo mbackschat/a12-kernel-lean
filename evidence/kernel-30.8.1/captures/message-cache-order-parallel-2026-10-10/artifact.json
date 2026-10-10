@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "../parallel-group-outer-2026-10-10/ErrTgtPar_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "outer-rows-4",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows[2]/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows[2]/Key",
+                "Et/Rows[2]/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows[2]/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows[2]/Key"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows[2]/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows[2]/Key",
+                "Et/Rows[2]/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows[2]/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows[2]/Key"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "outer-rows-5",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows[2]/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows[2]/Key"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "LEFTOR",
+              "field": "Et/Rows/Note",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows/Key",
+                "Et/Rows/Note",
+                "Et/Side/Key",
+                "Et/Side/Val"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Et/Rows[2]/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Et/Rows[2]/Key"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

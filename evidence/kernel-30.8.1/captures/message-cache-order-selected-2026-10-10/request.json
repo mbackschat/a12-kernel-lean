@@ -1,0 +1,370 @@
+{
+  "model": "../selected-message-references/model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "admitted-25",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admitted-26",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Scalar": "1"
+        }
+      }
+    },
+    {
+      "name": "empty-keeps-25",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Scalar": ""
+        }
+      }
+    },
+    {
+      "name": "invalid-keeps-25",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Scalar": "not-a-number"
+        }
+      }
+    },
+    {
+      "name": "empty-group-26",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  },
+                  "Items": [
+                    {}
+                  ]
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sparse-three-empty-groups",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  },
+                  "Items": [
+                    null,
+                    null,
+                    null
+                  ]
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sparse-with-over-capacity",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  },
+                  "Items": [
+                    null,
+                    null,
+                    null,
+                    {}
+                  ]
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unique-control",
+      "documentInline": {
+        "Form": {
+          "RootKey": "b",
+          "Parents": [
+            {
+              "Key": "b",
+              "RequestedKey": "b",
+              "Scalar": "99",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                },
+                {
+                  "Id": "b",
+                  "N": "2",
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

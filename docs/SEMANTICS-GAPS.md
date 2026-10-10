@@ -117,6 +117,8 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - [Selected overlap closure matrix](gaps/paths-and-groups.md#gap-sg29-overlap-matrix)
 <a id="gap-sg29"></a>
 - [open obligation](gaps/paths-and-groups.md#gap-sg29)
+<a id="gap-sg29-cache-order"></a>
+- [Shared message-cache producer closure matrix](gaps/paths-and-groups.md#gap-sg29-cache-order)
 
 ### SG13 — group-list and group-count completion
 
