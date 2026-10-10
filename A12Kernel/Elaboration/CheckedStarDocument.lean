@@ -581,9 +581,16 @@ def CheckedSemanticIndexSource.observeDocument (source : CheckedSemanticIndexSou
   let column ← source.resolvePreliminaryColumn preliminary outer |>.mapError .semanticIndex
   let keyCell ← match source.key with
     | .literal .. => pure (checkAdmittedRawCell .empty)
-    | .field declaration => do
-        let address ← document.cellAddress outer declaration.id
-        preliminary.readAuthoredValidation address |>.mapError .document
+    | .field declaration =>
+        match phase with
+        | .validation => do
+            -- Full-rule coordinates can be implicit; retain the existing validation domain and preliminary overlays (spec/07 §1, spec/08 §4.1).
+            let addressed ← document.fullValidationAddressedCell outer declaration.id
+            pure (preliminary.annotateCell addressed.address
+              (preliminary.stagedCell addressed.address addressed.cell))
+        | .computation => do
+            let address ← document.cellAddress outer declaration.id
+            preliminary.readAuthoredValidation address |>.mapError .document
   let key ← source.observeCurrentKey phase (fun _ => keyCell)
     (document.storedTextIn outer) |>.mapError .semanticIndex
   pure (column.lookupObservationForIndex phase source.numericIndex key)

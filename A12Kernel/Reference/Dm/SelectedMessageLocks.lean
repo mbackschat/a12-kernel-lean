@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.LowerValidation
 import A12Kernel.Reference.Dm.Parser
 import A12Kernel.Elaboration.ValidationCondition.Reference
@@ -241,5 +242,91 @@ private def listBinProjection : Option (List MessagePointer) := do
 
 example : listBinProjection = some [
     { field := 2, coordinates := [] }, { field := 1, coordinates := [.concrete 1] }] := by native_decide
+
+private def implicitParentDocument : Option (CheckedDocument model) := do
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let json := Lean.Json.mkObj [("Form", .mkObj [("Parents", .arr #[.mkObj [
+    ("Key", .str "a"), ("Anchor", .str "1"), ("Rows", .arr #[.mkObj [
+      ("Id", .str "a"), ("N", .str "2"), ("Text", .str "x"),
+      ("Flag", .str "true"), ("Stamp", .str "2024-01-01")]])]])])]
+  let raw ← (readDocument dm json).toOption
+  if !raw.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  (checkDocument prepared "en_US" raw.data).toOption
+
+private def implicitParentVerdicts (condition : String) : Option (List Verdict) := do
+  let document ← implicitParentDocument
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let rule ← (checkRule dm .english {
+    name := "ImplicitKey", group := ["Form", "Parents"], errorEntityRelPath := "../Anchor",
+    errorCode := "PROBE", condition, severity := "ERROR" } world).toOption
+  let outcomes ← (rule.evalOrdinaryRepeatableFull document (some world)).toOption
+  pure (outcomes.map fun (_, outcome) => outcome.verdict)
+
+example : implicitParentDocument.isSome ∧
+    implicitParentVerdicts "FieldFilled(Anchor)" = some [.fired .value, .notFired] := by native_decide
+
+example : implicitParentVerdicts "FieldFilled(Anchor) Or [Rows/N For Key] > 0" =
+    some [.fired .value, .notFired] := by native_decide
+
+example : ["N", "Text", "Flag", "Stamp"].all (fun field =>
+    implicitParentVerdicts ("FieldFilled(Anchor) And FieldFilled(Rows/" ++ field ++ " For Key)") ==
+      some [.fired .value, .notFired]) = true := by native_decide
+
+example : implicitParentVerdicts "FieldFilled(Anchor) Or [Rows/N For Key] == 0" =
+      some [.fired .value, .fired .omission] ∧
+    implicitParentVerdicts "[Rows/N For Key] == 0 Or FieldFilled(Anchor)" =
+      some [.fired .value, .fired .omission] := by native_decide
+
+private def implicitParentIndexedSource (field : String := "N") : Option (CheckedSemanticIndexSource model) := do
+  let parsed ← (parseText .english ("FieldFilled(Rows/" ++ field ++ " For Key)")).toOption
+  let condition ← (lowerCondition model ["Form", "Parents"] false parsed.body (world := world)).toOption
+  match condition.core with
+  | .leaf (.indexedFieldPresence .filled source) => some source
+  | _ => none
+
+private def implicitParentObservation (environment : Env) (phase : Phase) : Option CellObservation := do
+  let document ← implicitParentDocument
+  let source ← implicitParentIndexedSource "N"
+  (source.observeDocument document environment phase).toOption
+
+private def implicitParentSourceError (environment : Env) (phase : Phase)
+    (expected : CheckedAddressingError) : Bool :=
+  match implicitParentDocument, implicitParentIndexedSource "N" with
+  | some document, some source =>
+      match source.observeDocument document environment phase with
+      | .error actual => actual == expected
+      | .ok _ => false
+  | _, _ => false
+
+example : (implicitParentIndexedSource "N").isSome := by native_decide
+
+example : implicitParentObservation [(1, 1)] .validation = some (.value (.num 2)) ∧
+    implicitParentObservation [(1, 1)] .computation = some (.value (.num 2)) := by native_decide
+
+example : implicitParentObservation [(1, 2)] .validation = some .empty ∧
+    implicitParentSourceError [(1, 2)] .computation
+      (.document (.missingRow { group := 1, path := [2] })) ∧
+    implicitParentSourceError [(1, 3)] .validation
+      (.document (.missingRow { group := 1, path := [3] })) := by native_decide
+
+example : [Phase.validation, .computation].all (fun phase =>
+    implicitParentSourceError [] phase
+      (.semanticIndex (.checkedColumn (.environment (.missingBinding 1)))) &&
+    implicitParentSourceError [(1, 0)] phase
+      (.semanticIndex (.checkedColumn (.environment (.zeroBinding 1)))) &&
+    implicitParentSourceError [(1, 1), (1, 2)] phase
+      (.semanticIndex (.checkedColumn (.environment (.duplicateBinding 1))))) = true := by native_decide
+
+private def typedImplicitKeyControl (field : String) : Bool :=
+  match implicitParentDocument, implicitParentIndexedSource field with
+  | some document, some source =>
+      let physical := match source.observeDocument document [(1, 1)] .validation with
+        | .ok (.value _) => true
+        | _ => false
+      physical && (source.observeDocument document [(1, 2)] .validation).toOption == some .empty
+  | _, _ => false
+
+example : ["N", "Text", "Flag", "Stamp"].all typedImplicitKeyControl = true := by native_decide
 
 end A12Kernel.Dm.SelectedMessageLocks
