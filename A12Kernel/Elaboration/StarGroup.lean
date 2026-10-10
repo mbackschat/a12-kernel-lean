@@ -297,34 +297,11 @@ def inCapacityRowCount (checked : CheckedStarredGroupSource model)
     (document : Document) (outer : Env) : Except StarAddressingError Nat := do
   pure (← checked.path.inCapacityEnvironments document outer).length
 
-/-- Select the partial-validation in-capacity row count when the caller either covers the whole
-    starred extent or names at least one concrete in-capacity group row. A selection confined to
-    over-limit rows is unavailable rather than an empty operand. -/
-def partialInCapacityRowCount? (checked : CheckedStarredGroupSource model)
-    (document : Document) (outer : Env) (scope : ValidationRelevanceScope) :
-    Except StarAddressingError (Option Nat) := do
-  let environments ← checked.path.inCapacityEnvironments document outer
-  if checked.allRowsRelevant scope outer then
-    pure (some environments.length)
-  else
-    let relevant := environments.filter fun environment =>
-      scope.coversCell model checked.group.path environment
-    if relevant.isEmpty then pure none else pure (some relevant.length)
-
 /-- Evaluate either legal sole-star group predicate from the instantiated in-capacity row count. -/
 def evaluateFull (checked : CheckedStarredGroupSource model)
     (operator : StarredGroupFillQuantifier) (document : Document) (outer : Env) :
     Except StarAddressingError ValidationFillOutcome := do
   pure (operator.evalCount (← checked.inCapacityRowCount document outer))
-
-/-- Evaluate the measured single-star partial carrier without treating an unavailable selected
-    extent as zero rows. -/
-def evaluatePartialQuantifier (checked : CheckedStarredGroupSource model)
-    (operator : StarredGroupFillQuantifier) (document : Document) (outer : Env)
-    (scope : ValidationRelevanceScope) : Except StarAddressingError Verdict := do
-  match ← checked.partialInCapacityRowCount? document outer scope with
-  | some count => pure (operator.evalCount count).asConservativeVerdict
-  | none => pure .unknown
 
 /-- The sole-star numeric form counts the same instantiated in-capacity rows as the threshold predicates. -/
 def numberOfFilledGroups (checked : CheckedStarredGroupSource model)

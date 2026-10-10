@@ -132,36 +132,24 @@ theorem validationConditionLeaf_starredGroupPresence_partialSupport
     (ValidationConditionLeaf.groupList operator
       [.starredGroupPresence source]).supportsAddressedPartial =
         operator.toStarredGroupFillQuantifier?.isSome := by
-  rfl
+  cases operator <;> rfl
 
-/-- Partial evaluation selects the source's in-capacity ancestry environments, delegates each terminal to the caller's relevance-aware group-product resolver, and combines those classifications through the shared quantifier table. -/
-theorem validationConditionLeaf_starredGroupPresence_partialDelegates
+/-- The partial list route preserves operand order through delayed presence readers and the
+shared short-circuit fold. Unsupported carriers remain structural refusals. -/
+theorem validationConditionLeaf_groupList_partialDelegates
     (model : FlatModel) (operator : GroupFillQuantifier)
-    (source : CheckedStarredGroupPresenceSource model)
+    (operands : List (ResolvedGroupListOperand model))
     (context : AddressedValidationEvaluationContext model)
     (scope : ValidationRelevanceScope) (isRelevant : FlatRelevance)
-    (resolveGroup :
-      GroupPath → Env →
-        Except CheckedAddressingError ResolvedGroupPresenceInput)
+    (resolveGroup : PartialGroupResolver)
     (result? : Option RepetitionNotUniqueResult) :
-    (ValidationConditionLeaf.groupList operator
-      [.starredGroupPresence source]).evalAddressedPartial?
+    (ValidationConditionLeaf.groupList operator operands).evalAddressedPartial?
         context scope isRelevant resolveGroup result? =
-      (match operator.toStarredGroupFillQuantifier? with
-      | none => none
-      | some _ =>
-          some do
-            let document := match context.input with
-              | .legacy document _ => document
-              | .checked checked | .partialView checked _ =>
-                  checked.source.toDocument
-            let environments ←
-              (source.inCapacityEnvironments document context.outer)
-                |>.mapError CheckedAddressingError.addressing
-            let states ← environments.mapM fun environment => do
-              let input ← resolveGroup source.groupPath environment
-              pure input.derive.asGroupListPresence
-            pure (operator.evalPresence states).asConservativeVerdict) := by
+      (do
+        let selected ← operator.toStarredGroupFillQuantifier?
+        let readers ← operands.mapM
+          (ValidationConditionLeaf.partialGroupOperandStates? selected context resolveGroup)
+        pure (ValidationConditionLeaf.evalPartialGroupReaders selected readers)) := by
   rfl
 
 /-- A group-list leaf exposes exactly the captured prefix of its checked starred operands as its ordinary rule-iteration scope. -/

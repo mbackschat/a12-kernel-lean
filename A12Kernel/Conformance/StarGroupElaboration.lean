@@ -121,6 +121,10 @@ private def partialOutcomeOf (operator : GroupFillQuantifier)
   let leaf ← match checked.core with
     | .leaf leaf => some leaf
     | _ => none
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let checkedDocument ← (checkDocument prepared "en_US" { instantiatedRows := rows, cells := [] }).toOption
+  let preliminary ← (checkedDocument.applyPartialGeneratedPreliminaryForScope scope).toOption
   let scalar := model.checkContext { read := fun _ => .empty }
   let result ← leaf.evalAddressedPartial? {
       scalar := {
@@ -129,7 +133,8 @@ private def partialOutcomeOf (operator : GroupFillQuantifier)
       outer := []
       input := .legacy (document rows) (fun _ field => scalar.read field)
     } scope (fun _ => true)
-      (fun _ _ => .error (.checkedDocumentRequired [])) none
+      (fun path environment =>
+        (preliminary.groupPresenceInput path environment false).mapError .group) none
   result.toOption
 
 private def countResultOf (source : SurfaceStarGroupPath) (rows : List RowAddr)

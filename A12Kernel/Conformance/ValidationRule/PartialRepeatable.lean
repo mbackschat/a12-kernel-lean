@@ -625,18 +625,23 @@ example :
       some .unknown := by
   native_decide
 
-/- Complete coverage of both empty descendants settles the group as empty. Partial coverage without
-   a filled witness remains unavailable and makes the negative quantifier UNKNOWN. -/
+/- Covering both descendants of row one leaves the missing declared row two unavailable.
+   Wildcard descendant coverage settles absence (mixed group-predicate matrix, spec/10 §5). -/
 example :
     partialTerminalGroupVerdict? .noGroupFilled
         { instantiatedRows := [{ group := 10, path := [1] }], cells := [] }
         [relevantPartialGroupField selectedDetail,
           relevantPartialGroupField otherDetail] =
-      some (.fired .omission) ∧
+      some .unknown ∧
     partialTerminalGroupVerdict? .noGroupFilled
         { instantiatedRows := [{ group := 10, path := [1] }], cells := [] }
         [relevantPartialGroupField selectedDetail] =
-      some .unknown := by
+      some .unknown ∧
+    partialTerminalGroupVerdict? .noGroupFilled
+        { instantiatedRows := [{ group := 10, path := [1] }], cells := [] }
+        [RelevantEntityPattern.allInstances selectedDetail.path,
+          RelevantEntityPattern.allInstances otherDetail.path] =
+      some (.fired .omission) := by
   native_decide
 
 /- A filled in-capacity group decides the existential quantifier despite an unavailable peer. -/

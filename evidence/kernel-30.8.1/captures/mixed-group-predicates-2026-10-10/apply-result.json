@@ -1,0 +1,422 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "33 op(s) committed, written to Predicates_DM.json",
+  "data": {
+    "ops": 33,
+    "committed": true,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Anchor",
+          "kind": "STRING"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Left"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "added": "/Form/Left/Seal"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Left/Seal/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Left/Seal/M",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "repeatable": true,
+          "added": "/Form/Right"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "added": "/Form/Right/Seal"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Right/Seal/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Right/Seal/M",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "group",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged group add",
+        "changed": {
+          "added": "/Form/Fixed"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged field add",
+        "changed": {
+          "added": "/Form/Fixed/N",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/LSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/LNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/RSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/RNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/DSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/DNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/TSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/TNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/LRSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/LRNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/RLSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/RLNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/MSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/MNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/MRSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/MRNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/FSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/FNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/FLSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/FLNone"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/LFSome"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "staged rule add",
+        "changed": {
+          "rule": "/Form/LFNone"
+        },
+        "diagnostics": [],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "Predicates_DM.json"
+}

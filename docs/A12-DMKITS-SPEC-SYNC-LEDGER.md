@@ -238,3 +238,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: After the stricter first-instance gate, every held instance still requires decided presence. A later malformed-only group or partly covered group without visible admitted content makes the count UNKNOWN. Admitted content beside an independent error still counts; clean fully covered absence contributes zero.
 - `basis`: [Operand multiplicity and independent-axis matrix](sources/group-count-topology.md#src-group-count-multiplicity), both Kernel 30.8.1 strategies agreeing. This corrects Lean's later-instance Boolean projection, not a demonstrated peer defect.
 - `acceptance`: Reconcile the later-instance rule while preserving first-instance strictness, repeated-operand multiplicity, structural row counts, capacity filtering and the computation arm. Reuse the retained controls; report an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.
+
+<a id="spec-2026-10-10-20"></a>
+### SPEC-2026-10-10-20 — partial group predicates retain missing-position uncertainty
+
+- `status`: pending
+- `canonical`: [Partial group presence](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
+- `delta`: The two starred group predicates combine relevance-selected presence over declared positions, including missing rows. Uncovered absence cannot prove `NoGroupFilled`. A covered descendant exposes an instantiated terminal row as structural content even when the descendant is empty; fixed below-star groups still need admitted content.
+- `basis`: [Mixed group-predicate matrix](sources/group-count-topology.md#src-mixed-group-predicates), both Kernel strategies on 99 rows. Lean's full route agreed; its partial route refused mixtures and could emit a negative message for an uncovered absent group. No peer defect is claimed.
+- `acceptance`: Reconcile declared-coordinate uncertainty, descendant relevance, repeated operands, independent mixtures and operand-order controls. Preserve capacity filtering, group-count first-instance strictness and computation's distinct semantics. Reuse retained observations; return an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.

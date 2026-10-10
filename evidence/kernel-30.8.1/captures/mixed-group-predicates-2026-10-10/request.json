@@ -1,0 +1,3697 @@
+{
+  "model": "Predicates_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "absent-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "absent-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "absent-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "absent-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "empty-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "empty-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "empty-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "left-only-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "left-only-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "left-only-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "left-only-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "right-only-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "right-only-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "right-only-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "right-only-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "unbalanced-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "unbalanced-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "unbalanced-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "unbalanced-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "full-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "full-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "full-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "full-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "left-first-bad-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "left-first-bad-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "left-first-bad-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "left-first-bad-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "left-last-bad-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "left-last-bad-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "left-last-bad-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "left-last-bad-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "right-bad-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "right-bad-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "right-bad-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "right-bad-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-valid-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": "2"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-valid-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": "2"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-valid-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": "2"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-valid-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "bad",
+                "M": "2"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "left-over-bad-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "left-over-bad-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "left-over-bad-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "left-over-bad-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "right-over-bad-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "right-over-bad-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "right-over-bad-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "right-over-bad-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "later-bad-valid-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": "2"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "later-bad-valid-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": "2"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "later-bad-valid-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": "2"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "later-bad-valid-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "bad",
+                "M": "2"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "later-valid-bad-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "2",
+                "M": "bad"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "later-valid-bad-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "2",
+                "M": "bad"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "later-valid-bad-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "2",
+                "M": "bad"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "later-valid-bad-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "2",
+                "M": "bad"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "later-empty-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "later-empty-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "later-empty-right",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        }
+      ]
+    },
+    {
+      "name": "later-empty-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "partial-later-hidden-filled",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": "2"
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Left/Seal",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Left/Seal/N"
+        }
+      ]
+    },
+    {
+      "name": "partial-later-visible-filled",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Left/Seal",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Left/Seal/N"
+        }
+      ]
+    },
+    {
+      "name": "partial-later-empty",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Left/Seal",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Left/Seal/N"
+        }
+      ]
+    },
+    {
+      "name": "fixed-filled-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": "1"
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "fixed-filled-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": "1"
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "fixed-filled-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": "1"
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "fixed-filled-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": "1"
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "fixed-empty-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": ""
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "fixed-empty-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": ""
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "fixed-empty-left",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": ""
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Left"
+        }
+      ]
+    },
+    {
+      "name": "fixed-empty-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Fixed": {
+            "N": ""
+          },
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "extent-absent-field-all",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left/Seal/N"
+        }
+      ]
+    },
+    {
+      "name": "extent-absent-field-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left/Seal/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-absent-group-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-absent-group-second",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-one-empty-field-all",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left/Seal/N"
+        }
+      ]
+    },
+    {
+      "name": "extent-one-empty-field-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left/Seal/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-one-empty-group-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-one-empty-group-second",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-two-empty-field-all",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left/Seal/N"
+        }
+      ]
+    },
+    {
+      "name": "extent-two-empty-field-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left/Seal/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-two-empty-group-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-two-empty-group-second",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-one-filled-field-all",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left/Seal/N"
+        }
+      ]
+    },
+    {
+      "name": "extent-one-filled-field-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left/Seal/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-one-filled-group-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-one-filled-group-second",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-two-filled-field-all",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left/Seal/N"
+        }
+      ]
+    },
+    {
+      "name": "extent-two-filled-field-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left/Seal/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-two-filled-group-first",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left",
+          "reps": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extent-two-filled-group-second",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Left": [
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Seal": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Right": [],
+          "Fixed": {
+            "N": ""
+          }
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Right"
+        },
+        {
+          "path": "/Form/Fixed"
+        },
+        {
+          "path": "/Form/Left",
+          "reps": [
+            1,
+            2
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,399 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Left",
+    "repeatable": 2
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Left",
+    "name": "Seal"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Left/Seal",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Left/Seal",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Right",
+    "repeatable": 2
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Right",
+    "name": "Seal"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Right/Seal",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Right/Seal",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Fixed"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Fixed",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Left*/Seal)",
+    "code": "LSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Left*/Seal)",
+    "code": "LNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Right*/Seal)",
+    "code": "RSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Right*/Seal)",
+    "code": "RNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Left*/Seal, Left*/Seal)",
+    "code": "DSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Left*/Seal, Left*/Seal)",
+    "code": "DNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Left*, Left*)",
+    "code": "TSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Left*, Left*)",
+    "code": "TNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Left*/Seal, Right*/Seal)",
+    "code": "LRSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Left*/Seal, Right*/Seal)",
+    "code": "LRNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Right*/Seal, Left*/Seal)",
+    "code": "RLSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Right*/Seal, Left*/Seal)",
+    "code": "RLNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Left*/Seal, Right*)",
+    "code": "MSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Left*/Seal, Right*)",
+    "code": "MNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Right*, Left*/Seal)",
+    "code": "MRSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Right*, Left*/Seal)",
+    "code": "MRNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed)",
+    "code": "FSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Fixed)",
+    "code": "FNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed, Left*/Seal)",
+    "code": "FLSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Fixed, Left*/Seal)",
+    "code": "FLNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Left*/Seal, Fixed)",
+    "code": "LFSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Left*/Seal, Fixed)",
+    "code": "LFNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]
