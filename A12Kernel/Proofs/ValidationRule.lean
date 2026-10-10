@@ -257,7 +257,8 @@ theorem assembleResolvedValidationRule_rejects_negativeIteration
         severity messagePlan = .error error ∧
       (error = .negativeConditionInIteration level ∨
         (∃ field unbound, error = .unboundOperandLevel field unbound) ∨
-        ∃ field level, error = .errorFieldIterationInvalid field level) := by
+        (∃ field level, error = .errorFieldIterationInvalid field level) ∨
+        ∃ field level, error = .formOnlyIteration field level) := by
   unfold assembleResolvedValidationRule
   simp only [invalid]
   split
@@ -268,8 +269,18 @@ theorem assembleResolvedValidationRule_rejects_negativeIteration
   · split
     · exact ⟨_, rfl, Or.inr (Or.inl ⟨_, _, rfl⟩)⟩
     · split
-      · exact ⟨_, rfl, Or.inr (Or.inr ⟨_, _, rfl⟩)⟩
-      · exact ⟨_, rfl, Or.inl rfl⟩
+      · split
+        · exact ⟨_, rfl, Or.inr (Or.inr (Or.inr ⟨_, _, rfl⟩))⟩
+        · unfold assembleResolvedValidationRule.finish
+          simp only [invalid]
+          split
+          · exact ⟨_, rfl, Or.inr (Or.inr (Or.inl ⟨_, _, rfl⟩))⟩
+          · exact ⟨_, rfl, Or.inl rfl⟩
+      · unfold assembleResolvedValidationRule.finish
+        simp only [invalid]
+        split
+        · exact ⟨_, rfl, Or.inr (Or.inr (Or.inl ⟨_, _, rfl⟩))⟩
+        · exact ⟨_, rfl, Or.inl rfl⟩
 
 /-- The already-derived negative-iteration assembly error projects to the exact measured Kernel diagnostic class. -/
 theorem flatRuleAssemblyError_negativeIteration_diagnostic

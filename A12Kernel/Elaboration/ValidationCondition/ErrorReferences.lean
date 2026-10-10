@@ -9,18 +9,20 @@ namespace A12Kernel.ValidationCondition
 
 private inductive ReferenceQuery where
   | membership
+  | nonFormMembership
   | iteration (level : RepeatableLevel)
 
-private def ReferenceQuery.binds (query : ReferenceQuery) (scope : List RepeatableLevel) : Bool :=
+private def ReferenceQuery.binds (query : ReferenceQuery) (scope : List RepeatableLevel) (isForm : Bool := false) : Bool :=
   match query with
   | .membership => true
+  | .nonFormMembership => !isForm
   | .iteration level => scope.contains level
 
 private def unresolvedReference (query : ReferenceQuery) (member : Bool) : Option Bool :=
   if !member then some false else
   match query with
   | .membership => some true
-  | .iteration _ => none
+  | .nonFormMembership | .iteration _ => none
 
 /-- Static error references follow authored entities, not implicit index-cache reads
 (EntityRefUtils.getDRefs/getGRefs; IterationChecker.checkIteration4NotOnlyVRefs).
@@ -29,7 +31,12 @@ private def selectedReferenceAt (field : FieldId) (query : ReferenceQuery)
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) : Bool :=
   let selection := match source with | .inl source => source | .inr source => source.selection.indexSource
   let declarations := match source with | .inl source => [source.targetDeclaration] | .inr source => source.declarations
-  let target := declarations.any (·.id == field) && query.binds selection.indexDeclaration.repeatableScope.dropLast
+  let isForm := match source with
+    | .inl _ => false
+    | .inr source => match source.target with
+        | .group path | .starredGroup path => path.length == 1
+        | .star _ => false
+  let target := declarations.any (·.id == field) && query.binds selection.indexDeclaration.repeatableScope.dropLast isForm
   let key := match selection.key with
     | .literal .. => false
     | .field declaration => declaration.id == field && query.binds declaration.repeatableScope
@@ -66,6 +73,10 @@ private def markedReferenceAt (model : FlatModel) (field : FieldId) (query : Ref
         slot.references.any (fun reference => reference.origin == .outer && reference.field == field) &&
           match query with
           | .membership => true
+          | .nonFormMembership => match slot with
+              | .extent (.group reference) _ => !reference.isRoot
+              | .extent (.starredGroup path _) _ => path.length != 1
+              | _ => true
           | .iteration level => (slot.outerIterationScope? model).any (·.contains level)
 
 private def rawOperandReferenceAt? (field : FieldId) (query : ReferenceQuery)
@@ -75,8 +86,7 @@ private def rawOperandReferenceAt? (field : FieldId) (query : ReferenceQuery)
   | .keyed source => some (selectedReferenceAt field query (.inr source))
   | _ =>
       if !operand.expansionDeclarations.any (·.id == field) then some false
-      else if operand.subtreePath?.any (fun path => path.length == 1) then unresolvedReference query true
-      else some (query.binds operand.bindingScope)
+      else some (query.binds operand.bindingScope (operand.subtreePath?.any (fun path => path.length == 1)))
 
 private def shapeReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (shape : CheckedFieldEntityShape model) (filters : List CorrelatedHaving := []) : Option Bool :=
@@ -90,8 +100,7 @@ private def numberReferenceAt? (field : FieldId) (query : ReferenceQuery)
     | .star source => some (source.field.id == field && query.binds source.source.bindingScope)
     | .starHaving source => some ((source.source.field.id == field && query.binds source.source.source.bindingScope) ||
         markedReferenceAt model field query source.having)
-    | .group source => if source.source.groupPath.length == 1 then unresolvedReference query (source.referencesField field) else
-        some (source.referencesField field && query.binds source.source.bindingScope)
+    | .group source => some (source.referencesField field && query.binds source.source.bindingScope (source.source.groupPath.length == 1))
     | .selected source => some (selectedReferenceAt field query source.source))
 
 private def tokenReferenceAt? (field : FieldId) (query : ReferenceQuery)
@@ -100,8 +109,7 @@ private def tokenReferenceAt? (field : FieldId) (query : ReferenceQuery)
     | .field source => some (source.declaration.id == field && query.binds source.declaration.repeatableScope)
     | .star source => some ((source.source.declaration.id == field && query.binds source.source.bindingScope) ||
         source.filter.any (fun filter => markedReferenceAt model field query filter.condition))
-    | .group source => if source.source.groupPath.length == 1 then unresolvedReference query (source.referencesField field) else
-        some (source.referencesField field && query.binds source.source.bindingScope)
+    | .group source => some (source.referencesField field && query.binds source.source.bindingScope (source.source.groupPath.length == 1))
     | .selected source => some (selectedReferenceAt field query source.source))
 
 private def booleanCountReferenceAt? (field : FieldId) (query : ReferenceQuery)
@@ -111,8 +119,7 @@ private def booleanCountReferenceAt? (field : FieldId) (query : ReferenceQuery)
     | .selected source => some (selectedReferenceAt field query source.source)
     | .star source => some ((source.source.declaration.id == field && query.binds source.source.bindingScope) ||
         source.filter.any (fun filter => markedReferenceAt model field query filter.condition))
-    | .group source => if source.source.groupPath.length == 1 then unresolvedReference query (source.referencesField field) else
-        some (source.referencesField field && query.binds source.source.bindingScope))
+    | .group source => some (source.referencesField field && query.binds source.source.bindingScope (source.source.groupPath.length == 1)))
 
 private def fillReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (source : CheckedFieldFillList model) : Option Bool :=
@@ -120,8 +127,7 @@ private def fillReferenceAt? (field : FieldId) (query : ReferenceQuery)
     | .field declaration => some (declaration.id == field && query.binds declaration.repeatableScope)
     | .star source => some ((source.source.declaration.id == field && query.binds source.source.bindingScope) ||
         source.filter.any (fun filter => markedReferenceAt model field query filter.condition))
-    | .group source => if source.source.groupPath.length == 1 then unresolvedReference query (operand.referencesField field) else
-        some (operand.referencesField field && query.binds source.source.bindingScope)
+    | .group source => some (operand.referencesField field && query.binds source.source.bindingScope (source.source.groupPath.length == 1))
     | .indexed source => some (selectedReferenceAt field query (.inl source))
     | .keyed source => some (selectedReferenceAt field query (.inr source)))
 
@@ -214,16 +220,16 @@ private def leafErrorReferenceAt? (field : FieldId) (query : ReferenceQuery)
   | .repeatableFieldPresence _ declaration => some (query.binds declaration.repeatableScope)
   | .guardedRootCurrentRepetition _ _ _ => some (query.binds [])
   | .guardedRepeatableCurrentRepetition declaration _ _ => some (query.binds declaration.repeatableScope)
-  | .groupPresence _ reference => if reference.isRoot then unresolvedReference query true else
-      some (query.binds (model.repeatableScopeForGroupPath reference.path))
+  | .groupPresence _ reference => some (query.binds (model.repeatableScopeForGroupPath reference.path) reference.isRoot)
   | .groupList _ operands => anyReference (operands.map fun operand =>
       if !operand.referencesField field then some false else
       match operand with
       | .indexed source => some (selectedReferenceAt field query (.inl source))
       | .keyed source => some (selectedReferenceAt field query (.inr source))
-      | .group reference => if reference.isRoot then unresolvedReference query true else some (query.binds reference.boundRepeatableScope)
+      | .group reference => some (query.binds reference.boundRepeatableScope reference.isRoot)
       | _ => some (match query with
           | .membership => true
+          | .nonFormMembership => !operand.isRootGroup
           | .iteration level => operand.iterationScope.any (·.contains level)))
   | .fieldFill _ source => fillReferenceAt? field query source
   | .valuesNotUnique (.number source) => numberReferenceAt? field query source
@@ -259,6 +265,13 @@ private def errorReferenceFor? (condition : ValidationCondition model)
 legacy membership until their source-specific projection is known. -/
 def authoredErrorReference? (condition : ValidationCondition model) (field : FieldId) : Option Bool :=
   errorReferenceFor? condition field .membership
+
+/-- Whether the error field is reached through its root group alone. An unresolved carrier
+cannot certify this partition (spec/07 §1; `reachedThroughFormAlone`). -/
+def formOnlyErrorReference? (condition : ValidationCondition model) (field : FieldId) : Option Bool := do
+  let member ← errorReferenceFor? condition field .membership
+  let nonForm ← errorReferenceFor? condition field .nonFormMembership
+  pure (member && !nonForm)
 
 /-- Whether any reference naming the error field binds the queried ordinary iteration level.
 `none` preserves an unresolved reference carrier; it is not a positive correspondence claim. -/

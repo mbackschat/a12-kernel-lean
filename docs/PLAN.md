@@ -17,11 +17,11 @@ Resume the active family through its owner links. Update this file only when the
 <a id="active-unit"></a>
 ## Selected work
 
-- `milestone`: The selected-reference partition of [H10-R1](gaps/paths-and-groups.md#gap-sg17-closure-matrix) now includes the [remaining String, validity, membership and temporal-count callers](implementation/data-and-core.md#cap-having-caller-capabilities). Continue root-group-only and reachable recursive classifications through a finite source-settled matrix; audit other fallback carriers before claiming totality.
-- `oracle`: The [source-owned reference classification](sources/having-filter-probes.md#src-having-reference-scope) distinguishes authored entity-map entries, semantic-index coordinates and ordinary iteration. Existing retained Having reference grids remain regression controls; selected extensions have no fresh Kernel capture.
-- `working-tree`: Selected-caller adapters and nested reader scope propagation are accepted for landing; no implementation, build or replay process remains live.
+- `milestone`: Ordinary root-only error-reference iteration in [H10-R1](gaps/paths-and-groups.md#gap-sg17-closure-matrix) is implemented through the [checked caller boundary](implementation/data-and-core.md#cap-having-caller-capabilities). Continue the remaining reference classifications without conflating broad cells with complete conformance.
+- `oracle`: The [retained error-target controls](sources/model-structure-and-declaration-probes.md#src-error-target-declaration) separate root-only ordinary and parallel iteration from direct/containing references. Source-derived extensions retain their calibration limits in the implementation owner.
+- `working-tree`: Root-only ordinary iteration, its cold-review guards and the reviewed assembly-error module extraction are verified for landing. No build or review process remains live; the separate stale proof-introduction correction remains due.
 - `state`: Broad coverage remains 217/217; this is a conformance-composition closure, not another broad cell.
-- `next`: Reconcile H10-R1's remaining unknown classifications against code and source, select the largest settled shared-mechanism batch, and define its admitted/refused controls before implementation. Preserve the accepted selected-reference boundary; root-only and recursive-numeric behavior require their own settled matrix.
+- `next`: Audit checked parallel-reference identity against the retained root-only sibling/direct-reference pair before selecting the next H10-R1 batch. If its representation is an independent mechanism, keep that obligation separate and settle reachable recursive classifications from the existing resolver boundary.
 - `consumer`: The [traversal readback](consumer-probes/EXECUTE.md#run-filter-traversal-readback-01) closes the due Execute/Analyze knowledge-transport probe. Resume missing semantics; another independent probe is due only at a materially different capability milestone or compatibility risk.
 - `blocker`: No verified hard blocker.
 - `stop-condition`: An unresolved source distinction stops dependent implementation, not discovery. Settle a finite acceptance matrix before widening the next family.
@@ -29,12 +29,12 @@ Resume the active family through its owner links. Update this file only when the
 
 ## Verified family boundary
 
-- `accepted`: The baseline includes [selected static error references](implementation/data-and-core.md#cap-having-caller-capabilities), [partial first-filled prefixes](implementation/strings-and-enumerations.md#cap-first-filled-value), [partial fill quantifiers](implementation/validation-messages-and-custom.md#cap-fill-group-quantifiers), token direct-operand binding and full first-filled traversal.
-- `focused`: R1 the eleven additional caller/profile cases, R2 field/literal-key membership, R3 nested parent/own/sibling and key binding, and R4 one/two-level computation twins pass. The preceding selected-reference matrix and diagnostic-cascade theorem remain green.
-- `review-boundary`: HIGH accepted MEDIUM's adapters and completed the nested binding handoff correction. Fresh HIGH cold review of the frozen slice returned no findings. The preceding selected-reference and prefix boundaries remain accepted.
-- `replay-boundary`: The [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) records the full replay after the selected-caller scope fix: all admitted instances match, with no divergence or fault. Population growth since the prior report is separate from implementation gain. The replay cadence resets at this boundary.
-- `remaining-gates`: Focused/integrated checks, all 51 retained-evidence projections, cold review, the due full-population replay and trust audit pass. Final handoff edits require documentation hygiene only; no independent consumer probe is due.
-- `commands`: The [command ladder](TESTING.md#command-ladder) and [review disposition rules](TESTING.md#review-convergence-and-landing-gate) own gates. Reuse the accepted boundary; final documentation updates trigger no extra replay or reviewer.
+- `accepted`: The [caller boundary](implementation/data-and-core.md#cap-having-caller-capabilities) owns selected references and ordinary root-only iteration; prior first-filled/fill-quantifier/traversal boundaries remain accepted.
+- `focused`: Root-only absolute/relative refusals, direct/containing admitted controls, fixed/repeating roots, connective order, negative root, mixed root/direct scopes and unresolved classification pass. The diagnostic-cascade proof includes the new refusal without weakening rejection.
+- `review-boundary`: Fresh HIGH cold review found no behavioral defect. HIGH reproduced and retained both requested guards; warm review confirmed their disposition and the exact assembly-error module extraction. The separate pre-existing proof-introduction correction remains due.
+- `replay-boundary`: The [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) remains the full replay after selected-caller scope propagation. This static reference-classification family changes neither parsing nor scope resolution/evaluation; it is the first completed family toward the three-family interval.
+- `remaining-gates`: Focused and affected integrated checks, all 51 compact evidence projections, review disposition and final trust/hygiene pass. Final handoff edits require documentation hygiene only. No independent consumer probe or full population replay is due.
+- `commands`: The [command ladder](TESTING.md#command-ladder) and [review disposition rules](TESTING.md#review-convergence-and-landing-gate) own gates. Documentation-only finalization triggers no additional build or review.
 
 ## Consumer and evidence triggers
 
