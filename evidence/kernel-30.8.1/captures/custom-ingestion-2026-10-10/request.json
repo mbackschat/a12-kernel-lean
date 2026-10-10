@@ -1,0 +1,172 @@
+{
+  "model": "CustomIngestion_DM.json",
+  "locale": "en_US",
+  "customFieldTypes": {
+    "Loose": {
+      "pattern": "(?s)A.*B|SEED"
+    },
+    "Raw": {
+      "pattern": "A\\r+\\n?B|AB"
+    },
+    "Lf": {
+      "pattern": "A\\nB"
+    }
+  },
+  "observe": [
+    "validateFull",
+    "validatePart",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "plain",
+      "documentInline": {
+        "Form": {
+          "Copy": "SEED",
+          "Size": "99",
+          "Loose": "AB",
+          "Raw": "AB",
+          "Lf": "AB",
+          "CopyAgain": "SEED",
+          "CopySize": "99"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "crlf",
+      "documentInline": {
+        "Form": {
+          "Copy": "SEED",
+          "Size": "99",
+          "Loose": "A\r\nB",
+          "Raw": "A\r\nB",
+          "Lf": "A\r\nB",
+          "CopyAgain": "SEED",
+          "CopySize": "99"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "lf",
+      "documentInline": {
+        "Form": {
+          "Copy": "SEED",
+          "Size": "99",
+          "Loose": "A\nB",
+          "Raw": "A\nB",
+          "Lf": "A\nB",
+          "CopyAgain": "SEED",
+          "CopySize": "99"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "lone-cr",
+      "documentInline": {
+        "Form": {
+          "Copy": "SEED",
+          "Size": "99",
+          "Loose": "A\rB",
+          "Raw": "A\rB",
+          "Lf": "A\rB",
+          "CopyAgain": "SEED",
+          "CopySize": "99"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "cr-cr-lf",
+      "documentInline": {
+        "Form": {
+          "Copy": "SEED",
+          "Size": "99",
+          "Loose": "A\r\r\nB",
+          "Raw": "A\r\r\nB",
+          "Lf": "A\r\r\nB",
+          "CopyAgain": "SEED",
+          "CopySize": "99"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "rejected",
+      "documentInline": {
+        "Form": {
+          "Copy": "SEED",
+          "Size": "99",
+          "Loose": "BAD",
+          "Raw": "BAD",
+          "Lf": "BAD",
+          "CopyAgain": "SEED",
+          "CopySize": "99"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "Copy": "SEED",
+          "Size": "99",
+          "Loose": "",
+          "Raw": "",
+          "Lf": "",
+          "CopyAgain": "SEED",
+          "CopySize": "99"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "absent",
+      "documentInline": {
+        "Form": {
+          "Copy": "SEED",
+          "Size": "99",
+          "CopyAgain": "SEED",
+          "CopySize": "99"
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    }
+  ]
+}

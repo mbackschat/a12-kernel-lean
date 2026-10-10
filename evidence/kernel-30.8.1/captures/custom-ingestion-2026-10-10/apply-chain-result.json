@@ -1,0 +1,68 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "ops": 4,
+    "committed": true,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/CopyAgain",
+          "kind": "CUSTOM"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/CopySize",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "computation",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "computation": "/Form/CopyAgainComp"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "computation",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "computation": "/Form/CopySizeComp"
+        },
+        "diagnostics": [],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "CustomIngestion_DM.json"
+}

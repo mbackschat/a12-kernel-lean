@@ -1,0 +1,162 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Loose",
+    "kind": "CUSTOM",
+    "custom": {
+      "typeName": "Loose"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Raw",
+    "kind": "CUSTOM",
+    "custom": {
+      "typeName": "Raw"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Lf",
+    "kind": "CUSTOM",
+    "custom": {
+      "typeName": "Lf"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Copy",
+    "kind": "CUSTOM",
+    "custom": {
+      "typeName": "Loose"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Size",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Copy",
+    "alternatives": [
+      {
+        "operation": "[Loose]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Size",
+    "alternatives": [
+      {
+        "operation": "Length(Loose)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Raw",
+    "condition": "FieldFilled(Raw)",
+    "code": "RAW_READABLE",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Lf",
+    "condition": "FieldFilled(Lf)",
+    "code": "LF_READABLE",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Loose",
+    "condition": "Length(Loose) == 2",
+    "code": "LENGTH_2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Loose",
+    "condition": "Length(Loose) == 3",
+    "code": "LENGTH_3",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Loose",
+    "condition": "Length(Loose) == 4",
+    "code": "LENGTH_4",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Loose",
+    "condition": "Length(Loose) == 5",
+    "code": "LENGTH_5",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

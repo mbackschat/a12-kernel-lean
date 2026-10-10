@@ -1,0 +1,54 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CopyAgain",
+    "kind": "CUSTOM",
+    "custom": {
+      "typeName": "Loose"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CopySize",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/CopyAgain",
+    "alternatives": [
+      {
+        "operation": "[Copy]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/CopySize",
+    "alternatives": [
+      {
+        "operation": "Length(Copy)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

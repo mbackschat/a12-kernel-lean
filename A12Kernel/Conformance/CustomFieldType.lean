@@ -31,6 +31,10 @@ private def validatorExpecting (expected : CustomFieldValidationContext) :
   else
     some (rejection "WRONG_CONTEXT")
 
+private def validatorAccepting (expected : String) :
+    RegisteredCustomFieldValidator := fun value _ =>
+  if value == expected then none else some rejection
+
 private def worldWith (validator : RegisteredCustomFieldValidator) : World where
   now := { epochMillis := 0 }
   customFieldValidator? := fun name =>
@@ -99,6 +103,41 @@ example :
       (declaration (some 3) (some 5)) "de_DE" "bad" =
       some (.unknown (.registeredCustomValidation rejection),
         .poison (.registeredCustomValidation rejection)) := by
+  native_decide
+
+example :
+    phasePair (worldWith (validatorAccepting "A\r\nB"))
+      (declaration none none) "en_US" "A\r\nB" =
+      some (.value "A\nB", .value "A\nB") ∧
+    phasePair (worldWith (validatorAccepting "A\r\nB"))
+      (declaration none none) "en_US" "A\nB" =
+      some (.unknown (.registeredCustomValidation rejection),
+        .poison (.registeredCustomValidation rejection)) ∧
+    phasePair (worldWith (validatorAccepting "A\nB"))
+      (declaration none none) "en_US" "A\r\nB" =
+      some (.unknown (.registeredCustomValidation rejection),
+        .poison (.registeredCustomValidation rejection)) ∧
+    phasePair (worldWith (validatorAccepting "A\nB"))
+      (declaration none none) "en_US" "A\nB" =
+      some (.value "A\nB", .value "A\nB") := by
+  native_decide
+
+example :
+    phasePair (worldWith (fun _ _ => none))
+      (declaration none none) "en_US" "A\r\nB" =
+      some (.value "A\nB", .value "A\nB") ∧
+    phasePair (worldWith (fun _ _ => none))
+      (declaration none none) "en_US" "A\nB" =
+      some (.value "A\nB", .value "A\nB") ∧
+    phasePair (worldWith (fun _ _ => none))
+      (declaration none none) "en_US" "A\rB" =
+      some (.value "A\rB", .value "A\rB") ∧
+    phasePair (worldWith (fun _ _ => none))
+      (declaration none none) "en_US" "A\r\r\nB" =
+      some (.value "A\r\nB", .value "A\r\nB") ∧
+    phasePair (worldWith (fun _ _ => some rejection))
+      (declaration none none) "en_US" "" =
+      some (.empty, .empty) := by
   native_decide
 
 /- A missing registered name is a checked-construction failure, not acceptance or generic rejection. -/

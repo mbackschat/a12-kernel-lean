@@ -1,0 +1,2868 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "CustomIngestion_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "plain",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_2",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_2",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "value": "AB"
+              },
+              {
+                "field": "Form/CopySize",
+                "value": "2"
+              },
+              {
+                "field": "Form/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": "AB",
+                "CopyAgain": "AB",
+                "CopySize": 2,
+                "Lf": "AB",
+                "Loose": "AB",
+                "Raw": "AB",
+                "Size": 2
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_2",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_2",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "value": "AB"
+              },
+              {
+                "field": "Form/CopySize",
+                "value": "2"
+              },
+              {
+                "field": "Form/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": "AB",
+                "CopyAgain": "AB",
+                "CopySize": 2,
+                "Lf": "AB",
+                "Loose": "AB",
+                "Raw": "AB",
+                "Size": 2
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "crlf",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Copy",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "value": "3"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": "A\nB",
+                "CopyAgain": "A\nB",
+                "CopySize": 3,
+                "Lf": "A\r\nB",
+                "Loose": "A\r\nB",
+                "Raw": "A\r\nB",
+                "Size": 3
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Copy",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "value": "3"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": "A\nB",
+                "CopyAgain": "A\nB",
+                "CopySize": 3,
+                "Lf": "A\r\nB",
+                "Loose": "A\r\nB",
+                "Raw": "A\r\nB",
+                "Size": 3
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "lf",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LF_READABLE",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LF_READABLE",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Copy",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "value": "3"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": "A\nB",
+                "CopyAgain": "A\nB",
+                "CopySize": 3,
+                "Lf": "A\nB",
+                "Loose": "A\nB",
+                "Raw": "A\nB",
+                "Size": 3
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LF_READABLE",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LF_READABLE",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Copy",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "value": "3"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": "A\nB",
+                "CopyAgain": "A\nB",
+                "CopySize": 3,
+                "Lf": "A\nB",
+                "Loose": "A\nB",
+                "Raw": "A\nB",
+                "Size": 3
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "lone-cr",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\rB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": false,
+                "errored": false,
+                "value": "A\rB"
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Copy",
+                "value": "A\rB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "value": "A\rB"
+              },
+              {
+                "field": "Form/CopySize",
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "value": "3"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": "A\rB",
+                "CopyAgain": "A\rB",
+                "CopySize": 3,
+                "Lf": "A\rB",
+                "Loose": "A\rB",
+                "Raw": "A\rB",
+                "Size": 3
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\rB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": false,
+                "errored": false,
+                "value": "A\rB"
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_3",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Copy",
+                "value": "A\rB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "value": "A\rB"
+              },
+              {
+                "field": "Form/CopySize",
+                "value": "3"
+              },
+              {
+                "field": "Form/Size",
+                "value": "3"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": "A\rB",
+                "CopyAgain": "A\rB",
+                "CopySize": 3,
+                "Lf": "A\rB",
+                "Loose": "A\rB",
+                "Raw": "A\rB",
+                "Size": 3
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "cr-cr-lf",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_4",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": false,
+                "errored": false,
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_4",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Copy",
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "value": "4"
+              },
+              {
+                "field": "Form/Size",
+                "value": "4"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": "A\r\nB",
+                "CopyAgain": "A\r\nB",
+                "CopySize": 4,
+                "Lf": "A\r\r\nB",
+                "Loose": "A\r\r\nB",
+                "Raw": "A\r\r\nB",
+                "Size": 4
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_4",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": false,
+                "errored": false,
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopyComp",
+              "field": "Form/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LENGTH_4",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RAW_READABLE",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Copy",
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/CopyAgain",
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/CopySize",
+                "value": "4"
+              },
+              {
+                "field": "Form/Size",
+                "value": "4"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": "A\r\nB",
+                "CopyAgain": "A\r\nB",
+                "CopySize": 4,
+                "Lf": "A\r\r\nB",
+                "Loose": "A\r\r\nB",
+                "Raw": "A\r\r\nB",
+                "Size": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "rejected",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Size",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "customFieldType.pattern",
+                "field": "Form/Loose",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Loose"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": null,
+                "CopyAgain": null,
+                "CopySize": null,
+                "Lf": "BAD",
+                "Loose": "BAD",
+                "Raw": "BAD",
+                "Size": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Size",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "customFieldType.pattern",
+                "field": "Form/Loose",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Loose"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Lf",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Lf"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Loose",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": null,
+                "CopyAgain": null,
+                "CopySize": null,
+                "Lf": "BAD",
+                "Loose": "BAD",
+                "Raw": "BAD",
+                "Size": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": [
+                "Form/Loose",
+                "Form/Size"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": [
+                "Form/Loose",
+                "Form/Size"
+              ]
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/CopySize",
+                "value": "0"
+              },
+              {
+                "field": "Form/Size",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": null,
+                "CopyAgain": null,
+                "CopySize": 0,
+                "Lf": "",
+                "Loose": "",
+                "Raw": "",
+                "Size": 0
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": [
+                "Form/Loose",
+                "Form/Size"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": [
+                "Form/Loose",
+                "Form/Size"
+              ]
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/CopySize",
+                "value": "0"
+              },
+              {
+                "field": "Form/Size",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": null,
+                "CopyAgain": null,
+                "CopySize": 0,
+                "Lf": "",
+                "Loose": "",
+                "Raw": "",
+                "Size": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "absent",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": [
+                "Form/Loose",
+                "Form/Size"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": [
+                "Form/Loose",
+                "Form/Size"
+              ]
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/CopySize",
+                "value": "0"
+              },
+              {
+                "field": "Form/Size",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": null,
+                "CopyAgain": null,
+                "CopySize": 0,
+                "Size": 0
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": [
+                "Form/Loose",
+                "Form/Size"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopyAgain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/CopySize",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": [
+            {
+              "code": "CopySizeComp",
+              "field": "Form/CopySize",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Copy",
+                "Form/CopySize"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SizeComp",
+              "field": "Form/Size",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Loose",
+                "Form/Size"
+              ],
+              "fillToFix": [
+                "Form/Loose",
+                "Form/Size"
+              ]
+            }
+          ],
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/CopySize",
+                "value": "0"
+              },
+              {
+                "field": "Form/Size",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Copy": null,
+                "CopyAgain": null,
+                "CopySize": 0,
+                "Size": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

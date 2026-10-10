@@ -128,10 +128,15 @@ private def resultView? (input : CheckedDocument model) := do
 
 private def root (field : FieldId) : CellAddr := { field, path := [] }
 
-/- The externally measured empty selection clears a seeded target, while the filled source preserves its exact bytes. -/
+/- The externally measured empty selection clears a seeded target, while the filled source reuses its checked payload. -/
 example :
     result? none = some .noValue ∧
       result? (some "A7") = some (.value "A7") := by
+  native_decide
+
+example :
+    result? (some "A\r\nB") = some (.value "A\nB") ∧
+      result? (some "A\r\r\nB") = some (.value "A\r\nB") := by
   native_decide
 
 /- A reached registered rejection poisons through the already prepared checked cell; this branch remains externally uncalibrated. -/

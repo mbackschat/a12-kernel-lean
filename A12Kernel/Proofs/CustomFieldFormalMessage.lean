@@ -104,7 +104,7 @@ theorem customFieldValidationOutput_rejection_exact
     customFieldType_rejection_exact checked locale value rejection nonempty rejected]
   rfl
 
-/-- Acceptance retains the exact value and has no custom formal message. -/
+/-- Acceptance retains the evaluated String and has no custom formal message. -/
 theorem customFieldValidationOutput_acceptance_exact
     (checked : CheckedCustomFieldType) (locale value : String)
     (errorAddress : MessagePointer) (resolvedFieldLabel : String)
@@ -116,7 +116,7 @@ theorem customFieldValidationOutput_acceptance_exact
         resolvedFieldLabel fallbackText = some {
       cell := {
         rawPresent := true
-        parsed := some value
+        parsed := some (normalizeEvaluatedString value)
         findings := []
       }
       message? := none

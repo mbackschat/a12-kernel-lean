@@ -218,6 +218,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 
 - `boundary`: Checked registered custom field, bounds, stored-value mode, cause, validity, and formal-message projection. **The acceptance arm only:** the SPI's display-to-internal and internal-to-display conversions are outside this capability and unobserved
 - `owner`: [`CustomField.lean`](../../A12Kernel/Elaboration/CustomField.lean), custom-field semantic owners
+- `ingestion`: Registered callbacks receive original stored text; accepted cells cache one CRLF normalization pass shared by validation and computation. [The eight-row custom-ingestion matrix](../sources/custom-field-probes.md#src-custom-ingestion) calibrates ordinary stored-document reads and dependent computations. Direct/starred FirstFilled and both acceptance laws preserve the same checked payload; conversion-enabled profiles remain outside.
 - `assurance`: E/P/Q closed for admitted route; upstream L now locks the **per-cell** observation cardinality at a12-dmkits [source registry](../SOURCES.md) across both kernel strategies and the interpreter, which the pure-oracle account satisfies by construction because only an impure validator could observe the count; C/X none
 - `remains`: Complete integration: [SG7](../SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion), [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
 

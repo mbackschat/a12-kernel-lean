@@ -7,7 +7,7 @@ import A12Kernel.Elaboration.ScalarComputationRunResult
 `KNC = 1` under `FieldNotFilled(CF)`, every reader authored ahead of what it reads. The fixture is the
 model of the [Custom join grid](../../docs/sources/computation-scheduling-probes.md#src-extractor-join),
 whose request registers the type with a maximum length of three, which the world's validator here
-mirrors; every document row is the Kernel's, measured on both codegen strategies.
+mirrors; rows `r1`–`r5` were measured on both Kernel codegen strategies. Additional composition locks are internal checks.
 
 `CA` and `CF` are seeded with a value no row computes. The rows separate a fresh read of `CA` from its
 seed (`r1`), a cleared `CA` that `CF` falls through from one it reads as poison (`r2`, `r3`),
@@ -107,6 +107,11 @@ which the count reads and so clears. -/
 example :
     values? [("C1", "AA"), ("C3", "A")] = some ["AA", "AA", "1", "-", "1"] ∧
     values? [("C1", "AA"), ("C3", "BBBB")] = some ["AA", "AA", "1", "-", "-"] := by
+  native_decide
+
+/- This internal composition lock uses CRCRLF to separate a reused evaluated payload from a second ingestion pass through either computed target. -/
+example : values? [("C1", "\r\r\n")] =
+    some ["\r\n", "\r\n", "1", "-", "0"] := by
   native_decide
 
 /- Rows `r2` to `r4`: a cleared `CA` lets `CF` fall through, a poisoned one ends `CF`'s scan and reaches

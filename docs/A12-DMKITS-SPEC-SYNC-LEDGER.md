@@ -157,3 +157,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: An exact peer revision adopts these independently measured stages or supplies contrary Kernel evidence. Existing payload-only and excluded-index behavior must remain unchanged.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: pending.
+
+<a id="spec-2026-10-10-11"></a>
+### SPEC-2026-10-10-11 — custom validators receive raw text before evaluated normalization
+
+- `status`: pending
+- `canonical`: [Custom-field ingestion](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation) separates original callback input from the accepted evaluated payload.
+- `delta`: Validate original stored text, then normalize CRLF once on acceptance. Lone CR survives. Subsequent Length, value and computation reads reuse the checked payload; dependent computations must not re-ingest it. Empty and absent cells bypass validation; ordinary rejected cells remain unavailable.
+- `basis`: [Source and eight-row runtime matrix](sources/custom-field-probes.md#src-custom-ingestion), with raw-sensitive/LF-only validators and repeated-CR direct/dependent computation controls. Both Kernel strategies agree. The correction fixes Lean's raw-text acceptance branch; it does not claim an existing peer implementation defect.
+- `acceptance`: Reconcile callback-input and evaluated-value contracts on the ordinary stored-document route. Retain separate test-range and conversion-enabled presentation obligations; do not generalize this matrix to arbitrary custom codecs. Introducing revision is the first commit containing this ID; no peer response yet.

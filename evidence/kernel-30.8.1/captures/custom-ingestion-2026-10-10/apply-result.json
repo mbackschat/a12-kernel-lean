@@ -1,0 +1,179 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "ops": 13,
+    "committed": true,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Loose",
+          "kind": "CUSTOM"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Raw",
+          "kind": "CUSTOM"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Lf",
+          "kind": "CUSTOM"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Copy",
+          "kind": "CUSTOM"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "added": "/Form/Size",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "computation",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "computation": "/Form/CopyComp"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "computation",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "computation": "/Form/SizeComp"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/RAW_READABLE"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/LF_READABLE"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/LENGTH_2"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/LENGTH_3"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/LENGTH_4"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "[redacted]",
+        "changed": {
+          "rule": "/Form/LENGTH_5"
+        },
+        "diagnostics": [],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "CustomIngestion_DM.json"
+}

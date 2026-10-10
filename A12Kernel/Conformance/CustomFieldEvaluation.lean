@@ -17,6 +17,13 @@ private def worldWithValidator : World where
   customFieldValidator? := fun name =>
     if name == "ProjectCode" then some validator else none
 
+private def rawLinebreakWorld : World where
+  now := { epochMillis := 0 }
+  customFieldValidator? := fun name =>
+    if name == "ProjectCode" then
+      some (fun value _ => if value == "A\r\r\nB" then none else some rejection)
+    else none
+
 private def emptyWorld : World :=
   { now := { epochMillis := 0 } }
 
@@ -110,6 +117,23 @@ example : verdictOf { fields := [code] } worldWithValidator "en_US"
 example : verdictOf { fields := [code] } worldWithValidator "en_US"
     (rawAt code.id .empty) (.fieldFilled (path "Code")) =
     some .notFired := by
+  native_decide
+
+example : (do
+    let prepared ← (prepareFlatStringContext rawLinebreakWorld compilePattern
+      { fields := [code] }).toOption
+    pure (observeCell .validation
+      ((prepared.checkContext "en_US"
+        (rawAt code.id (.parsed (.str "A\r\r\nB")))).read code.id))) =
+    some (.value (.str "A\r\nB")) ∧
+    verdictOf { fields := [code] } rawLinebreakWorld "en_US"
+      (rawAt code.id (.parsed (.str "A\r\r\nB")))
+      (.lengthCompare .greater (path "Code") { value := 4, authoredScale := 0 }) =
+      some .notFired ∧
+    verdictOf { fields := [code] } rawLinebreakWorld "en_US"
+      (rawAt code.id (.parsed (.str "A\r\r\nB")))
+      (.lengthCompare .greater (path "Code") { value := 3, authoredScale := 0 }) =
+      some (.fired .value) := by
   native_decide
 
 /- Ordinary no-custom models retain their existing full-evaluation result. -/

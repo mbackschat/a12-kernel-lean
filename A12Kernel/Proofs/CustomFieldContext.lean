@@ -11,7 +11,7 @@ theorem customField_checkValueRaw_acceptance_exact
       (checked.declaration.validationContext locale) = none) :
     checked.checkValueRaw locale (.parsed (.str value)) = {
       rawPresent := true
-      parsed := some (.str value)
+      parsed := some (.str (normalizeEvaluatedString value))
       findings := []
     } := by
   simp [CheckedCustomFieldType.checkValueRaw,

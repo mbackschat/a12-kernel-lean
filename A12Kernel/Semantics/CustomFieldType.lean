@@ -46,7 +46,7 @@ def elaborateCustomFieldType (world : World)
   let validator ← requireCustomFieldValidator world declaration.name
   pure { declaration, validator }
 
-/-- Classify one concrete stored String through the resolved validator. Parsed empty remains semantic empty and never reaches the validator. -/
+/-- Validate the raw stored String, then cache one CRLF-normalization pass on acceptance, matching kernel 30.8.1 `FormalChecker.checkAndConvertFieldValue`. Parsed empty remains semantic empty and never reaches the validator. -/
 def CheckedCustomFieldType.classifyString (checked : CheckedCustomFieldType)
     (locale value : String) : Except BaseFormalCause (Option String) :=
   if value.isEmpty then
@@ -54,7 +54,7 @@ def CheckedCustomFieldType.classifyString (checked : CheckedCustomFieldType)
   else
     match checked.validator value
         (checked.declaration.validationContext locale) with
-    | none => .ok (some value)
+    | none => .ok (some (normalizeEvaluatedString value))
     | some rejection => .error (.registeredCustomValidation rejection)
 
 /-- Lift the same custom String classifier into the heterogeneous flat value domain. Any incoherent non-String payload fails closed as malformed. -/

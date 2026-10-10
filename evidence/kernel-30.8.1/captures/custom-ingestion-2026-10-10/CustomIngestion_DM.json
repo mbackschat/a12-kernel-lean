@@ -1,0 +1,264 @@
+{
+  "header" : {
+    "id" : "CustomIngestion_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "CustomIngestion_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Loose",
+            "name" : "Loose",
+            "Field" : {
+              "fieldType" : {
+                "type" : "CustomFieldType",
+                "CustomFieldType" : {
+                  "name" : "Loose"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Raw",
+            "name" : "Raw",
+            "Field" : {
+              "fieldType" : {
+                "type" : "CustomFieldType",
+                "CustomFieldType" : {
+                  "name" : "Raw"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Lf",
+            "name" : "Lf",
+            "Field" : {
+              "fieldType" : {
+                "type" : "CustomFieldType",
+                "CustomFieldType" : {
+                  "name" : "Lf"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Copy",
+            "name" : "Copy",
+            "Field" : {
+              "fieldType" : {
+                "type" : "CustomFieldType",
+                "CustomFieldType" : {
+                  "name" : "Loose"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Size",
+            "name" : "Size",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CopyComp",
+            "name" : "CopyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Copy",
+              "computationAlternatives" : [ {
+                "operation" : "[Loose]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SizeComp",
+            "name" : "SizeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Size",
+              "computationAlternatives" : [ {
+                "operation" : "Length(Loose)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RAW_READABLE",
+            "name" : "RAW_READABLE",
+            "Rule" : {
+              "errorEntityRelPath" : "../Raw",
+              "errorCode" : "RAW_READABLE",
+              "errorCondition" : "FieldFilled(Raw)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LF_READABLE",
+            "name" : "LF_READABLE",
+            "Rule" : {
+              "errorEntityRelPath" : "../Lf",
+              "errorCode" : "LF_READABLE",
+              "errorCondition" : "FieldFilled(Lf)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LENGTH_2",
+            "name" : "LENGTH_2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Loose",
+              "errorCode" : "LENGTH_2",
+              "errorCondition" : "Length(Loose) == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LENGTH_3",
+            "name" : "LENGTH_3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Loose",
+              "errorCode" : "LENGTH_3",
+              "errorCondition" : "Length(Loose) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LENGTH_4",
+            "name" : "LENGTH_4",
+            "Rule" : {
+              "errorEntityRelPath" : "../Loose",
+              "errorCode" : "LENGTH_4",
+              "errorCondition" : "Length(Loose) == 4",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LENGTH_5",
+            "name" : "LENGTH_5",
+            "Rule" : {
+              "errorEntityRelPath" : "../Loose",
+              "errorCode" : "LENGTH_5",
+              "errorCondition" : "Length(Loose) == 5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CopyAgain",
+            "name" : "CopyAgain",
+            "Field" : {
+              "fieldType" : {
+                "type" : "CustomFieldType",
+                "CustomFieldType" : {
+                  "name" : "Loose"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CopySize",
+            "name" : "CopySize",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CopyAgainComp",
+            "name" : "CopyAgainComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CopyAgain",
+              "computationAlternatives" : [ {
+                "operation" : "[Copy]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CopySizeComp",
+            "name" : "CopySizeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CopySize",
+              "computationAlternatives" : [ {
+                "operation" : "Length(Copy)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
