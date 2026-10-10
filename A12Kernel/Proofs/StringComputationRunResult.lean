@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.StringComputationRunResult
+import A12Kernel.Semantics.StringComputationRunResult
 
 /-! # String computation result-view laws
 

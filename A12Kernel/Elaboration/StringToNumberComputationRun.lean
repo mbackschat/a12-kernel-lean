@@ -1,3 +1,5 @@
+import A12Kernel.Elaboration.NumericComputation.RunResult
+import A12Kernel.Elaboration.StringComputationRunResult
 import A12Kernel.Elaboration.StringNumberComputationRunView
 
 /-! # One checked String-to-Number computation run

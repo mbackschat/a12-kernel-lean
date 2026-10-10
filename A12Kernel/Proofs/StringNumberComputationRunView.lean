@@ -1,6 +1,4 @@
 import A12Kernel.Elaboration.StringNumberComputationRunView
-import A12Kernel.Proofs.NumericComputationRunResult
-import A12Kernel.Proofs.StringComputationRunResult
 
 /-! # Family-preserving String and Number result laws -/
 

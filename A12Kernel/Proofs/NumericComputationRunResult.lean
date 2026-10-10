@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.NumericComputation.RunResult
+import A12Kernel.Semantics.NumericComputationRunResult
 
 /-! # Number computation result-view laws -/
 
