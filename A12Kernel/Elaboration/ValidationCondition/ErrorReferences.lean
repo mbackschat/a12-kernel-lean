@@ -151,6 +151,10 @@ private def numericAtomReferenceAt? (field : FieldId) (query : ReferenceQuery)
   | .tokenValueCount source => tokenReferenceAt? field query source.source
   | .booleanValueCount source => booleanCountReferenceAt? field query source
   | .tokenDistinctCount source => tokenReferenceAt? field query source
+  | .temporalDistinctCount run =>
+      shapeReferenceAt? field query run.source.shape (run.source.operands.filterMap fun
+        | .slot (.star _ _ filter) => filter
+        | _ => none)
   | .filledFieldCount source => fillReferenceAt? field query source
   | .temporalExpression source =>
       match source.core with
@@ -194,6 +198,17 @@ private def leafErrorReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (leaf : ValidationConditionLeaf model) : Option Bool :=
   if !leaf.referencesErrorField field then some false else
   match leaf with
+  | .indexedStringPattern source => some (selectedReferenceAt field query (.inl source.selection))
+  | .indexedCustomFieldValidity source => some (selectedReferenceAt field query (.inl source.source.selection))
+  | .stringExpression comparison =>
+      anyReference ((comparison.left.core.fields ++ comparison.right.core.fields).map fun
+        | .inl candidate => some (candidate == field && query.binds (model.fieldRepeatableScope candidate))
+        | .inr source => some (selectedReferenceAt field query (.inl source)))
+  | .valueList (.number source) => anyReference [
+      numberReferenceAt? field query source.fields, numberReferenceAt? field query source.values]
+  | .valueList (.token source) => anyReference [
+      tokenReferenceAt? field query source.fields, tokenReferenceAt? field query source.values]
+  | .valueList (.literals source) => tokenReferenceAt? field query source.fields
   | .indexedFieldPresence _ source => some (selectedReferenceAt field query (.inl source))
   | .keyedGroupPresence _ source => some (selectedReferenceAt field query (.inr source))
   | .repeatableFieldPresence _ declaration => some (query.binds declaration.repeatableScope)

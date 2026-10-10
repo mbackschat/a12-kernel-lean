@@ -147,8 +147,8 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         match equality, lowerSelectedStringExpr model rowGroup left, lowerSelectedStringExpr model rowGroup right with
         | some op, .ok left, .ok right =>
             if isStringExpressionComparisonOperand left || isStringExpressionComparisonOperand right then [do
-              let comparison ← elaborated "StringExpression" (elaborateSelectedStringExpressionComparison model rowGroup rowGroup op left right)
-              elaborated "StringExpression" (CheckedValidationCondition.fromStringExpression rowGroup comparison)] else []
+              let comparison ← elaborated "StringExpression" (elaborateSelectedStringExpressionComparison model rowGroup bindingGroup op left right)
+              elaborated "StringExpression" (CheckedValidationCondition.fromStringExpression bindingGroup comparison rowGroup)] else []
         | _, _, _ => []
     | _ => []
   let selected : Expr → Bool
@@ -213,7 +213,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | some operation, .entity { path, index := some key, category := none, filter := none } => [do
             let source ← lowerIndexedSource model rowGroup path key
             elaborated id (CheckedValidationCondition.fromIndexedCustomFieldValidity
-              model rowGroup world source name operation)]
+              model rowGroup world source name operation bindingGroup)]
         | _, _ =>
           match operation, field.fieldEntity? with
           | some operation, some path => [do

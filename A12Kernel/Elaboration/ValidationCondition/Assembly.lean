@@ -148,14 +148,16 @@ def fromCustomFieldValidity (model : FlatModel) (rowGroup : GroupPath)
             (by rw [hModel]; rfl) rowGroup
 
 def fromIndexedCustomFieldValidity (model : FlatModel) (rowGroup : GroupPath)
-    (world : World) (source : SurfaceSemanticIndex) (name : String) (operation : CustomFieldValidityOp) :
+    (world : World) (source : SurfaceSemanticIndex) (name : String) (operation : CustomFieldValidityOp)
+    (bindingGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
   | .ok () =>
-      match elaborateIndexedCustomFieldValidityLeaf model rowGroup world source name operation with
+      match elaborateIndexedCustomFieldValidityLeaf model rowGroup world source name operation
+          (some (model.repeatableScopeForGroupPath bindingGroup)) with
       | .error _ => .error .incoherentCore
-      | .ok leaf => checkCore model rowGroup (.leaf (.indexedCustomFieldValidity leaf)) (by rw [hModel]; rfl)
+      | .ok leaf => checkCore model bindingGroup (.leaf (.indexedCustomFieldValidity leaf)) (by rw [hModel]; rfl) rowGroup
 
 /-- Assemble one `PatternMatched`/`PatternViolated` leaf at a rule group, keeping the compiler that
     admitted its pattern beside the checked condition. -/
@@ -175,7 +177,8 @@ def fromIndexedStringPattern (model : FlatModel) (rowGroup : GroupPath)
     (compilePattern : StringPatternCompiler) (surface : SurfaceIndexedStringPatternCondition)
     (writtenGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) := do
-  let leaf ← (elaborateIndexedStringPattern compilePattern model rowGroup surface).mapError .indexedStringPattern
+  let leaf ← (elaborateIndexedStringPattern compilePattern model rowGroup surface
+    (some (model.repeatableScopeForGroupPath writtenGroup))).mapError .indexedStringPattern
   checkCore model writtenGroup (.leaf (.indexedStringPattern leaf)) leaf.selection.modelWellFormed rowGroup
 
 def fromFirstFilledComparison (rowGroup : GroupPath) (comparison : CheckedFirstFilledComparison model)
@@ -191,9 +194,10 @@ def fromTokenComparison (rowGroup : GroupPath) (comparison : CheckedTokenCompari
 
 /-- Join String expressions to the shared condition tree; whole-rule execution owns
 its full-validation iteration domain independently of the expression's operator. -/
-def fromStringExpression (rowGroup : GroupPath) (comparison : CheckedStringExpressionComparison model) :
+def fromStringExpression (rowGroup : GroupPath) (comparison : CheckedStringExpressionComparison model)
+    (declaringGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
-  checkCore model rowGroup (.leaf (.stringExpression comparison)) comparison.left.modelWellFormed
+  checkCore model rowGroup (.leaf (.stringExpression comparison)) comparison.left.modelWellFormed declaringGroup
 
 /-- Join a sealed scalar temporal comparison to the existing connective tree. -/
 def fromScalarTemporal (rowGroup : GroupPath) (comparison : CheckedScalarTemporalComparison model)

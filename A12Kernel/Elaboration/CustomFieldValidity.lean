@@ -133,9 +133,10 @@ def CheckedIndexedCustomFieldValidityLeaf.directLeaf
   { operand := leaf.source.operand, validity := leaf.validity, operation := leaf.operation }
 
 def elaborateIndexedCustomFieldValidityLeaf (model : FlatModel) (rowGroup : GroupPath)
-    (world : World) (source : SurfaceSemanticIndex) (name : String) (operation : CustomFieldValidityOp) :
+    (world : World) (source : SurfaceSemanticIndex) (name : String) (operation : CustomFieldValidityOp)
+    (boundScope? : Option (List RepeatableLevel) := none) :
     Except IndexedCustomFieldValidityElabError (CheckedIndexedCustomFieldValidityLeaf model) := do
-  let source ← elaborateIndexedCustomFieldValidityOperand model rowGroup source
+  let source ← elaborateIndexedCustomFieldValidityOperand model rowGroup source boundScope?
   let validity ← (elaborateCustomFieldValidity world name).mapError .name
   pure { source, validity, operation }
 
