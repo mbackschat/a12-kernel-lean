@@ -6,6 +6,13 @@ The exact-address repeatable half of §11. Scalar, fixed, and nonrepeatable comp
 
 ### §11 — calculations and formal checking
 
+<a id="cap-typed-result-application"></a>
+#### Typed source-relative result and application
+
+- `boundary`: Number, Boolean/Confirm and Enumeration retain their existing result and application folds: complete successes, source-relative changes, errors and retained clears remain distinct. Fixed Enumeration literals/direct/category operations now enter the same [target-instance table](../../A12Kernel/Elaboration/RowComputationTable.lean) as addressed operations through their existing ordinary checked certificate; no repeated-target certificate is weakened. Guard evaluation, dependency reads and first-selection semantics remain shared.
+- `assurance`: [Enumeration reader locks](../../A12Kernel/Reference/Dm/EnumerationTableLocks.lean) separate fixed/repeated literal and direct-copy admission, guard clearing and invalid-domain refusal. [Application locks](../../A12Kernel/Reference/Dm/ApplicationKindLocks.lean) execute the mixed plan, project actual typed outcomes, apply the owning folds to separately checked same-model destinations, then check and execute an explicit validation rule over the resulting cell states. They cover fresh/seeded/unchanged values, source-classified clear versus no action, Number attempted-value retention/rejection, fixed/two-row addresses, mixed row guards and downstream poison versus clean absence. Existing result/application laws own the generic folds; these are composition checks, not new universal correspondence proofs.
+- `evidence`: The [C03 capture and application source mechanism](../sources/computation-placement-and-constant-probes.md#src-application-kinds-c03) establish per-kind computation, same-source application and subsequent explicit-validation observations. Separate-destination composition is checked internally against the type-independent Kernel action mechanism, with maintained Number destination controls; no per-kind independent-destination capture is claimed. Execute/Explain consumers must retain immutable source classification when applying to another destination. Public protocol and independent-consumer qualification are unchanged.
+
 <a id="cap-selected-group-guards"></a>
 #### Selected lower-star computation guards
 

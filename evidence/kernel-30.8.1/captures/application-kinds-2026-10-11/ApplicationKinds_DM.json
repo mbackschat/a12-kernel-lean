@@ -1,0 +1,768 @@
+{
+  "header" : {
+    "id" : "ApplicationKinds_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "ApplicationKinds_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Gate",
+                "name" : "Gate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Source",
+                "name" : "Source",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/NOut",
+                "name" : "NOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/NAfter",
+                "name" : "NAfter",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/BOut",
+                "name" : "BOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/BAfter",
+                "name" : "BAfter",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/COut",
+                "name" : "COut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/CAfter",
+                "name" : "CAfter",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/EOut",
+                "name" : "EOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "A"
+                      }, {
+                        "value" : "B"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/EAfter",
+                "name" : "EAfter",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Rejected",
+                "name" : "Rejected",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "maxValue" : 9
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/RejectedAfter",
+                "name" : "RejectedAfter",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/NAfterComp",
+                "name" : "NAfterComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../NAfter",
+                  "commonPrecondition" : "[NOut] == 7",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/NOutComp",
+                "name" : "NOutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../NOut",
+                  "commonPrecondition" : "FieldFilled(Gate)",
+                  "computationAlternatives" : [ {
+                    "operation" : "7"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/RowsNObserved",
+                "name" : "RowsNObserved",
+                "Rule" : {
+                  "errorEntityRelPath" : "../NOut",
+                  "errorCode" : "RowsNObserved",
+                  "errorCondition" : "FieldFilled(NOut)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/BAfterComp",
+                "name" : "BAfterComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BAfter",
+                  "commonPrecondition" : "[BOut] == True",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/BOutComp",
+                "name" : "BOutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BOut",
+                  "commonPrecondition" : "FieldFilled(Gate)",
+                  "computationAlternatives" : [ {
+                    "operation" : "True"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/RowsBObserved",
+                "name" : "RowsBObserved",
+                "Rule" : {
+                  "errorEntityRelPath" : "../BOut",
+                  "errorCode" : "RowsBObserved",
+                  "errorCondition" : "FieldFilled(BOut)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/CAfterComp",
+                "name" : "CAfterComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../CAfter",
+                  "commonPrecondition" : "[COut] == True",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/COutComp",
+                "name" : "COutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../COut",
+                  "commonPrecondition" : "FieldFilled(Gate)",
+                  "computationAlternatives" : [ {
+                    "operation" : "True"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/RowsCObserved",
+                "name" : "RowsCObserved",
+                "Rule" : {
+                  "errorEntityRelPath" : "../COut",
+                  "errorCode" : "RowsCObserved",
+                  "errorCondition" : "FieldFilled(COut)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/EAfterComp",
+                "name" : "EAfterComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../EAfter",
+                  "commonPrecondition" : "[EOut] == \"B\"",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/EOutComp",
+                "name" : "EOutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../EOut",
+                  "commonPrecondition" : "FieldFilled(Gate)",
+                  "computationAlternatives" : [ {
+                    "operation" : "\"B\""
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/RowsEObserved",
+                "name" : "RowsEObserved",
+                "Rule" : {
+                  "errorEntityRelPath" : "../EOut",
+                  "errorCode" : "RowsEObserved",
+                  "errorCondition" : "FieldFilled(EOut)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/RejectedAfterComp",
+                "name" : "RejectedAfterComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RejectedAfter",
+                  "commonPrecondition" : "FieldFilled(Rejected) Or FieldNotFilled(Rejected)",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/RejectedComp",
+                "name" : "RejectedComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Rejected",
+                  "commonPrecondition" : "FieldFilled(Gate)",
+                  "computationAlternatives" : [ {
+                    "operation" : "[Source]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/RowsRejectedObserved",
+                "name" : "RowsRejectedObserved",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Rejected",
+                  "errorCode" : "RowsRejectedObserved",
+                  "errorCondition" : "FieldFilled(Rejected)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Gate",
+            "name" : "Gate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Source",
+            "name" : "Source",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NOut",
+            "name" : "NOut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NAfter",
+            "name" : "NAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BOut",
+            "name" : "BOut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BAfter",
+            "name" : "BAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/COut",
+            "name" : "COut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CAfter",
+            "name" : "CAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/EOut",
+            "name" : "EOut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "A"
+                  }, {
+                    "value" : "B"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/EAfter",
+            "name" : "EAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Rejected",
+            "name" : "Rejected",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "maxValue" : 9
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RejectedAfter",
+            "name" : "RejectedAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NAfterComp",
+            "name" : "NAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NAfter",
+              "commonPrecondition" : "[NOut] == 7",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NOutComp",
+            "name" : "NOutComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NOut",
+              "commonPrecondition" : "FieldFilled(Gate)",
+              "computationAlternatives" : [ {
+                "operation" : "7"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedNObserved",
+            "name" : "FixedNObserved",
+            "Rule" : {
+              "errorEntityRelPath" : "../NOut",
+              "errorCode" : "FixedNObserved",
+              "errorCondition" : "FieldFilled(NOut)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BAfterComp",
+            "name" : "BAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BAfter",
+              "commonPrecondition" : "[BOut] == True",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BOutComp",
+            "name" : "BOutComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BOut",
+              "commonPrecondition" : "FieldFilled(Gate)",
+              "computationAlternatives" : [ {
+                "operation" : "True"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedBObserved",
+            "name" : "FixedBObserved",
+            "Rule" : {
+              "errorEntityRelPath" : "../BOut",
+              "errorCode" : "FixedBObserved",
+              "errorCondition" : "FieldFilled(BOut)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CAfterComp",
+            "name" : "CAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CAfter",
+              "commonPrecondition" : "[COut] == True",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/COutComp",
+            "name" : "COutComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../COut",
+              "commonPrecondition" : "FieldFilled(Gate)",
+              "computationAlternatives" : [ {
+                "operation" : "True"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedCObserved",
+            "name" : "FixedCObserved",
+            "Rule" : {
+              "errorEntityRelPath" : "../COut",
+              "errorCode" : "FixedCObserved",
+              "errorCondition" : "FieldFilled(COut)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/EAfterComp",
+            "name" : "EAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EAfter",
+              "commonPrecondition" : "[EOut] == \"B\"",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/EOutComp",
+            "name" : "EOutComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EOut",
+              "commonPrecondition" : "FieldFilled(Gate)",
+              "computationAlternatives" : [ {
+                "operation" : "\"B\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedEObserved",
+            "name" : "FixedEObserved",
+            "Rule" : {
+              "errorEntityRelPath" : "../EOut",
+              "errorCode" : "FixedEObserved",
+              "errorCondition" : "FieldFilled(EOut)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RejectedAfterComp",
+            "name" : "RejectedAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RejectedAfter",
+              "commonPrecondition" : "FieldFilled(Rejected) Or FieldNotFilled(Rejected)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RejectedComp",
+            "name" : "RejectedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rejected",
+              "commonPrecondition" : "FieldFilled(Gate)",
+              "computationAlternatives" : [ {
+                "operation" : "[Source]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedRejectedObserved",
+            "name" : "FixedRejectedObserved",
+            "Rule" : {
+              "errorEntityRelPath" : "../Rejected",
+              "errorCode" : "FixedRejectedObserved",
+              "errorCondition" : "FieldFilled(Rejected)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

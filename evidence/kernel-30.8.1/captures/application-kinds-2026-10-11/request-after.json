@@ -1,0 +1,368 @@
+{
+  "model": "ApplicationKinds_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "fresh-success-applied",
+      "documentInline": {
+        "Form": {
+          "BAfter": 1,
+          "BOut": true,
+          "CAfter": 1,
+          "COut": true,
+          "EAfter": 1,
+          "EOut": "B",
+          "Gate": "on",
+          "NAfter": 1,
+          "NOut": 7,
+          "Rejected": 7,
+          "RejectedAfter": 1,
+          "Source": 7,
+          "Rows": [
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Rejected": 7,
+              "RejectedAfter": 1,
+              "Source": 7
+            },
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Rejected": 7,
+              "RejectedAfter": 1,
+              "Source": 7
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded-success-applied",
+      "documentInline": {
+        "Form": {
+          "BAfter": 1,
+          "BOut": true,
+          "CAfter": 1,
+          "COut": true,
+          "EAfter": 1,
+          "EOut": "B",
+          "Gate": "on",
+          "NAfter": 1,
+          "NOut": 7,
+          "Rejected": 7,
+          "RejectedAfter": 1,
+          "Source": 7,
+          "Rows": [
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Rejected": 7,
+              "RejectedAfter": 1,
+              "Source": 7
+            },
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Rejected": 7,
+              "RejectedAfter": 1,
+              "Source": 7
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unchanged-success-applied",
+      "documentInline": {
+        "Form": {
+          "BAfter": 1,
+          "BOut": true,
+          "CAfter": 1,
+          "COut": true,
+          "EAfter": 1,
+          "EOut": "B",
+          "Gate": "on",
+          "NAfter": 1,
+          "NOut": 7,
+          "Rejected": 7,
+          "RejectedAfter": 1,
+          "Source": 7,
+          "Rows": [
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Rejected": 7,
+              "RejectedAfter": 1,
+              "Source": 7
+            },
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Rejected": 7,
+              "RejectedAfter": 1,
+              "Source": 7
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fresh-clear-applied",
+      "documentInline": {
+        "Form": {
+          "Gate": "",
+          "RejectedAfter": 1,
+          "Source": 7,
+          "Rows": [
+            {
+              "Gate": "",
+              "RejectedAfter": 1,
+              "Source": 7
+            },
+            {
+              "Gate": "",
+              "RejectedAfter": 1,
+              "Source": 7
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded-clear-applied",
+      "documentInline": {
+        "Form": {
+          "BAfter": null,
+          "BOut": null,
+          "CAfter": null,
+          "COut": null,
+          "EAfter": null,
+          "EOut": null,
+          "Gate": "",
+          "NAfter": null,
+          "NOut": null,
+          "Rejected": null,
+          "RejectedAfter": 1,
+          "Source": 7,
+          "Rows": [
+            {
+              "BAfter": null,
+              "BOut": null,
+              "CAfter": null,
+              "COut": null,
+              "EAfter": null,
+              "EOut": null,
+              "Gate": "",
+              "NAfter": null,
+              "NOut": null,
+              "Rejected": null,
+              "RejectedAfter": 1,
+              "Source": 7
+            },
+            {
+              "BAfter": null,
+              "BOut": null,
+              "CAfter": null,
+              "COut": null,
+              "EAfter": null,
+              "EOut": null,
+              "Gate": "",
+              "NAfter": null,
+              "NOut": null,
+              "Rejected": null,
+              "RejectedAfter": 1,
+              "Source": 7
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fresh-reject-applied",
+      "documentInline": {
+        "Form": {
+          "BAfter": 1,
+          "BOut": true,
+          "CAfter": 1,
+          "COut": true,
+          "EAfter": 1,
+          "EOut": "B",
+          "Gate": "on",
+          "NAfter": 1,
+          "NOut": 7,
+          "Source": 10,
+          "Rows": [
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Source": 10
+            },
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Source": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded-reject-applied",
+      "documentInline": {
+        "Form": {
+          "BAfter": 1,
+          "BOut": true,
+          "CAfter": 1,
+          "COut": true,
+          "EAfter": 1,
+          "EOut": "B",
+          "Gate": "on",
+          "NAfter": 1,
+          "NOut": 7,
+          "Rejected": null,
+          "RejectedAfter": null,
+          "Source": 10,
+          "Rows": [
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Rejected": null,
+              "RejectedAfter": null,
+              "Source": 10
+            },
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Rejected": null,
+              "RejectedAfter": null,
+              "Source": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "mixed-rows-applied",
+      "documentInline": {
+        "Form": {
+          "BAfter": 1,
+          "BOut": true,
+          "CAfter": 1,
+          "COut": true,
+          "EAfter": 1,
+          "EOut": "B",
+          "Gate": "on",
+          "NAfter": 1,
+          "NOut": 7,
+          "Rejected": 7,
+          "RejectedAfter": 1,
+          "Source": 7,
+          "Rows": [
+            {
+              "BAfter": 1,
+              "BOut": true,
+              "CAfter": 1,
+              "COut": true,
+              "EAfter": 1,
+              "EOut": "B",
+              "Gate": "on",
+              "NAfter": 1,
+              "NOut": 7,
+              "Rejected": 7,
+              "RejectedAfter": 1,
+              "Source": 7
+            },
+            {
+              "BAfter": null,
+              "BOut": null,
+              "CAfter": null,
+              "COut": null,
+              "EAfter": null,
+              "EOut": null,
+              "Gate": "",
+              "NAfter": null,
+              "NOut": null,
+              "Rejected": null,
+              "RejectedAfter": 1,
+              "Source": 10
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

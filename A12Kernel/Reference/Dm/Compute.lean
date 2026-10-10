@@ -419,7 +419,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
     pure (target, .document step)
   if (row || (target.policy.kind == .string && operations.any (fun expression =>
       (lowerSelectedStringExpr model computation.group expression).toOption.any fun source =>
-        source.fields.any fun | .inr _ => true | .inl _ => false)) || target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .dateRange ||
+        source.fields.any fun | .inr _ => true | .inl _ => false)) || target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .enumeration || target.policy.kind == .dateRange ||
       (target.temporalTargetPolicy.isSome && operations.length > 1)) &&
       operations.all (isRowAlternativeOperation model computation.group target) then
     let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do

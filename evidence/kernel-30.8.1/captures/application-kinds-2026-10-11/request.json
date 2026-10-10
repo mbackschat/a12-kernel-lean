@@ -1,0 +1,313 @@
+{
+  "model": "ApplicationKinds_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "fresh-success",
+      "documentInline": {
+        "Form": {
+          "Gate": "on",
+          "Source": 7,
+          "Rows": [
+            {
+              "Gate": "on",
+              "Source": 7
+            },
+            {
+              "Gate": "on",
+              "Source": 7
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded-success",
+      "documentInline": {
+        "Form": {
+          "Gate": "on",
+          "Source": 7,
+          "NOut": 2,
+          "BOut": false,
+          "COut": true,
+          "EOut": "A",
+          "Rejected": 2,
+          "NAfter": 99,
+          "BAfter": 99,
+          "CAfter": 99,
+          "EAfter": 99,
+          "RejectedAfter": 99,
+          "Rows": [
+            {
+              "Gate": "on",
+              "Source": 7,
+              "NOut": 2,
+              "BOut": false,
+              "COut": true,
+              "EOut": "A",
+              "Rejected": 2,
+              "NAfter": 99,
+              "BAfter": 99,
+              "CAfter": 99,
+              "EAfter": 99,
+              "RejectedAfter": 99
+            },
+            {
+              "Gate": "on",
+              "Source": 7,
+              "NOut": 2,
+              "BOut": false,
+              "COut": true,
+              "EOut": "A",
+              "Rejected": 2,
+              "NAfter": 99,
+              "BAfter": 99,
+              "CAfter": 99,
+              "EAfter": 99,
+              "RejectedAfter": 99
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unchanged-success",
+      "documentInline": {
+        "Form": {
+          "Gate": "on",
+          "Source": 7,
+          "NOut": 7,
+          "BOut": true,
+          "COut": true,
+          "EOut": "B",
+          "Rejected": 7,
+          "NAfter": 99,
+          "BAfter": 99,
+          "CAfter": 99,
+          "EAfter": 99,
+          "RejectedAfter": 99,
+          "Rows": [
+            {
+              "Gate": "on",
+              "Source": 7,
+              "NOut": 7,
+              "BOut": true,
+              "COut": true,
+              "EOut": "B",
+              "Rejected": 7,
+              "NAfter": 99,
+              "BAfter": 99,
+              "CAfter": 99,
+              "EAfter": 99,
+              "RejectedAfter": 99
+            },
+            {
+              "Gate": "on",
+              "Source": 7,
+              "NOut": 7,
+              "BOut": true,
+              "COut": true,
+              "EOut": "B",
+              "Rejected": 7,
+              "NAfter": 99,
+              "BAfter": 99,
+              "CAfter": 99,
+              "EAfter": 99,
+              "RejectedAfter": 99
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fresh-clear",
+      "documentInline": {
+        "Form": {
+          "Gate": "",
+          "Source": 7,
+          "Rows": [
+            {
+              "Gate": "",
+              "Source": 7
+            },
+            {
+              "Gate": "",
+              "Source": 7
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded-clear",
+      "documentInline": {
+        "Form": {
+          "Gate": "",
+          "Source": 7,
+          "NOut": 2,
+          "BOut": false,
+          "COut": true,
+          "EOut": "A",
+          "Rejected": 2,
+          "NAfter": 99,
+          "BAfter": 99,
+          "CAfter": 99,
+          "EAfter": 99,
+          "RejectedAfter": 99,
+          "Rows": [
+            {
+              "Gate": "",
+              "Source": 7,
+              "NOut": 2,
+              "BOut": false,
+              "COut": true,
+              "EOut": "A",
+              "Rejected": 2,
+              "NAfter": 99,
+              "BAfter": 99,
+              "CAfter": 99,
+              "EAfter": 99,
+              "RejectedAfter": 99
+            },
+            {
+              "Gate": "",
+              "Source": 7,
+              "NOut": 2,
+              "BOut": false,
+              "COut": true,
+              "EOut": "A",
+              "Rejected": 2,
+              "NAfter": 99,
+              "BAfter": 99,
+              "CAfter": 99,
+              "EAfter": 99,
+              "RejectedAfter": 99
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fresh-reject",
+      "documentInline": {
+        "Form": {
+          "Gate": "on",
+          "Source": 10,
+          "Rows": [
+            {
+              "Gate": "on",
+              "Source": 10
+            },
+            {
+              "Gate": "on",
+              "Source": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded-reject",
+      "documentInline": {
+        "Form": {
+          "Gate": "on",
+          "Source": 10,
+          "NOut": 2,
+          "BOut": false,
+          "COut": true,
+          "EOut": "A",
+          "Rejected": 2,
+          "NAfter": 99,
+          "BAfter": 99,
+          "CAfter": 99,
+          "EAfter": 99,
+          "RejectedAfter": 99,
+          "Rows": [
+            {
+              "Gate": "on",
+              "Source": 10,
+              "NOut": 2,
+              "BOut": false,
+              "COut": true,
+              "EOut": "A",
+              "Rejected": 2,
+              "NAfter": 99,
+              "BAfter": 99,
+              "CAfter": 99,
+              "EAfter": 99,
+              "RejectedAfter": 99
+            },
+            {
+              "Gate": "on",
+              "Source": 10,
+              "NOut": 2,
+              "BOut": false,
+              "COut": true,
+              "EOut": "A",
+              "Rejected": 2,
+              "NAfter": 99,
+              "BAfter": 99,
+              "CAfter": 99,
+              "EAfter": 99,
+              "RejectedAfter": 99
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "mixed-rows",
+      "documentInline": {
+        "Form": {
+          "Gate": "on",
+          "Source": 7,
+          "NOut": 2,
+          "BOut": false,
+          "COut": true,
+          "EOut": "A",
+          "Rejected": 2,
+          "NAfter": 99,
+          "BAfter": 99,
+          "CAfter": 99,
+          "EAfter": 99,
+          "RejectedAfter": 99,
+          "Rows": [
+            {
+              "Gate": "on",
+              "Source": 7,
+              "NOut": 2,
+              "BOut": false,
+              "COut": true,
+              "EOut": "A",
+              "Rejected": 2,
+              "NAfter": 99,
+              "BAfter": 99,
+              "CAfter": 99,
+              "EAfter": 99,
+              "RejectedAfter": 99
+            },
+            {
+              "Gate": "",
+              "Source": 10,
+              "NOut": 2,
+              "BOut": false,
+              "COut": true,
+              "EOut": "A",
+              "Rejected": 2,
+              "NAfter": 99,
+              "BAfter": 99,
+              "CAfter": 99,
+              "EAfter": 99,
+              "RejectedAfter": 99
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

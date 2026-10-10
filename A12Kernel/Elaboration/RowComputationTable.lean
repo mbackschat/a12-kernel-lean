@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.BooleanConstantComputation
 
 /-! # Checked alternatives at non-Number target instances
 
-Selection belongs to one target instance; fixed Boolean/Confirm and temporal targets have the empty address. Temporal expressions, bound String expressions, String/Boolean/Confirm constants and Enumeration operations
+Selection belongs to one target instance; fixed Enumeration, Boolean/Confirm and temporal targets have the empty address. Temporal expressions, bound String expressions, String/Boolean/Confirm constants and Enumeration operations
 keep their certificates and evaluators; this table adds no token semantics or selection algorithm.
 -/
 
@@ -16,6 +16,7 @@ inductive CheckedRowComputationOperation (model : FlatModel) where
   | stringExpression (operation : CheckedRowStringExpression model)
   | stringConstant (operation : CheckedRepeatableStringConstantComputation model)
   | enumeration (operation : CheckedAddressedEnumerationComputation model)
+  | fixedEnumeration (operation : CheckedEnumerationComputationOperation model)
   | booleanConstant (operation : CheckedRepeatableBooleanConstantComputation model)
   | fixedBooleanConstant (operation : CheckedBooleanConstantComputation model)
   | temporalExpression (operation : CheckedTemporalExpressionComputation model)
@@ -27,6 +28,7 @@ def target : CheckedRowComputationOperation model → FieldId
   | .stringExpression operation => operation.targetField
   | .stringConstant operation => operation.checkedTarget.targetField
   | .enumeration operation => operation.target.field
+  | .fixedEnumeration operation => operation.target.field
   | .booleanConstant operation => operation.checkedTarget.targetField
   | .fixedBooleanConstant operation => operation.target.id
   | .dateRangeConstruction operation => operation.target.source.id
@@ -36,6 +38,7 @@ def scope : CheckedRowComputationOperation model → List RepeatableLevel
   | .stringExpression operation => operation.target.repeatableScope
   | .stringConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .enumeration operation => operation.target.declaration.repeatableScope
+  | .fixedEnumeration _ => []
   | .booleanConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .fixedBooleanConstant _ => []
   | .dateRangeConstruction operation => operation.target.declaration.repeatableScope
@@ -43,7 +46,7 @@ def scope : CheckedRowComputationOperation model → List RepeatableLevel
 
 def family : CheckedRowComputationOperation model → DocumentTargetFamily
   | .stringExpression _ | .stringConstant _ => .string
-  | .enumeration _ => .enumeration
+  | .enumeration _ | .fixedEnumeration _ => .enumeration
   | .booleanConstant _ | .fixedBooleanConstant _ => .boolean
   | .dateRangeConstruction _ => .dateRange
   | .temporalExpression operation => operation.family
@@ -52,6 +55,7 @@ def referencesField : CheckedRowComputationOperation model → FieldId → Bool
   | .stringExpression operation, field => operation.expression.referencesField field
   | .stringConstant _, _ | .booleanConstant _, _ | .fixedBooleanConstant _, _ => false
   | .enumeration operation, field => operation.source.referencesField field
+  | .fixedEnumeration operation, field => operation.source.referencesField field
   | .dateRangeConstruction operation, field => operation.referencesField field
   | .temporalExpression operation, field => operation.expression.referencesField field
 
@@ -177,6 +181,10 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
   | .enumeration operation =>
       let result ← (operation.evaluateAtWithRead document.read environment).mapError .enumeration
       let outcome := result.result.asExactStringTargetOutcome
+      pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
+  | .fixedEnumeration operation =>
+      let context := document.indexedComputationContextAt environment
+      let outcome := (operation.source.evaluate { read := context.read }).asExactStringTargetOutcome
       pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
 
 end CheckedRowComputationOperation

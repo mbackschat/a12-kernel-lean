@@ -75,6 +75,16 @@ def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : 
   | .value { index := none, filter := none, .. } => target.policy.kind == .enumeration
   | _ => false
 
+private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
+    (target : FlatFieldDecl) (source : SurfaceEnumerationComputationSource) :
+    Lowering (CheckedRowComputationOperation model) := do
+  if target.repeatableScope.isEmpty then
+    pure (.fixedEnumeration (← elaborated "EnumerationComputation"
+      (elaborateEnumerationComputation model group target.id source)))
+  else
+    pure (.enumeration (← elaborated "EnumerationComputation"
+      (checkAddressedEnumerationComputation model group target.id source)))
+
 /-- Retain each admitted operation certificate before certifying row-local selection. -/
 def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (expression : Expr) : Lowering (CheckedRowComputationOperation model) := do
@@ -106,8 +116,7 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
   | .string text => do
       if isTemporalConstant text then refuse "RowComputation" "temporal literal"
       if target.policy.kind == .enumeration then
-        return .enumeration (← elaborated "EnumerationComputation"
-          (checkAddressedEnumerationComputation model group target.id (.literal text)))
+        return ← lowerEnumerationAlternative model group target (.literal text)
       return .stringConstant (← elaborated "StringComputation"
         (checkRepeatableStringConstantComputation model group target.id text))
   | .value { path, index := none, category, filter := none } => do
@@ -115,8 +124,7 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
       let source := match category with
         | none => SurfaceTextFieldOperand.direct field
         | some name => .category field name
-      return .enumeration (← elaborated "EnumerationComputation"
-        (checkAddressedEnumerationComputation model group target.id (.field source)))
+      return ← lowerEnumerationAlternative model group target (.field source)
   | other => refuse "RowComputation" other.construct
 
 /-- One `Time(...)` component: a quoted constant, an extractor over a field, or a Number or digit

@@ -422,6 +422,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Computation conditions](implementation/computations.md#cap-computation-conditions)
 <a id="cap-captured-filter-scopes"></a>
 - [Caller-scope preservation in checked filters](implementation/repeatable-computations.md#cap-captured-filter-scopes)
+<a id="cap-typed-result-application"></a>
+- [Typed source-relative result and application](implementation/repeatable-computations.md#cap-typed-result-application)
 <a id="cap-selected-group-guards"></a>
 - [Selected lower-star computation guards](implementation/repeatable-computations.md#cap-selected-group-guards)
 <a id="cap-constant-assignment-diagnostic-ladder"></a>

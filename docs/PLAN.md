@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C03. C01 and C02 are closed; proceed in the frozen order.
+The autonomous goal is active at C04. C01–C03 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -45,9 +45,11 @@ C01–C12 are the required sequence. This checkpoint is a bounded consumer-relia
 
 ### C03 — preserve results through application and later reads
 
-- [ ] Reconcile remaining Number, Boolean/Confirm and Enumeration result/application boundaries against current carriers.
+- [x] Reconcile remaining Number, Boolean/Confirm and Enumeration result/application boundaries against current carriers.
 - Matrix: fresh/seeded target; produced/guard-cleared/target-rejected result; fixed/two-row target; separate same-model destination; subsequent explicit validation and dependent read. Existing String application observations are controls, not evidence for another kind.
 - Done: returned outcome, applied contents and later observation agree with retained Kernel results on each selected kind. Neither rejected attempted payload nor stale stored value survives. [SG16](gaps/keystone.md#gap-sg16), [SG18](gaps/keystone.md#gap-sg18).
+
+- Accepted: [typed application locks](../A12Kernel/Reference/Dm/ApplicationKindLocks.lean), [fixed Enumeration reader repair](../A12Kernel/Reference/Dm/EnumerationTableLocks.lean) and [per-kind application/validation capture](sources/computation-placement-and-constant-probes.md#src-application-kinds-c03). All 320 retained replay entries match. Separate-destination composition is checked against the shared Kernel application mechanism and existing maintained controls; it is not a new per-kind destination capture. Integrated/evidence/trust gates and fresh HIGH review passed.
 
 ### C04 — retain reached validator failures through ordinary conditions
 
@@ -206,7 +208,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C03. Reconcile Number, Boolean/Confirm and Enumeration result/application boundaries against existing carriers and observations. Start from [C03](#c03--preserve-results-through-application-and-later-reads): fresh/seeded targets, produced/guard-cleared/target-rejected results, fixed/two-row targets, separate same-model destination, subsequent validation and dependent reads. Reuse existing result/application mechanisms; start no other batch in parallel.
+- Active: C04. Inspect complete checked-rule callers and retained validator controls against the [frozen matrix](#c04--retain-reached-validator-failures-through-ordinary-conditions): ordered And/Or bypass, direct/indexed validity, covered/uncovered partial input, missing registration versus normal rejection. Close from existing evidence where sufficient; build or measure only an unresolved distinction. Start no other batch in parallel.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
 - C01 closed: [risk-boundary implementation](../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [reconciled eight-scenario consumer run](consumer-probes/EXECUTE.md#run-c01-execute-03). Integration (2,166 jobs), retained evidence (51 projections), trust (3,026 roots) and HIGH review passed; the review’s documentation correction is incorporated. Code is committed at `0e302b8d`; the accepted consumer basis is `9fe99116`. No remaining C01 blocker.
 - The latest [cache-context probe](consumer-probes/EXECUTE.md#run-message-cache-context-readback-01) passed its narrow task; it does not discharge C01/C12. C01’s broader probe is closed; the next bounded probe is C12. C22 uses those results and the subsequent evidence; it does not automatically trigger another consumer programme.
@@ -220,7 +222,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 ## Verified gate boundary
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
-- Latest verified boundary: C02 selected-group reader locks and retained capture; 2,168-job integration, 51-projection evidence, 540-entry family replay and 3,026-root trust audit passed. Fresh HIGH review found no new findings. The producer-omission mutant failed the intended freshness/content checks. No full-population replay was triggered.
+- Latest verified boundary: C03 fixed Enumeration routing and typed application matrix; 2,172-job integration, 51-projection evidence, 320-entry family replay and 3,026-root trust audit passed. Fresh HIGH review found no new findings. Fixed literal/direct-copy reader controls went red before the shared-table repair and green afterward. No full-population replay was triggered.
 - Last full replay: 59,766 matches; zero divergence/fault/unattributed; 3,052 rows, 217 without matching artifacts, six preparation refusals. The outer-bound capture is checked separately; one evidence-only family has closed since replay.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Final C02 plan recording requires documentation checks only; it does not invalidate the executable gates.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Final C03 plan recording requires documentation checks only; it does not invalidate the executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.

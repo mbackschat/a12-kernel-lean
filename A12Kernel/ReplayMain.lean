@@ -88,6 +88,8 @@ import A12Kernel.Reference.Dm.NestedGroupCountLocks
 import A12Kernel.Reference.Dm.EmptyPatternLocks
 import A12Kernel.Reference.Dm.GroupGuardLocks
 import A12Kernel.Reference.Dm.SelectedGroupGuardLocks
+import A12Kernel.Reference.Dm.EnumerationTableLocks
+import A12Kernel.Reference.Dm.ApplicationKindLocks
 import A12Kernel.Reference.Dm.SemanticIndexLocks
 import A12Kernel.Reference.Dm.NestedSemanticIndexLocks
 import A12Kernel.Reference.Dm.KeyedExtentLocks
