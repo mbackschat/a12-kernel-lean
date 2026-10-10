@@ -1,3 +1,5 @@
+import A12Kernel.Elaboration.CheckedCellPlacement
+import A12Kernel.Elaboration.Flat.Capacity
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.DateRangeRuntimeInput
 import A12Kernel.Elaboration.PartialDateInput
@@ -68,20 +70,6 @@ inductive ActualRowEnvironmentError where
   | incoherentRow (row : RowAddr)
   deriving Repr, DecidableEq
 
-structure CheckedCellPlacement where
-  address : CellAddr
-  cell : CheckedCell
-  /-- The exact selected Number input regime. Non-Number and empty placements carry `none`. -/
-  numericInput : Option NumericStoredInput := none
-  /-- The selected Number formal-read text, including on a formally rejected Number placement. Non-Number and empty placements carry `none`. -/
-  numericFormalReadText : Option String := none
-  /-- The stored text this placement's cell was read from, which a reader pairs with that cell: a
-  token scan's selected text and a partial Date's spelling. It travels with the cell, so a document
-  overlaid with a completed target reads that target's rendering rather than the source's text.
-  A placement with no text carries `none`. -/
-  storedText : Option String := none
-  deriving Repr, DecidableEq
-
 /-- One exact-model checked input. `checkDocument` constructs it from source data, so every placed cell is
 that source cell's one cached base formal-check result; `overlayNonrepeatableCells` derives a read view
 from one, whose replaced placements are no longer that check's result and whose own documentation names
@@ -116,21 +104,6 @@ private def firstDuplicateCell? : List ClassifiedCellInput → Option CellAddr
         some cell.address
       else
         firstDuplicateCell? rest
-
-/-- Resolve one validated field or group scope to the shared structural axes. A checked model makes failure unreachable; retaining `Option` keeps malformed internal callers explicit. -/
-def FlatModel.repeatableAxesForScope? (model : FlatModel) :
-    List RepeatableLevel → Option (List StarAxis)
-  | [] => some []
-  | level :: levels => do
-      let group ← model.repeatableGroupAtLevel? level
-      let remaining ← model.repeatableAxesForScope? levels
-      pure ({ level, repeatability := group.repeatability } :: remaining)
-
-/-- Apply the shared over-capacity decision to one exact model scope and coordinate path. Address depth and zero-coordinate checks remain owned by placement validation. -/
-def FlatModel.addressOverLimit? (model : FlatModel)
-    (scope : List RepeatableLevel) (path : List Nat) : Option Bool := do
-  let axes ← model.repeatableAxesForScope? scope
-  pure (StarAxes.environmentOverLimit axes (scope.zip path))
 
 private def parentRow? (scope : List RepeatableLevel) (row : RowAddr) :
     Option RowAddr :=

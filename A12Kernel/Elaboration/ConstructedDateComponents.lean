@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.Flat.Model
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.ModelZone

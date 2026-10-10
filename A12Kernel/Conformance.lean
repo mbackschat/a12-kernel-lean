@@ -256,6 +256,7 @@ import A12Kernel.Conformance.GroupOperandRepetitionWalk
 import A12Kernel.Conformance.ReadingScope
 import A12Kernel.Conformance.GroupOperandCapacity
 import A12Kernel.Conformance.GroupPresence
+import A12Kernel.Conformance.GroupPresenceInput
 import A12Kernel.Conformance.GroupPresenceRepeatableDescendant
 import A12Kernel.Conformance.IndexedDateRangeConstructionComputation
 import A12Kernel.Conformance.IteratedDateRangeCondition
