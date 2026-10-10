@@ -16,6 +16,8 @@ The current typed replay estate contains exactly three immutable compact bundles
 
 This is a deliberate assurance trade. The migrations ran the complete historical binders and compact lanes together before deleting the raw estates. Routine tests now check the accepted semantic meaning and exact compact bytes instead of repeatedly re-proving filesystem, model, runner, packet, qualification, or receipt relations. Git history is the audit archive; restoring that machinery to current `main` is not part of ordinary replay.
 
+The [Number parallel-token capture](sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens) retains seven agreeing full-validation documents with message multiplicity preserved and catalog text removed. Its source checkpoint owns hashes and profile limits; it is raw calibration, not an additional compact replay bundle.
+
 ## Validation bundle and gate ownership
 
 The validation bundle has seven ordered families. Four public families hold the current flat V2 cases, one directional Number witness, 12 captured-outer runtime cases, and four static one-star authoring cases. Three private families hold 11 path/required cases, six operator-sensitive empty-value cases, and seven uncorrelated iteration cases.

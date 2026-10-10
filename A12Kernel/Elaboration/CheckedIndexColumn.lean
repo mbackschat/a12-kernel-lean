@@ -4,7 +4,7 @@ import A12Kernel.Semantics.MessagePointer
 
 /-! # Checked index columns and bounded parallel joins
 
-This family-owned boundary resolves one generated-preliminary index column without inventing another document or address model. It retains every ordered key occurrence, duplicate identity for selection exclusion, and one column-unavailability cause. Semantic-index and parallel projections share only that admission relation while retaining their separate selection and missing-side policies. The checked parallel profile admits either one common outer repeatable scope or one non-indexed frame on exactly one side, across transparent nonrepeatable wrappers and exact non-Number stored keys; Number rendering order remains outside until its declaration/locale owner exists.
+This family-owned boundary resolves one generated-preliminary index column without inventing another document or address model. It retains every ordered key occurrence, duplicate identity for selection exclusion, and one column-unavailability cause. Semantic-index and parallel projections share only that admission relation while retaining their separate selection and missing-side policies. The checked parallel profile admits either one common outer repeatable scope or one non-indexed frame on exactly one side, across transparent nonrepeatable wrappers and exact non-Number stored keys or dot-decimal Number keys. Number iteration tokens retain declaration-specific minimum scale separately from numeric lookup identity (spec/07 §2).
 -/
 
 namespace A12Kernel
@@ -26,7 +26,6 @@ inductive CheckedIndexColumnError where
       (left right : GroupPath)
   | incompatibleGroups (left right : GroupPath)
   | incompatibleIndexFields (left right : List String)
-  | unsupportedParallelNumberIndex (path : List String)
   deriving Repr, DecidableEq
 
 structure ResolvedCheckedIndexEntry where
@@ -52,6 +51,7 @@ structure ResolvedParallelIndexSide where
   deriving Repr, DecidableEq
 
 structure ResolvedParallelIndexRow where
+  iterationToken : String
   key : SemanticIndexKey
   left : ResolvedParallelIndexSide
   right : ResolvedParallelIndexSide
@@ -62,15 +62,6 @@ structure ResolvedParallelIndexJoin where
   rightGroup : RepeatableGroupDecl
   rows : List ResolvedParallelIndexRow
   deriving Repr, DecidableEq
-
-namespace FieldKind
-
-/-- Parallel iteration orders every non-Number index by its exact stored token. Number needs declaration/locale-owned rendering and therefore fails this bounded profile closed. -/
-def supportsExactTextParallelKey : FieldKind → Bool
-  | .number _ => false
-  | .boolean | .confirm | .string | .enumeration | .temporal _ _ | .dateRange => true
-
-end FieldKind
 
 /-- The exact group-path ancestor shared by two parallel sides. Nonrepeatable segments below this path are transparent to repetition environments. -/
 def parallelCommonParent : GroupPath → GroupPath → GroupPath
@@ -151,8 +142,6 @@ structure CheckedParallelIndexGroups (model : FlatModel) where
   commonIndexKind :
     (leftIndexDeclaration.policy.kind ==
       rightIndexDeclaration.policy.kind) = true
-  exactTextIndex :
-    leftIndexDeclaration.policy.kind.supportsExactTextParallelKey = true
 
 namespace ResolvedCheckedIndexColumn
 
@@ -189,7 +178,7 @@ end ResolvedCheckedIndexColumn
 
 namespace CheckedParallelIndexGroups
 
-/-- The public certificate boundary for the bounded exact-text transparent-wrapper profile. -/
+/-- The public certificate boundary for the bounded transparent-wrapper profile. -/
 def WellFormed (groups : CheckedParallelIndexGroups model) : Prop :=
   model.validate.isOk = true ∧
     model.repeatableGroups.contains groups.leftGroup = true ∧
@@ -209,9 +198,7 @@ def WellFormed (groups : CheckedParallelIndexGroups model) : Prop :=
     (groups.leftIndexDeclaration.name ==
       groups.rightIndexDeclaration.name) = true ∧
     (groups.leftIndexDeclaration.policy.kind ==
-      groups.rightIndexDeclaration.policy.kind) = true ∧
-    groups.leftIndexDeclaration.policy.kind.supportsExactTextParallelKey =
-      true
+      groups.rightIndexDeclaration.policy.kind) = true
 
 end CheckedParallelIndexGroups
 
@@ -336,34 +323,27 @@ def checkParallelIndexGroups (model : FlatModel)
                       if hKind :
                           (leftIndex.policy.kind ==
                             rightIndex.policy.kind) = true then
-                        if hText :
-                            FieldKind.supportsExactTextParallelKey
-                              leftIndex.policy.kind = true then
-                          pure {
-                            leftGroup := left
-                            rightGroup := right
-                            leftIndexDeclaration := leftIndex
-                            rightIndexDeclaration := rightIndex
-                            modelWellFormed := by rw [hModel]; rfl
-                            leftGroupOwned := hLeft
-                            rightGroupOwned := hRight
-                            leftIndexDeclared := hLeftDeclared
-                            rightIndexDeclared := hRightDeclared
-                            groupsDistinct := hDistinct
-                            commonParent
-                            commonParentOwned := rfl
-                            commonParentNonempty := hCommon
-                            outerScopePlan
-                            outerScopePlanOwned := by
-                              simpa [leftOuterScope, rightOuterScope]
-                                using hOuterScope
-                            commonIndexName := hName
-                            commonIndexKind := hKind
-                            exactTextIndex := hText
-                          }
-                        else
-                          throw (.unsupportedParallelNumberIndex
-                            leftIndex.path)
+                        pure {
+                          leftGroup := left
+                          rightGroup := right
+                          leftIndexDeclaration := leftIndex
+                          rightIndexDeclaration := rightIndex
+                          modelWellFormed := by rw [hModel]; rfl
+                          leftGroupOwned := hLeft
+                          rightGroupOwned := hRight
+                          leftIndexDeclared := hLeftDeclared
+                          rightIndexDeclared := hRightDeclared
+                          groupsDistinct := hDistinct
+                          commonParent
+                          commonParentOwned := rfl
+                          commonParentNonempty := hCommon
+                          outerScopePlan
+                          outerScopePlanOwned := by
+                            simpa [leftOuterScope, rightOuterScope]
+                              using hOuterScope
+                          commonIndexName := hName
+                          commonIndexKind := hKind
+                        }
                       else
                         throw (.incompatibleIndexFields
                           leftIndex.path rightIndex.path)
@@ -463,15 +443,35 @@ def resolveCheckedParallelFrameEnvironments
       preliminary.collectParallelFrameEnvironments
         scope commonPath rows []
 
-private def textKeys
-    (column : ResolvedCheckedIndexColumn model) : List String :=
-  column.entries.filterMap fun entry =>
-    if column.admitsParallelKey entry.key then
-      match entry.key with
-      | .text token => some token
-      | .number _ => none
-    else
-      none
+/-- The index cache normalizes Number storage even in the String-valued input regime.
+The parsed fractional scale reconstructs the exact decimal without computed-result rounding. -/
+private def parallelNumberToken (preliminary : CheckedIndexPreliminary model)
+    (column : ResolvedCheckedIndexColumn model) (entry : ResolvedCheckedIndexEntry) :
+    Except CheckedIndexColumnError String := do
+  let path ← entry.environment.pathForScope column.indexDeclaration.repeatableScope
+    |>.mapError .environment
+  let address : CellAddr := { field := column.indexDeclaration.id, path }
+  let stored ← match preliminary.storedAt? address with
+    | some stored => pure stored
+    | none => throw (.missingStoredValue address)
+  let parsed ← match parseNumericFormalRead? stored with
+    | some parsed => pure parsed
+    | none => throw (.incoherentIndexValue address)
+  let exact := parsed.value * (decimalFactor parsed.fractionalDigits : Nat)
+  if exact.den != 1 || entry.key != .number parsed.value then
+    throw (.incoherentIndexValue address)
+  let decimal : NumericInputDecimal := { unscaled := exact.num, scale := parsed.fractionalDigits }
+  pure (decimal.formalReadText column.indexDeclaration.numericTargetConstraints.minFractionalDigits)
+
+private def parallelKeys (preliminary : CheckedIndexPreliminary model)
+    (column : ResolvedCheckedIndexColumn model) :
+    Except CheckedIndexColumnError (List (String × SemanticIndexKey)) := do
+  let entries := column.entries.filter fun entry => column.admitsParallelKey entry.key
+  entries.mapM fun entry => do
+    let token ← match entry.key with
+      | .text token => pure token
+      | .number _ => preliminary.parallelNumberToken column entry
+    pure (token, entry.key)
 
 private def parallelSide (column : ResolvedCheckedIndexColumn model)
     (key : SemanticIndexKey) : ResolvedParallelIndexSide := {
@@ -489,14 +489,15 @@ private def resolveCheckedParallelIndexJoinAt
     preliminary.resolveIndexColumn groups.leftGroup leftOuter
   let rightColumn ←
     preliminary.resolveIndexColumn groups.rightGroup rightOuter
-  let unsorted := (textKeys leftColumn ++ textKeys rightColumn).eraseDups
-  let sorted := unsorted.mergeSort fun first second =>
-    compare first second != .gt
-  let keys := sorted.map SemanticIndexKey.text
+  let leftKeys ← preliminary.parallelKeys leftColumn
+  let rightKeys ← preliminary.parallelKeys rightColumn
+  let keys := (leftKeys ++ rightKeys).eraseDups.mergeSort fun first second =>
+    compare first.1 second.1 != .gt
   pure {
     leftGroup := groups.leftGroup
     rightGroup := groups.rightGroup
-    rows := keys.map fun key => {
+    rows := keys.map fun (iterationToken, key) => {
+      iterationToken
       key
       left := parallelSide leftColumn key
       right := parallelSide rightColumn key

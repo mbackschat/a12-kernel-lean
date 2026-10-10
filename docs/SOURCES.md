@@ -125,7 +125,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Temporal constants and BaseYear](sources/temporal-constant-and-base-year-probes.md)
 - [Repeatable temporal computations](sources/repeatable-temporal-computation-probes.md)
 - [Having filters](sources/having-filter-probes.md)
-- [Groups and iteration](sources/group-and-iteration-probes.md), including [sparse filter traversal](sources/group-and-iteration-probes.md#src-sparse-filter-traversal)
+- [Groups and iteration](sources/group-and-iteration-probes.md), including [sparse filter traversal](sources/group-and-iteration-probes.md#src-sparse-filter-traversal) and [Number parallel tokens](sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens)
 - [Group lists and capacity](sources/group-list-and-capacity-probes.md)
 - [Group-operand inbound evidence](sources/inbound-group-operand-batches.md)
 - [Over-repetition](sources/over-repetition-probes.md)

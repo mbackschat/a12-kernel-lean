@@ -6,10 +6,6 @@ namespace A12Kernel.Conformance.CheckedIndexColumn
 
 open A12Kernel
 
-/- DateRange follows the established exact-stored-token index branch rather than Number normalization. -/
-example : FieldKind.dateRange.supportsExactTextParallelKey = true := by
-  rfl
-
 private def indexDecl (id : FieldId) (group : String)
     (scope : RepeatableLevel) : FlatFieldDecl := {
   id
@@ -342,14 +338,10 @@ private def numberParallelData : DocumentData := {
         input
 }
 
-/- Number columns remain usable by semantic index, but parallel ordering fails closed until declaration-owned normalized rendering exists. -/
 example : (preliminaryFor numberParallelModel numberParallelData).bind
-    (fun preliminary =>
-      match preliminary.resolveParallelIndexJoin demand supply with
-      | .error error => some error
-      | .ok _ => none) =
-    some (.unsupportedParallelNumberIndex
-      ["Order", "Demand", "Department"]) := by
+    (fun preliminary => (preliminary.resolveParallelIndexJoin demand supply).toOption.map
+      fun joined => joined.rows.map (·.key)) =
+    some [.number 5, .number 6] := by
   native_decide
 
 end A12Kernel.Conformance.CheckedIndexColumn

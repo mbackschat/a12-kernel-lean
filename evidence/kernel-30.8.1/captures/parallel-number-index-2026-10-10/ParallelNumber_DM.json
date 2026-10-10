@@ -1,0 +1,248 @@
+{
+  "header" : {
+    "id" : "ParallelNumber_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "ParallelNumber_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/L0",
+            "name" : "L0",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/L0/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/L0/Value",
+                "name" : "Value",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/R0",
+            "name" : "R0",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/R0/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/R0/Value",
+                "name" : "Value",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/L2",
+            "name" : "L2",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/L2/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/L2/Value",
+                "name" : "Value",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/R2",
+            "name" : "R2",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/R2/Key",
+                "name" : "Key",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/R2/Value",
+                "name" : "Value",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Key"
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/SAME0",
+            "name" : "SAME0",
+            "Rule" : {
+              "errorEntityRelPath" : "../L0/Value",
+              "errorCode" : "SAME0",
+              "errorCondition" : "FieldsNotCollectivelyFilled(/Form/L0/Value,/Form/R0/Value)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Parallel key discriminator."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/SAME2",
+            "name" : "SAME2",
+            "Rule" : {
+              "errorEntityRelPath" : "../L2/Value",
+              "errorCode" : "SAME2",
+              "errorCondition" : "FieldsNotCollectivelyFilled(/Form/L2/Value,/Form/R2/Value)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Parallel key discriminator."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CROSS",
+            "name" : "CROSS",
+            "Rule" : {
+              "errorEntityRelPath" : "../L0/Value",
+              "errorCode" : "CROSS",
+              "errorCondition" : "FieldsNotCollectivelyFilled(/Form/L0/Value,/Form/R2/Value)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Parallel key discriminator."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MATCH0",
+            "name" : "MATCH0",
+            "Rule" : {
+              "errorEntityRelPath" : "../L0/Value",
+              "errorCode" : "MATCH0",
+              "errorCondition" : "AllFieldsFilled(/Form/L0/Value,/Form/R0/Value)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Parallel match discriminator."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MATCH2",
+            "name" : "MATCH2",
+            "Rule" : {
+              "errorEntityRelPath" : "../L2/Value",
+              "errorCode" : "MATCH2",
+              "errorCondition" : "AllFieldsFilled(/Form/L2/Value,/Form/R2/Value)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Parallel match discriminator."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MATCHCROSS",
+            "name" : "MATCHCROSS",
+            "Rule" : {
+              "errorEntityRelPath" : "../L0/Value",
+              "errorCode" : "MATCHCROSS",
+              "errorCondition" : "AllFieldsFilled(/Form/L0/Value,/Form/R2/Value)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Parallel match discriminator."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

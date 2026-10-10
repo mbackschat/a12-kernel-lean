@@ -80,7 +80,7 @@ theorem checkedParallelIndexGroups_wellFormed
     groups.rightIndexDeclared, groups.groupsDistinct,
     groups.commonParentOwned, groups.commonParentNonempty,
     groups.outerScopePlanOwned, groups.commonIndexName,
-    groups.commonIndexKind, groups.exactTextIndex⟩
+    groups.commonIndexKind⟩
 
 @[simp] theorem checkedIndexColumn_duplicate_notSelectable
     (column : ResolvedCheckedIndexColumn model) (key : SemanticIndexKey)

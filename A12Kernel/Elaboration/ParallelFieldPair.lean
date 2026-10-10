@@ -28,6 +28,7 @@ inductive ParallelPresenceRuleEvaluationError where
 /-- One key-preserving whole-rule result. The complete outer evaluation environment distinguishes equal join keys in different frame rows; silent outcomes still require no physical error address. -/
 structure ParallelRuleRowOutcome where
   outerEnvironment : Env
+  iterationToken : String
   key : SemanticIndexKey
   outcome : FlatRuleOutcome
   deriving Repr, DecidableEq
@@ -86,7 +87,7 @@ private def evalRow (pair : CheckedParallelFieldPair model) (condition : Conditi
           |>.mapError .join
         pure ((pair.core condition).emitAtCoordinates pointer.coordinates verdict)
     | .notFired | .unknown => pure ((pair.core condition).emitAt [] verdict)
-  pure { outerEnvironment, key := row.key, outcome }
+  pure { outerEnvironment, iterationToken := row.iterationToken, key := row.key, outcome }
 
 /-- Traverse the certified key union in lexical order, within each actual one-sided frame when present. The supplied condition evaluator consumes the same resolved rows used for error projection. -/
 def evalFullWith (pair : CheckedParallelFieldPair model) (condition : Condition)

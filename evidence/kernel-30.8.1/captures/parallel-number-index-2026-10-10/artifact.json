@@ -1,0 +1,850 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "ParallelNumber_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "same-spelling",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MATCH0",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCH2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L2/Key",
+                "Form/L2/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MATCH0",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCH2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L2/Key",
+                "Form/L2/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "normalized-spelling",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MATCH0",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCH2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L2/Key",
+                "Form/L2/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MATCH0",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCH2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L2/Key",
+                "Form/L2/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "fractional-aligned",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MATCH0",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCH2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L2/Key",
+                "Form/L2/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MATCH0",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCH2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L2/Key",
+                "Form/L2/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "negative-same-spelling",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MATCH0",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCH2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L2/Key",
+                "Form/L2/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MATCH0",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCH2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L2/Key",
+                "Form/L2/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MATCHCROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key",
+                "Form/L0/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "different-values",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CROSS",
+              "field": "/Form[1]/L0[-5]/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/L0[-5]/Key",
+                "/Form[1]/L0[-5]/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/L0[-5]/Key",
+                "/Form[1]/L0[-5]/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ]
+            },
+            {
+              "code": "CROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/R2[-5]/Key",
+                "/Form[1]/R2[-5]/Value",
+                "Form/L0/Key",
+                "Form/L0/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/R2[-5]/Key",
+                "/Form[1]/R2[-5]/Value",
+                "Form/L0/Key",
+                "Form/L0/Value"
+              ]
+            },
+            {
+              "code": "SAME0",
+              "field": "/Form[1]/L0[-5]/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/L0[-5]/Key",
+                "/Form[1]/L0[-5]/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/L0[-5]/Key",
+                "/Form[1]/L0[-5]/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ]
+            },
+            {
+              "code": "SAME0",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/R0[-5]/Key",
+                "/Form[1]/R0[-5]/Value",
+                "Form/L0/Key",
+                "Form/L0/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/R0[-5]/Key",
+                "/Form[1]/R0[-5]/Value",
+                "Form/L0/Key",
+                "Form/L0/Value"
+              ]
+            },
+            {
+              "code": "SAME2",
+              "field": "/Form[1]/L2[-5]/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/L2[-5]/Key",
+                "/Form[1]/L2[-5]/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/L2[-5]/Key",
+                "/Form[1]/L2[-5]/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ]
+            },
+            {
+              "code": "SAME2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/R2[-5]/Key",
+                "/Form[1]/R2[-5]/Value",
+                "Form/L2/Key",
+                "Form/L2/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/R2[-5]/Key",
+                "/Form[1]/R2[-5]/Value",
+                "Form/L2/Key",
+                "Form/L2/Value"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CROSS",
+              "field": "/Form[1]/L0[-5]/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/L0[-5]/Key",
+                "/Form[1]/L0[-5]/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/L0[-5]/Key",
+                "/Form[1]/L0[-5]/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ]
+            },
+            {
+              "code": "CROSS",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/R2[-5]/Key",
+                "/Form[1]/R2[-5]/Value",
+                "Form/L0/Key",
+                "Form/L0/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/R2[-5]/Key",
+                "/Form[1]/R2[-5]/Value",
+                "Form/L0/Key",
+                "Form/L0/Value"
+              ]
+            },
+            {
+              "code": "SAME0",
+              "field": "/Form[1]/L0[-5]/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/L0[-5]/Key",
+                "/Form[1]/L0[-5]/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/L0[-5]/Key",
+                "/Form[1]/L0[-5]/Value",
+                "Form/R0/Key",
+                "Form/R0/Value"
+              ]
+            },
+            {
+              "code": "SAME0",
+              "field": "Form/L0/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/R0[-5]/Key",
+                "/Form[1]/R0[-5]/Value",
+                "Form/L0/Key",
+                "Form/L0/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/R0[-5]/Key",
+                "/Form[1]/R0[-5]/Value",
+                "Form/L0/Key",
+                "Form/L0/Value"
+              ]
+            },
+            {
+              "code": "SAME2",
+              "field": "/Form[1]/L2[-5]/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/L2[-5]/Key",
+                "/Form[1]/L2[-5]/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/L2[-5]/Key",
+                "/Form[1]/L2[-5]/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ]
+            },
+            {
+              "code": "SAME2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/R2[-5]/Key",
+                "/Form[1]/R2[-5]/Value",
+                "Form/L2/Key",
+                "Form/L2/Value"
+              ],
+              "fillToFix": [
+                "/Form[1]/R2[-5]/Key",
+                "/Form[1]/R2[-5]/Value",
+                "Form/L2/Key",
+                "Form/L2/Value"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "duplicate-left",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MATCH2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L2/Key",
+                "Form/L2/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/L0/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/L0[2]/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0[2]/Key"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MATCH2",
+              "field": "Form/L2/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L2/Key",
+                "Form/L2/Value",
+                "Form/R2/Key",
+                "Form/R2/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/L0/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/L0[2]/Key",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/L0[2]/Key"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    }
+  ]
+}

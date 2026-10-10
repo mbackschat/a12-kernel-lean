@@ -1,0 +1,207 @@
+{
+  "model": "ParallelNumber_DM.json",
+  "locale": "en_US",
+  "rows": [
+    {
+      "name": "same-spelling",
+      "documentInline": {
+        "Form": {
+          "L0": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ],
+          "R0": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ],
+          "L2": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ],
+          "R2": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "normalized-spelling",
+      "documentInline": {
+        "Form": {
+          "L0": [
+            {
+              "Key": "5",
+              "Value": "filled"
+            }
+          ],
+          "R0": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ],
+          "L2": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ],
+          "R2": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fractional-aligned",
+      "documentInline": {
+        "Form": {
+          "L0": [
+            {
+              "Key": "5.25",
+              "Value": "filled"
+            }
+          ],
+          "R0": [
+            {
+              "Key": "5.25",
+              "Value": "filled"
+            }
+          ],
+          "L2": [
+            {
+              "Key": "5.25",
+              "Value": "filled"
+            }
+          ],
+          "R2": [
+            {
+              "Key": "5.25",
+              "Value": "filled"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "negative-same-spelling",
+      "documentInline": {
+        "Form": {
+          "L0": [
+            {
+              "Key": "-5.00",
+              "Value": "filled"
+            }
+          ],
+          "R0": [
+            {
+              "Key": "-5.00",
+              "Value": "filled"
+            }
+          ],
+          "L2": [
+            {
+              "Key": "-5.00",
+              "Value": "filled"
+            }
+          ],
+          "R2": [
+            {
+              "Key": "-5.00",
+              "Value": "filled"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "different-values",
+      "documentInline": {
+        "Form": {
+          "L0": [
+            {
+              "Key": "5",
+              "Value": "filled"
+            }
+          ],
+          "R0": [
+            {
+              "Key": "6",
+              "Value": "filled"
+            }
+          ],
+          "L2": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ],
+          "R2": [
+            {
+              "Key": "6.00",
+              "Value": "filled"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "duplicate-left",
+      "documentInline": {
+        "Form": {
+          "L0": [
+            {
+              "Key": "5",
+              "Value": "filled"
+            },
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ],
+          "R0": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ],
+          "L2": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ],
+          "R2": [
+            {
+              "Key": "5.00",
+              "Value": "filled"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "L0": [],
+          "R0": [],
+          "L2": [],
+          "R2": []
+        }
+      }
+    }
+  ]
+}

@@ -979,7 +979,7 @@ The earlier account that made duplicate keys parallel-addressable and selected t
 
 The kernel's unmatched pointer sentinel is also not a physical address. Lean represents that state as `Option Env`; matched environments remain complete positive named bindings, while `none` selects the missing-side observation policy. This preserves the existing invariant that row zero or any other nonphysical coordinate is structural failure rather than semantic UNKNOWN.
 
-The first parallel projection deliberately stops at exact-text direct siblings. Kernel Number identity is numeric, but parallel union order is the lexical order of the declaration-rendered normalized key. Lean has normalized `Rat` identity but not that declaration/locale rendering boundary, so accepting Number parallel joins now would guess an observable order. Semantic index can already consume the Number column because lookup needs identity, not rendered sort order.
+**Correction, 2026-10-10:** Number lookup identity and iteration-token identity are different quotients. The [two-stage cache account](sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens) requires retaining both: declaration-specific rendering can visit the same numeric pair twice. Sorting normalized `Rat` values loses order and multiplicity; sorting rendered tokens but using them as exact cross-column lookup keys invents unmatched rows. The existing exact-decimal input renderer supplies the dot-decimal projection without computed-result rounding. Consumer selection policy remains separate; this validation union does not replace target-driven computation traversal.
 
 ## LF79 — resolving a host-SPI name during elaboration inverts a boundary the model check never had
 

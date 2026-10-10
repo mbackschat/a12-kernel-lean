@@ -115,6 +115,26 @@ example : run "[L/N] < [R/N]" model [("Alpha", "bad")] [("Alpha", "8")] = some [
     run "[L/N] < [R/N]" model [("Alpha", "3")] [("Alpha", "8")] =
     some [("Form/L/N", "VALUE_ERROR")] := by native_decide
 
+private def numberIndexModel (rightMinimum : Nat := 2) : FlatModel :=
+  let base := model
+  { base with fields := base.fields.map fun declaration =>
+      if declaration.id == 1 || declaration.id == 3 then
+        { declaration with
+          policy := { kind := .number { scale := 2, signed := true } }
+          numericTargetConstraints := {
+            minFractionalDigits := if declaration.id == 3 then rightMinimum else 0 } }
+      else declaration }
+
+example : run "AllFieldsFilled(L/N, R/N)" (numberIndexModel 2)
+    [("5", "7")] [("5.00", "8")] =
+      some [("Form/L/N", "VALUE_ERROR"), ("Form/L/N", "VALUE_ERROR")] ∧
+    run "AllFieldsFilled(L/N, R/N)" (numberIndexModel 0)
+      [("5", "7")] [("5.00", "8")] = some [("Form/L/N", "VALUE_ERROR")] ∧
+    run "FieldsNotCollectivelyFilled(L/N, R/N)" (numberIndexModel 2)
+      [("5", "7")] [("6.00", "8")] =
+      some [("Form/L/N", "OMISSION_ERROR"), ("/Form[1]/L[-5]/N", "OMISSION_ERROR")] := by
+  native_decide
+
 private def commonOuterModel : FlatModel :=
   let base : FlatModel := model
   { base with

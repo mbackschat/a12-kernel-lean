@@ -71,3 +71,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: A selected payload does not bind its selected row level, but retains ordinary ancestor bindings. A field-valued key keeps its own scope. Merely consulting the index column does not name that field for static error-field admission; explicitly selecting or guarding it does.
 - `basis`: [Source checkpoint](sources/having-filter-probes.md#src-having-reference-scope), from authored entity-map insertion through semantic-index coordinate marking to error-reference classification. Local reader controls cover independent field/group callers and admitted twins; this extension has no new Kernel capture.
 - `acceptance`: Reconcile static membership and per-level iteration separately from runtime dependency/message sets. Check selected field and group payloads, literal/field keys, explicit-index twins, bound ancestors, sibling versus own-error guards and unchanged computation admission. Introducing revision is the first commit containing this ID; no peer response yet.
+
+
+<a id="spec-2026-10-10-04"></a>
+### SPEC-2026-10-10-04 — numeric parallel lookup aliases can produce repeated visits
+
+- `status`: pending
+- `canonical`: [Parallel iteration](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key) separates rendered iteration-token identity from numeric lookup identity.
+- `delta`: Equal Number values still match across declarations with different minimum fractional digits, but distinct rendered tokens both visit the same matched pair. Deduplicating by numeric value loses observable message multiplicity; treating the tokens as unmatched loses lookup semantics.
+- `basis`: [Kernel 30.8.1 source and seven-document two-strategy matrix](sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens), including positive/negative controls, aligned fractional values, numeric aliases, duplicates and empty groups.
+- `reconcile`: Parallel iteration prose and validation evaluator key-union/lookup representation. Preserve duplicate exclusion, invalid-column UNKNOWN and lexical token order; computation target iteration remains a separate consumer.
+- `acceptance`: Reproduce one-versus-two matched visits for equal/different minimum scales, one visit when natural fractional precision aligns both renderings, and unchanged unmatched/duplicate controls. State uncalibrated profiles explicitly.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: pending.
