@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C05. C01–C04 are closed; proceed in the frozen order.
+The autonomous goal is active at C06. C01–C05 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -61,9 +61,11 @@ C01–C12 are the required sequence. This checkpoint is a bounded consumer-relia
 
 ### C05 — preserve categories through the shared entity reader
 
-- [ ] Correct the code-confirmed terminal-star group category erasure in [LowerEntity](../A12Kernel/Reference/Dm/LowerEntity.lean). Reconcile its generic starred-field category refusal with the dedicated token value-count route that already retains projection.
+- [x] Correct the code-confirmed terminal-star group category erasure in [LowerEntity](../A12Kernel/Reference/Dm/LowerEntity.lean). Reconcile its generic starred-field category refusal with the dedicated token value-count route that already retains projection.
 - Matrix: plain group/category-on-group; direct/starred Enumeration field with the same category; filtered/unfiltered projected star. Cover filled-field count, token value count and token first-filled where each admits the form.
 - Done: illegal group categories cannot become legal plain groups; legal category reads retain projected rather than stored tokens through shared lowering. Admitted and refused twins reach every affected consumer. [SG9](gaps/paths-and-groups.md#gap-sg9), [SG8](gaps/strings-and-messages.md#gap-sg8).
+
+- Accepted: [shared category carrier and source boundary](implementation/strings-and-enumerations.md#cap-entity-category-projection), [reader matrix](../A12Kernel/Reference/Dm/EntityCategoryLocks.lean) and [projected first-filled support](../A12Kernel/Conformance/TokenFirstFilledValue.lean). Plain/group, direct/star/filter, projection and refusal controls pass. Integrated/evidence/trust gates passed; fresh HIGH review found only a corrected module description. Full retained replay passed; no new external calibration or construct-cell gain is claimed.
 
 ### C06 — first-match alternatives for non-Number targets
 
@@ -210,7 +212,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C05. Reconcile the [frozen category matrix](#c05--preserve-categories-through-the-shared-entity-reader) against LowerEntity and the dedicated token routes, then repair category admission/projection at the shared owner. Keep plain-group, category-on-group and projected field twins otherwise admissible; use existing retained evidence and narrow targets.
+- Active: C06. Reconcile the [non-Number first-match matrix](#c06--first-match-alternatives-for-non-number-targets) against the existing row table and reader locks before selecting changes. String, Enumeration, Boolean/Confirm and temporal fixed/two-row alternatives share first-match selection; retain no-match seeded clearing, reached invalid operation, direct/FirstFilledValue and two-match controls. Use one settled family slice and one gate cycle.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
 - C01 closed: [risk-boundary implementation](../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [reconciled eight-scenario consumer run](consumer-probes/EXECUTE.md#run-c01-execute-03). Integration (2,166 jobs), retained evidence (51 projections), trust (3,026 roots) and HIGH review passed; the review’s documentation correction is incorporated. Code is committed at `0e302b8d`; the accepted consumer basis is `9fe99116`. No remaining C01 blocker.
 - The latest [cache-context probe](consumer-probes/EXECUTE.md#run-message-cache-context-readback-01) passed its narrow task; it does not discharge C01/C12. C01’s broader probe is closed; the next bounded probe is C12. C22 uses those results and the subsequent evidence; it does not automatically trigger another consumer programme.
@@ -224,7 +226,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 ## Verified gate boundary
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
-- Latest verified boundary: C03 fixed Enumeration routing and typed application matrix; 2,172-job integration, 51-projection evidence, 320-entry family replay and 3,026-root trust audit passed. Fresh HIGH review found no new findings. Fixed literal/direct-copy reader controls went red before the shared-table repair and green afterward. No full-population replay was triggered.
-- Last full replay: 59,766 matches; zero divergence/fault/unattributed; 3,052 rows, 217 without matching artifacts, six preparation refusals. The outer-bound capture is checked separately; one evidence-only family has closed since replay.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. C04 closes from previously reviewed and currently integrated evidence; its documentation recording requires documentation checks only; it does not invalidate the executable gates.
+- Latest verified boundary: C05 shared category carrier and reader matrix; 2,174-job integration, 51-projection evidence and 3,026-root trust audit passed. Fresh HIGH review found one stale module description, corrected without executable changes. Post-review full population replay passed; prose-only corrections reuse executable gates.
+- Last full replay: 71,442 matches; zero divergence/fault/unattributed/tier-2 instances; 3,312 rows, 217 without matching artifacts, six preparation refusals. The [derived coverage snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) was regenerated on 2026-10-11 at `d0cae6ed` plus the C05 working tree. The population changed, so its increased match count is not an unchanged-population gain. No semantic family has closed since this replay.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Final C05 plan recording and the reviewed module-description correction require documentation/prose checks only; it does not invalidate the executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.

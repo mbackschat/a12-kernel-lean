@@ -99,6 +99,7 @@ where
         if path.correlated then refuse "EntityOperand" "correlated"
         let terminalStar := path.segments.getLast?.any (·.star)
         if terminalStar then
+          if category.isSome then refuse "EntityOperand" "category on a group"
           if filter.isSome then refuse "EntityOperand" "filtered starred group"
           pure (.starredGroup { base := path.base, groups := path.starGroups })
         else if path.segments.any (·.star) then
@@ -108,10 +109,10 @@ where
             if filter.isSome || category.isSome then refuse "EntityOperand" "filtered starred group"
             return .starredGroup { base := path.base, groups := path.starGroups }
           let some star := path.toStarFieldPath? | refuse "EntityOperand" "star path"
-          if category.isSome then refuse "EntityOperand" "category on a star"
+          let form := match category with | some name => .projected name | none => .stored
           match filter with
-          | none => pure (.star star)
-          | some body => pure (.starHaving star (← lowerAdmittedHaving model group star body bindingGroup?))
+          | none => pure (.star star form)
+          | some body => pure (.starHaving star (← lowerAdmittedHaving model group star body bindingGroup?) form)
         else
           if filter.isSome then refuse "EntityOperand" "filter on an unstarred operand"
           match path.toFieldPath?, path.toGroupPath? with

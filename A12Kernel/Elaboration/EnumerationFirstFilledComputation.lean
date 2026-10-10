@@ -39,8 +39,10 @@ def toFieldEntityOperand : SurfaceEnumerationFirstFilledOperand →
   | .keyed source => .keyed source
   | .field (.direct path) => .field path .stored
   | .field (.category path category) => .field path (.projected category)
-  | .star path _ none => .star path
-  | .star path _ (some having) => .starHaving path having
+  | .star path projection none => .star path (match projection with
+      | .stored => .stored | .category name => .projected name)
+  | .star path projection (some having) => .starHaving path having (match projection with
+      | .stored => .stored | .category name => .projected name)
 
 end SurfaceEnumerationFirstFilledOperand
 
@@ -321,10 +323,10 @@ private def certifyEnumerationFirstFilledOperand
         (match form with
           | .stored => .stored
           | .projected category => .category category)
-  | .star source, .star _ projectionRef _ =>
+  | .star source _, .star _ projectionRef _ =>
       do pure (.star (← certifyStarEnumerationSource declaringGroup source
         projectionRef none bindingGroup |>.mapError .starSource))
-  | .starHaving source having, .star _ projectionRef _ =>
+  | .starHaving source having _, .star _ projectionRef _ =>
       do pure (.star (← certifyStarEnumerationSource declaringGroup source
         projectionRef (some having) bindingGroup |>.mapError .starSource))
   | _, _ => throw .incoherentCore

@@ -77,8 +77,8 @@ private def directDeclaration :
   | .indexed source => throw (.indexedOperandNotSupported source.targetDeclaration.path)
   | .keyed source => throw (.indexedOperandNotSupported source.entityPath)
   | .field declaration _ => pure declaration
-  | .star source => throw (.operandNeedsAddressing source.declaration.path)
-  | .starHaving source _ => throw (.operandNeedsAddressing source.declaration.path)
+  | .star source _ => throw (.operandNeedsAddressing source.declaration.path)
+  | .starHaving source _ _ => throw (.operandNeedsAddressing source.declaration.path)
   | .group reference => throw (.operandNeedsAddressing reference.path)
   | .starredGroup source => throw (.operandNeedsAddressing source.group.path)
   | .starredGroupPresence source => throw (.operandNeedsAddressing source.groupPath)
@@ -268,7 +268,7 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
   | .keyed source => throw (.declined (.indexedOperandNotSupported source.entityPath))
   | .field declaration _ =>
       (document.resolveCheckedDirectEntityOperandCore declaration.id).mapError .addressing
-  | .star source =>
+  | .star source _ =>
       (source.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := .sparse) document outer none).mapError .addressing
   | .group reference =>
       (document.resolveCheckedGroupEntityOperandCore outer
@@ -287,7 +287,7 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
   -- declined only when admission could not certify the filter, which is not a refusal of the shape:
   -- the Kernel admits it, and folding the unfiltered rows would answer a different question with no
   -- signal that it had.
-  | .starHaving source _ =>
+  | .starHaving source _ _ =>
       match filter with
       | some condition =>
           (source.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := .sparse) document outer

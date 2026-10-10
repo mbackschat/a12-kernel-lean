@@ -22,8 +22,9 @@ inductive SurfaceFieldEntityOperand where
   | field (path : SurfaceFieldPath) (form : FieldEntityReadForm := .stored)
   | indexed (source : SurfaceSemanticIndex)
   | keyed (source : SurfaceKeyedEntityExtent)
-  | star (path : SurfaceStarFieldPath)
+  | star (path : SurfaceStarFieldPath) (form : FieldEntityReadForm := .stored)
   | starHaving (path : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving)
+      (form : FieldEntityReadForm := .stored)
   | group (reference : SurfaceGroupReference)
   | starredGroup (reference : SurfaceStarGroupPath)
   deriving Repr, DecidableEq
@@ -41,9 +42,9 @@ inductive ResolvedFieldEntityOperand (model : FlatModel) where
   | field (declaration : FlatFieldDecl) (form : FieldEntityReadForm)
   | indexed (source : CheckedSemanticIndexSource model)
   | keyed (source : CheckedKeyedEntityExtent model)
-  | star (source : CheckedStarFieldPath model)
+  | star (source : CheckedStarFieldPath model) (form : FieldEntityReadForm := .stored)
   | starHaving (source : CheckedStarFieldPath model)
-      (having : SurfaceCorrelatedHaving)
+      (having : SurfaceCorrelatedHaving) (form : FieldEntityReadForm := .stored)
   | group (reference : ResolvedGroupReference)
   | starredGroup (source : CheckedStarredGroupSource model)
   | starredGroupPresence (source : CheckedStarredGroupPresenceSource model)
@@ -53,17 +54,17 @@ namespace ResolvedFieldEntityOperand
 /-- Whether one authored slot already satisfies the multiple-operand requirement by itself. A star denotes a row set and a group denotes a field scope, so both are already-many; this is exactly why one group slot is admitted where its single expanded field authored alone reports `MVK_PARAMSIZE_INVALIDN`. -/
 def isAlreadyMany : ResolvedFieldEntityOperand model → Bool
   | .field .. | .indexed _ => false
-  | .keyed _ | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
+  | .keyed _ | .star .. | .starHaving .. | .group _ | .starredGroup _ |
       .starredGroupPresence _ => true
 
 def directFieldId? : ResolvedFieldEntityOperand model → Option FieldId
   | .field declaration _ => some declaration.id
-  | .indexed _ | .keyed _ | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
+  | .indexed _ | .keyed _ | .star .. | .starHaving .. | .group _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
 /-- The group subtree a slot denotes, or `none` for a slot that denotes one field. Only the indirect duplicate arm and the expansion consult it. -/
 def subtreePath? : ResolvedFieldEntityOperand model → Option GroupPath
-  | .field .. | .indexed _ | .star _ | .starHaving _ _ => none
+  | .field .. | .indexed _ | .star .. | .starHaving .. => none
   | .keyed source => match source.target with | .group path | .starredGroup path => some path | .star _ => none
   | .group reference => some reference.path
   | .starredGroup source => some source.group.path
@@ -75,7 +76,7 @@ def expansionDeclarations : ResolvedFieldEntityOperand model →
   | .field declaration _ => [declaration]
   | .indexed source => [source.targetDeclaration]
   | .keyed source => source.declarations
-  | .star source | .starHaving source _ => [source.declaration]
+  | .star source _ | .starHaving source _ _ => [source.declaration]
   | .group reference => model.groupSubtreeFields reference.path
   | .starredGroup source => model.groupSubtreeFields source.group.path
   | .starredGroupPresence source => model.groupSubtreeFields source.groupPath
@@ -84,15 +85,16 @@ def expansionDeclarations : ResolvedFieldEntityOperand model →
     measured; a starred root would need a repeatable root, and no row places one on an entity list. -/
 def rootGroupPath? : ResolvedFieldEntityOperand model → Option GroupPath
   | .group reference => if reference.isRoot then some reference.path else none
-  | .field .. | .indexed _ | .keyed _ | .star _ | .starHaving _ _ | .starredGroup _ |
+  | .field .. | .indexed _ | .keyed _ | .star .. | .starHaving .. | .starredGroup _ |
       .starredGroupPresence _ => none
 
 /-- The Enumeration a category slot reads, for a carrier's category gate. A category of a field
     declaring no Enumeration, or one its Enumeration does not declare, was already refused as the
-    slot resolved, and a starred slot spells no category on this surface. -/
+    slot resolved. -/
 def categoryPath? : ResolvedFieldEntityOperand model → Option (List String)
   | .field declaration (.projected _) => some declaration.path
-  | .field _ .stored | .indexed _ | .keyed _ | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
+  | .star source (.projected _) | .starHaving source _ (.projected _) => some source.declaration.path
+  | .field _ .stored | .indexed _ | .keyed _ | .star _ .stored | .starHaving _ _ .stored | .group _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
 /-- The authored path each slot occupies for the indirect duplicate arm. -/
@@ -100,7 +102,7 @@ def entityPath : ResolvedFieldEntityOperand model → List String
   | .field declaration _ => declaration.path
   | .indexed source => source.targetDeclaration.path
   | .keyed source => source.entityPath
-  | .star source | .starHaving source _ => source.declaration.path
+  | .star source _ | .starHaving source _ _ => source.declaration.path
   | .group reference => reference.path
   | .starredGroup source => source.group.path
   | .starredGroupPresence source => source.groupPath
@@ -112,6 +114,7 @@ def indexIdentity? : ResolvedFieldEntityOperand model → Option (GroupPath × C
 
 private def categoryIdentity? : ResolvedFieldEntityOperand model → Option String
   | .field _ (.projected category) => some category
+  | .star _ (.projected category) | .starHaving _ _ (.projected category) => some category
   | _ => none
 
 /-- The **indirect** duplicate arm. Two group operands overlap only by strict ancestry, so the same starred group written twice stays two independent authored occurrences while a starred group beside its own starred descendant is rejected. A group overlaps a field-denoting slot inside it only when their index and category identities agree (`CheckEntityListenUtils.isEntityIndirectlyReferenced`, kernel 30.8.1; `spec/08` §4).
@@ -129,7 +132,7 @@ def bindingScope : ResolvedFieldEntityOperand model → List RepeatableLevel
   | .field declaration _ => declaration.repeatableScope
   | .indexed source => source.indexDeclaration.repeatableScope.dropLast
   | .keyed source => source.selection.indexDeclaration.repeatableScope.dropLast
-  | .star source | .starHaving source _ => source.bindingScope
+  | .star source _ | .starHaving source _ _ => source.bindingScope
   | .group reference => reference.boundRepeatableScope
   | .starredGroup source => source.path.bindingScope
   | .starredGroupPresence source => source.path.bindingScope
@@ -296,7 +299,7 @@ def ResolvedFieldEntityOperand.exactIdentity? :
     | .group path => some (.keyedGroup path source.selection.key)
     | .star _ | .starredGroup _ => none
   | .group reference => some (.fixedGroup reference.path)
-  | .star _ | .starHaving _ _ | .starredGroup _ |
+  | .star .. | .starHaving .. | .starredGroup _ |
       .starredGroupPresence _ => none
 
 def firstDuplicateResolvedEntityOperand? :
@@ -426,17 +429,20 @@ def resolveFieldEntityOperandIn (model : FlatModel)
       let declaration ← resolved.requireRepetitionBoundBy scope |>.mapError .resolve
       categoryRead declaration form
       pure (.field declaration form)
-  | .star path => do
-      pure (.star (← star path))
-  | .starHaving path having => do
+  | .star path form => do
       let source ← star path
+      categoryRead source.declaration form
+      pure (.star source form)
+  | .starHaving path having form => do
+      let source ← star path
+      categoryRead source.declaration form
       if fixedTargetGroup?.isNone then
         -- The error-field binding augments the declaring row without relocating filter names
         -- (the reading-scope checkpoint and `ValidationBindingLocks`).
         if let some (path, unbound) := having.unboundOuterReference? model declaringGroup writtenGroup
             (model.repeatableScopeForGroupPath declaringGroup ++ scope) then
           throw (.resolve (.unboundOperandLevel path unbound))
-      pure (.starHaving source having)
+      pure (.starHaving source having form)
   | .group reference => do
       let resolved ← (if fixedTargetGroup?.isSome then
           model.resolveFixedTargetListGroupReference declaringGroup reference

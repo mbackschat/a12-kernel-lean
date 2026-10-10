@@ -206,8 +206,8 @@ private def certifyAtLeastOneDateRangeOverlapScalarShape :
   | .field declaration .stored => pure declaration
   | .field declaration form =>
       throw (.unsupportedReadForm .scalar declaration.path form)
-  | .star source => throw (.scalarStarred source.declaration.path)
-  | .starHaving source _ =>
+  | .star source _ => throw (.scalarStarred source.declaration.path)
+  | .starHaving source _ _ =>
       throw (.scalarFilteredStarred source.declaration.path)
   | .group reference => throw (.scalarGroup reference.path)
   | .starredGroup source => throw (.scalarGroup source.group.path)
@@ -404,8 +404,8 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     | .keyed source => throw (.pluralScalarNotDirect source.entityPath)
     | .field declaration .stored => pure declaration
     | .field declaration form => throw (.unsupportedReadForm declaration.path form)
-    | .star source => throw (.pluralScalarNotDirect source.declaration.path)
-    | .starHaving source _ => throw (.pluralScalarNotDirect source.declaration.path)
+    | .star source _ => throw (.pluralScalarNotDirect source.declaration.path)
+    | .starHaving source _ _ => throw (.pluralScalarNotDirect source.declaration.path)
     | .group reference => throw (.pluralScalarNotDirect reference.path)
     | .starredGroup source => throw (.pluralScalarNotDirect source.group.path)
     | .starredGroupPresence source => throw (.pluralScalarNotDirect source.groupPath)

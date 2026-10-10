@@ -453,8 +453,8 @@ private def entityShapePointers (shape : CheckedFieldEntityShape model)
     | .field declaration _ => (concreteFieldPointer declaration environment).map ([·])
     | .indexed source => source.referencePointers environment inputs
     | .keyed source => source.referencePointers environment inputs
-    | .star source => (starFieldPointer source environment).map ([·])
-    | .starHaving _ _ => throw .filteredStarOperand
+    | .star source _ => (starFieldPointer source environment).map ([·])
+    | .starHaving .. => throw .filteredStarOperand
     | .group reference => fixedGroupPointers model reference environment
     | .starredGroup source => starredGroupPointers model source.group.path source.path.firstStar environment
     | .starredGroupPresence source => starredGroupPointers model source.groupPath source.path.firstStar environment

@@ -4,7 +4,7 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Checked String/Enumeration `FirstFilledValue`
 
-This consumer applies the common checked String/ordinary stored-Enumeration entity list to `FirstFilledValue`. It owns the operator-specific Confirm and type classes over the expanded list, lazy authored-order scanning, relevance, filter selection, and token-family empty-result semantics; common token admission and declaration-owned classification stay in `TokenEntityList`.
+This consumer applies the common checked String/stored-or-category Enumeration entity list to `FirstFilledValue`. It owns the operator-specific Confirm and type classes over the expanded list, lazy authored-order scanning, relevance, filter selection, and token-family empty-result semantics; common token admission and declaration-owned classification stay in `TokenEntityList`.
 -/
 
 namespace A12Kernel
@@ -250,15 +250,10 @@ private def resolveCheckedFirstFilledValidationSide
       pure ((← source.resolveCheckedValidationOperand (world := world) (traversalMode := .dense) document outer)
         |>.inCapacityValueListSideAt .validation)
 
-/-- Stored-token sources share the same scan across direct, starred and group operands.
-    Group certificates already require stored projections; explicit category projections remain
-    outside this route. -/
+/-- Checked token sources retain their selected projection through the common first-filled scan.
+    Group certificates require stored projections; field certificates own legal category reads. -/
 def supportsCheckedFirstFilledValidation
-    (checked : CheckedTokenEntitySource model) : Bool :=
-  checked.operands.all fun
-    | .group _ | .selected _ => true
-    | .field source => source.projectionRef == .stored
-    | .star source => source.projectionRef == .stored
+    (_checked : CheckedTokenEntitySource model) : Bool := true
 
 private def scanCheckedFirstFilledValidationOperands
     (document : CheckedDocument model) (outer : Env)
@@ -291,8 +286,7 @@ private def scanCheckedFirstFilledValidationOperands
           scanCheckedFirstFilledValidationOperands (world := world) document outer remaining next
       | .inr result => pure result.asToken
 
-/-- Evaluate a supported stored-token source. The support proof excludes projected slots before
-traversal, so condition consumers need no fallback that could disguise an unsupported shape. -/
+/-- Evaluate a supported token source through its declaration-owned projection. -/
 def evaluateSupportedFirstFilledValidation
     (checked : CheckedTokenEntitySource model) (document : CheckedDocument model) (outer : Env)
     (_supported : checked.supportsCheckedFirstFilledValidation = true)
@@ -303,7 +297,7 @@ def evaluateSupportedFirstFilledValidation
 /-- Evaluate one already-admitted direct/plain-star/filtered-star/group token source against the immutable
     checked document. A bound direct slot retains its formal findings; reopened star/group slots select their
     in-capacity projection before the common lazy scan; a terminal value or formal cause hides every later slot and its addressing work.
-    `none` denotes a projected source outside this stored-token account. -/
+    The optional result preserves the condition consumer's checked-support boundary. -/
 def evaluateCheckedFirstFilledValidation?
     (checked : CheckedTokenEntitySource model)
     (document : CheckedDocument model) (outer : Env)

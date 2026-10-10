@@ -7,9 +7,6 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 <a id="gap-sg9"></a>
 ### SG9 — paths, indices, and static legality completion
 
-- `projected-star-carrier`: [LowerEntity](../../A12Kernel/Reference/Dm/LowerEntity.lean) explicitly refuses a category on a starred field, including `NumberOfValueInFields("cat" In Rows*/Choice->Label Having ...)`. Raw declaration/domain admission is represented; the generic starred operand lacks the projection needed by executable callers. Extend the shared projected-star carrier across its ready token consumers, retaining admitted direct-category twins and group-category refusals; do not add a value-count-specific bypass. This is separate from the H08 global-admission batch.
-
-- `reader-category`: Ordinary `lowerEntityOperand` drops a terminal-star group category: `NumberOfFilledFields(Rows* -> Label)` lowers like its unprojected twin. Preserve the [group-category refusal](../../spec/08-paths-and-references.md) before constructing the starred group; retain admitted ordinary group and field-category controls.
 - `arity-discriminator`: Verify that entity-list arity locks distinguish a sole group containing one field from a sole group containing two fields, with a sole direct-field refusal control. Group-slot multiplicity must not be inferred from expanded field count. The [shared list-shape owner](../../A12Kernel/Elaboration/FieldEntityList.lean) supplies the mechanism; retain this obligation until the separating fixture is identified or added.
 
 - `state`: open

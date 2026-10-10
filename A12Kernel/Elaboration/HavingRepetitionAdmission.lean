@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.RepetitionNotUniqueAdmission
 namespace A12Kernel
 
 private def hasStar : ResolvedFieldEntityOperand model → Bool
-  | .star _ | .starHaving _ _ | .starredGroup _ | .starredGroupPresence _ => true
+  | .star .. | .starHaving .. | .starredGroup _ | .starredGroupPresence _ => true
   | _ => false
 
 /-- Check a forbidden repetition condition's own admission before its enclosing filter checks.

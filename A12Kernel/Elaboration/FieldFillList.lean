@@ -483,14 +483,14 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
   | _ => pure ()
   let shape ← (elaborateFieldEntityShapeIn model rowGroup (model.repeatableScopeForGroupPath bindingGroup)
     authored .manyRequired none bindingGroup
-    (categoryGate := if consumer == .quantifier then .behindRootGate else .absent)
+    (categoryGate := if consumer == .quantifier then .behindRootGate else .aheadOfRepeat)
     (groupReadScope := .ruleBound)).mapError .shape
   let operands ← ((authored.first :: authored.rest).zip shape.operands).mapM fun
     | (_, .indexed source) => pure (.indexed source)
     | (_, .keyed source) => pure (.keyed source)
     | (_, .field declaration .stored) => pure (.field declaration)
-    | (_, .star source) => pure (.star (.plain rowGroup source))
-    | (_, .starHaving source having) => do
+    | (_, .star source .stored) => pure (.star (.plain rowGroup source))
+    | (_, .starHaving source having .stored) => do
         pure (.star (← (CheckedFilledFieldStarSource.withHaving model rowGroup bindingGroup
           source having).mapError .having))
     | (.group (.path _), .group reference) =>
@@ -517,16 +517,16 @@ def elaborateComputationFieldFillList (model : FlatModel)
       CheckedFilledFieldCountGroupSource.ofResolved model source).mapError FieldFillListElabError.group
   let operands ← shape.operands.mapM fun
     | .field declaration .stored => pure (.field declaration)
-    | .star source => pure (.star (.plain declaringGroup source))
+    | .star source .stored => pure (.star (.plain declaringGroup source))
     | .group reference => group (.fixed reference)
     | .starredGroup source => group (.starred source)
     | .starredGroupPresence source => group (.starredPresence source)
-    | .starHaving source having => do
+    | .starHaving source having .stored => do
         pure (.star (← (CheckedFilledFieldStarSource.withHaving model declaringGroup targetGroup
           source having targetGroup).mapError .having))
     | .indexed source => pure (.indexed source)
     | .keyed source => pure (.keyed source)
-    | .field _ (.projected _) => throw .unsupportedOperand
+    | .field _ (.projected _) | .star _ (.projected _) | .starHaving _ _ (.projected _) => throw .unsupportedOperand
   pure { operands }
 
 end A12Kernel

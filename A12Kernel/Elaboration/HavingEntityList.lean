@@ -52,7 +52,7 @@ def resolveHavingEntityListOperands (model : FlatModel) (declaringGroup : GroupP
       | .group .. => .stored
     if form != .stored then
       match operand with
-      | .star source => source.declaration.checkEntityCategoryRead form |>.mapError .fieldFill
+      | .star source _ => source.declaration.checkEntityCategoryRead form |>.mapError .fieldFill
       | .field .. => pure ()
       | _ => throw (.comparisonEntry .noGroupsAllowed)
     pure { origin := authored.origin, operand, form }
@@ -67,7 +67,7 @@ def havingResolvedEntitySlots (operands : List (ResolvedHavingEntityOperand mode
       ({ origin, declaration, form := read.form } : ResolvedHavingDirectFieldOperand model)
     match operand with
     | .field declaration form => pure (.direct { origin, declaration, form })
-    | .star source => pure (.extent (.starField source.declaration.groupPath source.path) references)
+    | .star source _ => pure (.extent (.starField source.declaration.groupPath source.path) references)
     | .group reference => pure (.extent (.group reference) references)
     | .starredGroup source => pure (.extent (.starredGroup source.group.path source.path) references)
     | .starredGroupPresence source => pure (.extent (.starredGroup source.groupPath source.path) references)

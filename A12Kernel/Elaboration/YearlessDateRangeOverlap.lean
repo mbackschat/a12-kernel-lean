@@ -285,14 +285,16 @@ def certifyYearlessDateRangeOverlapOperand (model : FlatModel)
       .direct <$> certifyYearlessDateRangeOverlapField model declaration
   | .field declaration form =>
       throw (.unsupportedReadForm declaration.path form)
-  | .star path => do
+  | .star path .stored => do
       pure (.star path
         (← certifyYearlessDateRangeOverlapField model path.declaration) none)
-  | .starHaving path authored => do
+  | .starHaving path authored .stored => do
       let source ← certifyYearlessDateRangeOverlapField model path.declaration
       let filter ← elaborateStarHavingCore model declaringGroup path authored bindingGroup
         |>.mapError fun error => .source (.having error)
       pure (.star path source (some filter.condition))
+  | .star source form | .starHaving source _ form =>
+      throw (.unsupportedReadForm source.declaration.path form)
   | .group reference =>
       .group <$> certifyYearlessDateRangeEntityGroup model (.fixed reference)
   | .starredGroup source =>

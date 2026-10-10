@@ -151,7 +151,7 @@ private def operandDeclarations (model : FlatModel) :
   | .indexed source => pure [source.targetDeclaration]
   | .keyed source => pure source.declarations
   | .field declaration _ => pure [declaration]
-  | .star source | .starHaving source _ => pure [source.declaration]
+  | .star source _ | .starHaving source _ _ => pure [source.declaration]
   | .group reference =>
       match model.groupSubtreeFields reference.path with
       | [] => throw (.groupExpansionEmpty reference.path)
@@ -179,10 +179,10 @@ private def operandDeclarations (model : FlatModel) :
     operand it cannot filter correctly. -/
 private def certifiedFilter? (model : FlatModel) (declaringGroup bindingGroup : GroupPath) :
     ResolvedFieldEntityOperand model → Option CorrelatedHaving
-  | .starHaving source having =>
+  | .starHaving source having _ =>
       (elaborateStarHavingCore model declaringGroup source having bindingGroup).toOption.map
         (·.condition)
-  | .indexed _ | .keyed _ | .field .. | .star _ | .group _ | .starredGroup _
+  | .indexed _ | .keyed _ | .field .. | .star .. | .group _ | .starredGroup _
   | .starredGroupPresence _ => none
 
 /-- The lifted component set of one declaration, or the refusal its **position** earns. The two

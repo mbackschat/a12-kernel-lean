@@ -125,8 +125,8 @@ def elaborateFirstFilledFieldList (model : FlatModel) (declaringGroup writtenGro
     | .field declaration .stored => pure (FirstFilledFieldOperand.field declaration)
     | .indexed source => pure (.indexed source)
     | .keyed source => pure (.keyed source)
-    | .star source => pure (.star (.plain declaringGroup source))
-    | .starHaving source having =>
+    | .star source .stored => pure (.star (.plain declaringGroup source))
+    | .starHaving source having .stored =>
         (FirstFilledFieldOperand.star <$> CheckedFilledFieldStarSource.withHaving model
           declaringGroup writtenGroup source having writtenGroup).mapError .having
     | .group reference => group (.fixed reference)

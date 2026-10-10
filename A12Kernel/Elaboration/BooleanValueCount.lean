@@ -238,7 +238,7 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
       else
         throw (.fieldKindMismatch declaration.path expected
           declaration.policy.kind.surfaceKind)
-  | .star source =>
+  | .star source _ =>
       if hKind :
           booleanValueCountKindAllowed expected source.declaration.policy.kind =
             true then do
@@ -251,7 +251,7 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
       else
         throw (.fieldKindMismatch source.declaration.path expected
           source.declaration.policy.kind.surfaceKind)
-  | .starHaving source having =>
+  | .starHaving source having _ =>
       if hKind :
           booleanValueCountKindAllowed expected source.declaration.policy.kind =
             true then do

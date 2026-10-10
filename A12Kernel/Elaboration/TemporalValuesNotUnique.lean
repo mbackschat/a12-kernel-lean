@@ -343,10 +343,10 @@ def certifyTemporalUniquenessOperand (model : FlatModel)
   | .keyed source => certifySelectedUniqueness (.inr source)
   | .field declaration _ =>
       do pure (.field (← certifyTemporalUniquenessField declaration))
-  | .star source =>
+  | .star source _ =>
       do pure (.star source (← certifyTemporalUniquenessField source.declaration)
         none)
-  | .starHaving source having => do
+  | .starHaving source having _ => do
       let field ← certifyTemporalUniquenessField source.declaration
       let filter ← elaborateStarHavingCore model declaringGroup source having bindingGroup
         |>.mapError .having

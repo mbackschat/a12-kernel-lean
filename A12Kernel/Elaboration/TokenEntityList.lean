@@ -3,14 +3,14 @@ import A12Kernel.Elaboration.SelectedTokenEntity
 
 /-! # Checked String/Enumeration entity lists
 
-This boundary certifies the shared field entity-list shape as the Kernel's String/Enumeration token family. The common stored-only surface remains shared by distinct count and first-filled consumers, while the checked field/star representation can retain an exact category projection for a consumer whose syntax admits one. Caller-supplied checked cells let a prepared custom String participate without resampling its validator. Individual consumers retain their own authoring, evaluation, relevance, empty-result, and phase-projection rules.
+This boundary certifies the shared field entity-list shape as the Kernel's String/Enumeration token family. The common surface preserves stored/category forms on direct and starred fields; each consumer retains its own category admission gate. Caller-supplied checked cells let a prepared custom String participate without resampling its validator. Individual consumers retain their own authoring, evaluation, relevance, empty-result, and phase-projection rules.
 
 A group-scope slot is retained by [`TokenEntityGroup`](TokenEntityGroup.lean); indexed slots retain their selection certificate and declaration-owned projections. It is the reason the operand-level projection queries below are **list**-valued: a group reaches many declarations, and a token cell's meaning depends on the declaration that stored it, so an accessor returning one operand for a whole slot would encode a hidden one-declaration assumption.
 -/
 
 namespace A12Kernel
 
-/-- String/ordinary stored-Enumeration consumers use the common field entity-list shape. -/
+/-- String/Enumeration consumers use the common projection-bearing field entity-list shape. -/
 abbrev SurfaceTokenEntityOperand := SurfaceFieldEntityOperand
 
 /-- A nonempty authored token-family entity-list source. -/
@@ -331,10 +331,16 @@ private def certifyTokenEntityOperand (model : FlatModel)
         | .stored => .stored
         | .projected category => .category category
       do pure (.field (← certifyDirectTokenOperand model declaration projectionRef))
-  | .star source =>
-      do pure (.star (← certifyStarTokenOperand declaringGroup source none (bindingGroup := bindingGroup)))
-  | .starHaving source having =>
-      do pure (.star (← certifyStarTokenOperand declaringGroup source (some having) (bindingGroup := bindingGroup)))
+  | .star source form =>
+      let projectionRef := match form with
+        | .stored => EnumerationProjectionRef.stored
+        | .projected category => .category category
+      do pure (.star (← certifyStarTokenOperand declaringGroup source none projectionRef (bindingGroup := bindingGroup)))
+  | .starHaving source having form =>
+      let projectionRef := match form with
+        | .stored => EnumerationProjectionRef.stored
+        | .projected category => .category category
+      do pure (.star (← certifyStarTokenOperand declaringGroup source (some having) projectionRef (bindingGroup := bindingGroup)))
   | .group reference =>
       do pure (.group (← certifyTokenEntityGroup model (.fixed reference)
         |>.mapError .group))
@@ -376,7 +382,7 @@ def assembleTokenEntitySource
   else
     throw (.shape .tooFewFields)
 
-/-- Certify an already checked entity-list shape as String/ordinary stored-Enumeration without
+/-- Certify an already checked entity-list shape as String/stored-or-category Enumeration without
     resolving it again. A consumer may run its own whole-list gate before entering this boundary. -/
 def certifyTokenEntityShape (model : FlatModel)
     (declaringGroup : GroupPath) (shape : CheckedFieldEntityShape model)
@@ -389,7 +395,7 @@ def certifyTokenEntityShape (model : FlatModel)
   -- carrier's rule admitted.
   assembleTokenEntitySource shape.modelWellFormed first rest shape.arity
 
-/-- Resolve duplicate/cardinality shape before certifying the complete list as String/ordinary stored-Enumeration. -/
+/-- Resolve duplicate/cardinality shape before certifying the complete list as String/stored-or-category Enumeration. -/
 def elaborateTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenEntitySource)
     (arity : EntityListArity := .manyRequired) (writtenGroup : GroupPath := declaringGroup)

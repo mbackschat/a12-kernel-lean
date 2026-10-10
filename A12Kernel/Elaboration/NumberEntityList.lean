@@ -506,9 +506,9 @@ private def certifyNumberEntityOperand (model : FlatModel)
               fieldOwned := hField })
           else
             throw .incoherentCore
-  | .star source => do
+  | .star source _ => do
       pure (.star (← certifyStarNumber source))
-  | .starHaving source having => do
+  | .starHaving source having _ => do
       let numberSource ← certifyStarNumber source
       let filter ← elaborateStarHavingCore model declaringGroup numberSource.source having bindingGroup
         |>.mapError fun error => .star (.having error)

@@ -228,7 +228,7 @@ def firstDateRangesOverlapGroup? :
     | .keyed source => match source.target with
         | .group path | .starredGroup path => some path
         | .star _ => none
-    | .indexed _ | .field .. | .star _ | .starHaving _ _ => none
+    | .indexed _ | .field .. | .star .. | .starHaving .. => none
 
 /-- Both overlap operators' field walk: every field the operands expand to, in authored order, must be
 a DateRange declaration without a year interpretation. It completes before the format/year agreement gate over
@@ -318,13 +318,15 @@ def certifyDateRangesOverlapOperand (model : FlatModel)
       .field <$> certifyDateRangesOverlapField declaration
   | .field declaration form =>
       throw (.unsupportedReadForm declaration.path form)
-  | .star path => do
+  | .star path .stored => do
       pure (.star path (← certifyDateRangesOverlapField path.declaration) none)
-  | .starHaving path authored => do
+  | .starHaving path authored .stored => do
       let source ← certifyDateRangesOverlapField path.declaration
       let filter ← elaborateStarHavingCore model declaringGroup path authored bindingGroup
         |>.mapError .having
       pure (.star path source (some filter.condition))
+  | .star source form | .starHaving source _ form =>
+      throw (.unsupportedReadForm source.declaration.path form)
   | .group reference => throw (.groupsNotAllowed reference.path)
   | .starredGroup source => throw (.groupsNotAllowed source.group.path)
   | .starredGroupPresence source => throw (.groupsNotAllowed source.groupPath)

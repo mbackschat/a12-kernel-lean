@@ -131,8 +131,8 @@ private def readOperand (phase : Phase) (context : ScalarComputationContext)
   | .field declaration _ => do
       pure { operands := [← readField model phase declaration (context.read declaration.id)]
              hasUninstantiatedTail := false, hasHaving := false }
-  | .star source => readStar phase context source none
-  | .starHaving source _ => do
+  | .star source _ => readStar phase context source none
+  | .starHaving source _ _ => do
       let some filter := filter | throw .calendarUnavailable
       readStar phase context source (some filter)
   | .group source => readGroup phase context (.fixed (model := model) source) (model.groupSubtreeFields source.path)
@@ -157,11 +157,11 @@ private def readPartialOperand (partialRead : TemporalPartialReadContext model) 
     | .keyed source => (resolvePartialSelectedAddresses (.inr source) document scope outer partialRead.read
         (fun declaration bound reopened row => scope.coversAggregateExtent model declaration.path bound reopened row)).mapError .addressing
     | .field declaration _ => ordinary [declaration] declaration.repeatableScope.length
-    | .star source => ordinary [source.declaration] source.path.firstStar
+    | .star source _ => ordinary [source.declaration] source.path.firstStar
     | .group source => ordinary (model.groupSubtreeFields source.path) (CheckedEntityGroupSource.fixed (model := model) source).boundLevelCount
     | .starredGroup source => ordinary (model.groupSubtreeFields source.group.path) (CheckedEntityGroupSource.starred source).boundLevelCount
     | .starredGroupPresence source => ordinary (model.groupSubtreeFields source.groupPath) (CheckedEntityGroupSource.starredPresence source).boundLevelCount
-    | .starHaving _ _ => throw .indexedOperandNotSupported
+    | .starHaving .. => throw .indexedOperandNotSupported
   match extent with
   | none => pure { operands := [.value .nonRelevant true], hasUninstantiatedTail := false, hasHaving := false }
   | some .empty => pure { operands := [.notEvaluated], hasUninstantiatedTail := false, hasHaving := false }

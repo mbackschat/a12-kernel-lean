@@ -334,8 +334,7 @@ example :
           some (some (.value "A" false)) := by
   native_decide
 
-/- The route admits a stored Enumeration star, keeps capacity exclusion distinct from semantic
-   exhaustion, and rejects a category-projected source before evaluation. -/
+/- The route keeps capacity exclusion distinct from semantic exhaustion and admits declaration-owned category projections. -/
 example :
     evaluatedCheckedOf enumerationStar 4 [
       checkedRepeatedEnumerationCell 4 "A"] =
@@ -343,7 +342,7 @@ example :
       evaluatedCheckedOf enumerationStar 4 [
         checkedRepeatedEnumerationCell 1 "A"] =
           some (some (.value "A" false)) ∧
-      projectedCategorySupport = some false := by
+      projectedCategorySupport = some true := by
   native_decide
 
 /- A cell-independent true filter proves the over-limit token was selected before capacity removes
