@@ -209,7 +209,7 @@ private def scanNumber (context : ScalarComputationContext)
     (filterStoredText filterNumberText : Env → FieldId → Option String)
     (consume : State → ValueListCell .number → State ⊕ Result)
     (source : CheckedNumberEntityOperand model) (state : State)
-    (requireSmall : Bool := true) :
+    (traversalMode : FilterTraversalMode := .requireSmall) :
     Except ComputationPredicateError (ComputationHavingScanResult State Result) := do
   match source with
   | .selected source =>
@@ -230,12 +230,12 @@ private def scanNumber (context : ScalarComputationContext)
       pure (scanCells consume side.cells state)
   | .starHaving source =>
       let addressed ← addressed context
-      let candidates ← (model.filterEnvironments source.source.source.path
-        (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row requireSmall).mapError .addressing
+      let traversal ← (model.filterTraversal source.source.source.path
+        (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row traversalMode).mapError .addressing
       (source.having.scanComputation (({ read := model.filterRead addressed.document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
         (fun state environment => consume state
           (source.source.checkedValueListCellAt .computation (model.filterRead addressed.document addressed.read) environment))
-        candidates state).mapError (fun
+        traversal.candidates state traversal.occupancy).mapError (fun
           | .calendarUnavailable => .temporalUnavailable
           | .valueFailure => .valueFailure
           | .worldUnavailable => .contextRequired
@@ -249,7 +249,7 @@ private def scanToken (context : ScalarComputationContext)
     (filterStoredText filterNumberText : Env → FieldId → Option String)
     (consume : State → ValueListCell .token → State ⊕ Result)
     (source : CheckedTokenEntityOperand model) (state : State)
-    (requireSmall : Bool := true) :
+    (traversalMode : FilterTraversalMode := .requireSmall) :
     Except ComputationPredicateError (ComputationHavingScanResult State Result) := do
   match source with
   | .selected source => do
@@ -267,11 +267,12 @@ private def scanToken (context : ScalarComputationContext)
       | none => pure (scanCells consume
           (resolved.toResolvedSide (source.valueListCellAt .computation addressed.read)).cells state)
       | some having => do
-          let candidates ← (model.filterEnvironments source.source.path
-            (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row requireSmall).mapError .addressing
+          let traversal ← (model.filterTraversal source.source.path
+            (addressed.document.filterRows.getD addressed.document.instantiatedRows) context.row traversalMode).mapError .addressing
           (having.condition.scanComputation (({ read := model.filterRead addressed.document filterRead, storedText := filterStoredText, numberText := filterNumberText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
           (fun state environment => consume state
-            (source.valueListCellAt .computation (model.filterRead addressed.document addressed.read) environment)) candidates state).mapError (fun
+            (source.valueListCellAt .computation (model.filterRead addressed.document addressed.read) environment))
+            traversal.candidates state traversal.occupancy).mapError (fun
               | .calendarUnavailable => .temporalUnavailable
               | .valueFailure => .valueFailure
               | .worldUnavailable => .contextRequired
@@ -447,11 +448,11 @@ private def evalUniqueness (source : CheckedValuesNotUniqueCondition model)
   | .number source =>
       uniquenessResult <$> scanOperands
         (scanNumber context filterRead filterStoredText filterNumberText ValueListCell.duplicateComputationStep
-          (requireSmall := false)) source.operands []
+          (traversalMode := .dense)) source.operands []
   | .token source =>
       uniquenessResult <$> scanOperands
         (scanToken context filterRead filterStoredText filterNumberText ValueListCell.duplicateComputationStep
-          (requireSmall := false)) source.source.operands []
+          (traversalMode := .dense)) source.source.operands []
   | .temporal source =>
       uniquenessResult <$> scanOperands
         (scanTemporal context filterRead filterStoredText filterNumberText (requireSmall := false)) source.operands []
@@ -483,16 +484,25 @@ private def evalValueList (operator : ComputationValueListOperator)
     (filterRead : Env → FieldId → CheckedCell)
     (filterStoredText filterNumberText : Env → FieldId → Option String) :
     Except ComputationPredicateError ComputationConditionResult :=
+  let traversalMode := match operator with
+    | .quantified .atLeastOne => FilterTraversalMode.sparse
+    | .quantified .no | .quantified .notAll => .dense
+    | .scalar _ => .requireSmall
   match source with
   | .number source => operator.evalUsing
-      (fun _ => collectResult <$> scanOperands (scanNumber context filterRead filterStoredText filterNumberText collectStep) source.values.operands [])
-      (fun test => anyResult <$> scanOperands (scanNumber context filterRead filterStoredText filterNumberText (anyStep test)) source.fields.operands ())
+      (fun _ => collectResult <$> scanOperands
+        (scanNumber context filterRead filterStoredText filterNumberText collectStep (traversalMode := traversalMode)) source.values.operands [])
+      (fun test => anyResult <$> scanOperands
+        (scanNumber context filterRead filterStoredText filterNumberText (anyStep test) (traversalMode := traversalMode)) source.fields.operands ())
   | .token source => operator.evalUsing
-      (fun _ => collectResult <$> scanOperands (scanToken context filterRead filterStoredText filterNumberText collectStep) source.values.operands [])
-      (fun test => anyResult <$> scanOperands (scanToken context filterRead filterStoredText filterNumberText (anyStep test)) source.fields.operands ())
+      (fun _ => collectResult <$> scanOperands
+        (scanToken context filterRead filterStoredText filterNumberText collectStep (traversalMode := traversalMode)) source.values.operands [])
+      (fun test => anyResult <$> scanOperands
+        (scanToken context filterRead filterStoredText filterNumberText (anyStep test) (traversalMode := traversalMode)) source.fields.operands ())
   | .literals source => operator.evalUsing (kind := .token)
       (fun _ => pure (.ok (source.firstValue :: source.restValues)))
-      (fun test => anyResult <$> scanOperands (scanToken context filterRead filterStoredText filterNumberText (anyStep test)) source.fields.operands ())
+      (fun test => anyResult <$> scanOperands
+        (scanToken context filterRead filterStoredText filterNumberText (anyStep test) (traversalMode := traversalMode)) source.fields.operands ())
 
 private def evalTypeValidity (operation : CustomFieldValidityOp) (name : String)
     (observation : CellObservation) (world : Option World) :

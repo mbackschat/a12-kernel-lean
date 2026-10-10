@@ -54,11 +54,11 @@ def evaluateFull (source : CheckedValueListCondition model)
   match source with
   | .number source => source.evaluateFull (world := world) document outer
   | .token source => source.evaluateFull (world := world) document outer
-  | .literals source => do
-      let fields ← source.fields.operands.mapM (·.checkedValidationSide (world := world) document outer)
-      pure (source.quantifier.evalOrdered fields
-        [{ cells := (source.firstValue :: source.restValues).map (ValueListCell.present (kind := .token)),
-           hasUninstantiatedTail := false, hasHaving := false }])
+  | .literals source =>
+      source.quantifier.evalValidationUsing
+        (source.fields.scanValidationMembership source.quantifier document outer world)
+        (fun _ _ consume state => pure (scanValidationValueListCells consume false
+          ((source.firstValue :: source.restValues).map (ValueListCell.present (kind := .token))) state))
 
 end CheckedValueListCondition
 

@@ -238,4 +238,119 @@ example : operators.all (fun operator =>
       some (false, some .rootGroupIsEmpty) ∧
     admission "AtLeastOneFieldValueIncludedInValueList(Choices* In Allowed)" = some (true, none) := by native_decide
 
+
+private def traversalModel (kind : Nat := 0) : FlatModel := {
+  timeZoneId := "Europe/Berlin"
+  fields := [
+    { id := 1, name := "Error", groupPath := ["Form"], policy := { kind := .string } },
+    { id := 2, name := "Member", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 3, name := "Empty", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 4, name := "Out", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 5, name := "After", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 6, name := "V", groupPath := ["Form", "Outer", "Inner"], repeatableScope := [10, 20],
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 7, name := "Stamp", groupPath := ["Form", "Outer", "Inner"], repeatableScope := [10, 20],
+      policy := { kind := .temporal .dateTime (TemporalComponents.ofFormat "yyyy-MM-dd'T'HH:mm:ss") }
+      temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }].map fun field =>
+        if kind == 0 || ![2, 3, 6].contains field.id then field else { field with
+          policy := { kind := if kind == 1 then .string else .enumeration }
+          enumeration := if kind == 2 then some { storedTokens := ["5", "9"] } else none }
+  repeatableGroups := [
+    { level := 10, path := ["Form", "Outer"], repeatability := some 2 },
+    { level := 20, path := ["Form", "Outer", "Inner"], repeatability := some 51 }] }
+
+private def traversalRun (condition : String) (width : Nat) (early blank outside validation : Bool)
+    (kind : Nat := 0) (emptyPayload : String := "") : Option Char := do
+  let model := traversalModel kind
+  let row (value : String) := Json.mkObj [("V", .str value), ("Stamp", .str "2024-03-31T01:30:00")]
+  let parent (rows : List Json) := Json.mkObj [("Inner", .arr rows.toArray)]
+  let parents := [parent (List.replicate width (row (if early then "5" else ""))),
+    parent ([row "5"] ++ if blank then [Json.mkObj []] else [])]
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Error", .str "ready"), ("Member", .str (if outside then "9" else "5")), ("Empty", .str emptyPayload),
+    ("Out", .str "99"), ("After", .str "99"), ("Outer", .arr parents.toArray)])])).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  if validation then
+    let rule ← (checkRule dm .english {
+      group := ["Form"], name := "Membership", errorCode := "MEMBERSHIP", errorEntityRelPath := "../Error"
+      condition := "FieldFilled(Error) And " ++ condition, severity := "ERROR" }).toOption
+    let result ← (rule.evalAddressedFull {
+      scalar := { fields := document.flatContext.withWorld world, groups := GroupPresenceContext.unavailable }
+      outer := [], input := .checked document } true).toOption
+    return match result.verdict with
+      | .fired .omission => 'T'
+      | .fired .value => 'P'
+      | _ => 'F'
+  let definitions : List DmComputation := [
+    { name := "Consumer", group := ["Form"], targetRelPath := "../Out", commonPrecondition := some condition
+      alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := [] },
+    { name := "Dependent", group := ["Form"], targetRelPath := "../After", commonPrecondition := none
+      alternatives := [{ precondition := none, operation := "[Out] + 1" }], errorCodesToSuppress := [] }]
+  let lowered ← definitions.mapM fun definition => (lowerComputation model .english definition).toOption
+  match (← (runComputations world prepared document (lowered.map (·.2))).toOption).map (·.outcome) with
+  | ["value 1", "value 2"] => pure 'T'
+  | ["cleared", "value 1"] => pure 'F'
+  | ["cleared", "cleared"] => pure 'P'
+  | _ => none
+
+private def traversalStream :=
+  "Outer*/Inner*/V Having (FieldFilled(Outer/Inner/Stamp) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")"
+
+private def traversalMatrix (width : Nat) (early blank outside validation : Bool) (kind : Nat := 0) :=
+  [traversalStream ++ " In Member", "Member In " ++ traversalStream].map fun operands =>
+    operators.map fun operator => traversalRun (operator ++ "(" ++ operands ++ ")") width early blank outside validation kind
+
+private def traversalCases := [
+  (1, false, false, false, "TFF", "TFF", "FTF"),
+  (50, false, false, false, "PPP", "PPP", "FPF"),
+  (51, false, false, false, "TPP", "TPP", "FPF"),
+  (50, true, false, false, "TFP", "PPP", "FPF"),
+  (51, false, true, false, "PPP", "PPP", "FPF"),
+  (50, true, false, true, "PPT", "PPP", "FPF")]
+
+private def signature (expected : String) : List (Option Char) := expected.toList.map some
+
+private def emptyTraversalMatrix (width : Nat) (early blank outside validation : Bool) (kind : Nat) :=
+  ["AtLeastOneFieldValueIncludedInValueList(" ++ traversalStream ++ " In Empty)",
+    "NoFieldValueIncludedInValueList(" ++ traversalStream ++ " In Empty)",
+    "NotAllFieldValuesIncludedInValueList(Empty In " ++ traversalStream ++ ")"].map fun condition =>
+      traversalRun condition width early blank outside validation kind
+
+private def literalTraversalMatrix (width : Nat) (early blank outside validation : Bool) (kind : Nat) :=
+  operators.map fun operator => traversalRun
+    (operator ++ "(" ++ traversalStream ++ " In \"" ++ (if outside then "9" else "5") ++ "\")")
+    width early blank outside validation kind
+
+example : [0, 1, 2].all (fun kind => [true, false].all fun validation =>
+    traversalCases.all fun (width, early, blank, outside, subjects, values, empty) =>
+      traversalMatrix width early blank outside validation kind == [signature subjects, signature values] &&
+      emptyTraversalMatrix width early blank outside validation kind == signature empty) = true := by native_decide
+
+example : [1, 2].all (fun kind => [true, false].all fun validation =>
+    traversalCases.all fun (width, early, blank, outside, subjects, _, _) =>
+      literalTraversalMatrix width early blank outside validation kind == signature subjects) = true := by native_decide
+
+private def decidingStream := "Outer*/Inner*/V Having FieldFilled(Outer/Inner/Stamp)"
+private def failingStream := "Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\""
+
+example : [0, 1, 2].all (fun kind => [true, false].all fun validation =>
+    [(operators[0]!, false, 'T'), (operators[1]!, false, 'F'), (operators[2]!, true, 'T')].all
+      fun (operator, outside, expected) =>
+        traversalRun (operator ++ "(" ++ decidingStream ++ ", " ++ failingStream ++ " In Member)")
+          3 true false outside validation kind == some expected &&
+        traversalRun (operator ++ "(" ++ failingStream ++ ", " ++ decidingStream ++ " In Member)")
+          3 true false outside validation kind == some 'P') = true := by native_decide
+
+example : [0, 2].all (fun kind =>
+    operators.all fun operator =>
+      traversalRun (operator ++ "(Member In Empty, " ++ failingStream ++ ")")
+        3 true false false true kind (emptyPayload := "bad") ==
+          some (if operator == operators[0]! then 'P' else 'F') &&
+      traversalRun (operator ++ "(Member In " ++ failingStream ++ ", Empty)")
+        3 true false false true kind (emptyPayload := "bad") == some 'P') = true := by native_decide
+
 end A12Kernel.Dm.HavingMembershipExtentLocks

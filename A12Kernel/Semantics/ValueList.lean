@@ -455,6 +455,87 @@ def ValueListQuantifier.evalOrdered (quantifier : ValueListQuantifier)
       else
         .notFired
 
+/-- Operand uncertainty precedes its cells, while filter polarity belongs to each reached
+cell. This stream retains empty filtered operands without making AtLeastOne omission-typed. -/
+inductive ValidationValueListEvent (kind : ValueListKind) where
+  | operand (omission : Bool)
+  | cell (filtered : Bool) (value : ValueListCell kind)
+
+/-- A restartable membership side. Each invocation owns its iterator, so NotAll can perform
+its presence pass before collection and then restart the outside-value search (spec/06 §B.3). -/
+abbrev ValidationValueListScanner (kind : ValueListKind) (error : Type) :=
+  (State Result : Type) → (State → ValidationValueListEvent kind → State ⊕ Result) →
+    State → Except error (State ⊕ Result)
+
+def scanValidationValueListCells
+    (consume : State → ValidationValueListEvent kind → State ⊕ Result) (filtered : Bool) :
+    List (ValueListCell kind) → State → State ⊕ Result
+  | [], state => .inl state
+  | cell :: rest, state => match consume state (.cell filtered cell) with
+      | .inl next => scanValidationValueListCells consume filtered rest next
+      | .inr result => .inr result
+
+/-- Fully relevant materialized operands retain tail uncertainty without forcing later operands.
+Partial relevance is owned by evalOrdered; this adapter is for full-validation streams. -/
+def ResolvedValueListSide.scanValidationMembership (side : ResolvedValueListSide kind)
+    (consume : State → ValidationValueListEvent kind → State ⊕ Result) (state : State) : State ⊕ Result :=
+  match consume state (.operand (side.hasHaving || side.hasUninstantiatedTail)) with
+  | .inl next => scanValidationValueListCells consume side.hasHaving side.cells next
+  | .inr result => .inr result
+
+def scanValidationValueListOperands
+    (scan : operand → State → Except error (State ⊕ Result)) :
+    List operand → State → Except error (State ⊕ Result)
+  | [], state => pure (.inl state)
+  | operand :: rest, state => do
+      match ← scan operand state with
+      | .inl next => scanValidationValueListOperands scan rest next
+      | .inr result => pure (.inr result)
+
+private def collectValidationMembers (quantifier : ValueListQuantifier)
+    (state : List (ValueListAtom kind) × Bool) :
+    ValidationValueListEvent kind → (List (ValueListAtom kind) × Bool) ⊕ Unit
+  | .operand omission => .inl (state.1, state.2 || (quantifier != .atLeastOne && omission))
+  | .cell filtered (.present value) => .inl (value :: state.1, state.2 || filtered)
+  | .cell _ .empty => .inl (state.1, state.2 || quantifier != .atLeastOne)
+  | .cell _ (.unknown _) => if quantifier == .atLeastOne then .inl state else .inr ()
+
+private def validationMemberPresence (_ : Unit) : ValidationValueListEvent kind → Unit ⊕ Unit
+  | .cell _ (.present _) => .inr ()
+  | _ => .inl ()
+
+private def searchValidationMembers (quantifier : ValueListQuantifier)
+    (members : List (ValueListAtom kind)) (omission : Bool) :
+    ValidationValueListEvent kind → Bool ⊕ Verdict
+  | .operand uncertain => .inl (omission || (quantifier == .no && uncertain))
+  | .cell _ .empty => .inl (omission || quantifier == .no)
+  | .cell _ (.unknown _) => if quantifier == .no then .inr .unknown else .inl omission
+  | .cell filtered (.present value) =>
+      let contained := valueListMembersContain members value
+      match quantifier with
+      | .no => if contained then .inr .notFired else .inl omission
+      | .atLeastOne | .notAll =>
+          if contained == (quantifier == .atLeastOne) then
+            .inr (.fired (if omission || filtered then .omission else .value))
+          else .inl omission
+
+/-- Full-validation membership executes only reached phases and prefixes. Filter failures
+remain structural; unavailable payloads follow each operator's own skip/UNKNOWN rule. -/
+def ValueListQuantifier.evalValidationUsing (quantifier : ValueListQuantifier)
+    (fields values : ValidationValueListScanner kind error) : Except error Verdict := do
+  if quantifier == .notAll then
+    match ← fields Unit Unit validationMemberPresence () with
+    | .inl _ => return .notFired
+    | .inr _ => pure ()
+  match ← values _ Unit (collectValidationMembers quantifier) ([], false) with
+  | .inr _ => pure .unknown
+  | .inl (members, omission) =>
+      if quantifier == .atLeastOne && members.isEmpty then return .notFired
+      match ← fields Bool Verdict (searchValidationMembers quantifier members) omission with
+      | .inr result => pure result
+      | .inl finalOmission => pure (if quantifier == .no then
+          .fired (if finalOmission then .omission else .value) else .notFired)
+
 /-- The scalar membership pair specializes the resolved list quantifiers without introducing boolean negation. -/
 inductive ValueListMembershipOp where
   | included

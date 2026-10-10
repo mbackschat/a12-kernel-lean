@@ -119,4 +119,14 @@ theorem resolvedCheckedTokenEntityValueList_evaluate_delegates
         (resolved.values.map (·.valueListSideAt .validation)) := by
   rfl
 
+/-- Full validation delegates to the typed token streams without replacing their declaration-owned projections. -/
+theorem checkedTokenEntityValueList_evaluateFull_delegates
+    (checked : CheckedTokenEntityValueListSource model)
+    (document : CheckedDocument model) (outer : Env) (world : Option World) :
+    checked.evaluateFull document outer world =
+      checked.quantifier.evalValidationUsing
+        (checked.fields.scanValidationMembership checked.quantifier document outer world)
+        (checked.values.scanValidationMembership checked.quantifier document outer world) := by
+  rfl
+
 end A12Kernel

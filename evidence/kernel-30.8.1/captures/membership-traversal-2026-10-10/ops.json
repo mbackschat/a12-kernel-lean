@@ -1,0 +1,903 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Error",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Member",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Empty",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Bad",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TokenMember",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TokenEmpty",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Outer/Inner",
+    "name": "Text",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NSubjects0",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+    "code": "NSUBJECTS0",
+    "name": "RuleNSubjects0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NSubjects0",
+    "commonPrecondition": "AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NValues0",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "NVALUES0",
+    "name": "RuleNValues0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NValues0",
+    "commonPrecondition": "AtLeastOneFieldValueIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NEmpty0",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Empty)",
+    "code": "NEMPTY0",
+    "name": "RuleNEmpty0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NEmpty0",
+    "commonPrecondition": "AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Empty)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NSubjects1",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NoFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+    "code": "NSUBJECTS1",
+    "name": "RuleNSubjects1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NSubjects1",
+    "commonPrecondition": "NoFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NValues1",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NoFieldValueIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "NVALUES1",
+    "name": "RuleNValues1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NValues1",
+    "commonPrecondition": "NoFieldValueIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NEmpty1",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NoFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Empty)",
+    "code": "NEMPTY1",
+    "name": "RuleNEmpty1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NEmpty1",
+    "commonPrecondition": "NoFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Empty)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NSubjects2",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+    "code": "NSUBJECTS2",
+    "name": "RuleNSubjects2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NSubjects2",
+    "commonPrecondition": "NotAllFieldValuesIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NValues2",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "NVALUES2",
+    "name": "RuleNValues2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NValues2",
+    "commonPrecondition": "NotAllFieldValuesIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NEmpty2",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(Empty In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "NEMPTY2",
+    "name": "RuleNEmpty2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NEmpty2",
+    "commonPrecondition": "NotAllFieldValuesIncludedInValueList(Empty In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TSubjects0",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+    "code": "TSUBJECTS0",
+    "name": "RuleTSubjects0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/TSubjects0",
+    "commonPrecondition": "AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TValues0",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "TVALUES0",
+    "name": "RuleTValues0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/TValues0",
+    "commonPrecondition": "AtLeastOneFieldValueIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TEmpty0",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenEmpty)",
+    "code": "TEMPTY0",
+    "name": "RuleTEmpty0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/TEmpty0",
+    "commonPrecondition": "AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenEmpty)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TSubjects1",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NoFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+    "code": "TSUBJECTS1",
+    "name": "RuleTSubjects1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/TSubjects1",
+    "commonPrecondition": "NoFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TValues1",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NoFieldValueIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "TVALUES1",
+    "name": "RuleTValues1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/TValues1",
+    "commonPrecondition": "NoFieldValueIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TEmpty1",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NoFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenEmpty)",
+    "code": "TEMPTY1",
+    "name": "RuleTEmpty1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/TEmpty1",
+    "commonPrecondition": "NoFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenEmpty)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TSubjects2",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+    "code": "TSUBJECTS2",
+    "name": "RuleTSubjects2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/TSubjects2",
+    "commonPrecondition": "NotAllFieldValuesIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TValues2",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "TVALUES2",
+    "name": "RuleTValues2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/TValues2",
+    "commonPrecondition": "NotAllFieldValuesIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "TEmpty2",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(TokenEmpty In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "TEMPTY2",
+    "name": "RuleTEmpty2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/TEmpty2",
+    "commonPrecondition": "NotAllFieldValuesIncludedInValueList(TokenEmpty In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NBadValues1",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NoFieldValueIncludedInValueList(Member In Bad,Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "NBADVALUES1",
+    "name": "RuleNBadValues1",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NBadValues1",
+    "commonPrecondition": "NoFieldValueIncludedInValueList(Member In Bad,Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NBadValues2",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Error",
+    "condition": "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(Member In Bad,Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "code": "NBADVALUES2",
+    "name": "RuleNBadValues2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/NBadValues2",
+    "commonPrecondition": "NotAllFieldValuesIncludedInValueList(Member In Bad,Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership traversal control."
+      }
+    ]
+  }
+]

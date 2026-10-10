@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.NumberEntityList
 
 /-! # Checked mixed Number entity-list value lists
 
-This boundary joins two already-certified Number entity lists to the immutable checked document. Each resolved operand retains its checked declaration, canonical topology, complete selected environments and addresses, exact stored payload, hierarchical tail, filter marker, and positional partial-relevance fact. Quantifier truth and polarity remain exclusively with `ValueListQuantifier.evalOrdered`.
+This boundary joins two already-certified Number entity lists to the immutable checked document. Each resolved operand retains its checked declaration, canonical topology, complete selected environments and addresses, exact stored payload, hierarchical tail, filter marker, and positional partial-relevance fact. Full validation uses the restartable `ValueListQuantifier.evalValidationUsing`; materialized and partial views retain `evalOrdered`.
 -/
 
 namespace A12Kernel
@@ -82,6 +82,25 @@ def evaluate (resolved : ResolvedCheckedNumberEntityValueList model) : Verdict :
 
 end ResolvedCheckedNumberEntityValueList
 
+/-- Number membership streams preserve the consumer's stopping point inside a filtered
+operand as well as between authored operands. Only AtLeastOne opts into sparse traversal. -/
+def CheckedNumberEntitySource.scanValidationMembership
+    (source : CheckedNumberEntitySource model) (quantifier : ValueListQuantifier)
+    (document : CheckedDocument model) (outer : Env) (world : Option World := none) :
+    ValidationValueListScanner .number CheckedAddressingError := fun _ _ consume state =>
+  scanValidationValueListOperands (fun operand state => do
+    match operand with
+    | .starHaving filtered =>
+        match consume state (.operand true) with
+        | .inr result => pure (.inr result)
+        | .inl next =>
+            filtered.source.source.scanValidationCells filtered.having document outer
+              (fun state cell => consume state (.cell true ((observeCell .validation cell.cell).asNumberValueListCell)))
+              next (if quantifier == .atLeastOne then .sparse else .dense) world
+    | _ =>
+        let side ← operand.checkedValidationSide (world := world) document outer
+        pure (side.scanValidationMembership consume state)) source.operands state
+
 namespace CheckedNumberEntityValueListSource
 
 def hasHaving (checked : CheckedNumberEntityValueListSource model) : Bool :=
@@ -117,11 +136,9 @@ def evaluateFull (checked : CheckedNumberEntityValueListSource model)
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
     Except CheckedAddressingError Verdict := do
-  let resolve (source : CheckedNumberEntitySource model) :=
-    source.operands.mapM (·.checkedValidationSide (world := world) document outer)
-  let (fields, values) ← checked.quantifier.resolveSidesOrdered
-    (fun () => resolve checked.fields) (fun () => resolve checked.values)
-  pure (checked.quantifier.evalOrdered fields values)
+  checked.quantifier.evalValidationUsing
+    (checked.fields.scanValidationMembership checked.quantifier document outer world)
+    (checked.values.scanValidationMembership checked.quantifier document outer world)
 
 private def resolvePartialFields
     (checked : CheckedNumberEntityValueListSource model)

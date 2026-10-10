@@ -1625,6 +1625,7 @@ run_cmd do
 #print axioms A12Kernel.resolvedCheckedNumberEntityOperand_valueListSideAt_cells
 #print axioms A12Kernel.resolvedCheckedNumberEntityOperand_valueListSideAt_metadata
 #print axioms A12Kernel.resolvedCheckedNumberEntityValueList_evaluate_delegates
+#print axioms A12Kernel.checkedNumberEntityValueList_evaluateFull_delegates
 #print axioms A12Kernel.literalComparisonDiagnostic_total_on_refusals
 #print axioms A12Kernel.numericComparisonDiagnostic_total_on_refusals
 #print axioms A12Kernel.orderingComparisonDiagnostic_comm
@@ -1642,6 +1643,7 @@ run_cmd do
 #print axioms A12Kernel.checkedEntityGroupSource_everyDeclarationCovers_iff
 #print axioms A12Kernel.resolvedCheckedTokenEntityOperand_valueListSideAt_cells
 #print axioms A12Kernel.resolvedCheckedTokenEntityValueList_evaluate_delegates
+#print axioms A12Kernel.checkedTokenEntityValueList_evaluateFull_delegates
 #print axioms A12Kernel.valueListNo_match_before_nonRelevantOperand
 #print axioms A12Kernel.valueListQuantifier_resolveSidesOrdered_no_values_error
 #print axioms A12Kernel.valueListQuantifier_resolveSidesOrdered_notAll_fields_error
@@ -1871,6 +1873,9 @@ run_cmd do
 -- Retained from the closed core-IL experiment: AtLeastOne's empty-member short-circuit is
 -- redundant, which is a fact about this family rather than about the retired core.
 #print axioms A12Kernel.scanAtLeastOne_nil_members
+#print axioms A12Kernel.validationValueListOperands_terminalPrefix
+#print axioms A12Kernel.valueListAtLeastOne_validationUsing_emptyMembers
+#print axioms A12Kernel.valueListNotAll_validationUsing_emptySubjects
 #print axioms A12Kernel.valueListNotAll_unknown_iff_of_present
 #print axioms A12Kernel.valueListNotAll_prependUnknownField
 #print axioms A12Kernel.valueListAtLeastOne_present_emptyMember

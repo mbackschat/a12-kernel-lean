@@ -1,0 +1,1188 @@
+{
+  "header" : {
+    "id" : "TemporalSparse_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TemporalSparse_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Outer",
+            "name" : "Outer",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Outer/Inner",
+                "name" : "Inner",
+                "Group" : {
+                  "repeatability" : 51,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Outer/Inner/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Outer/Inner/V",
+                    "name" : "V",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Outer/Inner/Stamp",
+                    "name" : "Stamp",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateTimeType",
+                        "DateTimeType" : {
+                          "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Outer/Inner/Text",
+                    "name" : "Text",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Outer/RowSum",
+                "name" : "RowSum",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Outer/RowSumComp",
+                "name" : "RowSumComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RowSum",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(Inner*/V Having FieldFilled(Inner/N) Or ([Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Sparse traversal witness."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Other",
+            "name" : "Other",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Other/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 51,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Other/Items/Note",
+                    "name" : "Note",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Sum",
+            "name" : "Sum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/First",
+            "name" : "First",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Count",
+            "name" : "Count",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Reset",
+            "name" : "Reset",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OtherCount",
+            "name" : "OtherCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SumComp",
+            "name" : "SumComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Sum",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N) Or ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Sparse traversal witness."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FirstComp",
+            "name" : "FirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../First",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N) Or ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Sparse traversal witness."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CountComp",
+            "name" : "CountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Count",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledFields(Outer*/Inner*/V Having FieldFilled(Outer/Inner/N) Or ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Sparse traversal witness."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ResetComp",
+            "name" : "ResetComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Reset",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Outer*/Inner*/V Having [Outer/Inner/N] == 1 Or (FieldNotFilled(Outer/Inner/N) And ([Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Sparse traversal witness."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OtherCountComp",
+            "name" : "OtherCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OtherCount",
+              "computationAlternatives" : [ {
+                "operation" : "NumberOfFilledFields(Other*/Items*/Note)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Sparse traversal witness."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Error",
+            "name" : "Error",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Member",
+            "name" : "Member",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Empty",
+            "name" : "Empty",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Bad",
+            "name" : "Bad",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TokenMember",
+            "name" : "TokenMember",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TokenEmpty",
+            "name" : "TokenEmpty",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NSubjects0",
+            "name" : "NSubjects0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNSubjects0",
+            "name" : "RuleNSubjects0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NSUBJECTS0",
+              "errorCondition" : "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NSubjects0Comp",
+            "name" : "NSubjects0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NSubjects0",
+              "commonPrecondition" : "AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NValues0",
+            "name" : "NValues0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNValues0",
+            "name" : "RuleNValues0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NVALUES0",
+              "errorCondition" : "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NValues0Comp",
+            "name" : "NValues0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NValues0",
+              "commonPrecondition" : "AtLeastOneFieldValueIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NEmpty0",
+            "name" : "NEmpty0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNEmpty0",
+            "name" : "RuleNEmpty0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NEMPTY0",
+              "errorCondition" : "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Empty)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NEmpty0Comp",
+            "name" : "NEmpty0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NEmpty0",
+              "commonPrecondition" : "AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Empty)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NSubjects1",
+            "name" : "NSubjects1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNSubjects1",
+            "name" : "RuleNSubjects1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NSUBJECTS1",
+              "errorCondition" : "FieldFilled(Error) And NoFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NSubjects1Comp",
+            "name" : "NSubjects1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NSubjects1",
+              "commonPrecondition" : "NoFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NValues1",
+            "name" : "NValues1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNValues1",
+            "name" : "RuleNValues1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NVALUES1",
+              "errorCondition" : "FieldFilled(Error) And NoFieldValueIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NValues1Comp",
+            "name" : "NValues1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NValues1",
+              "commonPrecondition" : "NoFieldValueIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NEmpty1",
+            "name" : "NEmpty1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNEmpty1",
+            "name" : "RuleNEmpty1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NEMPTY1",
+              "errorCondition" : "FieldFilled(Error) And NoFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Empty)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NEmpty1Comp",
+            "name" : "NEmpty1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NEmpty1",
+              "commonPrecondition" : "NoFieldValueIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Empty)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NSubjects2",
+            "name" : "NSubjects2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNSubjects2",
+            "name" : "RuleNSubjects2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NSUBJECTS2",
+              "errorCondition" : "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NSubjects2Comp",
+            "name" : "NSubjects2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NSubjects2",
+              "commonPrecondition" : "NotAllFieldValuesIncludedInValueList(Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In Member)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NValues2",
+            "name" : "NValues2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNValues2",
+            "name" : "RuleNValues2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NVALUES2",
+              "errorCondition" : "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NValues2Comp",
+            "name" : "NValues2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NValues2",
+              "commonPrecondition" : "NotAllFieldValuesIncludedInValueList(Member In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NEmpty2",
+            "name" : "NEmpty2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNEmpty2",
+            "name" : "RuleNEmpty2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NEMPTY2",
+              "errorCondition" : "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(Empty In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NEmpty2Comp",
+            "name" : "NEmpty2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NEmpty2",
+              "commonPrecondition" : "NotAllFieldValuesIncludedInValueList(Empty In Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TSubjects0",
+            "name" : "TSubjects0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleTSubjects0",
+            "name" : "RuleTSubjects0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TSUBJECTS0",
+              "errorCondition" : "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TSubjects0Comp",
+            "name" : "TSubjects0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TSubjects0",
+              "commonPrecondition" : "AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TValues0",
+            "name" : "TValues0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleTValues0",
+            "name" : "RuleTValues0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TVALUES0",
+              "errorCondition" : "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TValues0Comp",
+            "name" : "TValues0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TValues0",
+              "commonPrecondition" : "AtLeastOneFieldValueIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TEmpty0",
+            "name" : "TEmpty0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleTEmpty0",
+            "name" : "RuleTEmpty0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TEMPTY0",
+              "errorCondition" : "FieldFilled(Error) And AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenEmpty)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TEmpty0Comp",
+            "name" : "TEmpty0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TEmpty0",
+              "commonPrecondition" : "AtLeastOneFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenEmpty)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TSubjects1",
+            "name" : "TSubjects1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleTSubjects1",
+            "name" : "RuleTSubjects1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TSUBJECTS1",
+              "errorCondition" : "FieldFilled(Error) And NoFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TSubjects1Comp",
+            "name" : "TSubjects1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TSubjects1",
+              "commonPrecondition" : "NoFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TValues1",
+            "name" : "TValues1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleTValues1",
+            "name" : "RuleTValues1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TVALUES1",
+              "errorCondition" : "FieldFilled(Error) And NoFieldValueIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TValues1Comp",
+            "name" : "TValues1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TValues1",
+              "commonPrecondition" : "NoFieldValueIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TEmpty1",
+            "name" : "TEmpty1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleTEmpty1",
+            "name" : "RuleTEmpty1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TEMPTY1",
+              "errorCondition" : "FieldFilled(Error) And NoFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenEmpty)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TEmpty1Comp",
+            "name" : "TEmpty1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TEmpty1",
+              "commonPrecondition" : "NoFieldValueIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenEmpty)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TSubjects2",
+            "name" : "TSubjects2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleTSubjects2",
+            "name" : "RuleTSubjects2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TSUBJECTS2",
+              "errorCondition" : "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TSubjects2Comp",
+            "name" : "TSubjects2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TSubjects2",
+              "commonPrecondition" : "NotAllFieldValuesIncludedInValueList(Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\") In TokenMember)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TValues2",
+            "name" : "TValues2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleTValues2",
+            "name" : "RuleTValues2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TVALUES2",
+              "errorCondition" : "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TValues2Comp",
+            "name" : "TValues2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TValues2",
+              "commonPrecondition" : "NotAllFieldValuesIncludedInValueList(TokenMember In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TEmpty2",
+            "name" : "TEmpty2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleTEmpty2",
+            "name" : "RuleTEmpty2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TEMPTY2",
+              "errorCondition" : "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(TokenEmpty In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TEmpty2Comp",
+            "name" : "TEmpty2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TEmpty2",
+              "commonPrecondition" : "NotAllFieldValuesIncludedInValueList(TokenEmpty In Outer*/Inner*/Text Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NBadValues1",
+            "name" : "NBadValues1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNBadValues1",
+            "name" : "RuleNBadValues1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NBADVALUES1",
+              "errorCondition" : "FieldFilled(Error) And NoFieldValueIncludedInValueList(Member In Bad,Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NBadValues1Comp",
+            "name" : "NBadValues1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NBadValues1",
+              "commonPrecondition" : "NoFieldValueIncludedInValueList(Member In Bad,Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NBadValues2",
+            "name" : "NBadValues2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RuleNBadValues2",
+            "name" : "RuleNBadValues2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NBADVALUES2",
+              "errorCondition" : "FieldFilled(Error) And NotAllFieldValuesIncludedInValueList(Member In Bad,Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NBadValues2Comp",
+            "name" : "NBadValues2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NBadValues2",
+              "commonPrecondition" : "NotAllFieldValuesIncludedInValueList(Member In Bad,Outer*/Inner*/V Having (FieldFilled(Outer/Inner/N) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\"))",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership traversal control."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -20,6 +20,16 @@ theorem resolvedCheckedNumberEntityValueList_evaluate_delegates
         (resolved.values.map (·.valueListSideAt .validation)) := by
   rfl
 
+/-- Full validation delegates to restartable Number streams so each operator retains its own prefix and phase boundary. -/
+theorem checkedNumberEntityValueList_evaluateFull_delegates
+    (checked : CheckedNumberEntityValueListSource model)
+    (document : CheckedDocument model) (outer : Env) (world : Option World) :
+    checked.evaluateFull document outer world =
+      checked.quantifier.evalValidationUsing
+        (checked.fields.scanValidationMembership checked.quantifier document outer world)
+        (checked.values.scanValidationMembership checked.quantifier document outer world) := by
+  rfl
+
 /-- A fields-side match decides `No` before a later operand-local partial nonrelevance. -/
 theorem valueListNo_match_before_nonRelevantOperand
     : ValueListQuantifier.no.evalOrdered (kind := .token)

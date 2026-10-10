@@ -406,6 +406,32 @@ theorem valueList_classified_fired_implies_resolved_fired
             evalClassifiedValueListNotAll, fullPresent, fullValuesKnown,
             fullOutside]
 
+/-- A terminal operand decides the incremental stream before any later resolver is called. -/
+theorem validationValueListOperands_terminalPrefix
+    (scan : operand → State → Except error (State ⊕ Result))
+    (first : operand) (remaining : List operand) (state : State) (result : Result)
+    (terminal : scan first state = .ok (.inr result)) :
+    scanValidationValueListOperands scan (first :: remaining) state = .ok (.inr result) := by
+  simp [scanValidationValueListOperands, terminal, bind, Except.bind, pure, Except.pure]
+
+/-- A genuinely empty member cell leaves AtLeastOne's subjects unread, including a subject scanner that would fail. -/
+theorem valueListAtLeastOne_validationUsing_emptyMembers
+    (fields : ValidationValueListScanner kind error) :
+    ValueListQuantifier.atLeastOne.evalValidationUsing fields
+      (fun _ _ consume state => pure (({
+        cells := [.empty], hasUninstantiatedTail := false, hasHaving := false } :
+          ResolvedValueListSide kind).scanValidationMembership consume state)) = .ok .notFired := by
+  rfl
+
+/-- NotAll's presence pass over an empty subject cell stops before a values scanner that would fail. -/
+theorem valueListNotAll_validationUsing_emptySubjects
+    (values : ValidationValueListScanner kind error) :
+    ValueListQuantifier.notAll.evalValidationUsing
+      (fun _ _ consume state => pure (({
+        cells := [.empty], hasUninstantiatedTail := false, hasHaving := false } :
+          ResolvedValueListSide kind).scanValidationMembership consume state)) values = .ok .notFired := by
+  rfl
+
 /-! ## Retained from the closed core-IL experiment
 
 The experiment recorded in `SEMANTIC-CORE-IL-PROPOSAL.md` (`docs/archived/SEMANTIC-CORE-IL-PROPOSAL.md` at `a050f150`)
