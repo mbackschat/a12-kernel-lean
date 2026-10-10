@@ -1,0 +1,16 @@
+{
+  "target": "model",
+  "op": "new",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "changed": {
+    "id": "NestedFirst_DM",
+    "root": "Form",
+    "locale": "en_US"
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "NestedFirst_DM.json"
+}

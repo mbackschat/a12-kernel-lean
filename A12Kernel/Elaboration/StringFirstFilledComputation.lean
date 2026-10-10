@@ -70,9 +70,6 @@ inductive StringFirstFilledComputationElabError where
   /-- A source naming the target itself. -/
   | targetSelfReference (path : List String)
   | declaringGroupInvalid (group : GroupPath)
-  /-- A star reopening more than one level, which no row measures on this carrier: this project's
-  limit, claiming no class. -/
-  | unsupportedStar (path : List String)
   deriving Repr, DecidableEq
 
 /-- Project the source's shape refusals, whose classes belong to the path rather than the carrier: an
@@ -87,7 +84,7 @@ def StringFirstFilledComputationElabError.diagnostic? :
   | .source (.shape cause) => cause.diagnostic?
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | .target _ | .placement _ | .targetNotOrdinaryString _ | .source _
-  | .sourceNotOrdinaryString _ | .declaringGroupInvalid _ | .unsupportedStar _ => none
+  | .sourceNotOrdinaryString _ | .declaringGroupInvalid _ => none
 
 /-- One ordinary String target, fixed or repeatable, and one ordinary String entity-list source
 bound by the target's rows, certified against the same model. -/
@@ -121,10 +118,6 @@ def checkStringFirstFilledComputation
     if hTarget : target.isOrdinaryStringComputationCarrier = true then
       let source ← (elaborateTokenEntitySource model declaringGroup authored
           (fixedTargetGroup? := some target.groupPath)).mapError .source
-      if let some star := source.operands.findSome? fun
-          | .star star => if star.source.reopenedScope.length == 1 then none else some star
-          | _ => none then
-        throw (.unsupportedStar star.source.declaration.path)
       if hSource : source.operands.all
           (·.declarations.all (·.isOrdinaryStringComputationCarrier)) = true then
         if hExcludes : source.referencesField targetField (fun having _ => having.forbidsTarget targetField) = false then

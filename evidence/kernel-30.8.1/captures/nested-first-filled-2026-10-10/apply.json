@@ -1,0 +1,260 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Parents",
+    "repeatable": 3
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Parents",
+    "name": "Rows",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Head",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Tail",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Bare",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Filtered",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Prefix",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Fallback",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Parents",
+    "name": "Local",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Parents",
+    "name": "Global",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Parents",
+    "name": "Captured",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Parents/Rows",
+    "name": "Text",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Parents",
+    "name": "Limit",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Parents/Rows",
+    "name": "Keep",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Bare",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents*/Rows*/Text)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Filtered",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Prefix",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Head,/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Fallback",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0,/Form/Tail)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Parents/Local",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Parents/Global",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Parents/Captured",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] <= [$/Form/Parents/Limit])"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And FirstFilledValue(/Form/Parents*/Rows*/Text) == \"A\"",
+    "code": "BARE",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And FirstFilledValue(/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0) == \"A\"",
+    "code": "FILTERED",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

@@ -140,7 +140,7 @@ is the shared entity list's, asked against the target's group
 ([`spec/09`](../../spec/09-computations.md) §1): a level beside the target's group declaring an index
 the target's path does not draws `MVK_ERROR_FIELD_NO_INDEX`, one declaring none `MVK_NO_WILDCARD`,
 while a fully starred root star and a star below the target's own row leave no level unbound and are
-admitted. A star reopening two levels is this project's limit. -/
+admitted, including stars reopening multiple levels. -/
 example :
     let classOf (group : GroupPath) (field : FieldId) (star : SurfaceStarFieldPath) :=
       (elabError? (checkStringFirstFilledComputation model group field ⟨.star star, []⟩)).bind
@@ -166,9 +166,7 @@ example :
         some (.targetNotOrdinaryString rawTarget.path) ∧
     admitted ["Projects", "Tasks"] target.id (siblingStar numberSource.name) = false ∧
     admitted ["Projects", "Tasks"] target.id (siblingStar rawSource.name) = false ∧
-    elabError? (checkStringFirstFilledComputation model
-      ["Projects", "Tasks"] target.id ⟨.star nestedSiblingStar, []⟩) =
-        some (.unsupportedStar nestedSource.path) ∧
+    admitted ["Projects", "Tasks"] target.id nestedSiblingStar = true ∧
     classOf ["Projects", "Tasks"] target.id partialBindingStar = some .errorFieldNoIndex ∧
     classOf ["OtherTasks"] unboundTarget.id absoluteSiblingStar = some .noWildcard ∧
     admitted ["Projects", "Tasks"] target.id rootStar = true ∧

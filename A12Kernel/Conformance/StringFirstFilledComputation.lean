@@ -132,7 +132,7 @@ private def outcome? (sourceCell : Option ClassifiedCellInput) :
     Option StringTargetOutcome :=
   outcomeFor? target.id sourceCell
 
-/- The checked boundary retains an ordinary evaluated-String target and an ordinary String source. A fixed target's placement is unrestricted: declaring at `["Review", "Rows"]` puts it *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted, a star aggregate deriving no iteration. An unrepresentable declaring group is still refused. The repeatable target inside the declaring group is admitted, its star over its own group reading the whole list at every row as the Kernel does ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-repeatable-computation-row-extent) `rerun`). A star reopening two levels stays this project's limit. -/
+/- The checked boundary retains an ordinary evaluated-String target and an ordinary String source. A fixed target's placement is unrestricted: declaring at `["Review", "Rows"]` puts it *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted, a star aggregate deriving no iteration. An unrepresentable declaring group is still refused. The repeatable target inside the declaring group is admitted, its star over its own group reading the whole list at every row as the Kernel does ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-repeatable-computation-row-extent) `rerun`). Nested stars reuse that same checked source boundary. -/
 example :
     (checked? target.id (star source.name)).isSome = true ∧
       (checkedAt? ["Review", "Rows"] target.id (star source.name)).isSome = true ∧
@@ -143,7 +143,7 @@ example :
       (checked? rawTarget.id (star source.name)).isNone = true ∧
       (checked? target.id (star rawSource.name)).isNone = true ∧
       (checked? target.id (star customSource.name)).isNone = true ∧
-      (checked? target.id nestedStar).isNone = true := by
+      (checked? target.id nestedStar).isSome = true := by
   native_decide
 
 /- Selection stays lazy and the ordinary target policy owns accepted, no-value, rejected, and poison outcomes. -/
@@ -288,8 +288,7 @@ example :
 /- `Rows*/Details/Nested` leaves `Details` unstarred below the first star, which the Kernel refuses
    with the missing-star class on this carrier in its two-operand form, beside a root String
    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate));
-   this carrier admits only a sole star, so the lock holds the path's class and not that exact
-   authored row. -/
+   this lock isolates the path's class with a sole source. -/
 example :
     let belowStar : SurfaceStarFieldPath := {
       base := .absolute
@@ -310,8 +309,8 @@ private def listChecked? (targetField : FieldId) (entries : List SurfaceFieldEnt
   | first :: rest => checkStringFirstFilledComputation model ["Review"] targetField { first, rest }
 
 /- A list is the shared entity list: a lone field is too few, a star beside a field is read in authored
-order as the Kernel admits it on the mixed Enumeration list, a String carrier crossing no row measures
-([checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-mixed-chain-string-target-rejection)), a
+order, measured for String prefix/fallback operands beside nested stars
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-nested-string-first-filled)), a
 non-ordinary String member is refused as on a star, and a list naming the target is the target-read
 class, as the Kernel reports for a String `FirstFilledValue` listing its target. -/
 example :

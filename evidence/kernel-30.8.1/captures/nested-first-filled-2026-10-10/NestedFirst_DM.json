@@ -1,0 +1,305 @@
+{
+  "header" : {
+    "id" : "NestedFirst_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "NestedFirst_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Parents",
+            "name" : "Parents",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Parents/Rows",
+                "name" : "Rows",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Parents/Rows/Text",
+                    "name" : "Text",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Parents/Rows/Keep",
+                    "name" : "Keep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Parents/Local",
+                "name" : "Local",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Parents/Global",
+                "name" : "Global",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Parents/Captured",
+                "name" : "Captured",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Parents/Limit",
+                "name" : "Limit",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Head",
+            "name" : "Head",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Tail",
+            "name" : "Tail",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Bare",
+            "name" : "Bare",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Filtered",
+            "name" : "Filtered",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Prefix",
+            "name" : "Prefix",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Fallback",
+            "name" : "Fallback",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BareComp",
+            "name" : "BareComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Bare",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Form/Parents*/Rows*/Text)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FilteredComp",
+            "name" : "FilteredComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Filtered",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PrefixComp",
+            "name" : "PrefixComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Prefix",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Form/Head,/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FallbackComp",
+            "name" : "FallbackComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Fallback",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0,/Form/Tail)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/LocalComp",
+            "name" : "LocalComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Parents/Local",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Form/Parents/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GlobalComp",
+            "name" : "GlobalComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Parents/Global",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CapturedComp",
+            "name" : "CapturedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Parents/Captured",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] <= [$/Form/Parents/Limit])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/BARE",
+            "name" : "BARE",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "BARE",
+              "errorCondition" : "FieldFilled(Anchor) And FirstFilledValue(/Form/Parents*/Rows*/Text) == \"A\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FILTERED",
+            "name" : "FILTERED",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FILTERED",
+              "errorCondition" : "FieldFilled(Anchor) And FirstFilledValue(/Form/Parents*/Rows*/Text Having [/Form/Parents/Rows/Keep] > 0) == \"A\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
