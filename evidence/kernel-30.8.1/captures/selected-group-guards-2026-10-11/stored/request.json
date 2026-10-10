@@ -1,0 +1,446 @@
+{
+  "model": "SelectedGuards_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "Key": "P1",
+          "Gate": "1",
+          "ControlBox": {
+            "Value": ""
+          },
+          "Packages": [
+            {
+              "Code": "P1",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": ""
+                  }
+                }
+              ]
+            },
+            {
+              "Code": "P2",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Positive": "99",
+          "PositiveAfter": "99",
+          "Negative": "99",
+          "NegativeAfter": "99",
+          "BeforePositive": "99",
+          "BeforePositiveAfter": "99",
+          "AfterPositive": "99",
+          "AfterPositiveAfter": "99",
+          "BeforeNegative": "99",
+          "BeforeNegativeAfter": "99",
+          "AfterNegative": "99",
+          "AfterNegativeAfter": "99",
+          "Control": "99",
+          "ControlAfter": "99"
+        }
+      }
+    },
+    {
+      "name": "filled",
+      "documentInline": {
+        "Form": {
+          "Key": "P1",
+          "Gate": "1",
+          "ControlBox": {
+            "Value": "2"
+          },
+          "Packages": [
+            {
+              "Code": "P1",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "Code": "P2",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Positive": "99",
+          "PositiveAfter": "99",
+          "Negative": "99",
+          "NegativeAfter": "99",
+          "BeforePositive": "99",
+          "BeforePositiveAfter": "99",
+          "AfterPositive": "99",
+          "AfterPositiveAfter": "99",
+          "BeforeNegative": "99",
+          "BeforeNegativeAfter": "99",
+          "AfterNegative": "99",
+          "AfterNegativeAfter": "99",
+          "Control": "99",
+          "ControlAfter": "99"
+        }
+      }
+    },
+    {
+      "name": "malformed",
+      "documentInline": {
+        "Form": {
+          "Key": "P1",
+          "Gate": "1",
+          "ControlBox": {
+            "Value": "bad"
+          },
+          "Packages": [
+            {
+              "Code": "P1",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": "bad"
+                  }
+                }
+              ]
+            },
+            {
+              "Code": "P2",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Positive": "99",
+          "PositiveAfter": "99",
+          "Negative": "99",
+          "NegativeAfter": "99",
+          "BeforePositive": "99",
+          "BeforePositiveAfter": "99",
+          "AfterPositive": "99",
+          "AfterPositiveAfter": "99",
+          "BeforeNegative": "99",
+          "BeforeNegativeAfter": "99",
+          "AfterNegative": "99",
+          "AfterNegativeAfter": "99",
+          "Control": "99",
+          "ControlAfter": "99"
+        }
+      }
+    },
+    {
+      "name": "failed-producer",
+      "documentInline": {
+        "Form": {
+          "Key": "P1",
+          "Gate": "1",
+          "ControlBox": {
+            "Value": "bad"
+          },
+          "Packages": [
+            {
+              "Code": "P1",
+              "Items": [
+                {
+                  "Source": "bad",
+                  "Box": {
+                    "Value": "bad"
+                  }
+                }
+              ]
+            },
+            {
+              "Code": "P2",
+              "Items": [
+                {
+                  "Source": "bad",
+                  "Box": {
+                    "Value": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Positive": "99",
+          "PositiveAfter": "99",
+          "Negative": "99",
+          "NegativeAfter": "99",
+          "BeforePositive": "99",
+          "BeforePositiveAfter": "99",
+          "AfterPositive": "99",
+          "AfterPositiveAfter": "99",
+          "BeforeNegative": "99",
+          "BeforeNegativeAfter": "99",
+          "AfterNegative": "99",
+          "AfterNegativeAfter": "99",
+          "Control": "99",
+          "ControlAfter": "99"
+        }
+      }
+    },
+    {
+      "name": "missing",
+      "documentInline": {
+        "Form": {
+          "Key": "missing",
+          "Gate": "1",
+          "ControlBox": {
+            "Value": "2"
+          },
+          "Packages": [
+            {
+              "Code": "P1",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": "2"
+                  }
+                }
+              ]
+            },
+            {
+              "Code": "P2",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Positive": "99",
+          "PositiveAfter": "99",
+          "Negative": "99",
+          "NegativeAfter": "99",
+          "BeforePositive": "99",
+          "BeforePositiveAfter": "99",
+          "AfterPositive": "99",
+          "AfterPositiveAfter": "99",
+          "BeforeNegative": "99",
+          "BeforeNegativeAfter": "99",
+          "AfterNegative": "99",
+          "AfterNegativeAfter": "99",
+          "Control": "99",
+          "ControlAfter": "99"
+        }
+      }
+    },
+    {
+      "name": "duplicate",
+      "documentInline": {
+        "Form": {
+          "Key": "P1",
+          "Gate": "1",
+          "ControlBox": {
+            "Value": ""
+          },
+          "Packages": [
+            {
+              "Code": "P1",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": ""
+                  }
+                }
+              ]
+            },
+            {
+              "Code": "P1",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Positive": "99",
+          "PositiveAfter": "99",
+          "Negative": "99",
+          "NegativeAfter": "99",
+          "BeforePositive": "99",
+          "BeforePositiveAfter": "99",
+          "AfterPositive": "99",
+          "AfterPositiveAfter": "99",
+          "BeforeNegative": "99",
+          "BeforeNegativeAfter": "99",
+          "AfterNegative": "99",
+          "AfterNegativeAfter": "99",
+          "Control": "99",
+          "ControlAfter": "99"
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Form": {
+          "Key": "P1",
+          "Gate": "1",
+          "ControlBox": {
+            "Value": ""
+          },
+          "Packages": [
+            {
+              "Code": "P1",
+              "Items": []
+            },
+            {
+              "Code": "P2",
+              "Items": []
+            }
+          ],
+          "Positive": "99",
+          "PositiveAfter": "99",
+          "Negative": "99",
+          "NegativeAfter": "99",
+          "BeforePositive": "99",
+          "BeforePositiveAfter": "99",
+          "AfterPositive": "99",
+          "AfterPositiveAfter": "99",
+          "BeforeNegative": "99",
+          "BeforeNegativeAfter": "99",
+          "AfterNegative": "99",
+          "AfterNegativeAfter": "99",
+          "Control": "99",
+          "ControlAfter": "99"
+        }
+      }
+    },
+    {
+      "name": "gate-empty",
+      "documentInline": {
+        "Form": {
+          "Key": "P1",
+          "Gate": "",
+          "ControlBox": {
+            "Value": ""
+          },
+          "Packages": [
+            {
+              "Code": "P1",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": ""
+                  }
+                }
+              ]
+            },
+            {
+              "Code": "P2",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Positive": "99",
+          "PositiveAfter": "99",
+          "Negative": "99",
+          "NegativeAfter": "99",
+          "BeforePositive": "99",
+          "BeforePositiveAfter": "99",
+          "AfterPositive": "99",
+          "AfterPositiveAfter": "99",
+          "BeforeNegative": "99",
+          "BeforeNegativeAfter": "99",
+          "AfterNegative": "99",
+          "AfterNegativeAfter": "99",
+          "Control": "99",
+          "ControlAfter": "99"
+        }
+      }
+    },
+    {
+      "name": "gate-bad",
+      "documentInline": {
+        "Form": {
+          "Key": "P1",
+          "Gate": "bad",
+          "ControlBox": {
+            "Value": ""
+          },
+          "Packages": [
+            {
+              "Code": "P1",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": ""
+                  }
+                }
+              ]
+            },
+            {
+              "Code": "P2",
+              "Items": [
+                {
+                  "Source": "7",
+                  "Box": {
+                    "Value": "3"
+                  }
+                }
+              ]
+            }
+          ],
+          "Positive": "99",
+          "PositiveAfter": "99",
+          "Negative": "99",
+          "NegativeAfter": "99",
+          "BeforePositive": "99",
+          "BeforePositiveAfter": "99",
+          "AfterPositive": "99",
+          "AfterPositiveAfter": "99",
+          "BeforeNegative": "99",
+          "BeforeNegativeAfter": "99",
+          "AfterNegative": "99",
+          "AfterNegativeAfter": "99",
+          "Control": "99",
+          "ControlAfter": "99"
+        }
+      }
+    }
+  ]
+}

@@ -6,6 +6,12 @@ The exact-address repeatable half of §11. Scalar, fixed, and nonrepeatable comp
 
 ### §11 — calculations and formal checking
 
+<a id="cap-selected-group-guards"></a>
+#### Selected lower-star computation guards
+
+- `boundary`: Selected computation group guards reuse [keyed extents](../../A12Kernel/Elaboration/KeyedGroupPresence.lean) and the ordinary group-content projection. The scheduler retains key-expression and selected-subtree producer dependencies; selection failure remains computation poison before group content is classified. This is separate from validation unavailability.
+- `assurance`: [Selected-group reader locks](../../A12Kernel/Reference/Dm/SelectedGroupGuardLocks.lean) and the [C02 capture](../sources/computation-scheduling-probes.md#src-selected-group-guard-dependencies) close fresh key/payload, missing/duplicate key, stored-malformed versus failed-computed content, ordered bypass, seeded clearing and downstream-read distinctions for one String-indexed parent and one lower star. Execute consumers can use the existing scheduled overlay without reconstructing selection from stored cells. No new universal correspondence proof or broader keyed protection profile is claimed.
+
 <a id="cap-captured-filter-scopes"></a>
 #### Caller-scope preservation in checked filters
 

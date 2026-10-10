@@ -1,0 +1,531 @@
+{
+  "header" : {
+    "id" : "SelectedGuards_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "SelectedGuards_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Gate",
+            "name" : "Gate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Packages",
+            "name" : "Packages",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Packages/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Packages/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Packages/Items/Source",
+                    "name" : "Source",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Group",
+                    "id" : "/Form/Packages/Items/Box",
+                    "name" : "Box",
+                    "Group" : {
+                      "repeatability" : 1,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Packages/Items/Box/Value",
+                        "name" : "Value",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      } ]
+                    }
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "Code"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/ControlBox",
+            "name" : "ControlBox",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/ControlBox/Value",
+                "name" : "Value",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Positive",
+            "name" : "Positive",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/PositiveAfter",
+            "name" : "PositiveAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Negative",
+            "name" : "Negative",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NegativeAfter",
+            "name" : "NegativeAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BeforePositive",
+            "name" : "BeforePositive",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BeforePositiveAfter",
+            "name" : "BeforePositiveAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterPositive",
+            "name" : "AfterPositive",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterPositiveAfter",
+            "name" : "AfterPositiveAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BeforeNegative",
+            "name" : "BeforeNegative",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BeforeNegativeAfter",
+            "name" : "BeforeNegativeAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNegative",
+            "name" : "AfterNegative",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNegativeAfter",
+            "name" : "AfterNegativeAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Control",
+            "name" : "Control",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ControlAfter",
+            "name" : "ControlAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PositiveAfterComp",
+            "name" : "PositiveAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PositiveAfter",
+              "commonPrecondition" : "FieldFilled(Positive) Or FieldNotFilled(Positive)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PositiveComp",
+            "name" : "PositiveComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Positive",
+              "commonPrecondition" : "AtLeastOneGroupFilled(Packages/Items*/Box For Key)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NegativeAfterComp",
+            "name" : "NegativeAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NegativeAfter",
+              "commonPrecondition" : "FieldFilled(Negative) Or FieldNotFilled(Negative)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NegativeComp",
+            "name" : "NegativeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Negative",
+              "commonPrecondition" : "NoGroupFilled(Packages/Items*/Box For Key)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BeforePositiveAfterComp",
+            "name" : "BeforePositiveAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BeforePositiveAfter",
+              "commonPrecondition" : "FieldFilled(BeforePositive) Or FieldNotFilled(BeforePositive)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BeforePositiveComp",
+            "name" : "BeforePositiveComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BeforePositive",
+              "commonPrecondition" : "AtLeastOneGroupFilled(Gate,Packages/Items*/Box For Key)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterPositiveAfterComp",
+            "name" : "AfterPositiveAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterPositiveAfter",
+              "commonPrecondition" : "FieldFilled(AfterPositive) Or FieldNotFilled(AfterPositive)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterPositiveComp",
+            "name" : "AfterPositiveComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterPositive",
+              "commonPrecondition" : "AtLeastOneGroupFilled(Packages/Items*/Box For Key,Gate)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BeforeNegativeAfterComp",
+            "name" : "BeforeNegativeAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BeforeNegativeAfter",
+              "commonPrecondition" : "FieldFilled(BeforeNegative) Or FieldNotFilled(BeforeNegative)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BeforeNegativeComp",
+            "name" : "BeforeNegativeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BeforeNegative",
+              "commonPrecondition" : "NoGroupFilled(Gate,Packages/Items*/Box For Key)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNegativeAfterComp",
+            "name" : "AfterNegativeAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNegativeAfter",
+              "commonPrecondition" : "FieldFilled(AfterNegative) Or FieldNotFilled(AfterNegative)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNegativeComp",
+            "name" : "AfterNegativeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNegative",
+              "commonPrecondition" : "NoGroupFilled(Packages/Items*/Box For Key,Gate)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ControlAfterComp",
+            "name" : "ControlAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ControlAfter",
+              "commonPrecondition" : "FieldFilled(Control) Or FieldNotFilled(Control)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ControlComp",
+            "name" : "ControlComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Control",
+              "commonPrecondition" : "GroupFilled(ControlBox)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/KeyProducerComp",
+            "name" : "KeyProducerComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Key",
+              "computationAlternatives" : [ {
+                "operation" : "\"P1\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

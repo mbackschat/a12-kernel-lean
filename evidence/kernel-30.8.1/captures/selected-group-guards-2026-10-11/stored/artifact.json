@@ -1,0 +1,4320 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "SelectedGuards_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeComp",
+              "field": "Form/Negative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeComp",
+              "field": "Form/Negative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlComp",
+              "field": "Form/Control",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlBox/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PositiveComp",
+              "field": "Form/Positive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Packages/Code",
+                "Form/Positive"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlComp",
+              "field": "Form/Control",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlBox/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PositiveComp",
+              "field": "Form/Positive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Packages/Code",
+                "Form/Positive"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "malformed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/ControlBox/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ControlBox/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Packages/Items/Box/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages/Items/Box/Value"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/ControlBox/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ControlBox/Value"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Packages/Items/Box/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Packages/Items/Box/Value"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/ControlBox/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ControlBox/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Packages/Items/Box/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages/Items/Box/Value"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/ControlBox/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ControlBox/Value"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Packages/Items/Box/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Packages/Items/Box/Value"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "failed-producer",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/ControlBox/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ControlBox/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Packages/Items/Box/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages/Items/Box/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Packages/Items/Source",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages/Items/Source"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Packages[2]/Items/Source",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages[2]/Items/Source"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/ControlBox/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ControlBox/Value"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Packages/Items/Box/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Packages/Items/Box/Value"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/ControlBox/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ControlBox/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Packages/Items/Box/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages/Items/Box/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Packages/Items/Source",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages/Items/Source"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Packages[2]/Items/Source",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages[2]/Items/Source"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/ControlBox/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/ControlBox/Value"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Packages/Items/Box/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Packages/Items/Box/Value"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "missing",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[-5]/Code",
+                "/Form[1]/Packages[-5]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[-5]/Code",
+                "/Form[1]/Packages[-5]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlComp",
+              "field": "Form/Control",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlBox/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeComp",
+              "field": "Form/Negative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[-5]/Code",
+                "/Form[1]/Packages[-5]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[-5]/Code",
+                "/Form[1]/Packages[-5]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative"
+              ]
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[-5]/Code",
+                "/Form[1]/Packages[-5]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[-5]/Code",
+                "/Form[1]/Packages[-5]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlComp",
+              "field": "Form/Control",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlBox/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeComp",
+              "field": "Form/Negative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[-5]/Code",
+                "/Form[1]/Packages[-5]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[-5]/Code",
+                "/Form[1]/Packages[-5]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative"
+              ]
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "duplicate",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[2]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages[2]/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[2]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages[2]/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Packages/Code",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Packages[2]/Code",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages[2]/Code"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Packages/Code",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Packages/Code"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Packages[2]/Code",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Packages[2]/Code"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[2]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages[2]/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[2]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages[2]/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Packages/Code",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Packages[2]/Code",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Packages[2]/Code"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Packages/Code",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Packages/Code"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Packages[2]/Code",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Packages[2]/Code"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "no-rows",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeComp",
+              "field": "Form/Negative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveComp",
+              "field": "Form/AfterPositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterPositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveComp",
+              "field": "Form/BeforePositive",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforePositive",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeComp",
+              "field": "Form/Negative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "gate-empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNegativeComp",
+              "field": "Form/AfterNegative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterNegative",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterNegative",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeComp",
+              "field": "Form/BeforeNegative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforeNegative",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforeNegative",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeComp",
+              "field": "Form/Negative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNegativeComp",
+              "field": "Form/AfterNegative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterNegative",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/AfterNegative",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeComp",
+              "field": "Form/BeforeNegative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforeNegative",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/BeforeNegative",
+                "Form/Gate",
+                "Form/Key",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeComp",
+              "field": "Form/Negative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Control",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "gate-bad",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeComp",
+              "field": "Form/Negative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Control",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Gate",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Gate"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterNegativeAfterComp",
+              "field": "Form/AfterNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterNegative",
+                "Form/AfterNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterPositiveAfterComp",
+              "field": "Form/AfterPositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/AfterPositive",
+                "Form/AfterPositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforeNegativeAfterComp",
+              "field": "Form/BeforeNegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforeNegative",
+                "Form/BeforeNegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BeforePositiveAfterComp",
+              "field": "Form/BeforePositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BeforePositive",
+                "Form/BeforePositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ControlAfterComp",
+              "field": "Form/ControlAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Control",
+                "Form/ControlAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeAfterComp",
+              "field": "Form/NegativeAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Negative",
+                "Form/NegativeAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NegativeComp",
+              "field": "Form/Negative",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ],
+              "fillToFix": [
+                "/Form[1]/Packages[1]/Items[0]/Box[1]/Value",
+                "Form/Key",
+                "Form/Negative",
+                "Form/Packages/Code"
+              ]
+            },
+            {
+              "code": "PositiveAfterComp",
+              "field": "Form/PositiveAfter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Positive",
+                "Form/PositiveAfter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Gate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AfterNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterNegativeAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterPositive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AfterPositiveAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegative",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforeNegativeAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforePositive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/BeforePositiveAfter",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Control",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ControlAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Negative",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NegativeAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Positive",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PositiveAfter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Gate",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Gate"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
