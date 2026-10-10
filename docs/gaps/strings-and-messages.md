@@ -2,7 +2,7 @@
 
 String and custom-field completion, enumerations and value lists, and the message surface — construction, the parameter grammar, its terminals, and the custom-condition callback.
 
-One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.md) is the hub and owns selection, the query contract, and the hard-frontier order; this file owns the detailed obligations below. The record contract is unchanged: current missing behaviour, prerequisites, discriminators, consumer consequences, evidence needs, route state, and reopening triggers only.
+One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.md) is the navigation hub and owns the query contract and dependency frontier; the [ordered checklist](../PLAN.md#ordered-checklist) owns priority; this file owns the detailed obligations below. The record contract is unchanged: current missing behaviour, prerequisites, discriminators, consumer consequences, evidence needs, route state, and reopening triggers only.
 
 <a id="gap-sg7"></a>
 ### SG7 — String, pattern, and custom-field completion

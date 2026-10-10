@@ -54,7 +54,7 @@ The capsule closure assessment in [`TESTING.md`](TESTING.md#same-context-capsule
 - Change the [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owner when executable, proof, non-law, protocol, or evidence support changes. Edit the matching shard record; change the hub only when its summary or stable entry set changes.
 - Change the [`SOURCES.md`](SOURCES.md) owner only when a reusable provenance checkpoint, authoritative source locus, or drill route changes. Edit the matching shard record; change the hub only when its navigation or stable entry set changes. Capsule-specific source narratives and review chronology stay in working context and Git history.
 - Change [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) only when the open set, prerequisite, discriminator, consumer consequence, evidence need, verified change route, route limit, or reopening trigger changes. Delete a completed entry; never append a shipped-status narrative.
-- Change [`PLAN.md`](PLAN.md) only when a resumption state must survive the current session, a blocker must outlive it, or a consumer-probe trigger changes. Completed-unit narratives, broad backlog, in-session selection, and durable findings do not belong there.
+- Change [`PLAN.md`](PLAN.md) when a resumption state must survive the current session, a blocker must outlive it, a consumer-probe trigger changes, or the owner-requested ordered checklist changes. The checklist owns priority, finite acceptance and deferral; detailed semantic obligations stay in the gap shards. Completed-unit narratives, in-session gate logs and durable findings do not belong there.
 - Change [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) only for a durable non-obvious lesson or a visible correction to an existing finding.
 - Change [`EVIDENCE.md`](EVIDENCE.md) only for retained observations, provenance, projections, replay, or claim limits.
 - Change [`TESTING.md`](TESTING.md) only for test layers, executable gates, assurance cadence, or contributor test method.
@@ -123,7 +123,7 @@ Detailed capability, gap, plan, and provenance records use keyed bullets instead
 
 Do not retain how the position was reached, completed route-discovery narrative, prior capsule inventories, or obsolete reopening triggers.
 
-`PLAN.md` is not a persistent mirror of an in-session task list, selected capsule, tool-call sequence, gate progress, or `update_plan` state. During uninterrupted work, keep selection and gate progress in working context and the in-session plan. Rewrite the file only when another session must resume at a different selected action, a blocker must outlive the session, or a consumer-probe trigger changes.
+`PLAN.md` retains the owner's numbered, risk-ranked checklist and separate deferred work, without a word limit. Update task completion, priority changes and consumer-probe checkpoints there; keep detailed semantics in their existing owners. It is not a mirror of tool calls or intermediate gate progress. Preserve stable task identifiers until the checkpoint is reported; Git owns completed checkpoint history.
 
 Do not patch and later revert `PLAN.md` around an uninterrupted capsule. At a clean generic route-discovery checkpoint, leave it unchanged. Commit a changed plan with the capsule or blocker that creates the handoff state; use a separate planning commit only when route discovery independently corrects durable facts or the handoff itself is the completed unit.
 

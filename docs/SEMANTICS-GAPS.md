@@ -1,10 +1,10 @@
 # Open semantic gaps
 
-This is the open-only work index for convergence toward complete semantic conformance with A12 Kernel 30.8.1. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns implemented, proved, and evidenced coverage. Working context selects uninterrupted work from this index. [`PLAN.md`](PLAN.md) persists a selection only for cross-session handoff.
+This is the open-only obligation index for convergence toward complete semantic conformance with A12 Kernel 30.8.1. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns implemented, proved, and evidenced coverage. The owner-requested [ordered checklist](PLAN.md#ordered-checklist) selects work and separates [deferred obligations](PLAN.md#deferred-work); do not select the next nearby gap independently of that order.
 
 ## Query contract
 
-This file is the hub: it owns selection, the hard-frontier order, and one stable compatibility entry per gap. The detailed obligations live in family shards under [`gaps/`](gaps/), one record per `gap-` anchor, and that is where every edit goes. Read the hub to choose; read the shard to work.
+This file owns the dependency frontier and one stable compatibility entry per gap. The detailed obligations live in family shards under [`gaps/`](gaps/), one record per `gap-` anchor. Read the plan for priority, this hub for navigation, and the selected shard for its obligation; legacy `remaining` prose must be reconciled against current code and evidence before implementation.
 
 | shard | families |
 |---|---|
