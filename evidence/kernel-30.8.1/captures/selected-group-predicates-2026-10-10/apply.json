@@ -1,0 +1,745 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Anchor",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Key",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Direct",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Fixed"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Fixed",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Rows",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Code",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Form/Rows",
+    "index-field": "Code"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form/Rows",
+    "name": "Details"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Details",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows/Details",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Tail",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Tail",
+    "name": "Value",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AllGroupsFilled(Direct, Fixed)",
+    "code": "DFAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Direct, Fixed)",
+    "code": "DFNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Direct, Fixed)",
+    "code": "DFSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NotAllGroupsFilled(Direct, Fixed)",
+    "code": "DFNotAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Direct, Fixed)",
+    "code": "DFMixed",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AllGroupsFilled(Rows/N For Key, Fixed)",
+    "code": "IFAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/N For Key, Fixed)",
+    "code": "IFNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/N For Key, Fixed)",
+    "code": "IFSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NotAllGroupsFilled(Rows/N For Key, Fixed)",
+    "code": "IFNotAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Rows/N For Key, Fixed)",
+    "code": "IFMixed",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AllGroupsFilled(Rows/Details For Key, Fixed)",
+    "code": "GFAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Details For Key, Fixed)",
+    "code": "GFNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Details For Key, Fixed)",
+    "code": "GFSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NotAllGroupsFilled(Rows/Details For Key, Fixed)",
+    "code": "GFNotAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Rows/Details For Key, Fixed)",
+    "code": "GFMixed",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AllGroupsFilled(Fixed, Rows/N For Key)",
+    "code": "FIAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Fixed, Rows/N For Key)",
+    "code": "FINone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed, Rows/N For Key)",
+    "code": "FISome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NotAllGroupsFilled(Fixed, Rows/N For Key)",
+    "code": "FINotAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Fixed, Rows/N For Key)",
+    "code": "FIMixed",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AllGroupsFilled(Fixed, Rows/Details For Key)",
+    "code": "FGAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Fixed, Rows/Details For Key)",
+    "code": "FGNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed, Rows/Details For Key)",
+    "code": "FGSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NotAllGroupsFilled(Fixed, Rows/Details For Key)",
+    "code": "FGNotAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Fixed, Rows/Details For Key)",
+    "code": "FGMixed",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AllGroupsFilled(Rows/N For \"missing\", Fixed)",
+    "code": "MIAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/N For \"missing\", Fixed)",
+    "code": "MINone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/N For \"missing\", Fixed)",
+    "code": "MISome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NotAllGroupsFilled(Rows/N For \"missing\", Fixed)",
+    "code": "MINotAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Rows/N For \"missing\", Fixed)",
+    "code": "MIMixed",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AllGroupsFilled(Rows/Details For \"missing\", Fixed)",
+    "code": "MGAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Details For \"missing\", Fixed)",
+    "code": "MGNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Details For \"missing\", Fixed)",
+    "code": "MGSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NotAllGroupsFilled(Rows/Details For \"missing\", Fixed)",
+    "code": "MGNotAll",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Rows/Details For \"missing\", Fixed)",
+    "code": "MGMixed",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/N For Key, Tail*)",
+    "code": "ISNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/N For Key, Tail*)",
+    "code": "ISSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Rows/Details For Key, Tail*)",
+    "code": "GSNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Details For Key, Tail*)",
+    "code": "GSSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Tail*, Rows/N For Key)",
+    "code": "SINone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Tail*, Rows/N For Key)",
+    "code": "SISome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Tail*, Rows/Details For Key)",
+    "code": "SGNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Tail*, Rows/Details For Key)",
+    "code": "SGSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And NoGroupFilled(Direct, Tail*)",
+    "code": "DSNone",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "group": "/Form",
+    "condition": "FieldFilled(Anchor) And AtLeastOneGroupFilled(Direct, Tail*)",
+    "code": "DSSome",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe observation."
+      }
+    ]
+  }
+]

@@ -1,0 +1,802 @@
+{
+  "header" : {
+    "id" : "SelectedPredicates_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "SelectedPredicates_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Direct",
+            "name" : "Direct",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Fixed",
+            "name" : "Fixed",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Fixed/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/Details",
+                "name" : "Details",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Details/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Details/M",
+                    "name" : "M",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "Code"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Tail",
+            "name" : "Tail",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Tail/Value",
+                "name" : "Value",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DFAll",
+            "name" : "DFAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "DFAll",
+              "errorCondition" : "FieldFilled(Anchor) And AllGroupsFilled(Direct, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DFNone",
+            "name" : "DFNone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "DFNone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Direct, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DFSome",
+            "name" : "DFSome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "DFSome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Direct, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DFNotAll",
+            "name" : "DFNotAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "DFNotAll",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllGroupsFilled(Direct, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DFMixed",
+            "name" : "DFMixed",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "DFMixed",
+              "errorCondition" : "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Direct, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/IFAll",
+            "name" : "IFAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "IFAll",
+              "errorCondition" : "FieldFilled(Anchor) And AllGroupsFilled(Rows/N For Key, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/IFNone",
+            "name" : "IFNone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "IFNone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Rows/N For Key, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/IFSome",
+            "name" : "IFSome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "IFSome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/N For Key, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/IFNotAll",
+            "name" : "IFNotAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "IFNotAll",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllGroupsFilled(Rows/N For Key, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/IFMixed",
+            "name" : "IFMixed",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "IFMixed",
+              "errorCondition" : "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Rows/N For Key, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GFAll",
+            "name" : "GFAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "GFAll",
+              "errorCondition" : "FieldFilled(Anchor) And AllGroupsFilled(Rows/Details For Key, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GFNone",
+            "name" : "GFNone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "GFNone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Rows/Details For Key, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GFSome",
+            "name" : "GFSome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "GFSome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Details For Key, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GFNotAll",
+            "name" : "GFNotAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "GFNotAll",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllGroupsFilled(Rows/Details For Key, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GFMixed",
+            "name" : "GFMixed",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "GFMixed",
+              "errorCondition" : "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Rows/Details For Key, Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIAll",
+            "name" : "FIAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIAll",
+              "errorCondition" : "FieldFilled(Anchor) And AllGroupsFilled(Fixed, Rows/N For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FINone",
+            "name" : "FINone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FINone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Fixed, Rows/N For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FISome",
+            "name" : "FISome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FISome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed, Rows/N For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FINotAll",
+            "name" : "FINotAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FINotAll",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllGroupsFilled(Fixed, Rows/N For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIMixed",
+            "name" : "FIMixed",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIMixed",
+              "errorCondition" : "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Fixed, Rows/N For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FGAll",
+            "name" : "FGAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FGAll",
+              "errorCondition" : "FieldFilled(Anchor) And AllGroupsFilled(Fixed, Rows/Details For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FGNone",
+            "name" : "FGNone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FGNone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Fixed, Rows/Details For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FGSome",
+            "name" : "FGSome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FGSome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Fixed, Rows/Details For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FGNotAll",
+            "name" : "FGNotAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FGNotAll",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllGroupsFilled(Fixed, Rows/Details For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FGMixed",
+            "name" : "FGMixed",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FGMixed",
+              "errorCondition" : "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Fixed, Rows/Details For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MIAll",
+            "name" : "MIAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MIAll",
+              "errorCondition" : "FieldFilled(Anchor) And AllGroupsFilled(Rows/N For \"missing\", Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MINone",
+            "name" : "MINone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MINone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Rows/N For \"missing\", Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MISome",
+            "name" : "MISome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MISome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/N For \"missing\", Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MINotAll",
+            "name" : "MINotAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MINotAll",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllGroupsFilled(Rows/N For \"missing\", Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MIMixed",
+            "name" : "MIMixed",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MIMixed",
+              "errorCondition" : "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Rows/N For \"missing\", Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MGAll",
+            "name" : "MGAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MGAll",
+              "errorCondition" : "FieldFilled(Anchor) And AllGroupsFilled(Rows/Details For \"missing\", Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MGNone",
+            "name" : "MGNone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MGNone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Rows/Details For \"missing\", Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MGSome",
+            "name" : "MGSome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MGSome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Details For \"missing\", Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MGNotAll",
+            "name" : "MGNotAll",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MGNotAll",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllGroupsFilled(Rows/Details For \"missing\", Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MGMixed",
+            "name" : "MGMixed",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "MGMixed",
+              "errorCondition" : "FieldFilled(Anchor) And GroupsNotCollectivelyFilled(Rows/Details For \"missing\", Fixed)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/ISNone",
+            "name" : "ISNone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "ISNone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Rows/N For Key, Tail*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/ISSome",
+            "name" : "ISSome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "ISSome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/N For Key, Tail*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GSNone",
+            "name" : "GSNone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "GSNone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Rows/Details For Key, Tail*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GSSome",
+            "name" : "GSSome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "GSSome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows/Details For Key, Tail*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/SINone",
+            "name" : "SINone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "SINone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Tail*, Rows/N For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/SISome",
+            "name" : "SISome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "SISome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Tail*, Rows/N For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/SGNone",
+            "name" : "SGNone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "SGNone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Tail*, Rows/Details For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/SGSome",
+            "name" : "SGSome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "SGSome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Tail*, Rows/Details For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DSNone",
+            "name" : "DSNone",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "DSNone",
+              "errorCondition" : "FieldFilled(Anchor) And NoGroupFilled(Direct, Tail*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DSSome",
+            "name" : "DSSome",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "DSSome",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneGroupFilled(Direct, Tail*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

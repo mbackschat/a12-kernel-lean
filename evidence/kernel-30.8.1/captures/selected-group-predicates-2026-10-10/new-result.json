@@ -1,0 +1,16 @@
+{
+  "target": "model",
+  "op": "new",
+  "outcome": "applied",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "created model SelectedPredicates_DM",
+  "changed": {
+    "id": "SelectedPredicates_DM",
+    "root": "Form",
+    "locale": "en_US"
+  },
+  "diagnostics": [],
+  "written": true,
+  "output": "SelectedPredicates_DM.json"
+}

@@ -1,0 +1,92 @@
+{
+  "target": "model",
+  "op": "describe",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "model card",
+  "data": {
+    "fields": [
+      {
+        "path": "/Form/Anchor",
+        "name": "Anchor",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Form/Key",
+        "name": "Key",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Form/Direct",
+        "name": "Direct",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Fixed/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Code",
+        "name": "Code",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Form/Rows/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Details/N",
+        "name": "N",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Details/M",
+        "name": "M",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Tail/Value",
+        "name": "Value",
+        "kind": "NUMBER",
+        "scale": 0
+      }
+    ],
+    "groups": [
+      {
+        "path": "/Form",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Fixed",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Rows",
+        "repeatable": true,
+        "maxRepetitions": 2
+      },
+      {
+        "path": "/Form/Rows/Details",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Tail",
+        "repeatable": true,
+        "maxRepetitions": 2
+      }
+    ],
+    "locales": [
+      "en_US"
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

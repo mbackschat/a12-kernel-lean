@@ -74,9 +74,10 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison =>
       comparison.supportsAddressedPartial
   | .groupList operator operands =>
-      operator.toStarredGroupFillQuantifier?.isSome && operands.all fun
-        | .group _ | .starredGroup _ | .starredGroupPresence _ => true
-        | _ => false
+      operands.all fun
+        | .field _ | .indexed _ | .group _ => true
+        | .keyed source => source.isGroup && !source.isStarredGroup
+        | .starredGroup _ | .starredGroupPresence _ => operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
   | .stringExpression _ => true
   | .constructedDateValidity _ source => !source.scalarCore.hasHaving
@@ -241,38 +242,71 @@ private def partialStarredGroupStates (operator : StarredGroupFillQuantifier)
         return true
   pure [if ← allEmpty (path.axes.drop path.firstStar) bound then .empty else .unavailable]
 
-/-- Delay each supported operand's partial presence read until its authored position is reached.
-Only the requested positive witness or negative coverage obligation is evaluated; the result is
-for the two star-admitting predicates, never cardinality. Unsupported carriers return `none`. -/
-def partialGroupOperandStates? (operator : StarredGroupFillQuantifier)
-    (context : AddressedValidationEvaluationContext model)
-    (resolveGroup : PartialGroupResolver) (operand : ResolvedGroupListOperand model) :
+/-- Delay presence reads until the predicate reaches their authored position. Selected fixed
+groups share the scalar group-state query; keyed stars need a separate extent interpretation. -/
+def partialGroupOperandStates? (operator : GroupFillQuantifier)
+    (context : AddressedValidationEvaluationContext model) (scope : ValidationRelevanceScope)
+    (isRelevant : FlatRelevance) (resolveGroup : PartialGroupResolver)
+    (operand : ResolvedGroupListOperand model) :
     Option (Unit → Except CheckedAddressingError (List GroupListPresenceState)) :=
   let document := match context.input with
     | .legacy document _ => document
     | .checked checked | .partialView checked _ => checked.source.toDocument
   match operand with
+  | .field declaration => some fun () => do
+      if !isRelevant declaration.id then return [.unavailable]
+      let cell ← context.readPartialCell context.outer declaration.id
+      pure [cell.map (fun value => (observeCell .validation value).asGroupListPresence) |>.getD .unavailable]
+  | .indexed source =>
+      match context.input with
+      | .legacy _ _ => none
+      | .checked checked | .partialView checked _ => some fun () => do
+          let observation ← source.observePartialDocument checked scope context.outer context.readPartialCell
+          pure [observation.map CellObservation.asGroupListPresence |>.getD .unavailable]
+  | .keyed source =>
+      if !source.isGroup || source.isStarredGroup then none else
+      match context.input with
+      | .legacy _ _ => none
+      | .checked checked | .partialView checked _ => some fun () => do
+          let state ← source.partialGroupState checked scope context.outer context.readPartialCell
+          pure [state.map GroupPresenceState.asGroupListPresence |>.getD .unavailable]
   | .group reference => some fun () => do
       pure [(← resolveGroup reference.path context.outer).derive.asGroupListPresence]
-  | .starredGroup source => some fun () =>
-      partialStarredGroupStates operator source.path source.group.path document context.outer resolveGroup
-  | .starredGroupPresence source => some fun () =>
-      partialStarredGroupStates operator source.path source.groupPath document context.outer resolveGroup
-  | .field _ | .indexed _ | .keyed _ => none
+  | .starredGroup source => do
+      let selected ← operator.toStarredGroupFillQuantifier?
+      pure fun () => partialStarredGroupStates selected source.path source.group.path document context.outer resolveGroup
+  | .starredGroupPresence source => do
+      let selected ← operator.toStarredGroupFillQuantifier?
+      pure fun () => partialStarredGroupStates selected source.path source.groupPath document context.outer resolveGroup
 
-/-- The shared entity-list runtime stops when a positive witness or negative counterexample
-settles the predicate (RuntimeController's entity-presence helpers, spec/10 §5). -/
-def evalPartialGroupReaders (operator : StarredGroupFillQuantifier)
+private def scanPartialGroupReaders (operator : GroupFillQuantifier)
     (readers : List (Unit → Except CheckedAddressingError (List GroupListPresenceState))) :
     Except CheckedAddressingError Verdict := do
   for read in readers do
-    let verdict := (operator.toGroupFillQuantifier.evalPresence (← read ())).asConservativeVerdict
+    let verdict := (operator.evalPresence (← read ())).asConservativeVerdict
     match operator with
     | .atLeastOneGroupFilled =>
         if verdict == .fired .value then return verdict
+    | .notAllGroupsFilled =>
+        if verdict == .fired .omission then return verdict
+    | .allGroupsFilled =>
+        unless verdict == .fired .value do return .unknown
     | .noGroupFilled =>
         unless verdict == .fired .omission do return .unknown
-  pure (operator.toGroupFillQuantifier.evalPresence []).asConservativeVerdict
+    | .groupsNotCollectivelyFilled => return .unknown
+  pure (operator.evalPresence []).asConservativeVerdict
+
+/-- The mixed predicate checks the positive witness before searching for a settled empty
+operand; unavailable peers do not erase either witness (RuntimeController entity-list helpers,
+spec/10 §5). The two passes retain the Kernel's reached-read order. -/
+def evalPartialGroupReaders (operator : GroupFillQuantifier)
+    (readers : List (Unit → Except CheckedAddressingError (List GroupListPresenceState))) :
+    Except CheckedAddressingError Verdict := do
+  if operator == .groupsNotCollectivelyFilled then
+    if (← scanPartialGroupReaders .atLeastOneGroupFilled readers) != .fired .value then
+      return .unknown
+    scanPartialGroupReaders .notAllGroupsFilled readers
+  else scanPartialGroupReaders operator readers
 
 /-- Evaluate one partial addressed leaf. The caller supplies the sole relevance-selected group-product query; `none` is structural unsupported information, not semantic UNKNOWN. A reached but nonrelevant supported source returns the family's exact UNKNOWN result. A missing RNU result means that partial relevance excluded the current composite key, while a mismatched result is a structural preparation error. -/
 def evalAddressedPartial?
@@ -390,9 +424,8 @@ def evalAddressedPartial?
         pure (operator.eval input.derive)
   | .groupList operator operands =>
       do
-        let selected ← operator.toStarredGroupFillQuantifier?
-        let readers ← operands.mapM (partialGroupOperandStates? selected context resolveGroup)
-        pure (evalPartialGroupReaders selected readers)
+        let readers ← operands.mapM (partialGroupOperandStates? operator context scope isRelevant resolveGroup)
+        pure (evalPartialGroupReaders operator readers)
   | .repetitionNotUnique _ =>
       some (match repetitionNotUniqueResult? with
         | some result =>

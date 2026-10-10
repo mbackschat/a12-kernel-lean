@@ -1,0 +1,4575 @@
+{
+  "model": "SelectedPredicates_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "empty-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "empty-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "empty-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "empty-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "empty-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "empty-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "absent-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "absent-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "absent-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "absent-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "absent-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "absent-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "absent-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "filled-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": [
+            {
+              "Value": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "filled-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": [
+            {
+              "Value": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "filled-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": [
+            {
+              "Value": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "filled-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": [
+            {
+              "Value": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "filled-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": [
+            {
+              "Value": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "filled-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": [
+            {
+              "Value": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "filled-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": [
+            {
+              "Value": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "selected-empty-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "selected-empty-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "selected-empty-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "selected-empty-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "selected-empty-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "selected-empty-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "selected-empty-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "selected-bad-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "selected-bad-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "selected-bad-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "selected-bad-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "selected-bad-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "selected-bad-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "selected-bad-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-good-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": "3"
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-good-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": "3"
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-good-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": "3"
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-good-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": "3"
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-good-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": "3"
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-good-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": "3"
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "bad-and-good-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "bad",
+              "Details": {
+                "N": "bad",
+                "M": "3"
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "missing-key-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "missing-key-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "missing-key-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "missing-key-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "missing-key-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "missing-key-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "missing-key-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "empty-key-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-key-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "empty-key-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "empty-key-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "empty-key-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "empty-key-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "empty-key-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            },
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "second-key-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "second-key-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "second-key-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "second-key-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "second-key-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "second-key-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "second-key-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "2",
+              "Details": {
+                "N": "2",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "over-limit-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "C",
+              "N": "3",
+              "Details": {
+                "N": "3",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "over-limit-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "C",
+              "N": "3",
+              "Details": {
+                "N": "3",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "over-limit-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "C",
+              "N": "3",
+              "Details": {
+                "N": "3",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "over-limit-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "C",
+              "N": "3",
+              "Details": {
+                "N": "3",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "over-limit-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "C",
+              "N": "3",
+              "Details": {
+                "N": "3",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "over-limit-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "C",
+              "N": "3",
+              "Details": {
+                "N": "3",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "over-limit-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "C",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "C",
+              "N": "3",
+              "Details": {
+                "N": "3",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "fixed-only-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "fixed-only-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "fixed-only-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "fixed-only-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "fixed-only-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "fixed-only-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "fixed-only-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "1"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "direct-only-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "direct-only-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "direct-only-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "direct-only-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "direct-only-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "direct-only-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "direct-only-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "1",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "fixed-bad-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": "bad"
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "direct-bad-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "bad",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "direct-bad-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "bad",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "direct-bad-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "bad",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "direct-bad-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "bad",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "direct-bad-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "bad",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "direct-bad-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "bad",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "direct-bad-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "A",
+          "Direct": "bad",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            },
+            {
+              "Code": "B",
+              "N": "",
+              "Details": {
+                "N": "",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-rows",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-fixed",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Direct"
+        },
+        {
+          "path": "/Form/Fixed"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-values",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/N"
+        },
+        {
+          "path": "/Form/Rows/Details/N"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-anchor",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        }
+      ]
+    },
+    {
+      "name": "guard-empty-tail",
+      "documentInline": {
+        "Form": {
+          "Anchor": "",
+          "Key": "A",
+          "Direct": "",
+          "Fixed": {
+            "N": ""
+          },
+          "Rows": [
+            {
+              "Code": "A",
+              "N": "1",
+              "Details": {
+                "N": "1",
+                "M": ""
+              }
+            }
+          ],
+          "Tail": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Tail"
+        }
+      ]
+    }
+  ]
+}

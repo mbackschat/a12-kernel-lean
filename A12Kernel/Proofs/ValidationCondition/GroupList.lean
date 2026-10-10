@@ -146,10 +146,9 @@ theorem validationConditionLeaf_groupList_partialDelegates
     (ValidationConditionLeaf.groupList operator operands).evalAddressedPartial?
         context scope isRelevant resolveGroup result? =
       (do
-        let selected ← operator.toStarredGroupFillQuantifier?
         let readers ← operands.mapM
-          (ValidationConditionLeaf.partialGroupOperandStates? selected context resolveGroup)
-        pure (ValidationConditionLeaf.evalPartialGroupReaders selected readers)) := by
+          (ValidationConditionLeaf.partialGroupOperandStates? operator context scope isRelevant resolveGroup)
+        pure (ValidationConditionLeaf.evalPartialGroupReaders operator readers)) := by
   rfl
 
 /-- A group-list leaf exposes exactly the captured prefix of its checked starred operands as its ordinary rule-iteration scope. -/

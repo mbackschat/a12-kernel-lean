@@ -47,26 +47,33 @@ def validationGroupPresence (source : CheckedKeyedEntityExtent model) (operator 
   | some [state] => pure (operator.eval state)
   | _ => throw (.addressing (.unsupportedGroupOperand source.groupPath))
 
-/-- Partial group presence applies its asymmetric content/relevance judgment at the selected
-row; key-only coverage can establish filledness but cannot establish empty descendants. -/
-def partialGroupPresence (source : CheckedKeyedEntityExtent model) (operator : GroupPresenceOperator)
+/-- Partial selected-group state preserves unavailable selection and incomplete missing-key
+coverage before a consuming predicate chooses filledness or emptiness (spec/10 §5). -/
+def partialGroupState (source : CheckedKeyedEntityExtent model)
     (document : CheckedDocument model) (scope : ValidationRelevanceScope) (outer : Env)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
-    Except CheckedAddressingError Verdict := do
+    Except CheckedAddressingError (Option GroupPresenceState) := do
   let view ← document.applyPartialGeneratedPreliminaryForScope scope |>.mapError .indexPreliminary
   match ← source.selection.indexSource.selectPartial view outer read with
-  | none | some (.unknown _) | some (.poison _) => pure .unknown
+  | none | some (.unknown _) | some (.poison _) => pure none
   | some .empty =>
       let bound := source.selection.indexDeclaration.repeatableScope.dropLast
       let complete := source.declarations.all fun declaration =>
         view.relevance.coversValueListExtent model declaration.path bound
           (declaration.repeatableScope.drop bound.length) outer
-      pure (operator.eval {
+      pure (some {
         content := false, erroneous := false
         relevance := if complete then .fullyRelevant else .partlyRelevant })
   | some (.value environment) =>
       let input ← view.groupPresenceInput source.groupPath environment false |>.mapError .group
-      pure (operator.eval input.derive)
+      pure (some input.derive)
+
+/-- Key-only coverage can establish filledness but cannot establish empty descendants. -/
+def partialGroupPresence (source : CheckedKeyedEntityExtent model) (operator : GroupPresenceOperator)
+    (document : CheckedDocument model) (scope : ValidationRelevanceScope) (outer : Env)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError Verdict := do
+  pure ((← source.partialGroupState document scope outer read).map operator.eval |>.getD .unknown)
 
 /-- Index poison precedes the ordinary group-content policy. That policy treats malformed input
 and failed computed cells differently, rather than propagating every descendant as field poison. -/
