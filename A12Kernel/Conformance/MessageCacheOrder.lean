@@ -198,6 +198,42 @@ example : messageCacheCapacities unrelatedTree = [64] ∧
       some { insertions := [association 1] } := by
   native_decide
 
+private def queryResult (context : MessageIndexContext) (group : RepeatableLevel)
+    (parent : List Nat) (key : Option SemanticIndexKey) :
+    MessageCacheOrderError ⊕ MessageRepetitionCoordinate :=
+  match context.lookup group parent key with
+  | .ok coordinate => .inr coordinate
+  | .error error => .inl error
+
+private def isolatedHostPopulation : List MessageCachePopulationEntry := treeHistory ++
+  [{ hash := 9, association := some { group := 20, parentPath := [1], key := .text "safe", row := 3 } },
+   { hash := 10, association := some { group := 10, parentPath := [2], key := .text "same", row := 4 } },
+   { hash := 11, association := some { group := 10, parentPath := [1], key := .text "other", row := 5 } }]
+
+example :
+    let context := MessageIndexContext.derived isolatedHostPopulation .ascendingPhysical []
+    queryResult context 20 [1] (some (.text "safe")) = .inr (.concrete 3) ∧
+    queryResult context 10 [2] (some (.text "same")) = .inr (.concrete 4) ∧
+    queryResult context 10 [1] (some (.text "other")) = .inr (.concrete 5) ∧
+    queryResult context 10 [1] (some (.text "absent")) = .inr .unknown ∧
+    queryResult context 10 [1] none = .inr .unknown ∧
+    queryResult context 10 [1] (some (.text "")) = .inr .unknown ∧
+    queryResult context 10 [1] (some (.text "same")) =
+      .inl (.unresolvedBucket 10 [1] (.text "same")) := by native_decide
+
+example :
+    let context := MessageIndexContext.derived capacityDependentWinner .ascendingPhysical []
+    queryResult context 10 [1] (some (.text "same")) = .inl .unresolvedCapacity ∧
+    queryResult context 20 [1] (some (.text "same")) = .inr .unknown ∧
+    queryResult (MessageIndexContext.derived (capacityPair ++ loadFillers) .ascendingPhysical [])
+      10 [1] (some (.text "same")) = .inr (.concrete 2) := by native_decide
+
+example :
+    queryResult (MessageIndexContext.derived treeHistory .ascendingPhysical [association 7])
+      10 [1] (some (.text "same")) = .inr (.concrete 7) ∧
+    queryResult (MessageIndexContext.known { insertions := [association 2] })
+      10 [1] (some (.text "same")) = .inr (.concrete 2) := by native_decide
+
 private def nameField (id : FieldId) (group : String) (name : String) : FlatFieldDecl :=
   { id, groupPath := ["Form", group], name, policy := { kind := .string } }
 

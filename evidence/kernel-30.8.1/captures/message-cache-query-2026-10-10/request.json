@@ -1,0 +1,217 @@
+{
+  "model": "model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "unique",
+      "documentInline": {
+        "Form": {
+          "Anchor": "x",
+          "Rows": [
+            {
+              "K6270": "b"
+            },
+            {
+              "K6270": "b"
+            }
+          ],
+          "CEFRZTCKMAaAaAaAa": "x",
+          "CEFRZTCKMAaAaAaBB": "x",
+          "CEFRZTCKMAaAaBBAa": "x",
+          "CEFRZTCKMAaAaBBBB": "x",
+          "CEFRZTCKMAaBBAaAa": "x",
+          "CEFRZTCKMAaBBAaBB": "x",
+          "CEFRZTCKMAaBBBBAa": "x",
+          "CEFRZTCKMAaBBBBBB": "x",
+          "CEFRZTCKMBBAaAaAa": "x",
+          "CEFRZTCKMBBAaAaBB": "x",
+          "CEFRZTCKMBBAaBBAa": "x",
+          "CEFRZTCKMBBAaBBBB": "x",
+          "CEFRZTCKMBBBBAaAa": "x",
+          "CEFRZTCKMBBBBAaBB": "x",
+          "CEFRZTCKMBBBBBBAa": "x",
+          "CEFRZTCKMBBBBBBBB": "x",
+          "CHQRBUERCAaAaAaAa": "x",
+          "CHQRBUERCAaAaAaBB": "x",
+          "CHQRBUERCAaAaBBAa": "x",
+          "CHQRBUERCAaAaBBBB": "x",
+          "CHQRBUERCAaBBAaAa": "x",
+          "CHQRBUERCAaBBAaBB": "x",
+          "CHQRBUERCAaBBBBAa": "x",
+          "CHQRBUERCAaBBBBBB": "x",
+          "CHQRBUERCBBAaAaAa": "x",
+          "CHQRBUERCBBAaAaBB": "x",
+          "CHQRBUERCBBAaBBAa": "x",
+          "CHQRBUERCBBAaBBBB": "x",
+          "CHQRBUERCBBBBAaAa": "x",
+          "CHQRBUERCBBBBAaBB": "x",
+          "CHQRBUERCBBBBBBAa": "x",
+          "CHQRBUERCBBBBBBBB": "x",
+          "Stable": [
+            {
+              "StableKey": "t",
+              "N": "1"
+            },
+            {
+              "StableKey": "s",
+              "N": "1"
+            }
+          ],
+          "Other": [
+            {
+              "StableKey": "s",
+              "N": "2"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "duplicate",
+      "documentInline": {
+        "Form": {
+          "Anchor": "x",
+          "Rows": [
+            {
+              "K6270": "b"
+            },
+            {
+              "K6270": "b"
+            }
+          ],
+          "CEFRZTCKMAaAaAaAa": "x",
+          "CEFRZTCKMAaAaAaBB": "x",
+          "CEFRZTCKMAaAaBBAa": "x",
+          "CEFRZTCKMAaAaBBBB": "x",
+          "CEFRZTCKMAaBBAaAa": "x",
+          "CEFRZTCKMAaBBAaBB": "x",
+          "CEFRZTCKMAaBBBBAa": "x",
+          "CEFRZTCKMAaBBBBBB": "x",
+          "CEFRZTCKMBBAaAaAa": "x",
+          "CEFRZTCKMBBAaAaBB": "x",
+          "CEFRZTCKMBBAaBBAa": "x",
+          "CEFRZTCKMBBAaBBBB": "x",
+          "CEFRZTCKMBBBBAaAa": "x",
+          "CEFRZTCKMBBBBAaBB": "x",
+          "CEFRZTCKMBBBBBBAa": "x",
+          "CEFRZTCKMBBBBBBBB": "x",
+          "CHQRBUERCAaAaAaAa": "x",
+          "CHQRBUERCAaAaAaBB": "x",
+          "CHQRBUERCAaAaBBAa": "x",
+          "CHQRBUERCAaAaBBBB": "x",
+          "CHQRBUERCAaBBAaAa": "x",
+          "CHQRBUERCAaBBAaBB": "x",
+          "CHQRBUERCAaBBBBAa": "x",
+          "CHQRBUERCAaBBBBBB": "x",
+          "CHQRBUERCBBAaAaAa": "x",
+          "CHQRBUERCBBAaAaBB": "x",
+          "CHQRBUERCBBAaBBAa": "x",
+          "CHQRBUERCBBAaBBBB": "x",
+          "CHQRBUERCBBBBAaAa": "x",
+          "CHQRBUERCBBBBAaBB": "x",
+          "CHQRBUERCBBBBBBAa": "x",
+          "CHQRBUERCBBBBBBBB": "x",
+          "Stable": [
+            {
+              "StableKey": "s",
+              "N": "1"
+            },
+            {
+              "StableKey": "s",
+              "N": "1"
+            }
+          ],
+          "Other": [
+            {
+              "StableKey": "s",
+              "N": "2"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "missing",
+      "documentInline": {
+        "Form": {
+          "Anchor": "x",
+          "Rows": [
+            {
+              "K6270": "b"
+            },
+            {
+              "K6270": "b"
+            }
+          ],
+          "CEFRZTCKMAaAaAaAa": "x",
+          "CEFRZTCKMAaAaAaBB": "x",
+          "CEFRZTCKMAaAaBBAa": "x",
+          "CEFRZTCKMAaAaBBBB": "x",
+          "CEFRZTCKMAaBBAaAa": "x",
+          "CEFRZTCKMAaBBAaBB": "x",
+          "CEFRZTCKMAaBBBBAa": "x",
+          "CEFRZTCKMAaBBBBBB": "x",
+          "CEFRZTCKMBBAaAaAa": "x",
+          "CEFRZTCKMBBAaAaBB": "x",
+          "CEFRZTCKMBBAaBBAa": "x",
+          "CEFRZTCKMBBAaBBBB": "x",
+          "CEFRZTCKMBBBBAaAa": "x",
+          "CEFRZTCKMBBBBAaBB": "x",
+          "CEFRZTCKMBBBBBBAa": "x",
+          "CEFRZTCKMBBBBBBBB": "x",
+          "CHQRBUERCAaAaAaAa": "x",
+          "CHQRBUERCAaAaAaBB": "x",
+          "CHQRBUERCAaAaBBAa": "x",
+          "CHQRBUERCAaAaBBBB": "x",
+          "CHQRBUERCAaBBAaAa": "x",
+          "CHQRBUERCAaBBAaBB": "x",
+          "CHQRBUERCAaBBBBAa": "x",
+          "CHQRBUERCAaBBBBBB": "x",
+          "CHQRBUERCBBAaAaAa": "x",
+          "CHQRBUERCBBAaAaBB": "x",
+          "CHQRBUERCBBAaBBAa": "x",
+          "CHQRBUERCBBAaBBBB": "x",
+          "CHQRBUERCBBBBAaAa": "x",
+          "CHQRBUERCBBBBAaBB": "x",
+          "CHQRBUERCBBBBBBAa": "x",
+          "CHQRBUERCBBBBBBBB": "x",
+          "Stable": [
+            {
+              "StableKey": "t",
+              "N": "1"
+            },
+            {
+              "StableKey": "u",
+              "N": "1"
+            }
+          ],
+          "Other": [
+            {
+              "StableKey": "s",
+              "N": "2"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    }
+  ]
+}

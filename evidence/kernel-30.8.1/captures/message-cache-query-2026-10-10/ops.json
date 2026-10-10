@@ -1,0 +1,88 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Stable",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Stable",
+    "name": "StableKey",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Stable",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Form/Stable",
+    "index-field": "StableKey"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Other",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Other",
+    "name": "StableKey",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Other",
+    "name": "N",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Form/Other",
+    "index-field": "StableKey"
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Anchor",
+    "code": "RefStable",
+    "condition": "FieldFilled(/Form/Anchor) Or [/Form/Stable/N For \"s\"] > 0",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/Stable/N",
+    "code": "ParallelStable",
+    "condition": "FieldFilled(/Form/Stable/N) Or FieldFilled(/Form/Other/N)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  }
+]

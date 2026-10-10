@@ -82,7 +82,7 @@ private def evalRow (pair : CheckedParallelFieldPair model) (condition : Conditi
     (evaluate : ResolvedParallelIndexRow → CheckedIndexPreliminary model →
       Except ParallelPresenceRuleEvaluationError Verdict)
     (preliminary : CheckedIndexPreliminary model)
-    (outerEnvironment : Env) (messageCache : Option MessageIndexCache)
+    (outerEnvironment : Env) (messageCache : Option MessageIndexContext)
     (row : ResolvedParallelIndexRow) :
     Except ParallelPresenceRuleEvaluationError ParallelRuleRowOutcome := do
   let verdict ← evaluate row preliminary
@@ -100,7 +100,7 @@ def evalWith (pair : CheckedParallelFieldPair model) (condition : Condition)
     (evaluate : Env → ResolvedParallelIndexRow → CheckedIndexPreliminary model →
       Except ParallelPresenceRuleEvaluationError Verdict)
     (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
-    (messageCache : Option MessageIndexCache := none)
+    (messageCache : Option MessageIndexContext := none)
     (includeAddress : CellAddr → Bool := fun _ => true)
     (admitOuter : Env → Bool := fun _ => true) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
@@ -122,7 +122,7 @@ def evalFullWith (pair : CheckedParallelFieldPair model) (condition : Condition)
     (evaluate : ResolvedParallelIndexRow → CheckedIndexPreliminary model →
       Except ParallelPresenceRuleEvaluationError Verdict)
     (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
-    (messageCache : Option MessageIndexCache := none) :
+    (messageCache : Option MessageIndexContext := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) :=
   pair.evalWith condition (fun _ => evaluate) preliminary outer messageCache
 

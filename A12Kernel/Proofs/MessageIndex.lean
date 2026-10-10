@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.MessageIndex
+import A12Kernel.Semantics.MessageCacheOrder
 
 namespace A12Kernel
 
@@ -33,5 +33,20 @@ theorem messageIndex_append_unrelated
     ({ insertions := cache.insertions ++ [insertion] } : MessageIndexCache).lookup
       group parentPath (some key) = cache.lookup group parentPath (some key) := by
   simp [MessageIndexCache.lookup, List.foldl_append, unrelated]
+
+/-- Query isolation keeps all host capacity and collision inputs, including unrelated entries. -/
+theorem messageCacheQueryPopulation_hashes (population : List MessageCachePopulationEntry)
+    (group : RepeatableLevel) (parent : List Nat) (key : SemanticIndexKey) :
+    (messageCacheQueryPopulation population group parent key).map (·.hash) = population.map (·.hash) := by
+  simp [messageCacheQueryPopulation, List.map_map]
+
+theorem messageCacheContext_known (cache : MessageIndexCache) (group : RepeatableLevel)
+    (parent : List Nat) (key : Option SemanticIndexKey) :
+    (MessageIndexContext.known cache).lookup group parent key = .ok (cache.lookup group parent key) := by
+  rfl
+
+theorem messageCacheContext_missingKey (context : MessageIndexContext) (group : RepeatableLevel)
+    (parent : List Nat) : context.lookup group parent none = .ok .unknown := by
+  cases context <;> rfl
 
 end A12Kernel

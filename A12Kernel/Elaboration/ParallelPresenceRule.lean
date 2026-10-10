@@ -77,7 +77,7 @@ private def evalLeaf (row : ResolvedParallelIndexRow)
 /-- Positive presence reuses the same checked join traversal as other pair-condition families. -/
 def evalFull (rule : CheckedParallelPresenceRule model)
     (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
-    (messageCache : Option MessageIndexCache := none) :
+    (messageCache : Option MessageIndexContext := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) :=
   rule.toCheckedParallelFieldPair.evalFullWith rule.condition.core
     (fun row view => rule.condition.core.evalVerdictExcept (evalLeaf row view)) preliminary outer messageCache

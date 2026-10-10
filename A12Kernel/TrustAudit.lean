@@ -1083,6 +1083,9 @@ run_cmd do
 #print axioms A12Kernel.numericComputationRun_executeTables_trace
 #print axioms A12Kernel.numericComputationRun_execute_trace
 #print axioms A12Kernel.messagePointer_toCellAddr_ofCellAddr
+#print axioms A12Kernel.messageCacheQueryPopulation_hashes
+#print axioms A12Kernel.messageCacheContext_known
+#print axioms A12Kernel.messageCacheContext_missingKey
 #print axioms A12Kernel.messageIndex_missingKey
 #print axioms A12Kernel.messageIndex_emptyCache
 #print axioms A12Kernel.messageIndex_append_matching

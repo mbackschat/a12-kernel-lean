@@ -257,7 +257,7 @@ private def keyedReferences : Option (Bool × List (List RepeatableLevel) × Lis
   let references := source.source.referencesField 1 && source.source.referencesField 3 &&
     !source.source.referencesField 2
   let pointers ← (source.source.referencePointers [] (some {
-    cache := { insertions := [{ group := 10, parentPath := [], key := .text "A", row := 1 }] },
+    cache := .known { insertions := [{ group := 10, parentPath := [], key := .text "A", row := 1 }] },
     keyAt := fun _ => none })).toOption
   pure (references, source.source.bindingScopes, pointers)
 
@@ -369,7 +369,7 @@ private def keyedDslMetadata : Option ((List FieldId × List FieldId × List (Li
   let parsed ← (parseText .english "YearFromDate(EndOfDateRange(Rows/Range1 For \"A\")) == 2000").toOption
   let condition ← (lowerCondition keyedModel ["Form"] false parsed.body).toOption
   let pointers ← (condition.core.referencePointers [] (some {
-    cache := { insertions := [{ group := 10, parentPath := [], key := .text "A", row := 1 }] },
+    cache := .known { insertions := [{ group := 10, parentPath := [], key := .text "A", row := 1 }] },
     keyAt := fun _ => none })).toOption
   pure ((source.fieldIds, source.boundFieldIds, source.bindingScopes), (source.requiresAddressed, pointers))
 
@@ -465,7 +465,7 @@ private def nestedMetadata : Option (List FieldId × List FieldId × List (List 
   let parsed ← (parseText .english (nestedOperation "/Form/Parents/Key" ++ " == 2001")).toOption
   let condition ← (lowerCondition nestedModel ["Form", "Parents"] false parsed.body).toOption
   let pointers ← (condition.core.referencePointers [(5, 2)] (some {
-    cache := { insertions := [{ group := 10, parentPath := [2], key := .text "B", row := 2 }] },
+    cache := .known { insertions := [{ group := 10, parentPath := [2], key := .text "B", row := 2 }] },
     keyAt := fun address => if address.field == 4 && address.path == [2] then some (.text "B") else none })).toOption
   pure (source.fieldIds, source.boundFieldIds, source.bindingScopes, pointers)
 

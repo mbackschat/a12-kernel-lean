@@ -239,7 +239,7 @@ private def references (expression : String) : Option (List MessagePointer) := d
   let parsed ← (parseText .english expression).toOption
   let checked ← (lowerCondition model ["Form"] false parsed.body).toOption
   (checked.core.referencePointers [] (some {
-    cache := { insertions := [{ group := 10, parentPath := [], key := .text "one", row := 1 }] }
+    cache := .known { insertions := [{ group := 10, parentPath := [], key := .text "one", row := 1 }] }
     keyAt := fun address => if address.field == 1 then some (.text "one") else none })).toOption
 
 example : references direct = some [

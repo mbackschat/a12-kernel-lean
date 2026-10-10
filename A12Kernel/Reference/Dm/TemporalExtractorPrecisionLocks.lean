@@ -209,7 +209,7 @@ example : ["YearFromDate(\"2024-05-06\")", "YearFromDate(AddYears(Day,1))",
     compute "HoursFromTime(TimeFromDateTime(Stamp))" = some ["value 12"] := by native_decide
 
 private def referenceInputs : MessageReferenceInputs := {
-  cache := { insertions := [
+  cache := .known { insertions := [
     { group := 10, parentPath := [], key := .text "A", row := 1 },
     { group := 10, parentPath := [], key := .text "B", row := 2 }] }
   keyAt := fun _ => none }

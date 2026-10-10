@@ -33,7 +33,7 @@ def messageCacheLoadCapacity (population : Nat) : Nat :=
         else grow fuel (capacity * 2)
   grow population 16
 
-/-- Every admitted field or group contributes a hash; only index fields contribute an association. The producer must supply distinct identifiers from one full-validation population. -/
+/-- Every admitted field or group contributes a hash; only index fields contribute an association. The producer must supply distinct identifiers from one validation-call population. -/
 structure MessageCachePopulationEntry where
   hash : UInt32
   association : Option MessageIndexInsertion := none
@@ -111,5 +111,35 @@ def deriveMessageIndexCache (population : List MessageCachePopulationEntry)
           if rest.all (fun other => decide ((cacheAtCapacity population other rowOrder).toOption = some candidate)) then
             pure candidate
           else throw .unresolvedCapacity
+
+/-- Retain every hash contribution while restricting association work to one lookup namespace. Removing unrelated entries instead would change table capacity and collision history (spec/08 §4.3). -/
+def messageCacheQueryPopulation (population : List MessageCachePopulationEntry)
+    (group : RepeatableLevel) (parentPath : List Nat) (key : SemanticIndexKey) :
+    List MessageCachePopulationEntry :=
+  population.map fun entry => { entry with association := entry.association.filter fun association =>
+    association.group == group && association.parentPath == parentPath && association.key == key }
+
+/-- An exact supplied cache or a population whose associations are resolved on demand. Host uncertainty belongs to the queried namespace; later default updates remain separate from the hash population (spec/08 §4.3). -/
+inductive MessageIndexContext where
+  | known (cache : MessageIndexCache)
+  | derived (population : List MessageCachePopulationEntry) (rowOrder : MessageCacheRowOrder)
+      (defaults : List MessageIndexInsertion)
+  deriving Repr, DecidableEq
+
+/-- Resolve only the requested association, preserving unknown for absent queries and explicit failure for an unsettled host-dependent winner. A later matching default supersedes the earlier population. -/
+def MessageIndexContext.lookup (context : MessageIndexContext) (group : RepeatableLevel)
+    (parentPath : List Nat) (key : Option SemanticIndexKey) :
+    Except MessageCacheOrderError MessageRepetitionCoordinate := do
+  match context with
+  | .known cache => pure (cache.lookup group parentPath key)
+  | .derived population rowOrder defaults =>
+      let some key := key | return .unknown
+      if key == .text "" then return .unknown
+      match ({ insertions := defaults } : MessageIndexCache).lookup group parentPath (some key) with
+      | .concrete row => return .concrete row
+      | _ =>
+          let cache ← deriveMessageIndexCache
+            (messageCacheQueryPopulation population group parentPath key) rowOrder
+          pure (cache.lookup group parentPath (some key))
 
 end A12Kernel

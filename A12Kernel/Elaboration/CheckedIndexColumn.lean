@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.MessageIndex
+import A12Kernel.Semantics.MessageCacheOrder
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Elaboration.RuleIterationDomain
 import A12Kernel.Semantics.SemanticIndex
@@ -524,7 +524,7 @@ namespace ResolvedParallelIndexSide
 remain structural errors rather than being widened into more unknown coordinates. A duplicate requires the actual cache association supplied by its caller: document bytes alone need not determine its host-dependent winner (spec/08 §4.3). -/
 def messagePointer (side : ResolvedParallelIndexSide) (model : FlatModel)
     (outer : Env) (field : FieldId)
-    (cacheQuery : Option (MessageIndexCache × SemanticIndexKey) := none) :
+    (cacheQuery : Option (MessageIndexContext × SemanticIndexKey) := none) :
     Except CheckedIndexColumnError MessagePointer := do
   let declaration ← model.lookupUniqueId field |>.mapError .model
   if !side.group.path.isPrefixOf declaration.groupPath then
@@ -535,7 +535,7 @@ def messagePointer (side : ResolvedParallelIndexSide) (model : FlatModel)
       let parentScope := (model.repeatableScopeForGroupPath side.group.path).dropLast
       let parentPath ← outer.pathForScope parentScope |>.mapError .environment
       match cache.lookup side.group.level parentPath (some key) with
-      | .concrete row => pure (some row)
+      | .ok (.concrete row) => pure (some row)
       | _ => throw (.unresolvedDuplicatePointer field side.group.path)
     else pure none
   let coordinates ← match selected, side.environment with

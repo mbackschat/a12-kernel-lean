@@ -134,6 +134,19 @@ def CheckedPartialPreliminary.deriveMessageCache (view : CheckedPartialPrelimina
   let population ← view.messageCachePopulation
   deriveMessageIndexCache population .ascendingPhysical |>.mapError .hostOrder
 
+/-- Prepare full-call lookup without requiring unrelated host-sensitive associations to settle. Strict whole-cache materialization remains available through `deriveMessageCache`. -/
+def CheckedIndexPreliminary.messageCacheContext (preliminary : CheckedIndexPreliminary model) :
+    Except CheckedMessageCacheError MessageIndexContext := do
+  let population ← preliminary.base.messageCachePopulation
+  let defaults := preliminary.base.indexCacheDefaults.filterMap fun entry =>
+    associationAt model entry.address (.text entry.stored)
+  return .derived population .ascendingPhysical defaults
+
+/-- Partial lookup retains the complete call-local hash population and never applies full-call defaults. -/
+def CheckedPartialPreliminary.messageCacheContext (view : CheckedPartialPreliminary model) :
+    Except CheckedMessageCacheError MessageIndexContext := do
+  return .derived (← view.messageCachePopulation) .ascendingPhysical []
+
 /-- Structural queries retain partial unavailability independently of the admitted cache. -/
 def CheckedPartialPreliminary.messageQueryKeyAt? (view : CheckedPartialPreliminary model)
     (address : CellAddr) : Option SemanticIndexKey := do

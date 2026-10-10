@@ -127,10 +127,10 @@ def runValidationRule (world : World) (document : CheckedDocument model)
   | .ordinary rule => runRule world document rule
   | .parallel rule => do
       let preliminary ← document.applyFullIndexPreliminary |>.mapError (fun error => (repr error).pretty)
-      let initial := rule.evalDocument preliminary messageCache
+      let initial := rule.evalDocument preliminary (messageCache.map MessageIndexContext.known)
       let evaluated := match messageCache, initial with
         | none, .error (.join (.unresolvedDuplicatePointer _ _)) =>
-            match preliminary.deriveMessageCache with
+            match preliminary.messageCacheContext with
             | .ok cache => rule.evalDocument preliminary (some cache)
             | .error _ => initial
         | _, _ => initial
@@ -142,10 +142,10 @@ def runPartialParallelRule (document : CheckedDocument model)
     (rule : CheckedParallelFieldRule model) (relevant : List RelevantEntityPattern)
     (messageCache : Option MessageIndexCache := none) : Except String (List FlatRuleMessage) := do
   let view ← document.applyPartialGeneratedPreliminary relevant |>.mapError (fun error => (repr error).pretty)
-  let initial := rule.evalPartialDocument view messageCache
+  let initial := rule.evalPartialDocument view (messageCache.map MessageIndexContext.known)
   let evaluated := match messageCache, initial with
     | none, .error (.join (.unresolvedDuplicatePointer _ _)) =>
-        match view.deriveMessageCache with
+        match view.messageCacheContext with
         | .ok cache => rule.evalPartialDocument view (some cache)
         | .error _ => initial
     | _, _ => initial

@@ -104,7 +104,7 @@ end CheckedPartialPreliminary
 
 /-- Partial calls use the same checked join and condition tree, selecting keys from relevant index addresses while preserving the uncompressed relevance set for leaf reads. -/
 def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRule model)
-    (view : CheckedPartialPreliminary model) (messageCache : Option MessageIndexCache := none) :
+    (view : CheckedPartialPreliminary model) (messageCache : Option MessageIndexContext := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
   let common := match rule.pair.groups.outerScopePlan with
     | .common shared | .framed _ shared _ => shared

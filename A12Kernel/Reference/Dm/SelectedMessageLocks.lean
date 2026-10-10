@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.LowerValidation
 import A12Kernel.Reference.Dm.Parser
@@ -32,7 +33,7 @@ private def model : FlatModel := {
     { level := 30, path := ["Form", "Parents", "Lookup"], repeatability := some 2 }] }
 
 private def inputs (key : Option SemanticIndexKey := some (.text "a")) : MessageReferenceInputs := {
-  cache := { insertions := [
+  cache := .known { insertions := [
     { group := 10, parentPath := [1], key := .text "a", row := 1 },
     { group := 10, parentPath := [1], key := .text "b", row := 3 },
     { group := 10, parentPath := [1], key := .text "b", row := 2 },
@@ -249,7 +250,7 @@ private def namedPopulationResult (candidate : FlatModel) (last : String) (index
   let expression ← (parseText .english "[Rows/N For Key] > 0").toOption
   let condition ← (lowerCondition candidate ["Form", "Parents"] false expression.body (world := world)).toOption
   let pointers ← (condition.core.referencePointers [(1, 1)] (some context)).toOption
-  pure (population.length, context.cache.lookup 10 [1] (some (.text "b")), pointers)
+  pure (population.length, ← (context.cache.lookup 10 [1] (some (.text "b"))).toOption, pointers)
 
 example : ["", "1"].all (fun last =>
     (namedPopulationResult renamedPopulationModel last "Key").map (fun (_, row, pointers) => (row, pointers)) ==
@@ -261,6 +262,73 @@ example : [(populationModel, "Id", "F0"), (renamedPopulationModel, "Key", "F0"),
     (reservedPopulationModel, "Key", "Key_0")].all (fun (candidate, indexName, firstFiller) =>
       (namedPopulationResult candidate "" indexName firstFiller "a").map (fun (_, row, pointers) => (row, pointers)) ==
         some (.concrete 2, selected [4] 1 (.concrete 2))) = true := by native_decide
+
+private def collisionNames : List String :=
+  ["CEFRZTCKM", "CHQRBUERC"].flatMap fun nameSeed =>
+    (List.range 16).map fun index => nameSeed ++ String.join ((List.range 4).map fun bit =>
+      if index / 2 ^ bit % 2 == 0 then "Aa" else "BB")
+
+private def isolatedCacheModel : FlatModel := {
+  fields := [
+    { id := 1, name := "K6270", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } },
+    { id := 2, name := "StableKey", groupPath := ["Form", "Stable"], repeatableScope := [20], policy := { kind := .string } },
+    { id := 3, name := "N", groupPath := ["Form", "Stable"], repeatableScope := [20], policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 4, name := "StableKey", groupPath := ["Form", "Other"], repeatableScope := [30], policy := { kind := .string } },
+    { id := 5, name := "N", groupPath := ["Form", "Other"], repeatableScope := [30], policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 6, name := "Anchor", groupPath := ["Form"], policy := { kind := .string } }] ++
+    collisionNames.zipIdx.map (fun (name, index) =>
+      { id := 100 + index, name, groupPath := ["Form"], policy := { kind := .string } })
+  repeatableGroups := [
+    { level := 10, path := ["Form", "Rows"], repeatability := some 2, indexField := some 1 },
+    { level := 20, path := ["Form", "Stable"], repeatability := some 2, indexField := some 2 },
+    { level := 30, path := ["Form", "Other"], repeatability := some 2, indexField := some 4 }] }
+
+private def isolatedCacheResults (first second : String) (partialCall : Bool) :
+    Except String (List MessageRepetitionCoordinate × List (List MessageRepetitionCoordinate) × Bool) := do
+  let dm : DmModel := { flat := isolatedCacheModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let stored := Lean.Json.mkObj [("Form", .mkObj (
+    [("Anchor", .str "x"),
+     ("Rows", .arr #[.mkObj [("K6270", .str "b")], .mkObj [("K6270", .str "b")]]),
+     ("Stable", .arr #[.mkObj [("StableKey", .str first), ("N", .str "1")],
+       .mkObj [("StableKey", .str second), ("N", .str "1")]]),
+     ("Other", .arr #[.mkObj [("StableKey", .str "s"), ("N", .str "2")]])] ++
+      collisionNames.map (fun name => (name, .str "x"))))]
+  let input ← (readDocument dm stored).mapError reprStr
+  if !input.refusals.isEmpty then throw (reprStr input.refusals)
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).mapError reprStr
+  let checked ← (checkDocument prepared "en_US" input.data).mapError reprStr
+  let context ← if partialCall then do
+    let view ← checked.applyPartialGeneratedPreliminary [RelevantEntityPattern.allInstances ["Form"]] |>.mapError reprStr
+    view.messageReferenceInputs.mapError reprStr
+    else do
+      let view ← checked.applyFullIndexPreliminary.mapError reprStr
+      view.messageReferenceInputs.mapError reprStr
+  let expression ← (parseText .english "FieldFilled(Anchor) Or [Stable/N For \"s\"] > 0").mapError reprStr
+  let condition ← (lowerCondition dm.flat ["Form"] false expression.body (world := world)).mapError reprStr
+  let pointers ← (condition.core.referencePointers [] (some context)).mapError reprStr
+  let some payload := pointers.find? (·.field == 3) | throw "missing stable payload"
+  let ambiguousExpression ← (parseText .english "FieldFilled(Anchor) Or FieldFilled(Rows/K6270 For \"b\")").mapError reprStr
+  let ambiguousCondition ← (lowerCondition dm.flat ["Form"] false ambiguousExpression.body (world := world)).mapError reprStr
+  let refused := match ambiguousCondition.core.referencePointers [] (some context) with
+    | .error (.hostOrder (.unresolvedBucket 10 [] (.text "b"))) => true
+    | _ => false
+  let rule : DmRule := {
+    group := ["Form", "Stable"], name := "ParallelStable", errorCode := "ParallelStable",
+    severity := "ERROR", errorEntityRelPath := "../N",
+    condition := "FieldFilled(/Form/Stable/N) Or FieldFilled(/Form/Other/N)" }
+  let plan ← (checkParallelRule dm .english rule).mapError reprStr
+  let messages ← if partialCall then runPartialParallelRule checked plan [RelevantEntityPattern.allInstances ["Form"]]
+    else runValidationRule world checked (.parallel plan)
+  pure (payload.coordinates, messages.map (·.errorAddress.coordinates), refused)
+
+-- The query-isolation capture preserves a host-sensitive collision beside these stable lookups (docs/sources/message-cache-probes.md#src-message-cache-query-isolation).
+#guard [false, true].all fun partialCall =>
+  (isolatedCacheResults "t" "s" partialCall).toOption ==
+    some ([.concrete 2], [[.concrete 2], [.concrete 1]], true) &&
+  (isolatedCacheResults "s" "s" partialCall).toOption ==
+    some ([.concrete 1], [[.concrete 1]], true) &&
+  (isolatedCacheResults "t" "u" partialCall).toOption ==
+    some ([.unknown], [[.unknown], [.concrete 1], [.concrete 2]], true)
 
 private def namedGroupPopulation (rowGroup otherGroup : String) : FlatModel := {
   populationModel with

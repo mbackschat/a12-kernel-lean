@@ -1,0 +1,1068 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "./model.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "unique",
+      "enginesAgree": false,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Other/N",
+                "Form/Other/StableKey",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Other/N",
+                "Form/Other/StableKey",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Other/N",
+                "Form/Other/StableKey",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Other/N",
+                "Form/Other/StableKey",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "duplicate",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Other/N",
+                "Form/Other/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Stable/StableKey",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Stable[2]/StableKey",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Other/N",
+                "Form/Other/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Stable/StableKey",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Stable[2]/StableKey",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Other/N",
+                "Form/Other/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Stable/StableKey",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Stable[2]/StableKey",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Other/N",
+                "Form/Other/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Stable/StableKey",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Stable[2]/StableKey",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "/Form[1]/Stable[-5]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Stable[-5]/N",
+                "/Form[1]/Stable[-5]/StableKey",
+                "Form/Other/N",
+                "Form/Other/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Stable[-5]/N",
+                "/Form[1]/Stable[-5]/StableKey",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "/Form[1]/Stable[-5]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Stable[-5]/N",
+                "/Form[1]/Stable[-5]/StableKey",
+                "Form/Other/N",
+                "Form/Other/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Stable[-5]/N",
+                "/Form[1]/Stable[-5]/StableKey",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "/Form[1]/Stable[-5]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Stable[-5]/N",
+                "/Form[1]/Stable[-5]/StableKey",
+                "Form/Other/N",
+                "Form/Other/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Stable[-5]/N",
+                "/Form[1]/Stable[-5]/StableKey",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "CacheSelected",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Anchor",
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "/Form[1]/Stable[-5]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Stable[-5]/N",
+                "/Form[1]/Stable[-5]/StableKey",
+                "Form/Other/N",
+                "Form/Other/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable/N",
+                "Form/Stable/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ParallelStable",
+              "field": "Form/Stable[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Other[-5]/N",
+                "/Form[1]/Other[-5]/StableKey",
+                "Form/Stable[2]/N",
+                "Form/Stable[2]/StableKey"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RefStable",
+              "field": "Form/Anchor",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Stable[-5]/N",
+                "/Form[1]/Stable[-5]/StableKey",
+                "Form/Anchor"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/K6270"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Rows[2]/K6270",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/K6270"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

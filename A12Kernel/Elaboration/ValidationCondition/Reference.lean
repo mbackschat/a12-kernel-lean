@@ -24,23 +24,24 @@ inductive ReferenceProjectionError where
   | incoherentHavingField (field : FieldId)
   | unreopenedReference (field : FieldId)
   | missingIndexContext
+  | hostOrder (error : MessageCacheOrderError)
   | binding (error : EnvBindingError)
   deriving Repr, DecidableEq
 
 /-- Inputs owned by cache admission, independently of payload validity or evaluation phase. Associations are supplied explicitly or derived by the shared population producer; physical row order alone does not determine them. -/
 structure MessageReferenceInputs where
-  cache : MessageIndexCache
+  cache : MessageIndexContext
   keyAt : CellAddr → Option SemanticIndexKey
 
-/-- Build structural-reference inputs from one full-validation preliminary view. Unsettled host ordering fails explicitly instead of becoming a missing association. -/
+/-- Build structural-reference inputs from one full-validation preliminary view. Unsettled host ordering fails at the affected lookup instead of refusing unrelated pointers. -/
 def CheckedIndexPreliminary.messageReferenceInputs (preliminary : CheckedIndexPreliminary model) :
     Except CheckedMessageCacheError MessageReferenceInputs := do
-  return { cache := ← preliminary.deriveMessageCache, keyAt := preliminary.messageQueryKeyAt? }
+  return { cache := ← preliminary.messageCacheContext, keyAt := preliminary.messageQueryKeyAt? }
 
 /-- Build structural-reference inputs from the same partial view used by rule evaluation. -/
 def CheckedPartialPreliminary.messageReferenceInputs (view : CheckedPartialPreliminary model) :
     Except CheckedMessageCacheError MessageReferenceInputs := do
-  return { cache := ← view.deriveMessageCache, keyAt := view.messageQueryKeyAt? }
+  return { cache := ← view.messageCacheContext, keyAt := view.messageQueryKeyAt? }
 
 /-- Every repeatable level of an unstarred reference is fixed by the rule's iteration scope, so its pointer is the concrete instance the rule is evaluating. -/
 def concreteFieldPointer (declaration : FlatFieldDecl) (environment : Env) :
@@ -63,7 +64,7 @@ private def selectedReferencePointers (group : RepeatableGroupDecl)
         let path ← (environment.pathForScope declaration.repeatableScope).mapError .binding
         let address : CellAddr := { field := declaration.id, path }
         pure (inputs.keyAt address, [MessagePointer.ofCellAddr address])
-  let coordinate := inputs.cache.lookup group.level parent key
+  let coordinate ← inputs.cache.lookup group.level parent key |>.mapError .hostOrder
   let selectedPrefix := parent.map MessageRepetitionCoordinate.concrete ++ [coordinate]
   pure (keyPointers ++ (indexDeclaration :: payloads).map fun declaration => {
     field := declaration.id
