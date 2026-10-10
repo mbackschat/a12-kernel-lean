@@ -120,8 +120,8 @@ def computationSlotsIn (source : CheckedKeyedEntityExtent model) (context : Scal
 end CheckedKeyedEntityExtent
 
 /-- Selection owns phase policy, row identity and omitted extents (spec/08 §4.1); each value-list
-consumer supplies its declaration-aware cell projection. Products retain omission on an absent
-selected star (spec/07 §4); ordinary list folds retain their established empty-extent policy. -/
+consumer supplies its declaration-aware cell projection and absent-star policy. Products and list
+quantifiers retain omission on an absent selected star (spec/07 §4 and spec/08 §4.1). -/
 def selectedValueListSideWith {kind : ValueListKind}
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
     (phase : Phase) (document : Document) (outer : Env) (direct : FieldId → CheckedCell)

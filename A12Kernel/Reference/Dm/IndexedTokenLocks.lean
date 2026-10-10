@@ -469,7 +469,7 @@ example : [false, true].all (fun enumeration =>
 
 example : [false, true].all (fun enumeration =>
     tokenListVerdict enumeration "NoFieldValueIncludedInValueList(Rows/Children*/Value For Key In Ref)"
-      .full { key := "missing" } == some (.fired .value) &&
+      .full { key := "missing" } == some (.fired .omission) &&
     tokenListVerdict enumeration "NoFieldValueIncludedInValueList(Rows/Children*/Value For Key In Ref)"
       (tokenCountCoverage []) { key := "missing" } == some .unknown &&
     tokenListVerdict enumeration "AtLeastOneFieldValueIncludedInValueList(Rows/Body For Key In Ref)"

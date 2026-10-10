@@ -1,0 +1,1567 @@
+{
+  "model": "Selected_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "root",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    },
+    {
+      "name": "selected-three",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "selected-two",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "other-three",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "all-nine",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            3,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            3,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            3,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "none",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        }
+      ]
+    },
+    {
+      "name": "empty2",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty3",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": []
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "match-last2",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                },
+                {
+                  "V": "100"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "match-last3",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                },
+                {
+                  "V": "100"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "match-first2",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "100"
+                },
+                {
+                  "V": "5"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "match-first3",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "100"
+                },
+                {
+                  "V": "5"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "formal2",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": "bad"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "formal3",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": "bad"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "key-missing-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "missing",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    },
+    {
+      "name": "key-missing-parent-three",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "missing",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            0,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            0,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "key-missing-all-nine",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "missing",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            3,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            3,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            3,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "key-empty-wildcard",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items"
+        }
+      ]
+    },
+    {
+      "name": "key-empty-parent-three",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            0,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            0,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "key-empty-all-nine",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            1,
+            3
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            3,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            3,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            3,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "excluded-key",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "name": "excluded-index",
+      "documentInline": {
+        "Form": {
+          "Anchor": "on",
+          "Key": "B",
+          "Needle": "100",
+          "Rows": [
+            {
+              "Code": "A",
+              "Items": [
+                {
+                  "V": "100"
+                }
+              ]
+            },
+            {
+              "Code": "B",
+              "Items": [
+                {
+                  "V": "5"
+                },
+                {
+                  "V": ""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Anchor"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Needle"
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items",
+          "reps": [
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    }
+  ]
+}

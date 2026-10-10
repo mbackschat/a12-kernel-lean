@@ -49,8 +49,8 @@ def CheckedNumberEntityOperand.resolvePartialValueListSide (source : CheckedNumb
   let selection ← match source with
     | .field source => partialListExtent document outer scope [source.declaration] source.declaration.repeatableScope.length
     | .selected source =>
-        resolvePartialSelectedExtent source.source document scope outer read
-          (fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment)
+        resolvePartialSelectedExtent source.source document scope outer read .declaredSlots
+          (missingStarIsOmitted := true)
     | .star source => partialListExtent document outer scope [source.source.declaration] source.source.path.firstStar
     | .group source => partialListExtent document outer scope (model.groupSubtreeFields source.groupPath) source.source.boundLevelCount
     | .starHaving _ => return { (ResolvedValueListSide.empty (kind := .number)) with hasHaving := true }
@@ -65,8 +65,8 @@ def CheckedTokenEntityOperand.resolvePartialValueListSide (source : CheckedToken
   let selection ← match source with
     | .field source => partialListExtent document outer scope [source.declaration] source.declaration.repeatableScope.length
     | .selected source =>
-        resolvePartialSelectedExtent source.source document scope outer read
-          (fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment)
+        resolvePartialSelectedExtent source.source document scope outer read .declaredSlots
+          (missingStarIsOmitted := true)
     | .star source => partialListExtent document outer scope [source.source.declaration] source.source.path.firstStar
     | .group source => partialListExtent document outer scope (source.slots.map (·.declaration)) source.source.boundLevelCount
   partialListSide (model := model) selection (!source.isAlreadyMany) scope read fun declaration _ cell => do
@@ -86,7 +86,7 @@ def CheckedTemporalUniquenessOperand.resolvePartialValueListSide
     | .field source => partialListExtent document outer scope [source.declaration] source.declaration.repeatableScope.length
     | .selected source _ =>
         resolvePartialSelectedExtent source.source document scope outer read
-          (fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment)
+          (.consumer (fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment))
     | .star path source _ => partialListExtent document outer scope [source.declaration] path.path.firstStar
     | .group source => partialListExtent document outer scope source.declarations source.source.boundLevelCount
   let emptyScalar := match source with

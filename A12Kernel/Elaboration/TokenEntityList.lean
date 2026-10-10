@@ -716,10 +716,10 @@ The richer addressed-cell resolver remains unavailable until selected pointer pr
 def checkedValidationSide (source : CheckedTokenEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) (inCapacity : Bool := false)
-    (traversalMode : FilterTraversalMode := .requireSmall) :
+    (traversalMode : FilterTraversalMode := .requireSmall) (missingStarIsOmitted : Bool := false) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
   match source with
-  | .selected source => source.sideIn .validation document outer
+  | .selected source => source.sideIn .validation document outer (missingStarIsOmitted := missingStarIsOmitted)
   | _ =>
       let resolved ← source.resolveCheckedValidationOperand (world := world) (traversalMode := traversalMode) document outer
       pure (if inCapacity then resolved.inCapacityValueListSideAt .validation else resolved.valueListSideAt .validation)

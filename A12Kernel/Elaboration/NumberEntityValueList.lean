@@ -98,7 +98,7 @@ def CheckedNumberEntitySource.scanValidationMembership
               (fun state cell => consume state (.cell true ((observeCell .validation cell.cell).asNumberValueListCell)))
               next (if quantifier == .atLeastOne then .sparse else .dense) world
     | _ =>
-        let side ← operand.checkedValidationSide (world := world) document outer
+        let side ← operand.checkedValidationSide (world := world) (missingStarIsOmitted := true) document outer
         pure (side.scanValidationMembership consume state)) source.operands state
 
 namespace CheckedNumberEntityValueListSource

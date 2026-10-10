@@ -202,3 +202,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: Concrete selectors covering rows one and two establish an ordinary capacity-two extent; the same selectors leave a capacity-three extent unknown even when its third row is absent. Do not require a wildcard at every repeated group or infer completeness from physical rows alone. Preserve the three quantifiers' side-specific UNKNOWN policy.
 - `basis`: [Two-capacity Number/String matrix](sources/group-list-and-capacity-probes.md#src-partial-list-declared-extent), 28 documents, field/group operands and both sides, with both strategies agreeing. Maintained reader-to-evaluator readback matches all 672 partial pointer/type comparisons after correcting 54 divergences.
 - `acceptance`: Reconcile the wildcard-only account against the retained capacity controls and source; retain distinct count/aggregate gates. Report exact adopted revision or contrary evidence. Nested/keyed, wider profiles and separate USB-host behavior remain explicitly uncalibrated. Introducing revision is the first commit containing this ID.
+
+<a id="spec-2026-10-10-16"></a>
+### SPEC-2026-10-10-16 — selected lists cover lower declared slots and retain absent-list omission
+
+- `status`: pending
+- `canonical`: [Selected partial coverage](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation) and [absent selected lists](../spec/08-paths-and-references.md#41-what-a-semantic-index-read-yields).
+- `delta`: A matched key binds the selected parent; lower declared slots may be covered concretely. No selection requires a wildcard at the parent, but not every lower level. No and values-side NotAll preserve absent-list OMISSION on full and partial validation.
+- `basis`: [Two-carrier selected-list matrix](sources/group-list-and-capacity-probes.md#src-selected-list-declared-extent), both strategies agreeing; 552 full and 552 partial exact pointer/type comparisons. This corrects Lean's shared extent/polarity adapters and does not assert a peer defect.
+- `acceptance`: Reconcile Number/String lower field/starred-group lists, both sides and all three quantifiers against retained selected, absent and excluded controls. Keep counts/aggregates separate; wider profiles and deeper topology remain uncalibrated. Introducing revision is the first commit containing this ID; no peer response yet.

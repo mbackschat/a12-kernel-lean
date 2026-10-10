@@ -1,0 +1,60 @@
+{
+  "target": "model",
+  "op": "describe",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "fields": [
+      {
+        "path": "/Form/Anchor",
+        "name": "Anchor",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Form/Key",
+        "name": "Key",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Form/Needle",
+        "name": "Needle",
+        "kind": "NUMBER",
+        "scale": 0
+      },
+      {
+        "path": "/Form/Rows/Code",
+        "name": "Code",
+        "kind": "STRING"
+      },
+      {
+        "path": "/Form/Rows/Items/V",
+        "name": "V",
+        "kind": "NUMBER",
+        "scale": 0
+      }
+    ],
+    "groups": [
+      {
+        "path": "/Form",
+        "repeatable": false
+      },
+      {
+        "path": "/Form/Rows",
+        "repeatable": true,
+        "maxRepetitions": 3
+      },
+      {
+        "path": "/Form/Rows/Items",
+        "repeatable": true,
+        "maxRepetitions": 3
+      }
+    ],
+    "locales": [
+      "en_US"
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

@@ -1,0 +1,270 @@
+{
+  "header" : {
+    "id" : "Selected_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Selected_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Needle",
+            "name" : "Needle",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/V",
+                    "name" : "V",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "Code"
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIELD_LEFT_ANY",
+            "name" : "FIELD_LEFT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIELD_LEFT_ANY",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneFieldValueIncludedInValueList(Rows/Items*/V For Key In Needle)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIELD_LEFT_NO",
+            "name" : "FIELD_LEFT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIELD_LEFT_NO",
+              "errorCondition" : "FieldFilled(Anchor) And NoFieldValueIncludedInValueList(Rows/Items*/V For Key In Needle)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIELD_LEFT_NOTALL",
+            "name" : "FIELD_LEFT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIELD_LEFT_NOTALL",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllFieldValuesIncludedInValueList(Rows/Items*/V For Key In Needle)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIELD_RIGHT_ANY",
+            "name" : "FIELD_RIGHT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIELD_RIGHT_ANY",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneFieldValueIncludedInValueList(Needle In Rows/Items*/V For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIELD_RIGHT_NO",
+            "name" : "FIELD_RIGHT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIELD_RIGHT_NO",
+              "errorCondition" : "FieldFilled(Anchor) And NoFieldValueIncludedInValueList(Needle In Rows/Items*/V For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FIELD_RIGHT_NOTALL",
+            "name" : "FIELD_RIGHT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "FIELD_RIGHT_NOTALL",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllFieldValuesIncludedInValueList(Needle In Rows/Items*/V For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/STAR_GROUP_LEFT_ANY",
+            "name" : "STAR_GROUP_LEFT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "STAR_GROUP_LEFT_ANY",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneFieldValueIncludedInValueList(Rows/Items* For Key In Needle)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/STAR_GROUP_LEFT_NO",
+            "name" : "STAR_GROUP_LEFT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "STAR_GROUP_LEFT_NO",
+              "errorCondition" : "FieldFilled(Anchor) And NoFieldValueIncludedInValueList(Rows/Items* For Key In Needle)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/STAR_GROUP_LEFT_NOTALL",
+            "name" : "STAR_GROUP_LEFT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "STAR_GROUP_LEFT_NOTALL",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllFieldValuesIncludedInValueList(Rows/Items* For Key In Needle)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/STAR_GROUP_RIGHT_ANY",
+            "name" : "STAR_GROUP_RIGHT_ANY",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "STAR_GROUP_RIGHT_ANY",
+              "errorCondition" : "FieldFilled(Anchor) And AtLeastOneFieldValueIncludedInValueList(Needle In Rows/Items* For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/STAR_GROUP_RIGHT_NO",
+            "name" : "STAR_GROUP_RIGHT_NO",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "STAR_GROUP_RIGHT_NO",
+              "errorCondition" : "FieldFilled(Anchor) And NoFieldValueIncludedInValueList(Needle In Rows/Items* For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/STAR_GROUP_RIGHT_NOTALL",
+            "name" : "STAR_GROUP_RIGHT_NOTALL",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "STAR_GROUP_RIGHT_NOTALL",
+              "errorCondition" : "FieldFilled(Anchor) And NotAllFieldValuesIncludedInValueList(Needle In Rows/Items* For Key)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

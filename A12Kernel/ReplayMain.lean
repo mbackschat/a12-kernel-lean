@@ -81,6 +81,7 @@ import A12Kernel.Reference.Dm.NestedFirstFilledLocks
 import A12Kernel.Reference.Dm.FirstFilledPrefixLocks
 import A12Kernel.Reference.Dm.FirstFilledExtentPrefixLocks
 import A12Kernel.Reference.Dm.PartialValueListExtentLocks
+import A12Kernel.Reference.Dm.SelectedValueListExtentLocks
 import A12Kernel.Reference.Dm.EmptyPatternLocks
 import A12Kernel.Reference.Dm.GroupGuardLocks
 import A12Kernel.Reference.Dm.SemanticIndexLocks

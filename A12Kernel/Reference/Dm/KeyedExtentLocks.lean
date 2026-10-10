@@ -476,7 +476,7 @@ example : [("AtLeastOneFieldValueIncludedInValueList", Verdict.fired .value),
       (header := "2") == some expected) = true := by native_decide
 
 example : partialVerdict "NoFieldValueIncludedInValueList(Packages/Items*/Weight For Key In Out)"
-    [relevant ["Key"], relevant ["Packages"]] "missing" = some (.fired .value) ∧
+    [relevant ["Key"], relevant ["Packages"]] "missing" = some (.fired .omission) ∧
     partialVerdict "NoFieldValueIncludedInValueList(Packages/Items*/Weight For Key In Out)"
       [relevant ["Key"], relevant ["Packages", "Code"]] "missing" = some .unknown ∧
     partialVerdict "NoFieldValueIncludedInValueList(Packages/Header For Key In Out)"

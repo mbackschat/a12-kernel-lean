@@ -147,15 +147,15 @@ empty-value and poison policy (spec/08 §4.1 and spec/04 aggregates). -/
 def sideWith (source : CheckedSelectedNumberEntity model) (phase : Phase)
     (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
     (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
-    (column : SemanticIndexColumnReader) :
+    (column : SemanticIndexColumnReader) (missingStarIsOmitted : Bool := false) :
     Except CheckedAddressingError (ResolvedValueListSide .number) :=
-  selectedValueListSideWith source.source phase document outer direct stored read column
+  selectedValueListSideWith (missingStarIsOmitted := missingStarIsOmitted) source.source phase document outer direct stored read column
     (fun _ value => pure value.asNumberValueListCell)
 
 def sideIn (source : CheckedSelectedNumberEntity model) (phase : Phase)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env) (missingStarIsOmitted : Bool := false) :
     Except CheckedAddressingError (ResolvedValueListSide .number) :=
-  source.sideWith phase document.source.toDocument outer (document.computationContextAt outer).read
+  source.sideWith (missingStarIsOmitted := missingStarIsOmitted) phase document.source.toDocument outer (document.computationContextAt outer).read
     (document.computationContextAt outer).storedText document.computationFillContext.read
     (document.resolveSemanticIndexColumnWith document.read)
 
@@ -656,9 +656,9 @@ def resolveCheckedValidationOperand
 selection; rich selected pointer projection remains a separate boundary. -/
 def checkedValidationSide (source : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env)
-    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) : Except CheckedAddressingError (ResolvedValueListSide .number) := do
+    (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) (missingStarIsOmitted : Bool := false) : Except CheckedAddressingError (ResolvedValueListSide .number) := do
   match source with
-  | .selected selection => selection.sideIn .validation document outer
+  | .selected selection => selection.sideIn .validation document outer (missingStarIsOmitted := missingStarIsOmitted)
   | _ => pure ((← source.resolveCheckedValidationOperand (world := world) (traversalMode := traversalMode) document outer).valueListSideAt .validation)
 
 /-- Resolve one unfiltered partial-validation operand. Direct masking precedes its read; a star retains canonical topology, reads only relevant concrete cells, and records incomplete extent on that exact authored operand. -/

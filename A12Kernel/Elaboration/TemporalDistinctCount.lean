@@ -565,8 +565,8 @@ private def resolvePartialSide (operation : CheckedTemporalDistinctCountRun mode
   let selection ← match operand with
     | .selected source _ | .slot (.selected source _) =>
         resolvePartialSelectedExtent source.source document scope outer read
-          (fun declaration bound reopened environment =>
-            scope.coversAggregateExtent model declaration.path bound reopened environment) true
+          (.consumer (fun declaration bound reopened environment =>
+            scope.coversAggregateExtent model declaration.path bound reopened environment)) true
     | .group source => ordinary source.declarations source.source.boundLevelCount
     | .slot (.group source) => ordinary source.declarations source.source.boundLevelCount
     | .slot (.field source) => ordinary [source.declaration] source.declaration.repeatableScope.length

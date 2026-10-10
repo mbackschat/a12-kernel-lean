@@ -212,7 +212,7 @@ def wildcardsLevels (entity : RelevantEntityPattern)
     (model : FlatModel) (levels : List RepeatableLevel) : Bool :=
   wildcardsLevelsAt entity model levels [] entity.path entity.indices
 
-/-- Project one caller identifier onto the operand field for the wildcard-only extent policy used by selected and legacy list adapters. Ordinary partial lists instead combine identifiers through `ValidationRelevanceScope.coversDeclaredFieldExtent` (spec/10 §5). -/
+/-- Project one caller identifier onto the operand field for wildcard-only consumers such as value counts and missing-key lookup. Partial list quantifiers instead combine identifiers through `ValidationRelevanceScope.coversDeclaredFieldExtent` (spec/10 §5). -/
 def coversValueListExtent (entity : RelevantEntityPattern)
     (model : FlatModel) (targetPath : List String)
     (boundLevels reopenedLevels : List RepeatableLevel) (outer : Env) : Bool :=
@@ -331,7 +331,7 @@ def coversGroupCountExtent (scope : ValidationRelevanceScope) (model : FlatModel
       reducedUniversalCovers (groupCountPatterns entities model groupPath boundLevels outer)
         model reopenedLevels
 
-/-- Wildcard-only extent policy for selected and legacy list adapters: concrete siblings do not cancel a qualifying wildcard. Ordinary partial lists use `coversDeclaredFieldExtent` to combine concrete coverage (spec/10 §5). -/
+/-- Wildcard-only extent policy for value counts, missing-key lookup and legacy adapters: concrete siblings do not cancel a qualifying wildcard. Partial list quantifiers use `coversDeclaredFieldExtent` to combine concrete coverage (spec/10 §5). -/
 def coversValueListExtent (scope : ValidationRelevanceScope) (model : FlatModel)
     (targetPath : List String) (boundLevels reopenedLevels : List RepeatableLevel)
     (outer : Env) : Bool :=

@@ -53,17 +53,17 @@ owned by each declaration, and the consumer owns stopping and empty-result rules
 def sideWith (source : CheckedSelectedTokenEntity model) (phase : Phase)
     (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
     (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
-    (column : SemanticIndexColumnReader) :
+    (column : SemanticIndexColumnReader) (missingStarIsOmitted : Bool := false) :
     Except CheckedAddressingError (ResolvedValueListSide .token) :=
-  selectedValueListSideWith source.source phase document outer direct stored read column fun declaration value => do
+  selectedValueListSideWith (missingStarIsOmitted := missingStarIsOmitted) source.source phase document outer direct stored read column fun declaration value => do
     let some slot := source.slots.find? (·.declaration.id == declaration.id)
       | throw (.checkedDocumentRequired source.path)
     pure (slot.operand.observedValueListCell value)
 
 def sideIn (source : CheckedSelectedTokenEntity model) (phase : Phase)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env) (missingStarIsOmitted : Bool := false) :
     Except CheckedAddressingError (ResolvedValueListSide .token) :=
-  source.sideWith phase document.source.toDocument outer (document.computationContextAt outer).read
+  source.sideWith (missingStarIsOmitted := missingStarIsOmitted) phase document.source.toDocument outer (document.computationContextAt outer).read
     (document.computationContextAt outer).storedText document.computationFillContext.read
     (document.resolveSemanticIndexColumnWith document.read)
 

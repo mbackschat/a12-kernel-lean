@@ -516,7 +516,7 @@ def CheckedTokenEntitySource.scanValidationMembership
                   (.cell true (filtered.operand.checkedValueListCellAt .validation cell.cell)))
                 next (if quantifier == .atLeastOne then .sparse else .dense) world
     | _ => pure ()
-    let side ← operand.checkedValidationSide (world := world) document outer
+    let side ← operand.checkedValidationSide (world := world) (missingStarIsOmitted := true) document outer
     pure (side.scanValidationMembership consume state)) source.operands state
 
 namespace CheckedTokenEntityValueListSource
