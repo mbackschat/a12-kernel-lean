@@ -124,6 +124,7 @@ import A12Kernel.Reference.Dm.IndexedProductLocks
 import A12Kernel.Reference.Dm.FieldFillGuardLocks
 import A12Kernel.Reference.Dm.TemporalExpressionLocks
 import A12Kernel.Reference.Dm.TemporalRowsetLocks
+import A12Kernel.Reference.Dm.TemporalRowsetCompositionLocks
 import A12Kernel.Reference.Dm.ScalarFieldGuardLocks
 import A12Kernel.Reference.Dm.NumericCountLocks
 import A12Kernel.Reference.Dm.FirstFilledValidationLocks

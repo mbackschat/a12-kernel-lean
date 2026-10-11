@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C15. C01–C14 are closed; proceed in the frozen order.
+The autonomous goal is active at C16. C01–C15 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -133,8 +133,10 @@ C13–C22 follow the reported first checkpoint and finish the ordinary-behavior 
 
 ### C15 — row-set temporal expressions compose with comparisons
 
-- [ ] Close MinValue/MaxValue over direct/one-star lists inside comparison and DifferenceInDays, for complete Date and yearless/common-BaseYear profiles.
+- [x] Close MinValue/MaxValue over direct/one-star lists inside comparison and DifferenceInDays, for complete Date and yearless/common-BaseYear profiles.
 - Done: full/partial validation and computation retain calendar metadata, empty/formal outcomes and ordinary Berlin date-boundary behavior through the shared tree. Pre-floor, arbitrary-zone and deeper nesting are excluded. [SG6](gaps/numeric-and-temporal.md#gap-sg6), [SG23](gaps/numeric-and-temporal.md#gap-sg23).
+
+- Accepted: [reader-to-execution composition matrix](../A12Kernel/Reference/Dm/TemporalRowsetCompositionLocks.lean) verifies the existing shared evaluator, including empty/formal outcomes, partial relevance and omission, and reverse-authored computation dependencies. The grammar refuses extrema directly inside DifferenceInDays; computed-extremum field readback is admitted and checked. Fresh HIGH review and integration/evidence/trust gates passed. New combinations are internal assurance, not new external calibration.
 
 ### C16 — Enumeration/String domain crossings retain value identity
 
@@ -220,8 +222,8 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C15, after accepted C14. Reconcile MinValue/MaxValue over direct/one-star temporal lists inside comparison and DifferenceInDays against [SG6/SG23](gaps/numeric-and-temporal.md), current reader/semantic tree and existing observations. Keep complete Date and yearless/common-BaseYear profiles; pre-floor, arbitrary-zone and deeper nesting remain excluded.
-- Next: enumerate only C15's frozen full/partial-validation and computation cases against current code and retained evidence, then implement the missing shared adapter if needed. Close existing support without recapturing it. C14 has no live process or unresolved cold finding. C12 fulfilled the scheduled consumer probe; C15 entry alone triggers no additional consumer exercise.
+- Active: C16, after accepted C15. Reconcile unlabelled Enumeration-to-String copy and String target Enumeration-domain/pattern interaction against [SG7/SG8](gaps/strings-and-messages.md) and [SG15](gaps/targets-and-derivation.md), existing token readers and retained observations.
+- Next: check C16's frozen stored/display-token, outside-domain and opposing pattern/domain cases against the current reader and target-validation mechanisms; implement or calibrate only unresolved distinctions. C15 has no live process or unresolved cold finding. C12 fulfilled the scheduled consumer probe; C16 entry alone triggers no additional consumer exercise.
 - C08 closed: the separate omission selector, shared filter coordinates, mixed-group wildcard correction and effect-preserving message origin pass the frozen matrix. [Reference calibration](implementation/validation-messages-and-custom.md#cap-structural-message-references) matches both exact sets for all 40 caller and 246 filtered-predicate messages. H10-R1 is reconciled against admitted temporal-reference controls; H10-R2 is discharged by dedicated calibration. No new outbound ledger entry. The scheduled C12 consumer probe is complete.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
 - C01 closed: [risk-boundary implementation](../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [reconciled eight-scenario consumer run](consumer-probes/EXECUTE.md#run-c01-execute-03). Integration (2,166 jobs), retained evidence (51 projections), trust (3,026 roots) and HIGH review passed; the review’s documentation correction is incorporated. Code is committed at `0e302b8d`; the accepted consumer basis is `9fe99116`. No remaining C01 blocker.
@@ -236,8 +238,8 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 ## Verified gate boundary
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
-- Latest executable boundary: C14 complete parallel numeric alternatives. Integration passed (2,219 jobs), all 51 compact projections agree, fresh HIGH review is accepted after correcting its evidence-ordering finding. Trust/hygiene passed (3,027 roots; 111,117 declarations in 890 modules). No new behavioral spec delta or outbound ledger entry; C13's existing request remains with its owner.
+- Latest executable/test boundary: C15 temporal row-set composition locks; the evaluator is unchanged. Integration passed (2,221 jobs), all 51 compact projections agree, fresh HIGH review has no actionable finding, and trust passed (3,027 roots; 111,117 declarations in 890 modules). No new behavioral spec delta or outbound ledger entry; C13's existing request remains with its owner.
 - Latest consumer boundary: C12 passes all eleven frozen Execute/Explain scenario families; fresh HIGH review and documentation/prose/sync hygiene pass. The first run exposed one omitted duplicate-key clause in the packet, repaired from the existing canonical owner; no runtime edit or new capture. This qualifies bounded semantic transport, not an independent evaluator or downstream product.
-- Last full replay: 71,694 matches (52,335 rules and 19,359 computations), zero divergence/fault/unattributed/tier-2 instances, 3,335 rows, 217 without matching artifacts and six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) includes the reviewed C14 slice. The 30 additional matches come from its new capture; the earlier population remains unchanged. Replay cadence resets at this boundary.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only handoff edits do not invalidate C14 executable gates.
+- Last full replay: 71,694 matches (52,335 rules and 19,359 computations), zero divergence/fault/unattributed/tier-2 instances, 3,335 rows, 217 without matching artifacts and six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) includes the reviewed C14 slice. The 30 additional matches come from its new capture; the earlier population remains unchanged. Replay cadence reset at C14; C15 is the first subsequent family and changed only tests/documentation, so no new population replay was required.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only handoff edits do not invalidate C15 executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.
