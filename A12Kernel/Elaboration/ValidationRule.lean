@@ -125,18 +125,29 @@ end CheckedResolvedFlatRule
 
 namespace ResolvedValidationRule
 
+def emitEvaluationResult (rule : ResolvedValidationRule model)
+    (result : Except ScalarTemporalEvaluationFault Verdict) : FlatRuleOutcome :=
+  match result with
+  | .ok verdict => rule.emit verdict
+  | .error _ => rule.emitRuntimeFailureAt []
+
 def evalFull (rule : ResolvedValidationRule model)
     (context : ValidationEvaluationContext)
     (hasContent : Bool) : FlatRuleOutcome :=
-  rule.evalWith fun condition => condition.evalFull context hasContent
+  if hasContent || rule.condition.canFireOnEmpty then
+    rule.emitEvaluationResult (rule.condition.evalSelectedResult context)
+  else .notFired
 
 /-- Emit at one resolved error path after effectful addressed condition evaluation. Structural addressing failure remains an outer error and therefore cannot manufacture UNKNOWN or a message. -/
 def evalAddressedFullAt (rule : ResolvedValidationRule model)
     (context : AddressedValidationEvaluationContext model)
     (hasContent : Bool) (errorPath : List Nat) :
     Except CheckedAddressingError FlatRuleOutcome := do
-  pure (rule.emitAt errorPath
-    (← rule.condition.evalAddressedFull context hasContent))
+  if !hasContent && !rule.condition.canFireOnEmpty then return .notFired
+  match rule.condition.evalAddressedWithRepetitionNotUniqueResult context none with
+  | .ok verdict => pure (rule.emitAt errorPath verdict)
+  | .error (.inl error) => throw error
+  | .error (.inr _) => pure (rule.emitRuntimeFailureAt errorPath)
 
 /-- The established addressed entry is the nonrepeatable error-path specialization. -/
 def evalAddressedFull (rule : ResolvedValidationRule model)
@@ -227,7 +238,7 @@ def evalPartial (rule : CheckedResolvedValidationRule model)
       groups
       pass := .part }
     .ok (.evaluated
-      (rule.core.emit (rule.condition.core.evalSelected context isRelevant)))
+      (rule.core.emitEvaluationResult (rule.condition.core.evalSelectedResult context isRelevant)))
 
 /-- Build the callback's four channels from the current checked view. Formal findings are never
 filtered by callback-hidden dependencies; partial generated failures augment the base findings,
@@ -387,9 +398,9 @@ private def evalOrdinaryPartialAdmittedAt
   | .error (.inl error) => throw error
   | .error (.inr (.addressing .typeValidityValueFailure))
   | .error (.inr (.addressing (.stringExpression .emptyPattern))) =>
-      pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
+      pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
   | .error (.inr (.addressing error)) => throw (.conditionAddressing error)
-  | .error (.inr _) => pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
+  | .error (.inr _) => pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
 
 /-- Execute one checked nonrepeatable addressed rule against the normalized partial document view. The scalar iteration plan fixes the empty environment and root error path; filtering and error-field relevance still gate execution before addressed leaf reads, while unsupported shapes and addressing failures remain structural errors outside semantic UNKNOWN. -/
 def evalAddressedPartial
@@ -507,11 +518,11 @@ private def evalOrdinaryRepeatableAt
   | .error (.inl error) => throw (.conditionAddressing error)
   | .error (.inr (.addressing .typeValidityValueFailure))
   | .error (.inr (.addressing (.stringExpression .emptyPattern))) =>
-      pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
+      pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
   | .error (.inr (.addressing error)) => throw (.conditionAddressing error)
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported) => throw (.conditionAddressing .temporalUnavailable)
   | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid) =>
-      pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
+      pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
 
 /-- Execute a checked ordinary nonparallel repeatable rule over the validation row domain. The root dispatcher and declared-capacity/occupied-prefix iterator own the domain (iteration grid, 2026-10-04). Repeated operands use the validation-only addressed view; the error address defaults its unbound suffix without reading or materializing that target. A runtime-aborted pair retains the failing environment, while its message points to the iterator’s first error address. -/
 def evalOrdinaryRepeatableFull
@@ -580,10 +591,10 @@ def evalOrdinaryOnceFull
     input := .checked checked
   }
   let context := rule.withCustomConditions context .all registry
-  let verdict ←
-    (rule.condition.core.evalAddressedFull context hasContent)
+  let outcome ←
+    (rule.core.evalAddressedFullAt context hasContent errorPath)
       |>.mapError .conditionAddressing
-  pure (environment, rule.core.emitAt errorPath verdict)
+  pure (environment, outcome)
 
 /-- Execute the once plan against an already-normalized partial preliminary view. A filtered rule skips before plan construction, an error path absent from the relevant set skips before condition reads, and an admitted path bypasses the full root-content gate. A once plan binds no repeatable level for this gate even though its message pointer defaults to the all-one environment. Relevance never creates the target row. -/
 def evalOrdinaryOncePartialPrepared

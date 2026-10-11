@@ -8,7 +8,7 @@ A fired validation message carries the field instances its rule *refers to*, and
 
 For ordinary and starred operands, coordinate assignment follows one rule. A repeatable level fixed by the rule's iteration scope is concrete at the firing instance; a level the star reopened, and every axis below it, is wildcard. Both facts are Kernel-locked upstream at a12-dmkits `bbbbf48e`; [`SOURCES.md`](../../../docs/SOURCES.md) owns that provenance.
 
-Two boundaries are deliberate. Membership is total over the fragment it classifies and **fails closed everywhere else**, so an unsupported operand can never be silently read as "no reference". And this projection is not attached to `FlatRuleMessage`: the emitted record still has no reference channel, because a caller that holds a fired outcome also holds the rule and its environment. [`SG10`](../../../docs/SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) owns the remaining channel work, the Number and Boolean/Confirm filtered-star carriers, and the pointer-shape exclusion.
+Two boundaries are deliberate. Membership is total over the fragment it classifies and **fails closed everywhere else**, so an unsupported operand can never be silently read as "no reference". And this projection is not attached to `FlatRuleMessage`: the emitted record still has no reference channel, because a caller that holds a fired outcome also holds the rule and its environment. [`SG10`](../../../docs/SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) owns the remaining channel work and pointer-shape exclusion.
 -/
 
 namespace A12Kernel
@@ -164,24 +164,6 @@ def CheckedEntityGroupSource.referencePointers
   | .starredPresence terminal =>
       starredGroupPointers model terminal.groupPath terminal.path.firstStar environment
 
-/-- A filtered star is refused rather than projected. Its own field pointer would be the plain starred one, but the measured account pins only that its `Having` operands *join* the set, not which coordinates they carry, and inventing them would make an incomplete set look complete. -/
-def CheckedNumberEntityOperand.referencePointers (environment : Env)
-    (operand : CheckedNumberEntityOperand model) (inputs : Option MessageReferenceInputs := none) :
-    Except ReferenceProjectionError (List MessagePointer) := match operand with
-  | .field source => (concreteFieldPointer source.declaration environment).map ([·])
-  | .star source => (starFieldPointer source.source environment).map ([·])
-  | .selected source => selectedEntityPointers source.source environment inputs
-  | .starHaving _ => .error .filteredStarOperand
-  | .group slot => slot.source.referencePointers environment
-
-/-- Every authored slot contributes, in authored order, whether or not a runtime scan would reach it. A slot contributes its field or group expansion, plus any selected index and dynamic key; flattening preserves every dependency. -/
-def CheckedNumberEntitySource.referencePointers
-    (source : CheckedNumberEntitySource model) (environment : Env)
-    (inputs : Option MessageReferenceInputs := none) :
-    Except ReferenceProjectionError (List MessagePointer) :=
-  (·.flatten) <$>
-    source.operands.mapM (fun operand => operand.referencePointers environment inputs)
-
 /-- Choose the pointer spelling for one filter reference, from the origin and the declaration's own
     scope depth against the operand's first star.
 
@@ -248,7 +230,9 @@ private def havingEntityListReferencePointers (source : CheckedStarFieldPath mod
         else reopenedFieldPointer declaration bound environment
   pure slots.flatten
 
-private def correlatedHavingReferencePointers (source : CheckedStarFieldPath model)
+/-- Every authored filter read retains its candidate or captured coordinate, independently of
+    whether its filtered operand contributes omission responsibility (KF522). -/
+def CheckedStarFieldPath.filterReferencePointers (source : CheckedStarFieldPath model)
     (environment : Env) : CorrelatedHaving →
     Except ReferenceProjectionError (List MessagePointer)
   | .leaf (.numeric comparison) => do
@@ -341,17 +325,38 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
   | .leaf (.groupFill _ first rest) =>
       havingEntityListReferencePointers source environment ((first :: rest).map (·.presenceSlot))
   | .and left right | .or left right => do
-      pure ((← correlatedHavingReferencePointers source environment left) ++
-        (← correlatedHavingReferencePointers source environment right))
+      pure ((← source.filterReferencePointers environment left) ++
+        (← source.filterReferencePointers environment right))
 
-/- Project the field dependencies of one checked token filter. Keeping this operation at the token source makes its carrier boundary type-enforced: Number and Boolean/Confirm sources cannot call it merely because they also contain a `CheckedStarHaving`. -/
+/-- A Number slot retains both its selected field and every authored filter dependency. -/
+def CheckedNumberEntityOperand.referencePointers (environment : Env)
+    (operand : CheckedNumberEntityOperand model) (inputs : Option MessageReferenceInputs := none) :
+    Except ReferenceProjectionError (List MessagePointer) := match operand with
+  | .field source => (concreteFieldPointer source.declaration environment).map ([·])
+  | .star source => (starFieldPointer source.source environment).map ([·])
+  | .selected source => selectedEntityPointers source.source environment inputs
+  | .starHaving source => do
+      let selected ← starFieldPointer source.source.source environment
+      pure (selected :: (← source.source.source.filterReferencePointers environment source.having))
+  | .group slot => slot.source.referencePointers environment
+
+/-- Every authored slot contributes, in authored order, whether or not a runtime scan would reach it. A slot contributes its field or group expansion, plus any selected index and dynamic key; flattening preserves every dependency. -/
+def CheckedNumberEntitySource.referencePointers
+    (source : CheckedNumberEntitySource model) (environment : Env)
+    (inputs : Option MessageReferenceInputs := none) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  (·.flatten) <$>
+    source.operands.mapM (fun operand => operand.referencePointers environment inputs)
+
+/- The token source retains its exact checked filter and star, as the shared coordinate projection
+   requires. -/
 private def tokenFilterReferencePointers
     (source : CheckedTokenStarSource model) (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
   match source.filter with
   | none => pure []
   | some having =>
-      correlatedHavingReferencePointers source.source environment having.condition
+      source.source.filterReferencePointers environment having.condition
 
 /-- A token star retains its selected source whether or not a filter adds dependencies. -/
 def CheckedTokenStarSource.referencePointers (source : CheckedTokenStarSource model)
@@ -361,7 +366,7 @@ def CheckedTokenStarSource.referencePointers (source : CheckedTokenStarSource mo
 
 /-- A projection-bearing token operand references its **declaring** field. The stored-versus-category choice is not part of a reference: `MessagePointer` has no projection slot, and the channel reports field instances.
 
-    A measured filtered star adds the filter's field operands. Unmarked references at or below the reopened level keep the candidate wildcard, while `$` references use the captured firing environment and stay concrete. Repetition-only leaves contribute no field pointer. This is intentionally token-specific: the Number and Boolean/Confirm carriers remain refused until their own observations establish that the same assignment crosses those representation boundaries.
+    A filtered star adds the filter's field operands. Unmarked references at or below the reopened level keep the candidate wildcard, while `$` references use the captured firing environment and stay concrete. Repetition-only leaves contribute no field pointer.
 
     A group slot contributes its whole recursive expansion through the shared projection, which is why this is list-valued where a field-denoting slot contributes exactly one pointer. -/
 def CheckedTokenEntityOperand.referencePointers (environment : Env)
@@ -398,16 +403,19 @@ def CheckedTemporalDistinctCountOperand.referencePointers (environment : Env)
   | .slot source => source.referencePointers environment inputs
   | .group source => source.source.referencePointers environment
 
-/-- The Boolean/Confirm companion has the same optional-filter shape, but it does not inherit the token carrier's measured coordinate account and therefore still refuses a filter. Its fixed canonical-token projection is invisible here for the same reason the token projection is. -/
+/-- The Boolean/Confirm companion retains its source and filter through the same coordinate
+projection. Its fixed canonical-token projection is invisible here for the same reason the token projection is. -/
 def CheckedBooleanValueCountOperand.referencePointers (environment : Env)
     (operand : CheckedBooleanValueCountOperand model expected) (inputs : Option MessageReferenceInputs := none) :
     Except ReferenceProjectionError (List MessagePointer) := match operand with
   | .selected source => selectedEntityPointers source.source environment inputs
   | .field source =>
       (concreteFieldPointer source.declaration environment).map ([·])
-  | .star source =>
-      if source.filter.isSome then .error .filteredStarOperand
-      else (starFieldPointer source.source environment).map ([·])
+  | .star source => do
+      let selected ← starFieldPointer source.source environment
+      let filters ← source.filter.toList.mapM fun having =>
+        source.source.filterReferencePointers environment having.condition
+      pure (selected :: filters.flatten)
   | .group source => source.source.referencePointers environment
 
 def CheckedBooleanValueCountSource.referencePointers
@@ -429,16 +437,19 @@ def CheckedNumericProductAggregate.referencePointers
       ← starFieldPointer checked.right.source environment]
 
 /-- Field-fill lists retain operand shape: expanded descendants and starred fields need the
-existing wildcard projection, not the direct-field sieve. Filter coordinates remain unclassified. -/
+existing wildcard projection, not the direct-field sieve. Filters retain their own dependencies. -/
 def CheckedFieldFillList.referencePointers (source : CheckedFieldFillList model)
     (environment : Env) (inputs : Option MessageReferenceInputs := none) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  if source.hasHaving then .error .filteredStarOperand else
   (·.flatten) <$> source.operands.mapM fun
     | .indexed source => source.referencePointers environment inputs
     | .keyed source => source.referencePointers environment inputs
     | .field declaration => (concreteFieldPointer declaration environment).map ([·])
-    | .star star => (starFieldPointer star.source environment).map ([·])
+    | .star star => do
+        let selected ← starFieldPointer star.source environment
+        let filters ← star.filter.toList.mapM fun having =>
+          star.source.filterReferencePointers environment having.condition
+        pure (selected :: filters.flatten)
     | .group group => group.source.referencePointers environment
 
 private def resolvedFieldPointers {model : FlatModel} (field : FieldId) (environment : Env) :
@@ -458,6 +469,21 @@ private def entityShapePointers (shape : CheckedFieldEntityShape model)
     | .group reference => fixedGroupPointers model reference environment
     | .starredGroup source => starredGroupPointers model source.group.path source.path.firstStar environment
     | .starredGroupPresence source => starredGroupPointers model source.groupPath source.path.firstStar environment
+
+/-- Overlap retains the checked filter beside its exact star; rebuilding it from the authored shape
+would lose the caller binding settled by the Having caller capture. -/
+private def overlapOperandPointers (operand : CheckedSingularDateRangesOverlapOperand model)
+    (environment : Env) (inputs : Option MessageReferenceInputs) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  match operand with
+  | .canonical (.field source) => (concreteFieldPointer source.declaration environment).map ([·])
+  | .fragmentField source => (concreteFieldPointer source.declaration environment).map ([·])
+  | .canonical (.indexed selection _) | .indexedFragment selection _ => selection.referencePointers environment inputs
+  | .canonical (.keyed selection _) => selection.referencePointers environment inputs
+  | .canonical (.star path _ filter) => do
+      let selected ← starFieldPointer path environment
+      let filters ← filter.toList.mapM (path.filterReferencePointers environment)
+      pure (selected :: filters.flatten)
 
 private def temporalEntityPointers (source : CheckedTemporalExtremumOperands model)
     (environment : Env) (inputs : Option MessageReferenceInputs) :
@@ -531,12 +557,12 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env)
   | .sumOfProducts source => source.referencePointers environment inputs
   | .filledFieldCount source => source.referencePointers environment inputs
   | .filledGroupCountMixed operands =>
-      -- Routed through the same sieve as the scalar group count, so a star in the list cannot
-      -- change which references a message may project.
-      sievedFieldPointers model
-        (fun declaration =>
-          operands.any fun operand => operand.referencesField model declaration.id)
-        environment
+      (·.flatten) <$> operands.mapM fun operand =>
+        let source : CheckedEntityGroupSource model := match operand with
+          | .fixed reference => .fixed reference
+          | .starred source => .starred source
+          | .starredPresence source => .starredPresence source
+        source.referencePointers environment
 
 /-- Traverse one authored operand expression left to right. Literals reference nothing; a failing atom fails the whole projection. -/
 private def expressionPointers (environment : Env) (inputs : Option MessageReferenceInputs) :
@@ -577,9 +603,13 @@ def ValidationConditionLeaf.referencePointers (environment : Env)
   | .orderedNumeric _ comparison => do
       pure ((← expressionPointers environment inputs comparison.left) ++
         (← expressionPointers environment inputs comparison.right))
-  | .groupList _ operands =>
+  | .groupList operator operands =>
       (·.flatten) <$>
-        operands.mapM (fun operand => operand.referencePointers environment inputs)
+        operands.mapM (fun operand => match operator, operand with
+          | .allGroupsFilled, .group reference | .atLeastOneGroupFilled, .group reference =>
+              if reference.path.length == 1 then pure []
+              else operand.referencePointers environment inputs
+          | _, _ => operand.referencePointers environment inputs)
   | .keyedGroupPresence _ source => source.referencePointers environment inputs
   | .indexedFieldPresence _ source => source.referencePointers environment inputs
   | .repeatableFieldPresence _ declaration =>
@@ -605,11 +635,24 @@ def ValidationConditionLeaf.referencePointers (environment : Env)
       sievedFieldPointers model
         (fun declaration => comparison.referencesField model declaration.id)
         environment
-  | .groupPresence _ reference => fixedGroupPointers model reference environment
+  | .groupPresence operator reference =>
+      if operator == .filled && reference.path.length == 1 then pure []
+      else fixedGroupPointers model reference environment
   | .guardedRootCurrentRepetition guard _ _ =>
       (concreteFieldPointer guard environment).map ([·])
   | .guardedRepeatableCurrentRepetition guard _ _ =>
       (concreteFieldPointer guard environment).map ([·])
+  | .iteratedDateRange (.overlap source) =>
+      (·.flatten) <$> source.operands.mapM (overlapOperandPointers · environment inputs)
+  | .iteratedDateRange (.pluralOverlap source) => do
+      let scalar ← match source.scalarSelection? with
+        | some selection => selection.referencePointers environment inputs
+        | none => (concreteFieldPointer source.scalar.declaration environment).map ([·])
+      let operands ← source.operands.mapM fun
+        | .field source => overlapOperandPointers source environment inputs
+        | .group source => source.source.referencePointers environment
+        | .keyed source _ _ => source.referencePointers environment inputs
+      pure (scalar ++ operands.flatten)
   | .iteratedDateRange condition =>
       match condition.overlapShape? with
       | some shape =>

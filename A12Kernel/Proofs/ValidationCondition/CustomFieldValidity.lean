@@ -21,7 +21,7 @@ theorem validationCondition_customFieldValidity_evalSelected
         .unknown) := by
   cases relevant : isRelevant leaf.operand.source <;>
     simp [ValidationCondition.customFieldValidity, ValidationCondition.evalSelected,
-      ValidationCondition.evalWithTemporalResult, relevant,
+      ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult, Except.toOption, relevant,
       CheckedCustomFieldValidityLeaf.evalValidationObservation,
       CheckedCustomFieldValidityLeaf.evalAt, CheckedCustomFieldValidityLeaf.evalCell,
       CheckedCustomFieldValidityLeaf.evalObservation, Except.mapError, pure, Except.pure]

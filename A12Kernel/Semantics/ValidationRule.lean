@@ -141,12 +141,20 @@ structure ResolvedRule (Condition : Type) where
 
 abbrev ResolvedFlatRule := ResolvedRule FlatCondition
 
-/-- The message fields admitted by this flat capsule. Rule path, referenced fields, and fill-to-fix metadata remain outside. -/
+/-- Caught evaluation failures emit without authored reference sets (predicate-family capture, KF522).
+Polarity alone cannot distinguish that handler from a normal value-error verdict. -/
+inductive RuleMessageOrigin where
+  | condition
+  | runtimeFailure
+  deriving Repr, DecidableEq
+
+/-- Emission retains the failure handler identity needed to derive reference sets from the checked rule. -/
 structure FlatRuleMessage where
   errorAddress : MessagePointer
   errorCode : String
   severity : ValidationSeverity
   messageType : Polarity
+  origin : RuleMessageOrigin := .condition
   text : ResolvedMessageText
   deriving Repr, DecidableEq
 
@@ -208,6 +216,12 @@ def emitAtCoordinates (rule : ResolvedRule Condition)
 def emitAt (rule : ResolvedRule Condition) (errorPath : List Nat)
     (verdict : Verdict) : FlatRuleOutcome :=
   rule.emitAtCoordinates (errorPath.map .concrete) verdict
+
+/-- The whole-rule catch preserves its distinct reference behavior after the control effect is handled. -/
+def emitRuntimeFailureAt (rule : ResolvedRule Condition) (errorPath : List Nat) : FlatRuleOutcome :=
+  match rule.emitAt errorPath (.fired .value) with
+  | .fired message => .fired { message with origin := .runtimeFailure }
+  | other => other
 
 /-- The established nonrepeatable emitter is the empty-path specialization. -/
 def emit (rule : ResolvedRule Condition) (verdict : Verdict) : FlatRuleOutcome :=

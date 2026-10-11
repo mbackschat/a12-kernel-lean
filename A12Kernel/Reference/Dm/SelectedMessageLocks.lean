@@ -2,7 +2,7 @@ import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.LowerValidation
 import A12Kernel.Reference.Dm.Parser
-import A12Kernel.Elaboration.ValidationCondition.Reference
+import A12Kernel.Elaboration.ValidationCondition.Omission
 import A12Kernel.Semantics.MessageIndex
 import A12Kernel.Reference.Dm.Document
 
@@ -61,6 +61,13 @@ private def hasPointers (text : String) (expected : List MessagePointer)
   | some (.ok actual) => actual.length == expected.length && expected.all actual.contains
   | _ => false
 
+private def omissionProject (text : String) (environment : Env := [(1, 1)])
+    (context : Option MessageReferenceInputs := some (inputs)) :
+    Option (List MessagePointer) := do
+  let parsed ← (parseText .english text).toOption
+  let condition ← (lowerCondition model ["Form", "Parents"] false parsed.body (world := world)).toOption
+  (condition.core.omissionPointers environment context).toOption
+
 private def projectionError (text : String) (environment : Env)
     (context : Option MessageReferenceInputs)
     (rowGroup : GroupPath := ["Form", "Parents"]) : Option ReferenceProjectionError :=
@@ -73,6 +80,13 @@ private def selected (fields : List FieldId) (parent : Nat := 1)
     List MessagePointer :=
   (if dynamic then [{ field := 1, coordinates := [.concrete parent] }] else []) ++
     (3 :: fields).map fun field => { field, coordinates := [.concrete parent, row] }
+
+example : omissionProject "[Rows/N For Key] > 0" = some (selected [4]) ∧
+    omissionProject "[Rows/N For Key] > 0" [(1, 2)] = some (selected [4] 2 (.concrete 2)) ∧
+    omissionProject "FieldFilled(Rows/N For Key)" = some [] ∧
+    omissionProject "FieldNotFilled(Rows/N For Key)" = some (selected [4]) ∧
+    omissionProject "[Rows/N For Key] > 0" [(1, 1)] (some (inputs none)) =
+      some (selected [4] 1 .unknown) := by native_decide
 
 example : hasPointers "[Rows/N For Key] > 0" (selected [4]) ∧
     hasPointers "[Rows/N For \"b\"] > 0" (selected [4] 1 (.concrete 2) false) ∧

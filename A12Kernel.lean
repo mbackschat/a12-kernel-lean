@@ -333,6 +333,7 @@ import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.NumericValidation.EntityComparison
 import A12Kernel.Elaboration.FieldFillRule
 import A12Kernel.Elaboration.ValidationCondition
+import A12Kernel.Elaboration.ValidationCondition.Omission
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.EnumerationComparability
 import A12Kernel.Elaboration.Enumeration

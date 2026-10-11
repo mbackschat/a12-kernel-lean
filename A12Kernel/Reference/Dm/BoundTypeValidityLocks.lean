@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Elaboration.ValidationCondition.Omission
 
 namespace A12Kernel.Dm.BoundTypeValidityLocks
 open Lean
@@ -207,5 +208,33 @@ example : ["Valid", "Invalid"].all (fun operation =>
     scalarEntryBoundary "Text" operation false == some true &&
     ["Rows/Text", "Rows/Enum"].all fun source =>
       scalarEntryBoundary source operation true == some true) = true := by native_decide
+
+private def emittedReferences (condition : String) (registered : Bool) :
+    Option (List (List String × List String)) := do
+  let checked ← (checkRule dm .english (rule condition false) (world registered)).toOption
+  let document ← checkedDocument registered ["x", "y"]
+  let messages ← (runRule (world registered) document checked).toOption
+  messages.mapM fun message => do
+    let references ← (checked.condition.core.messageReferences message []).toOption
+    pure ((references.referenced.map (renderPointer model)).mergeSort,
+      (references.fillToFix.map (renderPointer model)).mergeSort)
+
+example : emittedReferences "Invalid(Text,\"Code\") And FieldFilled(Out)" false = some [([], [])] ∧
+    emittedReferences "Invalid(Text,\"Code\") And FieldFilled(Out)" true = some [(["Form/Out", "Form/Text"], [])] ∧
+    emittedReferences "Valid(Rows/Text For \"A\",\"Code\") And FieldFilled(Out)" false = some [([], [])] := by native_decide
+
+private def scalarMessageOrigins (registered : Bool) : Option (RuleMessageOrigin × RuleMessageOrigin) := do
+  let checked ← (checkRule dm .english (rule "Invalid(Text,\"Code\") And FieldFilled(Out)" false)
+    (world registered)).toOption
+  let prepared ← (prepareFlatStringContext (world registered) builtinStringPatternCompiler model).toOption
+  let raw : RawFlatContext := {
+    read := fun field =>
+      if field == 1 then .parsed (.str "ready") else if field == 2 then .parsed (.str "y") else .empty }
+  let full ← (checked.evalFull prepared "en_US" raw GroupPresenceContext.unavailable true).toOption
+  let .evaluated part ← (checked.evalPartial prepared "en_US" raw GroupPresenceContext.unavailable .full).toOption | none
+  pure ((← full.message?).origin, (← part.message?).origin)
+
+example : scalarMessageOrigins false = some (.runtimeFailure, .runtimeFailure) ∧
+    scalarMessageOrigins true = some (.condition, .condition) := by native_decide
 
 end A12Kernel.Dm.BoundTypeValidityLocks

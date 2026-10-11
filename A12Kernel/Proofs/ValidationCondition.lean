@@ -145,7 +145,7 @@ theorem validationCondition_flat_evalSelected
       condition.evalSelected context.fields isRelevant := by
   have never (tree : ConditionTree FlatConditionLeaf) : tree.anyLeaf (fun _ => false) = false := by
     induction tree <;> simp_all
-  unfold ValidationCondition.evalSelected ValidationCondition.evalWithTemporalResult ValidationCondition.flat
+  unfold ValidationCondition.evalSelected ValidationCondition.evalSelectedResult ValidationCondition.evalWithTemporalResult ValidationCondition.flat
   dsimp only
   simp only [ConditionTree.evalBoolExcept_map, ConditionTree.evalClassificationExcept_map]
   dsimp only [Except.mapError, pure, Except.pure, bind, Except.bind]
@@ -155,7 +155,7 @@ theorem validationCondition_flat_evalSelected
   rw [conditionTree_evalVerdictExcept_embed condition ValidationConditionLeaf.flat _
     (fun leaf => (ValidationConditionLeaf.flat leaf).evalSelected context isRelevant) (fun _ => rfl)]
   cases condition <;> simp [ConditionTree.map, never,
-    FlatCondition.evalSelected, ValidationConditionLeaf.evalSelected]
+    FlatCondition.evalSelected, ValidationConditionLeaf.evalSelected, Except.toOption]
 
 
 
@@ -231,8 +231,8 @@ theorem validationCondition_numeric_evalSelected_of_relevant
     (ValidationCondition.numeric (model := model) comparison).evalSelected
         context isRelevant =
       comparison.evalSelectedWithGroups context := by
-  simp [ValidationCondition.numeric, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
-    Except.mapError,
+  simp [ValidationCondition.numeric, ValidationCondition.evalSelected, ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
+    Except.mapError, Except.toOption,
     ValidationConditionLeaf.evalSelected, relevant]
 
 /-- A reached resolved group leaf delegates exactly to the established product-state operator. -/
@@ -246,8 +246,8 @@ theorem validationCondition_groupPresence_evalSelected
     (ValidationCondition.groupPresence (model := model)
         operator reference).evalSelected
         context isRelevant = operator.eval state := by
-  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
-    Except.mapError,
+  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
+    Except.mapError, Except.toOption,
     ValidationConditionLeaf.evalSelected, resolved]
 
 /-- Missing checked-document group state is explicit semantic unavailability. -/
@@ -261,8 +261,8 @@ theorem validationCondition_groupPresence_missing_isUnknown
     (ValidationCondition.groupPresence (model := model)
         operator reference).evalSelected
         context isRelevant = .unknown := by
-  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
-    Except.mapError,
+  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
+    Except.mapError, Except.toOption,
     ValidationConditionLeaf.evalSelected, missing]
 
 /-- A group reference contributes exactly its model-owned repeatable ancestry to ordinary rule iteration, and the same fact selects the addressed evaluator. -/

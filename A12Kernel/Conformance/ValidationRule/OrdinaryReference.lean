@@ -87,12 +87,13 @@ example :
       { field := innerAmount.id, coordinates := [.concrete 2, .wildcard] }] := by
   native_decide
 
-/- A reached filter refuses the whole projection instead of returning the star pointer alone. An
-   incomplete set that looks complete is the failure this boundary exists to prevent. -/
+/- The repeated filtered source names the same candidate instance; structural deduplication keeps
+   one pointer even though both the source and its filter name it. -/
 example :
-    conditionReferenceError?
-        (comparisonCondition? outerWithFilteredInnerFirstFilledComparison?) [(10, 2)] =
-      some .filteredStarOperand := by
+    conditionReferences?
+        (comparisonCondition? outerWithFilteredInnerFirstFilledComparison?) [(10, 2)] = some [
+      { field := outerAmount.id, coordinates := [.concrete 2] },
+      { field := innerAmount.id, coordinates := [.concrete 2, .wildcard] }] := by
   native_decide
 
 /- Both connectives contribute every branch and the union is deduplicated once, so a repeated
@@ -323,7 +324,7 @@ private def filteredTokenValueCountSource? :
 
 /- The selected token and unmarked candidate reference share the reopened coordinate, while `$`
    stays at the captured firing row. This is the exact token-family witness at the message-pointer
-   checkpoint; Number and Boolean/Confirm have no corresponding observation and remain refused. -/
+   checkpoint. -/
 example :
     conditionReferences? (tokenValueCountCondition? filteredTokenValueCountSource?)
       [(10, 2)] = some [
@@ -633,8 +634,8 @@ example :
       some [{ field := rowFlag.id, coordinates := [.wildcard] }] := by
   native_decide
 
-private def filteredBooleanCountReferenceError? :
-    Option ReferenceProjectionError := do
+private def filteredBooleanCountReferences? :
+    Option (List MessagePointer) := do
   let source ← (elaborateBooleanValueCountSource countModel ["Count"] true {
     first := .starHaving {
       base := .absolute
@@ -656,14 +657,15 @@ private def filteredBooleanCountReferenceError? :
       core
       modelWellFormed := by native_decide
       wellFormed := hCore }).toOption
-    match condition.core.referencePointers [] with
-    | .error error => some error
-    | .ok _ => none
+    (condition.core.referencePointers []).toOption
   else
     none
 
-/- The token observation does not silently widen the Boolean/Confirm carrier. -/
-example : filteredBooleanCountReferenceError? = some .filteredStarOperand := by
+/- Candidate reads stay wildcarded, while the captured fixed-group dependency stays exact. -/
+example : filteredBooleanCountReferences? = some [
+    { field := rowFlag.id, coordinates := [.wildcard] },
+    { field := rowAmount.id, coordinates := [.wildcard] },
+    { field := fixedAmount.id, coordinates := [] }] := by
   native_decide
 
 /-- A filtered token value count and a filtered Boolean value count, each reaching the error field

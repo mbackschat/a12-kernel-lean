@@ -224,8 +224,6 @@ The selected-overlap implementation and assurance now live in the [shared overla
 
 | ID | Remaining obligation | Closure discriminator / owner |
 |---|---|---|
-| H10-R1 | Newly admitted temporal-amount reference classifications | Preserve authored membership, actual binding and root role through [ErrorReferences](../../A12Kernel/Elaboration/ValidationCondition/ErrorReferences.lean), against admitted/refused controls. |
-| H10-R2 | Emitted message reference-set transport | Reuse retained [predicate](../sources/having-filter-probes.md#src-having-predicate-family) and [caller](../sources/having-filter-probes.md#src-having-caller-runtime) artifacts. Compare referenced/fill-to-fix coordinates for selected payload, candidate and marked reads; code/pointer/type replay does not establish this output contract. |
 | H10-R3 | Wider profile and cross-carrier calibration | The family owners retain temporal/calendar, String-pattern, registered callback and broader composition limits. Select discriminators only where the represented alternatives remain unsettled; retain phase-specific failures and fresh producer state. |
 | H10-R4 | Additional combined-diagnostic and exact syntax projection | Preserve ordinary admission order when combining uncalibrated defects. Bare String counterparts of token first-filled comparisons refuse but still lack `MVK_UNEXPECTED_TOKEN` projection. |
 | H10-R5 | Effect-preserving rewrites and nested-scope transformations | Pure selector laws require effect-preservation hypotheses at the resolving runtime. Moving conditions across nested scope is a separate structural transformation. |

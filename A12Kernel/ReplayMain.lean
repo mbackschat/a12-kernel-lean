@@ -92,6 +92,7 @@ import A12Kernel.Reference.Dm.EnumerationTableLocks
 import A12Kernel.Reference.Dm.EntityCategoryLocks
 import A12Kernel.Reference.Dm.NonNumberAlternativeLocks
 import A12Kernel.Reference.Dm.PartialGroupOperandLocks
+import A12Kernel.Reference.Dm.MessageReferenceLocks
 import A12Kernel.Reference.Dm.ApplicationKindLocks
 import A12Kernel.Reference.Dm.SemanticIndexLocks
 import A12Kernel.Reference.Dm.NestedSemanticIndexLocks

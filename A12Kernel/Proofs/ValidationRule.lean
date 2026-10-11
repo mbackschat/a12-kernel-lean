@@ -108,8 +108,17 @@ theorem validationRule_eval_verdict (rule : ResolvedValidationRule model)
     (context : ValidationEvaluationContext) (hasContent : Bool) :
     (ResolvedValidationRule.evalFull rule context hasContent).verdict =
       rule.condition.evalFull context hasContent := by
-  exact resolvedRule_evalWith_verdict rule
-    (fun condition => condition.evalFull context hasContent)
+  unfold ResolvedValidationRule.evalFull ValidationCondition.evalFull
+  split
+  · cases h : rule.condition.evalSelectedResult context with
+    | ok verdict =>
+        simp [ResolvedValidationRule.emitEvaluationResult, ValidationCondition.evalSelected,
+          h, Except.toOption, ResolvedRule.emit]
+    | error fault =>
+        simp [ResolvedValidationRule.emitEvaluationResult, ValidationCondition.evalSelected,
+          h, Except.toOption, ResolvedRule.emitRuntimeFailureAt, ResolvedRule.emitAt,
+          ResolvedRule.emitAtCoordinates, FlatRuleOutcome.verdict]
+  · rfl
 
 /-- A fired condition copies the exact resolved address and supplied metadata, renders the structured plan, and derives its message type from the verdict. -/
 theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
@@ -325,8 +334,8 @@ theorem checkedValidationRule_partial_evaluated
         rule.errorField rule.partialErrorBoundLevels [] = true)
     (scalar : rule.requiresAddressedValidation = false) :
     rule.evalPartial prepared locale raw groups scope =
-      .ok (.evaluated (rule.core.emit
-        (rule.condition.core.evalSelected {
+      .ok (.evaluated (rule.core.emitEvaluationResult
+        (rule.condition.core.evalSelectedResult {
           fields := (prepared.checkContext locale raw).withWorld prepared.world
           groups
           pass := .part
@@ -439,7 +448,7 @@ theorem checkedFlatRule_fired_message_exact
       ((prepared.checkContext locale raw).withWorld prepared.world)
       hasContent messageType fires
 
-/-- Checked mixed assembly preserves the same exact fired-message contract. -/
+/-- Checked mixed assembly preserves exact metadata and the evaluation origin needed by message-reference selection. -/
 theorem checkedValidationRule_fired_message_exact
     (rule : CheckedResolvedValidationRule model)
     (prepared : PreparedFlatStringContext model compilePattern)
@@ -462,10 +471,31 @@ theorem checkedValidationRule_fired_message_exact
         severity := rule.severity
         messageType
         text := rule.messagePlan.render
+        origin := match rule.condition.core.evalSelectedResult {
+          fields := (prepared.checkContext locale raw).withWorld prepared.world
+          groups
+        } with
+          | .ok _ => .condition
+          | .error _ => .runtimeFailure
       }) := by
-  simp [CheckedResolvedValidationRule.evalFull,
-    CheckedResolvedValidationRule.core, ResolvedValidationRule.evalFull,
-    ResolvedRule.evalWith, ResolvedRule.evalWithAt, ResolvedRule.emitAt, ResolvedRule.emitAtCoordinates, MessagePointer.ofCellAddr,
-    scalar, fires]
+  unfold ValidationCondition.evalFull at fires
+  split at fires
+  · rename_i content
+    cases h : rule.condition.core.evalSelectedResult {
+        fields := (prepared.checkContext locale raw).withWorld prepared.world
+        groups } with
+    | ok verdict =>
+        simp [ValidationCondition.evalSelected, h, Except.toOption] at fires
+        simp [CheckedResolvedValidationRule.evalFull, ResolvedValidationRule.evalFull,
+          CheckedResolvedValidationRule.core, ResolvedValidationRule.emitEvaluationResult,
+          ResolvedRule.emit, ResolvedRule.emitAt, ResolvedRule.emitAtCoordinates,
+          MessagePointer.ofCellAddr, scalar, h, fires, content]
+    | error fault =>
+        simp [ValidationCondition.evalSelected, h, Except.toOption] at fires
+        simp [CheckedResolvedValidationRule.evalFull, ResolvedValidationRule.evalFull,
+          CheckedResolvedValidationRule.core, ResolvedValidationRule.emitEvaluationResult,
+          ResolvedRule.emitRuntimeFailureAt, ResolvedRule.emitAt,
+          ResolvedRule.emitAtCoordinates, MessagePointer.ofCellAddr, scalar, h, ← fires, content]
+  · contradiction
 
 end A12Kernel

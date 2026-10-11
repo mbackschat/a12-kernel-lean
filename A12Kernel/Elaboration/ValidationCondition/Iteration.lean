@@ -631,12 +631,13 @@ def evalWithTemporalResult (condition : ValidationCondition model)
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported)
   | .error (.inr (.addressing _)) => onTemporalUnavailable
 
-/-- Evaluate one mixed tree with the rule-owned truth and classification phases. -/
-def evalSelected (condition : ValidationCondition model)
+/-- Preserve a caught value failure until message emission; the verdict-only API below deliberately forgets its origin. -/
+def evalSelectedResult (condition : ValidationCondition model)
     (context : ValidationEvaluationContext)
-    (isRelevant : FlatRelevance := fun _ => true) : Verdict :=
-  match condition.evalWithTemporalResult context isRelevant
-      (fun leaf => Except.ok (ε := Empty) (leaf.evalSelected context isRelevant))
+    (isRelevant : FlatRelevance := fun _ => true) : Except ScalarTemporalEvaluationFault Verdict :=
+  condition.evalWithTemporalResult context isRelevant
+      (fun leaf => Except.ok (ε := ScalarTemporalEvaluationFault) (leaf.evalSelected context isRelevant))
+      (onTemporalValueFailure := Except.error)
       (temporalPartialResult? := fun
         | .stringPattern leaf => some do
             leaf.condition.pattern.checkExecution.mapError
@@ -647,9 +648,13 @@ def evalSelected (condition : ValidationCondition model)
             (leaf.evalValidationObservation (observeCell .validation
               (context.fields.read leaf.operand.source))).mapError
                 (fun _ => .inr (.addressing .typeValidityValueFailure))
-        | _ => none) with
-  | .ok verdict => verdict
-  | .error impossible => nomatch impossible
+        | _ => none)
+
+/-- The scalar verdict view retains historical value-error polarity while message emitters consume the effectful result. -/
+def evalSelected (condition : ValidationCondition model)
+    (context : ValidationEvaluationContext)
+    (isRelevant : FlatRelevance := fun _ => true) : Verdict :=
+  (condition.evalSelectedResult context isRelevant).toOption.getD (.fired .value)
 
 /-- Apply the ordinary full-validation content gate to a mixed resolved tree. -/
 def evalFull (condition : ValidationCondition model)

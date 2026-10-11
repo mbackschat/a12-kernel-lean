@@ -246,6 +246,38 @@ example : HavingFixture.referencesFor
     "DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"),Length(/Form/Rows/Tag)+Length($/Form/Rows/Tag))) == 3"
     HavingFixture.model = some (true, true) := by native_decide
 
+private def amountCondition (amount : String) (filtered : Bool) : String :=
+  let expression := "DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\")," ++ amount ++ ")) == 2"
+  if filtered then "Sum(/Form/Rows*/N Having " ++ expression ++ ") > 0" else expression
+
+private def amountReferences (amount : String) (filtered : Bool) :
+    Option (Option Bool × Option Bool × Option Bool) := do
+  let parsed ← (parseText .english (amountCondition amount filtered)).toOption
+  let checked ← (lowerCondition HavingFixture.model ["Form"] false parsed.body
+    (bindingGroup := ["Form", "Rows"])).toOption
+  pure (checked.core.authoredErrorReference? 3,
+    checked.core.errorReferenceAt? 3 10, checked.core.formOnlyErrorReference? 3)
+
+private def amountAdmission (amount : String) (filtered : Bool) : Bool :=
+  let dm : DmModel := {
+    flat := HavingFixture.model, rules := [], computations := []
+    conditionLanguage := "en_US", refusals := [] }
+  (checkRule dm .english {
+    group := ["Form"], name := "Amount", errorCode := "AMOUNT", severity := "ERROR"
+    errorEntityRelPath := "../Rows/Tag", condition := amountCondition amount filtered }).isOk
+
+example : [
+    ("Length(/Form/Rows/Tag)", true, false, false, false, false),
+    ("Length($/Form/Rows/Tag) + Length(/Form/Rows/Tag)", true, true, true, false, true),
+    ("NumberOfFilledFields($/Form/Rows) + Length(/Form/Rows/Tag)", true, true, true, false, true)
+  ].all (fun (amount, filtered, member, bound, rootOnly, admitted) =>
+    amountReferences amount filtered == some (some member, some bound, some rootOnly) &&
+      amountAdmission amount filtered == admitted) = true := by native_decide
+
+example : ["NumberOfFilledFields(Rows)", "NumberOfFilledFields(Rows*)",
+    "NumberOfFilledFields(/Form)"].all (fun amount =>
+      (amountReferences amount false).isNone && !amountAdmission amount false) = true := by native_decide
+
 private def partialSourceModel : FlatModel := { ordinaryModel with
   fields := ordinaryModel.fields.map fun field => if field.id == 3 || field.id == 13 then
     { field with temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .yearOptional } }
