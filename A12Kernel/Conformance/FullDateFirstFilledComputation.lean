@@ -355,7 +355,7 @@ example :
         (star "UnsupportedSource")).isNone = true ∧
       (checked? target.id (star "Time")).isNone = true ∧
       (checked? target.id (star "Month")).isNone = true ∧
-      (checked? target.id (star "PartialDate")).isNone = true ∧
+      (checked? target.id (star "PartialDate")).isSome = true ∧
       (checked? target.id (star "IncompleteDate")).isNone = true ∧
       (checkedAt? ["Cart", "Lines"] target.id (star "PromiseDate")).isSome = true ∧
       (checkedAt? [] target.id (star "PromiseDate")).isNone = true ∧

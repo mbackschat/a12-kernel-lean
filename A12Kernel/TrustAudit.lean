@@ -2779,6 +2779,7 @@ run_cmd do
 #print axioms A12Kernel.fullDateFirstFilledCellAt_poison
 #print axioms A12Kernel.evalFullDateFirstFilledCells_present_head
 #print axioms A12Kernel.evalFullDateFirstFilledCells_poison_head
+#print axioms A12Kernel.evalFullDateFirstFilledCells_nonempty_noValue_head
 #print axioms A12Kernel.checkedFullDateFirstFilled_executeWithRead_base
 #print axioms A12Kernel.checkedFullDateFirstFilled_executeResult_projects
 #print axioms A12Kernel.fullDateFirstFilledRun_applyToChecked_delegates

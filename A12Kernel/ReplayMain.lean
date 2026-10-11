@@ -124,6 +124,7 @@ import A12Kernel.Reference.Dm.TemporalRowsetLocks
 import A12Kernel.Reference.Dm.ScalarFieldGuardLocks
 import A12Kernel.Reference.Dm.NumericCountLocks
 import A12Kernel.Reference.Dm.FirstFilledValidationLocks
+import A12Kernel.Reference.Dm.PartialDateFirstFilledLocks
 import A12Kernel.Reference.Dm.SelectedFirstFilledLocks
 import A12Kernel.Reference.Dm.SelectedMessageLocks
 import A12Kernel.Reference.Dm.SelectedIterationLocks

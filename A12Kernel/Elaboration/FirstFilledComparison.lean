@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.DeclaredPartialFields
 import A12Kernel.Elaboration.FieldFillList
 import A12Kernel.Elaboration.TemporalExpression
 import A12Kernel.Semantics.DateRangeComparison
+import A12Kernel.Semantics.FirstFilledDate
 
 /-! # Typed first-filled validation comparisons
 
@@ -19,13 +20,17 @@ inductive FirstFilledComparisonProfile where
   | dateRange (format : DateRangeInputFormat)
   deriving Repr, DecidableEq
 
-private def firstFilledProfile? (declaration : FlatFieldDecl) : Option FirstFilledComparisonProfile :=
+private def firstFilledProfile? (declaration : FlatFieldDecl) (allowPartial : Bool := false) :
+    Option FirstFilledComparisonProfile :=
   match declaration.policy.kind with
   | .boolean => some .boolean
   | .confirm => some .confirm
   | .temporal _ components => do
       let policy ← declaration.toTemporalTargetPolicy?
-      if policy.partialMode != .full then none else pure (.temporal policy.format components)
+      if policy.partialMode != .full && (!allowPartial ||
+          components != TemporalComponents.fullDate || (FullDateTargetFormat.ofSource? policy.format).isNone) then
+        none
+      else pure (.temporal policy.format components)
   | .dateRange => do
       let policy ← declaration.toDateRangeDeclarationPolicy?
       .dateRange <$> DateRangeInputFormat.ofPolicy? policy
@@ -142,9 +147,9 @@ private def checkFirstFilledComparisonOperand (model : FlatModel) (declaringGrou
       if let some declaration := source.declarations.find? (·.policy.kind.surfaceKind == .confirm) then
         throw (.confirmOperand declaration.path)
       let first :: _ := source.declarations | throw .unsupportedSource
-      let some profile := firstFilledProfile? first | throw .unsupportedSource
+      let some profile := firstFilledProfile? first true | throw .unsupportedSource
       for declaration in source.declarations do
-        let some candidate := firstFilledProfile? declaration | throw .unsupportedSource
+        let some candidate := firstFilledProfile? declaration true | throw .unsupportedSource
         if candidate != profile then throw .varyingProfiles
       pure (.firstFilled { source, first, profile })
 
@@ -241,6 +246,18 @@ def projectFirstFilledValue (model : FlatModel) (declaration : FlatFieldDecl) :
   | .value (.bool value) given => .value (.boolean value) given
   | .value (.conf true) given => .value (.boolean true) given
   | .value (.dateRange value) given => .value (.dateRange value) given
+  | .value (.partialDate text) given =>
+      let completed := do
+        let policy ← declaration.toTemporalTargetPolicy?
+        let format ← FullDateTargetFormat.ofSource? policy.format
+        match ← firstFilledPartialDateResolution format text with
+        | .nonRelevant => pure ScalarTemporalValue.nonRelevant
+        | .date date =>
+            let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
+            ScalarTemporalValue.date <$> profile.resolveCompletedDateParts? date.civil.parts
+      match completed with
+      | some value => .value (.temporal value) given
+      | none => .unknown .malformed
   | .value value given =>
       match declaration.toTemporalField? with
       | none => .unknown .malformed

@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.TemporalFirstFilledShape
 import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
+import A12Kernel.Semantics.FirstFilledDate
 
 /-! # Full-Date `FirstFilledValue` at a fixed or a repeatable target
 
@@ -42,21 +43,34 @@ def checkFullDateFirstFilledComputation
   else throw (.targetNotFullDate shape.site.target.path)
 
 /-- Project one checked full-Date cell into the typed root computation result consumed by the target policy. Stored text is deliberately not selected here, so the account does not choose copy over decode/render. -/
-def fullDateFirstFilledCellAt
-    (addressed : CheckedAddressedCell) : TemporalComputationResult :=
+def fullDateFirstFilledCellAt (format : FullDateTargetFormat)
+    (profile : ModelZone.ConcreteProfile) (addressed : CheckedAddressedCell) : TemporalComputationResult :=
   match observeCell .computation addressed.cell with
   | .value (.temporal (.date date)) => .value date.instant
+  | .value (.partialDate text) =>
+      match firstFilledPartialDateResolution format text with
+      | some (.date date) =>
+          match profile.resolveCompletedDateParts? date.civil.parts with
+          | some value => .value value.instant
+          | none => .poison .malformed
+      | some .nonRelevant => .noValue
+      | none => .poison .malformed
   | .value _ => .poison .malformed
   | .empty => .noValue
   | .unknown cause | .poison cause => .poison cause
 
-/-- Select the first present full Date or reached formal cause; exhaustion keeps the temporal no-value identity. -/
-def evalFullDateFirstFilledCells :
+/-- Only an empty cell advances selection. A present unknown-year Date stops with no value,
+as the partial-Date first-filled discriminator requires (spec/05, KF508). -/
+def evalFullDateFirstFilledCells (format : FullDateTargetFormat)
+    (profile : ModelZone.ConcreteProfile) :
     List CheckedAddressedCell → TemporalComputationResult
   | [] => .noValue
   | addressed :: remaining =>
-      match fullDateFirstFilledCellAt addressed with
-      | .noValue => evalFullDateFirstFilledCells remaining
+      match fullDateFirstFilledCellAt format profile addressed with
+      | .noValue =>
+          if observeCell .computation addressed.cell = .empty then
+            evalFullDateFirstFilledCells format profile remaining
+          else .noValue
       | result => result
 
 /-- A full-Date run's failure: the shared site's, or the target policy's rendering. -/
@@ -103,7 +117,8 @@ def evaluateAt (operation : CheckedFullDateFirstFilledComputation model)
     Except FullDateFirstFilledComputationFault FullDateFirstFilledComputationOutcome := do
   let resolved ← (operation.shape.site.source.resolveAt input read environment world).mapError
     (.site ∘ .source)
-  let outcome ← (operation.targetPolicy.evaluate (evaluateFirstFilledSource resolved .poison (fun resolved => evalFullDateFirstFilledCells resolved.cells))).mapError
+  let outcome ← (operation.targetPolicy.evaluate (evaluateFirstFilledSource resolved .poison (fun resolved =>
+    evalFullDateFirstFilledCells operation.targetPolicy.format operation.targetPolicy.profile resolved.cells))).mapError
     .target
   pure { targetField := target, outcome }
 

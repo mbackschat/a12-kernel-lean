@@ -9,18 +9,9 @@ temporal profiles. -/
 
 namespace A12Kernel
 
-/-- Completed scalar temporal and DateRange declaration profiles sharing the first-filled site. Additional policies remain excluded.
-
-One of those exclusions is now known legal rather than undecided, and is named so its absence is not
-read as a gate. A **partially known** Date — a full-format DATE declaration carrying `DAY_OPTIONAL`,
-`MONTH_OPTIONAL` or `YEAR_OPTIONAL` — is admitted as a `FirstFilledValue` operand on every precision,
-measured against a full-precision control across the family's five field-list operators
-([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-07-dispositions)). The split runs three against two:
-the extrema and the distinct count refuse `MVK_PARTIAL_DATE_NOT_ALLOWED` and own that gate, while
-uniqueness and this operator accept them. The two `fullDate…` carriers below are full-precision profiles,
-so this certificate does not reach a partial one at all — it neither admits nor refuses it, and the
-silence is carrier coverage rather than a gate. An extension that adds the precision must therefore
-widen the carrier set, not add a check. -/
+/-- Scalar temporal and DateRange profiles sharing the first-filled site. Full-format Date
+sources allow partial precision because selection completes their earliest day (spec/05, KF508);
+the computation target still owes its separate full-precision target check. -/
 inductive TemporalFirstFilledStarCarrier where
   | monthFragment
   | yearFragment
@@ -66,8 +57,7 @@ def TemporalFirstFilledStarCarrier.isDateFragment :
     A DateFragment is a component-omitting Date: its declared components are the ones its format
     names, at full precision, as the reader decodes a `DateFragmentType` and as the Kernel reads it
     ([checkpoint](../../docs/sources/temporal-and-message-probes.md#src-partial-date-presence)). A
-    Date at a partial precision is a partially known full-format Date, never a fragment, so it stays
-    outside. -/
+    Date at partial precision uses a full-format Date carrier, never a fragment (spec/05, KF508). -/
 def FlatFieldDecl.temporalFirstFilledStarCarrier?
     (declaration : FlatFieldDecl) : Option TemporalFirstFilledStarCarrier :=
   match declaration.policy.kind, declaration.toTemporalTargetPolicy?,
@@ -77,7 +67,10 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
         if policy.format == "HH:mm:ss" then some .timeHms else none
       else if components == TemporalComponents.now then
         if policy.format == "yyyy-MM-dd'T'HH:mm:ss" then some .dateTimeIso else none
-      else if policy.partialMode != .full || policy.youngerThan1900Check then
+      else if policy.youngerThan1900Check ||
+          (policy.partialMode != .full &&
+            (components != TemporalComponents.fullDate ||
+              (FullDateTargetFormat.ofSource? policy.format).isNone)) then
         none
       else
         let carrier? : Option TemporalFirstFilledStarCarrier := match policy.format with

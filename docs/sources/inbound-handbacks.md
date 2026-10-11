@@ -157,7 +157,7 @@ The letter is the peer's `-2026-10-02`, delivered by its session and frozen at S
 
 **Classification.** Inbound; [`spec/05`](../../spec/05-dates-and-time.md)'s partial-Date paragraph takes the selection.
 
-**Lean.** Not yet compared on these rows.
+**Lean.** Direct-list and one-star validation/computation now re-derive the earliest-day and stopping distinctions; [the capability record](../implementation/strings-and-enumerations.md#cap-partial-date-first-filled) owns the exact matrix and remaining evidence boundary. No new kernel capture.
 
 <a id="inbound-2026-10-02-rule-buckets"></a>
 **Claim.** Its §11 (`RuleBucketGateDiffTest` at `3bab32bc`) narrows which comparisons are evaluated on an instance without content: `2 > NumberOfFilledGroups(…)`, `Abs(NumberOfFilledGroups(…)) < 2`, `NumberOfFilledFields(…) < 1` and `NumberOfDifferentValues(…) < 1` fire over the three blank documents, while `NumberOfFilledGroups(…) > 5 Or [W] < 5` stays silent. A rule naming a second root fires there too, and a rule on a repeatable root whose error field it does not iterate fires once, at the root's first row.
