@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C11. C01–C10 are closed; proceed in the frozen order.
+The autonomous goal is active at C12. C01–C11 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -102,9 +102,10 @@ C01–C12 are the required sequence. This checkpoint is a bounded consumer-relia
 
 ### C11 — Number length checks retain leading-zero text
 
-- [ ] Resolve the recorded formal-check gap for leadingZerosAllowed declarations without confusing stored spelling with numeric value.
+- [x] Resolve the recorded formal-check gap for leadingZerosAllowed declarations without confusing stored spelling with numeric value.
 - Matrix: 0012/12 at identical value, below/above declared length, flag on/off, stored input/computed replacement; reuse existing selected-number text controls.
 - Done: lexical length and numeric equality remain independently observable on admitted inputs. A new refusal of a Kernel-valid ordinary input does not close this task. [SG27](gaps/numeric-and-temporal.md#gap-sg27).
+- Accepted: [stored Number formal read](implementation/numeric.md#cap-stored-number-formal-read) already implements the shared mechanism. [C11 reader locks](../A12Kernel/Reference/Dm/NumberLengthLocks.lean) check the fixed lexical/equality/replacement matrix and retained leading-zero controls. No runtime change or new capture; fresh HIGH review found no issue. The historical cascade replay boundary remains unchanged.
 
 ### C12 — report the first consumer-reliability checkpoint
 
@@ -215,7 +216,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C11, after accepted C10. Reconcile the leadingZerosAllowed Number formal-length gap against stored-text ingestion and computed replacement. Use the fixed 0012/12, below/above length, flag on/off, stored/computed matrix; preserve equal numeric value while retaining the authored spelling where the formal check needs it. No C11 code changed yet. Next consumer probe stays C12.
+- Active: C12, after accepted C11. Run the frozen Execute/Explain consumer readback: C01 S1–S8 plus C05 category, C10 partial-Date and C11 lexical contrasts. Reuse the corrected canonical packet, verify excerpts against current clauses, and supply concrete inputs without expected answers. Reconcile actual outputs, report the bounded checkpoint, then continue C13–C22.
 - C08 closed: the separate omission selector, shared filter coordinates, mixed-group wildcard correction and effect-preserving message origin pass the frozen matrix. [Reference calibration](implementation/validation-messages-and-custom.md#cap-structural-message-references) matches both exact sets for all 40 caller and 246 filtered-predicate messages. H10-R1 is reconciled against admitted temporal-reference controls; H10-R2 is discharged by dedicated calibration. No new outbound ledger entry. Next consumer probe: C12.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
 - C01 closed: [risk-boundary implementation](../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [reconciled eight-scenario consumer run](consumer-probes/EXECUTE.md#run-c01-execute-03). Integration (2,166 jobs), retained evidence (51 projections), trust (3,026 roots) and HIGH review passed; the review’s documentation correction is incorporated. Code is committed at `0e302b8d`; the accepted consumer basis is `9fe99116`. No remaining C01 blocker.
@@ -230,7 +231,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 ## Verified gate boundary
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
-- Latest verified boundary: C10 partial-Date first-filled selection; the reader matrix and affected proofs pass, including mixed precision, terminal unknown year versus poison, ISO/dotted formats and unchanged bracket/target refusals. Integration (2,193 jobs), compact evidence (51 projections), fresh HIGH review and trust/hygiene passed (3,027 roots; 110,652 declarations in 884 modules). Review caught one over-broad documentation link replacement, now restored; no behavioral finding. The reserved trust-token wording in one comment is corrected and the affected trust gate passed.
+- Latest verified boundary: C11 leading-zero Number length closure, using existing semantics. Reader-to-comparison/computation/application matrix and retained w04/w05/w06 controls pass; integration (2,195 jobs), compact evidence (51 projections) and fresh HIGH review passed. Trust/hygiene passed (3,027 roots; 110,652 declarations in 884 modules). No runtime changes: no full population replay is triggered, and C10 remains the replay boundary.
 - Last full replay: 71,664 matches (52,335 rules and 19,329 computations); zero divergence/fault/unattributed/tier-2 instances; 3,329 rows, 217 without matching artifacts, six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) was regenerated on 2026-10-11 at `7601f488` plus C10. Counts are unchanged; C10 closes the partial-Date selection gap rather than adding population matches. The cadence resets at this reviewed boundary.
 - [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only final recording does not invalidate C10 executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.

@@ -157,7 +157,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 <a id="gap-sg14"></a>
 - [open obligation](gaps/targets-and-derivation.md#gap-sg14)
 
-### SG27 — the Number formal cascade's conversion route and its two unmodelled readings
+### SG27 — the Number formal cascade's conversion route and money text
 
 <a id="gap-sg27"></a>
 - [open obligation](gaps/numeric-and-temporal.md#gap-sg27)
