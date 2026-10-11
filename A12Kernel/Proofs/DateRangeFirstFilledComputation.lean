@@ -12,14 +12,14 @@ theorem dateRangeFirstFilledCellAt_value
     (observed : observeCell .computation addressed.cell =
       .value (.dateRange range)) :
     dateRangeFirstFilledCellAt addressed = .value range := by
-  simp [dateRangeFirstFilledCellAt, observed]
+  simp [dateRangeFirstFilledCellAt, dateRangeComputationCell, observed]
 
 /-- A reached formal rejection retains its exact cause at the DateRange selection boundary. -/
 theorem dateRangeFirstFilledCellAt_poison
     (addressed : CheckedAddressedCell) (cause : FormalCause)
     (observed : observeCell .computation addressed.cell = .poison cause) :
     dateRangeFirstFilledCellAt addressed = .poison cause := by
-  simp [dateRangeFirstFilledCellAt, observed]
+  simp [dateRangeFirstFilledCellAt, dateRangeComputationCell, observed]
 
 /-- A present head terminates the DateRange scan before every suffix cell. -/
 theorem evalDateRangeFirstFilledCells_present_head

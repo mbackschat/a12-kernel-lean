@@ -1,0 +1,306 @@
+{
+  "model": "DirectAlternatives_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "fall-through",
+      "documentInline": {
+        "Form": {
+          "Gate": 2,
+          "BOut": true,
+          "COut": true,
+          "ROut": "2024-02-01/2024-02-02",
+          "BRight": true,
+          "CRight": true,
+          "RRight": "2024-03-01/2024-03-02",
+          "BLeft": false,
+          "CLeft": true,
+          "RLeft": "2024-01-01/2024-01-02",
+          "Rows": [
+            {
+              "Gate": 2,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": true,
+              "RLeft": "2024-01-01/2024-01-02"
+            },
+            {
+              "Gate": 0,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": true,
+              "RLeft": "2024-01-01/2024-01-02"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "two",
+      "documentInline": {
+        "Form": {
+          "Gate": 1,
+          "BOut": true,
+          "COut": true,
+          "ROut": "2024-02-01/2024-02-02",
+          "BRight": true,
+          "CRight": true,
+          "RRight": "2024-03-01/2024-03-02",
+          "BLeft": false,
+          "CLeft": true,
+          "RLeft": "2024-01-01/2024-01-02",
+          "Rows": [
+            {
+              "Gate": 1,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": true,
+              "RLeft": "2024-01-01/2024-01-02"
+            },
+            {
+              "Gate": 0,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": true,
+              "RLeft": "2024-01-01/2024-01-02"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "none",
+      "documentInline": {
+        "Form": {
+          "Gate": 0,
+          "BOut": true,
+          "COut": true,
+          "ROut": "2024-02-01/2024-02-02",
+          "BRight": true,
+          "CRight": true,
+          "RRight": "2024-03-01/2024-03-02",
+          "BLeft": false,
+          "CLeft": true,
+          "RLeft": "2024-01-01/2024-01-02",
+          "Rows": [
+            {
+              "Gate": 0,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": true,
+              "RLeft": "2024-01-01/2024-01-02"
+            },
+            {
+              "Gate": 0,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": true,
+              "RLeft": "2024-01-01/2024-01-02"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "invalid",
+      "documentInline": {
+        "Form": {
+          "Gate": 1,
+          "BOut": true,
+          "COut": true,
+          "ROut": "2024-02-01/2024-02-02",
+          "BRight": true,
+          "CRight": true,
+          "RRight": "2024-03-01/2024-03-02",
+          "BLeft": "bad",
+          "CLeft": "bad",
+          "RLeft": "bad",
+          "Rows": [
+            {
+              "Gate": 1,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": "bad",
+              "CLeft": "bad",
+              "RLeft": "bad"
+            },
+            {
+              "Gate": 0,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": true,
+              "RLeft": "2024-01-01/2024-01-02"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "Gate": 1,
+          "BOut": true,
+          "COut": true,
+          "ROut": "2024-02-01/2024-02-02",
+          "BRight": true,
+          "CRight": true,
+          "RRight": "2024-03-01/2024-03-02",
+          "BLeft": "",
+          "CLeft": "",
+          "RLeft": "",
+          "Rows": [
+            {
+              "Gate": 1,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": "",
+              "CLeft": "",
+              "RLeft": ""
+            },
+            {
+              "Gate": 0,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": true,
+              "RLeft": "2024-01-01/2024-01-02"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "absent",
+      "documentInline": {
+        "Form": {
+          "Gate": 1,
+          "BOut": true,
+          "COut": true,
+          "ROut": "2024-02-01/2024-02-02",
+          "BRight": true,
+          "CRight": true,
+          "RRight": "2024-03-01/2024-03-02",
+          "Rows": [
+            {
+              "Gate": 1,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02"
+            },
+            {
+              "Gate": 0,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": true,
+              "RLeft": "2024-01-01/2024-01-02"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "false",
+      "documentInline": {
+        "Form": {
+          "Gate": 1,
+          "BOut": true,
+          "COut": true,
+          "ROut": "2024-02-01/2024-02-02",
+          "BRight": true,
+          "CRight": true,
+          "RRight": "2024-03-01/2024-03-02",
+          "BLeft": false,
+          "CLeft": false,
+          "RLeft": "2024-01-01/2024-01-02",
+          "Rows": [
+            {
+              "Gate": 1,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": false,
+              "RLeft": "2024-01-01/2024-01-02"
+            },
+            {
+              "Gate": 0,
+              "BOut": true,
+              "COut": true,
+              "ROut": "2024-02-01/2024-02-02",
+              "BRight": true,
+              "CRight": true,
+              "RRight": "2024-03-01/2024-03-02",
+              "BLeft": false,
+              "CLeft": true,
+              "RLeft": "2024-01-01/2024-01-02"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

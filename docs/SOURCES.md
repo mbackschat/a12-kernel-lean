@@ -179,3 +179,6 @@ Edit the source shard when its provenance or drill route changes; change this hu
 
 <a id="src-json-row-normalization"></a>
 - [Document JSON row normalization](sources/evaluation-and-application-routes.md#src-json-row-normalization): non-object removal, dense surviving coordinates, nested parent scope and the separate V1 placement route.
+
+<a id="src-non-number-direct-alternatives"></a>
+- [Direct Boolean, Confirm and DateRange alternative matrix](sources/computation-placement-and-constant-probes.md#src-non-number-direct-alternatives)

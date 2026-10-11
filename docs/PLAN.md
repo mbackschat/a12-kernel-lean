@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C06. C01–C05 are closed; proceed in the frozen order.
+The autonomous goal is active at C07. C01–C06 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -69,9 +69,10 @@ C01–C12 are the required sequence. This checkpoint is a bounded consumer-relia
 
 ### C06 — first-match alternatives for non-Number targets
 
-- [ ] Close remaining table gaps for String, Enumeration, Boolean/Confirm and temporal targets at fixed/two-row targets. [LowerRows](../A12Kernel/Reference/Dm/LowerRows.lean) already covers many operations; do not rebuild that baseline.
+- [x] Close remaining table gaps for String, Enumeration, Boolean/Confirm and temporal targets at fixed/two-row targets. [LowerRows](../A12Kernel/Reference/Dm/LowerRows.lean) already covers many operations; do not rebuild that baseline.
 - Matrix: false first guard then match; two matches; no match on a seeded target; invalid reached operation; direct/FirstFilledValue operation. Use the common row-table selector; add an operation adapter only where its source contract is settled.
 - Done: accepted forms execute once per instance with exact first-match and clear/poison outcomes; otherwise-admissible unsupported forms are explicitly accounted for. [SG4](gaps/keystone.md#gap-sg4), [row-table owner](../A12Kernel/Elaboration/RowComputationTable.lean).
+- Accepted: [non-Number alternative capability](implementation/repeatable-computations.md#cap-non-number-alternatives), its reader-to-plan matrix and direct-copy capture. Cold review found a nondiscriminating clear/poison assertion; typed-outcome and dependent-readback checks now distinguish it and reject the focused poison-collapse mutation. Integrated and compact-evidence gates pass; post-review population replay has no mismatches. Partial-Date first-filled remains C10.
 
 ### C07 — partial group operands share admitted observations
 
@@ -212,7 +213,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C06. Reconcile the [non-Number first-match matrix](#c06--first-match-alternatives-for-non-number-targets) against the existing row table and reader locks before selecting changes. String, Enumeration, Boolean/Confirm and temporal fixed/two-row alternatives share first-match selection; retain no-match seeded clearing, reached invalid operation, direct/FirstFilledValue and two-match controls. Use one settled family slice and one gate cycle.
+- Active: C07. Reconcile the [partial group matrix](#c07--partial-group-operands-share-admitted-observations) against Number group operands, Boolean group value counts and token group operand owners. Close fixed two-field and below-one-repeatable-parent complete/incomplete coverage, empty/filled/malformed content, mixed signedness and category/stored-token projection through the existing shared stream/product mechanisms. Use one settled family slice and one gate cycle; legacy raw-Document APIs remain excluded. The next consumer probe is C12.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
 - C01 closed: [risk-boundary implementation](../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [reconciled eight-scenario consumer run](consumer-probes/EXECUTE.md#run-c01-execute-03). Integration (2,166 jobs), retained evidence (51 projections), trust (3,026 roots) and HIGH review passed; the review’s documentation correction is incorporated. Code is committed at `0e302b8d`; the accepted consumer basis is `9fe99116`. No remaining C01 blocker.
 - The latest [cache-context probe](consumer-probes/EXECUTE.md#run-message-cache-context-readback-01) passed its narrow task; it does not discharge C01/C12. C01’s broader probe is closed; the next bounded probe is C12. C22 uses those results and the subsequent evidence; it does not automatically trigger another consumer programme.
@@ -226,7 +227,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 ## Verified gate boundary
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
-- Latest verified boundary: C05 shared category carrier and reader matrix; 2,174-job integration, 51-projection evidence and 3,026-root trust audit passed. Fresh HIGH review found one stale module description, corrected without executable changes. Post-review full population replay passed; prose-only corrections reuse executable gates.
-- Last full replay: 71,442 matches; zero divergence/fault/unattributed/tier-2 instances; 3,312 rows, 217 without matching artifacts, six preparation refusals. The [derived coverage snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) was regenerated on 2026-10-11 at `d0cae6ed` plus the C05 working tree. The population changed, so its increased match count is not an unchanged-population gain. No semantic family has closed since this replay.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Final C05 plan recording and the reviewed module-description correction require documentation/prose checks only; it does not invalidate the executable gates.
+- Latest verified boundary: C06 non-Number alternatives; 2,180-job integration and 51-projection compact evidence passed. Fresh HIGH review found one clear/poison lock weakness; strengthened typed and dependent-readback checks pass and reject the focused mutation. Semantic code is unchanged by that review repair. Full post-review replay and final trust/hygiene passed (3,026 roots; 110,495 declarations in 881 modules).
+- Last full replay: 71,484 matches (52,155 rules and 19,329 computations); zero divergence/fault/unattributed/tier-2 instances; 3,319 rows, 217 without matching artifacts, six preparation refusals. The [derived coverage snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) was regenerated on 2026-10-11 at `ca542f1b` plus the C06 working tree. The additional 42 matches are the new direct-copy capture, not an unchanged-population gain. No semantic family has closed since this replay.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only final recording does not invalidate C06 executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.

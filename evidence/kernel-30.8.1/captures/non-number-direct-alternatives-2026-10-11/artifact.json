@@ -1,0 +1,2484 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "DirectAlternatives_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "fall-through",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-01/2024-03-02"
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-01/2024-03-02"
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BOut",
+                "value": "true"
+              },
+              {
+                "field": "Form/COut",
+                "value": "true"
+              },
+              {
+                "field": "Form/ROut",
+                "value": "2024-03-01/2024-03-02"
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "value": "true"
+              },
+              {
+                "field": "Form/Rows/COut",
+                "value": "true"
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "value": "2024-03-01/2024-03-02"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": false,
+                "BOut": true,
+                "BRight": true,
+                "CLeft": true,
+                "COut": true,
+                "CRight": true,
+                "Gate": 2,
+                "RLeft": "2024-01-01/2024-01-02",
+                "ROut": "2024-03-01/2024-03-02",
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": false,
+                    "BOut": true,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": true,
+                    "CRight": true,
+                    "Gate": 2,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": "2024-03-01/2024-03-02",
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-01/2024-03-02"
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-01/2024-03-02"
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BOut",
+                "value": "true"
+              },
+              {
+                "field": "Form/COut",
+                "value": "true"
+              },
+              {
+                "field": "Form/ROut",
+                "value": "2024-03-01/2024-03-02"
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "value": "true"
+              },
+              {
+                "field": "Form/Rows/COut",
+                "value": "true"
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "value": "2024-03-01/2024-03-02"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": false,
+                "BOut": true,
+                "BRight": true,
+                "CLeft": true,
+                "COut": true,
+                "CRight": true,
+                "Gate": 2,
+                "RLeft": "2024-01-01/2024-01-02",
+                "ROut": "2024-03-01/2024-03-02",
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": false,
+                    "BOut": true,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": true,
+                    "CRight": true,
+                    "Gate": 2,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": "2024-03-01/2024-03-02",
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "two",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BCopy",
+              "field": "Form/BOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BLeft",
+                "Form/BOut",
+                "Form/BRight",
+                "Form/Gate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BCopy",
+              "field": "Form/Rows/BOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/BLeft",
+                "Form/Rows/BOut",
+                "Form/Rows/BRight",
+                "Form/Rows/Gate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/COut",
+                "value": "true"
+              },
+              {
+                "field": "Form/ROut",
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Rows/COut",
+                "value": "true"
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "value": "2024-01-01/2024-01-02"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": false,
+                "BOut": false,
+                "BRight": true,
+                "CLeft": true,
+                "COut": true,
+                "CRight": true,
+                "Gate": 1,
+                "RLeft": "2024-01-01/2024-01-02",
+                "ROut": "2024-01-01/2024-01-02",
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": false,
+                    "BOut": false,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": true,
+                    "CRight": true,
+                    "Gate": 1,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": "2024-01-01/2024-01-02",
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BCopy",
+              "field": "Form/BOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BLeft",
+                "Form/BOut",
+                "Form/BRight",
+                "Form/Gate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BCopy",
+              "field": "Form/Rows/BOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/BLeft",
+                "Form/Rows/BOut",
+                "Form/Rows/BRight",
+                "Form/Rows/Gate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/COut",
+                "value": "true"
+              },
+              {
+                "field": "Form/ROut",
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Rows/COut",
+                "value": "true"
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "value": "2024-01-01/2024-01-02"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": false,
+                "BOut": false,
+                "BRight": true,
+                "CLeft": true,
+                "COut": true,
+                "CRight": true,
+                "Gate": 1,
+                "RLeft": "2024-01-01/2024-01-02",
+                "ROut": "2024-01-01/2024-01-02",
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": false,
+                    "BOut": false,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": true,
+                    "CRight": true,
+                    "Gate": 1,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": "2024-01-01/2024-01-02",
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "none",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": false,
+                "BOut": null,
+                "BRight": true,
+                "CLeft": true,
+                "COut": null,
+                "CRight": true,
+                "Gate": 0,
+                "RLeft": "2024-01-01/2024-01-02",
+                "ROut": null,
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": false,
+                "BOut": null,
+                "BRight": true,
+                "CLeft": true,
+                "COut": null,
+                "CRight": true,
+                "Gate": 0,
+                "RLeft": "2024-01-01/2024-01-02",
+                "ROut": null,
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/RLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/RLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/Rows/RLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/RLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaFalsch",
+              "field": "Form/CLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaFalsch",
+              "field": "Form/Rows/CLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/CLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaNeinFalsch",
+              "field": "Form/BLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaNeinFalsch",
+              "field": "Form/Rows/BLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/BLeft"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/RLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/RLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/Rows/RLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/RLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "feldJaFalsch",
+                "field": "Form/CLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/CLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "feldJaFalsch",
+                "field": "Form/Rows/CLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/CLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "feldJaNeinFalsch",
+                "field": "Form/BLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/BLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "feldJaNeinFalsch",
+                "field": "Form/Rows/BLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/BLeft"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": "bad",
+                "BOut": null,
+                "BRight": true,
+                "CLeft": "bad",
+                "COut": null,
+                "CRight": true,
+                "Gate": 1,
+                "RLeft": "bad",
+                "ROut": null,
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": "bad",
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": "bad",
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 1,
+                    "RLeft": "bad",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/RLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/RLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/Rows/RLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/RLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaFalsch",
+              "field": "Form/CLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaFalsch",
+              "field": "Form/Rows/CLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/CLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaNeinFalsch",
+              "field": "Form/BLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaNeinFalsch",
+              "field": "Form/Rows/BLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/BLeft"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/RLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/RLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/Rows/RLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/RLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "feldJaFalsch",
+                "field": "Form/CLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/CLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "feldJaFalsch",
+                "field": "Form/Rows/CLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/CLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "feldJaNeinFalsch",
+                "field": "Form/BLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/BLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "feldJaNeinFalsch",
+                "field": "Form/Rows/BLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/BLeft"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": "bad",
+                "BOut": null,
+                "BRight": true,
+                "CLeft": "bad",
+                "COut": null,
+                "CRight": true,
+                "Gate": 1,
+                "RLeft": "bad",
+                "ROut": null,
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": "bad",
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": "bad",
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 1,
+                    "RLeft": "bad",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/COut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CLeft",
+                "Form/COut",
+                "Form/CRight",
+                "Form/Gate"
+              ],
+              "fillToFix": [
+                "Form/CLeft",
+                "Form/COut",
+                "Form/CRight",
+                "Form/Gate"
+              ]
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/COut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/CLeft",
+                "Form/Rows/COut",
+                "Form/Rows/CRight",
+                "Form/Rows/Gate"
+              ],
+              "fillToFix": [
+                "Form/Rows/CLeft",
+                "Form/Rows/COut",
+                "Form/Rows/CRight",
+                "Form/Rows/Gate"
+              ]
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": null,
+                "BOut": null,
+                "BRight": true,
+                "CLeft": null,
+                "COut": null,
+                "CRight": true,
+                "Gate": 1,
+                "RLeft": null,
+                "ROut": null,
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": null,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": null,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 1,
+                    "RLeft": null,
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/COut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CLeft",
+                "Form/COut",
+                "Form/CRight",
+                "Form/Gate"
+              ],
+              "fillToFix": [
+                "Form/CLeft",
+                "Form/COut",
+                "Form/CRight",
+                "Form/Gate"
+              ]
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/COut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/CLeft",
+                "Form/Rows/COut",
+                "Form/Rows/CRight",
+                "Form/Rows/Gate"
+              ],
+              "fillToFix": [
+                "Form/Rows/CLeft",
+                "Form/Rows/COut",
+                "Form/Rows/CRight",
+                "Form/Rows/Gate"
+              ]
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": null,
+                "BOut": null,
+                "BRight": true,
+                "CLeft": null,
+                "COut": null,
+                "CRight": true,
+                "Gate": 1,
+                "RLeft": null,
+                "ROut": null,
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": null,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": null,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 1,
+                    "RLeft": null,
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "absent",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/COut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CLeft",
+                "Form/COut",
+                "Form/CRight",
+                "Form/Gate"
+              ],
+              "fillToFix": [
+                "Form/CLeft",
+                "Form/COut",
+                "Form/CRight",
+                "Form/Gate"
+              ]
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/COut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/CLeft",
+                "Form/Rows/COut",
+                "Form/Rows/CRight",
+                "Form/Rows/Gate"
+              ],
+              "fillToFix": [
+                "Form/Rows/CLeft",
+                "Form/Rows/COut",
+                "Form/Rows/CRight",
+                "Form/Rows/Gate"
+              ]
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BOut": null,
+                "BRight": true,
+                "COut": null,
+                "CRight": true,
+                "Gate": 1,
+                "ROut": null,
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BOut": null,
+                    "BRight": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 1,
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/COut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CLeft",
+                "Form/COut",
+                "Form/CRight",
+                "Form/Gate"
+              ],
+              "fillToFix": [
+                "Form/CLeft",
+                "Form/COut",
+                "Form/CRight",
+                "Form/Gate"
+              ]
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/COut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/CLeft",
+                "Form/Rows/COut",
+                "Form/Rows/CRight",
+                "Form/Rows/Gate"
+              ],
+              "fillToFix": [
+                "Form/Rows/CLeft",
+                "Form/Rows/COut",
+                "Form/Rows/CRight",
+                "Form/Rows/Gate"
+              ]
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BOut": null,
+                "BRight": true,
+                "COut": null,
+                "CRight": true,
+                "Gate": 1,
+                "ROut": null,
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BOut": null,
+                    "BRight": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 1,
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "false",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BCopy",
+              "field": "Form/BOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BLeft",
+                "Form/BOut",
+                "Form/BRight",
+                "Form/Gate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BCopy",
+              "field": "Form/Rows/BOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/BLeft",
+                "Form/Rows/BOut",
+                "Form/Rows/BRight",
+                "Form/Rows/Gate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaFalsch",
+              "field": "Form/CLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaFalsch",
+              "field": "Form/Rows/CLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/CLeft"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Rows/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "feldJaFalsch",
+                "field": "Form/CLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/CLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "feldJaFalsch",
+                "field": "Form/Rows/CLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/CLeft"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/ROut",
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "value": "2024-01-01/2024-01-02"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": false,
+                "BOut": false,
+                "BRight": true,
+                "CLeft": "false",
+                "COut": null,
+                "CRight": true,
+                "Gate": 1,
+                "RLeft": "2024-01-01/2024-01-02",
+                "ROut": "2024-01-01/2024-01-02",
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": false,
+                    "BOut": false,
+                    "BRight": true,
+                    "CLeft": "false",
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 1,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": "2024-01-01/2024-01-02",
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BCopy",
+              "field": "Form/BOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BLeft",
+                "Form/BOut",
+                "Form/BRight",
+                "Form/Gate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BCopy",
+              "field": "Form/Rows/BOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/BLeft",
+                "Form/Rows/BOut",
+                "Form/Rows/BRight",
+                "Form/Rows/Gate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Gate",
+                "Form/RLeft",
+                "Form/ROut",
+                "Form/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RCopy",
+              "field": "Form/Rows/ROut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/Gate",
+                "Form/Rows/RLeft",
+                "Form/Rows/ROut",
+                "Form/Rows/RRight"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaFalsch",
+              "field": "Form/CLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CLeft"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "feldJaFalsch",
+              "field": "Form/Rows/CLeft",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/CLeft"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Rows/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows[2]/BOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/COut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ROut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "feldJaFalsch",
+                "field": "Form/CLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/CLeft"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "feldJaFalsch",
+                "field": "Form/Rows/CLeft",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/CLeft"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/ROut",
+                "value": "2024-01-01/2024-01-02"
+              },
+              {
+                "field": "Form/Rows/BOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Rows/ROut",
+                "value": "2024-01-01/2024-01-02"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "BLeft": false,
+                "BOut": false,
+                "BRight": true,
+                "CLeft": "false",
+                "COut": null,
+                "CRight": true,
+                "Gate": 1,
+                "RLeft": "2024-01-01/2024-01-02",
+                "ROut": "2024-01-01/2024-01-02",
+                "RRight": "2024-03-01/2024-03-02",
+                "Rows": [
+                  {
+                    "BLeft": false,
+                    "BOut": false,
+                    "BRight": true,
+                    "CLeft": "false",
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 1,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": "2024-01-01/2024-01-02",
+                    "RRight": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "BLeft": false,
+                    "BOut": null,
+                    "BRight": true,
+                    "CLeft": true,
+                    "COut": null,
+                    "CRight": true,
+                    "Gate": 0,
+                    "RLeft": "2024-01-01/2024-01-02",
+                    "ROut": null,
+                    "RRight": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

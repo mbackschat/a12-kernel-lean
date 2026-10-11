@@ -1,0 +1,366 @@
+{
+  "header" : {
+    "id" : "DirectAlternatives_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "DirectAlternatives_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Gate",
+                "name" : "Gate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/BOut",
+                "name" : "BOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/BLeft",
+                "name" : "BLeft",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/BRight",
+                "name" : "BRight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/BCopy",
+                "name" : "BCopy",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BOut",
+                  "computationAlternatives" : [ {
+                    "operation" : "[BLeft]",
+                    "precondition" : "[Gate] == 1"
+                  }, {
+                    "operation" : "[BRight]",
+                    "precondition" : "[Gate] > 0"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/COut",
+                "name" : "COut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/CLeft",
+                "name" : "CLeft",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/CRight",
+                "name" : "CRight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/CCopy",
+                "name" : "CCopy",
+                "Computation" : {
+                  "computedFieldRelPath" : "../COut",
+                  "computationAlternatives" : [ {
+                    "operation" : "[CLeft]",
+                    "precondition" : "[Gate] == 1"
+                  }, {
+                    "operation" : "[CRight]",
+                    "precondition" : "[Gate] > 0"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/ROut",
+                "name" : "ROut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/RLeft",
+                "name" : "RLeft",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/RRight",
+                "name" : "RRight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/RCopy",
+                "name" : "RCopy",
+                "Computation" : {
+                  "computedFieldRelPath" : "../ROut",
+                  "computationAlternatives" : [ {
+                    "operation" : "[RLeft]",
+                    "precondition" : "[Gate] == 1"
+                  }, {
+                    "operation" : "[RRight]",
+                    "precondition" : "[Gate] > 0"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Gate",
+            "name" : "Gate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BOut",
+            "name" : "BOut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BLeft",
+            "name" : "BLeft",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BRight",
+            "name" : "BRight",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BCopy",
+            "name" : "BCopy",
+            "Computation" : {
+              "computedFieldRelPath" : "../BOut",
+              "computationAlternatives" : [ {
+                "operation" : "[BLeft]",
+                "precondition" : "[Gate] == 1"
+              }, {
+                "operation" : "[BRight]",
+                "precondition" : "[Gate] > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/COut",
+            "name" : "COut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CLeft",
+            "name" : "CLeft",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CRight",
+            "name" : "CRight",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType"
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CCopy",
+            "name" : "CCopy",
+            "Computation" : {
+              "computedFieldRelPath" : "../COut",
+              "computationAlternatives" : [ {
+                "operation" : "[CLeft]",
+                "precondition" : "[Gate] == 1"
+              }, {
+                "operation" : "[CRight]",
+                "precondition" : "[Gate] > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ROut",
+            "name" : "ROut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RLeft",
+            "name" : "RLeft",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RRight",
+            "name" : "RRight",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RCopy",
+            "name" : "RCopy",
+            "Computation" : {
+              "computedFieldRelPath" : "../ROut",
+              "computationAlternatives" : [ {
+                "operation" : "[RLeft]",
+                "precondition" : "[Gate] == 1"
+              }, {
+                "operation" : "[RRight]",
+                "precondition" : "[Gate] > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

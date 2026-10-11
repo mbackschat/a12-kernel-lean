@@ -693,3 +693,6 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Group-operand reference projection](implementation/cross-clause.md#cap-group-operand-reference-projection)
 <a id="empty-handling-coverage-rule"></a>
 - [Trusted theorem surface](implementation/cross-clause.md#empty-handling-coverage-rule)
+
+<a id="cap-non-number-alternatives"></a>
+- [Non-Number direct and first-filled alternatives](implementation/repeatable-computations.md#cap-non-number-alternatives)

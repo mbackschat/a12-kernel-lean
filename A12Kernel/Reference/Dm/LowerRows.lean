@@ -61,8 +61,15 @@ where
 /-- Temporal target profiles select expression projection; other kinds retain their established
 carrier choice. FirstFilledValue and bare Date literals keep their entity-stream and year-presence gates. -/
 def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) (expression : Expr) : Bool :=
-  if target.policy.kind == .dateRange then
-    match expression with | .call "DateRange" [_, _] none none => true | _ => false
+  if let .call "FirstFilledValue" _ none none := expression then
+    target.customType.isNone && (target.policy.kind == .string || target.policy.kind == .enumeration ||
+      target.policy.kind == .boolean || target.policy.kind == .dateRange ||
+      (target.temporalFirstFilledFamily?.any fun family => match family with
+        | .time | .dateTime | .fullDate | .dateRange => true | .dateFragment => false))
+  else if target.policy.kind == .dateRange then
+    match expression with
+    | .call "DateRange" [_, _] none none | .value { index := none, category := none, filter := none, .. } => true
+    | _ => false
   else if target.temporalTargetPolicy.isSome then
     match expression with
     | .call "FirstFilledValue" _ _ _ => false
@@ -72,7 +79,7 @@ def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : 
   match expression with
   | .constant "True" | .constant "False" => target.policy.kind == .boolean || target.policy.kind == .confirm
   | .string text => !isTemporalConstant text
-  | .value { index := none, filter := none, .. } => target.policy.kind == .enumeration
+  | .value { index := none, filter := none, .. } => target.policy.kind == .enumeration || target.policy.kind == .boolean || target.policy.kind == .confirm
   | _ => false
 
 private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
@@ -85,9 +92,50 @@ private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
     pure (.enumeration (← elaborated "EnumerationComputation"
       (checkAddressedEnumerationComputation model group target.id source)))
 
+private def lowerFirstFilledAlternative (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
+    (arguments : List Argument) : Lowering (CheckedFirstFilledAlternative model) := do
+  let bindingGroup? := if arguments.any Argument.hasHaving then some target.groupPath else none
+  if target.policy.kind == .string && target.customType.isNone then
+    return .string (← elaborated "FirstFilledValue" (checkStringFirstFilledComputation model group target.id
+      (← lowerFirstFilledEntitySource model group arguments bindingGroup?)))
+  if target.policy.kind == .enumeration then
+    let source ← lowerEnumerationFirstFilledSource model group arguments bindingGroup?
+    if hFixed : target.repeatableScope = [] then
+      let operation ← elaborated "FirstFilledValue" (elaborateEnumerationFirstFilledComputation model group target.id source)
+      if hField : target.id = operation.target.field then
+        return .fixedEnumeration operation target hField hFixed
+      else refuse "FirstFilledValue" "target identity"
+    else
+      return .addressedEnumeration (← elaborated "FirstFilledValue"
+        (checkAddressedEnumerationFirstFilledComputation model group target.id source))
+  let source ← lowerFirstFilledSource model group arguments bindingGroup?
+  match target.temporalFirstFilledFamily?, target.policy.kind with
+  | some .time, _ =>
+      pure (.time (← elaborated "FirstFilledValue" (checkTimeFirstFilledComputation model group target.id source)))
+  | some .dateTime, _ =>
+      pure (.dateTime (← elaborated "FirstFilledValue" (checkDateTimeFirstFilledComputation model group target.id source)))
+  | some .fullDate, _ =>
+      pure (.fullDate (← elaborated "FirstFilledValue" (checkFullDateFirstFilledComputation model group target.id source)))
+  | some .dateRange, _ => do
+      if target.repeatableScope.isEmpty then
+        if let .list list := source then
+          if !(list.first :: list.rest).any (fun | .field .. => false | _ => true) then
+            return .directDateRange (← elaborated "FirstFilledValue"
+              (checkDateRangeFirstFilledDirectComputation model group target.id list))
+      pure (.dateRange (← elaborated "FirstFilledValue" (checkDateRangeFirstFilledSourceComputation model group target.id source)))
+  | none, .boolean =>
+      pure (.boolean (← elaborated "FirstFilledValue" (checkBooleanFirstFilledComputation model group target.id source)))
+  | _, _ => refuse "FirstFilledValue" "target kind"
+
 /-- Retain each admitted operation certificate before certifying row-local selection. -/
 def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (expression : Expr) : Lowering (CheckedRowComputationOperation model) := do
+  if let .call "FirstFilledValue" arguments none none := expression then
+    return .firstFilled (← lowerFirstFilledAlternative model group target arguments)
+  if target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .dateRange then
+    if let .value { path, index := none, category := none, filter := none } := expression then
+      let some source := path.toFieldPath? | refuse "ScalarCopy" "source path"
+      return .scalarCopy (← elaborated "ScalarCopy" (checkScalarCopyComputation model group target.id source))
   if target.policy.kind == .dateRange then
     let .call "DateRange" [.mk start none, .mk finish none] none none := expression
       | refuse "DateRange" "constructor operands"

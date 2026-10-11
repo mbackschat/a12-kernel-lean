@@ -417,7 +417,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       | none => pure step
       | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
     pure (target, .document step)
-  if (row || (target.policy.kind == .string && operations.any (fun expression =>
+  if (row || operations.any (fun | .call "FirstFilledValue" _ none none => true | _ => false) || (target.policy.kind == .string && operations.any (fun expression =>
       (lowerSelectedStringExpr model computation.group expression).toOption.any fun source =>
         source.fields.any fun | .inr _ => true | .inl _ => false)) || target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .enumeration || target.policy.kind == .dateRange ||
       (target.temporalTargetPolicy.isSome && operations.length > 1)) &&

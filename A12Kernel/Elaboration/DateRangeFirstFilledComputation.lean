@@ -250,13 +250,15 @@ def scanDirectDateRangeFirstFilled :
       | result => pure result
 
 /-- Project one checked DateRange cell into the typed root result consumed by the target policy. Source stored text is not selected. -/
-def dateRangeFirstFilledCellAt
-    (addressed : CheckedAddressedCell) : DateRangeComputationResult :=
-  match observeCell .computation addressed.cell with
+def dateRangeComputationCell (cell : CheckedCell) : DateRangeComputationResult :=
+  match observeCell .computation cell with
   | .value (.dateRange range) => .value range
   | .value _ => .poison .malformed
   | .empty => .noValue
   | .unknown cause | .poison cause => .poison cause
+
+def dateRangeFirstFilledCellAt (addressed : CheckedAddressedCell) : DateRangeComputationResult :=
+  dateRangeComputationCell addressed.cell
 
 /-- Select the first present DateRange or reached formal cause; exhaustion keeps the no-value identity. -/
 def evalDateRangeFirstFilledCells :

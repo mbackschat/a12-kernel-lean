@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.RepeatableStringConstantComputation
 import A12Kernel.Elaboration.AddressedEnumerationComputation
-import A12Kernel.Elaboration.DocumentComputationStep
+import A12Kernel.Elaboration.FirstFilledAlternative
+import A12Kernel.Elaboration.ScalarCopyComputation
 import A12Kernel.Elaboration.ComputationNumericGuard
 import A12Kernel.Elaboration.BooleanConstantComputation
 
@@ -13,6 +14,8 @@ keep their certificates and evaluators; this table adds no token semantics or se
 namespace A12Kernel
 
 inductive CheckedRowComputationOperation (model : FlatModel) where
+  | scalarCopy (operation : CheckedScalarCopyComputation model)
+  | firstFilled (operation : CheckedFirstFilledAlternative model)
   | stringExpression (operation : CheckedRowStringExpression model)
   | stringConstant (operation : CheckedRepeatableStringConstantComputation model)
   | enumeration (operation : CheckedAddressedEnumerationComputation model)
@@ -25,6 +28,8 @@ inductive CheckedRowComputationOperation (model : FlatModel) where
 namespace CheckedRowComputationOperation
 
 def target : CheckedRowComputationOperation model → FieldId
+  | .scalarCopy operation => operation.target.id
+  | .firstFilled operation => operation.target.id
   | .stringExpression operation => operation.targetField
   | .stringConstant operation => operation.checkedTarget.targetField
   | .enumeration operation => operation.target.field
@@ -35,6 +40,8 @@ def target : CheckedRowComputationOperation model → FieldId
   | .temporalExpression operation => operation.target
 
 def scope : CheckedRowComputationOperation model → List RepeatableLevel
+  | .scalarCopy operation => operation.target.repeatableScope
+  | .firstFilled operation => operation.target.repeatableScope
   | .stringExpression operation => operation.target.repeatableScope
   | .stringConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .enumeration operation => operation.target.declaration.repeatableScope
@@ -45,6 +52,8 @@ def scope : CheckedRowComputationOperation model → List RepeatableLevel
   | .temporalExpression operation => operation.scope
 
 def family : CheckedRowComputationOperation model → DocumentTargetFamily
+  | .scalarCopy operation => operation.family
+  | .firstFilled operation => operation.family
   | .stringExpression _ | .stringConstant _ => .string
   | .enumeration _ | .fixedEnumeration _ => .enumeration
   | .booleanConstant _ | .fixedBooleanConstant _ => .boolean
@@ -52,6 +61,8 @@ def family : CheckedRowComputationOperation model → DocumentTargetFamily
   | .temporalExpression operation => operation.family
 
 def referencesField : CheckedRowComputationOperation model → FieldId → Bool
+  | .scalarCopy operation, field => operation.source.id == field
+  | .firstFilled operation, field => operation.referencesWith field (·.referencesField field)
   | .stringExpression operation, field => operation.expression.referencesField field
   | .stringConstant _, _ | .booleanConstant _, _ | .fixedBooleanConstant _, _ => false
   | .enumeration operation, field => operation.source.referencesField field
@@ -62,6 +73,7 @@ def referencesField : CheckedRowComputationOperation model → FieldId → Bool
 def referencesWith (operation : CheckedRowComputationOperation model) (field : FieldId)
     (filterReads : CorrelatedHaving → Bool) : Bool :=
   match operation with
+  | .firstFilled operation => operation.referencesWith field filterReads
   | .temporalExpression operation => operation.expression.referencesWith field filterReads
   | operation => operation.referencesField field
 
@@ -136,6 +148,8 @@ def certifyRowComputationTable
   pure { target, scope, family, first, remaining }
 
 inductive RowComputationTableFault where
+  | scalarCopy (cause : ScalarCopyFault)
+  | firstFilled (cause : FirstFilledAlternativeFault)
   | stringExpression (error : StringComputationFault)
   | rows (cause : ActualRowEnvironmentError)
   | environment (cause : EnvBindingError)
@@ -157,6 +171,8 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
     (patterns : PreparedFlatStringPatterns model compilePattern) (document : CheckedDocument model)
     (environment : Env) : Except RowComputationTableFault (DocumentTargetOutcome × CheckedCell) := do
   match operation with
+  | .scalarCopy operation => (operation.evaluateAt document environment).mapError .scalarCopy
+  | .firstFilled operation => (operation.evaluateAt world patterns document environment).mapError .firstFilled
   | .stringExpression operation =>
       let field := operation.targetField
       let some matcher := patterns.targetMatcher? field | throw (.targetPatternUnavailable field)
