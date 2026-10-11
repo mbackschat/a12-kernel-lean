@@ -1,0 +1,179 @@
+{
+  "model": "Temporal_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "seconds--61",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "2024-01-15T11:58:59",
+          "CalendarDay": "2024-03-31",
+          "ExpectedMinutes": "-1",
+          "ExpectedSeconds": "-61",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "seconds--60",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "2024-01-15T11:59:00",
+          "CalendarDay": "2024-04-01",
+          "ExpectedMinutes": "-1",
+          "ExpectedSeconds": "-60",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "seconds--59",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "2024-01-15T11:59:01",
+          "CalendarDay": "2024-06-30",
+          "ExpectedMinutes": "0",
+          "ExpectedSeconds": "-59",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "seconds--1",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "2024-01-15T11:59:59",
+          "CalendarDay": "2024-07-01",
+          "ExpectedMinutes": "0",
+          "ExpectedSeconds": "-1",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "seconds-0",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "2024-01-15T12:00:00",
+          "CalendarDay": "2024-09-30",
+          "ExpectedMinutes": "0",
+          "ExpectedSeconds": "0",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "seconds-1",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "2024-01-15T12:00:01",
+          "CalendarDay": "2024-10-01",
+          "ExpectedMinutes": "0",
+          "ExpectedSeconds": "1",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "seconds-59",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "2024-01-15T12:00:59",
+          "CalendarDay": "2024-12-31",
+          "ExpectedMinutes": "0",
+          "ExpectedSeconds": "59",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "seconds-60",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "2024-01-15T12:01:00",
+          "CalendarDay": "2025-01-01",
+          "ExpectedMinutes": "1",
+          "ExpectedSeconds": "60",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "seconds-61",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "2024-01-15T12:01:01",
+          "CalendarDay": "2024-01-15",
+          "ExpectedMinutes": "1",
+          "ExpectedSeconds": "61",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "empty-first",
+      "documentInline": {
+        "Form": {
+          "Start": "",
+          "End": "2024-01-15T12:00:00",
+          "CalendarDay": "",
+          "ExpectedMinutes": "0",
+          "ExpectedSeconds": "0",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "empty-second",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "",
+          "CalendarDay": "2024-04-01",
+          "ExpectedMinutes": "0",
+          "ExpectedSeconds": "0",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "formal-first",
+      "documentInline": {
+        "Form": {
+          "Start": "bad",
+          "End": "2024-01-15T12:00:00",
+          "CalendarDay": "bad",
+          "ExpectedMinutes": "0",
+          "ExpectedSeconds": "0",
+          "Quarter": "99"
+        }
+      }
+    },
+    {
+      "name": "formal-second",
+      "documentInline": {
+        "Form": {
+          "Start": "2024-01-15T12:00:00",
+          "End": "bad",
+          "CalendarDay": "2024-04-01",
+          "ExpectedMinutes": "0",
+          "ExpectedSeconds": "0",
+          "Quarter": "99"
+        }
+      }
+    }
+  ]
+}

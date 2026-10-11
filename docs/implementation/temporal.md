@@ -39,6 +39,8 @@ Date-range capabilities are owned by [`date-range.md`](date-range.md).
 <a id="cap-temporal-differences"></a>
 #### Temporal differences
 
+- `calibration`: [C19 direct-field observations](../sources/temporal-runtime-fold-probes.md#src-temporal-calibration-c19) settle signed minute/second validation boundaries and either-side empty/formal inputs. All 52 reader-rule outcomes match; sub-second truncation remains internally locked rather than calibrated by this whole-second capture.
+
 - `boundary`: Date completed periods, exact-instant DateTime elapsed units, model-zone calendar-day differences, checked constructed-Date all-unit execution, field-backed or dynamic-`Now` calendar-day shift/direct DateTime forms, and field-backed or dynamic-`Now` sub-day shift/direct elapsed DateTime forms in either authored position under UTC/GMT and Berlin
 - `owner`: [`DateDifference.lean`](../../A12Kernel/Semantics/DateDifference.lean), [`DateTimeDifference.lean`](../../A12Kernel/Semantics/DateTimeDifference.lean), [`BerlinLegacyCalendarArithmetic.lean`](../../A12Kernel/Semantics/BerlinLegacyCalendarArithmetic.lean), [`DateTimeDayDifference.lean`](../../A12Kernel/Semantics/DateTimeDayDifference.lean), [`ConstructedDateDifferenceEvaluation.lean`](../../A12Kernel/Elaboration/ConstructedDateDifferenceEvaluation.lean), [`DateTimeDayShiftDifferenceEvaluation.lean`](../../A12Kernel/Elaboration/DateTimeDayShiftDifferenceEvaluation.lean), [`DateTimeSubdayShiftDifferenceEvaluation.lean`](../../A12Kernel/Elaboration/DateTimeSubdayShiftDifferenceEvaluation.lean)
 - `assurance`: E/P closed for admitted types/units and bounded mixed forms; Berlin midnight/repeated-hour identity, exact-instant ordering and millisecond truncation, per-call world transport, shift-value missing provenance, authored evaluation order/sign, shared period-sign laws, and unit gate locked; upstream L at [source registry](../SOURCES.md) covers the explicit nested `ValueAsDate` shift, difference, and DateTime placements across both kernel strategies plus JVM/Node; wider upstream L partial; C none
@@ -335,6 +337,8 @@ Date-range capabilities are owned by [`date-range.md`](date-range.md).
 
 <a id="cap-recursive-date-components"></a>
 #### Recursive and selected Date components
+
+- `calibration`: [C19 quarter observations](../sources/temporal-runtime-fold-probes.md#src-temporal-calibration-c19) settle all four quarter transitions, empty zero and malformed clearing through the checked reader on direct fixed Date fields. This does not widen correspondence for recursive or selected operands.
 
 - `boundary`: [Scalar construction](../../A12Kernel/Elaboration/TemporalExpression/DateComponents.lean) reuses the existing position certificates, ordered component fold and model-zone projection. Selected Number/String/year-format fields and matching Day/Month/Year extractors over admitted temporal expressions compose in the two-, three- and four-argument forms. Split-Year extractor refusal and ordinary extractor source-slot restrictions remain enforced.
 - `constructor-admission`: [Ordered native admission](../../A12Kernel/Reference/Dm/HavingAdmission.lean) checks Date/Time component grammar before lowering and position checks, across ordinary and Having validation/computation. Digit-only component names retain entity resolution.

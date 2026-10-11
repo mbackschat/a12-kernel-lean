@@ -1,0 +1,1500 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Temporal_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "seconds--61",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "seconds--60",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "seconds--59",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "seconds--1",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "seconds-0",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "seconds-1",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "seconds-59",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "seconds-60",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "seconds-61",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-first",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ]
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ]
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ]
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ]
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-second",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ]
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MINUTESEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ],
+              "fillToFix": [
+                "Form/End",
+                "Form/ExpectedMinutes",
+                "Form/Start"
+              ]
+            },
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SECONDSEXACT",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ],
+              "fillToFix": [
+                "Form/End",
+                "Form/ExpectedSeconds",
+                "Form/Start"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "formal-first",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/CalendarDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Start",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/CalendarDay",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/CalendarDay"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/CalendarDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Start",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/CalendarDay",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/CalendarDay"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "formal-second",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "QuarterComp",
+              "field": "Form/Quarter",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/CalendarDay",
+                "Form/Quarter"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/End",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/End"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Quarter",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    }
+  ]
+}

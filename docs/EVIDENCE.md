@@ -26,6 +26,8 @@ C17 retains [twelve declaration-admission static observations](sources/model-str
 
 The [tolerance-family capture](sources/computation-placement-and-constant-probes.md#src-tolerance-family-calibration) retains ten dual-strategy documents. Existing reader replay covers 150 explicit-rule/computation outcomes; generated-message decisions use the checked-table locks. This is bounded raw calibration, not a new compact typed bundle.
 
+The [C19 temporal capture](sources/temporal-runtime-fold-probes.md#src-temporal-calibration-c19) retains thirteen dual-strategy documents for minute/second validation and quarter computation. All 65 explicit-rule/computation results match the checked reader; it remains raw calibration outside the compact typed suites.
+
 ## Validation bundle and gate ownership
 
 The validation bundle has seven ordered families. Four public families hold the current flat V2 cases, one directional Number witness, 12 captured-outer runtime cases, and four static one-star authoring cases. Three private families hold 11 path/required cases, six operator-sensitive empty-value cases, and seven uncorrelated iteration cases.

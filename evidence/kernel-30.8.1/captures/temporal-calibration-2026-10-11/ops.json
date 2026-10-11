@@ -1,0 +1,135 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Start",
+    "kind": "DATETIME",
+    "dateTime": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "End",
+    "kind": "DATETIME",
+    "dateTime": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "CalendarDay",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM-dd"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "ExpectedMinutes",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "ExpectedSeconds",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Quarter",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "name": "MinutesExact",
+    "field": "/Form/End",
+    "condition": "DifferenceInMinutes(Start, End) == [ExpectedMinutes]",
+    "code": "MINUTESEXACT",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal calibration check"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "name": "MinutesWrong",
+    "field": "/Form/End",
+    "condition": "DifferenceInMinutes(Start, End) == [ExpectedMinutes] + 1",
+    "code": "MINUTESWRONG",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal calibration check"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "name": "SecondsExact",
+    "field": "/Form/End",
+    "condition": "DifferenceInSeconds(Start, End) == [ExpectedSeconds]",
+    "code": "SECONDSEXACT",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal calibration check"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "name": "SecondsWrong",
+    "field": "/Form/End",
+    "condition": "DifferenceInSeconds(Start, End) == [ExpectedSeconds] + 1",
+    "code": "SECONDSWRONG",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Quarter",
+    "name": "QuarterComp",
+    "alternatives": [
+      {
+        "operation": "QuarterFromDate(CalendarDay)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Temporal calibration check"
+      }
+    ]
+  }
+]
