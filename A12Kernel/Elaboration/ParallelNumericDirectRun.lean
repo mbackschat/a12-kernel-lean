@@ -126,6 +126,7 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   additionalRoutes : List (CheckedParallelNumericTargetRoute model)
   precondition : Option (CheckedComputationCondition model)
   suppressExactScaleWarning : Bool
+  bandedRounding : Option ComputationRoundingMode := none
   expression : AuthoredNumericExpr FlatFieldDecl
   guardExcludesTarget :
     (precondition.map
@@ -163,6 +164,12 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
       operationScale = true
 
 namespace CheckedIsolatedParallelNumericDirectRun
+
+/-- Output rounding belongs to the selected store attempt; the authored operation remains
+unchanged for generated comparison (spec/09, KF474). -/
+def withBandedRounding (checked : CheckedIsolatedParallelNumericDirectRun model)
+    (mode : Option ComputationRoundingMode) : CheckedIsolatedParallelNumericDirectRun model :=
+  { checked with bandedRounding := mode }
 
 /-- Every distinct operand group is represented by one route to the same checked target. -/
 def operandRoutes
@@ -308,11 +315,11 @@ def evaluateSelected
     Except ExecutionError NumericTargetOutcome := do
   let value ← checked.expression.evaluateComputation context
       |>.mapError .numeric
-  let checkedTarget :=
-    if checked.suppressExactScaleWarning then
-      checked.route.targetPolicy.checkWithScaleWarningSuppressed value
-    else
-      checked.route.targetPolicy.check value
+  let checkedTarget := match checked.bandedRounding with
+    | some mode => checked.route.targetPolicy.checkBanded mode value
+    | none => if checked.suppressExactScaleWarning then
+        checked.route.targetPolicy.checkWithScaleWarningSuppressed value
+      else checked.route.targetPolicy.check value
   match checkedTarget with
   | .supported outcome => pure outcome
   | .unsupported fault => throw (.unsupportedTarget fault)
@@ -551,7 +558,7 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
                         operationScale = true then
                     pure (CheckedIsolatedParallelNumericDirectRun.mk
                       route additionalRoutes precondition
-                      suppressExactScaleWarning resolved
+                      suppressExactScaleWarning none resolved
                       targetExclusion.guard targetExclusion.expression
                       targetsCoherent guardAdmitted
                       usesOperand operandsAdmitted

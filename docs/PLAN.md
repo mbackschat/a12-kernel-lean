@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C09. C01–C08 are closed; proceed in the frozen order.
+The autonomous goal is active at C10. C01–C09 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -90,7 +90,7 @@ C01–C12 are the required sequence. This checkpoint is a bounded consumer-relia
 
 ### C09 — parallel banded Number rounding
 
-- [ ] Close the recorded parallel-coordinate output-policy refusal using existing target rounding. Fixed and target-bound repeated rounding already exist.
+- [x] Close the recorded parallel-coordinate output-policy refusal using existing target rounding. Fixed and target-bound repeated rounding already exist.
 - Matrix: Exact/RoundUp/RoundDown; positive/negative band boundaries; unique-key match/no-match; generated comparison against the unrounded operation; fixed-target twins.
 - Done: parallel results and generated validation preserve separate rounding stages with exact outputs and mode refusals. [Banded locks](../A12Kernel/Reference/Dm/BandedComputationLocks.lean), [SG5](gaps/numeric-and-temporal.md#gap-sg5).
 
@@ -215,7 +215,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C09, after accepted C08. Inspect the existing parallel-coordinate target-policy refusal and fixed/row-bound controls in [banded locks](../A12Kernel/Reference/Dm/BandedComputationLocks.lean), then reuse target rounding for the frozen match/no-match, sign and generated-comparison matrix. Settle one reader-to-result path before delegating propagation; no C09 code changed yet.
+- Active: C10, after accepted C09. Reconcile partial-Date FirstFilledValue policy and the existing selector/admission shapes against the inbound oracle, then close year-only/year-month/complete, earlier empty/zero-date/malformed, direct-list/one-star and validation/computation in one settled family matrix. Start at [SG6](gaps/numeric-and-temporal.md#gap-sg6) and [temporal first-filled shape](../A12Kernel/Elaboration/TemporalFirstFilledShape.lean). No C10 code changed yet.
 - C08 closed: the separate omission selector, shared filter coordinates, mixed-group wildcard correction and effect-preserving message origin pass the frozen matrix. [Reference calibration](implementation/validation-messages-and-custom.md#cap-structural-message-references) matches both exact sets for all 40 caller and 246 filtered-predicate messages. H10-R1 is reconciled against admitted temporal-reference controls; H10-R2 is discharged by dedicated calibration. No new outbound ledger entry. Next consumer probe: C12.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
 - C01 closed: [risk-boundary implementation](../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [reconciled eight-scenario consumer run](consumer-probes/EXECUTE.md#run-c01-execute-03). Integration (2,166 jobs), retained evidence (51 projections), trust (3,026 roots) and HIGH review passed; the review’s documentation correction is incorporated. Code is committed at `0e302b8d`; the accepted consumer basis is `9fe99116`. No remaining C01 blocker.
@@ -230,7 +230,7 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 ## Verified gate boundary
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
-- Latest verified boundary: C08 omission/reference coordinates; 2,189-job integration and 51-projection compact evidence passed. Fresh HIGH cold review found recursive count detection missing nested temporal amounts and one stale capability claim. The shared traversal and record are corrected; upward/mirrored, downward and both-count reader controls pass. Affected integration/evidence passed; trust/hygiene passed (3,026 roots; 110,640 declarations in 883 modules).
-- Last full replay: 71,664 matches (52,335 rules and 19,329 computations); zero divergence/fault/unattributed/tier-2 instances; 3,329 rows, 217 without matching artifacts, six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) was regenerated on 2026-10-11 at `d57105f3` plus C08. Counts are unchanged; the gain is exact reference-set transport, not additional population matches. The cadence resets at this reviewed boundary.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only final recording does not invalidate C08 executable gates.
+- Latest verified boundary: C09 parallel banded output. Focused reader and direct-run proof checks, 2,189-job integration and 51-projection compact evidence passed. Fresh HIGH cold review found no issues. Final trust/hygiene passed (3,026 roots; 110,644 declarations in 883 modules). Parallel generated mismatch is checked at the resolved-value boundary after the actual join; the scalar-target generated-table assembler is unchanged. New parallel calibration remains external evidence pending.
+- Last full replay: 71,664 matches (52,335 rules and 19,329 computations); zero divergence/fault/unattributed/tier-2 instances; 3,329 rows, 217 without matching artifacts, six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) was regenerated on 2026-10-11 at `e2b5fcbf` plus C09. Counts are unchanged; C09 closes the parallel banded-output refusal rather than adding population matches. The cadence resets at this reviewed boundary.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only final recording does not invalidate C09 executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.

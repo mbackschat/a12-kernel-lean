@@ -297,11 +297,13 @@ retain a joined Number operand; bound fields use the same target environment as 
 private def lowerParallelNumber (model : FlatModel) (group : GroupPath) (target : FieldId)
     (guards : List (Option (CheckedComputationCondition model)))
     (expressions : List (AuthoredNumericExpr SurfaceNumericComputationAtom))
-    (common : Option (CheckedComputationCondition model)) (suppress : Bool) :
+    (common : Option (CheckedComputationCondition model)) (suppress : Bool)
+    (outputModes : List (Option ComputationRoundingMode)) :
     Lowering (CheckedParallelNumericStep model) := do
   let _ ← elaborated "ParallelNumber" (checkAddressedRepeatableTarget model group target)
   if guards.length > 1 && guards.any Option.isNone then refuse "ParallelNumber" "unguarded alternative"
-  let operations ← (guards.zip expressions).mapM fun (guard, expression) => do
+  if expressions.length != outputModes.length then refuse "ParallelNumber" "output policy arity"
+  let operations ← ((guards.zip expressions).zip outputModes).mapM fun ((guard, expression), mode) => do
     let expression ← expression.mapM fun
       | .numeric (.field path) => pure (SurfaceNumericAtom.field path)
       | _ => refuse "ParallelNumber" "operand"
@@ -309,8 +311,9 @@ private def lowerParallelNumber (model : FlatModel) (group : GroupPath) (target 
     let some operand := fields.find? fun path =>
         (checkParallelNumericComputationClearingPlan model group target path).isOk
       | refuse "ParallelNumber" "no joined operand"
-    elaborated "ParallelNumber" (checkIsolatedParallelNumericExpressionRunWithGuard model group
+    let operation ← elaborated "ParallelNumber" (checkIsolatedParallelNumericExpressionRunWithGuard model group
       target operand expression (CheckedComputationCondition.withCommon common guard) suppress)
+    pure (operation.withBandedRounding mode)
   match operations with
   | [operation] => pure (.single operation)
   | _ => (.alternatives ·) <$> elaborated "ParallelNumber" (certifyParallelNumericAlternativeTable operations)
@@ -442,8 +445,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
           let table ← (table.withBandedRounding? outputModes).getDM (refuse "NumberComputation" "output policy arity")
           pure (target, .number table row)
       | .error refusal =>
-          if outputModes.any Option.isSome then throw refusal
-          match lowerParallelNumber model computation.group target.id guards expressions common suppress with
+          match lowerParallelNumber model computation.group target.id guards expressions common suppress outputModes with
           | .ok step => pure (target, .parallel step)
           | .error _ => .error refusal
   | .string => do
