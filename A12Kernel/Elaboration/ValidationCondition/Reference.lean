@@ -50,13 +50,12 @@ def concreteFieldPointer (declaration : FlatFieldDecl) (environment : Env) :
   | .error error => .error (.binding error)
   | .ok path => .ok (MessagePointer.ofCellAddr { field := declaration.id, path })
 
-/-- Index selection owns one coordinate; every deeper repeatable payload level remains wildcard. Dynamic key scopes must be fully bound, even when cache lookup has no association. -/
-private def selectedReferencePointers (group : RepeatableGroupDecl)
-    (indexDeclaration : FlatFieldDecl) (key : CheckedSemanticIndexKey)
-    (payloads : List FlatFieldDecl) (environment : Env)
-    (inputs : Option MessageReferenceInputs := none) :
-    Except ReferenceProjectionError (List MessagePointer) := do
-  let some inputs := inputs | throw .missingIndexContext
+/-- Resolve the shared message-cache coordinate together with its parent and dynamic-key pointer.
+Structural references and keyed row parameters use the same admitted association and host boundary. -/
+def MessageReferenceInputs.resolveIndex (inputs : MessageReferenceInputs)
+    (group : RepeatableGroupDecl) (indexDeclaration : FlatFieldDecl)
+    (key : CheckedSemanticIndexKey) (environment : Env) :
+    Except ReferenceProjectionError (List Nat × MessageRepetitionCoordinate × List MessagePointer) := do
   let parent ← (environment.pathForScope indexDeclaration.repeatableScope.dropLast).mapError .binding
   let (key, keyPointers) ← match key with
     | .literal token _ => pure (some token, [])
@@ -65,6 +64,16 @@ private def selectedReferencePointers (group : RepeatableGroupDecl)
         let address : CellAddr := { field := declaration.id, path }
         pure (inputs.keyAt address, [MessagePointer.ofCellAddr address])
   let coordinate ← inputs.cache.lookup group.level parent key |>.mapError .hostOrder
+  pure (parent, coordinate, keyPointers)
+
+/-- Index selection owns one coordinate; every deeper repeatable payload level remains wildcard. Dynamic key scopes must be fully bound, even when cache lookup has no association. -/
+private def selectedReferencePointers (group : RepeatableGroupDecl)
+    (indexDeclaration : FlatFieldDecl) (key : CheckedSemanticIndexKey)
+    (payloads : List FlatFieldDecl) (environment : Env)
+    (inputs : Option MessageReferenceInputs := none) :
+    Except ReferenceProjectionError (List MessagePointer) := do
+  let some inputs := inputs | throw .missingIndexContext
+  let (parent, coordinate, keyPointers) ← inputs.resolveIndex group indexDeclaration key environment
   let selectedPrefix := parent.map MessageRepetitionCoordinate.concrete ++ [coordinate]
   pure (keyPointers ++ (indexDeclaration :: payloads).map fun declaration => {
     field := declaration.id

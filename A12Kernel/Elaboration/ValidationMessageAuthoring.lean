@@ -1,8 +1,6 @@
-import A12Kernel.Elaboration.ValidationRule
-import A12Kernel.Elaboration.MessageGroupArgument
-import A12Kernel.Elaboration.JavaOtherCategory
+import A12Kernel.Elaboration.ValidationMessageTypes
 
-/-! # Checked authoring for bounded flat validation-message templates
+/-! # Checked authoring for validation-message templates
 
 Each parameter is decoded on its own by `MessageParameterSyntax` into the events the Kernel's parser
 meets — every name resolved as it ends, a key's nesting refused, a fault where it stands — and its
@@ -48,10 +46,12 @@ spelling of a keyed field stays refused, so condition membership belongs to the 
 and the pairing is exact in the other direction too: a keyed condition operand does not license an
 unkeyed parameter.
 
-No flat condition reads a field under a key, so the index gate refuses every keyed parameter here,
+No flat condition reads a field under a key, so the flat entry point refuses every keyed parameter,
 `MVK_INDEX_FOR_ERROR_TEXT_INVALID` in the name position and `INVALID_GROUP` in the group position,
 both measured on the flat model; the grammar in front of that gate — suffix order, key spelling,
-nesting, whitespace — answers first.
+nesting, whitespace — answers first. Rule-owned group parameters additionally retain the selected
+key and require its matching positive presence guard; ordinary keyed field parameters retain the
+flat resolver's boundary.
 
 A parameter written `$#...$` occupies the **group position**, which is a different position from the
 name one and resolves the same words differently: bare `$RootGroup$` is an entity lookup and refused,
@@ -80,182 +80,13 @@ carries **does not apply** — the Kernel admits both on a field the condition n
 is why the checked part has no membership witness to carry rather than an unset one. What either
 renders is unmeasured and stays caller-supplied.
 
-What stays outside is the rest of the parameter grammar: `index(...)`, the remaining non-field forms,
-and repeatable targets. Two of the Kernel's own `.value` gates are unreachable in this
-fragment rather than modelled — a star reference needs a repeatable path, and a declaration's "no
-value validation" flag has no representation here.
+The index terminal uses the checked rule's actual error declaration and condition-reference modes.
+Its resolution and suffix gates are owned by `IndexMessageAuthoring`; ordinary field parameters
+still use the nonrepeatable resolver. The declaration's "no value validation" flag remains outside
+that ordinary-field boundary.
 -/
 
 namespace A12Kernel
-
-inductive ValidationMessageTemplateError where
-  | emptyTemplate
-  | lineSeparator
-  | controlCharacter (character : Char)
-  /-- A character outside the template's BMP repertoire. The Kernel refuses it **codelessly**, through
-  the runtime formal class its message text belongs to rather than through a bracketed parameter key. -/
-  | unsupportedCharacter (character : Char)
-  /-- Preserve the other check's cause beside the repertoire refusal ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-repertoire-co-reporting)); an unsupported-fragment cause remains local rather than acquiring a Kernel class. -/
-  | unsupportedCharacterWithError (character : Char)
-      (cause : ValidationMessageTemplateError)
-  | oddDollarCount
-  /-- A parameter alternative this fragment does not model, `index(...)`. -/
-  | invalidParameter (parameter : String)
-  | reference (parameter : String) (error : ResolveError)
-  /-- A name-position path that names a declared group rather than a field. The Kernel resolves the
-  group and refuses it on the class of a field the condition does not read, `INVALID_FIELD`, even when
-  the condition reads inside the group
-  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals)),
-  and a value or category suffix keeps that class
-  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
-  | groupInNamePosition (parameter : String) (group : GroupPath)
-  /-- A form pointer whose entity names a declared group. The pointer skips the membership gate, so its
-  refusal is the field requirement's own, `INVALID_FIELD_IN_PARAMETER`, and not the unread field's
-  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
-  | groupInFormPointer (parameter : String) (group : GroupPath)
-  | fieldNotReferenced (parameter : String) (field : FieldId)
-  /-- A category suffix was written with no category name after the arrow. -/
-  | missingCategoryName (parameter : String)
-  /-- A category suffix was applied to a field that is not an Enumeration declaration. -/
-  | categoryFieldNotEnumeration (parameter : String) (field : FieldId)
-  /-- The named category is not one this Enumeration declaration declares, or the declaration itself
-  is ill-formed. Both arrive through the one existing Enumeration projection gate. -/
-  | category (parameter : String) (error : EnumerationOperandError)
-  /-- A group-position argument that names no available group: an unknown group below a declared root
-  or below the rule's group, a field, or a declared group that is neither an ancestor of the rule's
-  group nor holds a field the condition reads. They share this one refusal, which is the Kernel's own
-  grouping — an **unknown root** is separated onto `unknownRootGroup`, and an ambiguous bare word onto
-  `groupShortNameNotUnique`. -/
-  | invalidGroupParameter (parameter : String)
-  /-- A bare group word that names nothing directly below the rule's group and is the short name of
-  more than one field, refused `ERROR_TEXT_FIELDNAME_NOT_UNIQUE`. The lookup covers fields only, so a
-  group's short name is never found this way. -/
-  | groupShortNameNotUnique (parameter name : String)
-  /-- A parameter's parent walk, naming no segment after it or in the group position, climbs past the
-  root group, refused on the message route's own above-root class
-  `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS`, distinct from the condition parser's. -/
-  | parameterAboveRoot (parameter : String)
-  /-- A parameter's turning point does not name the group its parent walk reaches. The Kernel refuses
-  it on its entity class `INVALID_ENTITY` in either position, not on the group class. -/
-  | turningPointMismatch (parameter : String)
-  /-- A parameter the parameter grammar refuses, carrying which of the Kernel's lexical and syntax
-  classes the malformed shape falls into, at the point in the parser's events where it meets it. Kept
-  apart from the refusals of a well-formed spelling. -/
-  | parameterSyntax (parameter : String) (fault : MessageParameterFault)
-  /-- The first segment of an absolute group argument names no declared root group. Root existence is
-  a gate of its own, ahead of the lookup below it and of availability, and reported apart from both,
-  so it fires whatever follows the root.
-
-  A root the model declares but leaves **empty** would be reported by the Kernel on the ordinary group
-  class instead. `FlatModel` cannot express such a group, so no input reaching here separates the two;
-  `FlatModel.hasGroupPath` owns that limit. -/
-  | unknownRootGroup (parameter root : String)
-  /-- A historic group terminal the Kernel still recognizes and refuses on the modern route. It stays
-  distinct from `invalidGroupParameter` because the Kernel's own code is distinct. -/
-  | retiredGroupTerminal (parameter terminal : String)
-  /-- The `RuleGroup` shorthand written from a rule whose own group **is** the root group, refused
-  `RULEGROUP_IMMEDIATELY_BELOW_ROOT`. The gate belongs to that one word: from the identical locus the
-  root shorthand and the absolute spelling of that very group are both admitted, so the group is
-  nameable and the position works — what is refused is the abbreviation whose meaning would there
-  coincide with `RootGroup`. -/
-  | ruleGroupImmediatelyBelowRoot (parameter : String)
-  /-- A Base Year parameter was authored against a model that declares none. -/
-  | noBaseYear
-  /-- A semantic-index key that is an entity carrying a key of its own, refused only after every name in
-  the parameter has resolved
-  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
-  | nestedSemanticIndex (parameter : String)
-  /-- A keyed name-position parameter, refused `MVK_INDEX_FOR_ERROR_TEXT_INVALID` because no flat
-  condition reads a field under a key. The Kernel admits a keyed parameter only on the condition's own
-  keyed field or the group's index field under the key the condition uses, so a condition with no key
-  admits none, which the flat model measures on a referenced field, a group and a literal containing
-  the key terminal ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). -/
-  | keyNotInCondition (parameter : String)
-  /-- The rule-group terminal as a field, with or without a suffix or key, refused `INVALID_PARAMETER`
-  by the field's own check before any other gate. -/
-  | ruleGroupParameter (parameter : String)
-  /-- The rule-group terminal where the Kernel's check expects a resolved entity: a form pointer's
-  entity or a field's key. The Kernel fails there with `MVK_INTERNAL_ERROR`, a defect this fragment
-  refuses on its own arm and does not model. -/
-  | ruleGroupUnresolved (parameter : String)
-  deriving Repr, DecidableEq
-
-private def isLineSeparator (character : Char) : Bool :=
-  character == '\n' || character == '\r' ||
-    character.toNat == 0x2028 || character.toNat == 0x2029
-
-/-- The Kernel's `INVALID_CHARACTERS` class over a message template: every code point Java's `\p{C}`
-matches on JDK 21, control, format, private-use and unassigned alike, asked after the line gate so a
-line separator keeps its own class ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). -/
-private def isControlCharacter (character : Char) : Bool :=
-  isJavaOtherCategory character
-
-/-- The template's repertoire is the **BMP**, the same bound a stored value's default charset applies.
-An earlier printable-ASCII bound here was an over-refusal: fourteen BMP code points spanning Latin-1,
-Latin Extended-A, currency, Greek, Cyrillic, CJK, punctuation and `U+FFFD` are admitted in message text,
-while both supplementary-plane scalars measured are refused — and the Kernel reports that refusal without
-a bracketed key, through the runtime formal class its message text belongs to. -/
-private def isSupportedTemplateCharacter (character : Char) : Bool :=
-  character.toNat < 0x10000
-
-/-- Retain one local locator for the repertoire refusal; the Kernel reports the template once even with two offending characters ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-repertoire-co-reporting)). -/
-def firstUnsupportedMessageTemplateCharacter? (source : String) : Option Char :=
-  source.toList.find? (fun character => !isSupportedTemplateCharacter character)
-
-/-- The quoting rule for a rule-message parameter. A name colliding with one of the selected
-language's terminals must be quoted, **except** for the terminals this producer has historically
-accepted unquoted inside an entity name. The exemption belongs to this producer rather than to the
-path grammar, which is why it does not live on `PathKeywordProfile`. -/
-structure ValidationMessageKeywordProfile where
-  path : PathKeywordProfile
-  unquotedTerminals : List String := []
-  /-- The selected language's spelling of the Base Year parameter terminal. It is data because the
-  parameter grammar is bilingual and this project does not choose a language for the author. -/
-  baseYearTerminal : String
-  /-- The selected language's spelling of the semantic-index key terminal. -/
-  forTerminal : String
-  /-- The selected language's spelling of the **value suffix**, without the grammar's leading dot.
-  It is data for the same reason the terminals around it are: the Kernel takes `value` under an
-  English condition language and `Wert` under German, whatever the message's locale, and each draws a
-  lexer refusal in the other's model on the `index(...)` terminal
-  ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-index-german-suffix)).
-  This was the one suffix the parser matched as a literal while every sibling was supplied, so a
-  German model would have been read with the English word. -/
-  valueSuffixTerminal : String
-  /-- The selected language's spelling of the group position's root shorthand. -/
-  rootGroupTerminal : String
-  /-- The selected language's spelling of the group position's own-group shorthand. -/
-  ruleGroupTerminal : String
-  /-- The two form-pointer terminals. The Kernel's own bundles spell both identically in English and
-  German, but they are data like every sibling terminal rather than literals, because the one exception
-  to that discipline was a latent bilingual defect ([`LF166`](../../docs/LEAN-FINDINGS.md)). -/
-  formLineTerminal : String
-  formNameTerminal : String
-  /-- The historic group terminals the Kernel recognizes in the group position and refuses on the
-  modern route. Measured under the English condition language the set is `Zeile` and `Usb`; whether it
-  is selected by language at all is unmeasured, so the caller supplies it like the other terminals. -/
-  retiredGroupTerminals : List String := []
-  /-- The retired group terminals that take a signed offset, `$#Zeile-1$`. Measured on `Zeile` under the
-  English condition language, where `Usb` takes none. -/
-  offsetGroupTerminals : List String := []
-  deriving Repr, DecidableEq
-
-/-- The words the parameter decoder distinguishes, read off the profile: the path grammar's reserved
-words, and the exemption from quoting that keeps a reserved word a name. -/
-def ValidationMessageKeywordProfile.parameterKeywords (profile : ValidationMessageKeywordProfile) :
-    MessageParameterKeywords :=
-  { reserved := profile.path.reserved, exempt := profile.unquotedTerminals,
-    exemptNonFinal :=
-      [profile.valueSuffixTerminal, profile.formLineTerminal, profile.formNameTerminal],
-    ruleGroup := profile.ruleGroupTerminal, rootGroup := profile.rootGroupTerminal,
-    retired := profile.retiredGroupTerminals, offset := profile.offsetGroupTerminals,
-    forTerminal := profile.forTerminal }
-
-/-- The name position's own terminals, read off the profile. -/
-def ValidationMessageKeywordProfile.nameTerminals (profile : ValidationMessageKeywordProfile) :
-    MessageNameTerminals :=
-  { baseYear := profile.baseYearTerminal, valueSuffix := profile.valueSuffixTerminal,
-    formLine := profile.formLineTerminal, formName := profile.formNameTerminal }
 
 /-- Treat an exempt terminal as if the author had quoted it, then reuse the one existing
 quote-provenance lowering. The exemption says exactly "no quote is needed here", so recording it as
@@ -267,41 +98,6 @@ private def exemptQuoting (profile : ValidationMessageKeywordProfile)
   else
     name
 
-private def validateMessageTemplatePrefix (source : String) :
-    Except ValidationMessageTemplateError Unit := do
-  if source.isEmpty then throw .emptyTemplate
-  match source.toList.find? isLineSeparator with
-  | some _ => throw .lineSeparator
-  | none => pure ()
-  match source.toList.find? isControlCharacter with
-  | some character => throw (.controlCharacter character)
-  | none => pure ()
-
-private def validateMessageTemplateSegments (source : String) :
-    Except ValidationMessageTemplateError (List String) := do
-  if source.toList.count '$' % 2 != 0 then throw .oddDollarCount
-  pure (source.splitOn "$")
-
-/-- The lexical gates both producers share: the line and control gates, then dollar parity. The
-repertoire refusal is not one of them; each producer adds it with `withMessageRepertoire`, since it
-stands beside these failures. -/
-def validateMessageTemplateSource (source : String) :
-    Except ValidationMessageTemplateError (List String) := do
-  validateMessageTemplatePrefix source
-  validateMessageTemplateSegments source
-
-/-- Add the codeless repertoire refusal to a producer's result, keeping the producer's own first
-failure beside it. It stands beside a named class on a rule's message
-([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-repertoire-co-reporting)) and beside the control class
-on a field's pattern message ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). -/
-def withMessageRepertoire (source : String)
-    (checked : Except ValidationMessageTemplateError α) :
-    Except ValidationMessageTemplateError α :=
-  match firstUnsupportedMessageTemplateCharacter? source, checked with
-  | none, result => result
-  | some character, .ok _ => .error (.unsupportedCharacter character)
-  | some character, .error cause => .error (.unsupportedCharacterWithError character cause)
-
 /-- The model a message parameter's name resolves in: the same declarations with the short-name tier
 always on. Measured, a model whose flag is off still answers a message name by its model-wide short
 name — ambiguous, unread, read, or form-pointed — while the same model's condition refuses a short name
@@ -312,7 +108,7 @@ def FlatModel.messageNameModel (model : FlatModel) : FlatModel :=
 /-- One checked field reference of a message parameter. `parameter` retains the authored spelling for
 Explain, including any value suffix; `reference` is its decoded path, which is what resolved. -/
 structure CheckedValidationMessageReference
-    (model : FlatModel) (condition : CheckedFlatCondition model) where
+    (model : FlatModel) (condition : ValidationMessageCondition model) where
   parameter : String
   reference : SurfaceFieldPath
   declaration : FlatFieldDecl
@@ -327,7 +123,7 @@ carrying a flag: the difference between the two is precisely that this one has n
 carry, and a shared record with an optional field would let a consumer read the exemption as missing
 data rather than as the measured rule. -/
 structure CheckedValidationMessageFormPointer
-    (model : FlatModel) (condition : CheckedFlatCondition model) where
+    (model : FlatModel) (condition : ValidationMessageCondition model) where
   parameter : String
   reference : SurfaceFieldPath
   declaration : FlatFieldDecl
@@ -340,7 +136,7 @@ structure CheckedValidationMessageFormPointer
 that the projection belongs to *that* field's own Enumeration declaration and selects *that* category.
 Together with the projection's own check this is the complete gate. -/
 structure CheckedValidationMessageCategory
-    (model : FlatModel) (condition : CheckedFlatCondition model) where
+    (model : FlatModel) (condition : ValidationMessageCondition model) where
   reference : CheckedValidationMessageReference model condition
   category : String
   projection : CheckedEnumerationProjection
@@ -354,7 +150,7 @@ a sibling, and an intermediate group holding no read field directly are all name
 reads below them, and why the same groups are refused when it does not
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-availability)). A
 field is never available, because its own path is never a prefix of its group's. -/
-def messageGroupAvailable (model : FlatModel) (condition : CheckedFlatCondition model)
+def messageGroupAvailable (model : FlatModel) (condition : ValidationMessageCondition model)
     (group : GroupPath) : Bool :=
   GroupPath.isPrefixOf group condition.rowGroup ||
     model.fields.any fun declaration =>
@@ -364,11 +160,12 @@ def messageGroupAvailable (model : FlatModel) (condition : CheckedFlatCondition 
 /-- One admitted group-position parameter: the group the author named, beside the witnesses that it is
 a representable path and that it is **available** to this rule's message. -/
 structure CheckedValidationMessageGroup
-    (model : FlatModel) (condition : CheckedFlatCondition model) where
+    (model : FlatModel) (condition : ValidationMessageCondition model) where
   parameter : String
   group : GroupPath
   valid : GroupPath.isValid group = true
   available : messageGroupAvailable model condition group = true
+  key : Option CheckedSemanticIndexKey := none
 
 /-- Admit one resolved group under the two gates every argument shares: it is a representable path,
 and it is available. Below the root gate, availability needs no separate existence test, because every
@@ -376,7 +173,7 @@ ancestor of a declared group and every group holding a declared field is itself 
 passing it is declared, and one failing it is refused whether or not the model declares it, which is
 what a **declared** unread group and an unknown one sharing one refusal already says. -/
 def admitMessageGroup {model : FlatModel}
-    (condition : CheckedFlatCondition model) (parameter : String)
+    (condition : ValidationMessageCondition model) (parameter : String)
     (group : GroupPath) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageGroup model condition) :=
@@ -388,13 +185,51 @@ def admitMessageGroup {model : FlatModel}
   else
     .error (.invalidGroupParameter parameter)
 
+private def knownMessageReference (parameter : String) : Option Bool →
+    Except ValidationMessageTemplateError Bool
+  | some answer => pure answer
+  | none => throw (.groupReferenceMetadataRequired parameter)
+
+/-- Group availability, wildcard mode, and positive keyed presence are distinct gates
+(FullChecks_ErrorTextParameterParser.checkLevelParam). -/
+private def checkMessageGroupMode (condition : ValidationMessageCondition model)
+    (parameter : String) (group : GroupPath) (key : Option CheckedSemanticIndexKey) :
+    Except ValidationMessageTemplateError Unit := do
+  match condition with
+  | .flat _ =>
+      if key.isSome then throw (.invalidGroupParameter parameter)
+  | .rule _ =>
+      match model.repeatableGroups.find? (·.path == group) with
+      | none => if key.isSome then throw (.invalidGroupParameter parameter)
+      | some declaration =>
+          match key with
+          | some key =>
+              let selected ← knownMessageReference parameter (condition.selectedGroupReferenced? group (some key))
+              if declaration.indexField.isNone || !selected then
+                throw (.invalidGroupParameter parameter)
+          | none =>
+              if declaration.indexField.isSome then
+                let available ← knownMessageReference parameter (condition.unkeyedGroupReferenced? group declaration.level)
+                if !available then
+                  let selected ← knownMessageReference parameter condition.anySelectedGroupReferenced?
+                  if !(group.isPrefixOf condition.rowGroup) || selected then
+                    throw (.invalidGroupParameter parameter)
+          if declaration.repeatability.any (· > 1) then
+            match condition.nonWildcardGroupReferenced? group declaration.level with
+            | some true => pure ()
+            | some false => throw (.groupReferenceMode parameter .iterParamWithStarReference)
+            | none => throw (.groupReferenceMetadataRequired parameter)
+          if let some key := key then
+            if !condition.keyedGroupGuarded group key then
+              throw (.groupReferenceMode parameter .invalidUseOfSemanticIndex)
+
 /-- Whether a path names a declared group or field. -/
 def FlatModel.declaresEntityPath (model : FlatModel) (path : GroupPath) : Bool :=
   model.hasGroupPath path || model.fields.any (·.path == path)
 
 /-- A relative group argument's parent walk and its check, which the Kernel runs when the walk's own
 rule ends: a climb past the root first, then a turning point that does not name the group reached. -/
-def walkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
+def walkMessageGroup {model : FlatModel} (condition : ValidationMessageCondition model)
     (parameter : String) (parents : Nat) (turningPoint : Option String) :
     Except ValidationMessageTemplateError GroupPath :=
   match GroupPath.walkUp condition.rowGroup parents with
@@ -412,7 +247,7 @@ the root, then checks its turning point against the group reached, and only then
 bare word that names nothing below the rule's group falls back to the short name of a **field**, the
 only kind that lookup covers
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-argument-layers)). -/
-def resolveMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
+def resolveMessageGroup {model : FlatModel} (condition : ValidationMessageCondition model)
     (parameter : String) : AuthoredMessageGroup → Except ValidationMessageTemplateError GroupPath
   -- The root shorthand is the top of the *rule's own* ancestor chain rather than a model-wide root.
   -- A model with two roots separates the two readings, and the rule's own chain is what the Kernel
@@ -458,10 +293,10 @@ fault met after a complete parent walk waits for the walk's check and the lookup
 before it, so `$#..Wrong/$` draws the turning-point class and `$#../Nope/$` the group class rather than
 the truncated one. `keyCheck` is the outcome of a key's events, which the caller resolves on this
 position's classes. -/
-def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition model)
+def checkMessageGroup {model : FlatModel} (condition : ValidationMessageCondition model)
     (parameter : String) (authored : AuthoredMessageGroup)
     (remainder : MessageGroupRemainder := .none)
-    (keyCheck : Except ValidationMessageTemplateError Unit := .ok ()) :
+    (keyCheck : Except ValidationMessageTemplateError (Option CheckedSemanticIndexKey) := .ok none) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageGroup model condition) :=
   match remainder, authored with
@@ -475,28 +310,31 @@ def checkMessageGroup {model : FlatModel} (condition : CheckedFlatCondition mode
             | .error error => .error error
             | .ok _ => .error (.parameterSyntax parameter fault)
   | .afterWalk fault, _ => .error (.parameterSyntax parameter fault)
-  -- The group's own lookup runs as its names end, the key's events after it, and the key's gate last:
-  -- no flat condition reads a group under a key, so a keyed group that survives its key is refused
-  -- `INVALID_GROUP` whatever its availability, measured on an admitted group.
-  | .keyed _, _ =>
+  | .keyed _ _ trailing, _ =>
       match resolveMessageGroup condition parameter authored with
       | .error error => .error error
-      | .ok _ =>
+      | .ok group =>
           match keyCheck with
           | .error error => .error error
-          | .ok () => .error (.invalidGroupParameter parameter)
+          | .ok none => .error (.invalidGroupParameter parameter)
+          | .ok (some key) => do
+              let access ← admitMessageGroup condition parameter group
+              checkMessageGroupMode condition parameter group (some key)
+              if trailing then throw (.parameterSyntax parameter .unexpected)
+              pure { access with key := some key }
   | _, _ =>
       match resolveMessageGroup condition parameter authored with
       | .error error => .error error
       | .ok group =>
           match admitMessageGroup condition parameter group with
           | .error error => .error error
-          | .ok access =>
+          | .ok access => do
+              checkMessageGroupMode condition parameter group none
               if remainder = .trailing then .error (.parameterSyntax parameter .unexpected)
               else .ok access
 
 inductive CheckedValidationMessagePart
-    (model : FlatModel) (condition : CheckedFlatCondition model) where
+    (model : FlatModel) (condition : ValidationMessageCondition model) where
   | text (value : String)
   | fieldName (reference : CheckedValidationMessageReference model condition)
   | fieldValue (reference : CheckedValidationMessageReference model condition)
@@ -506,37 +344,31 @@ inductive CheckedValidationMessagePart
   | baseYear (offset year : Int)
       (declared : model.baseYear = some (year - offset))
   | group (access : CheckedValidationMessageGroup model condition)
+  | indexField (access : CheckedMessageIndex model condition)
   /-- A form-pointer parameter, whose resolved entity carries no membership witness because the
   Kernel requires none here. -/
   | formPointer (access : CheckedValidationMessageFormPointer model condition)
 
 structure CheckedValidationMessageTemplate
-    (model : FlatModel) (condition : CheckedFlatCondition model) where
+    (model : FlatModel) (condition : ValidationMessageCondition model) where
   source : String
   parts : List (CheckedValidationMessagePart model condition)
 
 /-- One resolved name-bearing parameter position, carrying its resolution witness but **no**
 membership requirement. -/
 private structure ResolvedMessageEntity
-    (model : FlatModel) (condition : CheckedFlatCondition model) where
+    (model : FlatModel) (condition : ValidationMessageCondition model) where
   reference : SurfaceFieldPath
   declaration : FlatFieldDecl
   resolved :
     model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
       .ok declaration
 
-/-- Resolve one name-bearing parameter position to a declaration, or to the declared group it names.
-This is the part a keyed parameter shares with an unkeyed one: measured, an unresolvable name is
-refused for both, while a group is an entity each form refuses on its own class or not at all
-([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
-private def resolveMessageEntity (model : FlatModel)
-    (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model)
+private def lowerMessagePath (profile : ValidationMessageKeywordProfile)
     (parameter : String) (authored : AuthoredFieldPath) :
-    Except ValidationMessageTemplateError
-      (ResolvedMessageEntity model condition ⊕ GroupPath) := do
+    Except ValidationMessageTemplateError SurfaceFieldPath := do
   -- Every name-bearing position is checked, because a terminal may sit at any path level.
-  let reference ← match ({ authored with
+  match ({ authored with
       turningPoint := authored.turningPoint.map (exemptQuoting profile)
       groups := authored.groups.map (exemptQuoting profile)
       field := exemptQuoting profile authored.field
@@ -545,6 +377,18 @@ private def resolveMessageEntity (model : FlatModel)
     -- The lexer forms an unquoted reserved word as a keyword, which no name slot takes, so the
     -- decoder has already refused it as this token; the lowering's own refusal agrees.
     | .error (.unquotedKeyword _) => throw (.parameterSyntax parameter .unexpected)
+
+/-- Resolve one name-bearing parameter position to a declaration, or to the declared group it names.
+This is the part a keyed parameter shares with an unkeyed one: measured, an unresolvable name is
+refused for both, while a group is an entity each form refuses on its own class or not at all
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
+private def resolveMessageEntity (model : FlatModel)
+    (profile : ValidationMessageKeywordProfile)
+    (condition : ValidationMessageCondition model)
+    (parameter : String) (authored : AuthoredFieldPath) :
+    Except ValidationMessageTemplateError
+      (ResolvedMessageEntity model condition ⊕ GroupPath) := do
+  let reference ← lowerMessagePath profile parameter authored
   match hResolved :
       model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference with
   | .error error =>
@@ -559,7 +403,7 @@ nothing, since the Kernel's name check skips it. A bare walk's climb past the ro
 point answer on the group position's classes, measured in the name position too. -/
 private def resolveMessageSpec (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model) (parameter : String) :
+    (condition : ValidationMessageCondition model) (parameter : String) :
     MessageEntitySpec →
       Except ValidationMessageTemplateError
         (Option (ResolvedMessageEntity model condition ⊕ GroupPath))
@@ -568,9 +412,28 @@ private def resolveMessageSpec (model : FlatModel)
       (some ∘ .inr) <$> walkMessageGroup condition parameter parents (turningPoint.map (·.text))
   | .path authored => some <$> resolveMessageEntity model profile condition parameter authored
 
+private def resolveMessageGroupKeyEntity (model : FlatModel)
+    (profile : ValidationMessageKeywordProfile) (condition : ValidationMessageCondition model)
+    (parameter : String) (spec : MessageEntitySpec) :
+    Except ValidationMessageTemplateError (Option CheckedSemanticIndexKey) := do
+  match condition, spec with
+  | .rule _, .path authored =>
+      let reference ← lowerMessagePath profile parameter authored
+      match model.messageNameModel.resolveFieldDeclarationUnchecked condition.rowGroup reference with
+      | .ok declaration => pure (some (.field declaration))
+      | .error error =>
+          if error.isGroupDisplaceableMiss && (model.groupNamedBy? condition.rowGroup reference).isSome then
+            pure none
+          else throw (.reference parameter error)
+  | _, _ =>
+      match ← resolveMessageSpec model profile condition parameter spec with
+      | some (.inl entity) => pure (some (.field entity.declaration))
+      | some (.inr _) => pure none
+      | none => throw (.ruleGroupUnresolved parameter)
+
 private def resolveMessageReference (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model)
+    (condition : ValidationMessageCondition model)
     (parameter : String) (spec : MessageEntitySpec) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageReference model condition) := do
@@ -629,12 +492,14 @@ fragment leaves unclassed; a root, a parent walk and a turning point keep their 
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). -/
 private def runMessageEvents (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model) (parameter : String) (inGroupKey : Bool) :
+    (condition : ValidationMessageCondition model) (parameter : String) (inGroupKey : Bool) :
     List MessageParameterEvent → Except ValidationMessageTemplateError Unit
   | [] => pure ()
   | .resolve spec :: rest => do
       if inGroupKey && spec == .ruleGroup then throw (.ruleGroupUnresolved parameter)
-      match resolveMessageSpec model profile condition parameter spec with
+      match (if inGroupKey then
+          (resolveMessageGroupKeyEntity model profile condition parameter spec).map (fun _ => ())
+        else (resolveMessageSpec model profile condition parameter spec).map (fun _ => ())) with
       | .ok _ => pure ()
       | .error error =>
           throw (if inGroupKey && error matches .reference _ (.invalidEntity _) then
@@ -647,7 +512,7 @@ private def runMessageEvents (model : FlatModel)
 first, then the key's gate, then the membership gate and the suffix's gates. -/
 private def checkMessageField (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model) (parameter : String)
+    (condition : ValidationMessageCondition model) (parameter : String)
     (entity : MessageEntitySpec) (suffix : MessageFieldSuffix) :
     Option MessageKeyHead →
       Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition)
@@ -666,7 +531,7 @@ private def checkMessageField (model : FlatModel)
 meets at the end it requires. -/
 private def checkMessageName (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model) (parameter : String)
+    (condition : ValidationMessageCondition model) (parameter : String)
     (decoded : DecodedMessageName) :
     Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition) := do
   runMessageEvents model profile condition parameter false decoded.events
@@ -692,7 +557,16 @@ private def checkMessageName (model : FlatModel)
         | none => throw .noBaseYear
         | some base =>
             pure (.baseYear offset (base + offset) (by rw [hDeclared, Int.add_sub_cancel]))
-    | some .indexField => throw (.invalidParameter parameter)
+    | some (.indexField entity suffix) =>
+        -- The service compares the authored entity spelling with a short name, rather than
+        -- resolving it as a field path (FullChecks_ErrorTextParameterParser.checkIndexFieldRef).
+        let name := match entity with
+          | .path { base := .relative 0, groups := [], turningPoint := none, field } =>
+              if field.quoted then "'" ++ field.text ++ "'" else field.text
+          | _ => ""
+        match checkMessageIndex condition name suffix with
+        | .ok access => pure (.indexField access)
+        | .error error => throw (.indexParameter parameter error)
   match decoded.trailing with
   | some fault => throw (.parameterSyntax parameter fault)
   | none => pure part
@@ -701,7 +575,7 @@ private def checkMessageName (model : FlatModel)
 The position marker selects the grammar: a body whose first token is `#` is the group position. -/
 private def checkMessageParameter (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model) (parameter : String) :
+    (condition : ValidationMessageCondition model) (parameter : String) :
     Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition) :=
   let keywords := profile.parameterKeywords
   match ParameterToken.ofParameter keywords parameter with
@@ -711,8 +585,13 @@ private def checkMessageParameter (model : FlatModel)
       | .error (.retired terminal) => .error (.retiredGroupTerminal parameter terminal)
       | .ok (authored, remainder) =>
           let keyCheck := match remainder with
-            | .keyed events => runMessageEvents model profile condition parameter true events
-            | _ => .ok ()
+            | .keyed events key _ => do
+                runMessageEvents model profile condition parameter true events
+                match key with
+                | none => pure none
+                | some (.literal text) => pure (some (.literal (.text text)))
+                | some (.entity spec) => resolveMessageGroupKeyEntity model profile condition parameter spec
+            | _ => .ok none
           .group <$> checkMessageGroup condition parameter authored remainder keyCheck
   | tokens =>
       checkMessageName model profile condition parameter
@@ -721,7 +600,7 @@ private def checkMessageParameter (model : FlatModel)
 /-- Every part of a balanced template, each parameter checked independently. -/
 private def checkMessageSegments (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model) :
+    (condition : ValidationMessageCondition model) :
     List String →
       List (Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition))
   | [] => []
@@ -739,7 +618,7 @@ its own and reports each one's first failure, so `$Nope$ and $Nope2$` draws two
 repertoire finding is not among them; `withMessageRepertoire` keeps it beside the first. -/
 def validationMessageTemplateRefusals (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model) (source : String) :
+    (condition : ValidationMessageCondition model) (source : String) :
     List ValidationMessageTemplateError :=
   match validateMessageTemplateSource source with
   | .error error => [error]
@@ -752,7 +631,7 @@ def validationMessageTemplateRefusals (model : FlatModel)
 `validationMessageTemplateRefusals` lists the rest. -/
 def elaborateValidationMessageTemplate (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model) (source : String) :
+    (condition : ValidationMessageCondition model) (source : String) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageTemplate model condition) :=
   let checked : Except ValidationMessageTemplateError
@@ -771,8 +650,10 @@ structure ValidationMessageInputs where
   the two terminals was written are both passed, so a caller need not re-derive either. -/
   formPointer : FieldId → MessageFormPointer → String
 
-def CheckedValidationMessagePart.toRenderPart
-    (inputs : ValidationMessageInputs) :
+/-- Render already-selected inputs. Repeatable callers must supply the resolved group coordinate;
+`toRenderPlanAt` owns the addressed selection before this final substitution. -/
+def CheckedValidationMessagePart.toRenderPartWithGroupIndex
+    (inputs : ValidationMessageInputs) (groupIndex : GroupPath → Nat) :
     CheckedValidationMessagePart model condition → MessageRenderPart
   | .text value => .text value
   | .fieldName reference => .fieldName (inputs.fieldName reference.declaration.id)
@@ -783,14 +664,30 @@ def CheckedValidationMessagePart.toRenderPart
           (inputs.fieldStoredToken access.reference.declaration.id).bind
             (access.projection.declaration.categoryTokenFor? access.category) }
   | .baseYear _ year _ => .baseYear year
-  -- The measured rendering is the named group's repetition index in the firing row. Every group
-  -- admissible here is nonrepeatable — see `MessageGroupInput` — so the index is the constant the
-  -- Kernel renders for that case, and no caller-supplied bytes enter the message any more.
-  | .group _ => .group { repetitionIndex := 1 }
+  | .group access => .group { repetitionIndex := groupIndex access.group }
+  | .indexField access =>
+      match access.suffix with
+      | .value => .fieldValue {
+          displayValue := (inputs.fieldValue access.binding.declaration.id).displayValue
+          defaultDisplay := "" }
+      | .category name => .fieldCategory {
+          categoryToken := do
+            let source ← access.binding.declaration.enumeration
+            let checked ← (elaborateEnumeration source).toOption
+            let stored ← inputs.fieldStoredToken access.binding.declaration.id
+            checked.categoryTokenFor? name stored }
+      | .none => .text ""
   | .formPointer access =>
       .formPointer { text := inputs.formPointer access.declaration.id access.pointer }
 
+def CheckedValidationMessagePart.toRenderPart
+    {condition : CheckedFlatCondition model}
+    (inputs : ValidationMessageInputs)
+    (part : CheckedValidationMessagePart model condition) : MessageRenderPart :=
+  part.toRenderPartWithGroupIndex inputs (fun _ => 1)
+
 def CheckedValidationMessageTemplate.toRenderPlan
+    {condition : CheckedFlatCondition model}
     (template : CheckedValidationMessageTemplate model condition)
     (inputs : ValidationMessageInputs) : MessageRenderPlan :=
   { parts := template.parts.map (·.toRenderPart inputs) }

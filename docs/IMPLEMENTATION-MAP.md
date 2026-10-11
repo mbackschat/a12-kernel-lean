@@ -552,6 +552,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Presence contradiction analyzer](implementation/validation-messages-and-custom.md#cap-presence-contradiction-analyzer)
 <a id="cap-whole-rule-authoring-and-rendering"></a>
 - [Whole-rule authoring and rendering](implementation/validation-messages-and-custom.md#cap-whole-rule-authoring-and-rendering)
+<a id="cap-index-message-authoring-and-rendering"></a>
+- [Rule-owned index and group message parameters](implementation/validation-messages-and-custom.md#cap-index-message-authoring-and-rendering)
 <a id="cap-string-pattern-field-messages"></a>
 - [String-pattern field messages](implementation/validation-messages-and-custom.md#cap-string-pattern-field-messages)
 <a id="cap-structural-message-references"></a>

@@ -191,6 +191,7 @@ import A12Kernel.Elaboration.JavaOtherCategory
 import A12Kernel.Elaboration.MessageParameterSyntax
 import A12Kernel.Elaboration.MessageGroupArgument
 import A12Kernel.Elaboration.ValidationMessageAuthoring
+import A12Kernel.Elaboration.ValidationMessageRendering
 import A12Kernel.Elaboration.ValidationMessageDiagnostic
 import A12Kernel.Elaboration.StringPatternMessage
 import A12Kernel.Elaboration.FieldMessageCheck

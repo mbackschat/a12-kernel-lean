@@ -39,7 +39,7 @@ theorem withMessageRepertoire_repertoireFailure_refused {α : Type}
 /-- Co-reporting never admits a template whose repertoire check fails, even when every parameter checks. -/
 theorem validationMessageTemplate_repertoireFailure_refused
     (model : FlatModel) (profile : ValidationMessageKeywordProfile)
-    (condition : CheckedFlatCondition model) (source : String) (character : Char)
+    (condition : ValidationMessageCondition model) (source : String) (character : Char)
     (failure : firstUnsupportedMessageTemplateCharacter? source = some character) :
     (elaborateValidationMessageTemplate model profile condition source).isOk = false :=
   withMessageRepertoire_repertoireFailure_refused _ _ _ failure
@@ -50,6 +50,7 @@ theorem checkedValidationMessageReference_usedByCondition
   reference.conditionReferenced
 
 theorem checkedValidationMessage_fieldValue_present_isOpaque
+    {condition : CheckedFlatCondition model}
     (reference : CheckedValidationMessageReference model condition)
     (inputs : ValidationMessageInputs) (value defaultDisplay : String)
     (selected :
@@ -61,10 +62,12 @@ theorem checkedValidationMessage_fieldValue_present_isOpaque
     (CheckedValidationMessagePart.fieldValue reference
       |>.toRenderPart inputs
       |>.render) = value := by
-  simp [CheckedValidationMessagePart.toRenderPart, selected,
+  simp [CheckedValidationMessagePart.toRenderPart,
+    CheckedValidationMessagePart.toRenderPartWithGroupIndex, selected,
     MessageRenderPart.render, MessageValueInput.resolve, nonempty]
 
 theorem checkedValidationMessage_inputs_doNotChangeVerdict
+    {condition : CheckedFlatCondition model}
     (rule : ResolvedFlatRule)
     (template : CheckedValidationMessageTemplate model condition)
     (left right : ValidationMessageInputs)
@@ -103,7 +106,7 @@ private theorem groupPath_isValid_take_one {path : GroupPath}
 argument names a declared root group **and** is available to the rule's message, so nothing under an
 undeclared root, and no group the rule neither lies in nor reads into, is ever reached through it. -/
 theorem checkMessageGroup_absolute_admitted
-    {model : FlatModel} {condition : CheckedFlatCondition model}
+    {model : FlatModel} {condition : ValidationMessageCondition model}
     {parameter : String} {path : GroupPath} {remainder : MessageGroupRemainder}
     {access : CheckedValidationMessageGroup model condition}
     (admitted : checkMessageGroup condition parameter (.absolute path) remainder = .ok access) :
@@ -111,7 +114,7 @@ theorem checkMessageGroup_absolute_admitted
       model.hasGroupPath (path.take 1) = true := by
   cases remainder with
   | afterWalk _ => simp [checkMessageGroup] at admitted
-  | keyed _ =>
+  | keyed _ _ _ =>
       simp only [checkMessageGroup] at admitted
       split at admitted <;> (try split at admitted) <;> simp_all
   | none | trailing =>
@@ -134,7 +137,7 @@ theorem checkMessageGroup_absolute_admitted
 /-- A relative argument is admitted only when its parent walk stays at or below the root group, so a
 climb past the root is never reached through the relative form, whatever path follows it. -/
 theorem checkMessageGroup_relative_walkWithinRoot
-    {model : FlatModel} {condition : CheckedFlatCondition model}
+    {model : FlatModel} {condition : ValidationMessageCondition model}
     {parameter : String} {parents : Nat} {turningPoint : Option String} {path : GroupPath}
     {remainder : MessageGroupRemainder} {access : CheckedValidationMessageGroup model condition}
     (admitted : checkMessageGroup condition parameter
@@ -156,9 +159,9 @@ theorem checkMessageGroup_ruleGroup_resolvesToRuleGroup
     (parameter : String)
     (valid : GroupPath.isValid condition.rowGroup = true)
     (belowRoot : ¬ condition.rowGroup.length ≤ 1) :
-    (checkMessageGroup condition parameter .ruleGroup).map
+    (checkMessageGroup (ValidationMessageCondition.flat condition) parameter .ruleGroup).map
         (fun access => access.group) = .ok condition.rowGroup := by
-  simp only [checkMessageGroup, resolveMessageGroup, belowRoot, if_false,
+  simp only [checkMessageGroup, ValidationMessageCondition.rowGroup, resolveMessageGroup, belowRoot, if_false,
     admitMessageGroup, valid, messageGroupAvailable, groupPath_isPrefixOf_self, Bool.true_or,
     dite_true]
   rfl
@@ -167,7 +170,7 @@ theorem checkMessageGroup_ruleGroup_resolvesToRuleGroup
 refused whatever else is well formed. The admission law above is satisfied by an implementation that
 dropped the gate entirely, so it cannot carry this on its own. -/
 theorem checkMessageGroup_ruleGroup_refusedAtRootLocus
-    {model : FlatModel} {condition : CheckedFlatCondition model}
+    {model : FlatModel} {condition : ValidationMessageCondition model}
     (parameter : String)
     (atRoot : condition.rowGroup.length ≤ 1) :
     checkMessageGroup condition parameter .ruleGroup =
@@ -178,9 +181,9 @@ theorem checkMessageGroup_rootGroup_resolvesToChainRoot
     {model : FlatModel} {condition : CheckedFlatCondition model}
     (parameter : String)
     (valid : GroupPath.isValid condition.rowGroup = true) :
-    (checkMessageGroup condition parameter .rootGroup).map
+    (checkMessageGroup (ValidationMessageCondition.flat condition) parameter .rootGroup).map
         (fun access => access.group) = .ok (condition.rowGroup.take 1) := by
-  simp only [checkMessageGroup, resolveMessageGroup,
+  simp only [checkMessageGroup, ValidationMessageCondition.rowGroup, resolveMessageGroup,
     admitMessageGroup, groupPath_isValid_take_one valid, messageGroupAvailable,
     groupPath_take_isPrefixOf, Bool.true_or, dite_true]
   rfl

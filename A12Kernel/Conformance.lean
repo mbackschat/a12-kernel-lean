@@ -433,6 +433,7 @@ import A12Kernel.Conformance.ValidationCondition.CurrentRepetition
 import A12Kernel.Conformance.ValidationFillQuantifier
 import A12Kernel.Conformance.MessageGroupArgument
 import A12Kernel.Conformance.ValidationMessageAuthoring
+import A12Kernel.Conformance.IndexMessageAuthoring
 import A12Kernel.Conformance.MessageGroupPosition
 import A12Kernel.Conformance.MessageParameterDecoder
 import A12Kernel.Conformance.ValidationRule

@@ -28,10 +28,8 @@ inductive MessageGroupRemainder where
   the fault, each before the token after it. The decoded argument then carries the walk and those
   names. -/
   | afterWalk (fault : MessageParameterFault)
-  /-- A semantic-index key after the argument, with the events its decoding meets in order. The group's
-  own lookup answers before them, and in this fragment the key's own gate refuses after them, since no
-  condition here carries a key for the group to match. -/
-  | keyed (events : List MessageParameterEvent)
+  /-- Keep the checked key's identity and trailing syntax after its ordered resolution events. -/
+  | keyed (events : List MessageParameterEvent) (key : Option MessageKeyHead) (trailing : Bool)
   deriving Repr, DecidableEq
 
 /-- A group-position argument as the author spelled it. The two keyword shorthands stay distinct from
@@ -73,7 +71,8 @@ private def remainderAfterPath (keywords : MessageParameterKeywords) :
   | .bad :: _ => throw .lexer
   | .keyword word :: after =>
       if word == keywords.forTerminal then
-        pure (.keyed (decodeMessageKey keywords (after.length + 1) after).1)
+        let (events, decoded) := decodeMessageKey keywords (after.length + 1) after
+        pure (.keyed events (decoded.map (·.1)) (decoded.any (fun entry => !entry.2.isEmpty)))
       else pure .trailing
   | _ => pure .trailing
 

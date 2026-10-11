@@ -266,3 +266,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: Complete concrete coverage of finite repeatable children supplies full parent-group relevance, including coverage assembled from descendant fields across nested levels. Duplicate coordinates, out-of-capacity substitutes, missing fields and incomplete nested combinations do not suffice. Declared capacity, rather than held rows, sets the denominator.
 - `basis`: [Group relevance union matrix](sources/group-count-topology.md#src-group-relevance-union), both Kernel strategies agreeing on 126 rows across group presence, all five list predicates and fixed-list group counts. No peer defect is claimed.
 - `acceptance`: Reconcile the shared full-relevance product while preserving positive-content witnesses, malformed-input treatment, the count’s separate extent/first-instance gates and computation semantics. Return an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.
+
+<a id="spec-2026-10-11-01"></a>
+### SPEC-2026-10-11-01 — index substitution and keyed-group presence guards
+
+- `status`: pending
+- `canonical`: [message construction](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation).
+- `delta`: Preserve authored-path ancestry rather than expanded descendant membership in index/group reference metadata. Specify index value/category substitution from the firing context and distinguish keyed-group reference identity from the positive structural presence gate. Keyed group rendering reuses parent-scoped message-cache selection, including unknown and duplicate coordinates.
+- `basis`: [Kernel 30.8.1 source account](sources/message-and-pointer-probes.md#src-index-message-rendering); existing admission/group-coordinate/cache captures are controls, not a new rendering capture.
+- `reconcile`: message semantics and supported authoring/rendering consumers; preserve exact reference mode, guard algebra, conversion-versus-category behavior and host-cache boundaries.
+- `acceptance`: Review the linked clauses against the named service/runtime loci, reconcile supported peer surfaces and state empirical limits without equating a matching key with a presence guard.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: pending.

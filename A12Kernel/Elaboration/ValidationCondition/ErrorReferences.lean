@@ -7,16 +7,47 @@ operand's scope. -/
 
 namespace A12Kernel.ValidationCondition
 
-private inductive ReferenceQuery where
+private inductive ReferenceKind where
   | membership
   | nonFormMembership
   | iteration (level : RepeatableLevel)
+  | nonIteration (level : RepeatableLevel)
+  | nonWildcard (level : RepeatableLevel)
+  | unkeyed (level : RepeatableLevel)
+  | selected (group : GroupPath) (key : Option CheckedSemanticIndexKey)
+
+/-- Error-field membership expands a group, but message index ancestry follows the authored
+entity path (ReferencedIdsUtil.createAllIndexFieldEntityIds). The optional path restriction
+keeps that distinction in the shared visitor without changing error-field membership. -/
+private structure ReferenceQuery where
+  kind : ReferenceKind
+  within : Option GroupPath := none
+
+private def ReferenceQuery.acceptsPath (query : ReferenceQuery) (path : GroupPath) : Bool :=
+  query.within.all (·.isPrefixOf path)
+
+private def ReferenceQuery.acceptsSlot (query : ReferenceQuery) : HavingFieldListSlot Ref → Bool
+  | .direct _ => true
+  | .extent source _ => query.acceptsPath source.groupPath
 
 private def ReferenceQuery.binds (query : ReferenceQuery) (scope : List RepeatableLevel) (isForm : Bool := false) : Bool :=
-  match query with
+  match query.kind with
   | .membership => true
   | .nonFormMembership => !isForm
   | .iteration level => scope.contains level
+  | .nonIteration level => !scope.contains level
+  | .nonWildcard level => scope.contains level
+  | .unkeyed _ => true
+  | .selected _ _ => false
+
+private def ReferenceQuery.atPath (query : ReferenceQuery) (path : GroupPath)
+    (scope : List RepeatableLevel) (isForm : Bool := false) : Bool :=
+  query.acceptsPath path && query.binds scope isForm
+
+def sameMessageKey : CheckedSemanticIndexKey → CheckedSemanticIndexKey → Bool
+  | .literal left _, .literal right _ => left == right
+  | .field left, .field right => left.id == right.id
+  | _, _ => false
 
 /-- Static error references follow authored entities, not implicit index-cache reads
 (EntityRefUtils.getDRefs/getGRefs; IterationChecker.checkIteration4NotOnlyVRefs).
@@ -30,10 +61,19 @@ private def selectedReferenceAt (field : FieldId) (query : ReferenceQuery)
     | .inr source => match source.target with
         | .group path | .starredGroup path => path.length == 1
         | .star _ => false
-  let target := declarations.any (·.id == field) && query.binds selection.indexDeclaration.repeatableScope.dropLast isForm
+  let path := match source with
+    | .inl source => source.targetDeclaration.path
+    | .inr source => source.entityPath
+  let target := query.acceptsPath path && declarations.any (·.id == field) && match query.kind with
+    | .selected group key => selection.group.path == group &&
+        key.all (sameMessageKey selection.key)
+    | .unkeyed level => selection.group.level != level
+    | .nonWildcard level => selection.group.level == level ||
+        selection.indexDeclaration.repeatableScope.dropLast.contains level
+    | _ => query.binds selection.indexDeclaration.repeatableScope.dropLast isForm
   let key := match selection.key with
     | .literal .. => false
-    | .field declaration => declaration.id == field && query.binds declaration.repeatableScope
+    | .field declaration => declaration.id == field && query.atPath declaration.path declaration.repeatableScope
   target || key
 
 private def anyReference (answers : List (Option Bool)) : Option Bool :=
@@ -69,11 +109,15 @@ private def markedReferenceAt (model : FlatModel) (field : FieldId) (query : Ref
         | _ => (CorrelatedHaving.markedFieldIds (.leaf leaf)).map fun member =>
             .direct { origin := .outer, field := member }
       slots.any fun slot =>
-        slot.references.any (fun reference => reference.origin == .outer && reference.field == field) &&
-          match query with
+        query.acceptsSlot slot && slot.references.any (fun reference => reference.origin == .outer && reference.field == field) &&
+          match query.kind with
           | .membership => true
           | .nonFormMembership => !isFormSlot slot
           | .iteration level => (slot.outerIterationScope? model).any (·.contains level)
+          | .nonIteration level => (slot.outerIterationScope? model).any (!·.contains level)
+          | .nonWildcard level => (slot.outerIterationScope? model).any (·.contains level)
+          | .unkeyed _ => true
+          | .selected _ _ => false
 
 private def rawOperandReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (operand : ResolvedFieldEntityOperand model) : Option Bool :=
@@ -82,7 +126,7 @@ private def rawOperandReferenceAt? (field : FieldId) (query : ReferenceQuery)
   | .keyed source => some (selectedReferenceAt field query (.inr source))
   | _ =>
       if !operand.expansionDeclarations.any (·.id == field) then some false
-      else some (query.binds operand.bindingScope (operand.subtreePath?.any (fun path => path.length == 1)))
+      else some (query.atPath operand.entityPath operand.bindingScope (operand.subtreePath?.any (fun path => path.length == 1)))
 
 private def shapeReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (shape : CheckedFieldEntityShape model) (filters : List CorrelatedHaving := []) : Option Bool :=
@@ -96,7 +140,7 @@ private def numberReferenceAt? (field : FieldId) (query : ReferenceQuery)
     | .star source => some (source.field.id == field && query.binds source.source.bindingScope)
     | .starHaving source => some ((source.source.field.id == field && query.binds source.source.source.bindingScope) ||
         markedReferenceAt model field query source.having)
-    | .group source => some (source.referencesField field && query.binds source.source.bindingScope (source.source.groupPath.length == 1))
+    | .group source => some (source.referencesField field && query.atPath source.source.groupPath source.source.bindingScope (source.source.groupPath.length == 1))
     | .selected source => some (selectedReferenceAt field query source.source))
 
 private def tokenReferenceAt? (field : FieldId) (query : ReferenceQuery)
@@ -105,7 +149,7 @@ private def tokenReferenceAt? (field : FieldId) (query : ReferenceQuery)
     | .field source => some (source.declaration.id == field && query.binds source.declaration.repeatableScope)
     | .star source => some ((source.source.declaration.id == field && query.binds source.source.bindingScope) ||
         source.filter.any (fun filter => markedReferenceAt model field query filter.condition))
-    | .group source => some (source.referencesField field && query.binds source.source.bindingScope (source.source.groupPath.length == 1))
+    | .group source => some (source.referencesField field && query.atPath source.source.groupPath source.source.bindingScope (source.source.groupPath.length == 1))
     | .selected source => some (selectedReferenceAt field query source.source))
 
 private def booleanCountReferenceAt? (field : FieldId) (query : ReferenceQuery)
@@ -115,7 +159,7 @@ private def booleanCountReferenceAt? (field : FieldId) (query : ReferenceQuery)
     | .selected source => some (selectedReferenceAt field query source.source)
     | .star source => some ((source.source.declaration.id == field && query.binds source.source.bindingScope) ||
         source.filter.any (fun filter => markedReferenceAt model field query filter.condition))
-    | .group source => some (source.referencesField field && query.binds source.source.bindingScope (source.source.groupPath.length == 1)))
+    | .group source => some (source.referencesField field && query.atPath source.source.groupPath source.source.bindingScope (source.source.groupPath.length == 1)))
 
 private def fillReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (source : CheckedFieldFillList model) : Option Bool :=
@@ -123,7 +167,7 @@ private def fillReferenceAt? (field : FieldId) (query : ReferenceQuery)
     | .field declaration => some (declaration.id == field && query.binds declaration.repeatableScope)
     | .star source => some ((source.source.declaration.id == field && query.binds source.source.bindingScope) ||
         source.filter.any (fun filter => markedReferenceAt model field query filter.condition))
-    | .group source => some (operand.referencesField field && query.binds source.source.bindingScope (source.source.groupPath.length == 1))
+    | .group source => some (operand.referencesField field && query.atPath source.source.groupPath source.source.bindingScope (source.source.groupPath.length == 1))
     | .indexed source => some (selectedReferenceAt field query (.inl source))
     | .keyed source => some (selectedReferenceAt field query (.inr source)))
 
@@ -132,11 +176,15 @@ slot's binding scope, rather than the surrounding temporal operand's scope (spec
 private def temporalNumericReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (atom : HavingNumericAtomOf (ScalarTemporalExpression model)) : Option Bool :=
   anyReference ((atom.presenceSlotsWith (fun _ _ => [])).map fun slot =>
-    if !slot.references.any (fun reference => reference.field == field) then some false else
-    match query with
+    if !query.acceptsSlot slot || !slot.references.any (fun reference => reference.field == field) then some false else
+    match query.kind with
     | .membership => some true
     | .nonFormMembership => some (!isFormSlot slot)
-    | .iteration level => (slot.bindingScope? model).map (·.contains level))
+    | .iteration level => (slot.bindingScope? model).map (·.contains level)
+    | .nonIteration level => (slot.bindingScope? model).map (!·.contains level)
+    | .nonWildcard level => (slot.bindingScope? model).map (·.contains level)
+    | .unkeyed _ => some true
+    | .selected _ _ => some false)
 
 private def temporalReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (source : ScalarTemporalExpression model) : Option Bool :=
@@ -159,7 +207,7 @@ private def ordinaryNumericAtomReferenceAt? (model : FlatModel) (field : FieldId
   if !atom.referencesField model field then some false else
   match atom with
   | .filledGroupCount groups => some (groups.any fun reference =>
-      reference.referencesField model field && query.binds reference.boundRepeatableScope reference.isRoot)
+      reference.referencesField model field && query.atPath reference.path reference.boundRepeatableScope reference.isRoot)
   | _ => some (query.binds (model.fieldRepeatableScope field))
 
 private def numericAtomReferenceAt? (field : FieldId) (query : ReferenceQuery)
@@ -194,7 +242,7 @@ private def numericAtomReferenceAt? (field : FieldId) (query : ReferenceQuery)
       (source.left.field.id == field && query.binds source.left.source.bindingScope) ||
       (source.right.field.id == field && query.binds source.right.source.bindingScope))
   | .filledGroupCountMixed operands => some (operands.any fun operand =>
-      operand.referencesField model field && query.binds operand.bindingScope operand.isRoot)
+      operand.referencesField model field && query.atPath operand.groupPath operand.bindingScope operand.isRoot)
   | .ordinary source => ordinaryNumericAtomReferenceAt? model field query source
 
 private def numericExpressionReferenceAt? (referenceAt : Atom → Option Bool)
@@ -242,17 +290,21 @@ private def leafErrorReferenceAt? (field : FieldId) (query : ReferenceQuery)
   | .repeatableFieldPresence _ declaration => some (query.binds declaration.repeatableScope)
   | .guardedRootCurrentRepetition _ _ _ => some (query.binds [])
   | .guardedRepeatableCurrentRepetition declaration _ _ => some (query.binds declaration.repeatableScope)
-  | .groupPresence _ reference => some (query.binds (model.repeatableScopeForGroupPath reference.path) reference.isRoot)
+  | .groupPresence _ reference => some (query.atPath reference.path (model.repeatableScopeForGroupPath reference.path) reference.isRoot)
   | .groupList _ operands => anyReference (operands.map fun operand =>
       if !operand.referencesField field then some false else
       match operand with
       | .indexed source => some (selectedReferenceAt field query (.inl source))
       | .keyed source => some (selectedReferenceAt field query (.inr source))
-      | .group reference => some (query.binds reference.boundRepeatableScope reference.isRoot)
-      | _ => some (match query with
+      | .group reference => some (query.atPath reference.path reference.boundRepeatableScope reference.isRoot)
+      | _ => some (query.acceptsPath operand.entityPath && match query.kind with
           | .membership => true
           | .nonFormMembership => !operand.isRootGroup
-          | .iteration level => operand.iterationScope.any (·.contains level)))
+          | .iteration level => operand.iterationScope.any (·.contains level)
+          | .nonIteration level => !operand.iterationScope.any (·.contains level)
+          | .nonWildcard level => operand.iterationScope.any (·.contains level)
+          | .unkeyed _ => true
+          | .selected _ _ => false))
   | .fieldFill _ source => fillReferenceAt? field query source
   | .valuesNotUnique (.number source) => numberReferenceAt? field query source
   | .valuesNotUnique (.token source) => tokenReferenceAt? field query source.source
@@ -285,7 +337,7 @@ private def leafErrorReferenceAt? (field : FieldId) (query : ReferenceQuery)
       | .authoredFrom =>
           let reference : ResolvedGroupReference := { path := source.referenceGroup.path, origin := .path }
           reference.referencesField model field &&
-            query.binds (model.repeatableScopeForGroupPath reference.path) reference.isRoot)
+            query.atPath reference.path (model.repeatableScopeForGroupPath reference.path) reference.isRoot)
 
 private def errorReferenceFor? (condition : ValidationCondition model)
     (field : FieldId) (query : ReferenceQuery) : Option Bool :=
@@ -296,13 +348,13 @@ private def errorReferenceFor? (condition : ValidationCondition model)
 
 /-- Authored static references exclude implicit cache dependencies (spec/07 §1). -/
 def authoredErrorReference? (condition : ValidationCondition model) (field : FieldId) : Option Bool :=
-  errorReferenceFor? condition field .membership
+  errorReferenceFor? condition field { kind := .membership }
 
 /-- Whether the error field is reached through its root group alone. An unresolved carrier
 cannot certify this partition (spec/07 §1; `reachedThroughFormAlone`). -/
 def formOnlyErrorReference? (condition : ValidationCondition model) (field : FieldId) : Option Bool := do
-  let member ← errorReferenceFor? condition field .membership
-  let nonForm ← errorReferenceFor? condition field .nonFormMembership
+  let member ← errorReferenceFor? condition field { kind := .membership }
+  let nonForm ← errorReferenceFor? condition field { kind := .nonFormMembership }
   pure (member && !nonForm)
 
 /-- Whether any reference naming the error field binds the queried ordinary iteration level.
@@ -310,6 +362,32 @@ def formOnlyErrorReference? (condition : ValidationCondition model) (field : Fie
 def errorReferenceAt? (condition : ValidationCondition model)
     (field : FieldId) (level : RepeatableLevel) : Option Bool :=
   if !(model.fieldRepeatableScope field).contains level then some false
-  else errorReferenceFor? condition field (.iteration level)
+  else errorReferenceFor? condition field { kind := .iteration level }
+
+/-- Unlike error-field membership, an index reference must descend from an authored entity
+inside the indexed group; a read of its parent does not name all descendant indices. -/
+def messageGroupReference? (condition : ValidationCondition model)
+    (field : FieldId) (group : GroupPath) : Option Bool :=
+  errorReferenceFor? condition field { kind := .membership, within := some group }
+
+/-- Message parameters inspect each authored reference mode, including a non-iterating read beside
+an iterating read of the same field (spec/11; checkIndexFieldRefRepeatability4repeatableGroup). -/
+def messageNonIteratingReference? (condition : ValidationCondition model)
+    (field : FieldId) (group : GroupPath) (level : RepeatableLevel) : Option Bool :=
+  errorReferenceFor? condition field { kind := .nonIteration level, within := some group }
+
+def messageNonWildcardReference? (condition : ValidationCondition model)
+    (field : FieldId) (group : GroupPath) (level : RepeatableLevel) : Option Bool :=
+  errorReferenceFor? condition field { kind := .nonWildcard level, within := some group }
+
+/-- The keyed-group parameter and index terminal share this condition-owned selection inventory.
+Literal spelling is irrelevant after the checked key has established its typed identity. -/
+def messageSelectedGroupReference? (condition : ValidationCondition model)
+    (field : FieldId) (group : GroupPath) (key : Option CheckedSemanticIndexKey) : Option Bool :=
+  errorReferenceFor? condition field { kind := .selected group key, within := some group }
+
+def messageUnkeyedReference? (condition : ValidationCondition model)
+    (field : FieldId) (group : GroupPath) (level : RepeatableLevel) : Option Bool :=
+  errorReferenceFor? condition field { kind := .unkeyed level, within := some group }
 
 end A12Kernel.ValidationCondition

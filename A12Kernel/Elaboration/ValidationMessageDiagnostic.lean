@@ -12,7 +12,7 @@ the [group-argument checkpoints](../../docs/sources/message-and-pointer-probes.m
 and the [name-position](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals) and [carrier](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers) checkpoints. This projection is for the rule producer; the shared error type alone supplies no evidence
 for a String-pattern or computation-message carrier. A codeless repertoire finding remains in the
 original error, beside any named cause. `none` means no established named class, never acceptance;
-the `index(...)` form and the rule-group terminal where the Kernel fails internally stay unmapped. -/
+local context requirements and the rule-group terminal where the Kernel fails internally stay unmapped. -/
 def ValidationMessageTemplateError.namedRuleDiagnostic? :
     ValidationMessageTemplateError → Option KernelStaticDiagnostic
   | .emptyTemplate => some .ruleHasNoErrorText
@@ -38,6 +38,9 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .groupInFormPointer _ _ => some .invalidFieldInParameter
   | .nestedSemanticIndex _ => some .illegalSemanticIndex
   | .keyNotInCondition _ => some .indexForErrorTextInvalid
+  | .indexParameter _ (.diagnostic diagnostic) => some diagnostic
+  | .indexParameter _ .missingCategoryName => some .missingMessageCategory
+  | .groupReferenceMode _ diagnostic => some diagnostic
   | .ruleGroupParameter _ => some .invalidMessageParameter
   | .invalidGroupParameter _ => some .invalidGroupInParameter
   | .groupShortNameNotUnique _ _ => some .messageFieldNameNotUnique

@@ -67,11 +67,9 @@ Kernel renders for it: the **1-based repetition index** of that group in the fir
 nonrepeatable group ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-parameter-rendered-index)).
 The index is the row's own, not a firing ordinal — a rule firing on rows 2 and 3 renders `2` and `3`.
 
-Every group admissible in this fragment is nonrepeatable, so the value it carries is always `1`: the
-parameter's containment gate makes the named group a prefix of the rule's own row group, and this
-route's condition spine refuses a repeatable reference outright, so no repeatable rule host exists
-here to name one. The per-row arm is therefore stated by the spec and unreachable in this fragment
-rather than modelled and untested; it arrives with a repeatable rule host. -/
+The flat authoring route supplies `1`; the addressed message renderer supplies the named level's
+coordinate or its semantic-index cache selection. An unknown selected coordinate is rendered as
+text by that caller, rather than coerced into a natural-number coordinate. -/
 structure MessageGroupInput where
   repetitionIndex : Nat
   deriving Repr, DecidableEq

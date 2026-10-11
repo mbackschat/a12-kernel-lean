@@ -98,7 +98,8 @@ inductive ParameterToken where
   | sign (negative : Bool)
   | arrow
   | hash
-  | parenthesis
+  | openParenthesis
+  | closeParenthesis
   | bad
   deriving Repr, DecidableEq
 
@@ -167,8 +168,10 @@ def tokenizeParameter (keywords : MessageParameterKeywords) :
         .sign false :: tokenizeParameter keywords fuel rest
       else if character == '#' then
         .hash :: tokenizeParameter keywords fuel rest
-      else if character == '(' || character == ')' then
-        .parenthesis :: tokenizeParameter keywords fuel rest
+      else if character == '(' then
+        .openParenthesis :: tokenizeParameter keywords fuel rest
+      else if character == ')' then
+        .closeParenthesis :: tokenizeParameter keywords fuel rest
       else if isMessageNameCharacter character then
         let (run, after) := spanNameCharacters rest
         let text := String.ofList (character :: run)
@@ -436,8 +439,7 @@ inductive MessageNameForm where
       (key : Option MessageKeyHead)
   | formPointer (entity : MessageEntitySpec) (pointer : MessageFormPointer)
   | baseYear (offset : Int)
-  /-- `index(...)`, which this fragment does not model. -/
-  | indexField
+  | indexField (entity : MessageEntitySpec) (suffix : MessageFieldSuffix)
   deriving Repr, DecidableEq
 
 /-- A decoded name-position parameter: the events before the form's check, the form when no event
@@ -541,14 +543,37 @@ where
           | [] => { events := [.resolve entity], form := some (.formPointer entity pointer) }
           | _ => refusedName (continuationFault keywords after)
         else refusedName (continuationFault keywords (.dot :: .name word false :: after))
-    | .parenthesis :: _ =>
+    | .openParenthesis :: after =>
         if entity == .path { base := .relative 0, groups := [], field := { text := "index" } } then
-          { events := [], form := some .indexField }
+          decodeIndex after
         else refusedName .unexpected
     | [] => decodeFieldTail keywords entity .none []
     | .keyword word :: rest =>
         if word == keywords.forTerminal then decodeFieldTail keywords entity .none (.keyword word :: rest)
         else refusedName .unexpected
     | tokens => refusedName (continuationFault keywords tokens)
+  decodeIndex (tokens : List ParameterToken) : DecodedMessageName :=
+    match parseMessageEntitySpec keywords tokens with
+    | .error (_, fault) => refusedName fault
+    | .ok (entity, .closeParenthesis :: after) =>
+        match after with
+        | [] => { events := [], form := some (.indexField entity .none) }
+        | .dot :: .name word false :: rest =>
+            if word == terminals.valueSuffix then finishIndex entity .value rest
+            else refusedName (continuationFault keywords after)
+        | .arrow :: token :: rest =>
+            match token.name? with
+            | some (name, _) => finishIndex entity (.category name) rest
+            | none => refusedName (MessageParameterFault.at (token :: rest))
+        | .arrow :: [] => finishIndex entity (.category "") []
+        | .bad :: _ => refusedName .lexer
+        | rest => finishIndex entity .none rest
+    | .ok (_, rest) => refusedName (MessageParameterFault.at rest)
+  finishIndex (entity : MessageEntitySpec) (suffix : MessageFieldSuffix)
+      (rest : List ParameterToken) : DecodedMessageName :=
+    match rest with
+    | .bad :: _ => refusedName .lexer
+    | [] => { events := [], form := some (.indexField entity suffix) }
+    | _ => { events := [], form := some (.indexField entity suffix), trailing := some .unexpected }
 
 end A12Kernel
