@@ -1,0 +1,109 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Shop",
+    "name": "LookupKey",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Shop",
+    "name": "SeedKey",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Shop",
+    "name": "Result",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 2,
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Shop",
+    "name": "GroupResult",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 2,
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Shop",
+    "name": "Items",
+    "repeatable": 10
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Shop/Items",
+    "name": "Projection",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 2,
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Shop/Items",
+    "name": "ItemNo",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Shop/Items",
+    "name": "Price",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 2,
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Shop/Items",
+    "index-field": "ItemNo"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Shop/Result",
+    "name": "LookupComp",
+    "alternatives": [
+      {
+        "operation": "[Items/Price For LookupKey]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Independent computation control."
+      }
+    ]
+  }
+]

@@ -1,0 +1,107 @@
+[
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Order",
+    "name": "Lines",
+    "repeatable": 5
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Order/Lines",
+    "name": "LineNo",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Order/Lines",
+    "name": "Slots",
+    "repeatable": 5
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Order/Lines/Slots",
+    "name": "Key",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Order/Lines/Slots",
+    "name": "Total",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Order/Lines/Slots",
+    "index-field": "Key"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Order",
+    "name": "Refs",
+    "repeatable": 5
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Order/Refs",
+    "name": "Key",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Order/Refs",
+    "name": "Amount",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Order/Refs",
+    "index-field": "Key"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Order/Lines/Slots/Total",
+    "name": "C",
+    "alternatives": [
+      {
+        "operation": "[../../Refs/Amount]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Independent computation control."
+      }
+    ]
+  }
+]

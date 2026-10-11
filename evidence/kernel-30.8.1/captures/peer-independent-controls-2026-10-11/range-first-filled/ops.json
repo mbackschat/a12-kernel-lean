@@ -1,0 +1,96 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Claim",
+    "name": "PrimaryWindow",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Claim",
+    "name": "SecondaryWindow",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Claim",
+    "name": "TertiaryWindow",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Claim",
+    "name": "SelectedWindow",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Claim",
+    "name": "ExactPrimary",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Claim",
+    "name": "ExactSecondary",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Claim",
+    "name": "ExactSelected",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM-dd",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Claim/SelectedWindow",
+    "name": "SelectedWindowComp",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(PrimaryWindow, SecondaryWindow, TertiaryWindow)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Independent computation control."
+      }
+    ]
+  }
+]

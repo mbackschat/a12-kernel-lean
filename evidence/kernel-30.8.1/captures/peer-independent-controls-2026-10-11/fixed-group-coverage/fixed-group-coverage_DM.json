@@ -1,0 +1,145 @@
+{
+  "header" : {
+    "id" : "fixed-group-coverage_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "fixed-group-coverage_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Survey",
+        "name" : "Survey",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Survey/Witness",
+            "name" : "Witness",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Survey/Sections",
+            "name" : "Sections",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Survey/Sections/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Group",
+                    "id" : "/Survey/Sections/Items/Details",
+                    "name" : "Details",
+                    "Group" : {
+                      "repeatability" : 1,
+                      "elements" : [ {
+                        "type" : "Group",
+                        "id" : "/Survey/Sections/Items/Details/Evidence",
+                        "name" : "Evidence",
+                        "Group" : {
+                          "repeatability" : 3,
+                          "elements" : [ {
+                            "type" : "Field",
+                            "id" : "/Survey/Sections/Items/Details/Evidence/Code",
+                            "name" : "Code",
+                            "Field" : {
+                              "fieldType" : {
+                                "type" : "StringType"
+                              }
+                            }
+                          } ]
+                        }
+                      }, {
+                        "type" : "Field",
+                        "id" : "/Survey/Sections/Items/Details/Score",
+                        "name" : "Score",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 1,
+                              "minFractionalDigits" : 1
+                            }
+                          }
+                        }
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Survey/NO_DETAILS",
+            "name" : "NO_DETAILS",
+            "Rule" : {
+              "errorEntityRelPath" : "../Witness",
+              "errorCode" : "NO_DETAILS",
+              "errorCondition" : "FieldFilled(Witness) And NoGroupFilled(Sections*/Items*/Details)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Independent computation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Survey/SOME_DETAILS",
+            "name" : "SOME_DETAILS",
+            "Rule" : {
+              "errorEntityRelPath" : "../Witness",
+              "errorCode" : "SOME_DETAILS",
+              "errorCondition" : "FieldFilled(Witness) And AtLeastOneGroupFilled(Sections*/Items*/Details)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Independent computation control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Survey/SOME_EVIDENCE_ROWS",
+            "name" : "SOME_EVIDENCE_ROWS",
+            "Rule" : {
+              "errorEntityRelPath" : "../Witness",
+              "errorCode" : "SOME_EVIDENCE_ROWS",
+              "errorCondition" : "FieldFilled(Witness) And AtLeastOneGroupFilled(Sections*/Items*/Details/Evidence*)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Independent computation control."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

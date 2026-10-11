@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "parent-identity_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "same-key-across-parents",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "C",
+              "field": "Order/Lines/Slots/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Lines/Slots/Key",
+                "Order/Lines/Slots/Total",
+                "Order/Refs/Amount",
+                "Order/Refs/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "C",
+              "field": "Order/Lines[2]/Slots/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Lines[2]/Slots/Key",
+                "Order/Lines[2]/Slots/Total",
+                "Order/Refs/Amount",
+                "Order/Refs/Key"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Slots/Total",
+                "cleared": false,
+                "errored": false,
+                "value": "100"
+              },
+              {
+                "field": "Order/Lines[2]/Slots/Total",
+                "cleared": false,
+                "errored": false,
+                "value": "100"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "C",
+              "field": "Order/Lines/Slots/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Lines/Slots/Key",
+                "Order/Lines/Slots/Total",
+                "Order/Refs/Amount",
+                "Order/Refs/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "C",
+              "field": "Order/Lines[2]/Slots/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Lines[2]/Slots/Key",
+                "Order/Lines[2]/Slots/Total",
+                "Order/Refs/Amount",
+                "Order/Refs/Key"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Slots/Total",
+                "cleared": false,
+                "errored": false,
+                "value": "100"
+              },
+              {
+                "field": "Order/Lines[2]/Slots/Total",
+                "cleared": false,
+                "errored": false,
+                "value": "100"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "distinct-control",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "C",
+              "field": "Order/Lines/Slots/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Lines/Slots/Key",
+                "Order/Lines/Slots/Total",
+                "Order/Refs/Amount",
+                "Order/Refs/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "C",
+              "field": "Order/Lines[2]/Slots/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Lines[2]/Slots/Key",
+                "Order/Lines[2]/Slots/Total",
+                "Order/Refs[2]/Amount",
+                "Order/Refs[2]/Key"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Slots/Total",
+                "cleared": false,
+                "errored": false,
+                "value": "100"
+              },
+              {
+                "field": "Order/Lines[2]/Slots/Total",
+                "cleared": false,
+                "errored": false,
+                "value": "200"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "C",
+              "field": "Order/Lines/Slots/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Lines/Slots/Key",
+                "Order/Lines/Slots/Total",
+                "Order/Refs/Amount",
+                "Order/Refs/Key"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "C",
+              "field": "Order/Lines[2]/Slots/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Lines[2]/Slots/Key",
+                "Order/Lines[2]/Slots/Total",
+                "Order/Refs[2]/Amount",
+                "Order/Refs[2]/Key"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Lines/Slots/Total",
+                "cleared": false,
+                "errored": false,
+                "value": "100"
+              },
+              {
+                "field": "Order/Lines[2]/Slots/Total",
+                "cleared": false,
+                "errored": false,
+                "value": "200"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    }
+  ]
+}

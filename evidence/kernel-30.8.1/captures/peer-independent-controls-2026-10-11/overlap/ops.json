@@ -1,0 +1,24 @@
+[
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Order/BackorderQuantity",
+    "name": "OverlapComp",
+    "alternatives": [
+      {
+        "precondition": "[Quantity] >= 0",
+        "operation": "1"
+      },
+      {
+        "precondition": "[Quantity] <= 10",
+        "operation": "2"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Independent computation control."
+      }
+    ]
+  }
+]

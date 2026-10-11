@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C21. C01–C20 are closed; proceed in the frozen order.
+The autonomous goal is active at C22. C01–C21 are closed; complete final acceptance and stop.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -175,8 +175,10 @@ C13–C22 follow the reported first checkpoint and finish the ordinary-behavior 
 
 ### C21 — one independent, already-authored computation sample
 
-- [ ] Check the eight C01 scenario families against the [retained peer corpus](sources/evaluation-and-application-routes.md#src-peer-corpus-replay) and peer ComputationReadTest. Use one independently authored case per family, reusing existing observations where suitable; no ninth family or wider shape is introduced. Record actual runtime outcomes rather than round-trip assertions.
+- [x] Check the eight C01 scenario families against the [retained peer corpus](sources/evaluation-and-application-routes.md#src-peer-corpus-replay) and peer ComputationReadTest. Use one independently authored case per family, reusing existing observations where suitable; no ninth family or wider shape is introduced. Record actual runtime outcomes rather than round-trip assertions.
 - Done: all eight named families have a checked independent control, and any mismatch is corrected at its existing mechanism owner. This closes the fixed independent-sample check; it does not initiate another corpus campaign. [SG12](gaps/conformance-evidence.md#gap-sg12).
+
+- Accepted: [eight-family independent sample](sources/computation-placement-and-constant-probes.md#src-peer-independent-controls-c21) matches twenty-one new and five reused reader comparisons. Cached APIs separately check partial relevance and generated validation after application. Fresh HIGH review identified locally authored poison inputs; independently authored DateRange runtime cases replace them and both match. No Lean source changed; C18 executable gates remain valid. The source record distinguishes peer inputs from local relevance additions and excludes round-trip-only evidence.
 
 ### C22 — accept good-enough Lean kernel coverage and stop
 
@@ -232,9 +234,9 @@ Only CustomCondition validation remains uncalibrated, under the fixed D11 exclus
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C21, after accepted C20. Reconcile the eight C01 scenario families against the retained independently authored peer corpus and peer ComputationReadTest.
-- Working tree: C20 is accepted at its local commit boundary. Fresh HIGH review, focused retained replay and document/prose/sync guards pass; no Lean source changed. No build is live.
-- Next: map one already-authored independent case to each frozen C01 scenario family. Reuse suitable retained runtime outcomes first; round-trip assertions alone do not qualify. Resolve any mismatch at its existing mechanism owner without a ninth family or wider corpus campaign.
+- Active: C22 final acceptance after C21 closure.
+- Working tree: C21 adds retained independent controls and their source disposition; no Lean source changed and no build is live. Fresh HIGH review is disposed; focused reader, supplementary cached API and hygiene checks pass.
+- Next: commit C21, reconcile the frozen C01–C21 acceptance dispositions, run the due final population replay once, complete C22 consumer-adequacy cold review and final hygiene, then commit and stop. Reuse C18 executable gates; unchanged Lean sources do not require another broad build.
 - Calibration: the construct inventory now has 216 calibrated cells and one pending under D11. The derived report still records C17's full-population snapshot; C18/C19/C20 add 150/65/48 focused matching instances, not a fresh population total.
 - C17 synchronization: the stale rule-name tier sentence is corrected from committed peer evidence. The new empty-code co-notification and formal-name suppression are [pending reconciliation](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-11-02); no message was sent. C12 fulfilled the scheduled consumer probe; C17 alone triggers no additional consumer exercise.
 - C08 closed: the separate omission selector, shared filter coordinates, mixed-group wildcard correction and effect-preserving message origin pass the frozen matrix. [Reference calibration](implementation/validation-messages-and-custom.md#cap-structural-message-references) matches both exact sets for all 40 caller and 246 filtered-predicate messages. H10-R1 is reconciled against admitted temporal-reference controls; H10-R2 is discharged by dedicated calibration. No new outbound ledger entry. The scheduled C12 consumer probe is complete.
@@ -252,7 +254,7 @@ Only CustomCondition validation remains uncalibrated, under the fixed D11 exclus
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
 - Latest executable/test boundary: C18 adds generated-table tolerance locks without changing the evaluator. Integration passed (2,231 jobs), all 51 compact projections agree, fresh HIGH review is clean, and trust/hygiene passed (3,027 roots; 111,259 declarations in 891 modules). Focused retained reader replay matches all 150 C18 instances; 90 generated-table decisions are checked separately against the same artifact matrix.
-- Latest calibration boundary: C20 matches all 48 retained authored-rule/computation instances with no source changes. Fresh HIGH review's phase-wording correction is incorporated and document/prose/sync guards pass; C18 executable gates remain valid.
+- Latest calibration boundary: C21 matches 21 new and five reused reader comparisons; cached checked APIs also match partial relevance and generated validation after application. The fresh HIGH provenance finding is corrected with peer-authored runtime inputs. No Lean source changed; C18 executable gates remain valid.
 - Latest consumer boundary: C12 passes all eleven frozen Execute/Explain scenario families; fresh HIGH review and documentation/prose/sync hygiene pass. The first run exposed one omitted duplicate-key clause in the packet, repaired from the existing canonical owner; no runtime edit or new capture. This qualifies bounded semantic transport, not an independent evaluator or downstream product.
 - Last full replay: 71,710 matches (52,335 rules and 19,375 computations), zero divergence/fault/unattributed/tier-2 instances, 3,339 rows across 447 requests, 217 without matching artifacts and six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) includes the reviewed C17 slice. All population counts are unchanged from C16. The reader admission change triggered this replay, and cadence resets at C17.
 - [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only handoff edits do not invalidate C18 executable gates.

@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "cascade-clear_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "clear",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CompOut",
+              "field": "Order/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Mid",
+                "Order/Out"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Mid",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Order/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CompOut",
+              "field": "Order/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Mid",
+                "Order/Out"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Mid",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Order/Out",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CompMid",
+              "field": "Order/Mid",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Guard",
+                "Order/Mid",
+                "Order/Quantity"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CompOut",
+              "field": "Order/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Mid",
+                "Order/Out"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Mid",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Order/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CompMid",
+              "field": "Order/Mid",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Guard",
+                "Order/Mid",
+                "Order/Quantity"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CompOut",
+              "field": "Order/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Order/Mid",
+                "Order/Out"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Order/Mid",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Order/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    }
+  ]
+}

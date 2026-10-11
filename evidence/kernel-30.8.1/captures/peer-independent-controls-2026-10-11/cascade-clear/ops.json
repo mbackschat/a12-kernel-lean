@@ -1,0 +1,71 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Order",
+    "name": "Guard",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Order",
+    "name": "Mid",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Order",
+    "name": "Out",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 0,
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Order/Mid",
+    "name": "CompMid",
+    "alternatives": [
+      {
+        "operation": "[Quantity]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Independent computation control."
+      }
+    ],
+    "commonPrecondition": "FieldFilled(Guard)"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Order/Out",
+    "name": "CompOut",
+    "alternatives": [
+      {
+        "operation": "[Mid]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Independent computation control."
+      }
+    ],
+    "commonPrecondition": "FieldFilled(Mid)"
+  }
+]

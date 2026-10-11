@@ -1,0 +1,74 @@
+{
+  "model": "semantic-selection_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "missing",
+      "documentInline": {
+        "Shop": {
+          "LookupKey": "274",
+          "Result": "999.99",
+          "GroupResult": "999.99",
+          "Items": [
+            {
+              "ItemNo": "534",
+              "Price": "0.01"
+            },
+            {
+              "ItemNo": "12",
+              "Price": "0.02"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "matched",
+      "documentInline": {
+        "Shop": {
+          "LookupKey": "12",
+          "Result": "999.99",
+          "GroupResult": "999.99",
+          "Items": [
+            {
+              "ItemNo": "534",
+              "Price": "0.01"
+            },
+            {
+              "ItemNo": "12",
+              "Price": "5.25"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "duplicate",
+      "documentInline": {
+        "Shop": {
+          "LookupKey": "12",
+          "Result": "999.99",
+          "GroupResult": "999.99",
+          "Items": [
+            {
+              "ItemNo": "12",
+              "Price": "5.25"
+            },
+            {
+              "ItemNo": "7",
+              "Price": "0.01"
+            },
+            {
+              "ItemNo": "7",
+              "Price": "0.02"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

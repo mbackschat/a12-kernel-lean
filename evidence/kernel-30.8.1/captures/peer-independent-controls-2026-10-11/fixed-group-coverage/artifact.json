@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "fixed-group-coverage_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "ancestor-only-partial",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "NO_DETAILS",
+              "field": "Survey/Witness",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score",
+                "Survey/Witness"
+              ],
+              "fillToFix": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score"
+              ]
+            }
+          ],
+          "partialMessages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "NO_DETAILS",
+              "field": "Survey/Witness",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score",
+                "Survey/Witness"
+              ],
+              "fillToFix": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score"
+              ]
+            }
+          ],
+          "partialMessages": []
+        }
+      ]
+    },
+    {
+      "name": "ancestor-only-covered",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "NO_DETAILS",
+              "field": "Survey/Witness",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score",
+                "Survey/Witness"
+              ],
+              "fillToFix": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score"
+              ]
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "NO_DETAILS",
+              "field": "Survey/Witness",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score",
+                "Survey/Witness"
+              ],
+              "fillToFix": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "NO_DETAILS",
+              "field": "Survey/Witness",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score",
+                "Survey/Witness"
+              ],
+              "fillToFix": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score"
+              ]
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "NO_DETAILS",
+              "field": "Survey/Witness",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score",
+                "Survey/Witness"
+              ],
+              "fillToFix": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "scalar-partial",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "SOME_DETAILS",
+              "field": "Survey/Witness",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score",
+                "Survey/Witness"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "SOME_DETAILS",
+              "field": "Survey/Witness",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score",
+                "Survey/Witness"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "SOME_DETAILS",
+              "field": "Survey/Witness",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score",
+                "Survey/Witness"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "partialMessages": [
+            {
+              "code": "SOME_DETAILS",
+              "field": "Survey/Witness",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Evidence[0]/Code",
+                "/Survey[1]/Sections[0]/Items[0]/Details[1]/Score",
+                "Survey/Witness"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

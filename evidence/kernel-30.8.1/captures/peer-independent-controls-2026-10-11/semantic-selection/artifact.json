@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "semantic-selection_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "missing",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "LookupComp",
+              "field": "Shop/Result",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Shop[1]/Items[-5]/ItemNo",
+                "/Shop[1]/Items[-5]/Price",
+                "Shop/LookupKey",
+                "Shop/Result"
+              ],
+              "fillToFix": [
+                "/Shop[1]/Items[-5]/ItemNo",
+                "/Shop[1]/Items[-5]/Price",
+                "Shop/LookupKey",
+                "Shop/Result"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Shop/Result",
+                "cleared": false,
+                "errored": false,
+                "value": "0.00"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "LookupComp",
+              "field": "Shop/Result",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Shop[1]/Items[-5]/ItemNo",
+                "/Shop[1]/Items[-5]/Price",
+                "Shop/LookupKey",
+                "Shop/Result"
+              ],
+              "fillToFix": [
+                "/Shop[1]/Items[-5]/ItemNo",
+                "/Shop[1]/Items[-5]/Price",
+                "Shop/LookupKey",
+                "Shop/Result"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Shop/Result",
+                "cleared": false,
+                "errored": false,
+                "value": "0.00"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "matched",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "LookupComp",
+              "field": "Shop/Result",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Shop/Items[2]/ItemNo",
+                "Shop/Items[2]/Price",
+                "Shop/LookupKey",
+                "Shop/Result"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Shop/Result",
+                "cleared": false,
+                "errored": false,
+                "value": "5.25"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "LookupComp",
+              "field": "Shop/Result",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Shop/Items[2]/ItemNo",
+                "Shop/Items[2]/Price",
+                "Shop/LookupKey",
+                "Shop/Result"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Shop/Result",
+                "cleared": false,
+                "errored": false,
+                "value": "5.25"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "duplicate",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "LookupComp",
+              "field": "Shop/Result",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Shop/Items/ItemNo",
+                "Shop/Items/Price",
+                "Shop/LookupKey",
+                "Shop/Result"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Shop/Items[2]/ItemNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Shop/Items[2]/ItemNo"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Shop/Items[3]/ItemNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Shop/Items[3]/ItemNo"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Shop/Result",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "uniqueIndex",
+                "field": "Shop/Items[2]/ItemNo",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Shop/Items[2]/ItemNo"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Shop/Items[3]/ItemNo",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Shop/Items[3]/ItemNo"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "LookupComp",
+              "field": "Shop/Result",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Shop/Items/ItemNo",
+                "Shop/Items/Price",
+                "Shop/LookupKey",
+                "Shop/Result"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Shop/Items[2]/ItemNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Shop/Items[2]/ItemNo"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Shop/Items[3]/ItemNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Shop/Items[3]/ItemNo"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Shop/Result",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "uniqueIndex",
+                "field": "Shop/Items[2]/ItemNo",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Shop/Items[2]/ItemNo"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Shop/Items[3]/ItemNo",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Shop/Items[3]/ItemNo"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

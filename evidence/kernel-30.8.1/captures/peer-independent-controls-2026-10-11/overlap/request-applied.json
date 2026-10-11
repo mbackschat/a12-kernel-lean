@@ -1,0 +1,18 @@
+{
+  "model": "overlap_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "after-application",
+      "documentInline": {
+        "Order": {
+          "BackorderQuantity": 1,
+          "Quantity": 5
+        }
+      }
+    }
+  ]
+}

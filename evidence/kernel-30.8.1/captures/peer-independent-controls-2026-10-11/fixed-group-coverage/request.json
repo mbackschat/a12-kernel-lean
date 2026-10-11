@@ -1,0 +1,83 @@
+{
+  "model": "fixed-group-coverage_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "ancestor-only-partial",
+      "documentInline": {
+        "Survey": {
+          "Witness": "yes",
+          "Sections": [
+            {
+              "Items": [
+                {}
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Survey/Witness"
+        },
+        {
+          "path": "/Survey/Sections/Items/Details/Score"
+        }
+      ]
+    },
+    {
+      "name": "ancestor-only-covered",
+      "documentInline": {
+        "Survey": {
+          "Witness": "yes",
+          "Sections": [
+            {
+              "Items": [
+                {}
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Survey/Witness"
+        },
+        {
+          "path": "/Survey/Sections/Items/Details"
+        }
+      ]
+    },
+    {
+      "name": "scalar-partial",
+      "documentInline": {
+        "Survey": {
+          "Witness": "yes",
+          "Sections": [
+            {
+              "Items": [
+                {
+                  "Details": {
+                    "Score": "7.0"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Survey/Witness"
+        },
+        {
+          "path": "/Survey/Sections/Items/Details/Score"
+        }
+      ]
+    }
+  ]
+}

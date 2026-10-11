@@ -1,0 +1,96 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Survey",
+    "name": "Witness",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Survey",
+    "name": "Sections",
+    "repeatable": 3
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Survey/Sections",
+    "name": "Items",
+    "repeatable": 3
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Survey/Sections/Items",
+    "name": "Details"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Survey/Sections/Items/Details",
+    "name": "Evidence",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Survey/Sections/Items/Details",
+    "name": "Score",
+    "kind": "NUMBER",
+    "number": {
+      "minFractionalDigits": 1,
+      "maxFractionalDigits": 1
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Survey/Sections/Items/Details/Evidence",
+    "name": "Code",
+    "kind": "STRING"
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Survey/Witness",
+    "name": "NO_DETAILS",
+    "code": "NO_DETAILS",
+    "condition": "FieldFilled(Witness) And NoGroupFilled(Sections*/Items*/Details)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Independent computation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Survey/Witness",
+    "name": "SOME_DETAILS",
+    "code": "SOME_DETAILS",
+    "condition": "FieldFilled(Witness) And AtLeastOneGroupFilled(Sections*/Items*/Details)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Independent computation control."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Survey/Witness",
+    "name": "SOME_EVIDENCE_ROWS",
+    "code": "SOME_EVIDENCE_ROWS",
+    "condition": "FieldFilled(Witness) And AtLeastOneGroupFilled(Sections*/Items*/Details/Evidence*)",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Independent computation control."
+      }
+    ]
+  }
+]

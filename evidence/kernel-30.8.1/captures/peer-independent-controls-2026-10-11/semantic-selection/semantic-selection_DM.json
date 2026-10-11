@@ -1,0 +1,154 @@
+{
+  "header" : {
+    "id" : "semantic-selection_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "semantic-selection_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Shop",
+        "name" : "Shop",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Shop/LookupKey",
+            "name" : "LookupKey",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Shop/SeedKey",
+            "name" : "SeedKey",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Shop/Result",
+            "name" : "Result",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2,
+                  "minFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Shop/GroupResult",
+            "name" : "GroupResult",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2,
+                  "minFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Shop/Items",
+            "name" : "Items",
+            "Group" : {
+              "repeatability" : 10,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Shop/Items/Projection",
+                "name" : "Projection",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Shop/Items/ItemNo",
+                "name" : "ItemNo",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Shop/Items/Price",
+                "name" : "Price",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2,
+                      "minFractionalDigits" : 2
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "ItemNo"
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Shop/LookupComp",
+            "name" : "LookupComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Result",
+              "computationAlternatives" : [ {
+                "operation" : "[Items/Price For LookupKey]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Independent computation control."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
