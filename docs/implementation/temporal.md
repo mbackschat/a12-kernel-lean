@@ -12,6 +12,8 @@ Date-range capabilities are owned by [`date-range.md`](date-range.md).
 <a id="cap-date-construction-and-base-year"></a>
 #### Date construction and Base Year
 
+- `guard-calibration`: [C20 constructed-Date guards](../sources/temporal-runtime-fold-probes.md#src-membership-validity-calibration-c20) retain valid/non-leap February 29, empty components and malformed day/year controls for both Valid and Invalid. All twelve seeded-target outcomes match the checked reader; this does not calibrate named-type callbacks.
+
 - `boundary`: Gregorian and legacy-hybrid construction, partial-known admission, Base-Year date source, and numeric component projection
 - `owner`: [`DateConstruction.lean`](../../A12Kernel/Semantics/DateConstruction.lean), [`BaseYearDateSource.lean`](../../A12Kernel/Semantics/BaseYearDateSource.lean), [`DateConstructionNumeric.lean`](../../A12Kernel/Semantics/DateConstructionNumeric.lean)
 - `numeric-reader`: [LowerCore](../../A12Kernel/Reference/Dm/LowerCore.lean) decodes direct Base Year and both range endpoints for ordinary and filtered month/year/day differences. [LowerNumeric](../../A12Kernel/Reference/Dm/LowerNumeric.lean) also routes all three sources through the four numeric date extractors. [Reader guards](../../A12Kernel/Reference/Dm/HavingCalendarLocks.lean) execute both arms and distinguish endpoint identity, declared year, missing configuration, polarity and source-shape refusals. New reader combinations remain external evidence pending.

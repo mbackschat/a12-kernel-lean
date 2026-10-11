@@ -121,7 +121,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Cross-layer mechanisms and observation routes](sources/cross-layer-routes.md)
 - [DateRange construction](sources/date-range-construction.md)
 - [Temporal values and extraction](sources/temporal-and-message-probes.md)
-- [Temporal runtime folds](sources/temporal-runtime-fold-probes.md), including [minute/second and quarter calibration](sources/temporal-runtime-fold-probes.md#src-temporal-calibration-c19)
+- [Temporal runtime folds](sources/temporal-runtime-fold-probes.md), including [minute/second and quarter calibration](sources/temporal-runtime-fold-probes.md#src-temporal-calibration-c19) and [membership/Date-validity calibration](sources/temporal-runtime-fold-probes.md#src-membership-validity-calibration-c20)
 - [Temporal constants and BaseYear](sources/temporal-constant-and-base-year-probes.md)
 - [Repeatable temporal computations](sources/repeatable-temporal-computation-probes.md)
 - [Having filters](sources/having-filter-probes.md)

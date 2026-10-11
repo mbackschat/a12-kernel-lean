@@ -1,0 +1,311 @@
+{
+  "header" : {
+    "id" : "MembershipValidity_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MembershipValidity_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/NSubject",
+            "name" : "NSubject",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NMember",
+            "name" : "NMember",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SSubject",
+            "name" : "SSubject",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Membership input check"
+                  } ],
+                  "pattern" : "[A-Z]+"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SMember",
+            "name" : "SMember",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Membership input check"
+                  } ],
+                  "pattern" : "[A-Z]+"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ESubject",
+            "name" : "ESubject",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "A"
+                  }, {
+                    "value" : "B"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/EMember",
+            "name" : "EMember",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "A"
+                  }, {
+                    "value" : "B"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/D",
+            "name" : "D",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "maxValue" : 31,
+                  "positivesOnly" : true,
+                  "maxLength" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/M",
+            "name" : "M",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "maxValue" : 12,
+                  "positivesOnly" : true,
+                  "maxLength" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Y",
+            "name" : "Y",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "maxValue" : 9999,
+                  "positivesOnly" : true,
+                  "maxLength" : 4
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ValidOut",
+            "name" : "ValidOut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/InvalidOut",
+            "name" : "InvalidOut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NIncluded",
+            "name" : "NIncluded",
+            "Rule" : {
+              "errorEntityRelPath" : "../NSubject",
+              "errorCode" : "NINCLUDED",
+              "errorCondition" : "FieldValueIncludedInValueList(NSubject, [NMember])",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership and date calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NNotIncluded",
+            "name" : "NNotIncluded",
+            "Rule" : {
+              "errorEntityRelPath" : "../NSubject",
+              "errorCode" : "NNOTINCLUDED",
+              "errorCondition" : "FieldValueNotIncludedInValueList(NSubject, [NMember])",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership and date calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/SIncluded",
+            "name" : "SIncluded",
+            "Rule" : {
+              "errorEntityRelPath" : "../SSubject",
+              "errorCode" : "SINCLUDED",
+              "errorCondition" : "FieldValueIncludedInValueList(SSubject, [SMember])",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership and date calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/SNotIncluded",
+            "name" : "SNotIncluded",
+            "Rule" : {
+              "errorEntityRelPath" : "../SSubject",
+              "errorCode" : "SNOTINCLUDED",
+              "errorCondition" : "FieldValueNotIncludedInValueList(SSubject, [SMember])",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership and date calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/EIncluded",
+            "name" : "EIncluded",
+            "Rule" : {
+              "errorEntityRelPath" : "../ESubject",
+              "errorCode" : "EINCLUDED",
+              "errorCondition" : "FieldValueIncludedInValueList(ESubject, [EMember])",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership and date calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/ENotIncluded",
+            "name" : "ENotIncluded",
+            "Rule" : {
+              "errorEntityRelPath" : "../ESubject",
+              "errorCode" : "ENOTINCLUDED",
+              "errorCondition" : "FieldValueNotIncludedInValueList(ESubject, [EMember])",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership and date calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ValidComp",
+            "name" : "ValidComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ValidOut",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "Valid(Date(D, M, Y))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership and date calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/InvalidComp",
+            "name" : "InvalidComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../InvalidOut",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "Invalid(Date(D, M, Y))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Membership and date calibration check"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,894 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "MembershipValidity_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "hit-valid-leap",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "EINCLUDED",
+              "field": "Form/ESubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/EMember",
+                "Form/ESubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NINCLUDED",
+              "field": "Form/NSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/NMember",
+                "Form/NSubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SINCLUDED",
+              "field": "Form/SSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/SMember",
+                "Form/SSubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ValidComp",
+              "field": "Form/ValidOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/D",
+                "Form/M",
+                "Form/ValidOut",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "EINCLUDED",
+              "field": "Form/ESubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/EMember",
+                "Form/ESubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NINCLUDED",
+              "field": "Form/NSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/NMember",
+                "Form/NSubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SINCLUDED",
+              "field": "Form/SSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/SMember",
+                "Form/SSubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ValidComp",
+              "field": "Form/ValidOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/D",
+                "Form/M",
+                "Form/ValidOut",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "miss-invalid-leap",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ENOTINCLUDED",
+              "field": "Form/ESubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/EMember",
+                "Form/ESubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "InvalidComp",
+              "field": "Form/InvalidOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/D",
+                "Form/InvalidOut",
+                "Form/M",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NNOTINCLUDED",
+              "field": "Form/NSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/NMember",
+                "Form/NSubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SNOTINCLUDED",
+              "field": "Form/SSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/SMember",
+                "Form/SSubject"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ENOTINCLUDED",
+              "field": "Form/ESubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/EMember",
+                "Form/ESubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "InvalidComp",
+              "field": "Form/InvalidOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/D",
+                "Form/InvalidOut",
+                "Form/M",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NNOTINCLUDED",
+              "field": "Form/NSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/NMember",
+                "Form/NSubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SNOTINCLUDED",
+              "field": "Form/SSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/SMember",
+                "Form/SSubject"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-subject-components",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "InvalidComp",
+              "field": "Form/InvalidOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/D",
+                "Form/InvalidOut",
+                "Form/M",
+                "Form/Y"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/InvalidOut",
+                "Form/M",
+                "Form/Y"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "InvalidComp",
+              "field": "Form/InvalidOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/D",
+                "Form/InvalidOut",
+                "Form/M",
+                "Form/Y"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/InvalidOut",
+                "Form/M",
+                "Form/Y"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-subject-year",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/ESubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ESubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/SSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/SSubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/NSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/NSubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Y",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Y"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/ESubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ESubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/SSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/SSubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/NSubject",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/NSubject"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Y",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Y"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-member-day",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ENOTINCLUDED",
+              "field": "Form/ESubject",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/EMember",
+                "Form/ESubject"
+              ],
+              "fillToFix": [
+                "Form/EMember",
+                "Form/ESubject"
+              ]
+            },
+            {
+              "code": "InvalidComp",
+              "field": "Form/InvalidOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/D",
+                "Form/InvalidOut",
+                "Form/M",
+                "Form/Y"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/InvalidOut",
+                "Form/M",
+                "Form/Y"
+              ]
+            },
+            {
+              "code": "NNOTINCLUDED",
+              "field": "Form/NSubject",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/NMember",
+                "Form/NSubject"
+              ],
+              "fillToFix": [
+                "Form/NMember",
+                "Form/NSubject"
+              ]
+            },
+            {
+              "code": "SNOTINCLUDED",
+              "field": "Form/SSubject",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/SMember",
+                "Form/SSubject"
+              ],
+              "fillToFix": [
+                "Form/SMember",
+                "Form/SSubject"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ENOTINCLUDED",
+              "field": "Form/ESubject",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/EMember",
+                "Form/ESubject"
+              ],
+              "fillToFix": [
+                "Form/EMember",
+                "Form/ESubject"
+              ]
+            },
+            {
+              "code": "InvalidComp",
+              "field": "Form/InvalidOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/D",
+                "Form/InvalidOut",
+                "Form/M",
+                "Form/Y"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/InvalidOut",
+                "Form/M",
+                "Form/Y"
+              ]
+            },
+            {
+              "code": "NNOTINCLUDED",
+              "field": "Form/NSubject",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/NMember",
+                "Form/NSubject"
+              ],
+              "fillToFix": [
+                "Form/NMember",
+                "Form/NSubject"
+              ]
+            },
+            {
+              "code": "SNOTINCLUDED",
+              "field": "Form/SSubject",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/SMember",
+                "Form/SSubject"
+              ],
+              "fillToFix": [
+                "Form/SMember",
+                "Form/SSubject"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-member-day",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/EMember",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/EMember"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/SMember",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/SMember"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/NMember",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/NMember"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/D",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/D"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/EMember",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/EMember"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/SMember",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/SMember"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/NMember",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/NMember"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/InvalidOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/ValidOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/D",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/D"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

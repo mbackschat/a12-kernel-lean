@@ -1,0 +1,257 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NSubject",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NMember",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "SSubject",
+    "kind": "STRING",
+    "string": {
+      "pattern": "[A-Z]+",
+      "patternMessage": "Membership input check"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "SMember",
+    "kind": "STRING",
+    "string": {
+      "pattern": "[A-Z]+",
+      "patternMessage": "Membership input check"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "ESubject",
+    "kind": "ENUM",
+    "enum": {
+      "values": [
+        {
+          "value": "A"
+        },
+        {
+          "value": "B"
+        }
+      ]
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "EMember",
+    "kind": "ENUM",
+    "enum": {
+      "values": [
+        {
+          "value": "A"
+        },
+        {
+          "value": "B"
+        }
+      ]
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "D",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0,
+      "max": "31",
+      "maxLength": 2,
+      "positivesOnly": true
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "M",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0,
+      "max": "12",
+      "maxLength": 2,
+      "positivesOnly": true
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Y",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0,
+      "max": "9999",
+      "maxLength": 4,
+      "positivesOnly": true
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "ValidOut",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "InvalidOut",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/NSubject",
+    "name": "NIncluded",
+    "condition": "FieldValueIncludedInValueList(NSubject, [NMember])",
+    "code": "NINCLUDED",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership and date calibration check"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/NSubject",
+    "name": "NNotIncluded",
+    "condition": "FieldValueNotIncludedInValueList(NSubject, [NMember])",
+    "code": "NNOTINCLUDED",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership and date calibration check"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/SSubject",
+    "name": "SIncluded",
+    "condition": "FieldValueIncludedInValueList(SSubject, [SMember])",
+    "code": "SINCLUDED",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership and date calibration check"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/SSubject",
+    "name": "SNotIncluded",
+    "condition": "FieldValueNotIncludedInValueList(SSubject, [SMember])",
+    "code": "SNOTINCLUDED",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership and date calibration check"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/ESubject",
+    "name": "EIncluded",
+    "condition": "FieldValueIncludedInValueList(ESubject, [EMember])",
+    "code": "EINCLUDED",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership and date calibration check"
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/ESubject",
+    "name": "ENotIncluded",
+    "condition": "FieldValueNotIncludedInValueList(ESubject, [EMember])",
+    "code": "ENOTINCLUDED",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership and date calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/ValidOut",
+    "name": "ValidComp",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "Valid(Date(D, M, Y))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership and date calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/InvalidOut",
+    "name": "InvalidComp",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "Invalid(Date(D, M, Y))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Membership and date calibration check"
+      }
+    ]
+  }
+]

@@ -28,6 +28,8 @@ The [tolerance-family capture](sources/computation-placement-and-constant-probes
 
 The [C19 temporal capture](sources/temporal-runtime-fold-probes.md#src-temporal-calibration-c19) retains thirteen dual-strategy documents for minute/second validation and quarter computation. All 65 explicit-rule/computation results match the checked reader; it remains raw calibration outside the compact typed suites.
 
+The [C20 membership/Date-validity capture](sources/temporal-runtime-fold-probes.md#src-membership-validity-calibration-c20) retains six dual-strategy documents. All 48 authored-rule/computation results match the existing reader; the capture remains raw calibration outside the compact typed suites.
+
 ## Validation bundle and gate ownership
 
 The validation bundle has seven ordered families. Four public families hold the current flat V2 cases, one directional Number witness, 12 captured-outer runtime cases, and four static one-star authoring cases. Three private families hold 11 path/required cases, six operator-sensitive empty-value cases, and seven uncorrelated iteration cases.
