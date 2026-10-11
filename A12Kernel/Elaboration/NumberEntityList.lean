@@ -46,7 +46,7 @@ structure CheckedNumberEntityField (model : FlatModel) where
 
     `expansionOwned` and `expansionAllNumber` together are the certificate: the retained list **is** the group's recursive subtree in declaration order, nonempty by its shape, and no declaration in that subtree was dropped along the way. The second obligation is what makes the first a completeness claim rather than a filter — without it a subtree of Strings would certify as an empty selection. A consumer may therefore read the expansion off this slot without re-walking the model, while the authored reference stays available for re-rendering.
 
-    `uniformSigned` is a **representation** obligation rather than a Kernel gate. Directional missingness reads each empty cell's own declaration, but the aggregate scan applies one signedness per authored operand, so a slot spanning declarations that disagree has no correct operand-level answer. Refusing that shape keeps the accessor sound; it claims nothing about what the Kernel admits, and widening it belongs with the runtime capsule that makes signedness per-cell. -/
+    Sum retains declaration signedness beside each resolved cell rather than assigning one sign to the entire group. -/
 structure CheckedNumberEntityGroup (model : FlatModel) where
   source : CheckedEntityGroupSource model
   first : FlatNumberField
@@ -57,7 +57,6 @@ structure CheckedNumberEntityGroup (model : FlatModel) where
   expansionAllNumber :
     (model.groupSubtreeFields source.groupPath).all
       (fun declaration => declaration.toNumberField?.isSome) = true
-  uniformSigned : rest.all (·.info.signed == first.info.signed) = true
 
 namespace CheckedNumberEntityGroup
 
@@ -90,8 +89,8 @@ def scaleSummary (group : CheckedNumberEntityGroup model) : NumericScaleSummary 
     (fun summary field => summary.union (NumericScaleSummary.field field.info.scale))
     (NumericScaleSummary.field group.first.info.scale)
 
-/-- Sound because `uniformSigned` forces every expanded declaration to agree. -/
-def declarationSigned (group : CheckedNumberEntityGroup model) : Bool :=
+/-- Metadata of the first declaration only; aggregate missingness must inspect every declaration. -/
+def firstDeclarationSigned (group : CheckedNumberEntityGroup model) : Bool :=
   group.first.info.signed
 
 def referencesField (group : CheckedNumberEntityGroup model)
@@ -203,12 +202,12 @@ def scaleSummary : CheckedNumberEntityOperand model → NumericScaleSummary
   | .starHaving source => NumericScaleSummary.field source.source.field.info.scale
   | .group source => source.scaleSummary
 
-def declarationSigned : CheckedNumberEntityOperand model → Bool
+def firstDeclarationSigned : CheckedNumberEntityOperand model → Bool
   | .selected source => source.first.info.signed
   | .field source => source.field.info.signed
   | .star source => source.field.info.signed
   | .starHaving source => source.source.field.info.signed
-  | .group source => source.declarationSigned
+  | .group source => source.firstDeclarationSigned
 
 /-- Whether this slot reads `field`. `filterReads` decides which of a filter's reads count: every
     read for a dependency or pointer, only the marked ones for the rule's error-field gates. -/
@@ -318,7 +317,7 @@ inductive NumberEntityElabError where
       declared at an empty repeatable group; the shared shape refuses an explicit empty starred
       group first, as `MVK_GROUP_IS_EMPTY`. That spelling is unmeasured, so no class is claimed. -/
   | groupExpansionEmpty (path : List String)
-  /-- A group slot whose expanded declarations disagree on signedness. A representation limit rather than a Kernel gate; see `CheckedNumberEntityGroup.uniformSigned`. -/
+  /-- A selected group whose declarations disagree on signedness. The selected carrier still requires one sign; ordinary group aggregates retain it per cell. -/
   | groupExpansionMixedSign (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -441,7 +440,7 @@ private def certifyStarNumber (source : CheckedStarFieldPath model) :
         source.declaration.policy.kind.surfaceKind)
   | some field => pure { source, field, fieldOwned := hField }
 
-/-- Certify one authored group slot by expanding it once through the shared subtree query. The three refusals are distinct and all deliberately unprojected: `MVK_NO_NUMBER` and its siblings are each operator's own class, and this boundary has no operator. -/
+/-- Certify one authored group slot by expanding it once through the shared subtree query. The empty and non-Number refusals are deliberately unprojected: `MVK_NO_NUMBER` and its siblings are each operator's own class, and this boundary has no operator. -/
 private def certifyNumberEntityGroup (model : FlatModel)
     (source : CheckedEntityGroupSource model) :
     Except NumberEntityElabError (CheckedNumberEntityOperand model) :=
@@ -452,16 +451,12 @@ private def certifyNumberEntityGroup (model : FlatModel)
           FlatFieldDecl.toNumberField? with
     | [] => throw (.groupExpansionEmpty source.groupPath)
     | first :: rest =>
-        if hSigned : rest.all (·.info.signed == first.info.signed) = true then
-          pure (.group {
-            source
-            first
-            rest
-            expansionOwned := hExpansion
-            expansionAllNumber := hAll
-            uniformSigned := hSigned })
-        else
-          throw (.groupExpansionMixedSign source.groupPath)
+        pure (.group {
+          source
+          first
+          rest
+          expansionOwned := hExpansion
+          expansionAllNumber := hAll })
   else
     throw (.groupExpansionNotNumber source.groupPath
       ((model.groupSubtreeFields source.groupPath).filterMap fun declaration =>
@@ -573,6 +568,7 @@ def elaborateNumberEntitySource (model : FlatModel)
       (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])
       authored arity (fixedTargetGroup? := fixedTargetGroup?)
       (writtenGroup := writtenGroup)
+      (groupReadScope := if bindingGroup?.isSome && fixedTargetGroup?.isNone then .ruleBound else .scalar)
     |>.mapError NumberEntityElabError.shape
   certifyNumberEntityShape model declaringGroup shape (bindingGroup?.getD declaringGroup)
 

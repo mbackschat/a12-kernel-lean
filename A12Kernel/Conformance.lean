@@ -314,6 +314,7 @@ import A12Kernel.Conformance.ParallelPresenceRule
 import A12Kernel.Conformance.ParallelNumberIndex
 import A12Kernel.Conformance.PartialDateInput
 import A12Kernel.Conformance.PartialStarredGroupAggregate
+import A12Kernel.Conformance.PartialNumberGroupAggregate
 import A12Kernel.Conformance.PartialGroupCount
 import A12Kernel.Conformance.PartialGroupList
 import A12Kernel.Conformance.PartialValidation

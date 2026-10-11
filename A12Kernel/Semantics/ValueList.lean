@@ -171,23 +171,33 @@ def presentValues (side : ResolvedValueListSide kind) :
 
 end ResolvedValueListSide
 
-/-- Resolve authored operands lazily from left to right. A consumer-selected terminal result or the first unavailable resolved cell stops before any later operand is resolved. The caller supplies the accumulator update because some consumers retain declaration metadata in addition to the common value side. -/
-def scanResolvedValueListOperands {operand state terminal error : Type}
+/-- Resolve authored operands lazily, retaining consumer metadata beside the common availability view. A terminal result or unavailable side prevents resolution of later operands. -/
+def scanResolvedValueListOperandsBy {operand side state terminal error : Type}
     {kind : ValueListKind}
-    (resolve : operand → Except error (Sum (ResolvedValueListSide kind) terminal))
+    (values : side → ResolvedValueListSide kind)
+    (resolve : operand → Except error (Sum side terminal))
     (onUnavailable : FormalCause → terminal)
-    (append : state → operand → ResolvedValueListSide kind → state) :
+    (append : state → operand → side → state) :
     List operand → state → Except error (Sum state terminal)
   | [], accumulated => pure (.inl accumulated)
   | operand :: remaining, accumulated => do
       match ← resolve operand with
       | .inr result => pure (.inr result)
       | .inl side =>
-          match side.available with
+          match (values side).available with
           | .error cause => pure (.inr (onUnavailable cause))
           | .ok () =>
-              scanResolvedValueListOperands resolve onUnavailable append remaining
+              scanResolvedValueListOperandsBy values resolve onUnavailable append remaining
                 (append accumulated operand side)
+
+/-- The metadata-free instance of the common authored-order scan. -/
+def scanResolvedValueListOperands {operand state terminal error : Type}
+    {kind : ValueListKind}
+    (resolve : operand → Except error (Sum (ResolvedValueListSide kind) terminal))
+    (onUnavailable : FormalCause → terminal)
+    (append : state → operand → ResolvedValueListSide kind → state) :
+    List operand → state → Except error (Sum state terminal) :=
+  scanResolvedValueListOperandsBy id resolve onUnavailable append
 
 /-- Concatenate every authored operand's cells in authored order, tagging each cell with its own operand's filter state.
 

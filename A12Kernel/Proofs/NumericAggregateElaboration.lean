@@ -200,10 +200,9 @@ theorem checkedNumberEntityFilteredStar_checkedValidationAggregate_usesCapacityP
       | .ok () => pure (.inl side)) := by
   rfl
 
-/-- A checked Number group computation uses the same operand-bounded rich projection as validation,
-    changing only the phase at which each cached cell is observed — the declared-capacity extent
-    included. The value count once narrowed here alone; the measured arm shows every group aggregate
-    sharing that domain, so the two accounts are one resolver and this is their single statement. -/
+/-- The retained plain-value group helper reads the computation-phase in-capacity projection.
+    Aggregate dispatch uses `resolvedAggregateSides` instead: C07 requires per-declaration signedness,
+    which this value-only projection cannot retain. -/
 theorem checkedNumberEntityGroup_checkedComputationAggregate_usesRichProjection
     (group : CheckedNumberEntityGroup model)
     (document : CheckedDocument model) (outer : Env) :

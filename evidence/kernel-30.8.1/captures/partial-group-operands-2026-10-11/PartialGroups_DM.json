@@ -1,0 +1,500 @@
+{
+  "header" : {
+    "id" : "PartialGroups_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "PartialGroups_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Marker",
+                "name" : "Marker",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/N",
+                "name" : "N",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/N/A",
+                    "name" : "A",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/N/B",
+                    "name" : "B",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0,
+                          "positivesOnly" : true
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/B",
+                "name" : "B",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/B/A",
+                    "name" : "A",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/B/B",
+                    "name" : "B",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/T",
+                "name" : "T",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/T/A",
+                    "name" : "A",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType",
+                        "StringType" : {
+                          "maxLength" : 1
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/T/B",
+                    "name" : "B",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType",
+                        "StringType" : {
+                          "maxLength" : 1
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/BoundSumEq",
+                "name" : "BoundSumEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "BoundSumEq",
+                  "errorCondition" : "Sum(N) == 3 And FieldFilled(Marker)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/BoundSumGt",
+                "name" : "BoundSumGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "BoundSumGt",
+                  "errorCondition" : "Sum(N) > 2 And FieldFilled(Marker)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/BoundMaxEq",
+                "name" : "BoundMaxEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "BoundMaxEq",
+                  "errorCondition" : "MaxValue(N) == 3 And FieldFilled(Marker)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/BoundMinEq",
+                "name" : "BoundMinEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "BoundMinEq",
+                  "errorCondition" : "MinValue(N) == 3 And FieldFilled(Marker)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/BoundDistinct",
+                "name" : "BoundDistinct",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "BoundDistinct",
+                  "errorCondition" : "NumberOfDifferentValues(N) == 1 And FieldFilled(Marker)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/BoundNumberCount",
+                "name" : "BoundNumberCount",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "BoundNumberCount",
+                  "errorCondition" : "NumberOfValueInFields(3 In N) == 1 And FieldFilled(Marker)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/BoundBooleanCount",
+                "name" : "BoundBooleanCount",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "BoundBooleanCount",
+                  "errorCondition" : "NumberOfValueInFields(True In B) == 1 And FieldFilled(Marker)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/BoundTokenCount",
+                "name" : "BoundTokenCount",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "BoundTokenCount",
+                  "errorCondition" : "NumberOfValueInFields(\"X\" In T) == 1 And FieldFilled(Marker)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/BoundTokenNo",
+                "name" : "BoundTokenNo",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Marker",
+                  "errorCode" : "BoundTokenNo",
+                  "errorCondition" : "NoFieldValueIncludedInValueList(T In \"Z\") And FieldFilled(Marker)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe observation."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Marker",
+            "name" : "Marker",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/N",
+            "name" : "N",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/N/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/N/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "positivesOnly" : true
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/B",
+            "name" : "B",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/B/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/B/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/T",
+            "name" : "T",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/T/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 1
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/T/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 1
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedSumEq",
+            "name" : "FixedSumEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Marker",
+              "errorCode" : "FixedSumEq",
+              "errorCondition" : "Sum(N) == 3 And FieldFilled(Marker)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedSumGt",
+            "name" : "FixedSumGt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Marker",
+              "errorCode" : "FixedSumGt",
+              "errorCondition" : "Sum(N) > 2 And FieldFilled(Marker)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedMaxEq",
+            "name" : "FixedMaxEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Marker",
+              "errorCode" : "FixedMaxEq",
+              "errorCondition" : "MaxValue(N) == 3 And FieldFilled(Marker)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedMinEq",
+            "name" : "FixedMinEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Marker",
+              "errorCode" : "FixedMinEq",
+              "errorCondition" : "MinValue(N) == 3 And FieldFilled(Marker)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedDistinct",
+            "name" : "FixedDistinct",
+            "Rule" : {
+              "errorEntityRelPath" : "../Marker",
+              "errorCode" : "FixedDistinct",
+              "errorCondition" : "NumberOfDifferentValues(N) == 1 And FieldFilled(Marker)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedNumberCount",
+            "name" : "FixedNumberCount",
+            "Rule" : {
+              "errorEntityRelPath" : "../Marker",
+              "errorCode" : "FixedNumberCount",
+              "errorCondition" : "NumberOfValueInFields(3 In N) == 1 And FieldFilled(Marker)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedBooleanCount",
+            "name" : "FixedBooleanCount",
+            "Rule" : {
+              "errorEntityRelPath" : "../Marker",
+              "errorCode" : "FixedBooleanCount",
+              "errorCondition" : "NumberOfValueInFields(True In B) == 1 And FieldFilled(Marker)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedTokenCount",
+            "name" : "FixedTokenCount",
+            "Rule" : {
+              "errorEntityRelPath" : "../Marker",
+              "errorCode" : "FixedTokenCount",
+              "errorCondition" : "NumberOfValueInFields(\"X\" In T) == 1 And FieldFilled(Marker)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/FixedTokenNo",
+            "name" : "FixedTokenNo",
+            "Rule" : {
+              "errorEntityRelPath" : "../Marker",
+              "errorCode" : "FixedTokenNo",
+              "errorCondition" : "NoFieldValueIncludedInValueList(T In \"Z\") And FieldFilled(Marker)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe observation."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

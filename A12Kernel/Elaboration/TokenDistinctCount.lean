@@ -90,6 +90,7 @@ def elaborateTokenDistinctCountSource (model : FlatModel)
   let shape ← elaborateFieldEntityShapeIn model declaringGroup
       (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored (writtenGroup := writtenGroup)
       (categoryGate := .aheadOfRepeat) (fixedTargetGroup? := fixedTargetGroup?)
+      (groupReadScope := if bindingGroup?.isSome && fixedTargetGroup?.isNone then .ruleBound else .scalar)
     |>.mapError fun error => .source (.shape error)
   match distinctPositionalError? shape.operands with
   | some error => throw error

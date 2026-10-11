@@ -391,6 +391,7 @@ def elaborateBooleanValueCountSource (model : FlatModel)
       (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])
       authored (fixedTargetGroup? := fixedTargetGroup?)
       (writtenGroup := writtenGroup)
+      (groupReadScope := if bindingGroup?.isSome && fixedTargetGroup?.isNone then .ruleBound else .scalar)
     |>.mapError .shape
   let first ←
     certifyBooleanValueCountOperand model declaringGroup (bindingGroup?.getD declaringGroup) expected shape.first

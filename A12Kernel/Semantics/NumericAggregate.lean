@@ -422,12 +422,15 @@ structure ResolvedNumberEntityAggregateSides where
 
 namespace ResolvedNumberEntityAggregateSides
 
+def appendResolved (left right : ResolvedNumberEntityAggregateSides) :
+    ResolvedNumberEntityAggregateSides :=
+  { values := left.values.append right.values
+    sum := appendNumericSumSide left.sum right.sum }
+
 def append (accumulated : ResolvedNumberEntityAggregateSides)
     (declarationSigned : Bool) (side : ResolvedValueListSide .number) :
     ResolvedNumberEntityAggregateSides :=
-  { values := accumulated.values.append side
-    sum := appendNumericSumSide accumulated.sum
-      (side.toNumericSumSide declarationSigned) }
+  accumulated.appendResolved { values := side, sum := side.toNumericSumSide declarationSigned }
 
 def evaluate (accumulated : ResolvedNumberEntityAggregateSides)
     (op : NumericAggregateOp) : NumericOperand :=

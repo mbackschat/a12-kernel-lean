@@ -1,0 +1,880 @@
+{
+  "model": "PartialGroups_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "unsigned-empty-complete",
+      "documentInline": {
+        "Form": {
+          "Marker": "x",
+          "N": {
+            "A": "3",
+            "B": ""
+          },
+          "B": {
+            "A": true,
+            "B": false
+          },
+          "T": {
+            "A": "X",
+            "B": "Y"
+          },
+          "Rows": [
+            {
+              "Marker": "x",
+              "N": {
+                "A": "3",
+                "B": ""
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            },
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Marker"
+        },
+        {
+          "path": "/Form/Rows/Marker"
+        },
+        {
+          "path": "/Form/N/A"
+        },
+        {
+          "path": "/Form/N/B"
+        },
+        {
+          "path": "/Form/B/A"
+        },
+        {
+          "path": "/Form/B/B"
+        },
+        {
+          "path": "/Form/T/A"
+        },
+        {
+          "path": "/Form/T/B"
+        },
+        {
+          "path": "/Form/Rows/N/A"
+        },
+        {
+          "path": "/Form/Rows/N/B"
+        },
+        {
+          "path": "/Form/Rows/B/A"
+        },
+        {
+          "path": "/Form/Rows/B/B"
+        },
+        {
+          "path": "/Form/Rows/T/A"
+        },
+        {
+          "path": "/Form/Rows/T/B"
+        }
+      ]
+    },
+    {
+      "name": "unsigned-empty-incomplete",
+      "documentInline": {
+        "Form": {
+          "Marker": "x",
+          "N": {
+            "A": "3",
+            "B": ""
+          },
+          "B": {
+            "A": true,
+            "B": false
+          },
+          "T": {
+            "A": "X",
+            "B": "Y"
+          },
+          "Rows": [
+            {
+              "Marker": "x",
+              "N": {
+                "A": "3",
+                "B": ""
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            },
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Marker"
+        },
+        {
+          "path": "/Form/Rows/Marker"
+        },
+        {
+          "path": "/Form/N/A"
+        },
+        {
+          "path": "/Form/B/A"
+        },
+        {
+          "path": "/Form/T/A"
+        },
+        {
+          "path": "/Form/Rows/N/A"
+        },
+        {
+          "path": "/Form/Rows/B/A"
+        },
+        {
+          "path": "/Form/Rows/T/A"
+        }
+      ]
+    },
+    {
+      "name": "signed-empty-complete",
+      "documentInline": {
+        "Form": {
+          "Marker": "x",
+          "N": {
+            "A": "",
+            "B": "3"
+          },
+          "B": {
+            "A": true,
+            "B": false
+          },
+          "T": {
+            "A": "X",
+            "B": "Y"
+          },
+          "Rows": [
+            {
+              "Marker": "x",
+              "N": {
+                "A": "",
+                "B": "3"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            },
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Marker"
+        },
+        {
+          "path": "/Form/Rows/Marker"
+        },
+        {
+          "path": "/Form/N/A"
+        },
+        {
+          "path": "/Form/N/B"
+        },
+        {
+          "path": "/Form/B/A"
+        },
+        {
+          "path": "/Form/B/B"
+        },
+        {
+          "path": "/Form/T/A"
+        },
+        {
+          "path": "/Form/T/B"
+        },
+        {
+          "path": "/Form/Rows/N/A"
+        },
+        {
+          "path": "/Form/Rows/N/B"
+        },
+        {
+          "path": "/Form/Rows/B/A"
+        },
+        {
+          "path": "/Form/Rows/B/B"
+        },
+        {
+          "path": "/Form/Rows/T/A"
+        },
+        {
+          "path": "/Form/Rows/T/B"
+        }
+      ]
+    },
+    {
+      "name": "signed-empty-incomplete",
+      "documentInline": {
+        "Form": {
+          "Marker": "x",
+          "N": {
+            "A": "",
+            "B": "3"
+          },
+          "B": {
+            "A": true,
+            "B": false
+          },
+          "T": {
+            "A": "X",
+            "B": "Y"
+          },
+          "Rows": [
+            {
+              "Marker": "x",
+              "N": {
+                "A": "",
+                "B": "3"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            },
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Marker"
+        },
+        {
+          "path": "/Form/Rows/Marker"
+        },
+        {
+          "path": "/Form/N/A"
+        },
+        {
+          "path": "/Form/B/A"
+        },
+        {
+          "path": "/Form/T/A"
+        },
+        {
+          "path": "/Form/Rows/N/A"
+        },
+        {
+          "path": "/Form/Rows/B/A"
+        },
+        {
+          "path": "/Form/Rows/T/A"
+        }
+      ]
+    },
+    {
+      "name": "filled-complete",
+      "documentInline": {
+        "Form": {
+          "Marker": "x",
+          "N": {
+            "A": "1",
+            "B": "2"
+          },
+          "B": {
+            "A": true,
+            "B": false
+          },
+          "T": {
+            "A": "X",
+            "B": "Y"
+          },
+          "Rows": [
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            },
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Marker"
+        },
+        {
+          "path": "/Form/Rows/Marker"
+        },
+        {
+          "path": "/Form/N/A"
+        },
+        {
+          "path": "/Form/N/B"
+        },
+        {
+          "path": "/Form/B/A"
+        },
+        {
+          "path": "/Form/B/B"
+        },
+        {
+          "path": "/Form/T/A"
+        },
+        {
+          "path": "/Form/T/B"
+        },
+        {
+          "path": "/Form/Rows/N/A"
+        },
+        {
+          "path": "/Form/Rows/N/B"
+        },
+        {
+          "path": "/Form/Rows/B/A"
+        },
+        {
+          "path": "/Form/Rows/B/B"
+        },
+        {
+          "path": "/Form/Rows/T/A"
+        },
+        {
+          "path": "/Form/Rows/T/B"
+        }
+      ]
+    },
+    {
+      "name": "filled-incomplete",
+      "documentInline": {
+        "Form": {
+          "Marker": "x",
+          "N": {
+            "A": "1",
+            "B": "2"
+          },
+          "B": {
+            "A": true,
+            "B": false
+          },
+          "T": {
+            "A": "X",
+            "B": "Y"
+          },
+          "Rows": [
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            },
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Marker"
+        },
+        {
+          "path": "/Form/Rows/Marker"
+        },
+        {
+          "path": "/Form/N/A"
+        },
+        {
+          "path": "/Form/B/A"
+        },
+        {
+          "path": "/Form/T/A"
+        },
+        {
+          "path": "/Form/Rows/N/A"
+        },
+        {
+          "path": "/Form/Rows/B/A"
+        },
+        {
+          "path": "/Form/Rows/T/A"
+        }
+      ]
+    },
+    {
+      "name": "empty-complete",
+      "documentInline": {
+        "Form": {
+          "Marker": "x",
+          "N": {
+            "A": "",
+            "B": ""
+          },
+          "B": {
+            "A": "",
+            "B": false
+          },
+          "T": {
+            "A": "",
+            "B": "Y"
+          },
+          "Rows": [
+            {
+              "Marker": "x",
+              "N": {
+                "A": "",
+                "B": ""
+              },
+              "B": {
+                "A": "",
+                "B": false
+              },
+              "T": {
+                "A": "",
+                "B": "Y"
+              }
+            },
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Marker"
+        },
+        {
+          "path": "/Form/Rows/Marker"
+        },
+        {
+          "path": "/Form/N/A"
+        },
+        {
+          "path": "/Form/N/B"
+        },
+        {
+          "path": "/Form/B/A"
+        },
+        {
+          "path": "/Form/B/B"
+        },
+        {
+          "path": "/Form/T/A"
+        },
+        {
+          "path": "/Form/T/B"
+        },
+        {
+          "path": "/Form/Rows/N/A"
+        },
+        {
+          "path": "/Form/Rows/N/B"
+        },
+        {
+          "path": "/Form/Rows/B/A"
+        },
+        {
+          "path": "/Form/Rows/B/B"
+        },
+        {
+          "path": "/Form/Rows/T/A"
+        },
+        {
+          "path": "/Form/Rows/T/B"
+        }
+      ]
+    },
+    {
+      "name": "empty-incomplete",
+      "documentInline": {
+        "Form": {
+          "Marker": "x",
+          "N": {
+            "A": "",
+            "B": ""
+          },
+          "B": {
+            "A": "",
+            "B": false
+          },
+          "T": {
+            "A": "",
+            "B": "Y"
+          },
+          "Rows": [
+            {
+              "Marker": "x",
+              "N": {
+                "A": "",
+                "B": ""
+              },
+              "B": {
+                "A": "",
+                "B": false
+              },
+              "T": {
+                "A": "",
+                "B": "Y"
+              }
+            },
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Marker"
+        },
+        {
+          "path": "/Form/Rows/Marker"
+        },
+        {
+          "path": "/Form/N/A"
+        },
+        {
+          "path": "/Form/B/A"
+        },
+        {
+          "path": "/Form/T/A"
+        },
+        {
+          "path": "/Form/Rows/N/A"
+        },
+        {
+          "path": "/Form/Rows/B/A"
+        },
+        {
+          "path": "/Form/Rows/T/A"
+        }
+      ]
+    },
+    {
+      "name": "malformed-complete",
+      "documentInline": {
+        "Form": {
+          "Marker": "x",
+          "N": {
+            "A": "bad",
+            "B": "3"
+          },
+          "B": {
+            "A": "bad",
+            "B": false
+          },
+          "T": {
+            "A": "LONG",
+            "B": "Y"
+          },
+          "Rows": [
+            {
+              "Marker": "x",
+              "N": {
+                "A": "bad",
+                "B": "3"
+              },
+              "B": {
+                "A": "bad",
+                "B": false
+              },
+              "T": {
+                "A": "LONG",
+                "B": "Y"
+              }
+            },
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Marker"
+        },
+        {
+          "path": "/Form/Rows/Marker"
+        },
+        {
+          "path": "/Form/N/A"
+        },
+        {
+          "path": "/Form/N/B"
+        },
+        {
+          "path": "/Form/B/A"
+        },
+        {
+          "path": "/Form/B/B"
+        },
+        {
+          "path": "/Form/T/A"
+        },
+        {
+          "path": "/Form/T/B"
+        },
+        {
+          "path": "/Form/Rows/N/A"
+        },
+        {
+          "path": "/Form/Rows/N/B"
+        },
+        {
+          "path": "/Form/Rows/B/A"
+        },
+        {
+          "path": "/Form/Rows/B/B"
+        },
+        {
+          "path": "/Form/Rows/T/A"
+        },
+        {
+          "path": "/Form/Rows/T/B"
+        }
+      ]
+    },
+    {
+      "name": "malformed-incomplete",
+      "documentInline": {
+        "Form": {
+          "Marker": "x",
+          "N": {
+            "A": "bad",
+            "B": "3"
+          },
+          "B": {
+            "A": "bad",
+            "B": false
+          },
+          "T": {
+            "A": "LONG",
+            "B": "Y"
+          },
+          "Rows": [
+            {
+              "Marker": "x",
+              "N": {
+                "A": "bad",
+                "B": "3"
+              },
+              "B": {
+                "A": "bad",
+                "B": false
+              },
+              "T": {
+                "A": "LONG",
+                "B": "Y"
+              }
+            },
+            {
+              "Marker": "x",
+              "N": {
+                "A": "1",
+                "B": "2"
+              },
+              "B": {
+                "A": true,
+                "B": false
+              },
+              "T": {
+                "A": "X",
+                "B": "Y"
+              }
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Marker"
+        },
+        {
+          "path": "/Form/Rows/Marker"
+        },
+        {
+          "path": "/Form/N/A"
+        },
+        {
+          "path": "/Form/B/A"
+        },
+        {
+          "path": "/Form/T/A"
+        },
+        {
+          "path": "/Form/Rows/N/A"
+        },
+        {
+          "path": "/Form/Rows/B/A"
+        },
+        {
+          "path": "/Form/Rows/T/A"
+        }
+      ]
+    }
+  ]
+}

@@ -404,6 +404,7 @@ def elaborateTokenEntitySource (model : FlatModel)
   let shape ← elaborateFieldEntityShapeIn model declaringGroup
       (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored arity fixedTargetGroup?
       (writtenGroup := writtenGroup)
+      (groupReadScope := if bindingGroup?.isSome && fixedTargetGroup?.isNone then .ruleBound else .scalar)
     |>.mapError .shape
   certifyTokenEntityShape model declaringGroup shape ((bindingGroup?.or fixedTargetGroup?).getD writtenGroup)
 

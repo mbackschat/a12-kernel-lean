@@ -682,7 +682,7 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-shared-entity-list-group-admission"></a>
 - [Shared entity-list group admission](implementation/cross-clause.md#cap-shared-entity-list-group-admission)
 <a id="cap-number-group-aggregates"></a>
-- [Number group aggregates](implementation/cross-clause.md#cap-number-group-aggregates)
+- [Number group aggregates](implementation/numeric.md#cap-number-group-aggregates)
 <a id="cap-token-group-expansion"></a>
 - [Token group expansion](implementation/cross-clause.md#cap-token-group-expansion)
 <a id="cap-temporal-group-uniqueness"></a>

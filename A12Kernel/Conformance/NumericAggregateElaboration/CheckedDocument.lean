@@ -357,7 +357,7 @@ def numberEntityConsumerSlots
           signed := operand.source.field.info.signed }
     | .group operand =>
         { field := operand.first.id, repeated := operand.isStarred, filtered := false,
-          signed := operand.declarationSigned }
+          signed := operand.firstDeclarationSigned }
 
 def checkedDocumentPartialSnapshot
     (valueCount filtered : Bool) (scope : ValidationRelevanceScope) :

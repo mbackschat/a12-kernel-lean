@@ -100,6 +100,7 @@ def elaborateFirstFilledTokenSource (model : FlatModel)
   let shape ← elaborateFieldEntityShapeIn model declaringGroup
     (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored
     (writtenGroup := writtenGroup)
+    (groupReadScope := if bindingGroup?.isSome then .ruleBound else .scalar)
     |>.mapError fun error => .source (.shape error)
   match firstFilledMeasuredKindError? model shape.operands with
   | some error => throw error
