@@ -1,0 +1,29 @@
+[
+  {
+    "id": "plain-copy",
+    "verb": "computation",
+    "args": [
+      "add",
+      "plain-copy.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "labelled-copy",
+    "verb": "computation",
+    "args": [
+      "add",
+      "labelled-copy.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "string-to-enum",
+    "verb": "computation",
+    "args": [
+      "add",
+      "string-to-enum.json",
+      "--dry-run"
+    ]
+  }
+]

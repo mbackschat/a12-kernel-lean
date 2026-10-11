@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C16. C01–C15 are closed; proceed in the frozen order.
+The autonomous goal is active at C17. C01–C16 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -112,7 +112,7 @@ C01–C12 are the required sequence. This checkpoint is a bounded consumer-relia
 - [x] Run a fresh Execute/Explain consumer on the eight C01 scenarios plus the C05 category, C10 partial-Date and C11 lexical distinctions. Freeze the task and compare actual outputs.
 - Done: C01–C11 have evidence dispositions, no known in-scope wrong answer remains, consumer readback is green and applicable reviews/gates are complete. State the actual replay boundary; full replay remains governed by its existing cadence.
 - Report the supported task, closed items and limitations before moving on. Consumer failure returns to its semantic owner, never a consumer-specific workaround. This is not full conformance or Rust/SMT qualification.
-- Accepted: [C12 readback](consumer-probes/EXECUTE.md#run-c12-execute-02) recovers all eleven scenario families after restoring one omitted existing clause and clarifying the question wording. No semantic or acceptance-scope change. Fresh HIGH cold review found no issue; C11 executable gates remain valid, and C13 is now the last full replay. C13–C22 remain the fixed remaining work.
+- Accepted: [C12 readback](consumer-probes/EXECUTE.md#run-c12-execute-02) recovers all eleven scenario families after restoring one omitted existing clause and clarifying the question wording. No semantic or acceptance-scope change. Fresh HIGH cold review found no issue; C11 executable gates remain valid, and C16 is now the last full replay. C13–C22 remain the fixed remaining work.
 
 ## Subsequent order — visible language and evidence closure
 
@@ -140,8 +140,10 @@ C13–C22 follow the reported first checkpoint and finish the ordinary-behavior 
 
 ### C16 — Enumeration/String domain crossings retain value identity
 
-- [ ] Settle unlabelled Enumeration-to-String copy and ordinary String target Enumeration-domain/pattern interaction.
+- [x] Settle unlabelled Enumeration-to-String copy and ordinary String target Enumeration-domain/pattern interaction.
 - Done: differing stored/display token, outside-domain token, pattern-valid/domain-invalid value and its converse yield exact copy/refusal/target errors through existing token readers. [SG7](gaps/strings-and-messages.md#gap-sg7), [SG8](gaps/strings-and-messages.md#gap-sg8), [SG15](gaps/targets-and-derivation.md#gap-sg15).
+
+- Accepted: [crossing calibration](sources/computation-placement-and-constant-probes.md#src-string-enumeration-crossings) and [reader locks](../A12Kernel/Reference/Dm/StringEnumerationBoundaryLocks.lean) close the ordinary carrier matrix. The reader now preserves Enumeration labels for copy admission; stored-token evaluation is unchanged. String suggestions impose no domain, target pattern rejection retains its attempted value, and invalid Enumeration sources clear dependent targets. Fresh HIGH review, integration/evidence/trust/hygiene and post-review population replay passed.
 
 ### C17 — ordinary declaration and admission outcomes
 
@@ -222,8 +224,8 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C16, after accepted C15. Reconcile unlabelled Enumeration-to-String copy and String target Enumeration-domain/pattern interaction against [SG7/SG8](gaps/strings-and-messages.md) and [SG15](gaps/targets-and-derivation.md), existing token readers and retained observations.
-- Next: check C16's frozen stored/display-token, outside-domain and opposing pattern/domain cases against the current reader and target-validation mechanisms; implement or calibrate only unresolved distinctions. C15 has no live process or unresolved cold finding. C12 fulfilled the scheduled consumer probe; C16 entry alone triggers no additional consumer exercise.
+- Active: C17, after accepted C16. Reconcile unreadable-model, build-failure, codeless-notification and keyed-diagnostic outcomes; rule-name/blank-code admission; and target-read versus empty-precondition ordering against [SG28](gaps/targets-and-derivation.md#gap-sg28), [SG10/SG7](gaps/strings-and-messages.md) and existing source/evidence owners.
+- Next: enumerate C17's single-defect and competing-defect twins against current reader/admission APIs and retained observations; close existing support and measure only unresolved distinctions. C16 has no live process or unresolved cold finding. C12 fulfilled the scheduled consumer probe; C17 entry alone triggers no additional consumer exercise.
 - C08 closed: the separate omission selector, shared filter coordinates, mixed-group wildcard correction and effect-preserving message origin pass the frozen matrix. [Reference calibration](implementation/validation-messages-and-custom.md#cap-structural-message-references) matches both exact sets for all 40 caller and 246 filtered-predicate messages. H10-R1 is reconciled against admitted temporal-reference controls; H10-R2 is discharged by dedicated calibration. No new outbound ledger entry. The scheduled C12 consumer probe is complete.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
 - C01 closed: [risk-boundary implementation](../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [reconciled eight-scenario consumer run](consumer-probes/EXECUTE.md#run-c01-execute-03). Integration (2,166 jobs), retained evidence (51 projections), trust (3,026 roots) and HIGH review passed; the review’s documentation correction is incorporated. Code is committed at `0e302b8d`; the accepted consumer basis is `9fe99116`. No remaining C01 blocker.
@@ -238,8 +240,8 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 ## Verified gate boundary
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
-- Latest executable/test boundary: C15 temporal row-set composition locks; the evaluator is unchanged. Integration passed (2,221 jobs), all 51 compact projections agree, fresh HIGH review has no actionable finding, and trust passed (3,027 roots; 111,117 declarations in 890 modules). No new behavioral spec delta or outbound ledger entry; C13's existing request remains with its owner.
+- Latest executable/test boundary: C16 String/Enumeration crossings and localized-label preservation in the DM reader. Integration passed (2,223 jobs), all 51 compact projections agree, fresh HIGH review has no actionable finding, and trust/hygiene passed (3,027 roots; 111,117 declarations in 890 modules). No new behavioral spec delta or outbound ledger entry; C13's existing request remains with its owner.
 - Latest consumer boundary: C12 passes all eleven frozen Execute/Explain scenario families; fresh HIGH review and documentation/prose/sync hygiene pass. The first run exposed one omitted duplicate-key clause in the packet, repaired from the existing canonical owner; no runtime edit or new capture. This qualifies bounded semantic transport, not an independent evaluator or downstream product.
-- Last full replay: 71,694 matches (52,335 rules and 19,359 computations), zero divergence/fault/unattributed/tier-2 instances, 3,335 rows, 217 without matching artifacts and six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) includes the reviewed C14 slice. The 30 additional matches come from its new capture; the earlier population remains unchanged. Replay cadence reset at C14; C15 is the first subsequent family and changed only tests/documentation, so no new population replay was required.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only handoff edits do not invalidate C15 executable gates.
+- Last full replay: 71,710 matches (52,335 rules and 19,375 computations), zero divergence/fault/unattributed/tier-2 instances, 3,339 rows across 447 requests, 217 without matching artifacts and six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) includes the reviewed C16 slice. Its four new documents account for all 16 added computation matches; earlier population counts remain unchanged. The reader change triggered this replay, and cadence resets at C16.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only handoff edits do not invalidate C16 executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.

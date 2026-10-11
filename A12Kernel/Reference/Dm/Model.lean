@@ -131,13 +131,26 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         | none | some .null => pure none
         | some (.str value) => pure (if value.isEmpty then none else some value)
         | some _ => throw "EnumerationType sValue must be a string"
-      let values ← (← body.getObjValAs? (Array Json) "values").toList.mapM (·.getObjValAs? String "value")
+      let entries := (← body.getObjValAs? (Array Json) "values").toList
+      let values ← entries.mapM (·.getObjValAs? String "value")
+      -- Copy admission compares effective display mappings (spec/09 §1); discarding labels
+      -- here would turn a remapped Enumeration into an unlabelled one before that check.
+      let displayFacts ← entries.mapM fun entry => do
+        let stored ← entry.getObjValAs? String "value"
+        let labels ← match (entry.getObjVal? "label").toOption with
+          | none => pure #[]
+          | some labels => labels.getArr?
+        labels.toList.mapM fun label => do
+          let locale ← label.getObjValAs? String "locale"
+          let display ← label.getObjValAs? String "text"
+          pure ({ stored, locale, display } : EnumerationDisplayFact)
       let categories ← ((body.getObjValAs? (Array Json) "categories").toOption.getD #[]).toList.mapM
         fun category => do
           let name ← category.getObjValAs? String "name"
           let tokens ← category.getObjValAs? (Array String) "values"
           pure ({ name, tokens := tokens.toList } : EnumerationCategoryDeclaration)
-      let enumeration : EnumerationDeclaration := { storedTokens := values, categories, defaultStoredToken }
+      let enumeration : EnumerationDeclaration := {
+        storedTokens := values, displayFacts := displayFacts.flatten, categories, defaultStoredToken }
       let _ ← enumeration.validate.mapError (fun error => s!"EnumerationType {repr error}")
       pure { base with
         policy := { kind := .enumeration }

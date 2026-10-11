@@ -1,0 +1,66 @@
+{
+  "model": "Domain_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "inside-both",
+      "documentInline": {
+        "Form": {
+          "Plain": "A",
+          "Labelled": "A",
+          "Text": "A",
+          "BareOut": "SEED",
+          "PatternOut": "SEED",
+          "HintOut": "SEED",
+          "EnumOut": "A"
+        }
+      }
+    },
+    {
+      "name": "domain-only",
+      "documentInline": {
+        "Form": {
+          "Plain": "9",
+          "Labelled": "9",
+          "Text": "9",
+          "BareOut": "SEED",
+          "PatternOut": "SEED",
+          "HintOut": "SEED",
+          "EnumOut": "A"
+        }
+      }
+    },
+    {
+      "name": "pattern-only",
+      "documentInline": {
+        "Form": {
+          "Plain": "Z",
+          "Labelled": "Z",
+          "Text": "Z",
+          "BareOut": "SEED",
+          "PatternOut": "SEED",
+          "HintOut": "SEED",
+          "EnumOut": "A"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "Plain": "",
+          "Labelled": "",
+          "Text": "",
+          "BareOut": "SEED",
+          "PatternOut": "SEED",
+          "HintOut": "SEED",
+          "EnumOut": "A"
+        }
+      }
+    }
+  ]
+}

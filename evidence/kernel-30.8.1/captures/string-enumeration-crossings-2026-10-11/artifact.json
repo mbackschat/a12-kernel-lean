@@ -1,0 +1,548 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Domain_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "inside-both",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BareOutC16",
+              "field": "Form/BareOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BareOut",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HintOutC16",
+              "field": "Form/HintOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/HintOut",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PatternOutC16",
+              "field": "Form/PatternOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/PatternOut",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BareOut",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/HintOut",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/PatternOut",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BareOutC16",
+              "field": "Form/BareOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BareOut",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HintOutC16",
+              "field": "Form/HintOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/HintOut",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PatternOutC16",
+              "field": "Form/PatternOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/PatternOut",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BareOut",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/HintOut",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/PatternOut",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "domain-only",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BareOutC16",
+              "field": "Form/BareOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BareOut",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EnumOutC16",
+              "field": "Form/EnumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/EnumOut",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HintOutC16",
+              "field": "Form/HintOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/HintOut",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PatternOutC16",
+              "field": "Form/PatternOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/PatternOut",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BareOut",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Form/HintOut",
+                "cleared": false,
+                "errored": true,
+                "value": "9"
+              },
+              {
+                "field": "Form/PatternOut",
+                "cleared": false,
+                "errored": true,
+                "value": "9"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BareOutC16",
+              "field": "Form/BareOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BareOut",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EnumOutC16",
+              "field": "Form/EnumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/EnumOut",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HintOutC16",
+              "field": "Form/HintOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/HintOut",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PatternOutC16",
+              "field": "Form/PatternOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/PatternOut",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BareOut",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Form/HintOut",
+                "cleared": false,
+                "errored": true,
+                "value": "9"
+              },
+              {
+                "field": "Form/PatternOut",
+                "cleared": false,
+                "errored": true,
+                "value": "9"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "pattern-only",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "HintOutC16",
+              "field": "Form/HintOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/HintOut",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Labelled",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Labelled"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BareOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/HintOut",
+                "cleared": false,
+                "errored": false,
+                "value": "Z"
+              },
+              {
+                "field": "Form/PatternOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "HintOutC16",
+              "field": "Form/HintOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/HintOut",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Labelled",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Labelled"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BareOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/HintOut",
+                "cleared": false,
+                "errored": false,
+                "value": "Z"
+              },
+              {
+                "field": "Form/PatternOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BareOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/HintOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PatternOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BareOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/HintOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PatternOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -54,6 +54,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `owner`: [`StringFieldPolicy.lean`](../../A12Kernel/Semantics/StringFieldPolicy.lean), [`StringComputation.lean`](../../A12Kernel/Semantics/StringComputation.lean)
 - `assurance`: E/P closed for admitted target; root subset C
 - `assurance`: The diagnostic projection is executable and proved injective over `StringFieldError`, with first-failure and successful-input separators. The [pattern-invalid checkpoint](../sources/evaluation-and-application-routes.md#src-pattern-invalid-string-cell) supplies pattern/minimum/maximum observations and the source basis for all four codes. Newline correspondence remains external evidence pending; no wider Enumeration, Custom, message-rendering, or public-process claim follows from this projection.
+- `assurance`: [String/Enumeration crossing calibration](../sources/computation-placement-and-constant-probes.md#src-string-enumeration-crossings) and [reader locks](../../A12Kernel/Reference/Dm/StringEnumerationBoundaryLocks.lean) distinguish stored-token copy, target pattern rejection, invalid-source poison and empty clearing. Ordinary String suggestions are not a closed domain. The DM reader retains localized Enumeration value labels so existing copy admission sees effective remapping; identity labels remain admitted.
 - `remains`: Wider target/ingestion: [SG7](../SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion)
 
 <a id="cap-string-aggregates-value-lists"></a>
