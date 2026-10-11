@@ -314,6 +314,8 @@ inductive KernelStaticDiagnostic where
   | invalidCompareDecimalPlaces
   /-- A computation directly references its own calculated field. -/
   | errorReferenceToCalculatedField
+  | ruleNameInvalid
+  | errorCodeMissing
   /-- An established Enumeration computation shape reads the calculated field through a compatible category projection. -/
   | errorSemanticIndexOrCategoryForErrorField
   /-- A Date computation targets a declaration with partial rather than FULL precision. -/
@@ -467,6 +469,8 @@ namespace KernelStaticDiagnostic
 
 /-- The exact Kernel diagnostic identifier. This string is the observable, so it is never derived from the constructor name. -/
 def kernelCode : KernelStaticDiagnostic → String
+  | .ruleNameInvalid => "MVK_RULE_NAME_INVALID"
+  | .errorCodeMissing => "MVK_ERROR_CODE_MISSING"
   | .invalidStringConstantForEnumComparison =>
       "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON"
   | .onlyStringEnumNumberDateAllowed => "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED"
@@ -758,7 +762,7 @@ def all : List KernelStaticDiagnostic :=
     .invalidParameterForPatternComparison, .missingConstantInPatternComparison, .internalError,
     .invalidLengthOfRawType, .noNumber, .notSortable,
     .stringEnumAndNonStringEnum, .invalidCompareDecimalPlaces,
-    .errorReferenceToCalculatedField,
+    .errorReferenceToCalculatedField, .ruleNameInvalid, .errorCodeMissing,
     .errorSemanticIndexOrCategoryForErrorField, .invalidDateType,
     .invalidDateTypeForOp, .noDateRange,
     .partialDateNotAllowed,

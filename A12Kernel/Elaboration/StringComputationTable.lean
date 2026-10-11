@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ComputationNumericGuard
+import A12Kernel.Elaboration.ComputationAlternativeAdmission
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Semantics.StringAlternatives
 
@@ -131,6 +132,66 @@ def certifyStringComputationTable
         modelWellFormed := first.operation.expression.modelWellFormed
         targetAdmitted := first.operation.targetAdmitted
       }
+
+inductive StringComputationTableElabErrorOf (OperationError : Type) where
+  | operation (alternative : Nat) (error : OperationError)
+  | table (error : StringComputationTableError)
+  deriving Repr, DecidableEq
+
+abbrev StringComputationTableElabError := StringComputationTableElabErrorOf StringComputationElabError
+
+def StringComputationTableElabError.diagnostic? :
+    StringComputationTableElabError → Option KernelStaticDiagnostic
+  | .operation _ error => error.targetDiagnostic?
+  | .table error => error.diagnostic?
+
+/-- Certify each authored row's operation attempt without moving a later lowering refusal ahead of
+an earlier operation refusal. Non-target-read refusals precede own guardedness and target reads,
+using the same alternative walk as Number
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-02a-alternative-walk)). Guards are
+already resolved; the common guard remains separate until the table certifies. The caller identifies
+only the operation's typed target-read refusal for the deferred stage. -/
+def certifyStringComputationTableFromAttempts {OperationError : Type} (model : FlatModel)
+    (target : FieldId)
+    (alternatives : List (Option (CheckedComputationCondition model) ×
+      Except OperationError (CheckedStringComputationOperation model)))
+    (operationIsTargetRead : OperationError → Bool)
+    (commonPrecondition : Option (CheckedComputationCondition model) := none) :
+    Except (StringComputationTableElabErrorOf OperationError) (CheckedStringComputationTable model) :=
+  let elaborated := alternatives.map fun (precondition, operation) =>
+    ((.ok precondition : Except Empty _), operation)
+  let refusal? := ComputationAlternative.admissionRefusal? elaborated
+    (fun own => (CheckedComputationCondition.withCommon commonPrecondition own).all (·.wellFormedBool))
+    (·.forbidsTarget target)
+    operationIsTargetRead
+    (commonPrecondition.any (·.forbidsTarget target))
+  match refusal? with
+  | some refusal => .error (match refusal with
+      | .precondition _ error => nomatch error
+      | .operation index error => .operation index error
+      | .guardNotAdmitted index => .table (.guardNotAdmitted index)
+      | .unguardedAlternative index => .table (.unguardedAlternative index)
+      | .guardTargetReference index => .table (.guardTargetReference index))
+  | none => do
+      let checked ← elaborated.zipIdx.mapM fun ((guard, result), index) => do
+        let precondition := match guard with
+          | .ok precondition => precondition
+          | .error error => nomatch error
+        let operation ← result.mapError (.operation (index + 1))
+        pure { precondition, operation }
+      (certifyStringComputationTable checked commonPrecondition).mapError .table
+
+/-- Elaborate String expressions into per-row operation attempts, then apply the shared admission
+walk before assembling the checked table. -/
+def elaborateStringComputationTable (model : FlatModel) (declaringGroup : GroupPath)
+    (target : FieldId)
+    (alternatives : List (Option (CheckedComputationCondition model) × StringExpr SurfaceFieldPath String))
+    (commonPrecondition : Option (CheckedComputationCondition model) := none) :
+    Except StringComputationTableElabError (CheckedStringComputationTable model) :=
+  certifyStringComputationTableFromAttempts model target
+    (alternatives.map fun (precondition, expression) =>
+      (precondition, elaborateStringComputationOperation model declaringGroup target expression))
+    (fun | .targetSelfReference _ => true | _ => false) commonPrecondition
 
 inductive CheckedStringComputationFault where
   | operation (fault : StringComputationFault)

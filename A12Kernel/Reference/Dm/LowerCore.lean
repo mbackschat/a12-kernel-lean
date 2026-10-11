@@ -5,6 +5,7 @@ import A12Kernel.Elaboration.FullDateInput
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Elaboration.RoundingArgument
+import A12Kernel.Elaboration.DeclarationAdmission
 
 /-! # Lowering parse trees: the shared vocabulary
 
@@ -41,12 +42,18 @@ ledger clusters on, `detail` the elaborator's own error when one answered. -/
 structure Refusal where
   construct : String
   detail : String := ""
+  declarationFailure? : Option DeclarationAdmissionFailure := none
   deriving Repr, BEq, Inhabited
 
 abbrev Lowering := Except Refusal
 
 def refuse (construct : String) (detail : String := "") : Lowering α :=
   .error { construct, detail }
+
+def admitDeclarations (declarations : List ExecutableDeclaration) : Lowering Unit :=
+  (ExecutableDeclaration.admit declarations).mapError fun failure =>
+    { construct := "DeclarationAdmission", detail := toString (repr failure),
+      declarationFailure? := some failure }
 
 /-- A detail on one physical line, so a replay row stays one row. -/
 def oneLine (text : String) : String :=

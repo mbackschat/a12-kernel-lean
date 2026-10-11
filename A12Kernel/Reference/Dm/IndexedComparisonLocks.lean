@@ -55,7 +55,7 @@ private def computation (expression flag fallback : String) (key : String := "on
     alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := [] }).toOption
   let producers ← producer.toList.mapM fun (target, operation) =>
     (lowerComputation model .english {
-      name := target, group := ["Form"], targetRelPath := "../" ++ target, commonPrecondition := none,
+      name := target.replace "/" "_", group := ["Form"], targetRelPath := "../" ++ target, commonPrecondition := none,
       alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).toOption
   let results ← (runComputations { now := { epochMillis := 0 } } prepared document
     (step.2 :: producers.map (·.2))).toOption

@@ -48,7 +48,7 @@ private def run (parents : List (String × List (String × String))) (head : Str
   let checked ← (checkDocument prepared "en_US" raw.data).toOption
   let steps ← selected.mapM fun (target, operation) => do
     let (_, step) ← (lowerComputation model .english {
-      name := target, group := ["Form"], targetRelPath := "../" ++ target
+      name := target.replace "/" "_", group := ["Form"], targetRelPath := "../" ++ target
       commonPrecondition := none, alternatives := [{ precondition := none, operation }]
       errorCodesToSuppress := [] }).toOption
     pure step

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ComputationNumericGuard
+import A12Kernel.Elaboration.ComputationAlternativeAdmission
 import A12Kernel.Elaboration.NumericComputation.Target
 
 /-! # Checked Number computation tables
@@ -167,53 +168,26 @@ private def elaborateNumericTargetComputationTableWith (model : FlatModel) (decl
     (commonPrecondition : Option (CheckedComputationCondition model)) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   let join := CheckedComputationCondition.withCommon commonPrecondition
-  let elaborated := alternatives.zipIdx.map fun ((guard, expression), index) =>
-    (index + 1, guard,
+  let elaborated := alternatives.map fun (guard, expression) =>
+    (guard,
       elaborateCompleteNumericTargetComputationOperation model declaringGroup target expression
         suppressExactScaleWarning targetScope)
-  let otherRefusal? := elaborated.findSome? fun (index, guard, result) =>
-    match guard.map join with
-    | .error error => some (.precondition index error)
-    | .ok precondition =>
-        if !precondition.all (·.rowBoundBool (model.fieldRepeatableScope target)) then
-          some (.table (.guardNotAdmitted index))
-        else
-          match result with
-          | .error (.targetSelfReference _) | .ok _ => none
-          | .error error => some (.operation index error)
-  let several := alternatives.length > 1
-  -- Unguardedness is the alternative's own: a common precondition guards none of them. The common
-  -- precondition's reads are judged once, at the first alternative judged, so several alternatives
-  -- without their own leave it unjudged ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-self-read-alternative-walk)).
-  let judged (guard : Option (CheckedComputationCondition model)) := !(several && guard.isNone)
-  let firstJudged := elaborated.find? fun (_, guard, _) =>
-    match guard with
-    | .ok own => judged own
-    | .error _ => true
-  let commonReadsTarget := commonPrecondition.any (·.forbidsTarget target)
-  let alternativeRefusal? := elaborated.findSome? fun (index, guard, result) =>
-    let commonRefusal :=
-      if commonReadsTarget && firstJudged.map (·.1) == some index then
-        some (.table (.guardTargetReference index))
-      else none
-    match guard with
-    | .error error => some (.precondition index error)
-    | .ok none => if several then some (.table (.unguardedAlternative index)) else
-        commonRefusal <|> match result with
-          | .error error => some (.operation index error)
-          | .ok _ => none
-    | .ok (some precondition) =>
-        commonRefusal <|>
-          if precondition.forbidsTarget target then some (.table (.guardTargetReference index)) else
-            match result with
-            | .error error => some (.operation index error)
-            | .ok _ => none
-  match otherRefusal? <|> alternativeRefusal? with
-  | some refusal => .error refusal
+  let refusal? := ComputationAlternative.admissionRefusal? elaborated
+    (fun own => (join own).all (·.rowBoundBool (model.fieldRepeatableScope target)))
+    (·.forbidsTarget target)
+    (fun | .targetSelfReference _ => true | _ => false)
+    (commonPrecondition.any (·.forbidsTarget target))
+  match refusal? with
+  | some refusal => .error (match refusal with
+      | .precondition index error => .precondition index error
+      | .operation index error => .operation index error
+      | .guardNotAdmitted index => .table (.guardNotAdmitted index)
+      | .unguardedAlternative index => .table (.unguardedAlternative index)
+      | .guardTargetReference index => .table (.guardTargetReference index))
   | none => do
-      let checked ← elaborated.mapM fun (index, guard, result) => do
-        let precondition ← (guard.map join).mapError (.precondition index)
-        let operation ← result.mapError (.operation index)
+      let checked ← elaborated.zipIdx.mapM fun ((guard, result), index) => do
+        let precondition ← (guard.map join).mapError (.precondition (index + 1))
+        let operation ← result.mapError (.operation (index + 1))
         pure { precondition, operation }
       (certifyNumericComputationTable checked).mapError .table
 

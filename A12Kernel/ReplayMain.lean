@@ -49,6 +49,8 @@ import A12Kernel.Reference.Dm.HavingTypeValidityLocks
 import A12Kernel.Reference.Dm.BooleanCountHavingLocks
 import A12Kernel.Reference.Dm.StringExpressionLocks
 import A12Kernel.Reference.Dm.StringEnumerationBoundaryLocks
+import A12Kernel.Reference.Dm.StringAlternativeAdmissionLocks
+import A12Kernel.Reference.Dm.DeclarationAdmissionLocks
 import A12Kernel.Reference.Dm.CalendarExpressionLocks
 import A12Kernel.Reference.Dm.RangeExpressionLocks
 import A12Kernel.Reference.Dm.StampConstructionLocks

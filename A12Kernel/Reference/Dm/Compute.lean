@@ -450,12 +450,19 @@ private def lowerComputationWith (allowParallelGuards : Bool)
         return (target, .rows (← lowerRowStep model computation.group target operation))
       if operations.any fun | .call "FirstFilledValue" _ none none => true | _ => false then
         return ← document
-      let alternatives ← (guards.zip operations).mapM fun (precondition, operation) => do
-        let expression ← lowerStringExpr operation
-        let checked ← elaborated "StringComputation"
-          (elaborateStringComputationOperation model computation.group target.id expression)
-        pure ({ precondition, operation := checked } : CheckedComputationAlternative model _)
-      pure (target, .string (← elaborated "StringComputation" (certifyStringComputationTable alternatives common)))
+      let attempts : List (Option (CheckedComputationCondition model) ×
+          Except (Sum Refusal StringComputationElabError) (CheckedStringComputationOperation model)) :=
+        (guards.zip operations).map fun (precondition, operation) =>
+          (precondition, do
+            let expression ← (lowerStringExpr operation).mapError Sum.inl
+            (elaborateStringComputationOperation model computation.group target.id expression).mapError Sum.inr)
+      let table ← match certifyStringComputationTableFromAttempts model target.id attempts
+          (fun | .inr (.targetSelfReference _) => true | _ => false) common with
+        | .ok table => pure table
+        | .error (.operation _ (.inl refusal)) => .error refusal
+        | .error (.operation _ (.inr error)) => elaborated "StringComputation" (.error error)
+        | .error (.table error) => elaborated "StringComputation" (.error error)
+      pure (target, .string table)
   | kind =>
       if !row then
         return ← document
@@ -473,7 +480,8 @@ private def lowerComputationWith (allowParallelGuards : Bool)
 /-- Lower one computation onto its checked carrier. A parallel guard contributes admission only
 when the complete computation checks; failed fallback preserves the original guard refusal. -/
 def lowerComputation (model : FlatModel) (language : Language) (computation : DmComputation) :
-    Lowering (FlatFieldDecl × LoweredComputation model) :=
+    Lowering (FlatFieldDecl × LoweredComputation model) := do
+  admitDeclarations [computation.declaration]
   match lowerComputationWith false model language computation with
   | .ok checked => .ok checked
   | .error refusal =>

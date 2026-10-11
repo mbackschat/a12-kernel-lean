@@ -22,6 +22,8 @@ The [parallel numeric operation capture](sources/computation-scheduling-probes.m
 
 The [String/Enumeration crossing capture](sources/computation-placement-and-constant-probes.md#src-string-enumeration-crossings) retains four agreeing computation documents and three static copy candidates. Its source checkpoint owns identities and limits; message text is redacted.
 
+C17 retains [twelve declaration-admission static observations](sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission), including codeless co-notifications and explicit reader/build phases. They are a bounded static capture with no compact typed replay or runtime-population gain.
+
 ## Validation bundle and gate ownership
 
 The validation bundle has seven ordered families. Four public families hold the current flat V2 cases, one directional Number witness, 12 captured-outer runtime cases, and four static one-star authoring cases. Three private families hold 11 path/required cases, six operator-sensitive empty-value cases, and seven uncorrelated iteration cases.

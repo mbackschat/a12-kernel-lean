@@ -133,7 +133,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Path resolution](sources/path-resolution-class-probes.md)
 - [Static admission and classes](sources/static-admission-and-class-probes.md)
 - [Diagnostic vocabulary and sweeps](sources/diagnostic-class-vocabulary-and-sweeps.md)
-- [Model structure and declarations](sources/model-structure-and-declaration-probes.md)
+- [Model structure and declarations](sources/model-structure-and-declaration-probes.md), including [executable declaration phases](sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission) (peer reconciliation at `6bc5e75337a6b2caea5b563e26d346cf53e163c8`)
 - [Rule-set metadata](sources/rule-set-meta-information.md)
 - [Computation placement and constants](sources/computation-placement-and-constant-probes.md), including [String/Enumeration crossings](sources/computation-placement-and-constant-probes.md#src-string-enumeration-crossings)
 - [Computation scheduling and guards](sources/computation-scheduling-probes.md), including [guard-derived operand scope](sources/computation-scheduling-probes.md#src-computation-guard-operand-scope) and [nested String first-filled sources](sources/computation-scheduling-probes.md#src-nested-string-first-filled); [empty-prefix provenance](sources/computation-scheduling-probes.md#src-first-filled-empty-prefix) covers the validation follow-up

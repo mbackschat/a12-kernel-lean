@@ -278,3 +278,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `acceptance`: Review the linked clauses against the named service/runtime loci, reconcile supported peer surfaces and state empirical limits without equating a matching key with a presence guard.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: pending.
+
+<a id="spec-2026-10-11-02"></a>
+### SPEC-2026-10-11-02 — preserve declaration co-notifications and formal-name suppression
+
+- `status`: pending
+- `canonical`: [declaration notifications](../spec/01-data-model.md#32-computations).
+- `delta`: absent/exactly-empty rule error code retains a codeless empty-code notification beside `MVK_ERROR_CODE_MISSING`; whitespace-only controls retain the named class alone. Formal name rejection suppresses `MVK_RULE_NAME_INVALID`, while independent code findings remain reportable.
+- `basis`: [twelve static observations](sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission), Kernel 30.8.1, maintained a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`. The peer's name-tier correction is consumed separately as inbound evidence, not re-issued here.
+- `acceptance`: preserve keyed and codeless findings in declaration reporting; reconcile empty versus whitespace-only codes and reserved-prefix versus formally invalid name twins. No notification-order or complete consistency-report claim. Introducing revision is the first commit containing this ID; no reviewed peer response yet.

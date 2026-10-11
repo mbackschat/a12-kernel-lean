@@ -9,6 +9,7 @@ remains a fragment evaluator and cannot certify completeness against a DM model.
 def runModelComputations (model : DmModel) (language : Language) (world : World)
     (prepared : PreparedFlatStringContext model.flat compilePattern)
     (checked : CheckedDocument model.flat) : Lowering (List ComputedOutcome) := do
+  admitDeclarations model.declarations
   if !model.refusals.isEmpty then
     throw { construct := "ComputationModel", detail := "model contains refused declarations" }
   let lowered ← model.computations.mapM fun computation =>

@@ -68,7 +68,7 @@ private def run (source : String) (scenario : Scenario := {}) (target : String :
     scenario.sourceProducer.toList.map (fun (field, value) => ("Rows/" ++ field, value, none))
   let steps ← definitions.mapM fun (target, operation, guard) =>
       (lowerComputation model .english {
-        name := target ++ "Comp", group := ["Form"], targetRelPath := "../" ++ target
+        name := target.replace "/" "_" ++ "Comp", group := ["Form"], targetRelPath := "../" ++ target
         commonPrecondition := guard, alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).toOption
   let results ← (runComputations world prepared document (steps.map (·.2))).toOption
   pure ((results.filter (fun result => result.pointer == "Form/After" || result.pointer == "Form/" ++ target)).map

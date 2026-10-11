@@ -1,6 +1,7 @@
 import Lean.Data.Json
 import A12Kernel.Elaboration.Flat.Types
 import A12Kernel.Elaboration.Enumeration
+import A12Kernel.Elaboration.DeclarationAdmission
 
 /-! # Reading a DM-JSON document model
 
@@ -58,6 +59,15 @@ structure DmModel where
   /-- Each declaration this reader could not map, by its path, with the reason. -/
   refusals : List (List String × String)
   deriving Repr
+
+def DmRule.declaration (rule : DmRule) : ExecutableDeclaration :=
+  { group := rule.group, name := rule.name, kind := .rule (.text rule.errorCode) }
+
+def DmComputation.declaration (computation : DmComputation) : ExecutableDeclaration :=
+  { group := computation.group, name := computation.name, kind := .computation }
+
+def DmModel.declarations (model : DmModel) : List ExecutableDeclaration :=
+  model.rules.map (·.declaration) ++ model.computations.map (·.declaration)
 
 private def str? (json : Json) (key : String) : Option String :=
   (json.getObjValAs? String key).toOption
@@ -192,6 +202,7 @@ private structure ReadState where
   rules : Array DmRule := #[]
   computations : Array DmComputation := #[]
   refusals : Array (List String × String) := #[]
+  declarations : Array ExecutableDeclaration := #[]
   /-- Index-field names to resolve once every field id is known, by repeatable level. -/
   indexFields : Array (RepeatableLevel × GroupPath × String) := #[]
 
@@ -210,6 +221,14 @@ private def readAlternative (json : Json) : Except String DmAlternative := do
     precondition := str? json "precondition"
     operation := ← json.getObjValAs? String "operation"
     toleranceRangeOp := ← computationString? json "toleranceRangeOp" }
+
+private def ruleCode (body : Json) : DeclarationStringValue :=
+  match (body.getObjVal? "errorCode").toOption with
+  | none => .text ""
+  | some (.str value) => .text value
+  | some (.num value) => .text value.toString
+  | some (.bool value) => .text (if value then "true" else "false")
+  | some .null | some (.arr _) | some (.obj _) => .unreadable
 
 /-- Walk one group element and its descendants depth-first. -/
 private partial def readElement (path : GroupPath) (scope : List RepeatableLevel) (element : Json) :
@@ -237,17 +256,22 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
       | .ok declaration => modify fun state => { state with fields := state.fields.push declaration }
       | .error reason => modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
   | "Rule" =>
-      modify fun state => { state with rules := state.rules.push {
+      let code := ruleCode body
+      modify fun state => { state with
+        declarations := state.declarations.push { group := path, name, kind := .rule code }
+        rules := state.rules.push {
         group := path, name
         errorEntityRelPath := (str? body "errorEntityRelPath").getD ""
-        errorCode := (str? body "errorCode").getD ""
+        errorCode := match code with | .text value => value | .unreadable => ""
         condition := (str? body "errorCondition").getD ""
         severity := (str? body "severity").getD "ERROR" } }
   | "Computation" =>
       let roundingMode ← StateT.lift (computationString? body "roundingMode")
       let alternatives ← StateT.lift do
         (← body.getObjValAs? (Array Json) "computationAlternatives").toList.mapM readAlternative
-      modify fun state => { state with computations := state.computations.push {
+      modify fun state => { state with
+        declarations := state.declarations.push { group := path, name, kind := .computation }
+        computations := state.computations.push {
         group := path, name, alternatives
         targetRelPath := (str? body "computedFieldRelPath").getD ""
         commonPrecondition := str? body "commonPrecondition"
@@ -257,7 +281,7 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
 
 /-- Read a DM-JSON model. A structural fault in the file fails the whole read; an unmappable
 declaration is refused alone. -/
-def readModel (json : Json) : Except String DmModel := do
+private def readModelCore (json : Json) : Except String (DmModel × List ExecutableDeclaration) := do
   let content ← json.getObjVal? "content"
   let config := (content.getObjVal? "modelConfig").toOption.getD (Json.mkObj [])
   let info := (content.getObjVal? "modelInfo").toOption.getD (Json.mkObj [])
@@ -291,7 +315,7 @@ def readModel (json : Json) : Except String DmModel := do
           refusals := refusals ++ [(groupPath, s!"indexFieldName {index} names no field")]
         groups := groups ++ [{ group with indexField := fieldId groupPath index }]
     | none => groups := groups ++ [group]
-  pure {
+  pure ({
     flat := {
       fields := state.fields.toList
       repeatableGroups := groups
@@ -301,6 +325,27 @@ def readModel (json : Json) : Except String DmModel := do
     rules := state.rules.toList
     computations := state.computations.toList
     conditionLanguage := ((config.getObjVal? "conditionLanguage").toOption.bind (str? · "code")).getD "en_US"
-    refusals }
+    refusals }, state.declarations.toList)
+
+/-- An adapter limitation is not evidence of a Kernel reader failure. Only the established
+declaration checks attach the semantic phase or actual notification classes. -/
+inductive ModelReadFailure where
+  | input (reason : String)
+  | declaration (failure : DeclarationAdmissionFailure)
+  deriving Repr, BEq, DecidableEq
+
+/-- Read a model with structured declaration admission. Other model checks remain the
+responsibility of their checked carriers; success is not a complete consistency certificate. -/
+def readModelWithAdmission (json : Json) : Except ModelReadFailure DmModel := do
+  let (model, declarations) ← (readModelCore json).mapError .input
+  (ExecutableDeclaration.admit declarations).mapError .declaration
+  pure model
+
+/-- Compatibility projection for replay callers. Consumers explaining a refusal use
+`readModelWithAdmission` to retain its phase and codeless notifications. -/
+def readModel (json : Json) : Except String DmModel :=
+  (readModelWithAdmission json).mapError fun
+    | .input reason => reason
+    | .declaration failure => s!"declaration admission: {repr failure}"
 
 end A12Kernel.Dm

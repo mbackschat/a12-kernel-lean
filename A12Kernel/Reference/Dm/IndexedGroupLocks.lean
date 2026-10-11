@@ -49,7 +49,7 @@ private def computation (guard : String) (key : String := "R1") (firstA : String
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let lower (target operation : String) (guard : Option String) :=
     (lowerComputation model .english {
-      name := target, group := declaringGroup, targetRelPath := "../" ++ target, commonPrecondition := guard,
+      name := "Compute_" ++ (target.replace "/" "_").replace "." "_", group := declaringGroup, targetRelPath := "../" ++ target, commonPrecondition := guard,
       alternatives := [{ precondition := none, operation }],
       errorCodesToSuppress := if suppressScale then ["MVK_INVALID_COMPARE_DEC_PLACES"] else [] }).toOption
   let consumer ← lower target "1" (some guard)

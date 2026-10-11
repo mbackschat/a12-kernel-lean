@@ -1,0 +1,250 @@
+{
+  "kernel": "30.8.1",
+  "instrumentRevision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+  "route": "dmtool model check",
+  "projection": "Diagnostic summaries omitted; buildFailure classified by the maintained adapter build-failure prefix. Phase is not inferred from absence of a code. Temporary measurement copies discarded.",
+  "rows": [
+    {
+      "case": "control",
+      "name": "Ordinary",
+      "errorCode": "CODE",
+      "exit": 0,
+      "ok": true,
+      "valid": true,
+      "diagnostics": [],
+      "tier": "judged"
+    },
+    {
+      "case": "reserved-blank",
+      "name": "vk_vkProbe",
+      "errorCode": "",
+      "exit": 1,
+      "ok": true,
+      "valid": false,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "code": "MVK_ERROR_CODE_MISSING",
+          "where": {
+            "rule": "/Form/vk_vkProbe"
+          }
+        },
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "code": "MVK_RULE_NAME_INVALID",
+          "where": {
+            "rule": "/Form/vk_vkProbe"
+          }
+        },
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "where": {}
+        }
+      ],
+      "tier": "judged"
+    },
+    {
+      "case": "dotted-blank",
+      "name": "Bad.Name",
+      "errorCode": "",
+      "exit": 1,
+      "ok": true,
+      "valid": false,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "where": {
+            "rule": "/Form/Bad.Name"
+          }
+        },
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "code": "MVK_ERROR_CODE_MISSING",
+          "where": {
+            "rule": "/Form/Bad.Name"
+          }
+        },
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "where": {}
+        }
+      ],
+      "tier": "judged"
+    },
+    {
+      "case": "reserved-dotted",
+      "name": "vk_vk.Bad",
+      "errorCode": "CODE",
+      "exit": 1,
+      "ok": true,
+      "valid": false,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "where": {
+            "rule": "/Form/vk_vk.Bad"
+          }
+        }
+      ],
+      "tier": "judged"
+    },
+    {
+      "case": "null-reserved",
+      "name": "vk_vkProbe",
+      "errorCode": null,
+      "exit": 2,
+      "ok": false,
+      "valid": null,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "PRECHECK",
+          "code": "RK_MODEL_INPUT_INVALID",
+          "where": {
+            "arg": "/tmp/c17-declarations/candidate.json"
+          }
+        }
+      ],
+      "tier": "unreadable"
+    },
+    {
+      "case": "empty-blank",
+      "name": "",
+      "errorCode": "",
+      "exit": 1,
+      "ok": true,
+      "valid": false,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "where": {}
+        }
+      ],
+      "tier": "buildFailure"
+    },
+    {
+      "case": "underscore",
+      "name": "_Rule",
+      "errorCode": "CODE",
+      "exit": 1,
+      "ok": true,
+      "valid": false,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "where": {
+            "rule": "/Form/_Rule"
+          }
+        }
+      ],
+      "tier": "judged"
+    },
+    {
+      "case": "hyphen-code",
+      "name": "Ordinary",
+      "errorCode": "A-B",
+      "exit": 1,
+      "ok": true,
+      "valid": false,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "where": {
+            "rule": "/Form/Ordinary"
+          }
+        }
+      ],
+      "tier": "judged"
+    },
+    {
+      "case": "space-code",
+      "name": "Ordinary",
+      "errorCode": "   ",
+      "exit": 1,
+      "ok": true,
+      "valid": false,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "code": "MVK_ERROR_CODE_MISSING",
+          "where": {
+            "rule": "/Form/Ordinary"
+          }
+        }
+      ],
+      "tier": "judged"
+    },
+    {
+      "case": "vt-code",
+      "name": "Ordinary",
+      "errorCode": "\u000b",
+      "exit": 1,
+      "ok": true,
+      "valid": false,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "code": "MVK_ERROR_CODE_MISSING",
+          "where": {
+            "rule": "/Form/Ordinary"
+          }
+        }
+      ],
+      "tier": "judged"
+    },
+    {
+      "case": "nbsp-code",
+      "name": "Ordinary",
+      "errorCode": " ",
+      "exit": 1,
+      "ok": true,
+      "valid": false,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "where": {
+            "rule": "/Form/Ordinary"
+          }
+        }
+      ],
+      "tier": "judged"
+    },
+    {
+      "case": "absent-code",
+      "name": "Ordinary",
+      "exit": 1,
+      "ok": true,
+      "valid": false,
+      "diagnostics": [
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "code": "MVK_ERROR_CODE_MISSING",
+          "where": {
+            "rule": "/Form/Ordinary"
+          }
+        },
+        {
+          "severity": "ERROR",
+          "source": "KERNEL",
+          "where": {}
+        }
+      ],
+      "tier": "judged",
+      "errorCodePresent": false
+    }
+  ]
+}

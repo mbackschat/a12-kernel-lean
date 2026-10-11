@@ -65,6 +65,7 @@ world. Replay supplies the same registry used to prepare and evaluate the docume
 private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language : Language) (rule : DmRule)
     (world : World := { now := { epochMillis := 0 } }) :
     Lowering (CheckedResolvedValidationRule model.flat) := do
+  admitDeclarations [rule.declaration]
   let text ← parseValidationText language rule.condition
   let suppress := text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
   -- A filter captures the error field's iteration, including for refusals; a failed retry cannot
