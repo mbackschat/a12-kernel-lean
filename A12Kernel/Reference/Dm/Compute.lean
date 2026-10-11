@@ -276,24 +276,16 @@ private def guards (language : Language) (model : FlatModel) (computation : DmCo
     | .ok guard => pure guard
     | .error refusal =>
         if allowParallel && target.toNumberField?.isSome && !target.repeatableScope.isEmpty then
-          let rec presenceSurface : SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate →
-              Option SurfaceComputationCondition
-            | .fieldFilled field => some (.fieldFilled field)
-            | .fieldNotFilled field => some (.fieldNotFilled field)
-            | .and left right => do pure (.and (← presenceSurface left) (← presenceSurface right))
-            | .or left right => do pure (.or (← presenceSurface left) (← presenceSurface right))
-            | _ => none
-          let some legacy := presenceSurface surface | .error refusal
-          match model.resolveParallelPresenceCondition computation.group legacy with
-          | .ok guard => elaborated "Guard" (CheckedComputationCondition.ofLegacy model guard)
+          match model.resolveParallelNumericCondition computation.group target.groupPath surface with
+          | .ok guard => pure guard
           | .error _ => .error refusal
         else .error refusal
   let common ← computation.commonPrecondition.mapM resolve
   let own ← computation.alternatives.mapM (·.precondition.mapM resolve)
   pure (common, own)
 
-/-- Reuse the checked parallel carriers after ordinary scope binding refuses. Each operation must
-retain a joined Number operand; bound fields use the same target environment as the ordinary route. -/
+/-- Reuse the checked parallel carriers after ordinary scope binding refuses. The complete table owns
+its joined routes, including scalar fallbacks; bound fields retain the ordinary target environment. -/
 private def lowerParallelNumber (model : FlatModel) (group : GroupPath) (target : FieldId)
     (guards : List (Option (CheckedComputationCondition model)))
     (expressions : List (AuthoredNumericExpr SurfaceNumericComputationAtom))
@@ -303,15 +295,18 @@ private def lowerParallelNumber (model : FlatModel) (group : GroupPath) (target 
   let _ ← elaborated "ParallelNumber" (checkAddressedRepeatableTarget model group target)
   if guards.length > 1 && guards.any Option.isNone then refuse "ParallelNumber" "unguarded alternative"
   if expressions.length != outputModes.length then refuse "ParallelNumber" "output policy arity"
+  let expressions ← expressions.mapM fun expression => expression.mapM fun atom =>
+    match atom.parallelAtom? with
+    | some atom => pure atom
+    | none => refuse "ParallelNumber" "operand"
+  let guardFields := (common :: guards).flatMap parallelNumericGuardFields
+  let guardPaths := guardFields.filterMap fun field => (model.lookupUniqueId field).toOption.map fun declaration =>
+    { base := .absolute, groups := declaration.groupPath, field := declaration.name : SurfaceFieldPath }
+  let fields := expressions.flatMap (fun expression => expression.atoms.flatMap SurfaceNumericAtom.parallelFields) ++ guardPaths
+  let some operand := fields.find? fun path => (checkParallelNumericTargetRoute model group target path).isOk
+    | refuse "ParallelNumber" "no joined operand"
   let operations ← ((guards.zip expressions).zip outputModes).mapM fun ((guard, expression), mode) => do
-    let expression ← expression.mapM fun
-      | .numeric (.field path) => pure (SurfaceNumericAtom.field path)
-      | _ => refuse "ParallelNumber" "operand"
-    let fields := expression.atoms.filterMap fun | .field path => some path | _ => none
-    let some operand := fields.find? fun path =>
-        (checkParallelNumericComputationClearingPlan model group target path).isOk
-      | refuse "ParallelNumber" "no joined operand"
-    let operation ← elaborated "ParallelNumber" (checkIsolatedParallelNumericExpressionRunWithGuard model group
+    let operation ← elaborated "ParallelNumber" (checkParallelNumericTableOperationWithGuard model group
       target operand expression (CheckedComputationCondition.withCommon common guard) suppress)
     pure (operation.withBandedRounding mode)
   match operations with

@@ -1,0 +1,256 @@
+{
+  "header" : {
+    "id" : "staffing",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "staffing",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Staffing",
+        "name" : "Staffing",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Staffing/PlanName",
+            "name" : "PlanName",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Staffing/Demand",
+            "name" : "Demand",
+            "Group" : {
+              "repeatability" : 50,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Staffing/Demand/Department",
+                "name" : "Department",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Staffing/Demand/Headcount",
+                "name" : "Headcount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Staffing/Demand/Base",
+                "name" : "Base",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Staffing/Demand/Stamp",
+                "name" : "Stamp",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Staffing/Demand/HeadcountC14",
+                "name" : "HeadcountC14",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Headcount",
+                  "computationAlternatives" : [ {
+                    "operation" : "[Base] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C14 value check"
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "Department"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Staffing/Supply",
+            "name" : "Supply",
+            "Group" : {
+              "repeatability" : 50,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Staffing/Supply/Department",
+                "name" : "Department",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Staffing/Supply/Headcount",
+                "name" : "Headcount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Staffing/Supply/Combined",
+                "name" : "Combined",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Staffing/Supply/CombinedComp",
+                "name" : "CombinedComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Combined",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Staffing/Demand/Headcount] + [/Staffing/Supply/Headcount]",
+                    "precondition" : "FieldFilled(/Staffing/Supply/Department)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Combined is demand plus supply headcount per department."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Staffing/Supply/SumOut",
+                "name" : "SumOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Staffing/Supply/DayOut",
+                "name" : "DayOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Staffing/Supply/Choice",
+                "name" : "Choice",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Staffing/Supply/SumOutC14",
+                "name" : "SumOutC14",
+                "Computation" : {
+                  "computedFieldRelPath" : "../SumOut",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/Staffing/Demand/Headcount, Headcount)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C14 value check"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Staffing/Supply/DayOutC14",
+                "name" : "DayOutC14",
+                "Computation" : {
+                  "computedFieldRelPath" : "../DayOut",
+                  "computationAlternatives" : [ {
+                    "operation" : "DayFromDate(/Staffing/Demand/Stamp) + [Headcount]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C14 value check"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Staffing/Supply/ChoiceC14",
+                "name" : "ChoiceC14",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Choice",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/Staffing/Demand/Headcount, Headcount)",
+                    "precondition" : "[/Staffing/Demand/Headcount] > 10"
+                  }, {
+                    "operation" : "7",
+                    "precondition" : "FieldFilled(Department)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "C14 value check"
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "Department"
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

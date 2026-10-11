@@ -106,17 +106,11 @@ private def outsideTarget : DmComputation := {
 
 example : (lowerComputation model .english outsideTarget).isOk = false := by native_decide
 
-private def refusalOf (result : Lowering α) : Option (String × String) :=
-  match result with | .ok _ => none | .error refusal => some (refusal.construct, refusal.detail)
-
-private def originalGuardRefusal : Option (String × String) :=
-  refusalOf (elaborated "Guard" (model.elaborateCheckedComputationCondition ["Form", "Supply"] ["Form", "Supply"]
-    (.fieldFilled { base := .absolute, groups := ["Form", "Demand"], field := "Amount" })))
-
-example : originalGuardRefusal.isSome ∧ ["1", "[Amount] + 1"].all (fun operation =>
-    refusalOf (lowerComputation model .english (definition "Supply" "Total"
-      [{ operation, precondition := some "FieldFilled(/Form/Demand/Amount)" }])) == originalGuardRefusal) := by
-  native_decide
+example : ["1", "[Amount] + 1"].map (fun operation =>
+    run [definition "Supply" "Total"
+      [{ operation, precondition := some "FieldFilled(/Form/Demand/Amount)" }]]
+      [demandRow "A" "10"] [row "A" "2"]) = [
+    some [("Form/Supply/Total", "value 1")], some [("Form/Supply/Total", "value 3")]] := by native_decide
 
 example : run [definition "Supply" "Total"
       [{ operation := "[/Form/Demand/Amount] + 1", precondition := some "FieldFilled(Amount)" }],

@@ -180,7 +180,7 @@ def executeWithRead
       (List ParallelNumericDirectOutcome) := do
   let targets ←
     CheckedIsolatedParallelNumericDirectRun.executableTargets
-      table.first.operation.route.asTargetRoute
+      table.first.operation.route
       (table.operandRoutes.drop 1) preliminary
   targets.mapM (table.executeTargetWith preliminary read)
 

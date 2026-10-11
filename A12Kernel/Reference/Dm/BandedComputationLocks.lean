@@ -253,14 +253,14 @@ private def parallelGenerated (mode source stored : String) :
   let operation ← step.operations.head?
   let preliminary ← checked.applyFullIndexPreliminary.toOption
   let targets ← (CheckedIsolatedParallelNumericDirectRun.executableTargets
-    operation.route.asTargetRoute operation.additionalRoutes preliminary).toOption
+    operation.route operation.additionalRoutes preliminary).toOption
   targets.mapM fun target => do
     let key ← (operation.targetKeyFor preliminary target.environment target.address).toOption
     let cells ← (operation.operandCells preliminary target.environment key).toOption
     let context : ScalarComputationContext := {
       read := fun field => (cells.find? (fun cell => cell.1 == field)).map Prod.snd
         |>.getD malformedCheckedCell }
-    let .value raw ← (operation.expression.evaluateComputation context).toOption | none
+    let .value raw ← (operation.expression.evaluateResolvedComputation context).toOption | none
     let .accepted rounded ← (operation.evaluateSelected context).toOption | none
     let targetCell ← (checked.read target.address).toOption
     let validation : FlatContext := { read := fun _ => targetCell }

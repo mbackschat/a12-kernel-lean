@@ -1,0 +1,174 @@
+{
+  "model": "Parallel_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "reversed",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [
+            {
+              "Department": "A",
+              "Base": "9",
+              "Headcount": "123",
+              "Stamp": "2026-10-03"
+            },
+            {
+              "Department": "B",
+              "Base": "19",
+              "Headcount": "123",
+              "Stamp": "2026-10-08"
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "B",
+              "Headcount": "2",
+              "Combined": "999",
+              "SumOut": "999",
+              "DayOut": "999",
+              "Choice": "999"
+            },
+            {
+              "Department": "A",
+              "Headcount": "1",
+              "Combined": "999",
+              "SumOut": "999",
+              "DayOut": "999",
+              "Choice": "999"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unmatched",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [
+            {
+              "Department": "A",
+              "Base": "9",
+              "Headcount": "123",
+              "Stamp": "2026-10-08"
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "C",
+              "Headcount": "2",
+              "Combined": "999",
+              "SumOut": "999",
+              "DayOut": "999",
+              "Choice": "999"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-date",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [
+            {
+              "Department": "A",
+              "Base": "9",
+              "Headcount": "123",
+              "Stamp": ""
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "A",
+              "Headcount": "2",
+              "Combined": "999",
+              "SumOut": "999",
+              "DayOut": "999",
+              "Choice": "999"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "malformed-date",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [
+            {
+              "Department": "A",
+              "Base": "19",
+              "Headcount": "123",
+              "Stamp": "bad"
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "A",
+              "Headcount": "2",
+              "Combined": "999",
+              "SumOut": "999",
+              "DayOut": "999",
+              "Choice": "999"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "producer-poison",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [
+            {
+              "Department": "A",
+              "Base": "bad",
+              "Headcount": "123",
+              "Stamp": "2026-10-08"
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "A",
+              "Headcount": "2",
+              "Combined": "999",
+              "SumOut": "999",
+              "DayOut": "999",
+              "Choice": "999"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-producer",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [
+            {
+              "Department": "A",
+              "Base": "",
+              "Headcount": "123",
+              "Stamp": "2026-10-08"
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "A",
+              "Headcount": "2",
+              "Combined": "999",
+              "SumOut": "999",
+              "DayOut": "999",
+              "Choice": "999"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C14. C01–C13 are closed; proceed in the frozen order.
+The autonomous goal is active at C15. C01–C14 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -126,8 +126,10 @@ C13–C22 follow the reported first checkpoint and finish the ordinary-behavior 
 
 ### C14 — mixed parallel numeric tables use complete operations
 
-- [ ] Reconcile and close Sum/DayFromDate operands, a numeric comparison guard, a fallback without a joined operand and a computed producer feeding one side.
+- [x] Reconcile and close Sum/DayFromDate operands, a numeric comparison guard, a fallback without a joined operand and a computed producer feeding one side.
 - Done: one two-group unique-key matrix executes authored alternatives and fresh dependencies through the [existing parallel step](../A12Kernel/Elaboration/ParallelNumericStep.lean); no new join algorithm or third group. [SG4](gaps/keystone.md#gap-sg4).
+
+- Accepted: [reader-to-execution matrix](../A12Kernel/Reference/Dm/ParallelNumericOperationLocks.lean) and [retained two-group calibration](sources/computation-scheduling-probes.md#src-parallel-numeric-operations). Existing isolated-route refusal and banded-policy controls remain green; fresh HIGH review and applicable gates passed.
 
 ### C15 — row-set temporal expressions compose with comparisons
 
@@ -218,8 +220,8 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C14, after accepted C13. Reconcile the frozen mixed-parallel numeric table matrix against [ParallelNumericStep](../A12Kernel/Elaboration/ParallelNumericStep.lean), its reader/lowering and [SG4](gaps/keystone.md#gap-sg4): Sum/DayFromDate operands, numeric comparison guard, fallback without a joined operand, and a computed producer feeding one side. Preserve two-group unique-key scope; no new join algorithm or third group.
-- Next: inspect existing checked operations, row-table lowering and reader controls once; identify the actual missing adapters before editing. Settle one representative path at HIGH, then delegate a coherent settled batch only if it saves effort. C13 is accepted, with no live process or unresolved cold finding. C12 fulfilled the scheduled consumer probe; no extra probe is due merely because another task starts.
+- Active: C15, after accepted C14. Reconcile MinValue/MaxValue over direct/one-star temporal lists inside comparison and DifferenceInDays against [SG6/SG23](gaps/numeric-and-temporal.md), current reader/semantic tree and existing observations. Keep complete Date and yearless/common-BaseYear profiles; pre-floor, arbitrary-zone and deeper nesting remain excluded.
+- Next: enumerate only C15's frozen full/partial-validation and computation cases against current code and retained evidence, then implement the missing shared adapter if needed. Close existing support without recapturing it. C14 has no live process or unresolved cold finding. C12 fulfilled the scheduled consumer probe; C15 entry alone triggers no additional consumer exercise.
 - C08 closed: the separate omission selector, shared filter coordinates, mixed-group wildcard correction and effect-preserving message origin pass the frozen matrix. [Reference calibration](implementation/validation-messages-and-custom.md#cap-structural-message-references) matches both exact sets for all 40 caller and 246 filtered-predicate messages. H10-R1 is reconciled against admitted temporal-reference controls; H10-R2 is discharged by dedicated calibration. No new outbound ledger entry. The scheduled C12 consumer probe is complete.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
 - C01 closed: [risk-boundary implementation](../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [reconciled eight-scenario consumer run](consumer-probes/EXECUTE.md#run-c01-execute-03). Integration (2,166 jobs), retained evidence (51 projections), trust (3,026 roots) and HIGH review passed; the review’s documentation correction is incorporated. Code is committed at `0e302b8d`; the accepted consumer basis is `9fe99116`. No remaining C01 blocker.
@@ -234,8 +236,8 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 ## Verified gate boundary
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
-- Latest executable boundary: C13 index/group messages. Final integration passed (2,215 jobs), all 51 compact evidence projections agree, fresh HIGH review and its bounded correction recheck are accepted. Trust/hygiene passed (3,027 roots; 111,104 declarations in 889 modules). New source-grounded clauses are pending in `SPEC-2026-10-11-01`; the owner carries requests, and no handoff has been sent.
+- Latest executable boundary: C14 complete parallel numeric alternatives. Integration passed (2,219 jobs), all 51 compact projections agree, fresh HIGH review is accepted after correcting its evidence-ordering finding. Trust/hygiene passed (3,027 roots; 111,117 declarations in 890 modules). No new behavioral spec delta or outbound ledger entry; C13's existing request remains with its owner.
 - Latest consumer boundary: C12 passes all eleven frozen Execute/Explain scenario families; fresh HIGH review and documentation/prose/sync hygiene pass. The first run exposed one omitted duplicate-key clause in the packet, repaired from the existing canonical owner; no runtime edit or new capture. This qualifies bounded semantic transport, not an independent evaluator or downstream product.
-- Last full replay: 71,664 matches (52,335 rules and 19,329 computations); zero divergence/fault/unattributed/tier-2 instances; 3,329 rows, 217 without matching artifacts, six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) was regenerated on 2026-10-11 at `523f9264` plus reviewed C13. Counts are unchanged; this run checks regression preservation after the parser/reference changes. The cadence resets at this reviewed boundary.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only handoff edits do not invalidate C13 executable gates.
+- Last full replay: 71,694 matches (52,335 rules and 19,359 computations), zero divergence/fault/unattributed/tier-2 instances, 3,335 rows, 217 without matching artifacts and six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) includes the reviewed C14 slice. The 30 additional matches come from its new capture; the earlier population remains unchanged. Replay cadence resets at this boundary.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only handoff edits do not invalidate C14 executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.

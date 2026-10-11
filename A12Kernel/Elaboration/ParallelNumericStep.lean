@@ -16,20 +16,33 @@ inductive ParallelNumericStepFault where
   | execution (cause : CheckedIsolatedParallelNumericDirectRun.ExecutionError)
   deriving Repr, DecidableEq
 
-/-- Resolve the existing parallel carrier's presence-only guard vocabulary. The checked operation
-subsequently certifies every leaf against its bound or joined routes and excludes its target. -/
-def FlatModel.resolveParallelPresenceCondition (model : FlatModel) (group : GroupPath) :
-    SurfaceComputationCondition → Except ParallelNumericDirectPlanError ComputationCondition
+/-- Resolve presence and numeric comparison leaves without pretending that sibling scopes are
+bound. The checked run certifies their field routes and ordinary comparison admission together. -/
+def FlatModel.resolveParallelNumericCondition (model : FlatModel) (group targetGroup : GroupPath) :
+    SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate →
+      Except ParallelNumericDirectPlanError (CheckedComputationCondition model)
   | .fieldFilled path =>
-      (.fieldFilled ∘ FlatFieldDecl.id) <$> (model.resolveFieldDeclarationUnchecked group path).mapError .expressionResolve
+      (.fieldFilled ∘ FlatFieldDecl.id) <$> (model.resolvePresenceOperand group targetGroup path
+        (model.resolveFieldDeclarationUnchecked group path)).mapError .expressionResolve
   | .fieldNotFilled path =>
-      (.fieldNotFilled ∘ FlatFieldDecl.id) <$> (model.resolveFieldDeclarationUnchecked group path).mapError .expressionResolve
+      (.fieldNotFilled ∘ FlatFieldDecl.id) <$> (model.resolvePresenceOperand group targetGroup path
+        (model.resolveFieldDeclarationUnchecked group path)).mapError .expressionResolve
+  | .numeric comparison => do
+      let resolve : SurfaceNumericComputationAtom → Except ParallelNumericDirectPlanError (CheckedNumericComputationAtom model) := fun
+        | .numeric (.field path) => (.numeric ∘ .field) <$> model.resolveParallelNumericDeclaration group targetGroup path
+        | _ => .error .guardNotLimitedToOperand
+      let left ← comparison.left.mapM resolve
+      let right ← comparison.right.mapM resolve
+      let resolved : NumericComparisonOf (CheckedNumericComputationAtom model) := {
+        left, right, op := comparison.op
+        suppressExactScaleWarning := comparison.suppressExactScaleWarning }
+      pure (.leaf (.numeric resolved))
   | .and left right => do
-      pure (.and (← model.resolveParallelPresenceCondition group left)
-        (← model.resolveParallelPresenceCondition group right))
+      pure (.and (← model.resolveParallelNumericCondition group targetGroup left)
+        (← model.resolveParallelNumericCondition group targetGroup right))
   | .or left right => do
-      pure (.or (← model.resolveParallelPresenceCondition group left)
-        (← model.resolveParallelPresenceCondition group right))
+      pure (.or (← model.resolveParallelNumericCondition group targetGroup left)
+        (← model.resolveParallelNumericCondition group targetGroup right))
   | _ => .error .guardNotLimitedToOperand
 
 namespace CheckedParallelNumericStep
@@ -43,8 +56,8 @@ def operations : CheckedParallelNumericStep model → List (CheckedIsolatedParal
   | .alternatives table => table.alternatives.map (·.operation)
 
 def primary : CheckedParallelNumericStep model → CheckedParallelNumericTargetRoute model
-  | .single operation => operation.route.asTargetRoute
-  | .alternatives table => table.first.operation.route.asTargetRoute
+  | .single operation => operation.route
+  | .alternatives table => table.first.operation.route
 
 def operandRoutes : CheckedParallelNumericStep model → List (CheckedParallelNumericTargetRoute model)
   | .single operation => operation.operandRoutes
@@ -60,7 +73,7 @@ def referencesField (step : CheckedParallelNumericStep model) (field : FieldId) 
 def requiresProducer (step : CheckedParallelNumericStep model)
     (producerProtected : FieldId → ResolvedGroupReference → Bool) (field : FieldId) : Bool :=
   step.operations.any fun operation =>
-    operation.expression.anyAtom (fun declaration => declaration.id == field) ||
+    operation.expression.anyAtom (NumericComputationAtom.referencesField model field) ||
       operation.referencesIndexField field ||
       operation.precondition.any (·.requiresProducer step.targetField field (producerProtected field))
 

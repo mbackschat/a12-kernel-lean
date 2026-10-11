@@ -112,7 +112,7 @@ theorem parallelNumericAlternativeTable_executeWithRead_owns_target
   unfold CheckedParallelNumericAlternativeTable.executeWithRead at executed
   cases targetsResult :
       CheckedIsolatedParallelNumericDirectRun.executableTargets
-        table.first.operation.route.asTargetRoute
+        table.first.operation.route
         (table.operandRoutes.drop 1) preliminary with
   | error error =>
       rw [targetsResult] at executed
@@ -125,7 +125,7 @@ theorem parallelNumericAlternativeTable_executeWithRead_owns_target
         intro target member
         have owned :=
           parallelNumericExecutableTargets_own_primary_target
-            table.first.operation.route.asTargetRoute
+            table.first.operation.route
             (table.operandRoutes.drop 1) preliminary targets
             targetsResult target member
         change
@@ -156,7 +156,7 @@ theorem parallelNumericAlternativeTable_executeWithRead_addresses_nodup
   unfold CheckedParallelNumericAlternativeTable.executeWithRead at executed
   cases targetsResult :
       CheckedIsolatedParallelNumericDirectRun.executableTargets
-        table.first.operation.route.asTargetRoute
+        table.first.operation.route
         (table.operandRoutes.drop 1) preliminary with
   | error error =>
       rw [targetsResult] at executed
@@ -177,7 +177,7 @@ theorem parallelNumericAlternativeTable_executeWithRead_addresses_nodup
         executed
       rw [projected]
       exact parallelNumericExecutableTargets_addresses_nodup
-        table.first.operation.route.asTargetRoute
+        table.first.operation.route
         (table.operandRoutes.drop 1) preliminary targets targetsResult
 
 end A12Kernel

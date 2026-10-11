@@ -8,12 +8,12 @@ namespace A12Kernel
 theorem checkedIsolatedParallelNumericDirectRun_wellFormed
     (checked : CheckedIsolatedParallelNumericDirectRun model) :
     checked.WellFormed :=
-  ⟨checkedParallelNumericClearingPlan_wellFormed checked.route,
+  ⟨checkedParallelNumericTargetRoute_wellFormed checked.route,
     fun additional _ =>
       checkedParallelNumericTargetRoute_wellFormed additional,
     checked.routeTargetsCoherent, checked.guardExcludesTarget,
     checked.expressionExcludesTarget, checked.guardAdmitted,
-    checked.expressionUsesOperand, checked.expressionOperandsAdmitted,
+    checked.expressionOperandsAdmitted,
     checked.expressionAdmitted, checked.expressionAuthoring,
     checked.operandScopesAvailable,
     checked.operationScaleOwned, checked.operationScaleAdmitted⟩

@@ -1,0 +1,1686 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Parallel_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "reversed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply[2]/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply[2]/Choice",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply[2]/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply[2]/Combined",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply/DayOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply[2]/DayOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply[2]/DayOut",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand/Headcount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand[2]/Headcount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply[2]/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount",
+                "Staffing/Supply[2]/SumOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Demand[2]/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "20"
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              },
+              {
+                "field": "Staffing/Supply[2]/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Staffing/Supply[2]/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "11"
+              },
+              {
+                "field": "Staffing/Supply[2]/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "Staffing/Supply[2]/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "11"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply[2]/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply[2]/Choice",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply[2]/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply[2]/Combined",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply/DayOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply[2]/DayOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply[2]/DayOut",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand/Headcount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand[2]/Headcount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply[2]/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount",
+                "Staffing/Supply[2]/SumOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Demand[2]/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "20"
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              },
+              {
+                "field": "Staffing/Supply[2]/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Staffing/Supply[2]/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "11"
+              },
+              {
+                "field": "Staffing/Supply[2]/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "Staffing/Supply[2]/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "11"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "unmatched",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ]
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply/DayOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ]
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand/Headcount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ]
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply/DayOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ]
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand/Headcount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": [
+                "/Staffing[1]/Demand[-5]/Department",
+                "/Staffing[1]/Demand[-5]/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-date",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply/DayOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ]
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand/Headcount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "12"
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "12"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply/DayOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ]
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand/Headcount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "12"
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "12"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "malformed-date",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand/Headcount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Staffing/Demand/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Stamp"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "20"
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Staffing/Demand/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Staffing/Demand/Stamp"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand/Headcount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Staffing/Demand/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Stamp"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "20"
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "22"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Staffing/Demand/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Staffing/Demand/Stamp"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "producer-poison",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply/DayOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Staffing/Demand/Base",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Staffing/Demand/Base",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Staffing/Demand/Base"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply/DayOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Staffing/Demand/Base",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Staffing/Demand/Base",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Staffing/Demand/Base"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-producer",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply/DayOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand/Headcount",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ],
+              "fillToFix": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ]
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ChoiceC14",
+              "field": "Staffing/Supply/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Choice",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CombinedComp",
+              "field": "Staffing/Supply/Combined",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Combined",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DayOutC14",
+              "field": "Staffing/Supply/DayOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/DayOut",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "HeadcountC14",
+              "field": "Staffing/Demand/Headcount",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ],
+              "fillToFix": [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Headcount"
+              ]
+            },
+            {
+              "code": "SumOutC14",
+              "field": "Staffing/Supply/SumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/SumOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Staffing/Demand/Headcount",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Staffing/Supply/Choice",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Staffing/Supply/Combined",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Staffing/Supply/DayOut",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Staffing/Supply/SumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    }
+  ]
+}
