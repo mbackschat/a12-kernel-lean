@@ -142,6 +142,18 @@ example : [ComputationRoundingMode.exact, .roundUp, .roundDown].all (fun mode =>
     (generated mode (1259 / 1000) (25 / 100)).map Prod.snd == some true) = true ∧
     generated .roundUp 1 0 none = none ∧ generated .roundDown 1 0 none = none := by native_decide
 
+example : [NumericToleranceRange.range2, .range5, .range10].all (fun band =>
+    let width := band.threshold
+    [ComputationRoundingMode.exact, .roundUp, .roundDown].all fun mode =>
+      [ (width - 1 / 100, 0, false), (width, 0, false), (width + 1 / 100, 0, true),
+        (-width + 1 / 100, 0, false), (-width, 0, false), (-width - 1 / 100, 0, true),
+        (1259 / 1000, 125 / 100 - width, true),
+        (-1255 / 1000, -126 / 100 + width, false),
+        (125 / 100, 150 / 100 - width, false),
+        (125 / 100, 120 / 100 + width, false) ].all fun (source, stored, fires) =>
+          (generated mode source stored (some band)).map Prod.snd == some fires) = true := by
+  native_decide
+
 private def parallelModel : FlatModel := {
   fields := [
     { id := 1, groupPath := ["Form", "SourceRows"], name := "Key", repeatableScope := [10], policy := { kind := .string } },

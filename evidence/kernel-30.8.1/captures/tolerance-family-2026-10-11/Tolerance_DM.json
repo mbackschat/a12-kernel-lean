@@ -1,0 +1,493 @@
+{
+  "header" : {
+    "id" : "Tolerance_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Tolerance_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/A2",
+            "name" : "A2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 3
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/B2",
+            "name" : "B2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Exact2",
+            "name" : "Exact2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Up2",
+            "name" : "Up2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Down2",
+            "name" : "Down2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Guard2",
+            "name" : "Guard2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Rule2",
+            "name" : "Rule2",
+            "Rule" : {
+              "errorEntityRelPath" : "../A2",
+              "errorCode" : "BAND_2",
+              "errorCondition" : "[A2] DiffersWithToleranceRange2 [B2]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ExactComp2",
+            "name" : "ExactComp2",
+            "Computation" : {
+              "computedFieldRelPath" : "../Exact2",
+              "computationAlternatives" : [ {
+                "operation" : "[A2]",
+                "toleranceRangeOp" : "DiffersWithToleranceRange2"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/UpComp2",
+            "name" : "UpComp2",
+            "Computation" : {
+              "computedFieldRelPath" : "../Up2",
+              "roundingMode" : "RoundUp",
+              "computationAlternatives" : [ {
+                "operation" : "[A2]",
+                "toleranceRangeOp" : "DiffersWithToleranceRange2"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DownComp2",
+            "name" : "DownComp2",
+            "Computation" : {
+              "computedFieldRelPath" : "../Down2",
+              "roundingMode" : "RoundDown",
+              "computationAlternatives" : [ {
+                "operation" : "[A2]",
+                "toleranceRangeOp" : "DiffersWithToleranceRange2"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GuardComp2",
+            "name" : "GuardComp2",
+            "Computation" : {
+              "computedFieldRelPath" : "../Guard2",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "[A2] DiffersWithToleranceRange2 [B2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/A5",
+            "name" : "A5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 3
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/B5",
+            "name" : "B5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Exact5",
+            "name" : "Exact5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Up5",
+            "name" : "Up5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Down5",
+            "name" : "Down5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Guard5",
+            "name" : "Guard5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Rule5",
+            "name" : "Rule5",
+            "Rule" : {
+              "errorEntityRelPath" : "../A5",
+              "errorCode" : "BAND_5",
+              "errorCondition" : "[A5] DiffersWithToleranceRange5 [B5]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ExactComp5",
+            "name" : "ExactComp5",
+            "Computation" : {
+              "computedFieldRelPath" : "../Exact5",
+              "computationAlternatives" : [ {
+                "operation" : "[A5]",
+                "toleranceRangeOp" : "DiffersWithToleranceRange5"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/UpComp5",
+            "name" : "UpComp5",
+            "Computation" : {
+              "computedFieldRelPath" : "../Up5",
+              "roundingMode" : "RoundUp",
+              "computationAlternatives" : [ {
+                "operation" : "[A5]",
+                "toleranceRangeOp" : "DiffersWithToleranceRange5"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DownComp5",
+            "name" : "DownComp5",
+            "Computation" : {
+              "computedFieldRelPath" : "../Down5",
+              "roundingMode" : "RoundDown",
+              "computationAlternatives" : [ {
+                "operation" : "[A5]",
+                "toleranceRangeOp" : "DiffersWithToleranceRange5"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GuardComp5",
+            "name" : "GuardComp5",
+            "Computation" : {
+              "computedFieldRelPath" : "../Guard5",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "[A5] DiffersWithToleranceRange5 [B5]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/A10",
+            "name" : "A10",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 3
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/B10",
+            "name" : "B10",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Exact10",
+            "name" : "Exact10",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Up10",
+            "name" : "Up10",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Down10",
+            "name" : "Down10",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Guard10",
+            "name" : "Guard10",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Rule10",
+            "name" : "Rule10",
+            "Rule" : {
+              "errorEntityRelPath" : "../A10",
+              "errorCode" : "BAND_10",
+              "errorCondition" : "[A10] DiffersWithToleranceRange10 [B10]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ExactComp10",
+            "name" : "ExactComp10",
+            "Computation" : {
+              "computedFieldRelPath" : "../Exact10",
+              "computationAlternatives" : [ {
+                "operation" : "[A10]",
+                "toleranceRangeOp" : "DiffersWithToleranceRange10"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/UpComp10",
+            "name" : "UpComp10",
+            "Computation" : {
+              "computedFieldRelPath" : "../Up10",
+              "roundingMode" : "RoundUp",
+              "computationAlternatives" : [ {
+                "operation" : "[A10]",
+                "toleranceRangeOp" : "DiffersWithToleranceRange10"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DownComp10",
+            "name" : "DownComp10",
+            "Computation" : {
+              "computedFieldRelPath" : "../Down10",
+              "roundingMode" : "RoundDown",
+              "computationAlternatives" : [ {
+                "operation" : "[A10]",
+                "toleranceRangeOp" : "DiffersWithToleranceRange10"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GuardComp10",
+            "name" : "GuardComp10",
+            "Computation" : {
+              "computedFieldRelPath" : "../Guard10",
+              "computationAlternatives" : [ {
+                "operation" : "7",
+                "precondition" : "[A10] DiffersWithToleranceRange10 [B10]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Tolerance calibration check"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

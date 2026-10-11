@@ -1,0 +1,476 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "A2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 3
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "B2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Exact2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Up2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Down2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Guard2",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/A2",
+    "name": "Rule2",
+    "condition": "[A2] DiffersWithToleranceRange2 [B2]",
+    "code": "BAND_2",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Exact2",
+    "name": "ExactComp2",
+    "roundingMode": "Exact",
+    "alternatives": [
+      {
+        "operation": "[A2]",
+        "toleranceRangeOp": "DiffersWithToleranceRange2"
+      }
+    ],
+    "errorCodesToSuppress": [
+      "MVK_INVALID_COMPARE_DEC_PLACES"
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Up2",
+    "name": "UpComp2",
+    "roundingMode": "RoundUp",
+    "alternatives": [
+      {
+        "operation": "[A2]",
+        "toleranceRangeOp": "DiffersWithToleranceRange2"
+      }
+    ],
+    "errorCodesToSuppress": [
+      "MVK_INVALID_COMPARE_DEC_PLACES"
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Down2",
+    "name": "DownComp2",
+    "roundingMode": "RoundDown",
+    "alternatives": [
+      {
+        "operation": "[A2]",
+        "toleranceRangeOp": "DiffersWithToleranceRange2"
+      }
+    ],
+    "errorCodesToSuppress": [
+      "MVK_INVALID_COMPARE_DEC_PLACES"
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Guard2",
+    "name": "GuardComp2",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "[A2] DiffersWithToleranceRange2 [B2]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "A5",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 3
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "B5",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Exact5",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Up5",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Down5",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Guard5",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/A5",
+    "name": "Rule5",
+    "condition": "[A5] DiffersWithToleranceRange5 [B5]",
+    "code": "BAND_5",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Exact5",
+    "name": "ExactComp5",
+    "roundingMode": "Exact",
+    "alternatives": [
+      {
+        "operation": "[A5]",
+        "toleranceRangeOp": "DiffersWithToleranceRange5"
+      }
+    ],
+    "errorCodesToSuppress": [
+      "MVK_INVALID_COMPARE_DEC_PLACES"
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Up5",
+    "name": "UpComp5",
+    "roundingMode": "RoundUp",
+    "alternatives": [
+      {
+        "operation": "[A5]",
+        "toleranceRangeOp": "DiffersWithToleranceRange5"
+      }
+    ],
+    "errorCodesToSuppress": [
+      "MVK_INVALID_COMPARE_DEC_PLACES"
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Down5",
+    "name": "DownComp5",
+    "roundingMode": "RoundDown",
+    "alternatives": [
+      {
+        "operation": "[A5]",
+        "toleranceRangeOp": "DiffersWithToleranceRange5"
+      }
+    ],
+    "errorCodesToSuppress": [
+      "MVK_INVALID_COMPARE_DEC_PLACES"
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Guard5",
+    "name": "GuardComp5",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "[A5] DiffersWithToleranceRange5 [B5]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "A10",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 3
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "B10",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Exact10",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Up10",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Down10",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Guard10",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 2
+    }
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "field": "/Form/A10",
+    "name": "Rule10",
+    "condition": "[A10] DiffersWithToleranceRange10 [B10]",
+    "code": "BAND_10",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Exact10",
+    "name": "ExactComp10",
+    "roundingMode": "Exact",
+    "alternatives": [
+      {
+        "operation": "[A10]",
+        "toleranceRangeOp": "DiffersWithToleranceRange10"
+      }
+    ],
+    "errorCodesToSuppress": [
+      "MVK_INVALID_COMPARE_DEC_PLACES"
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Up10",
+    "name": "UpComp10",
+    "roundingMode": "RoundUp",
+    "alternatives": [
+      {
+        "operation": "[A10]",
+        "toleranceRangeOp": "DiffersWithToleranceRange10"
+      }
+    ],
+    "errorCodesToSuppress": [
+      "MVK_INVALID_COMPARE_DEC_PLACES"
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Down10",
+    "name": "DownComp10",
+    "roundingMode": "RoundDown",
+    "alternatives": [
+      {
+        "operation": "[A10]",
+        "toleranceRangeOp": "DiffersWithToleranceRange10"
+      }
+    ],
+    "errorCodesToSuppress": [
+      "MVK_INVALID_COMPARE_DEC_PLACES"
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "computedField": "/Form/Guard10",
+    "name": "GuardComp10",
+    "alternatives": [
+      {
+        "operation": "7",
+        "precondition": "[A10] DiffersWithToleranceRange10 [B10]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Tolerance calibration check"
+      }
+    ]
+  }
+]

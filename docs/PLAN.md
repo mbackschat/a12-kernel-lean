@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C18. C01–C17 are closed; proceed in the frozen order.
+The autonomous goal is active at C19. C01–C18 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -154,8 +154,10 @@ C13–C22 follow the reported first checkpoint and finish the ordinary-behavior 
 
 ### C18 — five pending tolerance calibration cells in one batch
 
-- [ ] Calibrate DiffersWithToleranceRange2 validation/computation, Range5 computation, Range10 validation/computation.
+- [x] Calibrate DiffersWithToleranceRange2 validation/computation, Range5 computation, Range10 validation/computation.
 - Done: retained below/at/above-boundary and sign controls, output rounding where applicable and checked-reader agreement for all five cells. Reuse C09 observations, not five separate gate cycles. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv), [SG12](gaps/conformance-evidence.md#gap-sg12).
+
+- Accepted: [ten-document tolerance calibration](sources/computation-placement-and-constant-probes.md#src-tolerance-family-calibration) closes all five cells. Both Kernel engines agree; the existing reader matches 30 explicit-rule and 120 computation outcomes, and checked generated-table locks match 90 corresponding decisions. Fresh HIGH review and focused/integrated/evidence/trust/hygiene gates pass. No evaluator or behavioral spec change; the full replay remains at C17.
 
 ### C19 — three pending temporal calibration cells in one batch
 
@@ -221,14 +223,15 @@ Do not convert these stale blanket claims into work:
 - [ComputationNumericGuard](../A12Kernel/Elaboration/ComputationNumericGuard.lean) already accepts indexed fields/keyed groups. C02 concerns actual selected-star scheduling.
 - [Validation evaluation](../A12Kernel/Elaboration/ValidationCondition/Evaluation.lean) already preserves direct/indexed validity failures. C04 must inspect full callers and retained controls before assuming a defect.
 
-The twelve pending construct/arm calibration cells have destinations: five tolerance cells C18; three temporal C19; three membership/validity C20; CustomCondition validation D11. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns the labels. A blocked reserved callback matrix does not mean every CustomCondition observation is blocked.
+Seven construct/arm calibration cells remain after C18: three temporal C19; three membership/validity C20; CustomCondition validation D11. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns the labels. A blocked reserved callback matrix does not mean every CustomCondition observation is blocked.
 
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C18, after accepted C17. Calibrate the five listed tolerance cells as one family batch; the construct inventory still marks exactly those five cells pending.
-- Working tree: C17 is accepted at its local commit boundary. Focused checks, integration, compact evidence, fresh HIGH review, population replay and final trust/hygiene pass. No build is live.
-- Next: reconcile the existing C09 observations and checked-reader tolerance controls, then retain only the missing below/at/above-boundary, sign and applicable rounding discriminators for Range2 validation/computation, Range5 computation and Range10 validation/computation. Use one calibration and gate cycle, preserving the frozen C18 matrix.
+- Active: C19, after accepted C18. Calibrate DifferenceInMinutes/DifferenceInSeconds validation and QuarterFromDate computation in one bounded batch.
+- Working tree: C18 is accepted at its local commit boundary. Fresh HIGH review and focused/integrated/evidence/trust/hygiene gates pass. No build is live.
+- Next: reconcile retained temporal observations and existing checked-reader controls, then capture only the missing signed completed-unit, quarter-end/start and empty/formal discriminators. Keep C19's three-cell matrix fixed and use one family gate cycle.
+- Calibration: the construct inventory now has 210 calibrated cells and seven pending. The derived coverage report still records C17's full-population snapshot; C18's 150 new matching instances are focused calibration, not a fresh population total.
 - C17 synchronization: the stale rule-name tier sentence is corrected from committed peer evidence. The new empty-code co-notification and formal-name suppression are [pending reconciliation](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-11-02); no message was sent. C12 fulfilled the scheduled consumer probe; C17 alone triggers no additional consumer exercise.
 - C08 closed: the separate omission selector, shared filter coordinates, mixed-group wildcard correction and effect-preserving message origin pass the frozen matrix. [Reference calibration](implementation/validation-messages-and-custom.md#cap-structural-message-references) matches both exact sets for all 40 caller and 246 filtered-predicate messages. H10-R1 is reconciled against admitted temporal-reference controls; H10-R2 is discharged by dedicated calibration. No new outbound ledger entry. The scheduled C12 consumer probe is complete.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
@@ -244,8 +247,8 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 ## Verified gate boundary
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
-- Latest executable/test boundary: C17 declaration metadata and shared Number/String alternative admission. Integration passed (2,231 jobs), all 51 compact projections agree, fresh HIGH review has no remaining actionable finding, and trust/hygiene passed (3,027 roots; 111,259 declarations in 891 modules). The source owner records inbound provenance; the ledger owns the new pending correction.
+- Latest executable/test boundary: C18 adds generated-table tolerance locks without changing the evaluator. Integration passed (2,231 jobs), all 51 compact projections agree, fresh HIGH review is clean, and trust/hygiene passed (3,027 roots; 111,259 declarations in 891 modules). Focused retained reader replay matches all 150 C18 instances; 90 generated-table decisions are checked separately against the same artifact matrix.
 - Latest consumer boundary: C12 passes all eleven frozen Execute/Explain scenario families; fresh HIGH review and documentation/prose/sync hygiene pass. The first run exposed one omitted duplicate-key clause in the packet, repaired from the existing canonical owner; no runtime edit or new capture. This qualifies bounded semantic transport, not an independent evaluator or downstream product.
 - Last full replay: 71,710 matches (52,335 rules and 19,375 computations), zero divergence/fault/unattributed/tier-2 instances, 3,339 rows across 447 requests, 217 without matching artifacts and six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) includes the reviewed C17 slice. All population counts are unchanged from C16. The reader admission change triggered this replay, and cadence resets at C17.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only handoff edits do not invalidate C17 executable gates.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only handoff edits do not invalidate C18 executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.

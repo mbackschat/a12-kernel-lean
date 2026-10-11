@@ -1,0 +1,2762 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Tolerance_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "positive-below",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "9.99"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "1.99"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "4.99"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "9.99"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "1.99"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "4.99"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "positive-at",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "positive-above",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BAND_10",
+              "field": "Form/A10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_2",
+              "field": "Form/A2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_5",
+              "field": "Form/A5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp10",
+              "field": "Form/Down10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Down10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp2",
+              "field": "Form/Down2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Down2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp5",
+              "field": "Form/Down5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Down5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp10",
+              "field": "Form/Exact10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Exact10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp2",
+              "field": "Form/Exact2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Exact2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp5",
+              "field": "Form/Exact5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Exact5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp10",
+              "field": "Form/Guard10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10",
+                "Form/Guard10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp2",
+              "field": "Form/Guard2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2",
+                "Form/Guard2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp5",
+              "field": "Form/Guard5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5",
+                "Form/Guard5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp10",
+              "field": "Form/Up10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Up10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp2",
+              "field": "Form/Up2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Up2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp5",
+              "field": "Form/Up5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Up5"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "10.01"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "2.01"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "5.01"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "11"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BAND_10",
+              "field": "Form/A10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_2",
+              "field": "Form/A2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_5",
+              "field": "Form/A5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp10",
+              "field": "Form/Down10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Down10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp2",
+              "field": "Form/Down2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Down2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp5",
+              "field": "Form/Down5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Down5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp10",
+              "field": "Form/Exact10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Exact10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp2",
+              "field": "Form/Exact2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Exact2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp5",
+              "field": "Form/Exact5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Exact5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp10",
+              "field": "Form/Guard10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10",
+                "Form/Guard10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp2",
+              "field": "Form/Guard2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2",
+                "Form/Guard2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp5",
+              "field": "Form/Guard5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5",
+                "Form/Guard5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp10",
+              "field": "Form/Up10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Up10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp2",
+              "field": "Form/Up2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Up2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp5",
+              "field": "Form/Up5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Up5"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "10"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "10.01"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "2.01"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "5.01"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "11"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "negative-below",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "-9.99"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.99"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "-4.99"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "-9"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "-4"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "-9.99"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.99"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "-4.99"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "-9"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "-4"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "negative-at",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "negative-above",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BAND_10",
+              "field": "Form/A10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_2",
+              "field": "Form/A2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_5",
+              "field": "Form/A5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp10",
+              "field": "Form/Down10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Down10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp2",
+              "field": "Form/Down2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Down2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp5",
+              "field": "Form/Down5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Down5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp10",
+              "field": "Form/Exact10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Exact10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp2",
+              "field": "Form/Exact2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Exact2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp5",
+              "field": "Form/Exact5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Exact5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp10",
+              "field": "Form/Guard10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10",
+                "Form/Guard10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp2",
+              "field": "Form/Guard2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2",
+                "Form/Guard2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp5",
+              "field": "Form/Guard5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5",
+                "Form/Guard5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp10",
+              "field": "Form/Up10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Up10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp2",
+              "field": "Form/Up2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Up2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp5",
+              "field": "Form/Up5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Up5"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "-11"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "-3"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "-6"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10.01"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2.01"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5.01"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BAND_10",
+              "field": "Form/A10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_2",
+              "field": "Form/A2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_5",
+              "field": "Form/A5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp10",
+              "field": "Form/Down10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Down10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp2",
+              "field": "Form/Down2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Down2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp5",
+              "field": "Form/Down5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Down5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp10",
+              "field": "Form/Exact10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Exact10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp2",
+              "field": "Form/Exact2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Exact2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp5",
+              "field": "Form/Exact5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Exact5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp10",
+              "field": "Form/Guard10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10",
+                "Form/Guard10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp2",
+              "field": "Form/Guard2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2",
+                "Form/Guard2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp5",
+              "field": "Form/Guard5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5",
+                "Form/Guard5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp10",
+              "field": "Form/Up10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Up10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp2",
+              "field": "Form/Up2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Up2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp5",
+              "field": "Form/Up5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Up5"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "-11"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "-3"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "-6"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10.01"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2.01"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5.01"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "-10"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "-5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "exact-finer-positive",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BAND_10",
+              "field": "Form/A10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_2",
+              "field": "Form/A2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_5",
+              "field": "Form/A5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp10",
+              "field": "Form/Down10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Down10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp2",
+              "field": "Form/Down2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Down2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp5",
+              "field": "Form/Down5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Down5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp10",
+              "field": "Form/Exact10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Exact10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp2",
+              "field": "Form/Exact2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Exact2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp5",
+              "field": "Form/Exact5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Exact5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp10",
+              "field": "Form/Guard10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10",
+                "Form/Guard10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp2",
+              "field": "Form/Guard2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2",
+                "Form/Guard2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp5",
+              "field": "Form/Guard5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5",
+                "Form/Guard5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp10",
+              "field": "Form/Up10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Up10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp2",
+              "field": "Form/Up2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Up2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp5",
+              "field": "Form/Up5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Up5"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BAND_10",
+              "field": "Form/A10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_2",
+              "field": "Form/A2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BAND_5",
+              "field": "Form/A5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp10",
+              "field": "Form/Down10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Down10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp2",
+              "field": "Form/Down2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Down2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DownComp5",
+              "field": "Form/Down5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Down5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp10",
+              "field": "Form/Exact10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Exact10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp2",
+              "field": "Form/Exact2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Exact2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExactComp5",
+              "field": "Form/Exact5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Exact5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp10",
+              "field": "Form/Guard10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/B10",
+                "Form/Guard10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp2",
+              "field": "Form/Guard2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/B2",
+                "Form/Guard2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardComp5",
+              "field": "Form/Guard5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/B5",
+                "Form/Guard5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp10",
+              "field": "Form/Up10",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A10",
+                "Form/Up10"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp2",
+              "field": "Form/Up2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A2",
+                "Form/Up2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UpComp5",
+              "field": "Form/Up5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/A5",
+                "Form/Up5"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "exact-finer-negative",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.26"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.26"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.26"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.26"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.26"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.26"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "up-authored-comparison",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "down-authored-comparison",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Down10",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Down5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Exact10",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact2",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Exact5",
+                "cleared": false,
+                "errored": false,
+                "value": "1.25"
+              },
+              {
+                "field": "Form/Guard10",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Guard5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Up10",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Up5",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    }
+  ]
+}

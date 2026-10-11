@@ -135,7 +135,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Diagnostic vocabulary and sweeps](sources/diagnostic-class-vocabulary-and-sweeps.md)
 - [Model structure and declarations](sources/model-structure-and-declaration-probes.md), including [executable declaration phases](sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission) (peer reconciliation at `6bc5e75337a6b2caea5b563e26d346cf53e163c8`)
 - [Rule-set metadata](sources/rule-set-meta-information.md)
-- [Computation placement and constants](sources/computation-placement-and-constant-probes.md), including [String/Enumeration crossings](sources/computation-placement-and-constant-probes.md#src-string-enumeration-crossings)
+- [Computation placement and constants](sources/computation-placement-and-constant-probes.md), including [String/Enumeration crossings](sources/computation-placement-and-constant-probes.md#src-string-enumeration-crossings) and [tolerance calibration](sources/computation-placement-and-constant-probes.md#src-tolerance-family-calibration)
 - [Computation scheduling and guards](sources/computation-scheduling-probes.md), including [guard-derived operand scope](sources/computation-scheduling-probes.md#src-computation-guard-operand-scope) and [nested String first-filled sources](sources/computation-scheduling-probes.md#src-nested-string-first-filled); [empty-prefix provenance](sources/computation-scheduling-probes.md#src-first-filled-empty-prefix) covers the validation follow-up
 - [Evaluation and application](sources/evaluation-and-application-routes.md)
 - [Custom-field ingestion and outcomes](sources/custom-field-probes.md)

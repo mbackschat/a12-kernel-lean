@@ -24,6 +24,8 @@ The [String/Enumeration crossing capture](sources/computation-placement-and-cons
 
 C17 retains [twelve declaration-admission static observations](sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission), including codeless co-notifications and explicit reader/build phases. They are a bounded static capture with no compact typed replay or runtime-population gain.
 
+The [tolerance-family capture](sources/computation-placement-and-constant-probes.md#src-tolerance-family-calibration) retains ten dual-strategy documents. Existing reader replay covers 150 explicit-rule/computation outcomes; generated-message decisions use the checked-table locks. This is bounded raw calibration, not a new compact typed bundle.
+
 ## Validation bundle and gate ownership
 
 The validation bundle has seven ordered families. Four public families hold the current flat V2 cases, one directional Number witness, 12 captured-outer runtime cases, and four static one-star authoring cases. Three private families hold 11 path/required cases, six operator-sensitive empty-value cases, and seven uncorrelated iteration cases.
