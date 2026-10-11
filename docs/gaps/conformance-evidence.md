@@ -1,25 +1,16 @@
-# Kernel-correspondence gap
+# Kernel-correspondence residual
 
-The standing obligation that every implemented family eventually carries retained Kernel observations rather than source reading, internal proof, or peer agreement.
-
-One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.md) is the navigation hub and owns the query contract and dependency frontier; the [ordered checklist](../PLAN.md#ordered-checklist) owns priority; this file owns the detailed obligations below. The record contract is unchanged: current missing behaviour, prerequisites, discriminators, consumer consequences, evidence needs, route state, and reopening triggers only.
+The [gap index](../SEMANTICS-GAPS.md) defines residual status; [PLAN](../PLAN.md#reconciliation-checklist) selects work. This record preserves the limit of finite evidence without scheduling universal recapture.
 
 <a id="gap-sg12"></a>
 ### SG12 — retained Kernel correspondence coverage
 
-- `state`: open
-- `missing`: every implemented family ultimately needs versioned retained observations that distinguish realistic wrong accounts. Source reading, internal proofs, and peer agreement are not Kernel calibration.
-- `baseline`: [`EVIDENCE.md`](../EVIDENCE.md) and the [external-evidence gate](../IMPLEMENTATION-MAP.md#current-external-evidence-gate) own the exact retained inventory and limits.
-- `prerequisite`: use the compact semantic-evidence pipeline and an existing source-maintained a12-dmkits route when it emits the needed observation shape.
-- `remaining`: for each coherent internally closed family, determine whether the current upstream route is sufficient. Otherwise request only the smallest missing producer capability.
-- `evidence-triage`: Reconcile flagged capability records against retained artifacts and exact peer revisions before measuring. The computation result/application owners already distinguish ready outcomes from missing observation channels; audit the remaining queue for reusable evidence, ready family batches and concrete blockers.
-- `determined 2026-08-30, computed-target message family`: the route is **sufficient and no producer capability is needed**. Everything still open there — a nested or filtered star, a non-Number target, a starred operand inside a precondition, a declared minimum, and the repeatable-descendant shell operand's polarity — is a message-type question over a model and its documents, which is exactly the `validateFull`/`compute` shape `:adapter:kernelProbe` already carries. What stays open per shape is **authoring**, not observation: whether `dmtool`'s structured verbs can express that model. Check that when the batch is authored rather than assuming it now.
-- `determined 2026-08-30, group-count family`: same answer and the same reason. A formally invalid row, a starred group owning a repeatable descendant, a deeper repeatable descendant, and an all-over-limit row set are all model-plus-document runtime questions.
-- `route-selection`: use the existing model-level `mandatoryInformation` observation for [SG14](targets-and-derivation.md#sg14--mandatory-information-derivation); its capability no longer needs to be requested. For the computation queue, distinguish runtime outcomes, which the existing `compute` observation exposes, from the full result/application observations still missing under [SG16](keystone.md#gap-sg16). A pending record may contain both ready and blocked axes.
-- `discriminator`: a happy path compatible with both the chosen and a realistic wrong account does not calibrate the seam.
-- `consumer`: Qualify and Govern require Kernel version, producer revision, digest, typed replay, separator, and a finite claim limit.
-- `forbidden`: no source, peer, or proof as evidence, no universal claim from finite cases, no resurrected universal capture estate, no per-capsule harness, and no copied sibling patch.
-- `entry-gate`: select one coherent family at a capability milestone and define its wrong-account matrix and exact retained claim.
-- `completion-gate`: every correspondence claim cites retained observations with provenance, separators, replay, and explicit finite limits. Mismatches correct the theory or open a divergence.
-- `probe-contract`: Peer `adapter/src/test/resources/kernel-probe/artifact.schema.json` promises identical bytes across identical-input runs. The [collision capture](../sources/message-and-pointer-probes.md#src-message-cache-collision) shows within-strategy pointer variation consistent with host identity ordering. Request a distinction between deterministic serialization and deterministic observations in peer probe guidance; whole-request cross-process reproduction remains unmeasured. This documentation concern does not block using retained observations.
+- `state`: evidence residual; no calibration campaign is active.
+- `baseline`: [Evidence](../EVIDENCE.md), the [construct denominator](../CONFORMANCE-COVERAGE.md#axis-0--kernel-constructs-by-arm) and [population replay](../CONFORMANCE-COVERAGE.md#axis-r--population-replay) own the retained inventory and its distinct claim limits.
+- `remaining`: the CustomCondition validation cell under D11 lacks the construct-level retained calibration. Its callback invocation and phase-specific matrix remains [SG11](strings-and-messages.md#gap-sg11).
+- `remaining`: family-specific compositions and profiles without runtime observations remain in their semantic gap owners. A calibrated construct cell can be supported by static admission evidence alone; it does not certify every runtime composition.
+- `remaining`: replay rows without matching artifacts, explicit host preparation refusals, and observation channels outside ordinary replay remain bounded by the population report and dedicated application/partial/message evidence. Admitted runtime replay does not test every Kernel-refused program.
+- `route-limit`: the [cache-collision evidence](../sources/message-and-pointer-probes.md#src-message-cache-collision) distinguishes deterministic serialization from host-dependent observations. Whole-request cross-process reproduction is not established by identical-input schema wording.
+- `consumer`: Qualify/Govern require a pinned observation, its exact input surface, provenance and a finite correspondence claim. Internal proof and source-derived behavior remain distinct assurance levels.
+- `reopen-when`: a named consumer or reproduced mismatch requires a specific unmeasured distinction. Reuse current retained artifacts and source routes first; request only a missing observation capability actually needed by that distinction.
 - `route-state`: discovery-required

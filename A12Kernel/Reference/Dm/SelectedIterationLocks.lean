@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.LowerValidation
 import A12Kernel.Reference.Dm.Parser
+import A12Kernel.Reference.Dm.Validate
 
 namespace A12Kernel.Dm.SelectedIterationLocks
 
@@ -169,5 +170,49 @@ private def unboundAt (field : String) (level : RepeatableLevel) : Bool :=
 
 example : unboundAt "Rows/N" 10 = true ∧ unboundAt "Lookup/Case" 30 = true ∧
     unboundAt "Rows/Items/N" 10 = true := by native_decide
+
+private def mixedStarModel : FlatModel := {
+  fields := [
+    { id := 1, name := "Qty", groupPath := ["Form", "Rows"], repeatableScope := [1],
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 2, name := "Text", groupPath := ["Form", "Rows"], repeatableScope := [1],
+      policy := { kind := .string } },
+    { id := 3, name := "Flag", groupPath := ["Form", "Rows"], repeatableScope := [1],
+      policy := { kind := .boolean } }]
+  repeatableGroups := [{ level := 1, path := ["Form", "Rows"], repeatability := some 3 }] }
+
+private def mixedStarAdmission (text : String) (errorField : String := "Qty") : Option Bool :=
+  let dm : DmModel := {
+    flat := mixedStarModel, rules := [], computations := []
+    conditionLanguage := "en_US", refusals := [] }
+  match checkRule dm .english {
+      name := "Mixed", group := ["Form"], errorEntityRelPath := "../Rows/" ++ errorField,
+      errorCode := "MIXED", severity := "ERROR", condition := text } with
+  | .ok _ => some true
+  | .error { construct := "RuleAssembly", detail, .. } =>
+      if detail == reprStr (FlatRuleAssemblyError.negativeConditionInIteration 1) then some false else none
+  | .error _ => none
+
+-- The retained iteration-domain binding fixture refuses Max without the positive guard.
+-- Min and the other entity folds specialize the same mixed-reference classifier; they add no capture.
+private def mixedStarConditions : List (String × String) := [
+  ("MaxValue(Rows/Qty, Rows*/Qty Having CurrentRepetition(Rows) == 1) > 5", "Qty"),
+  ("MinValue(Rows/Qty, Rows*/Qty Having CurrentRepetition(Rows) == 1) > 5", "Qty"),
+  ("Sum(Rows/Qty, Rows*/Qty) > 5", "Qty"),
+  ("FirstFilledValue(Rows/Qty, Rows*/Qty) > 5", "Qty"),
+  ("NumberOfDifferentValues(Rows/Qty, Rows*/Qty) > 1", "Qty"),
+  ("NumberOfValueInFields(1 In Rows/Qty, Rows*/Qty) > 1", "Qty"),
+  ("NumberOfValueInFields(\"x\" In Rows/Text, Rows*/Text) > 1", "Text"),
+  ("NumberOfValueInFields(True In Rows/Flag, Rows*/Flag) > 1", "Flag")]
+
+example : mixedStarConditions.all (fun (text, field) =>
+    mixedStarAdmission text field == some false &&
+    mixedStarAdmission ("FieldFilled(Rows/" ++ field ++ ") And " ++ text) field == some true &&
+    mixedStarAdmission (text ++ " And FieldFilled(Rows/" ++ field ++ ")") field == some true &&
+    mixedStarAdmission ("FieldFilled(Rows/" ++ field ++ ") Or " ++ text) field == some false) = true := by
+  native_decide
+
+example : mixedStarAdmission "MaxValue(Rows*/Qty, Rows/Qty) > 5" = some false ∧
+    mixedStarAdmission "[Rows/Qty] > 5" = some true := by native_decide
 
 end A12Kernel.Dm.SelectedIterationLocks

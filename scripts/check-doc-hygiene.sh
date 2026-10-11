@@ -251,7 +251,7 @@ while IFS=: read -r chronology_file line_number _; do
   [[ -z "$line_number" ]] && continue
   echo "${chronology_file}:${line_number}: completed or correction chronology does not belong in the open-only gap owner" >&2
   failed=true
-done < <(grep -Ein '^- (\*\*)?(closed|resolved|corrected|partly resolved|upstream reconciliation closed)(\*\*)?([ :,.]|$)' docs/SEMANTICS-GAPS.md docs/gaps/*.md || true)
+done < <(grep -Ein '^- (\*\*|`)?(closed|resolved|corrected|partly resolved|upstream reconciliation closed)(\*\*|`)?([ :,.]|$)' docs/SEMANTICS-GAPS.md docs/gaps/*.md || true)
 
 # Revision citations newly written in this range must resolve. A citation is "new" only when it
 # does not already appear in the tree at the range's start, so moving or re-quoting a record does

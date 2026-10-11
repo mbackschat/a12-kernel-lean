@@ -82,7 +82,9 @@ private def checkedNumberOperandIterationScope :
 private def checkedTokenOperandIterationScope :
     CheckedTokenEntityOperand model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .field _ => pure none
+  | .field source =>
+      let scope := source.declaration.repeatableScope
+      pure (if scope.isEmpty then none else some scope)
   | .selected source => selectedIterationScope source.source
   | .star source =>
       match source.filter with
@@ -112,7 +114,9 @@ private def checkedTokenSourceIterationScope
 private def checkedBooleanValueCountOperandIterationScope :
     CheckedBooleanValueCountOperand model expected →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .field _ => pure none
+  | .field source =>
+      let scope := source.declaration.repeatableScope
+      pure (if scope.isEmpty then none else some scope)
   | .selected source => selectedIterationScope source.source
   | .star source =>
       match source.filter with

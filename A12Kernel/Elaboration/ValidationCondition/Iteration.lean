@@ -117,62 +117,47 @@ private def selectedEntityGuardScope
     List RepeatableLevel :=
   (match source with | .inl source => source.bindingScopes | .inr source => source.bindingScopes).flatten
 
-private def numberEntityOperandReferenceScope? :
-    CheckedNumberEntityOperand model →
-      Option (List RepeatableLevel)
-  | .field source => some source.declaration.repeatableScope
-  | .selected source => some (selectedEntityGuardScope source.source)
-  | .star checked => checkedStarBindingScope checked.source
-  | .starHaving checked => checkedStarBindingScope checked.source.source
-  | .group slot =>
-      let scope := slot.source.bindingScope
-      if scope.isEmpty then some [] else some scope
+/-- A fully starred operand has a known empty binding scope. Keeping that empty entry is
+necessary for the mixed-reference refusal in the retained iteration-domain binding matrix. -/
+private def numberEntityOperandReferenceScope :
+    CheckedNumberEntityOperand model → List RepeatableLevel
+  | .field source => source.declaration.repeatableScope
+  | .selected source => selectedEntityGuardScope source.source
+  | .star checked => checked.source.bindingScope
+  | .starHaving checked => checked.source.source.bindingScope
+  | .group slot => slot.source.bindingScope
 
-private def numberEntityReferenceScopes?
-    (source : CheckedNumberEntitySource model) :
-    Option (List (List RepeatableLevel)) :=
-  source.operands.mapM numberEntityOperandReferenceScope?
+private def numberEntityReferenceScopes
+    (source : CheckedNumberEntitySource model) : List (List RepeatableLevel) :=
+  source.operands.map numberEntityOperandReferenceScope
 
-private def tokenEntityOperandReferenceScope? :
-    CheckedTokenEntityOperand model →
-      Option (List RepeatableLevel)
-  | .field source => some source.declaration.repeatableScope
-  | .selected source => some (selectedEntityGuardScope source.source)
-  | .star checked => checkedStarBindingScope checked.source
-  | .group slot =>
-      let scope := slot.source.bindingScope
-      if scope.isEmpty then some [] else some scope
+private def tokenEntityOperandReferenceScope :
+    CheckedTokenEntityOperand model → List RepeatableLevel
+  | .field source => source.declaration.repeatableScope
+  | .selected source => selectedEntityGuardScope source.source
+  | .star checked => checked.source.bindingScope
+  | .group slot => slot.source.bindingScope
 
-private def tokenEntityReferenceScopes?
-    (source : CheckedTokenEntitySource model) :
-    Option (List (List RepeatableLevel)) :=
-  source.operands.mapM tokenEntityOperandReferenceScope?
+private def tokenEntityReferenceScopes
+    (source : CheckedTokenEntitySource model) : List (List RepeatableLevel) :=
+  source.operands.map tokenEntityOperandReferenceScope
 
-private def booleanValueCountOperandReferenceScope? :
-    CheckedBooleanValueCountOperand model expected →
-      Option (List RepeatableLevel)
-  | .field source => some source.declaration.repeatableScope
-  | .selected source => some (selectedEntityGuardScope source.source)
-  | .star source => checkedStarBindingScope source.source
-  | .group slot =>
-      let scope := slot.source.bindingScope
-      if scope.isEmpty then some [] else some scope
+private def booleanValueCountOperandReferenceScope :
+    CheckedBooleanValueCountOperand model expected → List RepeatableLevel
+  | .field source => source.declaration.repeatableScope
+  | .selected source => selectedEntityGuardScope source.source
+  | .star source => source.source.bindingScope
+  | .group slot => slot.source.bindingScope
 
-private def booleanValueCountReferenceScopes?
-    (source : CheckedBooleanValueCountSource model) :
-    Option (List (List RepeatableLevel)) :=
-  source.operands.mapM booleanValueCountOperandReferenceScope?
+private def booleanValueCountReferenceScopes
+    (source : CheckedBooleanValueCountSource model) : List (List RepeatableLevel) :=
+  source.operands.map booleanValueCountOperandReferenceScope
 
-private def productReferenceScopes?
-    (source : CheckedNumericProductAggregate model) :
-    Option (List (List RepeatableLevel)) := do
-  match source with
-  | .selected source => pure [source.left.source.bindingScopes.flatten,
+private def productReferenceScopes :
+    CheckedNumericProductAggregate model → List (List RepeatableLevel)
+  | .selected source => [source.left.source.bindingScopes.flatten,
       source.right.source.bindingScopes.flatten]
-  | .row source =>
-      let left ← checkedStarBindingScope source.left.source
-      let right ← checkedStarBindingScope source.right.source
-      pure [left, right]
+  | .row source => [source.left.source.bindingScope, source.right.source.bindingScope]
 
 private structure NumericEntityGuardShape where
   referenceScopes : List (List RepeatableLevel)
@@ -182,29 +167,24 @@ private structure NumericEntityGuardShape where
 
 /-- The source visitor gives Number entity operations two independent static sensitivities plus an operator-specific rejection of mixed references. The Kernel visitor excludes `SumOfProducts` from its mixed-reference rejection, while preserving its zero sensitivity. -/
 private def numericEntityGuardShape? :
-    OrderedNumericValidationAtom model →
-      Option NumericEntityGuardShape
+    OrderedNumericValidationAtom model → Option NumericEntityGuardShape
   | .firstFilled source =>
-      (numberEntityReferenceScopes? source).map (⟨·, true, false, true⟩)
+      some ⟨numberEntityReferenceScopes source, true, false, true⟩
   | .valueCount _ source =>
-      (numberEntityReferenceScopes? source).map (⟨·, true, true, true⟩)
+      some ⟨numberEntityReferenceScopes source, true, true, true⟩
   | .aggregate op source =>
-      (numberEntityReferenceScopes? source).map fun scopes =>
-        match op with
+      let scopes := numberEntityReferenceScopes source
+      some (match op with
         | .sum | .minimum | .maximum => ⟨scopes, true, false, true⟩
-        | .distinctCount => ⟨scopes, false, true, true⟩
+        | .distinctCount => ⟨scopes, false, true, true⟩)
   | .sumOfProducts source =>
-      (productReferenceScopes? source).map (⟨·, true, false, false⟩)
+      some ⟨productReferenceScopes source, true, false, false⟩
   | .tokenValueCount source =>
-      (tokenEntityReferenceScopes? source.source).map (⟨·, true, true, true⟩)
+      some ⟨tokenEntityReferenceScopes source.source, true, true, true⟩
   | .booleanValueCount source =>
-      (booleanValueCountReferenceScopes? source).map (⟨·, true, true, true⟩)
-  -- The guard shape exists for Number entity operations whose references sit at a queried level.
-  -- A group count references groups, not levelled Number entities, so it has no shape here — the
-  -- same answer the scalar leaf gives.
-  -- The token distinct count shares the Number one's fold, but no measurement crosses that carrier
-  -- boundary for the guard, so it classifies nothing and an iterating rule it alone would guard stays
-  -- refused as unclassified.
+      some ⟨booleanValueCountReferenceScopes source, true, true, true⟩
+  -- Group counts reference groups; the remaining families have no classifier here.
+  -- Their existing assembly boundary, rather than this entity-list classifier, owns admission.
   | .indexed _ | .indexedString _ | .temporalExpression _ | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
   | .temporalDistinctCount _ => none
 
