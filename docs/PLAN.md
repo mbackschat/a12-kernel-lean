@@ -4,7 +4,7 @@ Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean 
 
 The execution contract is frozen at C01–C22 and their listed acceptance cases. This is the complete plan for the agreed good-enough coverage target, not a provisional queue. Do not append tasks, broaden acceptance cases, create a follow-on backlog or introduce extra completion gates. Close tasks from existing evidence where it already suffices, implement what is still required, and stop after C22 passes. Do not add a product launch, downstream adoption, new interpreter, SMT integration or qualification programme as a prerequisite. Consumer probes remain occasional checks that the semantics is usable.
 
-The autonomous goal is active at C12. C01–C11 are closed; proceed in the frozen order.
+The autonomous goal is active at C13. C01–C12 are closed; proceed in the frozen order.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
@@ -109,9 +109,10 @@ C01–C12 are the required sequence. This checkpoint is a bounded consumer-relia
 
 ### C12 — report the first consumer-reliability checkpoint
 
-- [ ] Run a fresh Execute/Explain consumer on the eight C01 scenarios plus the C05 category, C10 partial-Date and C11 lexical distinctions. Freeze the task and compare actual outputs.
+- [x] Run a fresh Execute/Explain consumer on the eight C01 scenarios plus the C05 category, C10 partial-Date and C11 lexical distinctions. Freeze the task and compare actual outputs.
 - Done: C01–C11 have evidence dispositions, no known in-scope wrong answer remains, consumer readback is green and applicable reviews/gates are complete. State the actual replay boundary; full replay remains governed by its existing cadence.
 - Report the supported task, closed items and limitations before moving on. Consumer failure returns to its semantic owner, never a consumer-specific workaround. This is not full conformance or Rust/SMT qualification.
+- Accepted: [C12 readback](consumer-probes/EXECUTE.md#run-c12-execute-02) recovers all eleven scenario families after restoring one omitted existing clause and clarifying the question wording. No semantic or acceptance-scope change. Fresh HIGH cold review found no issue; C11 executable gates remain valid, and C10 remains the last full replay. C13–C22 remain the fixed remaining work.
 
 ## Subsequent order — visible language and evidence closure
 
@@ -216,11 +217,11 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Active: C12, after accepted C11. Run the frozen Execute/Explain consumer readback: C01 S1–S8 plus C05 category, C10 partial-Date and C11 lexical contrasts. Reuse the corrected canonical packet, verify excerpts against current clauses, and supply concrete inputs without expected answers. Reconcile actual outputs, report the bounded checkpoint, then continue C13–C22.
+- Active: C13, after accepted C12. Reconcile index-message authoring against the existing index-name/suffix checkers and condition-reference metadata. Close the frozen String/Enumeration, value/category, English/German, plain/keyed/starred and two-parent matrix at that shared boundary. No C13 code changed yet. C12 completed the scheduled consumer probe; no additional probe is due merely because another task starts.
 - C08 closed: the separate omission selector, shared filter coordinates, mixed-group wildcard correction and effect-preserving message origin pass the frozen matrix. [Reference calibration](implementation/validation-messages-and-custom.md#cap-structural-message-references) matches both exact sets for all 40 caller and 246 filtered-predicate messages. H10-R1 is reconciled against admitted temporal-reference controls; H10-R2 is discharged by dedicated calibration. No new outbound ledger entry. Next consumer probe: C12.
 - The [outer-bound keyed-star family](sources/group-count-topology.md#src-bound-keyed-star-predicates) and its bounded C02 computation follow-up are closed. Wider domains remain excluded by the frozen contract.
 - C01 closed: [risk-boundary implementation](../A12Kernel/Reference/Dm/ModelComputationLocks.lean) and [reconciled eight-scenario consumer run](consumer-probes/EXECUTE.md#run-c01-execute-03). Integration (2,166 jobs), retained evidence (51 projections), trust (3,026 roots) and HIGH review passed; the review’s documentation correction is incorporated. Code is committed at `0e302b8d`; the accepted consumer basis is `9fe99116`. No remaining C01 blocker.
-- The latest [cache-context probe](consumer-probes/EXECUTE.md#run-message-cache-context-readback-01) passed its narrow task; it does not discharge C01/C12. C01’s broader probe is closed; the next bounded probe is C12. C22 uses those results and the subsequent evidence; it does not automatically trigger another consumer programme.
+- The latest [cache-context probe](consumer-probes/EXECUTE.md#run-message-cache-context-readback-01) passed its narrow task; it does not discharge C01/C12. C01 and the [C12 readback](consumer-probes/EXECUTE.md#run-c12-execute-02) are closed. C22 uses those results and the subsequent evidence; it does not automatically trigger another consumer programme.
 - One writer and sequential HIGH/MEDIUM work. HIGH settles the account and representative reader fixture; MEDIUM gets a complete bounded batch. Reuse warm context only for the same settled mechanism. HIGH acceptance does not replace triggered fresh cold review.
 - Verify admitted fixture controls, carrier phase and entry API before expanding a matrix. Never edit compiler inputs while a build is live; stage new modules before population inventory. Report refreshes never justify replay.
 - Consumer handovers: provide exact canonical excerpts, including the ordering clause, and concrete source seeds before handover; whole-file section extraction can expose material outside the allowlist. Corrections may reuse the same isolated MEDIUM context if it has received no expected answers or implementation detail; record the changed inputs and a new timed run.
@@ -231,7 +232,8 @@ The twelve pending construct/arm calibration cells have destinations: five toler
 ## Verified gate boundary
 
 - Outer-bound evidence-only readback: 10,816 full and 10,816 partial pointer/type matches, fresh HIGH review with no actionable finding, final hygiene and local commit complete.
-- Latest verified boundary: C11 leading-zero Number length closure, using existing semantics. Reader-to-comparison/computation/application matrix and retained w04/w05/w06 controls pass; integration (2,195 jobs), compact evidence (51 projections) and fresh HIGH review passed. Trust/hygiene passed (3,027 roots; 110,652 declarations in 884 modules). No runtime changes: no full population replay is triggered, and C10 remains the replay boundary.
+- Latest executable boundary: C11 leading-zero Number length closure, using existing semantics. Reader-to-comparison/computation/application matrix and retained w04/w05/w06 controls pass; integration (2,195 jobs), compact evidence (51 projections) and fresh HIGH review passed. Trust/hygiene passed (3,027 roots; 110,652 declarations in 884 modules). No runtime changes: no full population replay is triggered, and C10 remains the replay boundary.
+- Latest consumer boundary: C12 passes all eleven frozen Execute/Explain scenario families; fresh HIGH review and documentation/prose/sync hygiene pass. The first run exposed one omitted duplicate-key clause in the packet, repaired from the existing canonical owner; no runtime edit or new capture. This qualifies bounded semantic transport, not an independent evaluator or downstream product.
 - Last full replay: 71,664 matches (52,335 rules and 19,329 computations); zero divergence/fault/unattributed/tier-2 instances; 3,329 rows, 217 without matching artifacts, six preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) was regenerated on 2026-10-11 at `7601f488` plus C10. Counts are unchanged; C10 closes the partial-Date selection gap rather than adding population matches. The cadence resets at this reviewed boundary.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only final recording does not invalidate C10 executable gates.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern future gates. Prose-only C12 recording does not invalidate C11 executable gates.
 - The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) owns its specific observation blocker. The [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns handoffs; the owner carries requests. Do not resend them or infer upstream completion.
