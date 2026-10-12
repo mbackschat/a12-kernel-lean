@@ -68,14 +68,15 @@ private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language :
   admitDeclarations [rule.declaration]
   let text ← parseValidationText language rule.condition
   let suppress := text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
-  -- A filter captures the error field's iteration, including for refusals; a failed retry cannot
-  -- justify reporting a diagnostic from the declaring group's different scope (spec/07 §3).
-  let bindingGroup ← if useErrorBinding || text.body.hasHaving then do
+  -- Static reads use the error field's scope (spec/07 §3); that scope must not create runtime
+  -- iteration for a fixed expression reporting below a star (ConstructedDateValidityLocks).
+  let admissionGroup ← if useErrorBinding || text.body.needsOrderedAdmission then do
       let errorField ← errorFieldOf language model.flat rule
       let declaration ← elaborated "ErrorEntity" (model.flat.lookupUniqueId errorField)
       pure declaration.groupPath
     else pure rule.group
-  checkOrderedAdmission model.flat rule.group bindingGroup text.body suppress
+  let bindingGroup := if useErrorBinding || text.body.hasHaving then admissionGroup else rule.group
+  checkOrderedAdmission model.flat rule.group admissionGroup text.body suppress
   let condition ← lowerCondition model.flat rule.group suppress text.body world bindingGroup
   let errorField ← errorFieldOf language model.flat rule
   let some severity := severity? rule.severity | refuse "Severity" rule.severity
@@ -83,7 +84,7 @@ private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language :
     (assembleResolvedValidationRule model.flat condition errorField rule.errorCode severity
       { parts := [] })
 
-/-- Filters use the error field's captured scope from the first attempt, including refused reads.
+/-- Ordered authored admission uses the error field's scope from the first attempt, including refused reads.
 Other rules retain the compatibility fallback; lexical paths resolve at the declaring group. -/
 def checkRule (model : DmModel) (language : Language) (rule : DmRule)
     (world : World := { now := { epochMillis := 0 } }) :

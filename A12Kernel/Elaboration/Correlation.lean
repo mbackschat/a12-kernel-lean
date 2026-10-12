@@ -25,7 +25,19 @@ The established whole-rule route admits exactly one repeatable group, one starre
 
 namespace A12Kernel
 
+/-- Resolve the authored group, retaining a fixed group's exact subtree below repeatable ancestry. -/
+def HavingRepetitionRef.groupPath? (reference : HavingRepetitionRef) (model : FlatModel) : Option GroupPath :=
+  match reference.source with
+  | .fixed path => some path
+  | .repeatable level => (model.repeatableGroupAtLevel? level).map (·.path)
 
+/-- Error-field membership includes authored marked groups as well as marked value reads
+    (EntityRefUtils.getGRefs/getVRefs); `referencesMarkedField` remains the value-read projection. -/
+def CorrelatedHaving.referencesMarkedEntityField (model : FlatModel)
+    (condition : CorrelatedHaving) (field : FieldId) : Bool :=
+  condition.referencesMarkedField field || condition.markedRepetitionReferences.any fun reference =>
+    (reference.groupPath? model).any fun path =>
+      ({ path, origin := .path } : ResolvedGroupReference).referencesField model field
 
 /-- Whether a resolved filter uses only leaves and conjunction. This is narrower than the authored
 surface, which also carries `.or`. The legacy one-group route is the only consumer, at both its

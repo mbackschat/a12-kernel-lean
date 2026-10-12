@@ -571,20 +571,20 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .indexedStringPattern leaf, field => leaf.selection.referencesField field
 
 /-- Whether a leaf reaches `field` for the rule's error-field gates. Filter-owning sources count
-    marked body reads but exclude unmarked candidate reads, following the shared correlation gate. -/
+    marked body entities but exclude unmarked candidate references, following the shared correlation gate. -/
 def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | .customCondition _, _ => false
-  | .firstFilledComparison comparison, field => comparison.referencesField field CorrelatedHaving.referencesMarkedField
-  | .tokenComparison comparison, field => comparison.referencesField field CorrelatedHaving.referencesMarkedField
-  | .fieldFill _ source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .valuesNotUnique source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .valueList source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
+  | .firstFilledComparison comparison, field => comparison.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
+  | .tokenComparison comparison, field => comparison.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
+  | .fieldFill _ source, field => source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
+  | .valuesNotUnique source, field => source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
+  | .valueList source, field => source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
   | .orderedNumeric _ comparison, field => comparison.referencesErrorField field
   | .iteratedDateRange condition, field => condition.referencesErrorField field
   | .scalarTemporal comparison, field =>
-      comparison.referencesWith field (·.referencesMarkedField field)
+      comparison.referencesWith field (fun condition => CorrelatedHaving.referencesMarkedEntityField model condition field)
   | .constructedDateValidity _ components, field =>
-      components.scalarCore.referencesWith field (·.referencesMarkedField field)
+      components.scalarCore.referencesWith field (fun condition => CorrelatedHaving.referencesMarkedEntityField model condition field)
   | leaf@(.flat _), field | leaf@(.numeric _ _), field | leaf@(.groupPresence _ _), field
   | leaf@(.keyedGroupPresence _ _), field
   | leaf@(.indexedFieldPresence _ _), field

@@ -61,4 +61,37 @@ example : agrees "FirstFilledValue(Expected->Label, Other->Label)" "K" true &&
     agrees "FirstFilledValue(Rows*/Tag->Label)" "K" true &&
     agrees "FirstFilledValue(Rows*/Tag->Label Having [Rows/N] == 5)" "D" true = true := by native_decide
 
+private def ordinaryModel : FlatModel := { (model false) with
+  fields := (model false).fields ++ [
+    { id := 7, name := "Choice", groupPath := ["Form", "Pool"], policy := { kind := .enumeration }, enumeration := some domain },
+    { id := 8, name := "Digits", groupPath := ["Form"], policy := { kind := .enumeration },
+      enumeration := some { storedTokens := ["1", "2"] } }] }
+
+private def ordinaryDiagnostic (condition : String) : Option String :=
+  match checkRule { flat := ordinaryModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+      .english {
+        group := ["Form"], name := "Entity", errorCode := "ENTITY", errorEntityRelPath := "../Error",
+        condition := "FieldFilled(Error) And " ++ condition, severity := "ERROR" } with
+  | .ok _ => none
+  | .error error => some error.detail
+
+example : ordinaryModel.validate.isOk = true := by native_decide
+
+example : ["Length(Error) > 0", "FieldValueAsNumber(Digits) > 0",
+    "FirstFilledValue(Pool, Pool/Choice->Label) == \"keep\""].all (fun condition =>
+      ordinaryDiagnostic condition == none) = true := by native_decide
+
+-- The parameter-read grid and entity-list root/category oracle separate the authored slot
+-- from expanded declaration overlap (spec/07 §5; src-field-value-read-predictions).
+private def refusalRows := [
+    ("Length(/Form) > 0", KernelStaticDiagnostic.noGroupsAllowed),
+    ("FieldValueAsNumber(Pool) > 0", .noGroupsAllowed),
+    ("FirstFilledValue(Pool, Pool/Choice) == \"keep\"", .duplicateParam2),
+    ("FirstFilledValue(Pool, Pool) == \"keep\"", .duplicateParam1),
+    ("FirstFilledValue(/Form, Pool/Choice->Label) == \"keep\"", .rootGroupReferenced),
+    ("FirstFilledValue(Pool, Pool/Choice->Missing) == \"keep\"", .categoryUnknown)
+  ]
+
+example : refusalRows.all (fun (condition, expected) => ordinaryDiagnostic condition == some expected.kernelCode) = true := by native_decide
+
 end A12Kernel.Dm.EntityCategoryLocks

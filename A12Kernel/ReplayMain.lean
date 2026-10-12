@@ -60,6 +60,8 @@ import A12Kernel.Reference.Dm.ParallelComputationLocks
 import A12Kernel.Reference.Dm.ParallelNumericOperationLocks
 import A12Kernel.Reference.Dm.CrossRootValidationLocks
 import A12Kernel.Reference.Dm.ValidationBindingLocks
+import A12Kernel.Reference.Dm.CurrentRepetitionAdmissionLocks
+import A12Kernel.Reference.Dm.ProjectedTargetAdmissionLocks
 import A12Kernel.Reference.Dm.BoundEntityListLocks
 import A12Kernel.Reference.Dm.BoundTypeValidityLocks
 import A12Kernel.Reference.Dm.RowAlternativeLocks

@@ -36,10 +36,26 @@ def Expr.hasHaving : Expr → Bool := Expr.anyReference (·.filter.isSome)
 def Reference.hasHaving : Reference → Bool := Reference.anyReference (·.filter.isSome)
 def Argument.hasHaving : Argument → Bool := Argument.anyReference (·.filter.isSome)
 
-/-- Constructor children need their parse/read diagnostics before lowering or position checks
-(KF532). The same ordered walk already handles filter-containing expressions. -/
+/-- Authored scalar slots, lists and repetition operands need their parse/read diagnostics before
+lowering loses their shape (spec/07 §5–6, spec/08 CurrentRepetition cascade; KF532). -/
 def Expr.needsOrderedAdmission (expression : Expr) : Bool :=
-  expression.hasHaving || expression.anyReference (fun _ => false) (fun name => name == "Date" || name == "Time")
+  expression.hasHaving || expression.anyReference (fun _ => false)
+    (fun name => name == "Date" || name == "Time" || name == "CurrentRepetition" ||
+      name == "RepetitionNotUnique" || name == "FirstFilledValue" ||
+      (rawScalarOperator? name).isSome)
+
+/-- Retain projected target identity across all authored fragments before alternative lowering
+(spec/09 §6, self-read alternative-walk matrix). Parse-time admission still runs before refusal. -/
+def Expr.hasProjectedReferenceTo (expression : Expr) (model : FlatModel)
+    (group : GroupPath) (target : FieldId) : Bool :=
+  let namesTarget := fun reference : Reference =>
+    reference.path.toFieldPath?.any fun path =>
+      (model.resolveFieldDeclarationUnchecked group path).toOption.any (·.id == target)
+  expression.anyReference fun reference =>
+    ((reference.index.isSome || reference.category.isSome) && namesTarget reference) ||
+      match reference.index with
+      | some (.reference key) => key.anyReference namesTarget
+      | _ => false
 
 private def Expr.hasIndex : Expr → Bool := Expr.anyReference (·.index.isSome)
 

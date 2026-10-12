@@ -207,7 +207,7 @@ def referencesField (condition : IteratedDateRangeCondition model) (field : Fiel
     | none => condition.operandDeclarations.any (·.id == field)) ||
     condition.filters.any (·.referencesField field)
 
-/-- Error-field membership includes selected operands and marked filter reads (spec/07 §3).
+/-- Error-field membership includes selected operands and marked filter entities (spec/07 §3).
 Unlike `operandDeclarations`, this gate counts starred and group expansions without binding their
 levels to the enclosing row. -/
 def referencesErrorField (condition : IteratedDateRangeCondition model)
@@ -219,7 +219,7 @@ def referencesErrorField (condition : IteratedDateRangeCondition model)
         source.shape.operands.flatMap ResolvedFieldEntityOperand.expansionDeclarations
     | _ => condition.operandDeclarations
   declarations.any (·.id == field) ||
-    condition.filters.any (·.referencesMarkedField field)
+    condition.filters.any (fun condition => CorrelatedHaving.referencesMarkedEntityField model condition field)
 
 /-- The operands that actually cross a repeatable level. These are the declarations the enclosing
 rule resolves before evaluation and the levels it derives its iteration from. -/

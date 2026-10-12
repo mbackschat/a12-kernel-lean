@@ -349,7 +349,10 @@ private def checkComputationOrderedAdmission (language : Language) (model : Flat
   let common := computation.commonPrecondition.map (fragment true)
   let alternatives := computation.alternatives.map fun alternative =>
     (alternative.precondition.map (fragment true), fragment false alternative.operation, alternative.toleranceRangeOp)
-  let ordered := fun (source : Lowering Expr) => source.toOption.any Expr.needsOrderedAdmission
+  let projected := fun (source : Lowering Expr) => source.toOption.any fun expression =>
+    expression.hasProjectedReferenceTo model computation.group target.id
+  let ordered := fun (source : Lowering Expr) =>
+    source.toOption.any Expr.needsOrderedAdmission || projected source
   if !common.any ordered && !alternatives.any (fun (guard, operation, _) => guard.any ordered || ordered operation) then return
   let check := checkRawConditionBeforeGlobals model computation.group target.groupPath
   let mut facts : FilterRuleFacts := {}
@@ -368,6 +371,11 @@ private def checkComputationOrderedAdmission (language : Language) (model : Flat
     facts := facts.merge (← check (.compare comparison (rawComputationTarget target) operation) suppress)
   -- The generated filled-target conjunction is not a standalone raw-Length limiter (spec/09 §6).
   if let some diagnostic := facts.beforeIterationRefusal? then refuse "Having" diagnostic.kernelCode
+  -- The projected class precedes alternative-table checks even for an unconditional alternative
+  -- or an otherwise unjudged common precondition (spec/09 §6; self-read-alternative-walk grid).
+  if common.any projected || alternatives.any (fun (guard, operation, _) =>
+      guard.any projected || projected operation) then
+    refuse "Computation" KernelStaticDiagnostic.errorSemanticIndexOrCategoryForErrorField.kernelCode
 
 private def lowerComputationWith (allowParallelGuards : Bool)
     (model : FlatModel) (language : Language) (computation : DmComputation) :

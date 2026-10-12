@@ -81,7 +81,8 @@ private def computationRefusal (guard : String) (rowTarget : Bool)
 
 
 example : [false, true].all (fun rowTarget =>
-    computationRefusal repeated rowTarget == some "MVK_ERROR_INVALID_LANGUAGE_FEATURE") = true ∧
+    computationRefusal repeated rowTarget ==
+      some (if rowTarget then "MVK_ERROR_INVALID_LANGUAGE_FEATURE" else "MVK_NO_WILDCARD")) = true ∧
     [repeated ++ " And " ++ fixedFilter, fixedFilter ++ " And " ++ repeated].all (fun guard =>
       computationRefusal guard true == some "MVK_ERROR_INVALID_LANGUAGE_FEATURE" &&
       computationRefusal guard false == some "MVK_NO_WILDCARD") = true := by native_decide
@@ -91,5 +92,67 @@ example : [false, true].all (fun common =>
     [repeated, "CustomCondition Check"].all (fun forbidden =>
       [forbidden ++ " And " ++ fixedFilter, fixedFilter ++ " And " ++ forbidden].all fun guard =>
         computationRefusal guard true common == some "MVK_ERROR_INVALID_LANGUAGE_FEATURE")) = true := by native_decide
+
+private def siblingModel : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 3 then { field with groupPath := ["Form", "Rows", "Left"] }
+  else if field.id == 4 then { field with groupPath := ["Form", "Rows", "Right"] }
+  else field }
+
+private def siblingRun (explicitScope duplicate : Bool)
+    (reverse unequalFirst : Bool := false) : Option (List Bool) := do
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler siblingModel).toOption
+  let input := { data with cells := data.cells.map fun cell =>
+    if duplicate && cell.address == { field := 4, path := [3] } then
+      { cell with stored := "2", raw := .parsed (.num 2) }
+    else if unequalFirst && cell.address == { field := 3, path := [3] } then
+      { cell with stored := "different", raw := .parsed (.str "different") }
+    else cell }
+  let document ← (checkDocument prepared "en_US" input).toOption
+  let keys := if reverse then "Rows/Right/N, Rows/Left/Tag" else "Rows/Left/Tag, Rows/Right/N"
+  let rule ← (checkRule { dm with flat := siblingModel } .english {
+    group := ["Form"], name := "Siblings", errorCode := "DUPLICATES",
+    errorEntityRelPath := "/Form/Rows/Left/Tag", severity := "ERROR",
+    condition := "RepetitionNotUnique(" ++ keys ++
+      (if explicitScope then " @From Rows)" else ")") }).toOption
+  let outcomes ← (rule.evalOrdinaryRepeatableFull document).toOption
+  pure (outcomes.map fun (_, outcome) => match outcome.verdict with | .fired _ => true | _ => false)
+
+-- The paired-gate oracle admits sibling fixed keys (inbound-2026-09-26k); spec/07 §6 compares
+-- the complete composite key, so equality of just the first component must not fire.
+example : [false, true].all (fun explicitScope =>
+    [false, true].all (fun reverse =>
+      siblingRun explicitScope true reverse == some [true, false, true] &&
+      siblingRun explicitScope false reverse == some [false, false, false] &&
+      siblingRun explicitScope true reverse true == some [false, false, false])) = true := by native_decide
+
+private def siblingAdmission (condition : String) : Option String :=
+  match checkRule { dm with flat := siblingModel } .english {
+    group := ["Form"], name := "Siblings", errorCode := "DUPLICATES",
+    errorEntityRelPath := "/Form/Rows/Left/Tag", severity := "ERROR",
+    condition := "FieldFilled(Rows/Left/Tag) And " ++ condition } with
+  | .ok _ => none
+  | .error refusal => some refusal.detail
+
+private def siblingRefusals : List (String × KernelStaticDiagnostic) := [
+  ("RepetitionNotUnique(Rows/Left/Tag, Rows/Left/Tag)", .duplicateParam1),
+  ("RepetitionNotUnique(Rows/Left, Rows/Left/Tag)", .duplicateParam2),
+  ("RepetitionNotUnique(Rows/Left/Tag, Rows/Left)", .duplicateParam2),
+  ("RepetitionNotUnique(Rows/Left)", .noGroupsAllowed),
+  ("RepetitionNotUnique(/Form, Rows/Left/Tag)", .duplicateParam2),
+  ("RepetitionNotUnique(Rows/Left/Tag, /Form)", .duplicateParam2),
+  ("RepetitionNotUnique(Rows/Left/Tag, Rows/Left/Tag, Missing)", .invalidEntity),
+  ("RepetitionNotUnique(Rows/Left/Tag, Rows/Left/Tag @From Missing)", .invalidEntity),
+  ("RepetitionNotUnique(Rows/Left/Tag @From Rows/Left/Tag)", .noFieldsAllowed)]
+
+example : siblingRefusals.all (fun (condition, expected) =>
+    siblingAdmission condition == some expected.kernelCode) = true := by native_decide
+
+example : ["RepetitionNotUnique(Rows/Left/Tag)",
+    "RepetitionNotUnique(Rows/Left/Tag @From Rows)",
+    "RepetitionNotUnique(Rows/Left/Tag, Rows/Right/N)",
+    "RepetitionNotUnique(Rows/Right/N, Rows/Left/Tag)",
+    "RepetitionNotUnique(Rows/Left/Tag, Rows/Right/N @From Rows)",
+    "RepetitionNotUnique(Rows/Right/N, Rows/Left/Tag @From Rows)"].all (fun condition =>
+      siblingAdmission condition == none) = true := by native_decide
 
 end A12Kernel.Dm.RepetitionNotUniqueLocks

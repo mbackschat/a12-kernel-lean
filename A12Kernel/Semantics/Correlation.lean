@@ -172,6 +172,23 @@ def markedFieldIds : CorrelatedHaving → List FieldId
 def referencesMarkedField (condition : CorrelatedHaving) (field : FieldId) : Bool :=
   condition.markedFieldIds.contains field
 
+/-- Authored `$` repetition references retain group identity without adding field reads.
+    Error-field admission counts these groups through EntityRefUtils.getGRefs/getVRefs. -/
+def markedRepetitionReferences : CorrelatedHaving → List HavingRepetitionRef
+  | .leaf leaf =>
+      let references : List HavingRepetitionRef := match leaf with
+        | .numeric comparison => (comparison.left.atoms ++ comparison.right.atoms).flatMap fun
+            | .repetition reference => [reference]
+            | .temporalDifference _ left right => left.repetitionReferences ++ right.repetitionReferences
+            | .temporalExpressionPart _ source => source.repetitionReferences
+            | _ => []
+        | .temporalExpression comparison => comparison.left.repetitionReferences ++ comparison.right.repetitionReferences
+        | .dateValidity _ source => source.asTemporal.repetitionReferences
+        | _ => []
+      references.filter (·.origin == .outer)
+  | .and left right | .or left right =>
+      markedRepetitionReferences left ++ markedRepetitionReferences right
+
 /-- Target legality uses the ordinary computation group's positive conditional-presence exemption while `referencesField` retains complete membership (spec/09 §5). -/
 def forbidsTarget (condition : CorrelatedHaving) (target : FieldId) : Bool :=
   match condition with

@@ -24,6 +24,82 @@ private def rule (text : String) : DmRule := {
   group := ["Form"], name := "Rule", errorCode := "R", errorEntityRelPath := "../Rows/Qty"
   condition := text, severity := "ERROR" }
 private def row (qty key : String) : Json := Json.mkObj [("Qty", Json.str qty), ("Key", Json.str key)]
+
+private def capturedRepetitionFilter :=
+  "Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows)"
+
+example : ["AtLeastOneFieldFilled", "MoreThanOneFieldFilled"].all (fun operator =>
+    match checkRule dm .english (rule (operator ++ "(" ++ capturedRepetitionFilter ++ ")")) with
+    | .error refusal => refusal.construct == "RuleAssembly" &&
+        refusal.detail == reprStr (FlatRuleAssemblyError.negativeConditionInIteration 10)
+    | .ok _ => false) := by native_decide
+
+example : (checkRule dm .english
+    (rule ("AllFieldsFilled(" ++ capturedRepetitionFilter ++ ")"))).isOk = true := by native_decide
+
+example : (checkRule dm .english {
+      (rule ("AllFieldsFilled(" ++ capturedRepetitionFilter ++ ")")) with
+      errorEntityRelPath := "../Rows/Key" }).isOk = true := by native_decide
+
+example : (match checkRule dm .english {
+      (rule ("AtLeastOneFieldFilled(" ++ capturedRepetitionFilter ++ ")")) with
+      errorEntityRelPath := "../Rows/Key" } with
+    | .error refusal => refusal.construct == "RuleAssembly" &&
+        refusal.detail == reprStr (FlatRuleAssemblyError.negativeConditionInIteration 10)
+    | .ok _ => false) = true := by native_decide
+
+private def nestedRepetitionCases : List String := [
+  "AllFieldsFilled(Rows*/Qty Having CurrentRepetition(Rows) + 1 != CurrentRepetition($Rows) + 1)",
+  "MaxValue(" ++ capturedRepetitionFilter ++ ") > 0",
+  "AllFieldsFilled(Rows*/Qty Having CurrentRepetition(Rows) > 0 And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"),CurrentRepetition($Rows))) > 0)",
+  "AllFieldsFilled(Rows*/Qty Having CurrentRepetition(Rows) > 0 And DifferenceInDays(AddDays(Date(\"01\",\"01\",\"2024\"),CurrentRepetition($Rows)),Date(\"01\",\"01\",\"2024\")) > 0)",
+  "AllFieldsFilled(Rows*/Qty Having CurrentRepetition(Rows) > 0 And AddDays(Date(\"01\",\"01\",\"2024\"),CurrentRepetition($Rows)) > Date(\"01\",\"01\",\"2024\"))"]
+
+private def repetitionReferenceSummary (text : String) :
+    Option (Bool × Bool × Option Bool × Option Bool) := do
+  let checked ← (checkRule dm .english {
+    (rule text) with errorEntityRelPath := "../Rows/Key" }).toOption
+  pure (checked.condition.core.referencesField 3, checked.condition.core.referencesErrorField 3,
+    checked.condition.core.authoredErrorReference? 3, checked.condition.core.errorReferenceAt? 3 10)
+
+example : nestedRepetitionCases.all (fun text =>
+    repetitionReferenceSummary text == some (false, true, some true, some true)) = true := by native_decide
+
+example : (match checkRule dm .english {
+    (rule "AllFieldsFilled(Rows*/Qty Having CurrentRepetition(Rows) > 0)") with
+    errorEntityRelPath := "../Rows/Key" } with
+  | .error refusal => refusal.construct == "RuleAssembly" &&
+      refusal.detail == reprStr (FlatRuleAssemblyError.errorFieldNotReferenced 3)
+  | .ok _ => false) = true := by native_decide
+
+private def fixedModel : FlatModel := { model with
+  fields := model.fields ++ [number 5 ["Form", "Rows", "Box"] "NestedQty" [10],
+    number 6 ["Form", "Rows", "Sibling"] "NestedQty" [10]] }
+private def fixedDm : DmModel := { dm with flat := fixedModel }
+private def fixedRepetitionFilter :=
+  "Rows*/Qty Having CurrentRepetition(Rows/Box) == CurrentRepetition($Rows/Box)"
+
+private def fixedReferenceSummary :
+    Option (Bool × Bool × Bool × Option Bool × Option Bool × Option Bool) := do
+    let checked ← (checkRule fixedDm .english {
+      (rule ("AllFieldsFilled(" ++ fixedRepetitionFilter ++ ")")) with
+      errorEntityRelPath := "../Rows/Box/NestedQty" }).toOption
+    pure (checked.condition.core.referencesField 5,
+      checked.condition.core.referencesErrorField 5, checked.condition.core.referencesErrorField 6,
+      checked.condition.core.errorReferenceAt? 5 10,
+      checked.condition.core.messageGroupReference? 5 ["Form", "Rows", "Box"],
+      checked.condition.core.messageGroupReference? 5 ["Form", "Rows", "Sibling"])
+
+example : (fixedReferenceSummary ==
+    some (false, true, false, some true, some true, some false)) = true := by native_decide
+
+example : (match checkRule fixedDm .english {
+    (rule ("AtLeastOneFieldFilled(" ++ fixedRepetitionFilter ++ ")")) with
+    errorEntityRelPath := "../Rows/Box/NestedQty" } with
+  | .error refusal => refusal.construct == "RuleAssembly" &&
+      refusal.detail == reprStr (FlatRuleAssemblyError.negativeConditionInIteration 10)
+  | .ok _ => false) = true := by native_decide
+
 private def run (text : String) (rows : List Json) (errorField : String := "../Rows/Qty") : Option (List String) := do
   let checkedRule ← (checkRule dm .english { (rule text) with errorEntityRelPath := errorField }).toOption
   let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
@@ -33,6 +109,10 @@ private def run (text : String) (rows : List Json) (errorField : String := "../R
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
   pure ((← (runRule world document checkedRule).toOption).map fun message => (observe model message).pointer)
+
+example : run "FieldFilled(Rows/Key) And AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows))"
+    [row "5" "A", row "7" "B"] "../Rows/Key" =
+    some ["Form/Rows/Key", "Form/Rows[2]/Key"] := by native_decide
 
 example : run "[Rows/Key] PatternMatched \"[0-9]+\""
     [row "5" "123", row "5" "x123"] "../Rows/Key" = some ["Form/Rows/Key"] ∧

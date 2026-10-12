@@ -87,6 +87,15 @@ private def isFormSlot : HavingFieldListSlot HavingPresenceRef → Bool
 
 /-- Marking preserves the authored extent's scope; group membership does not bind its descendants
 (IterationChecker.checkIteration4NotOnlyVRefs; spec/07 §1). -/
+private def markedRepetitionReferenceAt (model : FlatModel) (field : FieldId)
+    (query : ReferenceQuery) (reference : HavingRepetitionRef) : Bool :=
+  if reference.origin != .outer then false
+  else
+    (reference.groupPath? model).any fun path =>
+      let group : ResolvedGroupReference := { path, origin := .path }
+      group.referencesField model field &&
+        query.atPath path (model.repeatableScopeForGroupPath path) group.isRoot
+
 private def markedReferenceAt (model : FlatModel) (field : FieldId) (query : ReferenceQuery) :
     CorrelatedHaving → Bool
   | .and left right | .or left right =>
@@ -108,7 +117,7 @@ private def markedReferenceAt (model : FlatModel) (field : FieldId) (query : Ref
             [.extent (.group source.reference) (source.members.map fun member => { origin, field := member })]
         | _ => (CorrelatedHaving.markedFieldIds (.leaf leaf)).map fun member =>
             .direct { origin := .outer, field := member }
-      slots.any fun slot =>
+      (CorrelatedHaving.markedRepetitionReferences (.leaf leaf)).any (markedRepetitionReferenceAt model field query) || slots.any fun slot =>
         query.acceptsSlot slot && slot.references.any (fun reference => reference.origin == .outer && reference.field == field) &&
           match query.kind with
           | .membership => true

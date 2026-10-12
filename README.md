@@ -71,7 +71,7 @@ The project considers ten consumer tasks: **Execute, Translate, Transform, Compi
 This is an active formal-semantics project, not a complete A12 interpreter or a qualified production release.
 
 <!-- github-publish-stats:start -->
-**Verified at publication:** **3,041 trusted theorem roots**, **111,810 audited declarations**, and **891 trusted modules** in the mechanized theory.
+**Verified at publication:** **3,041 trusted theorem roots**, **111,811 audited declarations**, and **891 trusted modules** in the mechanized theory.
 <!-- github-publish-stats:end -->
 
 - The agreed ordinary-coverage checklist is complete. The remaining conformance checklist in [PLAN](docs/PLAN.md#remaining-conformance-checklist) is active; completing it precedes the planned Rust interpreter and SMT consumer work.

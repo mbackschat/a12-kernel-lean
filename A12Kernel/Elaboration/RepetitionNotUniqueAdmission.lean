@@ -21,11 +21,6 @@ inductive RepetitionNotUniqueElabError where
   | keysOffOnePath (left right : GroupPath)
   /-- Without a scope, a key whose group lies outside the rule group. -/
   | keyOutsideRuleGroup (keyPath : List String)
-  /-- Keys whose own groups leave one hierarchy path although their lowest repeatable groups lie on
-  one. The Kernel admits keys in sibling fixed groups of one repeatable group, with a scope and
-  without one ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-paired-gates)); this theory needs
-  one path to build the row topology. -/
-  | keyGroupsDiverge (left right : GroupPath)
   /-- Under a scope, keys whose lowest repeatable groups are parallel, which a passing read means
   the rule iterates jointly. -/
   | keysIterateInParallel (left right : GroupPath)
@@ -52,7 +47,7 @@ namespace RepetitionNotUniqueElabError
 
 Three shapes draw `MVK_REPEATABLE_GROUP_MISSING`: a second key in a nonrepeatable group, a sole key whose group is not repeatable, and a rule already placed at the repeated group, unless that group is a repeatable root holding every key directly, whose own rows are then compared. The walk's missing-star class is measured on a key and on a scope, keyed, index-free and empty, and its error-field class on either; its parallel index-gate classes are the shared read's, an assumption [SG9](../../docs/gaps/paths-and-groups.md#gap-sg9) records. The scope's walk answers before its emptiness, so an empty scope claims no class only once its walk has passed: the measured empty scopes whose read passes are a fixed group ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-empty-scope)) and a starred one ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26k-paired-gates)), which this surface cannot build or spell, and the empty repeatable group it can hold passes the walk only when the rule's error-field group lies inside it, which no Kernel model can author since it holds no field.
 
-Every remaining form is named rather than caught by a wildcard, so a new refusal cannot be absorbed into this project's boundary without a decision. A custom String key needing prepared checking and an unsupported key kind are this theory's value-reading limits, and key groups diverging below one repeatable group its topology limit, not Kernel gates. `model` is routing rather than a key refusal, and `incoherentCore` is the unreachable-by-construction arm. The rest are Kernel refusals whose class this carrier has no evidence for. -/
+Every remaining form is named rather than caught by a wildcard, so a new refusal cannot be absorbed into this project's boundary without a decision. A custom String key needing prepared checking and an unsupported key kind are this theory's value-reading limits, not Kernel gates. `model` is routing rather than a key refusal, and `incoherentCore` is the unreachable-by-construction arm. The rest are Kernel refusals whose class this carrier has no evidence for. -/
 def diagnostic? : RepetitionNotUniqueElabError → Option KernelStaticDiagnostic
   | .resolve error => error.diagnostic?
   | .keyReadRefused _ unbound | .scopeReadRefused _ unbound => unbound.diagnostic?
@@ -68,7 +63,7 @@ def diagnostic? : RepetitionNotUniqueElabError → Option KernelStaticDiagnostic
   | .keyOutsideRuleGroup _ => some .notInRuleGroup
   | .keyPathMismatch _ _ | .missingReferenceGroup _ =>
       some .repeatableGroupMissing
-  | .model _ | .scope _ | .scopeIsEmpty _ | .keyGroupsDiverge _ _
+  | .model _ | .scope _ | .scopeIsEmpty _
   | .keyOutsideDefaultReferenceGroup _ _
   | .unsupportedKeyKind _ _ | .customStringRequiresPreparedChecking _
   | .path _ | .incoherentCore => none

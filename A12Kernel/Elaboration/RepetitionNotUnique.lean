@@ -7,7 +7,7 @@ import A12Kernel.Semantics.RepetitionNotUnique
 
 /-! # Checked nested heterogeneous `RepetitionNotUnique` construction
 
-This boundary resolves one nonempty typed composite key along a single group branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number, ordinary String, and direct stored-Enumeration components are its legal key domain. Temporal, Boolean/Confirm raw-spelling identity, and prepared custom-String keys are rejected. A surrounding rule supplies one complete environment per deepest row; the topology's existing bound prefix partitions nested default and explicit `@From` scopes without another address model.
+This boundary resolves one nonempty typed composite key along a single repeatable branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number, ordinary String, and direct stored-Enumeration components are its legal key domain. Temporal, Boolean/Confirm raw-spelling identity, and prepared custom-String keys are rejected. A surrounding rule supplies one complete environment per deepest row; the topology's existing bound prefix partitions nested default and explicit `@From` scopes without another address model.
 -/
 
 namespace A12Kernel
@@ -118,7 +118,8 @@ def classify (key : CheckedRepetitionKey model)
 
 end CheckedRepetitionKey
 
-/-- A checked RNU source retains one typed star-classifiable owner per key field. Every owner shares the exact topology plan stored by `firstKey`. -/
+/-- Each checked RNU key retains its own repeatable-axis prefix of the selected row topology;
+fixed group suffixes preserve field identity without adding axes (spec/07 §6). -/
 structure CheckedRepetitionNotUniqueSource (model : FlatModel) where
   ruleGroup : GroupPath
   referenceGroup : RepeatableGroupDecl
@@ -134,9 +135,10 @@ structure CheckedRepetitionNotUniqueSource (model : FlatModel) where
   terminalGroupOwned :
     (firstKey :: restKeys).any (fun key =>
       key.source.declaration.groupPath == terminalGroup) = true
-  keyGroupsOnBranch :
+  keyScopesOnBranch :
     (firstKey :: restKeys).all (fun key =>
-      key.source.declaration.groupPath.isPrefixOf terminalGroup) = true
+      key.source.declaration.repeatableScope.isPrefixOf
+        (model.repeatableScopeForGroupPath terminalGroup)) = true
   keyPathsWithinTopology :
     (firstKey :: restKeys).all (fun key =>
       key.source.path.axes == topology.path.axes.take key.source.path.axes.length) = true
@@ -249,8 +251,10 @@ private def deepestKeyDeclaration (model : FlatModel) (current : FlatFieldDecl) 
       else match model.terminalRepeatableGroupFor? current,
           model.terminalRepeatableGroupFor? declaration with
         | some left, some right =>
-            if left.path.isPrefixOf right.path || right.path.isPrefixOf left.path then
-              throw (.keyGroupsDiverge current.groupPath declaration.groupPath)
+            if left.path.isPrefixOf right.path then
+              deepestKeyDeclaration model declaration remaining
+            else if right.path.isPrefixOf left.path then
+              deepestKeyDeclaration model current remaining
             else throw (.keysIterateInParallel left.path right.path)
         | _, _ =>
             throw (.keyPathMismatch current.groupPath declaration.groupPath)
@@ -298,17 +302,14 @@ private def readRepetitionScope (model : FlatModel) (declaringGroup writtenGroup
 
 /-- The `@From` branch, over a scope already read: it must be a group, it must repeat, and it must
 hold every key. The Kernel asks no shared-path gate here, so keys in parallel repeatable groups meet
-its ban on parallel iteration beside this construct, and keys diverging below one repeatable group,
-which the Kernel admits, reach this theory's topology limit. -/
+its ban on parallel iteration beside this construct, while fixed suffixes retain each key's declaration without adding row axes (spec/07 §6). -/
 private def resolveScopedReferenceGroup (model : FlatModel) (group : RepeatableGroupDecl)
     (declarations : List FlatFieldDecl) :
     Except RepetitionNotUniqueElabError (FlatFieldDecl × RepeatableGroupDecl) := do
   match declarations with
   | [] => throw .incoherentCore
   | first :: rest =>
-      let terminal ← deepestKeyDeclaration model first rest |>.mapError fun
-        | .keyPathMismatch left right => .keyGroupsDiverge left right
-        | error => error
+      let terminal ← deepestKeyDeclaration model first rest
       pure (terminal, group)
 
 /-- The branch without `@From`: the keys' lowest repeatable groups must lie on one path, every key
@@ -457,8 +458,8 @@ def elaborateRepetitionNotUniqueSource (model : FlatModel)
                     key.source.declaration.groupPath ==
                       terminalDeclaration.groupPath) = true then
                   if hBranch : keys.all (fun key =>
-                      key.source.declaration.groupPath.isPrefixOf
-                        terminalDeclaration.groupPath) = true then
+                      key.source.declaration.repeatableScope.isPrefixOf
+                        (model.repeatableScopeForGroupPath terminalDeclaration.groupPath)) = true then
                     if hWithin : keys.all (fun key =>
                         key.source.path.axes ==
                           topology.path.axes.take key.source.path.axes.length) = true then
@@ -478,7 +479,7 @@ def elaborateRepetitionNotUniqueSource (model : FlatModel)
                             referenceGroupOwned := hReferenceOwned
                             uniqueKeyFields := hUnique
                             terminalGroupOwned := hTerminal
-                            keyGroupsOnBranch := hBranch
+                            keyScopesOnBranch := hBranch
                             keyPathsWithinTopology := hWithin
                             topologyLevelsOwned := hTopologyLevels
                             referenceLevelOwned := hReference }
@@ -575,7 +576,8 @@ def wellFormedBool (checked : CheckedRepetitionNotUniqueSource model)
     checked.keys.any (fun key =>
       key.source.declaration.groupPath == checked.terminalGroup) &&
     checked.keys.all (fun key =>
-      key.source.declaration.groupPath.isPrefixOf checked.terminalGroup) &&
+      key.source.declaration.repeatableScope.isPrefixOf
+        (model.repeatableScopeForGroupPath checked.terminalGroup)) &&
     checked.keys.all (fun key =>
       key.source.path.axes ==
         checked.topology.path.axes.take key.source.path.axes.length) &&

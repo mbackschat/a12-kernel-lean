@@ -219,15 +219,15 @@ def referencesErrorField (atom : OrderedNumericValidationAtom model)
     (field : FieldId) : Bool :=
   match atom with
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
-      source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .tokenValueCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
+      source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
+  | .tokenValueCount source => source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
   | .booleanValueCount source =>
-      source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .tokenDistinctCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
+      source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
+  | .tokenDistinctCount source => source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
   | .temporalDistinctCount run =>
-      run.source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .filledFieldCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .temporalExpression source => source.referencesWith field (·.referencesMarkedField field)
+      run.source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
+  | .filledFieldCount source => source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
+  | .temporalExpression source => source.referencesWith field (fun condition => CorrelatedHaving.referencesMarkedEntityField model condition field)
   | .indexed _ | .indexedString _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
       atom.referencesField field
 

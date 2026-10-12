@@ -3,8 +3,8 @@
 <a id="active-unit"></a>
 ## Next action and accepted baseline
 
-- `status`: K01–K03 are accepted; K04–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
-- `next`: Select K04 and reconcile authored identity and static-admission controls against its frozen matrix. K03’s [captured environments and scan policies](implementation/repetition-and-paths.md#cap-star-selection-and-correlation) passed focused and integrated checks, compact evidence, trust and fresh cold review; the final review found no actionable issue.
+- `status`: K01–K04 are accepted; K05–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
+- `next`: K05 — selected addressing and key fitting. Reconcile its frozen matrix with the [semantic-index owner](implementation/repetition-and-paths.md#cap-semantic-index), [key-shape contract](../A12Kernel/Elaboration/IndexKeyShape.lean) and [SG29](gaps/paths-and-groups.md#gap-sg29) before selecting the first unresolved distinction.
 - `baseline`: Accepted ordinary implementation boundaries remain in [coverage](CONFORMANCE-COVERAGE.md#axis-r--population-replay). The [C12 readback](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) establishes bounded semantic transport, not independent-evaluator qualification.
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
@@ -74,7 +74,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 ### K04 — authored identity and static admission
 
-- [ ] Close the remaining reference-classification gates in [SG9](gaps/paths-and-groups.md#gap-sg9), [SG19](gaps/paths-and-groups.md#gap-sg19) and [SG29](gaps/paths-and-groups.md#gap-sg29).
+- [x] Close the remaining reference-classification gates in [SG9](gaps/paths-and-groups.md#gap-sg9), [SG19](gaps/paths-and-groups.md#gap-sg19) and [SG29](gaps/paths-and-groups.md#gap-sg29).
 - Matrix: the retained `Other` companion's negative-iteration class and guarded twin; direct/selected/key-field references; group-as-field slots and category/root/duplicate precedence; target self-read before/after common guards; starred CurrentRepetition and repetition-uniqueness sibling fixed-group keys.
 - Done: authored identity survives lowering and ordinary levels bind only where admitted. Each distinct gate gets an isolated positive/negative pair; named competing-gate cases keep their precedence. This is not an exhaustive permutation of every diagnostic pair.
 

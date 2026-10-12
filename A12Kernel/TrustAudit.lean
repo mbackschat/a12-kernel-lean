@@ -1974,7 +1974,7 @@ run_cmd do
 #print axioms A12Kernel.repetitionKey_tokenValueList_unknown
 #print axioms A12Kernel.checkedRepetitionNotUnique_uniqueKeyFields
 #print axioms A12Kernel.checkedRepetitionEnumerationKey_classify
-#print axioms A12Kernel.checkedRepetitionNotUnique_keyGroupsOnBranch
+#print axioms A12Kernel.checkedRepetitionNotUnique_keyScopesOnBranch
 #print axioms A12Kernel.checkedRepetitionNotUnique_terminalGroupOwned
 #print axioms A12Kernel.checkedRepetitionNotUnique_keyPathsWithinTopology
 #print axioms A12Kernel.checkedRepetitionNotUnique_topologyLevels

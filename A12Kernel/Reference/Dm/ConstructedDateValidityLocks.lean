@@ -461,6 +461,9 @@ example : fixedPartialValidity false [0, 951782400000] = some [
     fixedPartialValidity true [0, 951782400000] = some [
     (.fired .value, some { field := 6, path := [1] }), (.notFired, none)] := by native_decide
 
+example : fixedPartialValidity true [0] .full "Valid(Date(D,\"01\",\"2024\"))" =
+    some [(.fired .value, some { field := 6, path := [1] })] := by native_decide
+
 example : fixedPartialValidity false [0]
     (.partialSet [{ path := ["Form", "D"], indices := [.all, .all] }])
     "Valid(Date(D,M,Y))" = some [(.unknown, none)] := by native_decide

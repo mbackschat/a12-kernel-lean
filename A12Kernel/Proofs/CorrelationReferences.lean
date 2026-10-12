@@ -2,8 +2,8 @@ import A12Kernel.Semantics.Correlation
 
 namespace A12Kernel
 
-/-- A filter's marked reads are among its reads, so the error-field reference a rule takes from a
-    filter never names a field the filter does not read. The converse fails on an unmarked read. -/
+/-- A filter's marked value reads are among its value reads. Authored repetition groups use a
+    separate admission projection because naming a group does not read its descendants. -/
 theorem correlatedHaving_referencesMarkedField_referencesField
     (condition : CorrelatedHaving) (field : FieldId)
     (marked : condition.referencesMarkedField field = true) :

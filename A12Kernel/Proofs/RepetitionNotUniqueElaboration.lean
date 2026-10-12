@@ -56,12 +56,13 @@ theorem checkedRepetitionNotUnique_uniqueKeyFields
     FieldId.firstDuplicate? (checked.keys.map (·.fieldId)) = none :=
   checked.uniqueKeyFields
 
-/-- Every checked key group is an ancestor-or-equal prefix of the selected terminal group. -/
-theorem checkedRepetitionNotUnique_keyGroupsOnBranch
+/-- Every checked key shares a prefix of the terminal repeatable ancestry; fixed suffixes add no row axes (spec/07 §6). -/
+theorem checkedRepetitionNotUnique_keyScopesOnBranch
     (checked : CheckedRepetitionNotUniqueSource model) :
     checked.keys.all (fun key =>
-      key.source.declaration.groupPath.isPrefixOf checked.terminalGroup) = true :=
-  checked.keyGroupsOnBranch
+      key.source.declaration.repeatableScope.isPrefixOf
+        (model.repeatableScopeForGroupPath checked.terminalGroup)) = true :=
+  checked.keyScopesOnBranch
 
 /-- At least one checked key owns the selected terminal group. -/
 theorem checkedRepetitionNotUnique_terminalGroupOwned

@@ -467,22 +467,16 @@ private def atFirstKey (writtenGroup : GroupPath) (first : SurfaceFieldPath)
     Option (Option KernelStaticDiagnostic) :=
   policyVerdict ["Policy"] writtenGroup first rest scope
 
-/- The shared path is the keys' lowest repeatable groups, so keys in the sibling fixed groups
-   `Adjuster` and `Assessor` of `Claims` share one, and the Kernel admits them with a scope and
-   without one. This theory's topology takes the deepest key's row and refuses two keys whose own
-   groups diverge, without a class; so does it a key in the fixed `Claims/Detail` beside one in the
-   repeatable `Claims/Items`, which no row reads. Keys in the parallel `Items` and `Parts` of
-   `Batches`, jointly iterated on their shared index field, draw the shared-path class without a
-   scope, and under one, which asks no shared-path gate, the construct's ban on parallel
-   iteration. -/
+/- Fixed suffixes share the containing repeatable ancestry (spec/07 §6; inbound-2026-09-26k).
+   Parallel repeatable keys retain the distinct default and explicit-scope refusals. -/
 example :
     atFirstKey ["Policy", "Claims", "Adjuster"] (rel ["Claims", "Adjuster"] "AdjusterRef") = none ∧
     atFirstKey ["Policy", "Claims", "Adjuster"] (rel ["Claims", "Adjuster"] "AdjusterRef")
-        [rel ["Claims", "Assessor"] "AssessorRef"] = some none ∧
+        [rel ["Claims", "Assessor"] "AssessorRef"] = none ∧
     atFirstKey ["Policy", "Claims", "Adjuster"] (rel ["Claims", "Adjuster"] "AdjusterRef")
-        [rel ["Claims", "Assessor"] "AssessorRef"] (fromGroups ["Claims"]) = some none ∧
+        [rel ["Claims", "Assessor"] "AssessorRef"] (fromGroups ["Claims"]) = none ∧
     atFirstKey ["Policy", "Claims", "Items"] (rel ["Claims", "Detail"] "DetailRef")
-        [rel ["Claims", "Items"] "ItemRef"] = some none ∧
+        [rel ["Claims", "Items"] "ItemRef"] = none ∧
     atFirstKey ["Policy", "Batches", "Items"] (rel ["Batches", "Items"] "ItemRef")
         [rel ["Batches", "Parts"] "PartRef"] = some (some .notInSamePath) ∧
     atFirstKey ["Policy", "Batches", "Items"] (rel ["Batches", "Items"] "ItemRef")
