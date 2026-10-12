@@ -103,12 +103,10 @@ Selected-overlap implementation and assurance live in the [shared overlap owner]
 <a id="gap-sg20"></a>
 ### SG20 — filter reference scope and iteration gates
 
-- `state`: residual calibration and transport; D01/D23 and D18.
+- `state`: consumer-gated public diagnostic transport; D18.
 - `baseline`: [Correlation](../implementation/repetition-and-paths.md#cap-star-selection-and-correlation), [two-level scope source](../sources/having-filter-probes.md#src-filter-reference-two-levels-above) and [captured runtime](../sources/having-filter-probes.md#src-off-path-captured-filter-runtime) own the two distinct gates and existing controls.
-- `evidence-needed`: a condition naming two different off-path levels, a marked off-path group leaf, computation runtime of the off-path capture, and a captured malformed cell rather than an absent one. A single path crossing two off-path levels is not the two-reference case.
 - `consumer-gated`: normalized public `.fieldOutsideEnvironment` becomes generic `incoherentCore`, losing a Kernel class available internally. A new published diagnostic needs an Explain/Analyze consumer and a [protocol](../PROTOCOL.md) decision; D18 excludes this transport extension.
-- `discriminator`: vary both the referenced level's relation to the operand path and an in-scope conjunct. An added conjunct can repair the reopened-level requirement but cannot repair an illegal off-path reference. Preserve captured versus candidate environments.
-- `reopen-when`: a selected calibration or diagnostic consumer needs one remaining distinction; the already proved gate split does not require reimplementation.
+- `reopen-when`: an adopted Explain/Analyze consumer requires the public diagnostic distinction.
 - `route-state`: discovery-required
 
 <a id="sg19--repetition-reference-binding"></a>

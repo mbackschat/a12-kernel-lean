@@ -63,7 +63,7 @@ The [Number capability owners](../implementation/numeric.md) define current exec
 
 - `state`: composition/evidence residual; D03/D20/D23.
 - `baseline`: [Temporal extrema](../implementation/temporal.md#cap-temporal-extrema) owns the shared fold, format gate, operand forms, target routes and C15 compositions.
-- `remaining`: filtered partial row-set compositions and the remaining recursive difference partitions, retaining calendar provenance, authored grouping and phase-specific missing/error states.
+- `remaining`: recursive difference partitions, retaining calendar provenance, authored grouping and phase-specific missing/error states.
 - `evidence-needed`: additional temporal families, target placements, presence-extent transfer and wider profile/runtime combinations beyond the retained matrices. Existing group admission and component-omitting/Base-Year folds are not missing implementation.
 - `host-boundary`: low-level payloads with components absent from their declared format have internal masking laws only; they do not establish that a Kernel document can carry those components.
 - `legacy-api`: an admitted operand with a filter a narrow fold cannot certify is an explicit unavailable fold, not evidence that the maintained Having reader lacks that filter family. [SG17](paths-and-groups.md#gap-sg17) owns current filter residuals.

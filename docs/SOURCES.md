@@ -124,7 +124,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Temporal runtime folds](sources/temporal-runtime-fold-probes.md), including [minute/second and quarter calibration](sources/temporal-runtime-fold-probes.md#src-temporal-calibration-c19) and [membership/Date-validity calibration](sources/temporal-runtime-fold-probes.md#src-membership-validity-calibration-c20)
 - [Temporal constants and BaseYear](sources/temporal-constant-and-base-year-probes.md)
 - [Repeatable temporal computations](sources/repeatable-temporal-computation-probes.md)
-- [Having filters](sources/having-filter-probes.md)
+- [Having filters](sources/having-filter-probes.md), including [captured predicate compositions](sources/having-filter-probes.md#src-captured-filter-compositions)
 - [Groups and iteration](sources/group-and-iteration-probes.md), including [sparse filter traversal](sources/group-and-iteration-probes.md#src-sparse-filter-traversal) and [Number parallel tokens](sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens)
 - [Group lists and capacity](sources/group-list-and-capacity-probes.md)
 - [Group-count topology and declared extent](sources/group-count-topology.md)

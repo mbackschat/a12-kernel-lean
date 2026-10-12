@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.HavingRepetitionAdmissionLocks
+import A12Kernel.Reference.Dm.HavingCaptureLocks
 import A12Kernel.Reference.Dm.HavingStarCategoryLocks
 import A12Kernel.Reference.Dm.HavingStringExpressionLocks
 import A12Kernel.Reference.Dm.HavingForbiddenLocks
