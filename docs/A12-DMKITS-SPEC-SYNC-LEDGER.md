@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-The reviewed 2026-10-12 handback yields 18 `accepted`, five `answered` and one `handed-off` receipt across the 24 entries below. Stable IDs remain here; [the provenance record](sources/inbound-handbacks.md#src-inbound-2026-10-12) owns the reviewed revision, evidence routes and limits.
+The reviewed responses yield 18 `accepted` and six `answered` receipts across the 24 entries below, with no outstanding peer request. Stable IDs remain here; [the consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own the reviewed revisions, evidence routes and limits.
 
 <a id="spec-2026-10-10-01"></a>
 ### SPEC-2026-10-10-01 — explicit narrower guards qualify target-derived operand scope
@@ -187,13 +187,14 @@ The reviewed 2026-10-12 handback yields 18 `accepted`, five `answered` and one `
 <a id="spec-2026-10-10-12"></a>
 ### SPEC-2026-10-10-12 — measure reserved custom test-range outcomes and continuation
 
-- `status`: handed-off
+- `status`: answered
 - `request`: Supply a retained runtime matrix for a registered validator returning `testIDNummer`, ordinary rejection and acceptance. The [source boundary](sources/custom-field-probes.md#src-custom-test-range) predicts admitted cache text beside a reported finding, but also identifies whole-call continuation and unique-entity interactions. This is a measurement request, not a settled canonical correction.
 - `instrument`: The maintained declarative kernelProbe registry exposes only fixed pattern/length error keys. Existing custom rejection-code tests also fix their keys. Use a source-owned differential or extend the maintained observation route; no local harness copy is requested or authorized.
 - `matrix`: Cross full/partial validation and computation; direct value/Length reads and seeded copies; unrelated computations; with/without unique entities; full versus abort-on-formal-error validation mode; relevant/excluded, absent and empty controls. Include repeated-CR text to distinguish original callback input from one-pass evaluated normalization.
 - `acceptance`: Report exact findings/pointers, available values, changed and unchanged computation outcomes, whole-call abort/fault behavior, and relevant cache membership, separately for both strategies. Pin the producer revision and evidence. Preserve distinctions between observed behavior and source predictions; introducing revision is the first commit containing this ID.
-- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
-- `disposition`: Partial response settles modern validation/computation and explicit core modes with hasUniqueEntities=false. Both indexed and unindexed controls assert false; the requested legacy true arm remains unmeasured. The original matrix stays open pending local scope/route resolution, with no new outbound entry or send. `CustomTestRangeLawsTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
+- `reviewed a12-dmkits revision`: `a4091041fe4d0de02053517f11d12f480b5c2cbc`.
+- `disposition`: Answered by the verified [profile boundary](sources/custom-field-probes.md#src-custom-legacy-profile), which scopes the unmeasured true-arm continuation outside the expanded-A12 evaluator contract. The original matrix is not accepted as complete; no outstanding peer request remains. Local modern-route adoption is still K01.
+- `prior-observations`: `CustomTestRangeLawsTest` modern validation/computation and core-mode observations retain [their earlier matrix basis](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-13"></a>
 ### SPEC-2026-10-10-13 — retain empty authored pattern execution failure

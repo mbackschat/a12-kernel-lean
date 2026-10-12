@@ -548,10 +548,10 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `source`: Owner-delivered `a12-kernel-lean-spec-corrections-2026-10-11a.md`, SHA-256 `df4973bc98f3032b6e914bdd7e71405d0b08ab60387541a531a94748837578b0`; the consolidated letter is dated 2026-10-12 and answers the 24 ledger entries below.
 - `revision`: Reviewed a12-dmkits `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`; every principal checkpoint below resolves and is its ancestor. Committed files were read with `git show` at this revision rather than from the sibling working tree.
 - `review`: Source-reading review inspected named peer clean-room test assertions and findings against each existing acceptance condition. No peer suites, Kernel calls or local replay were run for this receipt.
-- `receipt`: [The reconciliation ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue) owns 18 accepted, five answered and one handed-off disposition. Acceptance does not certify universal peer compatibility or widen the original finite profiles.
+- `receipt`: [The reconciliation ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue) owns current dispositions, including the subsequent [profile clarification](custom-field-probes.md#src-custom-legacy-profile). Acceptance does not certify universal peer compatibility or widen the original finite profiles.
 - `if376`: [The peer policy](../../../a12-rulekit/docs/INTERPRETER-FINDINGS.md#if376) retains first-admitted duplicate selected/parallel pointers. Reviewed tests pin Kernel winners separately or project only a coherent concrete duplicate association; this is a compatibility difference, not contrary Kernel evidence.
 - `comparator`: `DocumentDifferential.MessageSignature` retains full error/reference/fill pointer coordinates, including group terminals. It does not compare severity or localized text; separate `assertMessageTexts` controls compare exact text and address. Reported retained replay totals were not independently checked here.
-- `reserved-limit`: `CustomTestRangeLawsTest` explicitly asserts `hasUniqueEntities=false` for indexed and unindexed controls. Modern routes and core report/abort modes are settled; the requested legacy true arm remains unmeasured and SPEC-2026-10-10-12 remains handed-off pending local scope/route resolution.
+- `reserved-limit`: [The legacy profile checkpoint](custom-field-probes.md#src-custom-legacy-profile) owns the unmeasured true-arm continuation limit and reopening trigger. The modern observations remain evidence for K01, not proof of local implementation.
 - `canonical-limit`: [KF541](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf541) retains its canonical fold as pending. [The peer API contract](../../../a12-rulekit/docs/INTERPRETER-API-SPEC.md) carries raw callback input, one-pass evaluated normalization and the exact reserved result; the canonical kernel-truth prose has not explicitly folded `testIDNummer`.
 - `follow-on`: Enclosing-row Having and fixed-suffix relevance are reviewed candidate evidence routes for [path/group obligations](../gaps/paths-and-groups.md). Their local coverage remains to be checked under K03/K06; the receipt does not establish local conformance.
 - `follow-on`: Duplicate-result computation assembly is a reviewed candidate route for [computation/result obligations](../gaps/keystone.md), outside the 24 receipt decisions. K02 must check the local execution/report boundary.
@@ -570,7 +570,7 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 | 10-10-09 | `1dc5d5dca` | `SelectedMessageReferenceDiffTest` | answered |
 | 10-10-10 | `1dc5d5dca` | `ParallelValidationDispatchDiffTest` | answered |
 | 10-10-11 | `0047d5e0c` | `CustomTestRangeLawsTest` | accepted |
-| 10-10-12 | `0047d5e0c` | `CustomTestRangeLawsTest` | handed-off |
+| 10-10-12 | `0047d5e0c` | `CustomTestRangeLawsTest` | [answered](custom-field-probes.md#src-custom-legacy-profile) |
 | 10-10-13 | `a4c920ca4` | `EmptyAuthoredPatternDiffTest` | accepted |
 | 10-10-14 | `67c7f0957` | `FirstFilledNestedPrefixDiffTest` | accepted |
 | 10-10-15 | `9da38987d` | `PartialDeclaredListExtentDiffTest` | accepted |

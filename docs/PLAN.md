@@ -44,7 +44,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 - [ ] Close the measured reserved-result behavior through validation, computation and cache admission. [SG7](gaps/strings-and-messages.md#gap-sg7), [test-range source](sources/custom-field-probes.md#src-custom-test-range).
 - Matrix: exact `testIDNummer`, ordinary rejection, acceptance and near-spelled keys; raw versus normalized text; absent/empty/relevant/excluded input; seeded/unchanged targets and an independent computation; full examination versus abort mode.
 - Done: finding, readable payload, invalid-pointer membership and continuation agree with the committed modern-route observations. Preserve callback invocation order and normalize once.
-- The original ledger's `hasUniqueEntities=true` arm is unresolved. Settle its reachable model/API profile separately from merely declaring an index. Keep this item open until that arm is observed or a verified profile boundary establishes why it is outside the evaluator contract; lack of an instrument alone is insufficient.
+- The [verified legacy profile boundary](sources/custom-field-probes.md#src-custom-legacy-profile) removes the external profile blocker under the existing expanded-A12 contract. K01 remains unchecked until the local modern-route matrix and applicable gates close; the peer disposition does not implement it.
 
 ### K02 — computation report assembly and whole-call failure
 
@@ -215,7 +215,7 @@ The old D identifiers explain the C01–C22 boundary only. They no longer exclud
 | D07–D08 multiplicity and index classes | K14–K15 |
 | D09 provider/locale breadth | K14–K15 host inputs; catalog prose remains external under K19 |
 | D10 regex/Unicode | K13 semantics and K19 compiler/host contract |
-| D11 callbacks/codecs | K01, K13, K18; legacy custom arm remains open until K01 disposition |
+| D11 callbacks/codecs | K01, K13, K18 local work; [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) supplies the expanded-A12 boundary |
 | D12 Number display ingress | K16 |
 | D13 mandatory-information service | K19 boundary, then U02 when its query profile needs the service |
 | D14 partial plans | K08 enforcement and K19 contract; no silent stale-field execution |
@@ -440,7 +440,7 @@ Do not convert these stale blanket claims into work:
 - [ComputationNumericGuard](../A12Kernel/Elaboration/ComputationNumericGuard.lean) already accepts indexed fields/keyed groups. C02 covers actual selected-star scheduling.
 - [Validation evaluation](../A12Kernel/Elaboration/ValidationCondition/Evaluation.lean) already preserves direct/indexed validity failures. C04 covers full callers and retained controls.
 
-CustomCondition validation remains uncalibrated and is now selected under K18. C18–C20 closed the eleven ordinary calibration cells; the construct inventory now records 216 of 217 cells calibrated. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns the labels. The reserved-custom handback supplies modern-route observations; its legacy-arm limit is distinct from CustomCondition calibration.
+CustomCondition validation remains uncalibrated and is now selected under K18. C18–C20 closed the eleven ordinary calibration cells; the construct inventory now records 216 of 217 cells calibrated. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns the labels. The reserved-custom handback supplies modern-route observations; [the legacy profile boundary](sources/custom-field-probes.md#src-custom-legacy-profile) is distinct from CustomCondition calibration and does not close K01.
 
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
@@ -448,7 +448,7 @@ CustomCondition validation remains uncalibrated and is now selected under K18. C
 - Status: K01–K22 are unchecked and selected as the remaining conformance programme. C01–C22 and R01–R03 are the accepted baseline, not evidence that the K tasks have already passed.
 - Next: K01 read-only route discovery against the [reserved-custom checkpoint](sources/custom-field-probes.md#src-custom-test-range), then focused red/green at the verified owning route. Inventory current implementation before editing; reuse the delivered modern observations.
 - Oracle: [October 12 inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints. Peer receipts do not silently become local implementation or replay gains.
-- Open dependency: the requested legacy custom unique-entity arm remains unmeasured. K01 owns its observation or verified profile disposition; other independent K work may proceed if that narrow arm needs another handback.
+- External profile boundary: [the reserved-custom disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request. Continue K01 local modern-route implementation; its task remains unchecked.
 - Consumer: K21 checks semantic transport. K22 transitions to U01 Rust and then U02 SMT; the implementation objectives are explicitly requested, while concrete repository/dependency choices remain at their existing decision boundaries.
 - Execution: one writer and one sequential track. Use MEDIUM for settled coherent batches, HIGH for semantic decisions and acceptance, and the existing cold-review triggers. No peer messages were sent.
 - Stop: stop this phase at K22 and select U01. A genuine blocker keeps its task unchecked; neither a documentation cleanup nor a peer receipt substitutes for semantic closure.
