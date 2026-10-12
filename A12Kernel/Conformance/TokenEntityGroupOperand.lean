@@ -552,9 +552,8 @@ example :
     rawRoutesResolve (group ["Form", "Bag"]) = [false, false, false, true] := by
   native_decide
 
-/- `FirstFilledValue` still refuses a group on this raw-`Document` route, which no observation
-   measures ([SG5](../../docs/gaps/numeric-and-temporal.md#gap-sg5-number-token-group-runtime)). The
-   checked-document route below owns the measured fixed-group fragment. -/
+/- The [token group contract](../../docs/implementation/cross-clause.md#cap-token-group-expansion)
+   requires checked-document context for group first-filled reads, so this raw route refuses. -/
 private def firstFilledResolves (operand : SurfaceFieldEntityOperand) : Bool :=
   match elaborateFirstFilledTokenSource probeModel ["Form"]
       { first := operand, rest := [field "Other"] } with

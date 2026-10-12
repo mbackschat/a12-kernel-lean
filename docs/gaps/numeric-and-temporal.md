@@ -22,17 +22,6 @@
 - `reopen-when`: a named output consumer needs this exact form and its source route settles the coordinate.
 - `route-state`: discovery-required
 
-<a id="gap-sg5-number-token-group-runtime"></a>
-#### Number, token, and Boolean group runtime
-
-- `state`: residual; additional dedicated-carrier shapes and D18 legacy raw-Document parity.
-- `baseline`: [C07 reader locks](../../A12Kernel/Reference/Dm/PartialGroupOperandLocks.lean) cover maintained Number/token/Boolean full and partial group execution. Their existence must not be inferred from a separate narrow legacy carrier.
-- `remaining`: wider Boolean fixed-group computation and non-value-count token group computation beyond the dedicated carrier profiles; deeper repeatable descendants need their own source-selection and extent checks.
-- `evidence-needed`: Enumeration/category value-count literal admission over a starred group, distinguishing union-domain admission from an all-declarations gate. [Group source provenance](../sources/inbound-group-operand-batches.md#src-partial-group-operands-c07) owns the retained full/partial contrasts.
-- `legacy-api`: raw-Document group routes are outside the maintained checked-document contract.
-- `reopen-when`: a consumer selects one remaining dedicated-carrier shape; first test whether the maintained reader already supplies it.
-- `route-state`: discovery-required
-
 #### SG5 family completion
 
 The [Number capability owners](../implementation/numeric.md) define current execution and assurance. A family-level open label does not imply missing ordinary arithmetic or group execution.

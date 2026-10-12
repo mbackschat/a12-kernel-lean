@@ -24,10 +24,10 @@ The Kernel answers the over-limit document as the one without its third row on e
 full validation, under a partial scope of the whole root, and under one naming rows 1 and 2 of each
 group; partial validation skips the filtered scan under both scopes.
 
-The `NRows` value lists retain their sole `Y` value-side operand on full validation, and the starred
-field also runs under whole-root partial validation. Partial Number group resolution remains
-unsupported. The rows-1-and-2 partial scope remains a separate gap: the token value lists fire on the Kernel where
-Lean answers unknown because it counts only a wildcard index as covering the list extent.
+The `NRows` value lists retain their sole `Y` value-side operand on full validation, and this
+module also exercises the starred field under whole-root partial validation. Declared-coordinate
+coverage is checked separately in [PartialGroupList](PartialGroupList.lean); maintained group
+reader combinations are checked in [PartialGroupOperandLocks](../Reference/Dm/PartialGroupOperandLocks.lean).
 -/
 
 namespace A12Kernel.Conformance.CapacityGroupConsumers

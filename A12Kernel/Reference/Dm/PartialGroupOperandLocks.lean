@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.Compute
 
 namespace A12Kernel.Dm.PartialGroupOperandLocks
 open Lean
@@ -170,5 +171,100 @@ example : [false, true].all (fun repeated => [false, true].all (fun isPartial =>
       some (messages repeated (some "VALUE_ERROR") true) &&
     result repeated true false "FirstFilledValue(Pair) == \"X\"" "" "X" .token ==
       some (messages repeated none true)) = true := by native_decide
+
+private def computeGroup (repeated : Bool) (a b : String) : Option (List (String × String)) := do
+  let base := modelFor .boolean repeated
+  let model : FlatModel := { base with fields := base.fields ++ [{
+    id := 4, name := "Target", groupPath := parent repeated, repeatableScope := if repeated then [10] else [],
+    policy := { kind := .number { scale := 0, signed := true } } }] }
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let computeRow := fun a b => Json.mkObj [
+    ("Marker", .str "x"), ("Target", .str "99"), ("Pair", .mkObj [("A", .str a), ("B", .str b)])]
+  let input ← (readDocument dm (.mkObj [("Form", if repeated then
+    .mkObj [("Rows", .arr #[computeRow a b, computeRow "false" "false"])] else computeRow a b)])).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let (_, step) ← (lowerComputation model .english {
+    name := "Count", group := parent repeated, targetRelPath := "../Target", commonPrecondition := none,
+    alternatives := [{ precondition := none, operation := "NumberOfValueInFields(True In Pair)" }],
+    errorCodesToSuppress := [] }).toOption
+  pure ((← (runComputations world prepared document [step]).toOption).map fun result =>
+    (result.pointer, result.outcome))
+
+example : [false, true].all (fun repeated =>
+    [("true", "false", "value 1"), ("", "true", "value 1"), ("", "", "value 0"),
+      ("bad", "true", "cleared")].all fun (a, b, outcome) =>
+      computeGroup repeated a b == some (
+        [(if repeated then "Form/Rows/Target" else "Form/Target", outcome)] ++
+          if repeated then [("Form/Rows[2]/Target", "value 0")] else [])) = true := by native_decide
+
+private def groupLiteralAdmission (literal operand : String) : String :=
+  let model := modelFor .enumeration true
+  let model := { model with fields := model.fields.map fun field =>
+    if field.id == 2 then { field with enumeration := some {
+      storedTokens := ["Y", "Z"], categories := [{ name := "Label", tokens := ["AY", "AZ"] }] } }
+    else field }
+  match parseText .english ("NumberOfValueInFields(\"" ++ literal ++ "\" In " ++ operand ++ ") > 0") with
+  | .error _ => "syntax"
+  | .ok parsed => match checkRawConditionBeforeGlobals model ["Form"] ["Form"] parsed.body false with
+    | .error refusal => refusal.detail
+    | .ok facts => facts.refusal?.map (·.kernelCode) |>.getD "admitted"
+
+example : groupLiteralAdmission "Y" "Rows*/Pair" = "admitted" ∧
+    groupLiteralAdmission "X" "Rows*/Pair" = "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION" ∧
+    groupLiteralAdmission "Z" "Rows*/Pair" = "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION" ∧
+    groupLiteralAdmission "Y" "Rows*/Pair/A,Rows*/Pair/B" = "admitted" ∧
+    groupLiteralAdmission "X" "Rows*/Pair/A,Rows*/Pair/B" = "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION" ∧
+    groupLiteralAdmission "AY" "Rows*/Pair/A->Label,Rows*/Pair/B->Label" = "admitted" ∧
+    groupLiteralAdmission "AX" "Rows*/Pair/A->Label,Rows*/Pair/B->Label" =
+      "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION_CATEGORY" := by native_decide
+
+private def suffixModel : FlatModel := {
+  fields := [
+    { id := 1, name := "Anchor", groupPath := ["Form"], policy := { kind := .string } },
+    { id := 2, name := "N", groupPath := ["Form", "Parent", "Children", "Parts", "Detail"],
+      repeatableScope := [10, 20], policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 3, name := "N", groupPath := ["Form", "Other"], policy := { kind := .number { scale := 0, signed := true } } }]
+  repeatableGroups := [
+    { level := 10, path := ["Form", "Parent", "Children"], repeatability := some 2 },
+    { level := 20, path := ["Form", "Parent", "Children", "Parts"], repeatability := some 2 }] }
+
+private def suffixMessages (condition : String) (groupCoordinate fieldCoordinate : RelevanceIndex)
+    (present : Bool := false) : Option (List String) := do
+  let dm : DmModel := { flat := suffixModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let payload : Json := .mkObj [("Children", .arr #[.mkObj [("Parts", .arr #[
+    .mkObj [("Detail", .mkObj [("N", .str "1")])]])]])]
+  let raw ← (readDocument dm (.mkObj [("Form", .mkObj (
+    [("Anchor", .str "on")] ++ if present then [("Parent", payload)] else []))])).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler suffixModel).toOption
+  let document ← (checkDocument prepared "en_US" raw.data).toOption
+  let rule ← (checkRule dm .english {
+    group := ["Form"], name := "Suffix", errorCode := "SUFFIX", severity := "ERROR",
+    errorEntityRelPath := "../Anchor", condition := "FieldFilled(Anchor) And " ++ condition }).toOption
+  let scope : ValidationRelevanceScope := .partialSet [
+    RelevantEntityPattern.allInstances ["Form", "Anchor"], RelevantEntityPattern.allInstances ["Form", "Other"],
+    { path := ["Form", "Parent", "Children", "Parts", "Detail", "N"],
+      indices := [.all, .all, .all, .all, groupCoordinate, fieldCoordinate] }]
+  let result ← if rule.requiresAddressedValidation then
+    (rule.evalAddressedPartial document scope (some world)).toOption
+    else do
+      let preliminary ← (document.applyPartialGeneratedPreliminaryForScope scope).toOption
+      let fields : RawFlatContext := { read := fun field =>
+        (raw.data.cells.find? fun cell => cell.address.field == field && cell.address.path.isEmpty).map (·.raw) |>.getD .empty }
+      let groups : GroupPresenceContext := fun path =>
+        (preliminary.groupPresenceInput path [] false).toOption.map (·.derive)
+      (rule.evalPartial prepared "en_US" fields groups scope).toOption
+  let .evaluated result := result | none
+  pure (result.message?.toList.map fun message => (observe suffixModel message).code)
+
+example : ["GroupNotFilled(Parent)", "NoGroupFilled(Parent,Other)", "NumberOfFilledGroups(Parent,Other) == 0"].all
+    (fun condition => suffixMessages condition (.concrete 1) (.concrete 2) == some ["SUFFIX"] &&
+      suffixMessages condition (.concrete 2) .all == some []) = true := by native_decide
+
+example : [(.all, .all), (.concrete 1, .all), (.concrete 2, .all), (.all, .concrete 1), (.all, .concrete 2)].all
+    (fun (groupCoordinate, fieldCoordinate) =>
+      suffixMessages "GroupFilled(Parent)" groupCoordinate fieldCoordinate true == some ["SUFFIX"]) = true := by native_decide
 
 end A12Kernel.Dm.PartialGroupOperandLocks

@@ -47,7 +47,7 @@ The prior 24 responses yield 18 `accepted` and six `answered` receipts. One new 
 - `delta`: State the eligibility and address-replacement rule for a unique authored semantic-index key on the error field, separately from payload availability and ordinary iteration.
 - `basis`: Kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`; [source checkpoint](sources/message-cache-probes.md#src-selected-error-reanchoring). The peer's selected-error controls at `17b3eb0840e2e5dccf76135eb91fef04512ef3e8` establish full/partial invalid-key and duplicate-key outcomes, not every eligibility contrast. No new Kernel capture is claimed.
 - `acceptance`: Reconcile the canonical account and existing selected-error implementation with the source-owned unique-key/non-iterating gate. Check repeated same-key versus competing-key occurrences, ordinary iteration at the selected level, parent-local association, unavailable payload and absent association. Preserve the explicit duplicate-cache host-order boundary; do not adopt first-admitted row order as the Kernel oracle.
-- `introducing revision`: first commit containing this ID. This pending clarification accompanies active K05 work and does not claim K05 closure.
+- `introducing revision`: `83008cf9`. Local K05 closure is recorded in [the plan](PLAN.md#active-unit); peer reconciliation remains pending.
 
 <a id="spec-2026-10-10-01"></a>
 ### SPEC-2026-10-10-01 — explicit narrower guards qualify target-derived operand scope

@@ -3,9 +3,9 @@
 <a id="active-unit"></a>
 ## Next action and accepted baseline
 
-- `status`: K01–K05 are accepted; K06–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
-- `next`: K06 — group extent, relevance and capacity. Reconcile its frozen matrix with [SG13](gaps/paths-and-groups.md#gap-sg13), [SG5 group runtime](gaps/numeric-and-temporal.md#gap-sg5-number-token-group-runtime) and their linked implementation/evidence owners before selecting the first unresolved distinction. K05 passed the integrated, compact-evidence, population, trust and fresh HIGH review gates; its implemented boundary belongs to the [semantic-index owner](implementation/repetition-and-paths.md#cap-semantic-index).
-- `sync`: [SPEC-2026-10-12-01](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-12-01) is pending and not handed off. It requests peer reconciliation of source-derived selected-error eligibility; no external wait blocks K06.
+- `status`: K01–K06 are accepted; K07–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
+- `next`: K07 — parallel joins and cross-root dispatch. Reconcile its frozen matrix with [SG9 and SG29](gaps/paths-and-groups.md) and [SG10](gaps/strings-and-messages.md#gap-sg10) before selecting the first unresolved distinction. K06 passed the integrated, compact-evidence, population, trust and fresh HIGH review gates; its implemented boundaries belong to [group presence](implementation/cross-clause.md#cap-resolved-group-presence-both-arms) and [group counts](implementation/cross-clause.md#cap-mixed-validation-filled-group-count).
+- `sync`: [SPEC-2026-10-12-01](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-12-01) is pending and not handed off. It requests peer reconciliation of source-derived selected-error eligibility; no external wait blocks K07.
 - `baseline`: Accepted ordinary implementation boundaries remain in [coverage](CONFORMANCE-COVERAGE.md#axis-r--population-replay). The [C12 readback](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) establishes bounded semantic transport, not independent-evaluator qualification.
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
@@ -87,7 +87,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 ### K06 — group extent, relevance and capacity
 
-- [ ] Close the residual shared product/coverage mechanism in [SG13](gaps/paths-and-groups.md#gap-sg13) and [SG5 group runtime](gaps/numeric-and-temporal.md#gap-sg5-number-token-group-runtime).
+- [x] Close the residual shared product/coverage mechanism in [SG13](gaps/paths-and-groups.md#gap-sg13) and [group runtime](implementation/cross-clause.md#cap-boolean-confirm-group-value-count).
 - Matrix: bound ancestor plus three reopened levels; independent and repeated operands; complete/diagonal/missing declared-slot selections; impossible fixed suffix coordinates; absent versus empty versus malformed-only content; capacity overflow with a valid sibling.
 - Matrix: Number, token/category and Boolean group callers; presence, counts, memberships, extrema/distinct and generated self-validation use their distinct gates. Include a fully covered negative large-domain control without requiring materialized products.
 - Done: current-reader outcomes and coordinates agree across full/partial/computation routes. Fixed-suffix and structural follow-on evidence is reconciled, and no generic coverage helper erases a consumer-specific gate.

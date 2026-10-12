@@ -2,6 +2,16 @@
 
 The structural over-repetition family: which findings an over-capacity row draws, how deep its absorption and suppression reach, and which physical rows the starred numeric domains then exclude. Split out of [`group-and-iteration-probes.md`](group-and-iteration-probes.md) when that document reached its size ceiling; the checkpoints are unchanged and keep their anchors.
 
+<a id="src-over-limit-finite-prefix-handback"></a>
+#### Finite-prefix structural occurrences remain independent of descendant capacity
+
+- `revision`: Reviewed a12-dmkits `9acc4088bb32630b1f2a76b9d4a13c4c1d9155c8`, `OverRepetitionOccurrenceDiffTest.directUnboundedDescendantRetainsFinitePrefixStructuralDiagnostics`, dated 2026-10-12. The committed test was inspected without rerunning the Kernel.
+- `matrix`: A capacity-two ancestor and finite descendant are exercised at ancestor row two/three, with an empty or populated descendant, under full, nonempty partial and empty partial validation. A wider descendant-capacity control preserves the same ancestor violation.
+- `result`: The out-of-capacity ancestor yields its row finding plus one context finding for each present descendant group/cell occurrence. In-capacity controls and empty partial validation emit none; changing an inactive descendant bound does not erase the occurrences.
+- `route`: The peer additionally compares its direct unbounded ModelDef extension against those finite-prefix observations. That extension is not an authorable unbounded A12 declaration and does not widen the [declaration domain](../../spec/01-data-model.md).
+- `local`: [Structural finding locks](../../A12Kernel/Conformance/OverRepetitionFindings.lean) already distinguish a bare excess row, present descendant rows/cells and disjoint violations. [The bound/nested count checkpoint](group-count-topology.md#src-bound-nested-count) separately establishes exclusion from ancestor error caches. Physical occurrences, findings and admitted value extents remain distinct.
+- `sync`: Inbound corroboration of the existing finite structural account; no canonical change or outbound request.
+
 <a id="src-over-limit-absorption-depth"></a>
 #### The absorption is transitive and the suppression covers the whole written subtree, measured locally 2026-08-30
 

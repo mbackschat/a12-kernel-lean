@@ -58,7 +58,9 @@ def path : CheckedTokenEntityOperand model → List String
   | .star source => source.source.declaration.path
   | .group source => source.groupPath
 
-/-- A group slot admits the literal only when **every** expanded declaration does, which is the same all-slots rule the whole list already applies one level up. The measured starred String group does not discriminate this gate because every String literal is admitted; applying it to Enumeration declarations remains the representation's internally executable choice. -/
+/-- A group slot admits the literal only when every expanded declaration does, as required by
+`CheckEntityListenUtils.checkIsValidStringOrEnums` (Kernel 30.8.1; source checkpoint
+`docs/sources/group-count-topology.md#src-group-value-count-literal-domain`). -/
 def allowsValueCountLiteral (checked : CheckedTokenEntityOperand model)
     (expected : String) : Bool :=
   match checked with

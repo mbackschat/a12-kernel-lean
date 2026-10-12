@@ -162,9 +162,8 @@ private def scanCheckedFirstFilledTokenOperand
         (FirstFilledScanState ⊕ PartialValidationFirstFilledTokenResult)
   | .selected source => .error (.unsupportedGroupOperand source.path)
   | .group source =>
-      -- No observation measures a token group on this raw-`Document` route
-      -- ([SG5](../../docs/gaps/numeric-and-temporal.md#gap-sg5-number-token-group-runtime)), so it
-      -- refuses; the checked-document specialization below owns the measured fixed-group fragment.
+      -- The [token group contract](../../docs/implementation/cross-clause.md#cap-token-group-expansion)
+      -- requires checked-document context to select group cells and their availability.
       .error (.unsupportedGroupOperand source.groupPath)
   | .field source =>
       if scope.coversCell model source.declaration.path [] then

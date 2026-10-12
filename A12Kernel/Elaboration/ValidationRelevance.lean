@@ -246,6 +246,7 @@ def coversValueListExtent (scope : ValidationRelevanceScope) (model : FlatModel)
       entity.coversValueListExtent model targetPath boundLevels reopenedLevels outer
 
 private inductive DeclaredCoverageAxis where
+  | ignored
   | fixed (coordinate : Nat)
   | wildcard
   | finite (capacity : Nat)
@@ -262,6 +263,10 @@ private def coverageTails (selector : RelevanceIndex)
 coordinate sees exactly the wildcard tails, so capacities never require a Cartesian materialization. -/
 private def declaredCoverage : List DeclaredCoverageAxis → List (List RelevanceIndex) → Bool
   | [], patterns => patterns.any List.isEmpty
+  | .ignored :: remaining, patterns =>
+      declaredCoverage remaining (patterns.filterMap fun
+        | _ :: tail => some tail
+        | [] => none)
   | .fixed coordinate :: remaining, patterns =>
       declaredCoverage remaining (coverageTails (.concrete coordinate) patterns)
   | .wildcard :: remaining, patterns => declaredCoverage remaining (coverageTails .all patterns)
@@ -272,10 +277,9 @@ private def declaredCoverage : List DeclaredCoverageAxis → List (List Relevanc
       named.all (fun coordinate => declaredCoverage remaining (coverageTails (.concrete coordinate) patterns)) &&
         (named.length == capacity || declaredCoverage remaining (coverageTails .all patterns))
 
-/-- Coverage of every declared slot by the union of relevant identifiers (spec/10 §5).
-Finite capacity permits concrete coverage; unbounded capacity and a missing selected parent
-still require wildcard coverage. The partition uses authored patterns rather than declared size. -/
-def coversDeclaredFieldExtent (scope : ValidationRelevanceScope) (model : FlatModel)
+/-- Group-absence coverage consumes the terminal field's identity, but not its coordinate;
+declared-field coverage retains that coordinate (KF120 fixed-suffix calibration, 2026-10-12). -/
+private def coversDeclaredFieldExtentUsing (terminal : DeclaredCoverageAxis) (scope : ValidationRelevanceScope) (model : FlatModel)
     (targetPath : List String) (reopenedLevels : List RepeatableLevel) (outer : Env)
     (missingParent : Option RepeatableLevel := none) : Except StarAddressingError Bool := do
   let .partialSet entities := scope | return true
@@ -284,7 +288,7 @@ def coversDeclaredFieldExtent (scope : ValidationRelevanceScope) (model : FlatMo
   for segment in targetPath do
     path := path ++ [segment]
     let axis ← match model.repeatableGroups.find? (·.path == path) with
-      | none => pure (.fixed 1)
+      | none => pure (if path == targetPath then terminal else .fixed 1)
       | some group =>
           if missingParent == some group.level then pure .wildcard
           else if reopenedLevels.contains group.level then
@@ -295,6 +299,14 @@ def coversDeclaredFieldExtent (scope : ValidationRelevanceScope) (model : FlatMo
     axes := axes ++ [axis]
   pure (declaredCoverage axes (entities.filterMap fun entity =>
     (entity.projectOntoTarget? targetPath).map (·.indices)))
+
+/-- Coverage of every declared slot by the union of relevant identifiers (spec/10 §5).
+Finite capacity permits concrete coverage; unbounded capacity and a missing selected parent
+still require wildcard coverage. The partition uses authored patterns rather than declared size. -/
+def coversDeclaredFieldExtent (scope : ValidationRelevanceScope) (model : FlatModel)
+    (targetPath : List String) (reopenedLevels : List RepeatableLevel) (outer : Env)
+    (missingParent : Option RepeatableLevel := none) : Except StarAddressingError Bool :=
+  coversDeclaredFieldExtentUsing (.fixed 1) scope model targetPath reopenedLevels outer missingParent
 
 /-- Per-cell relevance retains concrete row identity and ancestor descent. Unlike all-rows relevance, different concrete entities may cover different reached cells. -/
 def coversCell (scope : ValidationRelevanceScope) (model : FlatModel)
@@ -342,7 +354,7 @@ def groupRelevance (scope : ValidationRelevanceScope) (model : FlatModel)
           groupPath.isPrefixOf declaration.groupPath).all fun declaration =>
           let reopened := (model.repeatableGroups.filter fun group =>
             groupPath.length < group.path.length && groupPath.isPrefixOf group.path).map (·.level)
-          (scope.coversDeclaredFieldExtent model declaration.path reopened environment).toOption.getD false then
+          (coversDeclaredFieldExtentUsing .ignored scope model declaration.path reopened environment).toOption.getD false then
         .fullyRelevant
       else
         .partlyRelevant

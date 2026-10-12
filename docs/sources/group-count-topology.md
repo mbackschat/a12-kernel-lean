@@ -1,5 +1,23 @@
 # Group-count topology and declared extent
 
+<a id="src-group-fixed-suffix-coverage"></a>
+#### Group-absence coverage distinguishes fixed group and terminal field coordinates
+
+- `revision`: Reviewed a12-dmkits `9acc4088bb32630b1f2a76b9d4a13c4c1d9155c8`, `PartialParentGroupCoverageDiffTest.fixedSuffixCoordinatesAreMeasuredWithoutWideningConcreteCellRelevance` and KF120, dated 2026-10-12. No new Kernel run was performed here.
+- `matrix`: A fixed parent contains two capacity-two repeated levels and a fixed Detail group with one Number field. Five selectors distinguish wildcard, fixed-group coordinates one/two and terminal-field coordinates one/two on absent and filled documents.
+- `result`: Fixed-group coordinate two prevents full absence coverage; coordinate one and wildcard allow it. Terminal-field coordinate two does not change group-absence coverage. Admitted descendant content proves positive presence under all five selectors. The peer records ten complete-message comparisons agreeing between both Kernel strategies and its interpreter.
+- `source`: Kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`, `ValidationCommand.setupFullyRelevantGroups`, `compress` and `filterTotallyRelevantGroups`: group relevance propagates field identity through parent contexts, retaining fixed-group coordinate eligibility.
+- `limit`: This result concerns group-absence coverage. Concrete-cell relevance and declared-field coverage retain exact terminal coordinates; the separate reduced-universal aggregate and wildcard-only list policies are unchanged. The observation does not establish one coordinate policy for all consumers.
+- `sync`: Reviewed inbound correction; its [canonical consequence](../../spec/10-validation-and-polarity.md#5-full-vs-partial-validation) creates no duplicate outbound ledger request.
+
+<a id="src-group-value-count-literal-domain"></a>
+#### Group value-count admission checks each expanded Enumeration domain
+
+- `source`: Kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`, inspected 2026-10-12: `CheckAnzahlWertOpImpl.check` delegates String constants to `CheckEntityListenUtils.checkAllFieldsAreValidStringOrEnums`; `checkIsValidStringOrEnums` expands each entity to its fields and `checkEnumType` checks each selected stored/category domain.
+- `result`: A literal must belong to every expanded Enumeration declaration's selected domain. Membership in the union of domains is insufficient. String declarations impose no closed Enumeration-domain restriction. Invalid stored/category literals retain their distinct refusal classes.
+- `separators`: Two declarations with stored domains X/Y and Y/Z admit Y and refuse X or Z, both as a starred group and an explicit field list. Category domains AX/AY and AY/AZ admit AY and refuse AX. These are internal reader controls; no new external capture is claimed.
+- `limit`: The source settles the all-declarations gate; it does not add runtime or diagnostic-precedence calibration. This confirms the existing [value-count admission clause](../../spec/04-numbers-and-decimals.md#4-other-numeric-constraints), with no behavioral spec delta or outbound request.
+
 <a id="src-bound-group-count"></a>
 #### Fixed and mixed group counts retain the bound parent on full and partial validation, measured locally 2026-10-10
 

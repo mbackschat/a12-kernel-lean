@@ -101,4 +101,95 @@ example : validate (extraDescRows true) true "Rows*/Items*" 4 = some [.value] :=
 example : validate (extraDescRows false) true "Rows*" 2 = some [.value] := by native_decide
 example : validate (extraDescRows true) true "Rows*" 2 = some [.value] := by native_decide
 
+private def boundModel (capacity : Nat := 2) : FlatModel := {
+  model with
+  fields := model.fields.map fun field => { field with
+    groupPath := ["Form", "Parents"] ++ field.groupPath.drop 1
+    repeatableScope := 1 :: field.repeatableScope }
+  repeatableGroups := { level := 1, path := ["Form", "Parents"], repeatability := some 2 } ::
+    model.repeatableGroups.map fun group => { group with
+      path := ["Form", "Parents"] ++ group.path.drop 1, repeatability := some capacity } }
+
+private def boundRun (condition : String) (isPartial : Bool) (capacity : Nat := 2)
+    (first : Array Json := full) (second : Array Json := emptyPrefix)
+    (scope : ValidationRelevanceScope := .partialSet [RelevantEntityPattern.allInstances ["Form"]]) :
+    Option (List (String × String)) := do
+  let model := boundModel capacity
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let parent := fun rows => Json.mkObj [("Anchor", .str "on"), ("Target", .str "99"), ("Rows", .arr rows)]
+  let data ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Parents", .arr #[parent first, parent second])])])).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
+  let rule ← (checkRule dm .english {
+    name := "Bound", group := ["Form", "Parents"], errorCode := "BOUND", severity := "ERROR",
+    errorEntityRelPath := "../Anchor", condition := "FieldFilled(Anchor) And " ++ condition }).toOption
+  let messages ← if isPartial then
+    match ← (rule.evalOrdinaryRepeatablePartial document scope (some world)).toOption with
+    | .skipped => none
+    | .evaluated outcomes => pure (outcomes.flatMap fun (_, outcome) => match outcome with
+        | .skipped => [] | .evaluated result => result.message?.toList)
+  else (runRule world document rule).toOption
+  pure (messages.map fun message => let observed := observe model message
+    (observed.pointer, observed.messageType))
+
+example : [false, true].all (fun partialMode =>
+    boundRun "NumberOfFilledGroups(Rows*/Items*/Desc*) == 8" partialMode ==
+      some [("Form/Parents/Anchor", "VALUE_ERROR")] &&
+    boundRun "NumberOfFilledGroups(Rows*/Items*/Desc*) == 4" partialMode ==
+      some [("Form/Parents[2]/Anchor", "OMISSION_ERROR")]) = true := by native_decide
+
+example : boundRun "NoGroupFilled(Rows*/Items*/Desc*)" true 40 #[] #[] =
+    some [("Form/Parents/Anchor", "OMISSION_ERROR"),
+      ("Form/Parents[2]/Anchor", "OMISSION_ERROR")] := by native_decide
+
+private def boundTriples : List (Nat × Nat × Nat) :=
+  [(1, 1, 1), (1, 1, 2), (1, 2, 1), (1, 2, 2),
+    (2, 1, 1), (2, 1, 2), (2, 2, 1), (2, 2, 2)]
+
+private def boundLeaves (outer : Nat) (triples : List (Nat × Nat × Nat)) :
+    List RelevantEntityPattern :=
+  triples.flatMap fun (row, item, desc) => ["N", "M"].map fun name => {
+    path := ["Form", "Parents", "Rows", "Items", "Desc", name],
+    indices := [.concrete 1, .concrete outer, .concrete row,
+      .concrete item, .concrete desc, .all] }
+
+private def boundAbsence (entities : List RelevantEntityPattern) :
+    Option (List (String × String)) :=
+  boundRun "NoGroupFilled(Rows*/Items*/Desc*)" true 2 #[] #[]
+    (.partialSet (RelevantEntityPattern.allInstances ["Form", "Parents", "Anchor"] :: entities))
+
+example : boundAbsence (boundLeaves 1 boundTriples) =
+    some [("Form/Parents/Anchor", "OMISSION_ERROR")] := by native_decide
+example : boundAbsence (boundLeaves 2 boundTriples) =
+    some [("Form/Parents[2]/Anchor", "OMISSION_ERROR")] := by native_decide
+example : boundAbsence (boundLeaves 1 [(1, 1, 1), (2, 2, 2)]) =
+    some [] := by native_decide
+example : boundAbsence (boundLeaves 1 [(1, 1, 1), (2, 2, 2), (1, 1, 1), (2, 2, 2)]) =
+    some [] := by native_decide
+example : boundAbsence (boundLeaves 1 (boundTriples.filter (· != (2, 2, 2)))) =
+    some [] := by native_decide
+example : boundAbsence (boundLeaves 1 ((boundTriples.filter (· != (2, 2, 2))) ++ [(2, 2, 3)])) =
+    some [] := by native_decide
+example : boundAbsence (boundLeaves 1 boundTriples ++ boundLeaves 2 boundTriples) =
+    some [("Form/Parents/Anchor", "OMISSION_ERROR"),
+      ("Form/Parents[2]/Anchor", "OMISSION_ERROR")] := by native_decide
+
+private def boundCompute (operation : String) : Option (List (String × String)) := do
+  let model := boundModel
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let parent := fun rows => Json.mkObj [("Anchor", .str "on"), ("Target", .str "99"), ("Rows", .arr rows)]
+  let data ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Parents", .arr #[parent full, parent emptyPrefix])])])).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
+  let (_, step) ← (lowerComputation model .english {
+    group := ["Form", "Parents"], name := "Bound", targetRelPath := "../Target", commonPrecondition := none,
+    alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).toOption
+  pure ((← (runComputations world prepared document [step]).toOption).map fun result =>
+    (result.pointer, result.outcome))
+
+example : boundCompute "NumberOfFilledGroups(Rows*/Items*/Desc*)" =
+    some [("Form/Parents/Target", "value 8"), ("Form/Parents[2]/Target", "value 4")] := by native_decide
+
 end A12Kernel.Dm.NestedGroupCountLocks
