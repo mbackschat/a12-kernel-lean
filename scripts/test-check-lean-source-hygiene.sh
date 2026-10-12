@@ -53,12 +53,29 @@ write_testing_doc() {
 new_fixture() {
   local name="$1"
   local fixture="${temporary_root}/${name}"
-  mkdir -p "$fixture/scripts" "$fixture/docs" "$fixture/A12Kernel"
+  mkdir -p "$fixture/scripts" "$fixture/docs" \
+    "$fixture/A12Kernel/Elaboration" "$fixture/A12Kernel/Semantics"
   cp "$guard" "$fixture/scripts/check-lean-source-hygiene.sh"
   chmod +x "$fixture/scripts/check-lean-source-hygiene.sh"
   git -C "$fixture" init -q
   printf '%s\n' 'import A12Kernel.Basic' > "$fixture/A12Kernel.lean"
   printf '%s\n' '-- smoke' > "$fixture/A12Kernel/Basic.lean"
+  # An independent caller inventory makes a guard-contract change fail the passing control.
+  printf '%s\n' 'def topologyCaller := StarPath.resolveTopology' \
+    > "$fixture/A12Kernel/Elaboration/CheckedStarDocument.lean"
+  printf '%s\n' \
+    'def topologyCaller1 := StarPath.resolveTopology' \
+    'def topologyCaller2 := StarPath.resolveTopology' \
+    > "$fixture/A12Kernel/Elaboration/RepetitionNotUnique.lean"
+  printf '%s\n' 'def topologyCaller := StarPath.resolveTopology' \
+    > "$fixture/A12Kernel/Elaboration/StarGroup.lean"
+  printf '%s\n' \
+    'def topologyCaller1 := StarPath.resolveTopology' \
+    'def topologyCaller2 := StarPath.resolveTopology' \
+    'def topologyCaller3 := StarPath.resolveTopology' \
+    'def topologyCaller4 := StarPath.resolveTopology' \
+    'def topologyCaller5 := StarPath.resolveTopology' \
+    > "$fixture/A12Kernel/Semantics/StarAddressing.lean"
   write_testing_doc "$fixture/docs/TESTING.md"
   printf '%s\n' "$fixture"
 }
@@ -126,6 +143,44 @@ write_testing_doc "$malformed_registry/docs/TESTING.md" \
 track_fixture "$malformed_registry"
 expect_failure "$malformed_registry" "A12Kernel/TrustAudit.lean:1202: exceptional registry contains semantic or fixture declaration"
 
+missing_topology_caller="$(new_fixture missing-topology-caller)"
+rm "$missing_topology_caller/A12Kernel/Elaboration/StarGroup.lean"
+track_fixture "$missing_topology_caller"
+expect_failure "$missing_topology_caller" "StarPath.resolveTopology callers changed"
+
+wrong_topology_count="$(new_fixture wrong-topology-count)"
+printf '%s\n' 'def extraTopologyCaller := StarPath.resolveTopology' \
+  >> "$wrong_topology_count/A12Kernel/Elaboration/RepetitionNotUnique.lean"
+track_fixture "$wrong_topology_count"
+expect_failure "$wrong_topology_count" "StarPath.resolveTopology callers changed"
+
+extra_topology_caller="$(new_fixture extra-topology-caller)"
+mkdir -p "$extra_topology_caller/A12Kernel/Reference"
+printf '%s\n' 'def topologyCaller := StarPath.resolveTopology' \
+  > "$extra_topology_caller/A12Kernel/Reference/Extra.lean"
+track_fixture "$extra_topology_caller"
+expect_failure "$extra_topology_caller" "StarPath.resolveTopology callers changed"
+
+redistributed_topology_callers="$(new_fixture redistributed-topology-callers)"
+printf '%s\n' 'def topologyCaller := StarPath.resolveTopology' \
+  > "$redistributed_topology_callers/A12Kernel/Elaboration/RepetitionNotUnique.lean"
+printf '%s\n' 'def extraTopologyCaller := StarPath.resolveTopology' \
+  >> "$redistributed_topology_callers/A12Kernel/Elaboration/CheckedStarDocument.lean"
+track_fixture "$redistributed_topology_callers"
+expect_failure "$redistributed_topology_callers" "StarPath.resolveTopology callers changed"
+
+commented_topology_caller="$(new_fixture commented-topology-caller)"
+printf '%s\n' '-- def topologyCaller := StarPath.resolveTopology' \
+  > "$commented_topology_caller/A12Kernel/Elaboration/StarGroup.lean"
+track_fixture "$commented_topology_caller"
+expect_failure "$commented_topology_caller" "StarPath.resolveTopology callers changed"
+
+quoted_topology_caller="$(new_fixture quoted-topology-caller)"
+printf '%s\n' 'def topologyCaller := "StarPath.resolveTopology"' \
+  > "$quoted_topology_caller/A12Kernel/Elaboration/CheckedStarDocument.lean"
+track_fixture "$quoted_topology_caller"
+expect_failure "$quoted_topology_caller" "StarPath.resolveTopology callers changed"
+
 green="$(new_fixture green)"
 write_nonblank_lines "$green/A12Kernel/Ordinary.lean" 800
 write_nonblank_lines "$green/A12Kernel/Reviewed.lean" 801
@@ -133,6 +188,11 @@ write_registry_lines "$green/A12Kernel/TrustAudit.lean" 1201
 write_testing_doc "$green/docs/TESTING.md" \
   'A12Kernel/Reviewed.lean | review-threshold | cohesive reviewed owner' \
   'A12Kernel/TrustAudit.lean | exceptional-ceiling | single-session theorem-root registry'
+printf '%s\n' \
+  '-- StarPath.resolveTopology' \
+  '/- StarPath.resolveTopology -/' \
+  'def topologyLabel := "StarPath.resolveTopology"' \
+  >> "$green/A12Kernel/Elaboration/CheckedStarDocument.lean"
 mkdir -p "$green/.lake/build"
 write_nonblank_lines "$green/.lake/build/Generated.lean" 1400
 track_fixture "$green"
@@ -141,7 +201,7 @@ if ! output="$(cd "$green" && ./scripts/check-lean-source-hygiene.sh 2>&1)"; the
   echo "source-hygiene self-test expected the valid fixture to pass" >&2
   exit 1
 fi
-if [[ "$output" != "Lean source hygiene passed: 5 tracked files; largest ordinary file 801 nonblank lines; 2 reviewed exceptions" ]]; then
+if [[ "$output" != "Lean source hygiene passed: 9 tracked files; largest ordinary file 801 nonblank lines; 2 reviewed exceptions" ]]; then
   printf 'unexpected source-hygiene success summary: %s\n' "$output" >&2
   exit 1
 fi
