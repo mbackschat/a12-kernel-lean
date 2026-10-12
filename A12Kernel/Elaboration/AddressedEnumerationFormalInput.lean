@@ -12,6 +12,8 @@ inductive AddressedEnumerationCheckedResultFault where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : AddressedEnumerationComputationFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedEnumerationComputation
@@ -23,7 +25,7 @@ def formalInputPlan (operation : CheckedAddressedEnumerationComputation model) :
   checkImplicitGuardFormalInputPlan model operation.source.fieldDependencies
     [operation.target.field]
 
-/-- Prepare selected source findings and index state once, then execute through that exact view and retain the inventory beside either result arm. -/
+/-- Prepare selected source findings and index state once, then execute through that exact view and check report assembly after successful execution, retaining findings beside faults. -/
 def executeResultWithFormalInputs
     (operation : CheckedAddressedEnumerationComputation model)
     (input : CheckedDocument model) :
@@ -35,7 +37,9 @@ def executeResultWithFormalInputs
       prepared.preliminary.readComputation prepared.formalErrorsInOperands with
   | .error cause =>
       .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok result => .ok result
+  | .ok result =>
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands result)
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end CheckedAddressedEnumerationComputation
 
@@ -45,6 +49,8 @@ inductive AddressedEnumerationFirstFilledCheckedResultFault where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : AddressedEnumerationFirstFilledComputationFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedEnumerationFirstFilledComputation
@@ -57,7 +63,7 @@ def formalInputPlan
   checkImplicitGuardFormalInputPlan model operation.source.fieldDependencies
     [operation.target.field]
 
-/-- Prepare every selected operand once, then preserve lazy runtime reads while retaining the eager inventory beside either result arm. -/
+/-- Prepare every selected operand once, then preserve lazy runtime reads while checking report assembly after successful execution. -/
 def executeResultWithFormalInputs
     (operation : CheckedAddressedEnumerationFirstFilledComputation model)
     (input : CheckedDocument model) (world : Option World := none) :
@@ -71,7 +77,9 @@ def executeResultWithFormalInputs
       prepared.formalErrorsInOperands with
   | .error cause =>
       .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok result => .ok result
+  | .ok result =>
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands result)
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end CheckedAddressedEnumerationFirstFilledComputation
 

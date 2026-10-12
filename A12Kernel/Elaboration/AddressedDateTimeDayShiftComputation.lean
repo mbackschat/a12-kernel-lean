@@ -87,6 +87,8 @@ inductive AddressedDateTimeDayShiftCheckedResultFault where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : AddressedDateTimeDayShiftComputationFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 /-- One exact source/target-address pair and its declaration-rendered DateTime outcome. -/
@@ -277,7 +279,9 @@ def executeResultWithFormalInputs
       prepared.formalErrorsInOperands with
   | .error cause =>
       .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok view => .ok view
+  | .ok view =>
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands view)
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end CheckedAddressedDateTimeDayShiftComputation
 

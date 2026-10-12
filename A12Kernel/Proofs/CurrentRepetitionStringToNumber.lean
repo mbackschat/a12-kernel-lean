@@ -80,7 +80,8 @@ theorem currentRepetitionStringToNumber_executeResultWithFormalInputs_exact
     (executed : plan.executeWithRead patterns input
       (CheckedCurrentRepetitionStringToNumberCascade.preparedStringSourceRead
         prepared.preliminary) = .ok outcomes)
-    (produced : plan.executeResultWithFormalInputs patterns input = .ok view) :
+    (produced : plan.executeResultWithFormalInputs patterns input = .ok view)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     view.formalErrorsInOperands = prepared.formalErrorsInOperands ∧
       view.phases.string = StringComputationRunView.fromSourcedOutcomes []
         (outcomes.rows.map (·.string)) ∧
@@ -94,9 +95,10 @@ theorem currentRepetitionStringToNumber_executeResultWithFormalInputs_exact
   rw [CheckedCurrentRepetitionStringToNumberCascade.executeResultWithRead,
     executed] at produced
   simp only [bind, Except.bind, pure, Except.pure,
-    Except.ok.injEq] at produced
+    Except.ok.injEq, ComputationFormalInputFinding.assembleResult, assembled] at produced
   subst view
   exact ⟨rfl, rfl, rfl⟩
+
 
 /-- A post-preparation inverse-cascade failure retains the exact eager inventory beside the unchanged typed fault. -/
 theorem currentRepetitionStringToNumber_executeResultWithFormalInputs_failure_exact

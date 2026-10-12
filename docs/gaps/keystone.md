@@ -5,7 +5,7 @@
 <a id="gap-sg4"></a>
 ### SG4 — computation scheduling and state transition
 
-- `state`: residual selected by K02/K08/K09; wider compositions and calibration formerly tagged D14/D20/D24.
+- `state`: residual selected by K08/K09; wider compositions and calibration formerly tagged D14/D20/D24.
 - `baseline`: [Checked guards](../implementation/computations.md#cap-computation-conditions), [whole-model plans](../implementation/computations.md#cap-scalar-execution-plans), [mixed plans](../implementation/computations.md#cap-mixed-computation-plan) and [non-Number alternatives](../implementation/repeatable-computations.md#cap-non-number-alternatives) own execution and reader coverage.
 - `remaining`: wider guarded operation, indexed/correlated membership and whole-document multi-alternative/repeated-target compositions beyond those owners' admitted matrices. Preserve the distinction between a complete authored plan and a deliberately selected fragment.
 - `remaining`: wider parallel Number operand/guard shapes and cross-declaration topology calibration beyond [C14's matrix](../sources/computation-scheduling-probes.md#src-parallel-numeric-operations).

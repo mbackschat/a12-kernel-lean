@@ -107,10 +107,12 @@ theorem checkedStringFirstFilled_executeResultWithFormalInputs_exact
     (planned : operation.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
     (executed : operation.executeResultWithRead patterns input
-      prepared.preliminary.readComputation prepared.formalErrorsInOperands = .ok result) :
+      prepared.preliminary.readComputation prepared.formalErrorsInOperands = .ok result)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     operation.executeResultWithFormalInputs patterns input = .ok result := by
   rw [CheckedStringFirstFilledComputation.executeResultWithFormalInputs, planned]
   simp only [Except.mapError, bind, Except.bind, preparation, executed]
+  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure]
 
 /-- A post-preparation execution failure retains the exact eager input findings beside the
 unchanged String fault. -/

@@ -260,6 +260,8 @@ inductive AddressedEnumerationThreeStageCheckedResultFault where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : AddressedEnumerationThreeStageCascadeFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedEnumerationThreeStageCascade
@@ -348,10 +350,11 @@ def executeResultWithFormalInputs
       prepared.preliminary.readComputation noResidual noResidual noResidual with
   | .error cause =>
       .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok phases => .ok {
-      phases
-      formalErrorsInOperands := prepared.formalErrorsInOperands
-    }
+  | .ok phases =>
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands {
+        phases
+        formalErrorsInOperands := prepared.formalErrorsInOperands })
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end CheckedAddressedEnumerationThreeStageCascade
 

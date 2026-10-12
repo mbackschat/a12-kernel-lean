@@ -64,9 +64,10 @@ theorem runWithFormalInputs_exact {Cause Result : Type}
     (run : (CellAddr → Except CheckedDocumentError CheckedCell) →
       List ComputationFormalInputFinding → Except Cause Result)
     (preparation : plan.prepare input = .ok prepared)
-    (executed : run prepared.preliminary.readComputation prepared.formalErrorsInOperands = .ok result) :
+    (executed : run prepared.preliminary.readComputation prepared.formalErrorsInOperands = .ok result)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     runWithFormalInputs (.ok plan) input run = .ok result := by
-  simp only [runWithFormalInputs, Except.mapError, bind, Except.bind, preparation, executed]
+  simp only [runWithFormalInputs, Except.mapError, bind, Except.bind, preparation, executed, assembled, pure, Except.pure]
 
 /-- A run fault after preparation retains the exact eager findings beside the unchanged fault. -/
 theorem runWithFormalInputs_failure_exact {Cause Result : Type}
@@ -78,5 +79,20 @@ theorem runWithFormalInputs_failure_exact {Cause Result : Type}
     (executed : run prepared.preliminary.readComputation prepared.formalErrorsInOperands = .error fault) :
     runWithFormalInputs (.ok plan) input run = .error (.execution prepared.formalErrorsInOperands fault) := by
   simp only [runWithFormalInputs, Except.mapError, bind, Except.bind, preparation, executed]
+
+/-- A pointer collision after successful execution keeps the eager findings and exposes no result. -/
+theorem runWithFormalInputs_assembly_failure_exact {Cause Result : Type}
+    (input : CheckedDocument model) (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model) (result : Result)
+    (fault : ComputationReportAssemblyFault)
+    (run : (CellAddr → Except CheckedDocumentError CheckedCell) →
+      List ComputationFormalInputFinding → Except Cause Result)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : run prepared.preliminary.readComputation prepared.formalErrorsInOperands = .ok result)
+    (collided : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .error fault) :
+    runWithFormalInputs (.ok plan) input run =
+      .error (.assembly prepared.formalErrorsInOperands fault) := by
+  simp only [runWithFormalInputs, Except.mapError, bind, Except.bind, preparation,
+    executed, collided]
 
 end A12Kernel

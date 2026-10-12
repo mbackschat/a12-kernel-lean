@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.ScalarComputationRun
 import A12Kernel.Elaboration.RepeatableNumberPlan
 import A12Kernel.Elaboration.RowComputationStep
 import A12Kernel.Elaboration.ParallelNumericStep
+import A12Kernel.Elaboration.ComputationFormalInput
 
 /-! # One computation plan over every target kind, fixed and repeatable
 
@@ -168,6 +169,12 @@ structure MixedComputationState where
   rows : List CheckedCellPlacement := []
   outcomes : List MixedComputationOutcome := []
 
+/-- A successfully assembled call keeps its outcomes beside every selected noncomputed input finding. -/
+structure MixedComputationCheckedResult where
+  outcomes : List MixedComputationOutcome
+  formalErrorsInOperands : List ComputationFormalInputFinding
+  deriving Repr, DecidableEq
+
 namespace CheckedMixedComputationPlan
 
 def targetFields (plan : CheckedMixedComputationPlan model compilePattern) : List FieldId :=
@@ -254,11 +261,32 @@ def executeSteps (plan : CheckedMixedComputationPlan model compilePattern) (worl
   | step :: remaining, state => do
       plan.executeSteps world patterns input remaining (← plan.executeStep world patterns input state step)
 
-/-- Run the certified order and return every outcome in that order, by row within a step. -/
+/-- Run the certified order and return execution-stage outcomes before diagnostic assembly, by row within a step. -/
 def execute (plan : CheckedMixedComputationPlan model compilePattern) (world : World)
     (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model) :
     Except MixedComputationPlanFault (List MixedComputationOutcome) :=
   (·.outcomes) <$> plan.executeSteps world patterns input plan.execution {}
+
+/-- Select the expanded authored operand union, excluding every computed target from eager input reports. -/
+def formalInputPlan (plan : CheckedMixedComputationPlan model compilePattern) :
+    Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model
+    ((model.fields.filter fun field => plan.authored.any (·.operandField field.id)).map (·.id))
+    plan.targetFields
+
+/-- Prepare selected input findings once, execute through those exact cells and spellings, then reject colliding report pointers before exposing the call result. -/
+def executeResultWithFormalInputs (plan : CheckedMixedComputationPlan model compilePattern)
+    (world : World) (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
+    Except (ComputationFormalInputRunFault MixedComputationPlanFault) MixedComputationCheckedResult := do
+  let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
+  let prepared ← inputPlan.prepare input |>.mapError .preliminary
+  let outcomes ← (plan.execute world patterns prepared.preliminary.computationInput)
+    |>.mapError (.execution prepared.formalErrorsInOperands)
+  ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands {
+    outcomes
+    formalErrorsInOperands := prepared.formalErrorsInOperands }
+    |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end CheckedMixedComputationPlan
 

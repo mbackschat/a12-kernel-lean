@@ -87,6 +87,8 @@ inductive CurrentRepetitionAlternatingEnumerationHavingCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (cause : CurrentRepetitionAlternatingEnumerationHavingFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedCurrentRepetitionAlternatingEnumerationHaving
@@ -192,6 +194,8 @@ def executeResultWithFormalInputs
   let phases ← plan.executeResultWithConsumerFallbackRead (world := world) patterns input
     prepared.preliminary.readComputation (fun _ => ()) [] [] []
     |>.mapError .execution
+  ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands
+    |>.mapError (.assembly prepared.formalErrorsInOperands)
   pure {
     phases
     formalErrorsInOperands := prepared.formalErrorsInOperands

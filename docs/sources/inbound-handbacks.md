@@ -554,7 +554,7 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `reserved-limit`: [The legacy profile checkpoint](custom-field-probes.md#src-custom-legacy-profile) owns the unmeasured true-arm continuation limit and reopening trigger. The modern observations remain evidence for K01, not proof of local implementation.
 - `canonical-limit`: [KF541](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf541) retains its canonical fold as pending. [The peer API contract](../../../a12-rulekit/docs/INTERPRETER-API-SPEC.md) carries raw callback input, one-pass evaluated normalization and the exact reserved result; the canonical kernel-truth prose has not explicitly folded `testIDNummer`.
 - `follow-on`: Enclosing-row Having and fixed-suffix relevance are reviewed candidate evidence routes for [path/group obligations](../gaps/paths-and-groups.md). Their local coverage remains to be checked under K03/K06; the receipt does not establish local conformance.
-- `follow-on`: Duplicate-result computation assembly is a reviewed candidate route for [computation/result obligations](../gaps/keystone.md), outside the 24 receipt decisions. K02 must check the local execution/report boundary.
+- `computation-assembly`: [The duplicate-diagnostic checkpoint](#src-computation-diagnostic-assembly) owns the committed controls and source mechanism, outside the 24 receipt decisions.
 - `qualification`: Integration, JVM/Node, performance and mutant outcomes remain peer-reported. They were not rerun or certified by this source-reading review.
 
 | SPEC-2026 suffix | Checkpoint | Committed test class | Status |
@@ -603,3 +603,14 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `claim`: These public result channels expose neither per-clear validity nor causal attribution. Error messages cover actual errored results; they do not restore silent poison. Formal operand errors are an inventory, not a cause graph.
 - `method`: Seed the target and a numeric-copy dependent in the same call. The dependent distinguishes clean emptiness from poison; it does not uniquely identify an originating cause. An unseeded aborted target can be absent from the change projection.
 - `disposition`: Instrument inquiry answered with an API boundary, not a missing adapter field. No inference field, new harness or outbound ledger entry is warranted. Reopen direct exposure only if the public API gains the information.
+
+<a id="src-computation-diagnostic-assembly"></a>
+#### Computation diagnostic assembly — Kernel source and peer law tests, 2026-10-12
+
+- `source`: Inbound a12-dmkits `6b919e0870e36b9da7f33e6735ea7821474e68a0`, retained in reviewed `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`; [ComputationDiagnosticAssemblyLawsTest](../../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/ComputationDiagnosticAssemblyLawsTest.kt).
+- `oracle`: Seven witnesses on both Kernel strategies cover reserved duplicate, accepted duplicate, reserved distinct, rejected distinct, unused collision, separate target errors and collision after an independent callback. Public compute/apply calls and original-document preservation are asserted separately.
+- `mechanism`: Kernel `cb66e51fa7ab90b650698f861bf670754e2e1e66`, `kernel-md/kernel-md-runtime-service/src/main/java/com/mgmtp/a12/kernel/md/rt/a12internal/service/DocumentComputationResultImpl.java`, `init`: the complete result-message stream is keyed by full error pointer before target classification, with duplicate keys rejected.
+- `claim`: Computation completes before duplicate report assembly fails. Distinct physical rows remain distinct; reserved Custom reports do not override index unavailability. Root-only computation ignores an unused custom index. No result or applied snapshot exists on the assembly-failure arm.
+- `limit`: The tests establish duplicate-key failure, not a portable choice of which collision wins when several pointers repeat. Exact exception text beyond the asserted prefix is not a language-neutral contract. The peer's separate first-admitted pointer policy does not replace this Kernel result-assembly oracle.
+- `local`: [The implementation owner](../implementation/validation-messages-and-custom.md#cap-computation-message-partition) separates raw execution, checked assembly and projection. The ordinary malformed-source twin is an internal composition control, not a newly measured Kernel witness.
+- `sync`: Inbound correction to [computation §3.3](../../spec/09-computations.md#33-what-compute-reports); no outbound acknowledgement request is created.

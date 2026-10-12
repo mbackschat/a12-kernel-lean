@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.NumericComputation.RunResult
 
 namespace A12Kernel
 
-/-- One completed checked Number run paired with its call-global raw formal-input inventory. The numeric result keeps its exact target identity and independently rendered target messages. -/
+/-- One completed checked Number run paired with its prepared formal-input inventory. The numeric result keeps its exact target identity and independently rendered target messages. -/
 structure NumericComputationFormalInputRunView (model : FlatModel)
     (Target : Type := FieldId) where
   private mk ::
@@ -26,11 +26,14 @@ def of (numeric : NumericComputationRunView
 
 end NumericComputationFormalInputRunView
 
-/-- Failure while composing the checked scalar run's direct-field inventory with execution and source-relative result projection. Once planning succeeds, an execution failure retains the exact eager raw findings even though no numeric result exists. -/
+/-- Failure while composing the checked scalar run's direct-field inventory with selected preliminary preparation, execution, and source-relative result projection. After preparation succeeds, an execution failure retains the cached and generated findings even though no numeric result exists. -/
 inductive NumericComputationFormalInputRunFault where
   | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : NumericComputationRunResultFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedNumericComputationOperation
@@ -82,17 +85,19 @@ def formalInputPlan (run : CheckedNumericComputationRun model) :
       (CheckedComputationFormalInputPlan model) :=
   checkComputationFormalInputOperations model run.formalInputOperations
 
-/-- Check the call-global inventory before execution, then retain its raw findings on either execution arm without copying them into the rendered numeric message channel. -/
+/-- Prepare selected operand findings and index state once, execute through those staged cells, and retain the findings without copying them into the rendered numeric message channel. -/
 def executeResultWithFormalInputs (run : CheckedNumericComputationRun model)
     (world : World) (input : CheckedDocument model) :
     Except NumericComputationFormalInputRunFault
       (NumericComputationFormalInputRunView model) := do
   let inputPlan ← run.formalInputPlan |>.mapError .formalInput
-  let findings := inputPlan.findings input
-  match run.executeResult world input (fun _ => ()) [] with
+  let prepared ← inputPlan.prepare input |>.mapError .preliminary
+  let findings := prepared.formalErrorsInOperands
+  match run.executeResult world prepared.preliminary.computationInput (fun _ => ()) [] with
   | .error cause => .error (.execution findings cause)
   | .ok numeric =>
-      .ok (NumericComputationFormalInputRunView.of numeric findings)
+      (ComputationFormalInputFinding.assembleResult findings (NumericComputationFormalInputRunView.of numeric findings))
+        |>.mapError (.assembly findings)
 
 end CheckedNumericComputationRun
 
@@ -102,6 +107,8 @@ inductive AddressedNumberFirstFilledCheckedResultFault where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : AddressedNumberFirstFilledComputationFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedNumberFirstFilledComputation
@@ -127,8 +134,9 @@ def executeResultWithFormalInputs
   | .error cause =>
       .error (.execution prepared.formalErrorsInOperands cause)
   | .ok result =>
-      .ok (NumericComputationFormalInputRunView.of result.numeric
-        prepared.formalErrorsInOperands)
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands
+        (NumericComputationFormalInputRunView.of result.numeric prepared.formalErrorsInOperands))
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end CheckedAddressedNumberFirstFilledComputation
 

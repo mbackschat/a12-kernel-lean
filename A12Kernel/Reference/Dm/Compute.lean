@@ -518,7 +518,7 @@ private def textOutcome (model : FlatModel) (checked : CheckedDocument model) (a
   | none, some attempted => some { pointer, outcome := s!"errored {attempted}" }
   | none, none => if !stored.isEmpty then some { pointer, outcome := "cleared" } else none
 
-/-- Run the lowered computations on one plan and project their change outcomes. -/
+/-- Assemble one checked call before projecting the lowered computations' changes. -/
 def runComputations (world : World) (prepared : PreparedFlatStringContext model compilePattern)
     (checked : CheckedDocument model) (lowered : List (LoweredComputation model)) :
     Lowering (List ComputedOutcome) := do
@@ -529,8 +529,8 @@ def runComputations (world : World) (prepared : PreparedFlatStringContext model 
     | .document step => .document step
     | .rows step => .rows (step compilePattern)
   let plan ← elaborated "ComputationPlan" (certifyAuthoredMixedComputationPlan steps)
-  let outcomes ← elaborated "ComputationRun" (plan.execute world prepared.patterns checked)
-  pure (outcomes.filterMap fun
+  let result ← elaborated "ComputationRun" (plan.executeResultWithFormalInputs world prepared.patterns checked)
+  pure (result.outcomes.filterMap fun
     | .number entry => numberOutcome model entry
     | .string target (.accepted value) => textOutcome model checked { field := target, path := [] }
         (some value.text) none

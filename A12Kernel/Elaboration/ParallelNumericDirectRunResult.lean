@@ -21,6 +21,8 @@ inductive ParallelNumericDirectFormalInputRunFault where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : ParallelNumericDirectRunResultError)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 /-- Find the first outcome-classified target also claimed by the independently classified post-loop index clears. -/
@@ -136,8 +138,9 @@ def executeResultWithFormalInputs
   | .error cause =>
       .error (.execution prepared.formalErrorsInOperands cause)
   | .ok numeric =>
-      .ok (NumericComputationFormalInputRunView.of numeric
-        prepared.formalErrorsInOperands)
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands
+        (NumericComputationFormalInputRunView.of numeric prepared.formalErrorsInOperands))
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end CheckedIsolatedParallelNumericDirectRun
 

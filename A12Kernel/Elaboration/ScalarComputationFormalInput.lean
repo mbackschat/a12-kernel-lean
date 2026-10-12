@@ -3,12 +3,12 @@ import A12Kernel.Elaboration.ScalarComputationRunResult
 
 /-! # Checked formal inputs for finite mixed scalar runs
 
-This boundary builds one target-excluding eager inventory from every typed String and Number step, then retains that inventory beside either the family-partitioned result or the exact typed execution/result fault.
+This boundary prepares one target-excluding eager inventory and index view from every typed String and Number step, then retains the cached and generated findings beside either the family-partitioned result or the exact typed execution/result fault.
 -/
 
 namespace A12Kernel
 
-/-- One successful mixed scalar result paired with its call-global raw formal-input inventory. -/
+/-- One successful mixed scalar result paired with its prepared formal-input inventory. -/
 structure ScalarComputationFormalInputRunView (model : FlatModel)
     (StringResidual NumberPayload : Type) where
   private mk ::
@@ -26,14 +26,26 @@ def of (scalar : ScalarComputationRunView StringResidual NumberPayload)
 
 end ScalarComputationFormalInputRunView
 
-/-- Failure while composing the mixed run's complete direct-field inventory with execution and source-relative result projection. -/
+/-- Failure while composing the mixed run's direct-field inventory with selected preliminary preparation, execution, and source-relative result projection. -/
 inductive ScalarComputationFormalInputRunFault where
   | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : ScalarComputationRunResultFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedScalarComputationRun
+
+/-- Full Number diagnostic pointers before partitioning. Value-less Number errors have no computed instance, while payloadful rejections are represented by the supplied stream. -/
+def numberReportPointers (outcomes : List ScalarComputationOutcome)
+    (messages : List (ComputationFormalMessage NumberPayload)) : List MessagePointer :=
+  messages.map (·.pointer) ++ outcomes.filterMap fun
+    | .number target outcome =>
+        if outcome.emitsValuelessTargetError then
+          some (MessagePointer.ofCellAddr { field := target, path := [] }) else none
+    | .string _ _ | .document _ _ => none
 
 /-- Project every checked typed step to the shared `(target, raw dependencies)` whole-call shape in certified execution order. -/
 def formalInputOperations (run : CheckedScalarComputationRun model) :
@@ -47,7 +59,7 @@ def formalInputPlan (run : CheckedScalarComputationRun model) :
       (CheckedComputationFormalInputPlan model) :=
   checkComputationFormalInputOperations model run.formalInputOperations
 
-/-- Collect the complete eager mixed inventory before execution, then retain it beside either the exact family-partitioned result or the exact typed failure. -/
+/-- Prepare selected index state, execute once through its staged cells, check the complete Number and operand report stream, then project against the immutable source. Opaque String residuals remain the caller's already-assembled channel. -/
 def executeResultWithFormalInputs
     (run : CheckedScalarComputationRun model)
     (world : World)
@@ -60,11 +72,15 @@ def executeResultWithFormalInputs
       (ScalarComputationFormalInputRunView model
         StringResidual NumberPayload) := do
   let plan ← run.formalInputPlan |>.mapError .formalInput
-  let findings := plan.findings input
-  match run.executeResult world patterns input numberPayloadAt
-      numberMessages stringResidualMessages with
-  | .error cause => .error (.execution findings cause)
-  | .ok result => .ok (ScalarComputationFormalInputRunView.of result findings)
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  let findings := prepared.formalErrorsInOperands
+  let outcomes ← (run.execute world patterns prepared.preliminary.computationInput)
+    |>.mapError (fun cause => .execution findings (.execution cause))
+  checkComputationReportPointers ((findings.map fun finding => MessagePointer.ofCellAddr finding.address) ++
+    numberReportPointers outcomes numberMessages) |>.mapError (.assembly findings)
+  let result ← (resultFromOutcomes input numberPayloadAt numberMessages stringResidualMessages outcomes)
+    |>.mapError (.execution findings)
+  pure (ScalarComputationFormalInputRunView.of result findings)
 
 end CheckedScalarComputationRun
 

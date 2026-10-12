@@ -47,17 +47,15 @@ inductive ScalarComputationRunResultFault where
 
 namespace CheckedScalarComputationRun
 
-/-- Execute once, partition only by retained family, and route each partition through its existing source-relative result owner. -/
-def executeResult (run : CheckedScalarComputationRun model)
-    (world : World)
-    (patterns : PreparedFlatStringPatterns model compilePattern)
+/-- Project supplied execution-stage outcomes before assembly; the checked whole-call wrapper owns diagnostic pointer admission. -/
+def resultFromOutcomes
     (input : CheckedDocument model)
     (numberPayloadAt : FieldId → NumberPayload)
     (numberMessages : List (ComputationFormalMessage NumberPayload))
-    (stringResidualMessages : List StringResidual) :
+    (stringResidualMessages : List StringResidual)
+    (outcomes : List ScalarComputationOutcome) :
     Except ScalarComputationRunResultFault
       (ScalarComputationRunView StringResidual NumberPayload) := do
-  let outcomes ← (run.execute world patterns input).mapError .execution
   let partitioned := ScalarComputationOutcomePartitions.ofOutcomes outcomes
   if let some (target, _) := partitioned.document.head? then
     throw (.documentTarget target)
@@ -68,6 +66,16 @@ def executeResult (run : CheckedScalarComputationRun model)
     (NumericComputationRunView.fromOutcomes input numberPayloadAt
       numberMessages partitioned.number).mapError .numberSource
   pure { string, number }
+
+/-- Execute once, then project retained family outcomes. This low-level result remains before diagnostic assembly. -/
+def executeResult (run : CheckedScalarComputationRun model)
+    (world : World) (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) (numberPayloadAt : FieldId → NumberPayload)
+    (numberMessages : List (ComputationFormalMessage NumberPayload))
+    (stringResidualMessages : List StringResidual) :
+    Except ScalarComputationRunResultFault (ScalarComputationRunView StringResidual NumberPayload) := do
+  let outcomes ← (run.execute world patterns input).mapError .execution
+  resultFromOutcomes input numberPayloadAt numberMessages stringResidualMessages outcomes
 
 end CheckedScalarComputationRun
 

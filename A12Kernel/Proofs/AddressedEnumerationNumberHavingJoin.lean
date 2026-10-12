@@ -266,7 +266,8 @@ theorem addressedEnumerationToNumberHavingCascade_executeResultWithFormalInputs_
     (preparation : inputPlan.prepare input = .ok prepared)
     (executed : plan.executeWithFallbackRead input
       prepared.preliminary.readComputation = .ok outcomes)
-    (produced : plan.executeResultWithFormalInputs input = .ok view) :
+    (produced : plan.executeResultWithFormalInputs input = .ok view)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     view.formalErrorsInOperands = prepared.formalErrorsInOperands ∧
       view.phases.enumerationProducer =
         projectAddressedEnumerationResults input [] outcomes.enumerationProducer ∧
@@ -281,9 +282,10 @@ theorem addressedEnumerationToNumberHavingCascade_executeResultWithFormalInputs_
   rw [CheckedAddressedEnumerationToNumberHavingCascade.executeResultWithFallbackRead,
     executed] at produced
   simp only [bind, Except.bind, pure, Except.pure,
-    Except.ok.injEq] at produced
+    Except.ok.injEq, ComputationFormalInputFinding.assembleResult, assembled] at produced
   subst view
   exact ⟨rfl, rfl, rfl, rfl⟩
+
 
 /-- A post-preparation serial execution failure retains the exact eager inventory beside the unchanged typed fault. -/
 theorem addressedEnumerationToNumberHavingCascade_executeResultWithFormalInputs_failure_exact

@@ -70,6 +70,8 @@ inductive AddressedNumberDateTimeShiftCheckedResultFault where
   | formalInput (cause : ComputationFormalInputPlanError)
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (cause : AddressedNumberDateTimeShiftCascadeFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedNumberDateTimeShiftCascade
@@ -172,6 +174,8 @@ def executeResultWithFormalInputs
   let phases ← plan.executeResultWithProducerRead input
     prepared.preliminary.readComputation (fun _ => ()) [] []
     |>.mapError .execution
+  ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands
+    |>.mapError (.assembly prepared.formalErrorsInOperands)
   pure {
     phases
     formalErrorsInOperands := prepared.formalErrorsInOperands

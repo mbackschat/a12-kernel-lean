@@ -43,34 +43,39 @@ theorem checkedNumericComputationRun_formalInputOperations_targets_exact
       run.tables.map (·.targetField) := by
   simp [CheckedNumericComputationRun.formalInputOperations]
 
-/-- Whole-call composition projects the eager checked-plan findings exactly and preserves the independently classified numeric result. -/
+/-- Whole-call composition retains the exact prepared input findings beside the numeric result over the same staged cells. -/
 theorem checkedNumericComputationRun_executeResultWithFormalInputs_exact
     (run : CheckedNumericComputationRun model)
     (world : World) (input : CheckedDocument model)
     (inputPlan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (numeric : NumericComputationRunView (ComputationFormalMessage Unit))
     (planned : run.formalInputPlan = .ok inputPlan)
-    (executed : run.executeResult world input (fun _ => ()) [] = .ok numeric) :
+    (preparation : inputPlan.prepare input = .ok prepared)
+    (executed : run.executeResult world prepared.preliminary.computationInput (fun _ => ()) [] = .ok numeric)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     (run.executeResultWithFormalInputs world input).map (fun view =>
       (view.formalErrorsInOperands, view.numeric)) =
-      .ok (inputPlan.findings input, numeric) := by
+      .ok (prepared.formalErrorsInOperands, numeric) := by
   rw [CheckedNumericComputationRun.executeResultWithFormalInputs, planned]
-  simp only [bind, Except.bind, Except.mapError]
+  simp only [bind, Except.bind, Except.mapError, preparation]
   rw [executed]
-  rfl
+  simp [ComputationFormalInputFinding.assembleResult, assembled, bind, Except.bind, pure, Except.pure, Except.map, NumericComputationFormalInputRunView.of] <;> rfl
 
-/-- Once formal-input planning succeeds, a failed numeric execution retains exactly that plan's eager raw findings beside the unchanged failure. -/
+/-- After input preparation succeeds, a failed numeric execution retains the cached and generated findings beside the unchanged failure. -/
 theorem checkedNumericComputationRun_executeResultWithFormalInputs_failure_exact
     (run : CheckedNumericComputationRun model)
     (world : World) (input : CheckedDocument model)
     (inputPlan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
     (fault : NumericComputationRunResultFault)
     (planned : run.formalInputPlan = .ok inputPlan)
-    (executed : run.executeResult world input (fun _ => ()) [] = .error fault) :
+    (preparation : inputPlan.prepare input = .ok prepared)
+    (executed : run.executeResult world prepared.preliminary.computationInput (fun _ => ()) [] = .error fault) :
     run.executeResultWithFormalInputs world input =
-      .error (.execution (inputPlan.findings input) fault) := by
+      .error (.execution prepared.formalErrorsInOperands fault) := by
   rw [CheckedNumericComputationRun.executeResultWithFormalInputs, planned]
-  simp only [bind, Except.bind, Except.mapError]
+  simp only [bind, Except.bind, Except.mapError, preparation]
   rw [executed]
 
 /-- Successful addressed Number first-filled composition preserves the complete eager raw inventory beside the independently classified typed Number result. -/
@@ -83,7 +88,8 @@ theorem addressedNumberFirstFilled_executeResultWithFormalInputs_exact
     (planned : operation.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
     (executed : operation.executeResultWithRead input
-      prepared.preliminary.readComputation (fun _ => ()) [] = .ok result) :
+      prepared.preliminary.readComputation (fun _ => ()) [] = .ok result)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     (operation.executeResultWithFormalInputs input).map (fun view =>
       (view.formalErrorsInOperands, view.numeric)) =
         .ok (prepared.formalErrorsInOperands, result.numeric) := by
@@ -91,7 +97,7 @@ theorem addressedNumberFirstFilled_executeResultWithFormalInputs_exact
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation]
   rw [executed]
-  rfl
+  simp [ComputationFormalInputFinding.assembleResult, assembled, bind, Except.bind, pure, Except.pure, Except.map, NumericComputationFormalInputRunView.of] <;> rfl
 
 /-- A post-preparation addressed Number first-filled failure retains the exact eager raw inventory beside the unchanged execution fault. -/
 theorem addressedNumberFirstFilled_executeResultWithFormalInputs_failure_exact

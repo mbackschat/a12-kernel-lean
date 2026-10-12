@@ -11,6 +11,8 @@ inductive AddressedDateFromDateTimeCheckedResultFault where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : AddressedDateFromDateTimeFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedDateFromDateTime
@@ -38,7 +40,9 @@ def executeResultWithFormalInputs
   match operation.executeResultWithRead input
       prepared.preliminary.readComputation
       prepared.formalErrorsInOperands with
-  | .ok view => pure view
+  | .ok view =>
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands view)
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
   | .error cause => throw (.execution prepared.formalErrorsInOperands cause)
 
 end CheckedAddressedDateFromDateTime

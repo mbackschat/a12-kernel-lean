@@ -250,7 +250,8 @@ theorem generatedNumericOperationTable_executeResultWithFormalInputs_exact
     (planned : admission.formalInputPlan = .ok inputPlan)
     (preparation : inputPlan.prepare input = .ok prepared)
     (executed : admission.executeAddressedResultWithRead world input
-      prepared.preliminary.readComputation (fun _ => ()) [] = .ok numeric) :
+      prepared.preliminary.readComputation (fun _ => ()) [] = .ok numeric)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     computation.executeNumericResultWithFormalInputs world input =
       .ok (NumericComputationFormalInputRunView.of numeric
         prepared.formalErrorsInOperands) := by
@@ -259,6 +260,7 @@ theorem generatedNumericOperationTable_executeResultWithFormalInputs_exact
   rw [planned]
   simp only [preparation]
   rw [executed]
+  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure]
 
 /-- After generated preparation succeeds, any subsequent execution failure retains the exact eager raw findings beside the unchanged failure. -/
 theorem generatedNumericOperationTable_executeResultWithFormalInputs_failure_exact

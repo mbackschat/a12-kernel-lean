@@ -21,6 +21,8 @@ inductive GeneratedNumericComputationFormalInputRunError where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : GeneratedNumericComputationRunResultError)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr
 
 private def optionalGeneratedGuardReferences
@@ -117,8 +119,9 @@ def executeNumericResultWithFormalInputs (computation : GeneratedComputationTabl
   | .error cause =>
       .error (.execution prepared.formalErrorsInOperands cause)
   | .ok numeric =>
-      .ok (NumericComputationFormalInputRunView.of numeric
-        prepared.formalErrorsInOperands)
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands
+        (NumericComputationFormalInputRunView.of numeric prepared.formalErrorsInOperands))
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end GeneratedComputationTable
 

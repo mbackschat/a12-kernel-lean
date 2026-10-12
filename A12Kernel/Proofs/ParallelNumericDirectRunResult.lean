@@ -68,13 +68,15 @@ theorem checkedIsolatedParallelNumericDirectRun_executeResultWithFormalInputs_ex
     (planned : checked.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
     (executed : checked.executeResult prepared.preliminary
-      (fun _ => ()) [] = .ok numeric) :
+      (fun _ => ()) [] = .ok numeric)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     checked.executeResultWithFormalInputs input =
       .ok (NumericComputationFormalInputRunView.of numeric
         prepared.formalErrorsInOperands) := by
   rw [CheckedIsolatedParallelNumericDirectRun.executeResultWithFormalInputs,
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation, executed]
+  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure]
 
 /-- A post-preparation execution failure retains the exact eager inventory beside the unchanged addressed fault. -/
 theorem checkedIsolatedParallelNumericDirectRun_executeResultWithFormalInputs_failure_exact

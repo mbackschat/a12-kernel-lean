@@ -524,7 +524,7 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-aggregate-seeded-mixed-result"></a>
 - [Aggregate-seeded mixed result](implementation/computations.md#cap-aggregate-seeded-mixed-result)
 <a id="cap-computation-message-partition"></a>
-- [Computation message partition](implementation/computations.md#cap-computation-message-partition)
+- [Computation message partition](implementation/validation-messages-and-custom.md#cap-computation-message-partition)
 <a id="cap-computation-self-validation-type"></a>
 - [Implicit self-validation message type](implementation/computations.md#cap-computation-self-validation-type)
 <a id="cap-generated-computation-validation"></a>

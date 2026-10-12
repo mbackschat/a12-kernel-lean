@@ -63,11 +63,13 @@ theorem checkedIndexedDateRangeConstructionComputation_executeResultWithFormalIn
     (planned : operation.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
     (executed : operation.executeResult prepared.preliminary
-      prepared.formalErrorsInOperands = .ok result) :
+      prepared.formalErrorsInOperands = .ok result)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     operation.executeResultWithFormalInputs input = .ok result := by
   rw [CheckedIndexedDateRangeConstructionComputation.executeResultWithFormalInputs,
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation, executed]
+  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure]
 
 /-- A post-preparation indexed execution failure retains the exact eager inventory beside the unchanged existing fault. -/
 theorem checkedIndexedDateRangeConstructionComputation_executeResultWithFormalInputs_failure_exact

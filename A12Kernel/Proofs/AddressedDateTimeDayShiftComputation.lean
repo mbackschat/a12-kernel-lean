@@ -61,7 +61,8 @@ theorem addressedDateTimeDayShiftComputation_executeResultWithFormalInputs_exact
     (executed : operation.executeWithAmountRead input
       (fun environment field =>
         (input.checkedCellWithRead prepared.preliminary.readComputation
-          environment field).map some) = .ok outcomes) :
+          environment field).map some) = .ok outcomes)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     operation.executeResultWithFormalInputs input =
       .ok (operation.resultFromOutcomes input
         prepared.formalErrorsInOperands outcomes) := by
@@ -70,7 +71,7 @@ theorem addressedDateTimeDayShiftComputation_executeResultWithFormalInputs_exact
   simp only [Except.mapError, Bind.bind, Except.bind, preparation]
   rw [CheckedAddressedDateTimeDayShiftComputation.executeResultWithAmountRead,
     executed]
-  rfl
+  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure]
 
 /-- A post-preparation structural failure retains the exact eager findings beside the unchanged calendar-day fault. -/
 theorem addressedDateTimeDayShiftComputation_executeResultWithFormalInputs_failure_exact

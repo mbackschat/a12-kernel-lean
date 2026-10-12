@@ -167,7 +167,8 @@ theorem addressedEnumerationThreeStage_executeResultWithFormalInputs_exact
     (preparation : inputPlan.prepare input = .ok prepared)
     (executed : plan.executeWithFallbackRead input
       prepared.preliminary.readComputation = .ok outcomes)
-    (produced : plan.executeResultWithFormalInputs input = .ok view) :
+    (produced : plan.executeResultWithFormalInputs input = .ok view)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     view.formalErrorsInOperands = prepared.formalErrorsInOperands ∧
       view.phases.first.formalErrorsInOperands = [] ∧
       view.phases.second.formalErrorsInOperands = [] ∧
@@ -178,9 +179,10 @@ theorem addressedEnumerationThreeStage_executeResultWithFormalInputs_exact
   rw [CheckedAddressedEnumerationThreeStageCascade.executeResultWithFallbackRead,
     executed] at produced
   simp only [bind, Except.bind, pure, Except.pure,
-    Except.ok.injEq] at produced
+    Except.ok.injEq, ComputationFormalInputFinding.assembleResult, assembled] at produced
   subst view
   exact ⟨rfl, rfl, rfl, rfl⟩
+
 
 /-- A post-preparation three-stage execution failure retains the exact eager inventory beside the unchanged cascade fault. -/
 theorem addressedEnumerationThreeStage_executeResultWithFormalInputs_failure_exact

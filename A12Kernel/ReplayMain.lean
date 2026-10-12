@@ -48,6 +48,7 @@ import A12Kernel.Reference.Dm.HavingGroupLocks
 import A12Kernel.Reference.Dm.HavingTypeValidityLocks
 import A12Kernel.Reference.Dm.BooleanCountHavingLocks
 import A12Kernel.Reference.Dm.StringExpressionLocks
+import A12Kernel.Reference.Dm.ComputationAssemblyLocks
 import A12Kernel.Reference.Dm.StringEnumerationBoundaryLocks
 import A12Kernel.Reference.Dm.StringAlternativeAdmissionLocks
 import A12Kernel.Reference.Dm.DeclarationAdmissionLocks

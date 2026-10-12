@@ -98,6 +98,7 @@ import A12Kernel.Conformance.ComputationOperandScope
 import A12Kernel.Conformance.ComputationFillQuantifier
 import A12Kernel.Conformance.ComputationFormalInput
 import A12Kernel.Conformance.ComputationMessage
+import A12Kernel.Conformance.ScalarReportAssembly
 import A12Kernel.Conformance.ComputationSelfValidation
 import A12Kernel.Conformance.ComputationTargetDiagnosticConsumer
 import A12Kernel.Conformance.DynamicEnumerationLegality

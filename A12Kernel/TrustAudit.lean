@@ -1093,6 +1093,9 @@ run_cmd do
 #print axioms A12Kernel.partitionComputationMessages_atComputedInstances_iff
 #print axioms A12Kernel.partitionComputationMessages_residual_iff
 #print axioms A12Kernel.partitionComputationMessages_complete
+#print axioms A12Kernel.checkComputationReportPointers_clean_iff
+#print axioms A12Kernel.assembleComputationMessages_clean
+#print axioms A12Kernel.assembleComputationMessages_failure
 #print axioms A12Kernel.numericTargetOutcome_emitsValuelessTargetError_iff
 #print axioms A12Kernel.numericComputationRun_invalidNoValue_residual
 #print axioms A12Kernel.numericComputationRun_shouldClear_iff
@@ -2345,6 +2348,7 @@ run_cmd do
 #print axioms A12Kernel.scalarComputationRun_formalInputOperations_targets
 #print axioms A12Kernel.scalarComputationRun_executeResultWithFormalInputs_exact
 #print axioms A12Kernel.scalarComputationRun_executeResultWithFormalInputs_failure_exact
+#print axioms A12Kernel.scalarComputationRun_executeResultWithFormalInputs_execution_failure_exact
 #print axioms A12Kernel.stringStep_outcome_independent_of_prior
 #print axioms A12Kernel.notTrueStringPrecondition_evaluates_noValue
 #print axioms A12Kernel.holdingStringPrecondition_preserves_outcome
@@ -2756,6 +2760,7 @@ run_cmd do
 #print axioms A12Kernel.computationFormalInputFinding_selected
 #print axioms A12Kernel.runWithFormalInputs_exact
 #print axioms A12Kernel.runWithFormalInputs_failure_exact
+#print axioms A12Kernel.runWithFormalInputs_assembly_failure_exact
 #print axioms A12Kernel.computationFormalInputPreliminaryFinding_selected
 #print axioms A12Kernel.computationFormalInputFindingIncludingPreliminary_selected
 #print axioms A12Kernel.checkedNumericComputationOperation_fieldDependencies_exact

@@ -206,6 +206,15 @@ private def oneDefaultRow (cells : List ClassifiedCellInput := []) :
 private def defaultAddress : CellAddr :=
   { field := defaultKey.id, path := [1, 1] }
 
+example : [oneDefaultRow, oneDefaultRow [cell [1, 1] "" .presentEmpty]].all
+    (fun data => (do
+      let preliminary ← preliminaryFor defaultModel data
+      let input := preliminary.computationInput
+      let checked ← (input.read defaultAddress).toOption
+      pure (observeCell .computation checked == .value (.enum "B") &&
+        input.storedTextAt defaultAddress == some "B" &&
+        input.source.cells == data.cells)) == some true) = true := by native_decide
+
 /- Full validation injects the checked stored default into its transient view for both an absent and a physically present-empty cell, without mutating the checked source. -/
 example :
     let absent := preliminaryFor defaultModel (oneDefaultRow)

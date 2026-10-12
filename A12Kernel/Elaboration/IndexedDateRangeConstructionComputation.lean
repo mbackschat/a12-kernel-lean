@@ -216,6 +216,8 @@ inductive IndexedDateRangeConstructionFormalInputFault where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : IndexedDateRangeConstructionComputationFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 /-- Rich execution result retaining both keyed endpoint selections beside the typed target outcome. -/
@@ -369,7 +371,9 @@ def executeResultWithFormalInputs
       prepared.formalErrorsInOperands with
   | .error cause =>
       .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok result => .ok result
+  | .ok result =>
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands result)
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end CheckedIndexedDateRangeConstructionComputation
 

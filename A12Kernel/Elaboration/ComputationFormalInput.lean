@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Elaboration.ComputationGroupDependency
+import A12Kernel.Semantics.ComputationMessage
 
 /-! # Checked direct-field computation formal-input inventory
 
@@ -19,6 +20,17 @@ structure ComputationFormalInputFinding where
   address : CellAddr
   cause : FormalCause
   deriving Repr, DecidableEq
+
+/-- Validate report construction independently of whether each finding blocks its operand value. -/
+def ComputationFormalInputFinding.checkAssembly (findings : List ComputationFormalInputFinding) :
+    Except ComputationReportAssemblyFault Unit :=
+  checkComputationReportPointers (findings.map fun finding => MessagePointer.ofCellAddr finding.address)
+
+/-- Return an execution-stage result only when its eager operand reports allow result assembly. -/
+def ComputationFormalInputFinding.assembleResult (findings : List ComputationFormalInputFinding)
+    (result : Result) : Except ComputationReportAssemblyFault Result := do
+  ComputationFormalInputFinding.checkAssembly findings
+  pure result
 
 /-- One model-checked direct-field inventory. Fields are extensional sets represented as duplicate-free lists. -/
 structure CheckedComputationFormalInputPlan (model : FlatModel) where
@@ -138,10 +150,11 @@ inductive ComputationFormalInputRunFault (Cause : Type) where
   | formalInput (cause : ComputationFormalInputPlanError)
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding) (cause : Cause)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding) (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 /-- Prepare a plan's selected sources once, retain every eager finding, and run lazily through the
-prepared read, so a run fault keeps the findings it was handed. -/
+prepared read. Only after execution succeeds may report assembly reject duplicate pointers; no result is returned on that arm. A run fault keeps the findings it was handed. -/
 def runWithFormalInputs {Cause Result : Type}
     (planned : Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model))
     (input : CheckedDocument model)
@@ -152,6 +165,9 @@ def runWithFormalInputs {Cause Result : Type}
   let prepared ← plan.prepare input |>.mapError .preliminary
   match run prepared.preliminary.readComputation prepared.formalErrorsInOperands with
   | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok result => .ok result
+  | .ok result => do
+      ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
+      pure result
 
 end A12Kernel

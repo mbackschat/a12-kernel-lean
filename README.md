@@ -71,16 +71,13 @@ The project considers ten consumer tasks: **Execute, Translate, Transform, Compi
 This is an active formal-semantics project, not a complete A12 interpreter or a qualified production release.
 
 <!-- github-publish-stats:start -->
-**Verified at publication:** **2,838 trusted theorem roots**, **85,626 audited declarations**, and **725 trusted modules** in the mechanized theory.
+**Verified at publication:** **3,041 trusted theorem roots**, **111,810 audited declarations**, and **891 trusted modules** in the mechanized theory.
 <!-- github-publish-stats:end -->
 
-- The internal theory already covers substantial validation, computation, numeric, String, Enumeration, Date/DateTime, repeatable, addressing, message, checked-document, and dependency behavior, with coverage varying independently across execution, proof, kernel evidence, public exposure, and consumer qualification.
-- One immutable, model-certified checked document now owns declared topology and address resolution. A shared addressed core resolves checked Number, String, and stored/category Enumeration operands across independent and nested repeatable groups, preserves hierarchical extent and positional relevance, and keeps structural addressing failures distinct from semantic `UNKNOWN`; typed wrappers retain their exact declaration and projection certificates.
-- Ordered checked Number and token value-list evaluation plus Number aggregates, token distinct count, and projection-bearing token value count consume that same resolved representation with their distinct stopping and fold rules; stored access and multiple named categories on one Enumeration remain distinct exact references rather than a flattened display value.
-- Large semantic families are decomposed into import-only compatibility roots and focused elaboration, evaluation, proof, and conformance modules. This keeps ordinary source below the project’s 1,200-nonblank-line ceiling and lets red/green work rebuild only the affected family.
-- The public reference process advertises reference semantics **0.3.0** over protocol **1**. It currently exposes checked flat validation and one single-group correlation capability and rejects unsupported constructs explicitly.
-- Empirical correspondence arrives through two channels: compact observations retained and replayed here, and corrections confirmed upstream by a12-dmkits law tests that execute the real kernel. They are tracked separately because only local replay can guard a refactor in this repository. A family with neither remains honestly marked `external evidence pending`.
-- The immediate hard frontier is completing that canonical addressed operand stream across cross-level, RNU, group, and whole-rule repeatable routes. Whole-document computation scheduling remains gated behind this boundary and its source audit.
+- The agreed ordinary-coverage checklist is complete. The remaining conformance checklist in [PLAN](docs/PLAN.md#remaining-conformance-checklist) is active; completing it precedes the planned Rust interpreter and SMT consumer work.
+- Coverage is tracked separately for execution, proofs, Kernel evidence, public exposure and consumer qualification. The [implementation map](docs/IMPLEMENTATION-MAP.md) owns capability details; the [coverage report](docs/CONFORMANCE-COVERAGE.md) owns measured construct and replay results.
+- The public reference process advertises reference semantics **0.3.0** over protocol **1**. It exposes checked flat validation and one single-group correlation capability and rejects unsupported constructs explicitly.
+- Empirical correspondence arrives through compact observations replayed here and upstream a12-dmkits law tests against the real Kernel. These remain distinct evidence channels; upstream confirmation alone does not provide a local regression check.
 
 [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) is the exact coverage index. [`docs/PLAN.md`](docs/PLAN.md) records persisted cross-session handoff state, while [`docs/SEMANTICS-GAPS.md`](docs/SEMANTICS-GAPS.md) owns unresolved semantic obligations and working context carries uninterrupted capsule selection.
 

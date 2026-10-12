@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ComputationFormalInput
+import A12Kernel.Elaboration.StringComputation
 
 /-! # Checked direct-field computation formal-input inventory locks -/
 
@@ -238,5 +239,35 @@ example :
           (generatedFinding selectedEmptyIndex.id [1] .required))) =
       some true := by
   native_decide
+
+private def reportedIndex : FlatFieldDecl := {
+  id := 90, name := "Code", groupPath := ["Form", "Rows"], repeatableScope := [90]
+  policy := { kind := .string }, customType := some { name := "Code" } }
+private def auditTarget : FlatFieldDecl := {
+  id := 91, name := "Audit", groupPath := ["Form"], policy := { kind := .string }
+  customType := some { name := "Audit" } }
+private def reportModel : FlatModel := {
+  fields := [reportedIndex, auditTarget]
+  repeatableGroups := [
+    { level := 90, path := ["Form", "Rows"], repeatability := some 2, indexField := some 90 }] }
+private def reportWorld : World := {
+  now := { epochMillis := 0 }
+  customFieldValidator? := fun name => some fun value _ =>
+    if name == "Code" then some { projectCode := "testIDNummer" }
+    else if value == "checked" then none else some { projectCode := "bad-audit" } }
+private def reportRun (same : Bool) : Option Bool := do
+  let prepared ← (prepareFlatStringContext reportWorld builtinStringPatternCompiler reportModel).toOption
+  let input ← (checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := 90, path := [1] }, { group := 90, path := [2] }]
+    cells := [
+      { address := { field := 90, path := [1] }, stored := "ABCD", raw := .parsed (.str "ABCD") },
+      { address := { field := 90, path := [2] }, stored := if same then "ABCD" else "EFGH",
+        raw := .parsed (.str (if same then "ABCD" else "EFGH")) }] }).toOption
+  let operation ← (elaborateStringComputationOperation reportModel ["Form"] 91 (.literal "checked")).toOption
+  let result := runWithFormalInputs (checkComputationFormalInputPlan reportModel [90] [91]) input
+    (fun _ _ => operation.evaluateOutcome prepared.patterns input)
+  pure result.toOption.isSome
+
+example : reportRun true = some false ∧ reportRun false = some true := by native_decide
 
 end A12Kernel.Conformance.ComputationFormalInput

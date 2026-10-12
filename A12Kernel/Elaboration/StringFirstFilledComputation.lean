@@ -284,6 +284,8 @@ inductive StringFirstFilledCheckedResultFault where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : StringFirstFilledComputationFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedStringFirstFilledComputation
@@ -306,7 +308,9 @@ def executeResultWithFormalInputs (operation : CheckedStringFirstFilledComputati
   match operation.executeResultWithRead (world := world) patterns input prepared.preliminary.readComputation
       prepared.formalErrorsInOperands with
   | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok result => .ok result
+  | .ok result =>
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands result)
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end CheckedStringFirstFilledComputation
 

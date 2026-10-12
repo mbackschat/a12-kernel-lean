@@ -15,7 +15,8 @@ theorem addressedDateFromDateTime_executeResultWithFormalInputs_exact
     (planned : operation.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
     (executed : operation.executeWithRead input
-      prepared.preliminary.readComputation = .ok outcomes) :
+      prepared.preliminary.readComputation = .ok outcomes)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     (operation.executeResultWithFormalInputs input).map
       (fun view => view.fullDate.formalErrorsInOperands) =
         .ok prepared.formalErrorsInOperands := by
@@ -23,7 +24,7 @@ theorem addressedDateFromDateTime_executeResultWithFormalInputs_exact
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation]
   rw [CheckedAddressedDateFromDateTime.executeResultWithRead, executed]
-  rfl
+  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure, Except.map] <;> rfl
 
 /-- A post-preparation addressed execution failure retains the exact eager inventory beside the unchanged existing fault. -/
 theorem addressedDateFromDateTime_executeResultWithFormalInputs_failure_exact

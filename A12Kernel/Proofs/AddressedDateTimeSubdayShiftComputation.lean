@@ -57,12 +57,14 @@ theorem addressedDateTimeSubdayShiftComputation_executeResultWithFormalInputs_ex
       (fun environment field =>
         (input.checkedCellWithRead prepared.preliminary.readComputation
           environment field).map some)
-      prepared.formalErrorsInOperands = .ok view) :
+      prepared.formalErrorsInOperands = .ok view)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     operation.executeResultWithFormalInputs input = .ok view := by
   rw [CheckedAddressedDateTimeSubdayShiftComputation.executeResultWithFormalInputs,
     planned]
   simp only [Except.mapError, Bind.bind, Except.bind, preparation]
   rw [executed]
+  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure]
 
 /-- Once the addressed plan succeeds, a later structural failure retains the exact eager findings beside the unchanged fault. -/
 theorem addressedDateTimeSubdayShiftComputation_executeResultWithFormalInputs_failure_exact

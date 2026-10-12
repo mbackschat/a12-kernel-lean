@@ -277,13 +277,17 @@ private def placements (preliminary : CheckedIndexPreliminary model) :
   let placed := preliminary.base.checkedCells.map fun placement =>
     { placement with
       cell := preliminary.annotateCell placement.address
-        (preliminary.stagedCell placement.address placement.cell) }
+        (preliminary.stagedCell placement.address placement.cell)
+      storedText := (preliminary.defaultStoredAt? placement.address).or placement.storedText }
   let injected := preliminary.defaulted.filterMap fun defaulted =>
     if preliminary.base.checkedCells.any fun placement =>
         placement.address == defaulted.address then
       none
     else
-      some { address := defaulted.address, cell := defaulted.cell }
+      some {
+        address := defaulted.address
+        cell := preliminary.annotateCell defaulted.address defaulted.cell
+        storedText := some defaulted.stored }
   let staged := placed ++ injected
   let absent := preliminary.findings.filterMap fun finding =>
     if staged.any fun placement =>
@@ -295,6 +299,10 @@ private def placements (preliminary : CheckedIndexPreliminary model) :
         cell := (checkAdmittedRawCell .empty).withFinding finding.kind.cause
       }
   staged ++ absent
+
+/-- Reuse the prepared cells and their staged spellings for computation without changing source placement or ingesting values again. -/
+def computationInput (preliminary : CheckedIndexPreliminary model) : CheckedDocument model :=
+  preliminary.base.overlayCells [] preliminary.placements
 
 /-- Reuse the sole resolved group-scope owner with the addressed preliminary cell view, including required findings on physically absent index cells. -/
 def groupPresenceInput (preliminary : CheckedIndexPreliminary model)

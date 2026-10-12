@@ -295,6 +295,8 @@ inductive AddressedEnumerationToNumberHavingCascadeCheckedResultFault where
   | preliminary (cause : CheckedIndexPreliminaryError)
   | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
       (cause : AddressedEnumerationToNumberHavingCascadeFault)
+  | assembly (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : ComputationReportAssemblyFault)
   deriving Repr, DecidableEq
 
 namespace CheckedAddressedEnumerationToNumberHavingCascade
@@ -405,10 +407,11 @@ def executeResultWithFormalInputs
       noResidual with
   | .error cause =>
       .error (.execution prepared.formalErrorsInOperands cause)
-  | .ok phases => .ok {
-      phases
-      formalErrorsInOperands := prepared.formalErrorsInOperands
-    }
+  | .ok phases =>
+      (ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands {
+        phases
+        formalErrorsInOperands := prepared.formalErrorsInOperands })
+        |>.mapError (.assembly prepared.formalErrorsInOperands)
 
 end CheckedAddressedEnumerationToNumberHavingCascade
 

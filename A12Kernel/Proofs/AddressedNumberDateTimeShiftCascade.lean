@@ -118,7 +118,8 @@ theorem addressedNumberDateTimeShift_executeResultWithFormalInputs_exact
     (preparation : inputPlan.prepare input = .ok prepared)
     (executed : plan.executeWithProducerRead input
       prepared.preliminary.readComputation = .ok outcomes)
-    (produced : plan.executeResultWithFormalInputs input = .ok view) :
+    (produced : plan.executeResultWithFormalInputs input = .ok view)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     view.formalErrorsInOperands = prepared.formalErrorsInOperands ∧
       view.phases.number =
         NumericComputationRunView.fromSourceOutcomesWithMessages
@@ -131,8 +132,9 @@ theorem addressedNumberDateTimeShift_executeResultWithFormalInputs_exact
   simp only [bind, Except.bind, Except.mapError, preparation] at produced
   rw [CheckedAddressedNumberDateTimeShiftCascade.executeResultWithProducerRead,
     executed] at produced
-  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq, ComputationFormalInputFinding.assembleResult, assembled] at produced
   subst view
   exact ⟨rfl, rfl, rfl, rfl⟩
+
 
 end A12Kernel

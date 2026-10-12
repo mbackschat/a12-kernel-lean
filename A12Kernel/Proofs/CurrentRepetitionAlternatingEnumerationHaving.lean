@@ -108,7 +108,8 @@ theorem currentRepetitionAlternatingEnumerationHaving_executeResultWithFormalInp
     (preparation : inputPlan.prepare input = .ok prepared)
     (executed : plan.executeWithConsumerFallbackRead patterns input
       prepared.preliminary.readComputation = .ok outcomes)
-    (produced : plan.executeResultWithFormalInputs patterns input = .ok view) :
+    (produced : plan.executeResultWithFormalInputs patterns input = .ok view)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     view.formalErrorsInOperands = prepared.formalErrorsInOperands ∧
       view.phases.chain.string = StringComputationRunView.fromSourcedOutcomes
         [] (outcomes.chain.rows.map (·.second)) ∧
@@ -128,9 +129,10 @@ theorem currentRepetitionAlternatingEnumerationHaving_executeResultWithFormalInp
     CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResultWithConsumerFallbackRead,
     executed] at produced
   simp only [bind, Except.bind, pure, Except.pure,
-    Except.ok.injEq] at produced
+    Except.ok.injEq, ComputationFormalInputFinding.assembleResult, assembled] at produced
   subst view
   exact ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
+
 
 /-- Same-family application delegates to the completed middle String and final Enumeration folds in checked phase order. -/
 theorem currentRepetitionAlternatingEnumerationHavingRun_applyStrings_delegates

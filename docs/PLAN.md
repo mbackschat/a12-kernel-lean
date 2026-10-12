@@ -3,8 +3,8 @@
 <a id="active-unit"></a>
 ## Next action and accepted baseline
 
-- `status`: K01 is accepted; K02–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
-- `next`: K02 report-assembly route discovery against the [inbound duplicate-diagnostic evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12). Reuse the K01 custom-ingestion and result-boundary context; distinguish computation execution, report failure and applied-snapshot availability before editing.
+- `status`: K01–K02 are accepted; K03–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
+- `next`: Select K03 and reconcile its frozen matrix against the captured-environment, Having and ordered-consumer owners. K02’s [assembly boundary](implementation/validation-messages-and-custom.md#cap-computation-message-partition) passed focused and integrated checks, compact evidence, population replay, trust and cold review with both findings resolved.
 - `baseline`: Accepted ordinary implementation boundaries remain in [coverage](CONFORMANCE-COVERAGE.md#axis-r--population-replay). The [C12 readback](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) establishes bounded semantic transport, not independent-evaluator qualification.
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
@@ -47,7 +47,7 @@ These groups retain useful context across consecutive tasks. They are not new ta
 <a id="remaining-conformance-checklist"></a>
 ## K01–K22 — remaining conformance before consumers
 
-Owner direction, 2026-10-11, resumed with the 2026-10-12 handbacks: close the relevant remaining semantic obligations, then move to actual consumer development, including a Rust interpreter and SMT-backed analysis. All K items remain unchecked: their status must follow verified outcomes, not the existence of a plan or a peer receipt.
+Owner direction, 2026-10-11, resumed with the 2026-10-12 handbacks: close the relevant remaining semantic obligations, then move to actual consumer development, including a Rust interpreter and SMT-backed analysis. K-item status follows verified outcomes, not the existence of a plan or a peer receipt.
 
 The denominator is the current residual mechanisms in all 24 SG families, including the concrete inbound corrections linked below. Each task fixes a finite separating matrix rather than a Cartesian product of every depth, kind and host profile. At entry, recover existing implementation, proofs and observations; sufficient existing evidence can discharge a row without new code. A stale gap is deleted only after that check. A task that only prepares prerequisites remains unchecked.
 
@@ -62,7 +62,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 ### K02 — computation report assembly and whole-call failure
 
-- [ ] Reconcile duplicate diagnostic assembly after computation with the returned partitions and application boundary. [SG4](gaps/keystone.md#gap-sg4), [SG16](gaps/keystone.md#gap-sg16), [inbound evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
+- [x] Reconcile duplicate diagnostic assembly after computation with the returned partitions and application boundary. [SG4](gaps/keystone.md#gap-sg4), [SG16](gaps/keystone.md#gap-sg16), [inbound evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 - Matrix: two findings at the same full error pointer versus distinct physical rows; an independent callback computation; selected duplicate versus ordinary malformed source; root-only computation beside an unused custom index.
 - Done: computation execution, report assembly failure and availability of an applied snapshot remain distinct. No early abort, swallowed whole-call failure or invented applied result. Use the peer's committed duplicate-diagnostic controls before requesting a capture.
 

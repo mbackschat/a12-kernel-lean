@@ -25,7 +25,7 @@ structure ComputationMessagePartition (Payload : Type) where
   residual : List (ComputationFormalMessage Payload)
   deriving Repr, DecidableEq
 
-/-- Partition messages by exact membership in the computed-instance pointer set. Wildcard and unknown coordinates are compared structurally, never expanded. -/
+/-- Pure partition projection; callers must establish assembly success before exposing a result. Partition messages by exact membership in the computed-instance pointer set. Wildcard and unknown coordinates are compared structurally, never expanded. -/
 def partitionComputationMessages (computedInstances : List MessagePointer)
     (messages : List (ComputationFormalMessage Payload)) :
     ComputationMessagePartition Payload := {
@@ -34,5 +34,24 @@ def partitionComputationMessages (computedInstances : List MessagePointer)
   residual :=
     messages.filter fun message => !computedInstances.contains message.pointer
 }
+
+/-- Result construction fails when two messages share a full error pointer, regardless of payload or code (`spec/09` §3.3). -/
+inductive ComputationReportAssemblyFault where
+  | duplicatePointer (pointer : MessagePointer)
+  deriving Repr, DecidableEq
+
+/-- Check the complete diagnostic stream after execution and before partitioning or application. Pointer coordinates are compared structurally, including wildcard and unknown. -/
+def checkComputationReportPointers : List MessagePointer → Except ComputationReportAssemblyFault Unit
+  | [] => .ok ()
+  | pointer :: remaining =>
+      if remaining.contains pointer then .error (.duplicatePointer pointer)
+      else checkComputationReportPointers remaining
+
+/-- Assemble the public message partition only when every complete error pointer is unique. -/
+def assembleComputationMessages (computedInstances : List MessagePointer)
+    (messages : List (ComputationFormalMessage Payload)) :
+    Except ComputationReportAssemblyFault (ComputationMessagePartition Payload) := do
+  checkComputationReportPointers (messages.map (·.pointer))
+  pure (partitionComputationMessages computedInstances messages)
 
 end A12Kernel

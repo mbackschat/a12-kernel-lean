@@ -8,7 +8,7 @@ namespace A12Kernel
 
 namespace NumericComputationRunView
 
-/-- Attach immutable source state to each rich run outcome, then build the public projection. -/
+/-- Attach immutable source state to each rich run outcome, then build its pre-assembly projection. -/
 def fromOutcomes (input : CheckedDocument model)
     (payloadAt : FieldId → Payload)
     (supplied : List (ComputationFormalMessage Payload))
@@ -31,7 +31,7 @@ inductive NumericComputationRunResultFault where
 
 namespace CheckedNumericComputationRun
 
-/-- Execute the checked run under one explicit world and classify its outcomes relative to that same immutable source document. -/
+/-- Execute the checked run and classify its outcomes relative to the immutable source. This low-level projection precedes diagnostic assembly. -/
 def executeResult (run : CheckedNumericComputationRun model)
     (world : World) (input : CheckedDocument model)
     (payloadAt : FieldId → Payload)

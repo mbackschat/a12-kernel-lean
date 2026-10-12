@@ -176,6 +176,7 @@ theorem scalarComputationRun_executeResult_routesFamilies
       } := by
   unfold CheckedScalarComputationRun.executeResult
   rw [executed]
-  simp [noDocument, numberProjected, Except.mapError, bind, Except.bind, pure, Except.pure]
+  simp [CheckedScalarComputationRun.resultFromOutcomes, noDocument, numberProjected,
+    Except.mapError, bind, Except.bind, pure, Except.pure]
 
 end A12Kernel

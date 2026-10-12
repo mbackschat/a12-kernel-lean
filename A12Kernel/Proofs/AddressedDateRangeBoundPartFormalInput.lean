@@ -16,7 +16,8 @@ theorem addressedDateRangeBoundPart_executeResultWithFormalInputs_exact
     (planned : operation.formalInputPlan = .ok plan)
     (preparation : plan.prepare input = .ok prepared)
     (executed : operation.executeResultWithRead input
-      prepared.preliminary.readComputation (fun _ => ()) [] = .ok numeric) :
+      prepared.preliminary.readComputation (fun _ => ()) [] = .ok numeric)
+    (assembled : ComputationFormalInputFinding.checkAssembly prepared.formalErrorsInOperands = .ok ()) :
     (operation.executeResultWithFormalInputs input).map (fun view =>
       (view.formalErrorsInOperands, view.numeric)) =
         .ok (prepared.formalErrorsInOperands, numeric) := by
@@ -24,7 +25,7 @@ theorem addressedDateRangeBoundPart_executeResultWithFormalInputs_exact
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation]
   rw [executed]
-  rfl
+  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure, Except.map, NumericComputationFormalInputRunView.of] <;> rfl
 
 /-- A post-preparation addressed failure retains the exact eager inventory beside the unchanged fault. -/
 theorem addressedDateRangeBoundPart_executeResultWithFormalInputs_failure_exact
