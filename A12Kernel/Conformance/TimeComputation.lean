@@ -206,6 +206,40 @@ private def executionView? (components : SurfaceTimeComponents)
   let checked ← (checkDocument prepared "en_US" input).toOption
   operation.executeResult checked [] |>.toOption
 
+private def unconvertedSource : DocumentData := {
+  oldSource with cells := oldSource.cells.map fun cell =>
+    { cell with sourceRepresentation := .unconvertedText }
+}
+
+example :
+    (executionView? (.second
+      (.constant "05") (.constant "02") (.constant "08")) oldSource).map
+        (fun view => (view.withoutErrors.map (·.value), view.withChanges)) =
+      some ([oldTime], []) ∧
+    (executionView? (.second
+      (.constant "05") (.constant "02") (.constant "08")) unconvertedSource).map
+        (fun view => (view.withoutErrors.map (·.value),
+          view.withChanges.map (·.value))) = some ([oldTime], [oldTime]) := by
+  native_decide
+
+example :
+    (constructionView? unconvertedSource .noValue).map (·.cleared) = some [1] ∧
+    (constructionView? unconvertedSource (.poison .malformed)).map
+      (fun view => (view.cleared, view.withErrors)) = some ([1], []) ∧
+    (do
+      let view ← constructionView? unconvertedSource (.accepted oldTime)
+      let applied ← view.applyTo (fun _ => .absent) |>.toOption
+      let reapplied := TimeComputationRunView.fromOutcomesAt applied
+        ([] : List FormalCause) [(1, .accepted oldTime)]
+      pure (applied 1, reapplied.withChanges)) =
+        some (.presentValue oldTime, []) ∧
+    (do
+      let view ← constructionView? oldSource (.accepted oldTime)
+      let applied ← view.applyTo
+        (fun _ => .presentUnconverted oldTime) |>.toOption
+      pure (applied 1)) = some (.presentUnconverted oldTime) := by
+  native_decide
+
 private def executionOutcome? (components : SurfaceTimeComponents)
     (input : DocumentData) : Option TimeTargetOutcome := do
   let operation ← operation? components

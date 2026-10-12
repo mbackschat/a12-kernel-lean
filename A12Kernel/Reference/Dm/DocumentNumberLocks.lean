@@ -121,4 +121,19 @@ example : [0, 1, -1, 10, 100, -100, 123400].all (fun coefficient =>
       let value : NumericInputDecimal := { unscaled := coefficient, scale }
       convertedDecimal? value.wireText == some value)) := by native_decide
 
+private def representationCoherent (representation : SourceRepresentation)
+    (decimal : Bool) : Option Bool := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler dm.flat).toOption
+  let cell ← fileCell "7.00"
+  let cell := { cell with
+    sourceRepresentation := representation
+    numericDecimal := if decimal then cell.numericDecimal else none }
+  pure (checkDocument prepared "en_US" { instantiatedRows := [], cells := [cell] }).isOk
+
+example :
+    representationCoherent .classified true = some true ∧
+    representationCoherent .unconvertedText false = some true ∧
+    representationCoherent .unconvertedText true = some false := by native_decide
+
 end A12Kernel.Dm.DocumentNumberLocks

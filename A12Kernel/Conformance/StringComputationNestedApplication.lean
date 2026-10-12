@@ -158,7 +158,7 @@ private def nonemptyRows
     | [outer, inner] =>
         let target := address label.id outer inner
         match projection.stateAt target with
-        | .presentValue text => if text.text.isEmpty then none else some target
+        | .presentValue text | .presentUnconverted text => if text.text.isEmpty then none else some target
         | .absent | .presentEmpty => none
     | _ => none
 

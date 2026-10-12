@@ -30,22 +30,24 @@ theorem sourceNonemptyStoredTargetState_nonempty
     (cell : ClassifiedCellInput)
     (found : input.source.cells.find? (fun candidate =>
       candidate.address == ({ field, path := [] } : CellAddr)) = some cell)
-    (nonempty : cell.stored ≠ "") :
+    (nonempty : cell.stored ≠ "")
+    (classified : cell.sourceRepresentation = .classified) :
     input.sourceNonemptyStoredTargetState field makeStored =
       .presentValue (makeStored cell.stored nonempty) := by
   simp [CheckedDocument.sourceNonemptyStoredTargetState,
-    CheckedDocument.sourceNonemptyStoredTargetStateAt, found, nonempty]
+    CheckedDocument.sourceNonemptyStoredTargetStateAt, found, nonempty, classified]
 
 theorem sourceDateRangeTargetState_nonempty
     (input : CheckedDocument model) (field : FieldId)
     (cell : ClassifiedCellInput)
     (found : input.source.cells.find? (fun candidate =>
       candidate.address == ({ field, path := [] } : CellAddr)) = some cell)
-    (nonempty : cell.stored ≠ "") :
+    (nonempty : cell.stored ≠ "")
+    (classified : cell.sourceRepresentation = .classified) :
     input.sourceDateRangeTargetState field =
       .presentValue ({ text := cell.stored, nonempty } : StoredDateRange) := by
   simp [CheckedDocument.sourceDateRangeTargetState,
     CheckedDocument.sourceDateRangeTargetStateAt,
-    CheckedDocument.sourceNonemptyStoredTargetStateAt, found, nonempty]
+    CheckedDocument.sourceNonemptyStoredTargetStateAt, found, nonempty, classified]
 
 end A12Kernel

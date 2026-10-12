@@ -221,4 +221,26 @@ example : (do
       | _ => false)) = some true := by
   native_decide
 
+
+private def unconvertedSource : DocumentData := {
+  source [(target.id, oldValue)] with
+  cells := (source [(target.id, oldValue)]).cells.map fun cell =>
+    { cell with sourceRepresentation := .unconvertedText }
+}
+
+example : (do
+    let view ← view? unconvertedSource [(target.id, .accepted oldValue)]
+    let applied ← view.applyTo (destination .absent .absent) |>.toOption
+    let reapplied := DateRangeComputationRunView.fromOutcomesAt applied
+      ([] : List FormalCause) [(target.id, .accepted oldValue)]
+    pure (applied target.id, reapplied.withChanges)) =
+      some (.presentValue oldValue, []) ∧
+    (do
+      let view ← view? (source [(target.id, oldValue)])
+        [(target.id, .accepted oldValue)]
+      let unconverted ← checked? unconvertedSource
+      let applied ← view.applyToChecked unconverted |>.toOption
+      pure (applied target.id)) = some (.presentUnconverted oldValue) := by
+  native_decide
+
 end A12Kernel.Conformance.DateRangeComputationApplication

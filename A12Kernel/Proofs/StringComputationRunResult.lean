@@ -34,7 +34,7 @@ theorem stringComputationRun_withChanges_subset
   | none =>
       simp [StringComputationRunView.changedInstance?, success] at changed
   | some current =>
-      by_cases same : entry.source.storedValue = some current.value
+      by_cases same : entry.source.computedValue = some current.value
       · simp [StringComputationRunView.changedInstance?, success, same] at changed
       · simp [StringComputationRunView.changedInstance?, success, same] at changed
         subst computed

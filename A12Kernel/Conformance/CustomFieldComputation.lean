@@ -125,6 +125,7 @@ private def priorCells (prior : StringTargetState) (field : FieldId) : List Clas
   | .absent => []
   | .presentEmpty => [{ address := { field, path := [] }, stored := "", raw := .presentEmpty }]
   | .presentValue value => [{ address := { field, path := [] }, stored := value.text, raw := .parsed (.str value.text) }]
+  | .presentUnconverted value => [{ address := { field, path := [] }, stored := value.text, raw := .parsed (.str value.text), sourceRepresentation := .unconvertedText }]
 
 private def checkedRunOutcome (answer : Option RegisteredCustomRejection)
     (prior : StringTargetState := .absent) (normalizedSource : Bool := false) :

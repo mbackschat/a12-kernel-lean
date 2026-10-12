@@ -7,7 +7,7 @@ namespace A12Kernel
 
 namespace CheckedDocument
 
-/-- Recover the exact source placement and stored text for one addressed String target. Target-policy validity is irrelevant to source-relative change and clearing classification. -/
+/-- Recover the exact source placement and identity for one addressed String-shaped target. Temporal declarations retain unconverted ingress identity (spec/09 §3.3); ordinary String, Custom and Enumeration retain token identity. Target-policy validity is irrelevant to source-relative change and clearing classification. -/
 def sourceStringTargetStateAt (input : CheckedDocument model)
     (address : CellAddr) : StringTargetState :=
   match input.source.cells.find? fun cell =>
@@ -17,7 +17,13 @@ def sourceStringTargetStateAt (input : CheckedDocument model)
       if empty : cell.stored = "" then
         .presentEmpty
       else
-        .presentValue { text := cell.stored, nonempty := empty }
+        let value : StoredString := { text := cell.stored, nonempty := empty }
+        match model.lookupUniqueId address.field with
+        | .ok declaration =>
+            match declaration.policy.kind, cell.sourceRepresentation with
+            | .temporal _ _, .unconvertedText => .presentUnconverted value
+            | _, _ => .presentValue value
+        | .error _ => .presentValue value
 
 /-- Nonrepeatable compatibility projection through the exact addressed owner. -/
 def sourceStringTargetState (input : CheckedDocument model)

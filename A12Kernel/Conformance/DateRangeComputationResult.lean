@@ -123,4 +123,20 @@ example : (view? (source oldValue.text)
       (fun view => view.formalErrorsInOperands) = some [.malformed] := by
   native_decide
 
+
+private def unconvertedSource : DocumentData := {
+  source oldValue.text with cells := (source oldValue.text).cells.map fun cell =>
+    { cell with sourceRepresentation := .unconvertedText }
+}
+
+example :
+    (view? unconvertedSource [(target.id, .accepted oldValue)]).map
+      (fun view => (view.withoutErrors.map (·.value),
+        view.withChanges.map (·.value))) = some ([oldValue], [oldValue]) ∧
+    (view? unconvertedSource [(target.id, .noValue)]).map
+      (·.cleared) = some [target.id] ∧
+    (view? unconvertedSource [(target.id, .poison .malformed)]).map
+      (fun view => (view.cleared, view.withErrors)) = some ([target.id], []) := by
+  native_decide
+
 end A12Kernel.Conformance.DateRangeComputationResult

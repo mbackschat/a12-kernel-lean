@@ -7,21 +7,37 @@ The relation below states the same narrow transition independently of the execut
 
 namespace A12Kernel
 
+/-- DateFragment's unconverted ingress is filled for clearing while every computed token has a different object identity (spec/09 §3.3). -/
+theorem unconvertedString_filled_and_changed (previous value : StoredString) :
+    (StringTargetState.presentUnconverted previous).storedValue = some previous ∧
+      (StringTargetState.presentUnconverted previous).computedValue = none ∧
+      (StringTargetOutcome.accepted value).projectDelta
+        (StringTargetState.presentUnconverted previous).toDeltaPrior =
+          some (.value value) ∧
+      StringTargetOutcome.noValue.projectDelta
+        (StringTargetState.presentUnconverted previous).toDeltaPrior =
+          some .cleared := by
+  exact ⟨rfl, rfl, rfl, rfl⟩
+
 /-- Independent relational account of exact one-target String application. -/
 def StringTargetApplies : StringTargetOutcome → StringTargetState → StringTargetState → Prop
   | .accepted value, _, .presentValue applied => value = applied
   | .invalidNoValue, .absent, .absent => True
   | .invalidNoValue, .presentEmpty, .presentEmpty => True
   | .invalidNoValue, .presentValue _, .presentEmpty => True
+  | .invalidNoValue, .presentUnconverted _, .presentEmpty => True
   | .noValue, .absent, .absent => True
   | .noValue, .presentEmpty, .presentEmpty => True
   | .noValue, .presentValue _, .presentEmpty => True
+  | .noValue, .presentUnconverted _, .presentEmpty => True
   | .errored _ _, .absent, .absent => True
   | .errored _ _, .presentEmpty, .presentEmpty => True
   | .errored _ _, .presentValue _, .presentEmpty => True
+  | .errored _ _, .presentUnconverted _, .presentEmpty => True
   | .poison _, .absent, .absent => True
   | .poison _, .presentEmpty, .presentEmpty => True
   | .poison _, .presentValue _, .presentEmpty => True
+  | .poison _, .presentUnconverted _, .presentEmpty => True
   | _, _, _ => False
 
 /-- The executable transition is sound and complete with respect to the independent relation. -/

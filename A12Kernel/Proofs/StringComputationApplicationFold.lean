@@ -18,14 +18,14 @@ theorem oneTargetStringResult_actionsOwned
   cases outcome with
   | accepted value =>
       cases source with
-      | absent | presentEmpty =>
+      | absent | presentEmpty | presentUnconverted _ =>
           simp [StringComputationRunView.actionTargets,
             StringComputationRunView.fromSourcedOutcomes,
             StringComputationRunView.changedInstance?,
             StringComputationRunView.successfulInstance?,
             StringComputationRunView.computedError?,
             StringComputationRunView.shouldClear,
-            StringTargetState.storedValue]
+            StringTargetState.storedValue, StringTargetState.computedValue]
       | presentValue prior =>
           by_cases same : prior = value <;>
             simp [StringComputationRunView.actionTargets,
@@ -34,7 +34,7 @@ theorem oneTargetStringResult_actionsOwned
               StringComputationRunView.successfulInstance?,
               StringComputationRunView.computedError?,
               StringComputationRunView.shouldClear,
-              StringTargetState.storedValue, same]
+              StringTargetState.storedValue, StringTargetState.computedValue, same]
   | noValue | invalidNoValue | errored _ _ | poison _ =>
       cases source <;>
         simp [StringComputationRunView.actionTargets,
@@ -121,7 +121,7 @@ theorem stringComputationRun_unchanged_notApplied
     StringComputationRunView.computedError?.eq_def,
     StringComputationRunView.shouldClear,
     StringTargetOutcome.hasComputedInstance,
-    StringTargetState.storedValue,
+    StringTargetState.storedValue, StringTargetState.computedValue,
     StringComputationRunView.applyTo,
     StringComputationRunView.firstDuplicateActionTarget?,
     StringComputationRunView.firstDuplicateStringTarget?,
@@ -132,7 +132,7 @@ theorem stringComputationRun_changed_applies
     [DecidableEq Target] (residualMessages : List ResidualMessage)
     (target : Target) (value : StoredString) (source : StringTargetState)
     (destination : StringComputationDestination Target)
-    (changed : source.storedValue ≠ some value) :
+    (changed : source.computedValue ≠ some value) :
     (StringComputationRunView.fromSourcedOutcomes residualMessages
       [{
         targetField := target

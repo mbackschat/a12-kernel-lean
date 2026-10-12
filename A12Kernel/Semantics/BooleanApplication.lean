@@ -21,6 +21,7 @@ inductive BooleanTargetState where
   | presentEmpty
   | presentValue (value : Bool)
   | presentInvalid (stored : String)
+  | presentUnconverted (stored : String)
   deriving Repr, DecidableEq
 
 namespace BooleanTargetState
@@ -28,16 +29,16 @@ namespace BooleanTargetState
 /-- Return the typed Boolean or Confirm identity of a valid filled target. -/
 def value? : BooleanTargetState → Option Bool
   | .presentValue value => some value
-  | .absent | .presentEmpty | .presentInvalid _ => none
+  | .absent | .presentEmpty | .presentInvalid _ | .presentUnconverted _ => none
 
 /-- A valid or invalid nonempty placement is source-filled for clear classification. -/
 def isFilled : BooleanTargetState → Bool
-  | .presentValue _ | .presentInvalid _ => true
+  | .presentValue _ | .presentInvalid _ | .presentUnconverted _ => true
   | .absent | .presentEmpty => false
 
 /-- Apply one source-classified CLEARED action, materializing present-empty even from absence. -/
 def applyRetainedClear : BooleanTargetState → BooleanTargetState
-  | .absent | .presentEmpty | .presentValue _ | .presentInvalid _ => .presentEmpty
+  | .absent | .presentEmpty | .presentValue _ | .presentInvalid _ | .presentUnconverted _ => .presentEmpty
 
 end BooleanTargetState
 

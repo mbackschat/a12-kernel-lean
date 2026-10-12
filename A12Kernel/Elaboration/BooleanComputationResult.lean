@@ -34,6 +34,8 @@ def sourceBooleanTargetStateAt (input : CheckedDocument model)
   | some cell =>
       if cell.stored.isEmpty then
         .presentEmpty
+      else if cell.sourceRepresentation == .unconvertedText then
+        .presentUnconverted cell.stored
       else
         match cell.raw with
         | .parsed (.bool value) | .parsed (.conf value) => .presentValue value

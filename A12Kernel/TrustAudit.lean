@@ -410,6 +410,8 @@ run_cmd do
 #print axioms A12Kernel.sourceNonemptyStoredTargetState_nonempty
 #print axioms A12Kernel.sourceDateRangeTargetState_nonempty
 #print axioms A12Kernel.temporalComputationRun_fromErrorOutcomes_withChanges_subset
+#print axioms A12Kernel.temporalUnconverted_filled_and_changed
+#print axioms A12Kernel.unconvertedString_filled_and_changed
 #print axioms A12Kernel.dateRangeComputationRun_shouldClear_iff
 #print axioms A12Kernel.temporalComputationDestination_update_same
 #print axioms A12Kernel.temporalComputationDestination_applyRetainedClear_same

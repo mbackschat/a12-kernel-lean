@@ -77,7 +77,7 @@ theorem timeComputationRun_noErrorOccurred_iff
 theorem timeComputationRun_sourceValueChangedAt_identical
     (sourceState : Target → TimeTargetState)
     (computed : TimeComputedInstance Target)
-    (identical : (sourceState computed.targetField).storedValue =
+    (identical : (sourceState computed.targetField).computedValue =
       some computed.value) :
     TimeComputationRunView.sourceValueChangedAt sourceState computed =
       false := by
@@ -87,7 +87,7 @@ theorem timeComputationRun_sourceValueChangedAt_identical
 theorem timeComputationRun_sourceValueChangedAt_different
     (sourceState : Target → TimeTargetState)
     (computed : TimeComputedInstance Target)
-    (different : (sourceState computed.targetField).storedValue ≠
+    (different : (sourceState computed.targetField).computedValue ≠
       some computed.value) :
     TimeComputationRunView.sourceValueChangedAt sourceState computed =
       true := by

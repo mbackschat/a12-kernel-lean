@@ -93,7 +93,7 @@ theorem fullDateComputationRun_unchanged_notApplied
     (target : FieldId) (value : StoredDate)
     (destination : FullDateComputationDestination)
     (unchanged :
-      (input.sourceFullDateTargetState target).storedValue = some value) :
+      (input.sourceFullDateTargetState target).computedValue = some value) :
     (FullDateComputationRunView.fromOutcomes input messages
       [(target, .accepted value)]).applyTo destination = .ok destination := by
   simp [FullDateComputationRunView.applyTo,
@@ -115,7 +115,7 @@ theorem fullDateComputationRun_changed_applies
     (target : FieldId) (value : StoredDate)
     (destination : FullDateComputationDestination)
     (changed :
-      (input.sourceFullDateTargetState target).storedValue != some value) :
+      (input.sourceFullDateTargetState target).computedValue != some value) :
     (FullDateComputationRunView.fromOutcomes input messages
       [(target, .accepted value)]).applyTo destination =
         .ok (destination.applyOutcome target (.accepted value)) := by

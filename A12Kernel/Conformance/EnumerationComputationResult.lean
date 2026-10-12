@@ -62,6 +62,18 @@ private def result? (input : CheckedDocument model) :
     Option (EnumerationComputationRunView model FormalCause) :=
   some (operation.executeResult input [])
 
+example : (do
+    let input ← document (some (value "B")) (some (value "B"))
+    let data := { input.source with cells := input.source.cells.map fun cell =>
+      { cell with sourceRepresentation := .unconvertedText } }
+    let checked ← (checkDocument prepared "en_US" data).toOption
+    let result ← result? checked
+    pure (checked.sourceStringTargetState target.id,
+      result.string.withoutErrors.map (·.value.text),
+      result.string.withChanges)) =
+        some (.presentValue ⟨"B", by decide⟩, ["B"], []) := by
+  native_decide
+
 /- Literal execution enters the same exact-token result boundary as a checked field source. -/
 example : (do
     let input ← document (some (value "A")) none

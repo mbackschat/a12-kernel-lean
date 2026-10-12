@@ -89,7 +89,7 @@ theorem dateTimeComputationRun_unchanged_notApplied
     (target : FieldId) (value : StoredDateTime)
     (destination : DateTimeComputationDestination)
     (unchanged :
-      (input.sourceDateTimeTargetState target).storedValue = some value) :
+      (input.sourceDateTimeTargetState target).computedValue = some value) :
     (DateTimeComputationRunView.fromOutcomes input messages
       [(target, .accepted value)]).applyTo destination = .ok destination := by
   simp [DateTimeComputationRunView.applyTo,
@@ -111,7 +111,7 @@ theorem dateTimeComputationRun_changed_applies
     (target : FieldId) (value : StoredDateTime)
     (destination : DateTimeComputationDestination)
     (changed :
-      (input.sourceDateTimeTargetState target).storedValue != some value) :
+      (input.sourceDateTimeTargetState target).computedValue != some value) :
     (DateTimeComputationRunView.fromOutcomes input messages
       [(target, .accepted value)]).applyTo destination =
         .ok (destination.applyOutcome target (.accepted value)) := by

@@ -40,11 +40,12 @@ private structure Summary where
   applied : List String
   laterFilled : Nat
   downstream : List String
+  referenceAgrees : Bool := true
   deriving Repr, BEq
 
 private def run (kind : Kind) (repeated : Bool) (sourceSeed : Option Bool)
     (destinationSeed : Option Bool) (gate : String := "on") (number : Nat := 7)
-    (secondGate : Option String := none) : Option Summary := do
+    (secondGate : Option String := none) (unconverted : Bool := false) : Option Summary := do
   let group := if repeated then ["Form", "Rows"] else ["Form"]
   let scope := if repeated then [10] else []
   let model : FlatModel := {
@@ -67,11 +68,15 @@ private def run (kind : Kind) (repeated : Bool) (sourceSeed : Option Bool)
       [("Source", toJson number), ("Gate", .str (if index == 1 then secondGate.getD gate else gate)), ("After", toJson (99 : Nat))] ++
         target.toList.map ("Out", ·))
     Lean.Json.mkObj [("Form", if repeated then .mkObj [("Rows", .arr rows.toArray)] else rows.head!)]
-  let checked (targets : List (Option Lean.Json)) := do
+  let checked (targets : List (Option Lean.Json)) (unconverted : Bool := false) := do
     let input ← (readDocument dm (data targets)).toOption
-    (checkDocument prepared "en_US" input.data).toOption
+    let data := if unconverted then { input.data with
+      cells := input.data.cells.map fun cell =>
+        if cell.address.field == 2 then { cell with sourceRepresentation := .unconvertedText } else cell }
+      else input.data
+    (checkDocument prepared "en_US" data).toOption
   let count := if repeated then 2 else 1
-  let source ← checked (List.replicate count (sourceSeed.map kind.value))
+  let source ← checked (List.replicate count (sourceSeed.map kind.value)) unconverted
   let destination ← checked (List.replicate count (destinationSeed.map kind.value))
   let definitions : List DmComputation := [
     { name := "AfterComp", group, targetRelPath := "../After",
@@ -117,6 +122,7 @@ private def run (kind : Kind) (repeated : Bool) (sourceSeed : Option Bool)
           | .absent => (none, "absent") | .presentEmpty => (some .null, "empty")
           | .presentValue value => (some (toJson value), if value then "true" else "false")
           | .presentInvalid text => (some (.str text), "invalid")
+          | .presentUnconverted text => (some (.str text), "unconverted")
         pure (result.withoutErrors.length, result.withChanges.length, result.withErrors.length,
           result.cleared.length, [], states.map (·.1), states.map (·.2))
     | .enumeration => do
@@ -129,6 +135,7 @@ private def run (kind : Kind) (repeated : Bool) (sourceSeed : Option Bool)
         let states : List (Option Json × String) := addresses.map fun address => match applied address with
           | .absent => (none, "absent") | .presentEmpty => (some .null, "empty")
           | .presentValue value => (some (.str value.text), value.text)
+          | .presentUnconverted value => (some (.str value.text), "unconverted")
         pure (result.withoutErrors.length, result.withChanges.length, result.withErrors.length,
           result.cleared.length, result.withErrors.map (·.attempted.text), states.map (·.1), states.map (·.2))
   let applied ← checked targets
@@ -137,7 +144,10 @@ private def run (kind : Kind) (repeated : Bool) (sourceSeed : Option Bool)
     errorCode := "observed", condition := "FieldFilled(Out)", severity := "ERROR" }
   let rule ← (checkRule dm .english definition).toOption
   let messages ← (runRule world applied rule).toOption
-  pure { successful, changed, errored, cleared, attempted, applied := states, laterFilled := messages.length, downstream }
+  let reported ← (runComputations world prepared source (lowered.map (·.2))).toOption
+  let pointers := addresses.map (fun address => renderPointer model (MessagePointer.ofCellAddr address))
+  let referenceAgrees := (reported.filter fun result => pointers.contains result.pointer).length == changed + errored + cleared
+  pure { successful, changed, errored, cleared, attempted, applied := states, laterFilled := messages.length, downstream, referenceAgrees }
 
 private def kinds := [Kind.number, .boolean, .confirm, .enumeration]
 private def resultText : Kind → String
@@ -185,5 +195,11 @@ example : kinds.all (fun kind =>
     run kind true (some true) none "on" 7 (some "") == some {
       successful := 1, changed := 0, errored := 0, cleared := 1,
       applied := ["absent", "empty"], laterFilled := 0, downstream := ["1", "1"] }) = true := by native_decide
+
+example : [Kind.boolean, .confirm].all (fun kind => [false, true].all fun repeated =>
+    let n := if repeated then 2 else 1
+    (run kind repeated (some true) none "on" 7 none true).map
+      (fun result => (result.successful, result.changed, result.applied, result.downstream, result.referenceAgrees)) ==
+      some (n, n, List.replicate n "true", List.replicate n "1", true)) = true := by native_decide
 
 end A12Kernel.Dm.ApplicationKindLocks

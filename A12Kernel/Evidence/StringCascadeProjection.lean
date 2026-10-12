@@ -201,7 +201,7 @@ private def computationContext (input : Input) : StringComputationContext where
     else if field == 2 then
       match input.priorMid with
       | .empty => checkedString none
-      | .filled value => checkedString (some value.text)
+      | .filled value | .unconverted value => checkedString (some value.text)
     else checkedString none
 
 private def cascade (input : Input) : StringDirectCascade := {

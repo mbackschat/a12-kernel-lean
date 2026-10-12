@@ -286,6 +286,7 @@ def StringFieldPolicy.checkTarget (policy : StringFieldPolicy) :
 inductive PriorStringTarget where
   | empty
   | filled (value : StoredString)
+  | unconverted (value : StoredString)
   deriving Repr, DecidableEq
 
 /-- Observable computation delta. `errored` always retains the attempted nonempty stored form and the target-check cause. -/
@@ -300,12 +301,13 @@ namespace StringDelta
 /-- Project an already selected nonempty value against the previous target without assigning a target-check phase to that value. -/
 def projectValue (value : StoredString) : PriorStringTarget → Option StringDelta
   | .empty => some (.value value)
+  | .unconverted _ => some (.value value)
   | .filled previous => if value == previous then none else some (.value value)
 
 /-- Project the absence of a stored value against the previous target. -/
 def projectNoValue : PriorStringTarget → Option StringDelta
   | .empty => none
-  | .filled _ => some .cleared
+  | .filled _ | .unconverted _ => some .cleared
 
 end StringDelta
 

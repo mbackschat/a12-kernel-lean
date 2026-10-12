@@ -14,12 +14,15 @@ def FullDateTargetApplies :
   | .noValue, .absent, .absent => True
   | .noValue, .presentEmpty, .presentEmpty => True
   | .noValue, .presentValue _, .presentEmpty => True
+  | .noValue, .presentUnconverted _, .presentEmpty => True
   | .errored _ _, .absent, .absent => True
   | .errored _ _, .presentEmpty, .presentEmpty => True
   | .errored _ _, .presentValue _, .presentEmpty => True
+  | .errored _ _, .presentUnconverted _, .presentEmpty => True
   | .poison _, .absent, .absent => True
   | .poison _, .presentEmpty, .presentEmpty => True
   | .poison _, .presentValue _, .presentEmpty => True
+  | .poison _, .presentUnconverted _, .presentEmpty => True
   | _, _, _ => False
 
 /-- Executable one-target application is sound and complete for the independent transition relation. -/

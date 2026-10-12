@@ -209,7 +209,7 @@ example :
       StringComputationRunView.computedError?.eq_def,
       StringComputationRunView.shouldClear,
       StringTargetOutcome.hasComputedInstance,
-      StringTargetState.storedValue,
+      StringTargetState.storedValue, StringTargetState.computedValue,
       NumericComputationRunView.ExtensionalEq,
       NumericComputationRunView.fromPartitionedSourceOutcomes,
       NumericComputationRunView.successfulInstance?.eq_def,

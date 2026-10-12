@@ -11,6 +11,7 @@ namespace A12Kernel
 inductive PriorTemporalTarget (Stored : Type) where
   | empty
   | filled (value : Stored)
+  | unconverted (value : Stored)
   deriving Repr, DecidableEq
 
 /-- Shared source-relative value/clear action for temporal families without a target-error branch. -/
@@ -25,6 +26,7 @@ namespace TemporalValueDelta
 def projectValue [DecidableEq Stored] (value : Stored) :
     PriorTemporalTarget Stored → Option (TemporalValueDelta Stored)
   | .empty => some (.value value)
+  | .unconverted _ => some (.value value)
   | .filled previous =>
       if value = previous then none else some (.value value)
 
@@ -32,7 +34,7 @@ def projectValue [DecidableEq Stored] (value : Stored) :
 def projectNoValue :
     PriorTemporalTarget Stored → Option (TemporalValueDelta Stored)
   | .empty => none
-  | .filled _ => some .cleared
+  | .filled _ | .unconverted _ => some .cleared
 
 end TemporalValueDelta
 
@@ -41,6 +43,7 @@ inductive TemporalTargetState (Stored : Type) where
   | absent
   | presentEmpty
   | presentValue (value : Stored)
+  | presentUnconverted (value : Stored)
   deriving Repr, DecidableEq
 
 namespace TemporalTargetState
@@ -49,27 +52,33 @@ namespace TemporalTargetState
 def clearValue :
     TemporalTargetState Stored → TemporalTargetState Stored
   | .absent => .absent
-  | .presentEmpty | .presentValue _ => .presentEmpty
+  | .presentEmpty | .presentValue _ | .presentUnconverted _ => .presentEmpty
 
 /-- Apply one retained CLEARED result action. Classification already happened against the source, so the destination target exists empty even when it was absent. -/
 def applyRetainedClear :
     TemporalTargetState Stored → TemporalTargetState Stored
-  | .absent | .presentEmpty | .presentValue _ => .presentEmpty
+  | .absent | .presentEmpty | .presentValue _ | .presentUnconverted _ => .presentEmpty
 
 /-- Return the exact stored temporal value when this state contains one. -/
 def storedValue : TemporalTargetState Stored → Option Stored
-  | .presentValue value => some value
+  | .presentValue value | .presentUnconverted value => some value
   | .absent | .presentEmpty => none
+
+/-- Return a stored value compatible with computed typed identity. Unconverted ingress remains source-filled but differs from a computed temporal object (spec/09 §3.3). -/
+def computedValue : TemporalTargetState Stored → Option Stored
+  | .presentValue value => some value
+  | .absent | .presentEmpty | .presentUnconverted _ => none
 
 /-- Report whether the target cell exists independently of its stored value. -/
 def isPresent : TemporalTargetState Stored → Bool
   | .absent => false
-  | .presentEmpty | .presentValue _ => true
+  | .presentEmpty | .presentValue _ | .presentUnconverted _ => true
 
 /-- Forget placement while retaining the source value needed for delta classification. -/
 def toDeltaPrior :
     TemporalTargetState Stored → PriorTemporalTarget Stored
   | .presentValue value => .filled value
+  | .presentUnconverted value => .unconverted value
   | .absent | .presentEmpty => .empty
 
 end TemporalTargetState

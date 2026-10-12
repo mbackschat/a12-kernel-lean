@@ -133,6 +133,55 @@ private def resultFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
 
 private def result? := resultFor? target source
 
+private def ingressView? (representation : SourceRepresentation)
+    (sourceInput : Option (String × RawCell) :=
+      some ("01", .parsed (dateValue 2000 1 1))) :
+    Option (StringComputationRunView FormalCause CellAddr) := do
+  let operation ← checked? target.id (star source.name)
+  let input ← inputFor? target source sourceInput
+  let data := { input.source with cells := input.source.cells.map fun cell =>
+    { cell with sourceRepresentation := representation } }
+  let checked ← (checkDocument prepared "en_US" data).toOption
+  let result ← operation.executeResult checked ([] : List FormalCause) |>.toOption
+  pure result.string
+
+example :
+    (ingressView? .classified).map
+      (fun view => (view.withoutErrors.map (·.value.text),
+        view.withChanges.map (·.value.text))) = some (["01"], []) ∧
+    (ingressView? .unconvertedText).map
+      (fun view => (view.withoutErrors.map (·.value.text),
+        view.withChanges.map (·.value.text))) = some (["01"], ["01"]) := by
+  native_decide
+
+example :
+    (ingressView? .unconvertedText none).map (·.cleared) =
+      some [{ field := target.id, path := [] }] ∧
+    (ingressView? .unconvertedText
+      (some ("XX", .rejected .malformed))).map
+      (fun view => (view.cleared, view.withErrors)) =
+        some ([{ field := target.id, path := [] }], []) := by
+  native_decide
+
+example : (do
+    let view ← ingressView? .unconvertedText
+    let applied ← view.applyTo (fun _ => .absent) |>.toOption
+    let address : CellAddr := { field := target.id, path := [] }
+    let value : StoredString := ⟨"01", by decide⟩
+    let reapplied := StringComputationRunView.fromSourcedOutcomes
+      ([] : List FormalCause)
+      [{ targetField := address, outcome := .accepted value,
+         source := applied address }]
+    pure (applied address, reapplied.withChanges)) =
+      some (.presentValue ⟨"01", by decide⟩, []) ∧
+    (do
+      let view ← ingressView? .classified
+      let applied ← view.applyTo
+        (fun _ => .presentUnconverted ⟨"01", by decide⟩) |>.toOption
+      pure (applied { field := target.id, path := [] })) =
+        some (.presentUnconverted ⟨"01", by decide⟩) := by
+  native_decide
+
 private def rootFragmentCell (declaration : FlatFieldDecl)
     (stored : String) (month : Nat) : ClassifiedCellInput := {
   address := { field := declaration.id, path := [] }

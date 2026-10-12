@@ -526,8 +526,13 @@ private def textOutcome (model : FlatModel) (checked : CheckedDocument model) (a
     (value? errored? : Option String) : Option ComputedOutcome :=
   let pointer := renderPointer model (MessagePointer.ofCellAddr address)
   let stored := (checked.storedTextAt address).getD ""
+  let unconverted := checked.source.cells.any fun cell =>
+    cell.address == address && cell.sourceRepresentation == .unconvertedText
+  let retainsTextIdentity := match (model.fields.find? (·.id == address.field)).map (·.policy.kind) with
+    | some .string | some .enumeration => true
+    | _ => !unconverted
   match value?, errored? with
-  | some value, _ => if value == stored then none else some { pointer, outcome := s!"value {value}" }
+  | some value, _ => if retainsTextIdentity && value == stored then none else some { pointer, outcome := s!"value {value}" }
   | none, some attempted => some { pointer, outcome := s!"errored {attempted}" }
   | none, none => if !stored.isEmpty then some { pointer, outcome := "cleared" } else none
 

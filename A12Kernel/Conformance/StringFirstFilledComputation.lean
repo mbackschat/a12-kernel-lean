@@ -132,6 +132,20 @@ private def outcome? (sourceCell : Option ClassifiedCellInput) :
     Option StringTargetOutcome :=
   outcomeFor? target.id sourceCell
 
+example : (do
+    let operation ← checked? target.id (star source.name)
+    let input ← document? (some "AAA") (some (sourceText "AAA"))
+    let data := { input.source with cells := input.source.cells.map fun cell =>
+      { cell with sourceRepresentation := .unconvertedText } }
+    let checked ← (checkDocument prepared "en_US" data).toOption
+    let result ← operation.executeResult prepared.patterns checked
+      ([] : List FormalCause) |>.toOption
+    pure (checked.sourceStringTargetState target.id,
+      result.string.withoutErrors.map (·.value.text),
+      result.string.withChanges)) =
+        some (.presentValue ⟨"AAA", by decide⟩, ["AAA"], []) := by
+  native_decide
+
 /- The checked boundary retains an ordinary evaluated-String target and an ordinary String source. A fixed target's placement is unrestricted: declaring at `["Review", "Rows"]` puts it *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted, a star aggregate deriving no iteration. An unrepresentable declaring group is still refused. The repeatable target inside the declaring group is admitted, its star over its own group reading the whole list at every row as the Kernel does ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-repeatable-computation-row-extent) `rerun`). Nested stars reuse that same checked source boundary. -/
 example :
     (checked? target.id (star source.name)).isSome = true ∧

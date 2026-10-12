@@ -96,7 +96,7 @@ end DateRangeTargetOutcome
 
 namespace CheckedDocument
 
-/-- Recover exact addressed source placement and construct a family-owned stored identity only for nonempty text. -/
+/-- Recover exact addressed source placement and construct a family-owned stored payload only for nonempty text, retaining the original typed versus unconverted identity from spec/09 §3.3. -/
 def sourceNonemptyStoredTargetStateAt (input : CheckedDocument model)
     (address : CellAddr)
     (makeStored : (text : String) → text ≠ "" → Stored) :
@@ -108,7 +108,9 @@ def sourceNonemptyStoredTargetStateAt (input : CheckedDocument model)
       if empty : cell.stored = "" then
         .presentEmpty
       else
-        .presentValue (makeStored cell.stored empty)
+        match cell.sourceRepresentation with
+        | .classified => .presentValue (makeStored cell.stored empty)
+        | .unconvertedText => .presentUnconverted (makeStored cell.stored empty)
 
 /-- Nonrepeatable compatibility projection through the exact addressed owner. -/
 def sourceNonemptyStoredTargetState (input : CheckedDocument model)
@@ -278,7 +280,7 @@ def successfulInstance? {Target : Type} :
 /-- Classify an ordinary successful Time result against the immutable source target. -/
 def sourceValueChangedAt (sourceState : Target → TimeTargetState)
     (computed : TimeComputedInstance Target) : Bool :=
-  (sourceState computed.targetField).storedValue != some computed.value
+  (sourceState computed.targetField).computedValue != some computed.value
 
 /-- Nonrepeatable compatibility specialization of exact-key source-relative change classification. -/
 def sourceValueChanged (input : CheckedDocument model)
@@ -335,7 +337,7 @@ def computedError? {Target : Type} :
 
 def sourceValueChangedAt (sourceState : Target → FullDateTargetState)
     (computed : FullDateComputedInstance Target) : Bool :=
-  (sourceState computed.targetField).storedValue !=
+  (sourceState computed.targetField).computedValue !=
     some computed.value
 
 /-- Nonrepeatable compatibility specialization of exact-key source-relative change classification. -/
@@ -396,7 +398,7 @@ def computedError? {Target : Type} :
 
 def sourceValueChangedAt (sourceState : Target → DateTimeTargetState)
     (computed : DateTimeComputedInstance Target) : Bool :=
-  (sourceState computed.targetField).storedValue != some computed.value
+  (sourceState computed.targetField).computedValue != some computed.value
 
 def sourceValueChanged (input : CheckedDocument model)
     (computed : DateTimeComputedInstance) : Bool :=
@@ -456,7 +458,7 @@ def computedError? {Target : Type} :
 def sourceValueChangedAt
     (sourceState : Target → TemporalTargetState StoredDateRange)
     (computed : DateRangeComputedInstance Target) : Bool :=
-  (sourceState computed.targetField).storedValue !=
+  (sourceState computed.targetField).computedValue !=
     some computed.value
 
 def sourceValueChanged (input : CheckedDocument model)

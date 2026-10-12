@@ -65,7 +65,7 @@ def changedInstance? {Target : Type}
     (entry : SourcedStringTargetOutcome Target) :
     Option (StringComputedInstance Target) := do
   let computed ← successfulInstance? entry
-  if entry.source.storedValue = some computed.value then
+  if entry.source.computedValue = some computed.value then
     none
   else
     some computed

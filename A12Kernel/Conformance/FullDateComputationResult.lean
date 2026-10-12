@@ -286,4 +286,33 @@ example : (do
       | _ => false)) = some true := by
   native_decide
 
+
+private def unconvertedSource : DocumentData := {
+  oldSource with cells := oldSource.cells.map fun cell =>
+    { cell with sourceRepresentation := .unconvertedText }
+}
+
+example :
+    (view? unconvertedSource (.accepted oldDate)).map
+      (fun view => (view.withoutErrors.map (·.value),
+        view.withChanges.map (·.value))) = some ([oldDate], [oldDate]) ∧
+    (view? unconvertedSource .noValue).map (·.cleared) = some [target.id] ∧
+    (view? unconvertedSource (.poison .malformed)).map
+      (fun view => (view.cleared, view.withErrors)) = some ([target.id], []) := by
+  native_decide
+
+example : (do
+    let view ← view? unconvertedSource (.accepted oldDate)
+    let applied ← view.applyTo (destinationWith .absent) |>.toOption
+    let reapplied := FullDateComputationRunView.fromOutcomesAt applied
+      ([] : List FormalCause) [(target.id, .accepted oldDate)]
+    pure (applied target.id, reapplied.withChanges)) =
+      some (.presentValue oldDate, []) ∧
+    (do
+      let view ← view? oldSource (.accepted oldDate)
+      let applied ← view.applyTo
+        (destinationWith (.presentUnconverted oldDate)) |>.toOption
+      pure (applied target.id)) = some (.presentUnconverted oldDate) := by
+  native_decide
+
 end A12Kernel.Conformance.FullDateComputationResult

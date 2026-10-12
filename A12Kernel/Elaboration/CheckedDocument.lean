@@ -18,6 +18,12 @@ This module starts at the theory's established scalar-parser boundary. A finite 
 
 namespace A12Kernel
 
+/-- The original object can remain text even after formal parsing succeeds (spec/09 §3.3, V1 ingress). Classified input otherwise retains each kind's existing identity, including Number's explicit decimal representation. -/
+inductive SourceRepresentation where
+  | classified
+  | unconvertedText
+  deriving Repr, DecidableEq
+
 /-- One physically placed field plus its parser-boundary classification. `stored` retains application text. `raw` remains caller-classified for non-Number kinds and must match the canonical Boolean/Confirm classifier plus the bounded DateRange classifier whenever its declaration and zone are supported. A filled Number may carry an explicit decimal representation in `numericDecimal`; `none` selects the exact String-valued regime already carried by `stored`. Document checking derives and verifies the selected formal-read classification. An absent cell has no entry. -/
 structure ClassifiedCellInput where
   address : CellAddr
@@ -25,6 +31,7 @@ structure ClassifiedCellInput where
   raw : RawCell
   /-- Explicit decimal-valued Number input. On a filled Number, `none` means the exact String-valued `stored` input; non-Number and present-empty inputs also require `none`. -/
   numericDecimal : Option NumericInputDecimal := none
+  sourceRepresentation : SourceRepresentation := .classified
   deriving Repr, DecidableEq
 
 /-- Finite immutable document data. Rows remain independent of placed cells. -/
@@ -212,7 +219,8 @@ private def ClassifiedCellInput.numberCoherent
   else
     let numeric := input.numericDecimal.map NumericStoredInput.decimal
       |>.getD (.text input.stored)
-    numeric.storedText == input.stored &&
+    (input.sourceRepresentation != .unconvertedText || input.numericDecimal.isNone) &&
+      numeric.storedText == input.stored &&
       constraints.classifyFormalRead info numeric == input.raw
 
 /-- Whether a caller's temporal cell agrees with what the model's own classifier derives from its

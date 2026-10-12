@@ -37,12 +37,9 @@
 <a id="gap-sg16"></a>
 ### SG16 — computation result projection and application
 
-- `state`: residual; D15 explanation/transport certificates and D20 additional carrier calibration.
+- `state`: residual; K19 observation/host-boundary verification and consumer application-compatibility certificates. The finite K10 result/application matrix is owned by [typed application coverage](../implementation/repeatable-computations.md#cap-typed-result-application).
 - `baseline`: [Result/application semantics](../implementation/computations.md#cap-result-and-application), [typed application](../implementation/repeatable-computations.md#cap-typed-result-application) and their family owners distinguish returned partitions, source-relative changes, applied state and later validation.
-- `remaining`: wider carrier/profile, cross-group and materialized-topology correspondence beyond those exact application matrices. A generic application function does not externally calibrate every target policy.
-- `remaining`: additional multi-operation formal-input unions and later-rule execution beyond the [direct-field](../implementation/computations.md#cap-checked-direct-field-formal-input) and [selected-preliminary](../implementation/computations.md#cap-selected-computation-preliminary) boundaries.
 - `host-boundary`: public Kernel result partitions erase clean-clear versus poison state and do not expose per-clear causal attribution. [The audited observation boundary](../sources/inbound-handbacks.md#src-computation-clear-observability) supports same-call dependent-read discriminators; formal operand inventory or missing error messages alone cannot recover that state.
-- `host-boundary`: noncanonical String-ingress identity for non-String targets outside the supported Number route must retain original source representation; parsed value or stored spelling alone cannot reconstruct it.
 - `consumer-gated`: addressed-index clear attribution, pointer-dialect rendering and source/destination model-compatibility certificates require a named consumer unable to supply the existing same-model precondition.
 - `evidence-needed`: separate-destination application beyond current source-grounded controls requires an observation with an independent destination. [computeResults](../sources/cross-layer-routes.md#src-runtime-observation-route) exposes full result partitions and same-source application; it does not supply that parameter.
 - `evidence-needed`: object-level over-capacity application, if a consumer requires it. The [serializer boundary](../sources/evaluation-and-application-routes.md#src-applied-document-over-limit-unobservable) cannot settle the applied object state by another JSON request.

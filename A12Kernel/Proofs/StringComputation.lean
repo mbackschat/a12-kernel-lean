@@ -215,10 +215,10 @@ theorem concat_noValue_is_not_term_identity :
 /-- A quiet no-value clears exactly a previously filled target. -/
 theorem noValue_delta_iff_prior_filled (prior : PriorStringTarget) :
     StringStore.noValue.projectDelta prior = some .cleared ↔
-      ∃ previous, prior = .filled previous := by
+      ∃ previous, prior = .filled previous ∨ prior = .unconverted previous := by
   cases prior with
   | empty => simp [StringStore.projectDelta, StringDelta.projectNoValue]
-  | filled previous => simp [StringStore.projectDelta, StringDelta.projectNoValue]
+  | filled previous | unconverted previous => simp [StringStore.projectDelta, StringDelta.projectNoValue]
 
 /-- A formally poisoned computation and a quiet no-value have the same immediate target delta, while remaining distinct semantic states. -/
 theorem poison_and_noValue_same_immediate_delta (cause : FormalCause)
