@@ -1,0 +1,3240 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Carrier_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "filled-prefix",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ExtraCategory",
+              "field": "Form/Category",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Category",
+                "Form/Choice",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows[2]/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "enum_control",
+              "field": "Form/EnumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "enum_only",
+              "field": "Form/EnumOnly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOnly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixed",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Out",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ]
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows[2]/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ]
+            },
+            {
+              "code": "reverse",
+              "field": "Form/Reverse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Reverse",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "value": "T"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "value": "A"
+              },
+              {
+                "field": "Form/EnumOut",
+                "value": "A"
+              },
+              {
+                "field": "Form/Out",
+                "value": "T"
+              },
+              {
+                "field": "Form/Reverse",
+                "value": "A"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {
+                "Rows": [
+                  {
+                    "Text": "Away"
+                  },
+                  {
+                    "Text": "Later"
+                  }
+                ]
+              },
+              "Form": {
+                "BoolOut": false,
+                "Category": "T",
+                "Choice": "A",
+                "Choice2": "B",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": "A",
+                "EnumOut": "A",
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": "T",
+                "Reverse": "A",
+                "Text": "T",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": ""
+                  },
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": "Own"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ExtraCategory",
+              "field": "Form/Category",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Category",
+                "Form/Choice",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows[2]/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "enum_control",
+              "field": "Form/EnumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "enum_only",
+              "field": "Form/EnumOnly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOnly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixed",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Out",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ]
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows[2]/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ]
+            },
+            {
+              "code": "reverse",
+              "field": "Form/Reverse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Reverse",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "value": "T"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "value": "A"
+              },
+              {
+                "field": "Form/EnumOut",
+                "value": "A"
+              },
+              {
+                "field": "Form/Out",
+                "value": "T"
+              },
+              {
+                "field": "Form/Reverse",
+                "value": "A"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {
+                "Rows": [
+                  {
+                    "Text": "Away"
+                  },
+                  {
+                    "Text": "Later"
+                  }
+                ]
+              },
+              "Form": {
+                "BoolOut": false,
+                "Category": "T",
+                "Choice": "A",
+                "Choice2": "B",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": "A",
+                "EnumOut": "A",
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": "T",
+                "Reverse": "A",
+                "Text": "T",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": ""
+                  },
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": "Own"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-text",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ExtraCategory",
+              "field": "Form/Category",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Category",
+                "Form/Choice",
+                "Form/Text"
+              ],
+              "fillToFix": [
+                "Form/Category",
+                "Form/Choice",
+                "Form/Text"
+              ]
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows[2]/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "enum_control",
+              "field": "Form/EnumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "enum_only",
+              "field": "Form/EnumOnly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOnly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixed",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Out",
+                "Form/Text"
+              ],
+              "fillToFix": [
+                "Form/Choice",
+                "Form/Out",
+                "Form/Text"
+              ]
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ]
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows[2]/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ]
+            },
+            {
+              "code": "reverse",
+              "field": "Form/Reverse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Reverse",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": false,
+                "errored": false,
+                "value": "K"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "value": "K"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "value": "A"
+              },
+              {
+                "field": "Form/EnumOut",
+                "value": "A"
+              },
+              {
+                "field": "Form/Out",
+                "value": "A"
+              },
+              {
+                "field": "Form/Reverse",
+                "value": "A"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {
+                "Rows": [
+                  {
+                    "Text": "Away"
+                  },
+                  {
+                    "Text": "Later"
+                  }
+                ]
+              },
+              "Form": {
+                "BoolOut": false,
+                "Category": "K",
+                "Choice": "A",
+                "Choice2": "B",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": "A",
+                "EnumOut": "A",
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": "A",
+                "Reverse": "A",
+                "Text": "",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": ""
+                  },
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": "Own"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ExtraCategory",
+              "field": "Form/Category",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Category",
+                "Form/Choice",
+                "Form/Text"
+              ],
+              "fillToFix": [
+                "Form/Category",
+                "Form/Choice",
+                "Form/Text"
+              ]
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows[2]/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "enum_control",
+              "field": "Form/EnumOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "enum_only",
+              "field": "Form/EnumOnly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOnly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixed",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Out",
+                "Form/Text"
+              ],
+              "fillToFix": [
+                "Form/Choice",
+                "Form/Out",
+                "Form/Text"
+              ]
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ]
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows[2]/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ]
+            },
+            {
+              "code": "reverse",
+              "field": "Form/Reverse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Reverse",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": false,
+                "errored": false,
+                "value": "K"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": false,
+                "errored": false,
+                "value": "A"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "value": "K"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "value": "A"
+              },
+              {
+                "field": "Form/EnumOut",
+                "value": "A"
+              },
+              {
+                "field": "Form/Out",
+                "value": "A"
+              },
+              {
+                "field": "Form/Reverse",
+                "value": "A"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {
+                "Rows": [
+                  {
+                    "Text": "Away"
+                  },
+                  {
+                    "Text": "Later"
+                  }
+                ]
+              },
+              "Form": {
+                "BoolOut": false,
+                "Category": "K",
+                "Choice": "A",
+                "Choice2": "B",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": "A",
+                "EnumOut": "A",
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": "A",
+                "Reverse": "A",
+                "Text": "",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": ""
+                  },
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": "Own"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-enum",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ExtraCategory",
+              "field": "Form/Category",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Category",
+                "Form/Choice",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows/Away",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ],
+              "fillToFix": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ]
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows[2]/Away",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ],
+              "fillToFix": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ]
+            },
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "enum_only",
+              "field": "Form/EnumOnly",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOnly"
+              ],
+              "fillToFix": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOnly"
+              ]
+            },
+            {
+              "code": "mixed",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Out",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows[2]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "reverse",
+              "field": "Form/Reverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Reverse",
+                "Form/Text"
+              ],
+              "fillToFix": [
+                "Form/Choice",
+                "Form/Reverse",
+                "Form/Text"
+              ]
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": false,
+                "errored": false,
+                "value": "B"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "value": "T"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "value": "B"
+              },
+              {
+                "field": "Form/EnumOut",
+                "value": "B"
+              },
+              {
+                "field": "Form/Out",
+                "value": "T"
+              },
+              {
+                "field": "Form/Reverse",
+                "value": "T"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {
+                "Rows": [
+                  {
+                    "Text": ""
+                  },
+                  {
+                    "Text": "Away"
+                  }
+                ]
+              },
+              "Form": {
+                "BoolOut": false,
+                "Category": "T",
+                "Choice": "",
+                "Choice2": "B",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": "B",
+                "EnumOut": "B",
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": "T",
+                "Reverse": "T",
+                "Text": "T",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": "Own"
+                  },
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": ""
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ExtraCategory",
+              "field": "Form/Category",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Category",
+                "Form/Choice",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows/Away",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ],
+              "fillToFix": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ]
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows[2]/Away",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ],
+              "fillToFix": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ]
+            },
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "enum_only",
+              "field": "Form/EnumOnly",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOnly"
+              ],
+              "fillToFix": [
+                "Form/Choice",
+                "Form/Choice2",
+                "Form/EnumOnly"
+              ]
+            },
+            {
+              "code": "mixed",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Out",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows[2]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "reverse",
+              "field": "Form/Reverse",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Reverse",
+                "Form/Text"
+              ],
+              "fillToFix": [
+                "Form/Choice",
+                "Form/Reverse",
+                "Form/Text"
+              ]
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": false,
+                "errored": false,
+                "value": "B"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "value": "T"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "value": "B"
+              },
+              {
+                "field": "Form/EnumOut",
+                "value": "B"
+              },
+              {
+                "field": "Form/Out",
+                "value": "T"
+              },
+              {
+                "field": "Form/Reverse",
+                "value": "T"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {
+                "Rows": [
+                  {
+                    "Text": ""
+                  },
+                  {
+                    "Text": "Away"
+                  }
+                ]
+              },
+              "Form": {
+                "BoolOut": false,
+                "Category": "T",
+                "Choice": "",
+                "Choice2": "B",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": "B",
+                "EnumOut": "B",
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": "T",
+                "Reverse": "T",
+                "Text": "T",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": "Own"
+                  },
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": ""
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hidden-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ExtraCategory",
+              "field": "Form/Category",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Category",
+                "Form/Choice",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows[2]/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixed",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Out",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows[2]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Choice",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Choice"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "value": "T"
+              },
+              {
+                "field": "Form/Out",
+                "value": "T"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {
+                "Rows": [
+                  {
+                    "Text": "Away"
+                  },
+                  {
+                    "Text": ""
+                  }
+                ]
+              },
+              "Form": {
+                "BoolOut": false,
+                "Category": "T",
+                "Choice": "invalid",
+                "Choice2": "B",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": null,
+                "EnumOut": null,
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": "T",
+                "Reverse": null,
+                "Text": "T",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": "Own"
+                  },
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": ""
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ExtraCategory",
+              "field": "Form/Category",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Category",
+                "Form/Choice",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows[2]/Away",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "mixed",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice",
+                "Form/Out",
+                "Form/Text"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows[2]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "T"
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Choice",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Choice"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "value": "T"
+              },
+              {
+                "field": "Form/Out",
+                "value": "T"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {
+                "Rows": [
+                  {
+                    "Text": "Away"
+                  },
+                  {
+                    "Text": ""
+                  }
+                ]
+              },
+              "Form": {
+                "BoolOut": false,
+                "Category": "T",
+                "Choice": "invalid",
+                "Choice2": "B",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": null,
+                "EnumOut": null,
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": "T",
+                "Reverse": null,
+                "Text": "T",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": "Own"
+                  },
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": ""
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "reached-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows/Away",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ],
+              "fillToFix": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ]
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows[2]/Away",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ],
+              "fillToFix": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ]
+            },
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ]
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows[2]/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ]
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Choice",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Choice"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {
+                "Rows": [
+                  {
+                    "Text": ""
+                  },
+                  {
+                    "Text": "Away"
+                  }
+                ]
+              },
+              "Form": {
+                "BoolOut": false,
+                "Category": null,
+                "Choice": "invalid",
+                "Choice2": "B",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": null,
+                "EnumOut": null,
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": null,
+                "Reverse": null,
+                "Text": "",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": ""
+                  },
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": "Own"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows/Away",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ],
+              "fillToFix": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows/Away"
+              ]
+            },
+            {
+              "code": "ExtraRowsAway",
+              "field": "Form/Rows[2]/Away",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ],
+              "fillToFix": [
+                "/Foreign[1]/Rows[0]/Text",
+                "Form/Rows[2]/Away"
+              ]
+            },
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows/Out"
+              ]
+            },
+            {
+              "code": "own",
+              "field": "Form/Rows[2]/Out",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Text",
+                "Form/Rows[2]/Out"
+              ]
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Choice",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Choice"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": false,
+                "errored": false,
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/Choice",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Choice"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/Rows/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "value": "Away"
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "value": "Own"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {
+                "Rows": [
+                  {
+                    "Text": ""
+                  },
+                  {
+                    "Text": "Away"
+                  }
+                ]
+              },
+              "Form": {
+                "BoolOut": false,
+                "Category": null,
+                "Choice": "invalid",
+                "Choice2": "B",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": null,
+                "EnumOut": null,
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": null,
+                "Reverse": null,
+                "Text": "",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": ""
+                  },
+                  {
+                    "Away": "Away",
+                    "Out": "Own",
+                    "Text": "Own"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-all",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {},
+              "Form": {
+                "BoolOut": false,
+                "Category": null,
+                "Choice": "",
+                "Choice2": "",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": null,
+                "EnumOut": null,
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": null,
+                "Reverse": null,
+                "Text": "",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": null,
+                    "Out": null,
+                    "Text": ""
+                  },
+                  {
+                    "Away": null,
+                    "Out": null,
+                    "Text": ""
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "bool_control",
+              "field": "Form/BoolOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/BoolOut",
+                "Form/Flag",
+                "Form/Flag2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "time_control",
+              "field": "Form/TimeOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Clock",
+                "Form/Clock2",
+                "Form/TimeOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/BoolOut",
+                "cleared": false,
+                "errored": false,
+                "value": "false"
+              },
+              {
+                "field": "Form/Category",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOnly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Reverse",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Away",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/Away",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/TimeOut",
+                "cleared": false,
+                "errored": false,
+                "value": "03:04:05"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/BoolOut",
+                "value": "false"
+              },
+              {
+                "field": "Form/TimeOut",
+                "value": "03:04:05"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Foreign": {},
+              "Form": {
+                "BoolOut": false,
+                "Category": null,
+                "Choice": "",
+                "Choice2": "",
+                "Clock": "03:04:05",
+                "Clock2": "06:07:08",
+                "EnumOnly": null,
+                "EnumOut": null,
+                "Error": "ready",
+                "Flag": false,
+                "Flag2": true,
+                "Out": null,
+                "Reverse": null,
+                "Text": "",
+                "TimeOut": "03:04:05",
+                "Rows": [
+                  {
+                    "Away": null,
+                    "Out": null,
+                    "Text": ""
+                  },
+                  {
+                    "Away": null,
+                    "Out": null,
+                    "Text": ""
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

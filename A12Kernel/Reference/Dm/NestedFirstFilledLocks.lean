@@ -134,4 +134,43 @@ example : run [("1", [("A", "bad")])] (head := "") = some [
     ("Form/Parents/Captured", "cleared"), ("Form/Parents/Global", "cleared"), ("Form/Parents/Local", "cleared"),
     ("Form/Prefix", "cleared")] := by native_decide
 
+private def sameLevelRun (own foreign : List String) : Option (List (String × String)) := do
+  let text (id : FieldId) (name : String) (root : String) (level : RepeatableLevel) : FlatFieldDecl := {
+    id, name, groupPath := [root, "Rows"], repeatableScope := [level], policy := { kind := .string } }
+  let model : FlatModel := {
+    fields := [text 1 "Text" "Form" 10, text 2 "Own" "Form" 10,
+      text 3 "Away" "Form" 10, text 4 "Text" "Foreign" 20]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2 },
+      { level := 20, path := ["Foreign", "Rows"], repeatability := some 2 }] }
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let row (value : String) := Json.mkObj [("Text", .str value), ("Own", .str "SEED"), ("Away", .str "SEED")]
+  let raw ← (readDocument dm (Json.mkObj [
+    ("Form", Json.mkObj [("Rows", .arr (own.map row).toArray)]),
+    ("Foreign", Json.mkObj [("Rows", .arr (foreign.map fun value => Json.mkObj [("Text", .str value)]).toArray)])])).toOption
+  if !raw.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" raw.data).toOption
+  let steps ← [("Own", "Form"), ("Away", "Foreign")].mapM fun (target, sourceRoot) => do
+    let (_, step) ← (lowerComputation model .english {
+      group := ["Form"], name := target, targetRelPath := "../Rows/" ++ target
+      commonPrecondition := none
+      alternatives := [{ precondition := none, operation := "FirstFilledValue(/" ++ sourceRoot ++ "/Rows*/Text)" }]
+      errorCodesToSuppress := [] }).toOption
+    pure step
+  pure (((← (runComputations world prepared checked steps).toOption).map fun outcome =>
+    (outcome.pointer, outcome.outcome)).mergeSort (fun left right => decide (left.1 ≤ right.1)))
+
+example : sameLevelRun ["", "Own"] ["Away", "Later"] = some [
+    ("Form/Rows/Away", "value Away"), ("Form/Rows/Own", "value Own"),
+    ("Form/Rows[2]/Away", "value Away"), ("Form/Rows[2]/Own", "value Own")] := by native_decide
+
+example : sameLevelRun ["Own", ""] ["", "Away"] = some [
+    ("Form/Rows/Away", "value Away"), ("Form/Rows/Own", "value Own"),
+    ("Form/Rows[2]/Away", "value Away"), ("Form/Rows[2]/Own", "value Own")] := by native_decide
+
+example : sameLevelRun ["", ""] [] = some [
+    ("Form/Rows/Away", "cleared"), ("Form/Rows/Own", "cleared"),
+    ("Form/Rows[2]/Away", "cleared"), ("Form/Rows[2]/Own", "cleared")] := by native_decide
+
 end A12Kernel.Dm.NestedFirstFilledLocks

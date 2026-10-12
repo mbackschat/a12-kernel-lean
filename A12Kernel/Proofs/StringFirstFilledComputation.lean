@@ -24,17 +24,17 @@ theorem stringFirstFilledCell_malformed (field : FlatStringField) (value : Strin
     } = .unknown .malformed := by
   rfl
 
-/-- The checked operation retains ordinary String carriers and excludes forbidden target references. A repeatable target lies at or below its declaring group and is no index field; positive conditional group membership remains in the complete inventory (spec/09 §5). -/
+/-- The checked operation retains an ordinary String target and supported text sources and excludes forbidden target references. A repeatable target lies at or below its declaring group and is no index field; positive conditional group membership remains in the complete inventory (spec/09 §5). -/
 theorem checkedStringFirstFilled_carriersAndPlacement
     (operation : CheckedStringFirstFilledComputation model) :
     operation.target.isOrdinaryStringComputationCarrier = true ∧
       operation.source.operands.all
-        (·.declarations.all (·.isOrdinaryStringComputationCarrier)) = true ∧
+        (·.declarations.all (·.isStringFirstFilledSource)) = true ∧
       operation.referencesWith operation.targetField (·.forbidsTarget operation.targetField) = false ∧
       (operation.target.repeatableScope.isEmpty ||
         (GroupPath.isPrefixOf operation.declaringGroup operation.target.groupPath &&
           !model.isIndexField operation.targetField)) = true :=
-  ⟨operation.targetOrdinary, operation.sourceOrdinary, operation.excludesTarget,
+  ⟨operation.targetOrdinary, operation.sourceSupported, operation.excludesTarget,
     operation.targetPlaced⟩
 
 /-- A fixed target runs exactly once, at its single instance, the empty environment. -/

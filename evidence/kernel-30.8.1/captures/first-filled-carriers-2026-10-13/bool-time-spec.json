@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/BoolOut",
+  "group": "/Form",
+  "alternatives": [
+    {
+      "operation": "FirstFilledValue(Flag,Clock)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}

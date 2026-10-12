@@ -100,12 +100,13 @@ private def lowerFirstFilledAlternative (model : FlatModel) (group : GroupPath) 
   if target.policy.kind == .enumeration then
     let source ← lowerEnumerationFirstFilledSource model group arguments bindingGroup?
     if hFixed : target.repeatableScope = [] then
-      let operation ← elaborated "FirstFilledValue" (elaborateEnumerationFirstFilledComputation model group target.id source)
+      let operation ← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
+        (elaborateEnumerationFirstFilledComputation model group target.id source)
       if hField : target.id = operation.target.field then
         return .fixedEnumeration operation target hField hFixed
       else refuse "FirstFilledValue" "target identity"
     else
-      return .addressedEnumeration (← elaborated "FirstFilledValue"
+      return .addressedEnumeration (← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
         (checkAddressedEnumerationFirstFilledComputation model group target.id source))
   let source ← lowerFirstFilledSource model group arguments bindingGroup?
   match target.temporalFirstFilledFamily?, target.policy.kind with
@@ -222,7 +223,7 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
         (← lowerFirstFilledEntitySource model group arguments bindingGroup?))))
   if target.policy.kind == .enumeration then
     return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedEnumerationFirstFilled?
-      (← elaborated "FirstFilledValue" (checkAddressedEnumerationFirstFilledComputation model group
+      (← elaboratedEnumerationFirstFilled (·.calculationRefusal?) (checkAddressedEnumerationFirstFilledComputation model group
         target.id (← lowerEnumerationFirstFilledSource model group arguments bindingGroup?))))
   let source ← lowerFirstFilledSource model group arguments bindingGroup?
   if target.customType.isSome then

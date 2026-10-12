@@ -1,0 +1,268 @@
+{
+  "model": "Carrier_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "filled-prefix",
+      "documentInline": {
+        "Form": {
+          "Error": "ready",
+          "Text": "T",
+          "Choice": "A",
+          "Choice2": "B",
+          "Flag": "false",
+          "Flag2": "true",
+          "Clock": "03:04:05",
+          "Clock2": "06:07:08",
+          "Out": "seed",
+          "Reverse": "seed",
+          "EnumOnly": "seed",
+          "Category": "seed",
+          "EnumOut": "B",
+          "BoolOut": "true",
+          "TimeOut": "01:01:01",
+          "Rows": [
+            {
+              "Text": "",
+              "Out": "seed",
+              "Away": "seed"
+            },
+            {
+              "Text": "Own",
+              "Out": "seed",
+              "Away": "seed"
+            }
+          ]
+        },
+        "Foreign": {
+          "Rows": [
+            {
+              "Text": "Away"
+            },
+            {
+              "Text": "Later"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-text",
+      "documentInline": {
+        "Form": {
+          "Error": "ready",
+          "Text": "",
+          "Choice": "A",
+          "Choice2": "B",
+          "Flag": "false",
+          "Flag2": "true",
+          "Clock": "03:04:05",
+          "Clock2": "06:07:08",
+          "Out": "seed",
+          "Reverse": "seed",
+          "EnumOnly": "seed",
+          "Category": "seed",
+          "EnumOut": "B",
+          "BoolOut": "true",
+          "TimeOut": "01:01:01",
+          "Rows": [
+            {
+              "Text": "",
+              "Out": "seed",
+              "Away": "seed"
+            },
+            {
+              "Text": "Own",
+              "Out": "seed",
+              "Away": "seed"
+            }
+          ]
+        },
+        "Foreign": {
+          "Rows": [
+            {
+              "Text": "Away"
+            },
+            {
+              "Text": "Later"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-enum",
+      "documentInline": {
+        "Form": {
+          "Error": "ready",
+          "Text": "T",
+          "Choice": "",
+          "Choice2": "B",
+          "Flag": "false",
+          "Flag2": "true",
+          "Clock": "03:04:05",
+          "Clock2": "06:07:08",
+          "Out": "seed",
+          "Reverse": "seed",
+          "EnumOnly": "seed",
+          "Category": "seed",
+          "EnumOut": "B",
+          "BoolOut": "true",
+          "TimeOut": "01:01:01",
+          "Rows": [
+            {
+              "Text": "Own",
+              "Out": "seed",
+              "Away": "seed"
+            },
+            {
+              "Text": "",
+              "Out": "seed",
+              "Away": "seed"
+            }
+          ]
+        },
+        "Foreign": {
+          "Rows": [
+            {
+              "Text": ""
+            },
+            {
+              "Text": "Away"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "hidden-invalid",
+      "documentInline": {
+        "Form": {
+          "Error": "ready",
+          "Text": "T",
+          "Choice": "invalid",
+          "Choice2": "B",
+          "Flag": "false",
+          "Flag2": "true",
+          "Clock": "03:04:05",
+          "Clock2": "06:07:08",
+          "Out": "seed",
+          "Reverse": "seed",
+          "EnumOnly": "seed",
+          "Category": "seed",
+          "EnumOut": "B",
+          "BoolOut": "true",
+          "TimeOut": "01:01:01",
+          "Rows": [
+            {
+              "Text": "Own",
+              "Out": "seed",
+              "Away": "seed"
+            },
+            {
+              "Text": "",
+              "Out": "seed",
+              "Away": "seed"
+            }
+          ]
+        },
+        "Foreign": {
+          "Rows": [
+            {
+              "Text": "Away"
+            },
+            {
+              "Text": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "reached-invalid",
+      "documentInline": {
+        "Form": {
+          "Error": "ready",
+          "Text": "",
+          "Choice": "invalid",
+          "Choice2": "B",
+          "Flag": "false",
+          "Flag2": "true",
+          "Clock": "03:04:05",
+          "Clock2": "06:07:08",
+          "Out": "seed",
+          "Reverse": "seed",
+          "EnumOnly": "seed",
+          "Category": "seed",
+          "EnumOut": "B",
+          "BoolOut": "true",
+          "TimeOut": "01:01:01",
+          "Rows": [
+            {
+              "Text": "",
+              "Out": "seed",
+              "Away": "seed"
+            },
+            {
+              "Text": "Own",
+              "Out": "seed",
+              "Away": "seed"
+            }
+          ]
+        },
+        "Foreign": {
+          "Rows": [
+            {
+              "Text": ""
+            },
+            {
+              "Text": "Away"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-all",
+      "documentInline": {
+        "Form": {
+          "Error": "ready",
+          "Text": "",
+          "Choice": "",
+          "Choice2": "",
+          "Flag": "false",
+          "Flag2": "true",
+          "Clock": "03:04:05",
+          "Clock2": "06:07:08",
+          "Out": "seed",
+          "Reverse": "seed",
+          "EnumOnly": "seed",
+          "Category": "seed",
+          "EnumOut": "B",
+          "BoolOut": "true",
+          "TimeOut": "01:01:01",
+          "Rows": [
+            {
+              "Text": "",
+              "Out": "seed",
+              "Away": "seed"
+            },
+            {
+              "Text": "",
+              "Out": "seed",
+              "Away": "seed"
+            }
+          ]
+        },
+        "Foreign": {
+          "Rows": []
+        }
+      }
+    }
+  ]
+}

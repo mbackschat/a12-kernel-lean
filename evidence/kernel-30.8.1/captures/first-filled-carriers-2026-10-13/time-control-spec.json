@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/TimeOut",
+  "group": "/Form",
+  "alternatives": [
+    {
+      "operation": "FirstFilledValue(Clock,Clock2)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}

@@ -262,6 +262,13 @@ inductive EnumerationFirstFilledComputationElabError where
 
 namespace EnumerationFirstFilledComputationElabError
 
+/-- The Enumeration assignment gate retains the calculation class for a String source or a source domain that cannot fit the target (spec/09 computation source compatibility). Other operand-kind failures retain their earlier gate. -/
+def calculationRefusal? : EnumerationFirstFilledComputationElabError → Option CalculationRefusal
+  | .directSource (.textFieldOperandKindMismatch _ .string)
+  | .starSource (.fieldNotEnumeration _ .string)
+  | .sourceIncompatible _ _ => some .invalidEnumCalculation
+  | _ => none
+
 /-- Project the two measured self-read modes to their distinct Kernel diagnostic
 classes. A self-reference outside the measured denominator stays local. -/
 def targetDiagnostic? :

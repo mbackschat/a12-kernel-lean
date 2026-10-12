@@ -18,6 +18,15 @@ inductive AddressedEnumerationFirstFilledComputationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+namespace AddressedEnumerationFirstFilledComputationElabError
+
+def calculationRefusal? : AddressedEnumerationFirstFilledComputationElabError → Option CalculationRefusal
+  | .source cause => cause.calculationRefusal?
+  | .sourceIncompatible _ _ => some .invalidEnumCalculation
+  | _ => none
+
+end AddressedEnumerationFirstFilledComputationElabError
+
 /-- One repeatable Enumeration target and complete checked first-filled source tied to the same validated model. -/
 structure CheckedAddressedEnumerationFirstFilledComputation
     (model : FlatModel) where

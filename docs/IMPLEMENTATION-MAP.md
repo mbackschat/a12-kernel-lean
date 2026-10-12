@@ -264,6 +264,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Resolved `FirstFilledValue`](implementation/strings-and-enumerations.md#cap-first-filled-value)
 <a id="cap-partial-date-first-filled"></a>
 - [Partial-Date `FirstFilledValue`](implementation/strings-and-enumerations.md#cap-partial-date-first-filled)
+<a id="cap-first-filled-carrier-composition"></a>
+- [First-filled carrier composition](implementation/strings-and-enumerations.md#cap-first-filled-carrier-composition)
 <a id="cap-first-filled-value-assurance"></a>
 - [Resolved `FirstFilledValue` — assurance and calibration](implementation/strings-and-enumerations.md#cap-first-filled-value-assurance)
 <a id="cap-enumeration-identity-and-categories"></a>

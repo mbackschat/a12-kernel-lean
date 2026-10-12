@@ -1,0 +1,598 @@
+{
+  "header": {
+    "id": "Carrier_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "Carrier_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Group",
+                "id": "/Form/Rows",
+                "name": "Rows",
+                "Group": {
+                  "repeatability": 3,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Text",
+                      "name": "Text",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Out",
+                      "name": "Out",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Away",
+                      "name": "Away",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Error",
+                "name": "Error",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Text",
+                "name": "Text",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Fallback",
+                "name": "Fallback",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Out",
+                "name": "Out",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Reverse",
+                "name": "Reverse",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/EnumOnly",
+                "name": "EnumOnly",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Own",
+                "name": "Own",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Away",
+                "name": "Away",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/HeadFirst",
+                "name": "HeadFirst",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/TailFirst",
+                "name": "TailFirst",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Choice",
+                "name": "Choice",
+                "Field": {
+                  "fieldType": {
+                    "type": "EnumerationType",
+                    "EnumerationType": {
+                      "values": [
+                        {
+                          "value": "A",
+                          "label": [
+                            {
+                              "locale": "en_US",
+                              "text": "Alpha"
+                            }
+                          ]
+                        },
+                        {
+                          "value": "B",
+                          "label": [
+                            {
+                              "locale": "en_US",
+                              "text": "Beta"
+                            }
+                          ]
+                        }
+                      ],
+                      "categories": [
+                        {
+                          "name": "Label",
+                          "values": [
+                            "K",
+                            "D"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Choice2",
+                "name": "Choice2",
+                "Field": {
+                  "fieldType": {
+                    "type": "EnumerationType",
+                    "EnumerationType": {
+                      "values": [
+                        {
+                          "value": "A",
+                          "label": [
+                            {
+                              "locale": "en_US",
+                              "text": "Alpha"
+                            }
+                          ]
+                        },
+                        {
+                          "value": "B",
+                          "label": [
+                            {
+                              "locale": "en_US",
+                              "text": "Beta"
+                            }
+                          ]
+                        }
+                      ],
+                      "categories": [
+                        {
+                          "name": "Label",
+                          "values": [
+                            "K",
+                            "D"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/EnumOut",
+                "name": "EnumOut",
+                "Field": {
+                  "fieldType": {
+                    "type": "EnumerationType",
+                    "EnumerationType": {
+                      "values": [
+                        {
+                          "value": "A",
+                          "label": [
+                            {
+                              "locale": "en_US",
+                              "text": "Alpha"
+                            }
+                          ]
+                        },
+                        {
+                          "value": "B",
+                          "label": [
+                            {
+                              "locale": "en_US",
+                              "text": "Beta"
+                            }
+                          ]
+                        }
+                      ],
+                      "categories": [
+                        {
+                          "name": "Label",
+                          "values": [
+                            "K",
+                            "D"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Flag",
+                "name": "Flag",
+                "Field": {
+                  "fieldType": {
+                    "type": "BooleanType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Flag2",
+                "name": "Flag2",
+                "Field": {
+                  "fieldType": {
+                    "type": "BooleanType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/BoolOut",
+                "name": "BoolOut",
+                "Field": {
+                  "fieldType": {
+                    "type": "BooleanType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Clock",
+                "name": "Clock",
+                "Field": {
+                  "fieldType": {
+                    "type": "TimeType",
+                    "TimeType": {
+                      "format": "HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Clock2",
+                "name": "Clock2",
+                "Field": {
+                  "fieldType": {
+                    "type": "TimeType",
+                    "TimeType": {
+                      "format": "HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/TimeOut",
+                "name": "TimeOut",
+                "Field": {
+                  "fieldType": {
+                    "type": "TimeType",
+                    "TimeType": {
+                      "format": "HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Category",
+                "name": "Category",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/mixed",
+                "name": "mixed",
+                "Computation": {
+                  "computedFieldRelPath": "../Out",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(Text,Choice)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/reverse",
+                "name": "reverse",
+                "Computation": {
+                  "computedFieldRelPath": "../Reverse",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(Choice,Text)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/enum_only",
+                "name": "enum_only",
+                "Computation": {
+                  "computedFieldRelPath": "../EnumOnly",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(Choice,Choice2)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/enum_control",
+                "name": "enum_control",
+                "Computation": {
+                  "computedFieldRelPath": "../EnumOut",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(Choice,Choice2)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/bool_control",
+                "name": "bool_control",
+                "Computation": {
+                  "computedFieldRelPath": "../BoolOut",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(Flag,Flag2)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/time_control",
+                "name": "time_control",
+                "Computation": {
+                  "computedFieldRelPath": "../TimeOut",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(Clock,Clock2)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/own",
+                "name": "own",
+                "Computation": {
+                  "computedFieldRelPath": "../Rows/Out",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(/Form/Rows*/Text)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/ExtraRowsAway",
+                "name": "ExtraRowsAway",
+                "Computation": {
+                  "computedFieldRelPath": "../Rows/Away",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(/Foreign/Rows*/Text)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/ExtraCategory",
+                "name": "ExtraCategory",
+                "Computation": {
+                  "computedFieldRelPath": "../Category",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(Text,Choice->Label)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "Group",
+          "id": "/Foreign",
+          "name": "Foreign",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Group",
+                "id": "/Foreign/Rows",
+                "name": "Rows",
+                "Group": {
+                  "repeatability": 3,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Foreign/Rows/Text",
+                      "name": "Text",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Foreign/Rows/Out",
+                      "name": "Out",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

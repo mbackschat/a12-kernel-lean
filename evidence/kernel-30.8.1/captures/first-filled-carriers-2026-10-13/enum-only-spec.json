@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/EnumOnly",
+  "group": "/Form",
+  "alternatives": [
+    {
+      "operation": "FirstFilledValue(Choice,Choice2)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}

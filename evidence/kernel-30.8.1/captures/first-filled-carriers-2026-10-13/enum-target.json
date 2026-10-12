@@ -1,0 +1,21 @@
+{
+  "target": "computation",
+  "op": "add",
+  "outcome": "rejected",
+  "ok": false,
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "diagnostics": [
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "code": "MVK_ERROR_INVALID_ENUM_CALCULATION",
+      "summary": "[redacted]",
+      "where": {
+        "rule": "/Form/EnumOutComp"
+      }
+    }
+  ],
+  "written": false
+}

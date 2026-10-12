@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/Rows/Out",
+  "group": "/Form",
+  "alternatives": [
+    {
+      "operation": "FirstFilledValue(/Foreign/Rows*/Text)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}

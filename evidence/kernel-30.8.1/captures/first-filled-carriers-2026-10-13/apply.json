@@ -1,0 +1,178 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Away",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Category",
+    "kind": "STRING"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "mixed",
+    "computedField": "/Form/Out",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Text,Choice)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "reverse",
+    "computedField": "/Form/Reverse",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Choice,Text)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "enum_only",
+    "computedField": "/Form/EnumOnly",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Choice,Choice2)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "enum_control",
+    "computedField": "/Form/EnumOut",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Choice,Choice2)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "bool_control",
+    "computedField": "/Form/BoolOut",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Flag,Flag2)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "time_control",
+    "computedField": "/Form/TimeOut",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Clock,Clock2)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "own",
+    "computedField": "/Form/Rows/Out",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Rows*/Text)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "ExtraRowsAway",
+    "computedField": "/Form/Rows/Away",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Foreign/Rows*/Text)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "ExtraCategory",
+    "computedField": "/Form/Category",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(Text,Choice->Label)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  }
+]

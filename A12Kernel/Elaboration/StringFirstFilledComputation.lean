@@ -67,7 +67,7 @@ inductive StringFirstFilledComputationElabError where
   | placement (cause : AddressedRepeatableTargetElabError)
   | targetNotOrdinaryString (path : List String)
   | source (cause : TokenEntityElabError)
-  | sourceNotOrdinaryString (path : List String)
+  | unsupportedSourceCarrier (path : List String)
   /-- A source naming the target itself. -/
   | targetSelfReference (path : List String)
   | declaringGroupInvalid (group : GroupPath)
@@ -85,10 +85,14 @@ def StringFirstFilledComputationElabError.diagnostic? :
   | .source (.shape cause) => cause.diagnostic?
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | .target _ | .placement _ | .targetNotOrdinaryString _ | .source _
-  | .sourceNotOrdinaryString _ | .declaringGroupInvalid _ => none
+  | .unsupportedSourceCarrier _ | .declaringGroupInvalid _ => none
 
-/-- One ordinary String target, fixed or repeatable, and one ordinary String entity-list source
-bound by the target's rows, certified against the same model. -/
+/-- First-filled text results retain stored or category tokens across String/Enumeration sources;
+the ordinary String target applies its own policy (spec/06 §B.1, spec/09 §1). -/
+def FlatFieldDecl.isStringFirstFilledSource (declaration : FlatFieldDecl) : Bool :=
+  declaration.isOrdinaryStringComputationCarrier || declaration.policy.kind == .enumeration
+
+/-- One ordinary String target and a checked text entity list bound by that target's rows. -/
 structure CheckedStringFirstFilledComputation (model : FlatModel) where
   private mk ::
   targetField : FieldId
@@ -102,8 +106,8 @@ structure CheckedStringFirstFilledComputation (model : FlatModel) where
   targetPlaced : (target.repeatableScope.isEmpty ||
     (GroupPath.isPrefixOf declaringGroup target.groupPath && !model.isIndexField targetField)) = true
   targetOrdinary : target.isOrdinaryStringComputationCarrier = true
-  sourceOrdinary :
-    source.operands.all (·.declarations.all (·.isOrdinaryStringComputationCarrier)) = true
+  sourceSupported :
+    source.operands.all (·.declarations.all (·.isStringFirstFilledSource)) = true
   excludesTarget : source.referencesField targetField (fun having _ => having.forbidsTarget targetField) = false
 
 /-- Check the target's placement and carrier, then the source against the target's group. -/
@@ -120,7 +124,7 @@ def checkStringFirstFilledComputation
       let source ← (elaborateTokenEntitySource model declaringGroup authored
           (fixedTargetGroup? := some target.groupPath)).mapError .source
       if hSource : source.operands.all
-          (·.declarations.all (·.isOrdinaryStringComputationCarrier)) = true then
+          (·.declarations.all (·.isStringFirstFilledSource)) = true then
         if hExcludes : source.referencesField targetField (fun having _ => having.forbidsTarget targetField) = false then
           if hValid : GroupPath.isValid declaringGroup = true then
             if hPlaced : (target.repeatableScope.isEmpty || (GroupPath.isPrefixOf declaringGroup
@@ -131,7 +135,7 @@ def checkStringFirstFilledComputation
                 declaringGroupValid := hValid
                 targetPlaced := hPlaced
                 targetOrdinary := hTarget
-                sourceOrdinary := hSource
+                sourceSupported := hSource
                 excludesTarget := hExcludes }
             -- The repeatable-target certificate above already refused every placement failing here.
             else throw (.placement (.targetOutsideDeclaringGroup target.path declaringGroup))
@@ -139,8 +143,8 @@ def checkStringFirstFilledComputation
         else throw (.targetSelfReference target.path)
       else
         let other := ((source.operands.flatMap (·.declarations)).find?
-          (!·.isOrdinaryStringComputationCarrier)).getD target
-        throw (.sourceNotOrdinaryString other.path)
+          (!·.isStringFirstFilledSource)).getD target
+        throw (.unsupportedSourceCarrier other.path)
     else throw (.targetNotOrdinaryString target.path)
 
 

@@ -128,6 +128,32 @@ private def stamp : FlatFieldDecl := {
   policy := { kind := .temporal .dateTime TemporalComponents.now },
   temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }
 
+private def carrierRead (a b : FlatFieldDecl) (counterpart : String) : String × String := Id.run do
+  let model : FlatModel := {
+    fields := [{ text with id := 1, name := "Error" }, { a with id := 2, name := "A" },
+      { b with id := 3, name := "B" }, { a with id := 4, name := "Out" }]
+    timeZoneId := "UTC" }
+  let report {α : Type} : Lowering α → String
+    | .ok _ => "admitted"
+    | .error refusal => refusal.detail
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let rule : DmRule := {
+    group := ["Form"], name := "Pair", errorCode := "PAIR", errorEntityRelPath := "../Error"
+    condition := "FieldFilled(Error) And FirstFilledValue(A, B) == " ++ counterpart
+    severity := "ERROR" }
+  let computation : DmComputation := {
+    group := ["Form"], name := "Pair", targetRelPath := "../Out", commonPrecondition := none
+    alternatives := [{ precondition := none, operation := "FirstFilledValue(A, B)" }]
+    errorCodesToSuppress := [] }
+  return (report (checkRule dm .english rule), report (lowerComputation model .english computation))
+
+example : carrierRead boolean time "True" =
+      ("MVK_VARYING_TYPES_NOT_ALLOWED", "MVK_VARYING_TYPES_NOT_ALLOWED") ∧
+    carrierRead time boolean "[A]" =
+      ("MVK_VARYING_TYPES_NOT_ALLOWED", "MVK_VARYING_TYPES_NOT_ALLOWED") ∧
+    carrierRead boolean boolean "True" = ("admitted", "admitted") ∧
+    carrierRead time time "[A]" = ("admitted", "admitted") := by native_decide
+
 private def fragment : FlatFieldDecl := {
   id := 0, groupPath := ["Form"], name := "F",
   policy := { kind := .temporal .date (TemporalComponents.ofFormat "MM-dd") },

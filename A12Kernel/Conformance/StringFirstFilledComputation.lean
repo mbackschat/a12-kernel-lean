@@ -311,7 +311,7 @@ private def listChecked? (targetField : FieldId) (entries : List SurfaceFieldEnt
 /- A list is the shared entity list: a lone field is too few, a star beside a field is read in authored
 order, measured for String prefix/fallback operands beside nested stars
 ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-nested-string-first-filled)), a
-non-ordinary String member is refused as on a star, and a list naming the target is the target-read
+Custom member retains its distinct carrier refusal, and a list naming the target is the target-read
 class, as the Kernel reports for a String `FirstFilledValue` listing its target. -/
 example :
     ((listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry minimumTarget.name]).isOk &&
@@ -320,7 +320,7 @@ example :
       | .ok _ => false) &&
     (listChecked? patternTarget.id [.star (star source.name), plainEntry unrelated.name]).isOk &&
     (match listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry customTarget.name] with
-      | .error (.sourceNotOrdinaryString _) => true
+      | .error (.unsupportedSourceCarrier _) => true
       | _ => false) &&
     (match listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry patternTarget.name] with
       | .error error => error.diagnostic? == some .errorReferenceToCalculatedField &&

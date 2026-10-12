@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/EnumOut",
+  "group": "/Form",
+  "alternatives": [
+    {
+      "operation": "FirstFilledValue(Text,Choice)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}

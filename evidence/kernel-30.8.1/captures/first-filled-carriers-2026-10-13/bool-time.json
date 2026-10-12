@@ -1,0 +1,22 @@
+{
+  "target": "computation",
+  "op": "add",
+  "outcome": "rejected",
+  "ok": false,
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "diagnostics": [
+    {
+      "severity": "ERROR",
+      "source": "KERNEL",
+      "code": "MVK_VARYING_TYPES_NOT_ALLOWED",
+      "summary": "[redacted]",
+      "where": {
+        "rule": "/Form/BoolOutComp"
+      },
+      "fix": "this code is raised by more than one construct; the corrective depends on which you used — list only same-type fields — here a string and a number field are mixed; list operands of ONE comparability category — all String (Custom counts as String here), all Enumeration, all Number (any scales), or all temporal at ONE identical declared format. To count distinct values across a String/Enumeration mix instead, use NumberOfDifferentValues, whose comparability rule is the looser one"
+    }
+  ],
+  "written": false
+}

@@ -209,6 +209,13 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `partial-date-assurance`: [Reader locks](../../A12Kernel/Reference/Dm/PartialDateFirstFilledLocks.lean) close direct-list/one-star validation and computation for year-only, year-month and complete values, empty prefixes, unknown year, malformed/deeper omissions and hidden invalid suffixes. ISO/dotted controls preserve full targets and refuse direct partial-Date bracket reads. The [scan law](../../A12Kernel/Proofs/FullDateFirstFilledComputation.lean) proves nonempty no-value termination.
 - `partial-date-evidence`: These cases re-derive the [inbound earliest-day account](../sources/inbound-handbacks.md#inbound-2026-10-02-partial-date-readers). No new kernel capture or independent consumer probe is claimed; wider selected/topology compositions and dotted selection remain externally pending. Execute distinguishes clean no-value from poison, and Transform must preserve the terminal partial-Date prefix.
 
+<a id="cap-first-filled-carrier-composition"></a>
+#### First-filled carrier composition
+
+- `text-computation`: [The String carrier](../../A12Kernel/Elaboration/StringFirstFilledComputation.lean) accepts ordinary String and stored/category Enumeration sources at fixed and row targets, preserving their checked token scanner and the String target's own policy. Labels never replace stored tokens. Custom and raw String retain separate carrier boundaries. The [carrier/placement law](../../A12Kernel/Proofs/StringFirstFilledComputation.lean) records the widened source certificate.
+- `assignment-gate`: Fixed and addressed Enumeration first-filled errors retain `MVK_ERROR_INVALID_ENUM_CALCULATION` for String sources or an incompatible source domain. [Reader locks](../../A12Kernel/Reference/Dm/StringEnumerationBoundaryLocks.lean) exercise direct/starred sources, both operand orders, admitted Enumeration twins, category selection and reached/unread invalidity; [Boolean/Time controls](../../A12Kernel/Reference/Dm/FirstFilledValidationLocks.lean) retain exact varying-types refusals beside homogeneous admissions.
+- `carrier-evidence`: The [six-document carrier capture](../sources/computation-scheduling-probes.md#src-first-filled-carriers-k09) calibrates stored/category token identity, authored order, reached/unread invalidity and own-level/foreign-root String stars. [Row-star locks](../../A12Kernel/Reference/Dm/NestedFirstFilledLocks.lean) distinguish reopened extent from target-row binding. The source checkpoint separates measured fixed crossings from internally checked row-target propagation.
+
 <a id="cap-first-filled-value-assurance"></a>
 #### Resolved `FirstFilledValue` — assurance and calibration
 

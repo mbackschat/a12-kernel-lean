@@ -1,0 +1,58 @@
+{
+  "target": "model",
+  "op": "read",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "rules": {},
+    "computations": {
+      "/Form/mixed": {
+        "converted": true,
+        "calculatedField": "/Form/Out"
+      },
+      "/Form/reverse": {
+        "converted": true,
+        "calculatedField": "/Form/Reverse"
+      },
+      "/Form/enum_only": {
+        "converted": true,
+        "calculatedField": "/Form/EnumOnly"
+      },
+      "/Form/enum_control": {
+        "converted": true,
+        "calculatedField": "/Form/EnumOut"
+      },
+      "/Form/bool_control": {
+        "converted": true,
+        "calculatedField": "/Form/BoolOut"
+      },
+      "/Form/time_control": {
+        "converted": true,
+        "calculatedField": "/Form/TimeOut"
+      },
+      "/Form/own": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/Out"
+      },
+      "/Form/ExtraRowsAway": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/Away"
+      },
+      "/Form/ExtraCategory": {
+        "converted": true,
+        "calculatedField": "/Form/Category"
+      }
+    },
+    "summary": {
+      "rules": 0,
+      "convertedRules": 0,
+      "computations": 9,
+      "convertedComputations": 9,
+      "fullyTyped": true
+    }
+  },
+  "diagnostics": [],
+  "written": false
+}

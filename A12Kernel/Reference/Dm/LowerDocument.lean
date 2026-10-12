@@ -25,7 +25,8 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
   let check {ε α : Type} [Repr ε] (result : Except ε α) : Lowering α :=
     elaborated "FirstFilledValue" result
   if target.policy.kind == .enumeration then
-    let operation ← check (elaborateEnumerationFirstFilledComputation model group target.id
+    let operation ← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
+      (elaborateEnumerationFirstFilledComputation model group target.id
       (← lowerEnumerationFirstFilledSource model group arguments bindingGroup?))
     return .ofEnumerationFirstFilled operation
   let source ← lowerFirstFilledSource model group arguments bindingGroup?

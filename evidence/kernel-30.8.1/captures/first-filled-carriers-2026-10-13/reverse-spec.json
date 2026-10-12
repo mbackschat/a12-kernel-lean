@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/Reverse",
+  "group": "/Form",
+  "alternatives": [
+    {
+      "operation": "FirstFilledValue(Choice,Text)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}
