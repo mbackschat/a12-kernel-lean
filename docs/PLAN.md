@@ -3,8 +3,9 @@
 <a id="active-unit"></a>
 ## Next action and accepted baseline
 
-- `status`: K01–K04 are accepted; K05–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
-- `next`: K05 — selected addressing and key fitting. Reconcile its frozen matrix with the [semantic-index owner](implementation/repetition-and-paths.md#cap-semantic-index), [key-shape contract](../A12Kernel/Elaboration/IndexKeyShape.lean) and [SG29](gaps/paths-and-groups.md#gap-sg29) before selecting the first unresolved distinction.
+- `status`: K01–K05 are accepted; K06–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
+- `next`: K06 — group extent, relevance and capacity. Reconcile its frozen matrix with [SG13](gaps/paths-and-groups.md#gap-sg13), [SG5 group runtime](gaps/numeric-and-temporal.md#gap-sg5-number-token-group-runtime) and their linked implementation/evidence owners before selecting the first unresolved distinction. K05 passed the integrated, compact-evidence, population, trust and fresh HIGH review gates; its implemented boundary belongs to the [semantic-index owner](implementation/repetition-and-paths.md#cap-semantic-index).
+- `sync`: [SPEC-2026-10-12-01](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-12-01) is pending and not handed off. It requests peer reconciliation of source-derived selected-error eligibility; no external wait blocks K06.
 - `baseline`: Accepted ordinary implementation boundaries remain in [coverage](CONFORMANCE-COVERAGE.md#axis-r--population-replay). The [C12 readback](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) establishes bounded semantic transport, not independent-evaluator qualification.
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
@@ -80,7 +81,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 ### K05 — selected addressing and key fitting
 
-- [ ] Close key interpretation and selected row identity in [SG29](gaps/paths-and-groups.md#gap-sg29), including selected error-field reanchoring.
+- [x] Close key interpretation and selected row identity in [SG29](gaps/paths-and-groups.md#gap-sg29), including selected error-field reanchoring.
 - Matrix: literal/field keys; Number signed zero/scale and String padding/whitespace/UTF-16/non-ASCII distinctions; valid/missing/duplicate keys; same key under two parents; partial lower-star selection with complete/incomplete coverage; selected error/reference/fill coordinates.
 - Done: key fit, value availability and message association remain separate. Preserve selected ancestry through nested payload/filter and typed computation callers. Custom codecs receive an explicit contract rather than implicit String coercion.
 

@@ -37,7 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-The reviewed responses yield 18 `accepted` and six `answered` receipts across the 24 entries below, with no outstanding peer request. Stable IDs remain here; [the consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own the reviewed revisions, evidence routes and limits.
+The prior 24 responses yield 18 `accepted` and six `answered` receipts. One new source-derived clarification is `pending` below; it has not been handed off. [The consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own the prior reviewed revisions, evidence routes and limits.
+
+<a id="spec-2026-10-12-01"></a>
+### SPEC-2026-10-12-01 — selected error addresses use the unique non-iterating key
+
+- `status`: pending
+- `canonical`: [selected validation-message references](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
+- `delta`: State the eligibility and address-replacement rule for a unique authored semantic-index key on the error field, separately from payload availability and ordinary iteration.
+- `basis`: Kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`; [source checkpoint](sources/message-cache-probes.md#src-selected-error-reanchoring). The peer's selected-error controls at `17b3eb0840e2e5dccf76135eb91fef04512ef3e8` establish full/partial invalid-key and duplicate-key outcomes, not every eligibility contrast. No new Kernel capture is claimed.
+- `acceptance`: Reconcile the canonical account and existing selected-error implementation with the source-owned unique-key/non-iterating gate. Check repeated same-key versus competing-key occurrences, ordinary iteration at the selected level, parent-local association, unavailable payload and absent association. Preserve the explicit duplicate-cache host-order boundary; do not adopt first-admitted row order as the Kernel oracle.
+- `introducing revision`: first commit containing this ID. This pending clarification accompanies active K05 work and does not claim K05 closure.
 
 <a id="spec-2026-10-10-01"></a>
 ### SPEC-2026-10-10-01 — explicit narrower guards qualify target-derived operand scope

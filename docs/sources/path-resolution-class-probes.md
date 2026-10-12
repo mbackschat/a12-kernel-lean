@@ -2,6 +2,16 @@
 
 Which class a path that does not resolve draws, how a starred path is judged segment by segment, and which locus admits a repeatable operand, across every carrier measured. Split from [`static-admission-and-class-probes.md`](static-admission-and-class-probes.md), which keeps operand kind gates and carrier-specific admission. Anchors are unchanged and every `SOURCES.md#src-…` citation still resolves through the hub.
 
+<a id="src-index-key-literal-fitting"></a>
+#### Literal index keys are fitted after one normalization pass; Custom keys use authored bounds, reviewed 2026-10-12
+
+- `revision`: a12-dmkits `c935533dc0c5eb8e3c996b29cc002af1af338cdd`, Kernel 30.8.1. The committed `CheckerIndexKeyConstantAgreementTest` and `IndexKeyNormalizationPopulation.literalDecodingRows` were inspected; the suite was not rerun here.
+- `oracle`: Both ordinary and Custom declarations have 36 static Kernel controls over unbounded/minimum-four/maximum-three/maximum-four profiles. Repeated CR before LF remains one CR plus LF after decoding, distinguishing one pass from two at both bounds. The peer checker deliberately declines the CR-bearing Custom cases; its policy is not the Kernel verdict.
+- `source`: At the [pinned Kernel revision](../SOURCES.md), `TypeConverter.convertCustomType` preserves authored bounds, `IPredefinedType.isValueApplicable` uses only those positive UTF-16 bounds, and `IStringType.isValueApplicable` additionally checks the whole declared pattern. `INumberType.getNumberPattern` checks ASCII numeric shape independently of stored-value signedness, zero and integer-digit constraints.
+- `consequence`: [The canonical key contract](../../spec/08-paths-and-references.md) separates authored literal fit from registered stored-value admission. [Reader controls](../../A12Kernel/Reference/Dm/IndexKeyLiteralLocks.lean) distinguish the two normalization paths and preserve Custom metadata; [shape controls](../../A12Kernel/Conformance/IndexKeyShape.lean) distinguish UTF-16 length from codepoint pattern matching.
+- `limit`: Additional UTF-16, non-ASCII and Number spelling separators are source-backed internal checks, not new Kernel measurements. Direct supplementary keys do not establish their authorability in condition text. Runtime Custom and computation compositions apply the existing checked-key contract internally.
+- `sync`: Inbound committed evidence, reviewed locally; no outbound request echoes the Custom-bound or one-pass findings to their origin.
+
 <a id="src-starred-group-value-count-classes"></a>
 #### A starred group naming nothing answers in the segment order on the filled-field and value-count carriers too, and a fixed group below a star is admitted on the count, all seven field-fill quantifiers and the three value-count arms, measured locally 2026-09-24
 

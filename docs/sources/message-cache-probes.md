@@ -1,5 +1,14 @@
 # Message-cache population probes
 
+<a id="src-selected-error-reanchoring"></a>
+#### A unique non-iterating selected error reference uses the message-cache association, source checked 2026-10-12
+
+- `revision`: Kernel 30.8.1 source `cb66e51fa7ab90b650698f861bf670754e2e1e66`; reviewed peer test revision `17b3eb0840e2e5dccf76135eb91fef04512ef3e8`. No new Kernel process was run here.
+- `source`: `SemanticIndexLevelVisitor` and `SemanticIndices4ErrorFieldVisitor` distinguish one authored key from competing keys and suppress reanchoring at an ordinary or parallel iteration level. `RuleInfoBuilder` retains that result; `CodeGenRuleDefinition.st` applies it only after the condition fires. `ValidationCache.replaceSemanticIndexRepetition` replaces one coordinate through the parent-local association cache, preserving the remaining path.
+- `oracle`: `SelectedMessageReferenceDiffTest.associatedPointersRetainOmissionMetadataAndSelectedErrorTargets` compares both Kernel strategies on full/partial calls with invalid and duplicate keys. An independent branch fires while the selected value is unavailable; the error field uses the selected association, including unknown on the partial invalid-key row. Duplicate expectations are projected by the peer's separate first-admitted policy, so they establish a concrete coherent association, not an exact portable duplicate winner.
+- `limit`: Unique-key eligibility, competing-key and ordinary-iteration contrasts are source-derived. The two-parent scalar and group-expansion Lean controls expose the missing reanchoring locally; they are not additional Kernel observations. Message-reference cache order and uncertainty retain their existing [host boundary](message-and-pointer-probes.md#src-message-cache-collision).
+- `sync`: [SPEC-2026-10-12-01](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-12-01) requests reconciliation of the explicit eligibility rule in [the canonical clause](../../spec/08-paths-and-references.md#43-selected-references-in-validation-messages); existing peer runtime observations do not by themselves settle every contrast.
+
 <a id="src-message-cache-partial-population"></a>
 #### Partial relevance changes duplicate message pointers by filtering the temporary cache population, measured locally 2026-10-10
 

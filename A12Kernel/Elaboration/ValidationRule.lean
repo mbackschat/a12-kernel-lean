@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.ValidationCondition
 import A12Kernel.Elaboration.ValidationCondition.ErrorReferences
+import A12Kernel.Elaboration.ValidationCondition.ErrorSelection
 import A12Kernel.Elaboration.ValidationRule.AssemblyError
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Elaboration.CheckedStarDocument
@@ -27,6 +28,8 @@ inductive OrdinaryRepeatableRuleEvaluationError where
   | addressing (error : CheckedAddressingError)
   | conditionAddressing (error : CheckedAddressingError)
   | preliminary (error : CheckedIndexPreliminaryError)
+  | messageCache (error : CheckedMessageCacheError)
+  | messageReference (error : ReferenceProjectionError)
   deriving Repr, DecidableEq
 
 /-- The checked ordinary rule's value-independent execution shape. A once plan pins every repeatable error-field level to row 1 without claiming that row exists in document topology. -/
@@ -335,6 +338,28 @@ private inductive OrdinaryRuleStep where
 private def OrdinaryRuleStep.outcome : OrdinaryRuleStep → FlatRuleOutcome
   | .next _ outcome | .abort _ outcome => outcome
 
+/-- Error addressing uses the structural key even when another branch fires. Runtime failures
+keep the iterator address because the generated catch bypasses reanchoring (spec/08 §4.3). -/
+private def reanchorSelectedError (rule : CheckedResolvedValidationRule model)
+    (environment : Env) (outcome : FlatRuleOutcome)
+    (inputs : Unit → Except OrdinaryRepeatableRuleEvaluationError MessageReferenceInputs) :
+    Except OrdinaryRepeatableRuleEvaluationError FlatRuleOutcome := do
+  let .fired message := outcome | return outcome
+  if message.origin == .runtimeFailure then return outcome
+  let some selection := rule.condition.core.uniqueErrorSelection? rule.errorField
+      (rule.iterationScope.getD []) | return outcome
+  let inputs ← inputs ()
+  let (_, coordinate, _) ← inputs.resolveIndex selection.group selection.indexDeclaration
+    selection.key environment |>.mapError .messageReference
+  let position := selection.indexDeclaration.repeatableScope.length - 1
+  pure (.fired { message with errorAddress := { message.errorAddress with
+    coordinates := message.errorAddress.coordinates.set position coordinate } })
+
+private def fullMessageReferenceInputs (checked : CheckedDocument model) :
+    Except OrdinaryRepeatableRuleEvaluationError MessageReferenceInputs := do
+  let preliminary ← checked.applyFullIndexPreliminary |>.mapError .preliminary
+  preliminary.messageReferenceInputs |>.mapError .messageCache
+
 /-- Evaluate an already-admitted partial instance at a derived target path. The caller owns filtering, relevance admission, and path construction; this helper owns leaf evaluation and message emission. -/
 private def evalOrdinaryPartialAdmittedAt
     (rule : CheckedResolvedValidationRule model)
@@ -394,7 +419,10 @@ private def evalOrdinaryPartialAdmittedAt
       (customResult := fun name => (context.scalar.customResult name).mapError
         (fun error => .inl (.conditionAddressing (.customCondition error))))
   match result with
-  | .ok verdict => pure (.next environment (rule.core.emitAt errorPath verdict))
+  | .ok verdict => do
+      let outcome ← rule.reanchorSelectedError environment (rule.core.emitAt errorPath verdict)
+        (fun _ => preliminary.messageReferenceInputs |>.mapError .messageCache)
+      pure (.next environment outcome)
   | .error (.inl error) => throw error
   | .error (.inr (.addressing .typeValidityValueFailure))
   | .error (.inr (.addressing (.stringExpression .emptyPattern))) =>
@@ -514,7 +542,10 @@ private def evalOrdinaryRepeatableAt
   let context := rule.withCustomConditions context .all registry
   match rule.condition.core.evalAddressedWithRepetitionNotUniqueResult
       context repetitionNotUniqueResult? with
-  | .ok verdict => pure (.next environment (rule.core.emitAt errorPath verdict))
+  | .ok verdict => do
+      let outcome ← rule.reanchorSelectedError environment (rule.core.emitAt errorPath verdict)
+        (fun _ => fullMessageReferenceInputs checked)
+      pure (.next environment outcome)
   | .error (.inl error) => throw (.conditionAddressing error)
   | .error (.inr (.addressing .typeValidityValueFailure))
   | .error (.inr (.addressing (.stringExpression .emptyPattern))) =>
@@ -594,6 +625,8 @@ def evalOrdinaryOnceFull
   let outcome ←
     (rule.core.evalAddressedFullAt context hasContent errorPath)
       |>.mapError .conditionAddressing
+  let outcome ← rule.reanchorSelectedError environment outcome
+    (fun _ => fullMessageReferenceInputs checked)
   pure (environment, outcome)
 
 /-- Execute the once plan against an already-normalized partial preliminary view. A filtered rule skips before plan construction, an error path absent from the relevant set skips before condition reads, and an admitted path bypasses the full root-content gate. A once plan binds no repeatable level for this gate even though its message pointer defaults to the all-one environment. Relevance never creates the target row. -/

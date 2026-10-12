@@ -193,7 +193,8 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
           youngerThan1900Check := (bool? body "youngerThan1900Check").getD false } }
   | "CustomFieldType" =>
       let customName ← body.getObjValAs? String "name"
-      pure { base with customType := some { name := customName } }
+      pure { base with customType := some {
+        name := customName, minLength := nat? body "minLength", maxLength := nat? body "maxLength" } }
   | other => throw s!"field type {other}"
 
 private structure ReadState where

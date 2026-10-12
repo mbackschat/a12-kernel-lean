@@ -130,7 +130,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Group-count topology and declared extent](sources/group-count-topology.md)
 - [Group-operand inbound evidence](sources/inbound-group-operand-batches.md)
 - [Over-repetition](sources/over-repetition-probes.md)
-- [Path resolution](sources/path-resolution-class-probes.md)
+- [Path resolution and literal index-key fitting](sources/path-resolution-class-probes.md), including the [reviewed one-pass and custom-bound controls](sources/path-resolution-class-probes.md#src-index-key-literal-fitting).
 - [Static admission and classes](sources/static-admission-and-class-probes.md)
 - [Diagnostic vocabulary and sweeps](sources/diagnostic-class-vocabulary-and-sweeps.md)
 - [Model structure and declarations](sources/model-structure-and-declaration-probes.md), including [executable declaration phases](sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission) (peer reconciliation at `6bc5e75337a6b2caea5b563e26d346cf53e163c8`)

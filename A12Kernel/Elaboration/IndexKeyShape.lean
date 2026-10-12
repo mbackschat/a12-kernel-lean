@@ -19,7 +19,13 @@ carrying a line feed fits a field that permits no line breaks
 injected as a whole-value matcher, as [`StringPattern`](../Semantics/StringPattern.lean) injects it;
 the matcher receives a Lean `String`, so it counts code points, which is how the Kernel counts them
 here ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-index-key-pattern)). The length bounds reuse
-the stored value's UTF-16 count, an assumption: no row measures a key whose two counts differ.
+the stored value's UTF-16 count; supplementary-key length locks are source-backed and separate from
+the condition reader's character repertoire.
+
+**A custom String key uses only its own authored positive length bounds** after the same one-pass
+normalization (`IPredefinedType.isValueApplicable`; KF542's custom literal rows). It asks neither the
+registered stored-value validator nor ordinary String pattern or line-break policy. Static key fit
+does not prepare or replace that runtime validator.
 
 The empty key is not this module's business. The cascade refuses it by a separate disjunct whatever
 the type answers.
@@ -27,9 +33,10 @@ the type answers.
 
 namespace A12Kernel
 
-/-- A Number key: an optional minus, digits, and a fraction after `.` or `,` whose digit count lies
-within the declared bounds, no fraction counting as none. A plus sign is refused. A key with no
-integer digit or an empty fraction is refused here too, which no row measures. -/
+/-- A Number key: an optional minus, ASCII digits, and a fraction after `.` or `,` whose digit count
+lies within the declared bounds, no fraction counting as none. A plus sign, missing integer digits
+and an empty fraction are refused. Signedness, zero permission and integer caps do not enter the
+key's fraction pattern (`INumberType.getNumberPattern`; spec/08 §4). -/
 def numberIndexKeyFits (minFraction maxFraction : Nat) (key : String) : Bool :=
   let body := match key.toList with
     | '-' :: rest => rest
@@ -70,21 +77,24 @@ def dateRangeIndexKeyFits (format separator key : String) : Bool :=
     (characters.drop shape.length).take separator.length == separator.toList &&
     matchesShape shape ((characters.drop shape.length).drop separator.length)
 
-/-- Whether the index field's type accepts a constant key, or `none` where the declaration lacks the
-policy its kind needs: a temporal field without its format, a date range without its format pair,
-an Enumeration without its tokens, and a String with a custom type, whose own validity would decide
-and is not modelled for keys. `patternMatches` is the declared pattern's whole-value matcher and is
-read only when a pattern is declared. A Number key's sign is not asked, a signed and an unsigned
-field answering alike, which no row separates. -/
+/-- Whether the index field's type accepts a raw authored constant key, or `none` where the
+declaration lacks the policy its kind needs: a temporal field without its format, a date range
+without its format pair, or an Enumeration without its tokens. String text is normalized once here;
+callers must not pass already-normalized text. Custom String bounds come from `customType`, with
+absence and zero inactive. `patternMatches` is the ordinary String declaration's whole-value matcher
+and is read only when its pattern is declared. -/
 def FlatFieldDecl.indexKeyFits? (declaration : FlatFieldDecl)
     (patternMatches : String → Bool) (key : String) : Option Bool :=
   match declaration.policy.kind with
   | .string =>
-      if declaration.customType.isSome then none
-      else
-        let normalized := normalizeLinebreaks key
-        some ((declaration.stringPolicy.checkNormalizedLength normalized).toBool &&
-          (declaration.stringPatternSource.isNone || patternMatches normalized))
+      let normalized := normalizeLinebreaks key
+      match declaration.customType with
+      | some custom =>
+          let bounds : StringFieldPolicy := { minLength := custom.minLength, maxLength := custom.maxLength }
+          some (bounds.checkNormalizedLength normalized).toBool
+      | none =>
+          some ((declaration.stringPolicy.checkNormalizedLength normalized).toBool &&
+            (declaration.stringPatternSource.isNone || patternMatches normalized))
   | .number config =>
       some (numberIndexKeyFits declaration.numericTargetConstraints.minFractionalDigits
         config.scale key)

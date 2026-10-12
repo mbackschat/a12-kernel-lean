@@ -2,13 +2,15 @@ import A12Kernel.Elaboration.IndexKeyShape
 
 /-! # Locks on a constant index key's fit
 
-Every expected verdict is the Kernel's, read through the admission cascade's key-agreement stage so
+Verdicts are read through the admission cascade's key-agreement stage so
 the empty key meets its own disjunct: `true` is an admitted key and `false` the
 `MVK_INDEX_VALUE_INVALID` refusal. The rows are the peer's
 `CheckerIndexKeyConstantAgreementTest`, one per discriminating shape of each kind
 ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26-index-key-shape)), and its
 `IndexKeyNormalizationPopulation` line-terminator rows
 ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-key-dialect)).
+Additional UTF-16, padding and Number-shape locks are source-backed separators, not new measured
+evidence.
 
 The String patterns are injected, so each fixture's matcher is a hand-written stand-in for its Java
 pattern. Those rows lock that the fit asks the length and the pattern together over the collapsed
@@ -26,6 +28,9 @@ private def field (kind : FieldKind) : FlatFieldDecl :=
 private def text (policy : StringFieldPolicy := {}) (pattern : Option String := none) :
     FlatFieldDecl :=
   { field .string with stringPolicy := policy, stringPatternSource := pattern }
+
+private def custom (minimum maximum : Option Nat := none) : FlatFieldDecl :=
+  { field .string with customType := some { name := "Code", minLength := minimum, maxLength := maximum } }
 
 private def number (minFraction maxFraction : Nat) (maxInteger : Option Nat := none) :
     FlatFieldDecl :=
@@ -95,6 +100,53 @@ example :
       [some false, some false, some false]] := by
   native_decide
 
+example :
+    [admitted (custom) "A", admitted (custom (some 0) (some 0)) "A",
+      admitted (custom (some 4)) "A\r\r\nB",
+      admitted (custom (some 4)) "A\r\nB",
+      admitted (custom none (some 3)) "A\r\r\nB",
+      admitted (custom none (some 3)) "A\r\nB",
+      admitted (custom none (some 4)) "A\r\r\nB"] =
+    [some true, some true, some true, some false, some false, some true, some true] := by
+  native_decide
+
+-- Custom key shape uses the custom declaration's bounds, bypassing ordinary String policy;
+-- KF542 measures its independent custom length profile.
+example :
+    let declaration := { custom (some 4) (some 4) with
+      stringPolicy := { minLength := some 5, maxLength := some 5 }
+      stringPatternSource := some "[A-Z]+" }
+    [admitted declaration "A\r\r\nB" (fun _ => false),
+      admitted declaration "ABC" (fun _ => true),
+      admitted declaration "ABCDE" (fun _ => true)] =
+    [some true, some false, some false] := by
+  native_decide
+
+-- Source-backed length locks exercise UTF-16 counting separately from the whole-key matcher.
+-- These direct keys make no claim about the condition reader's character repertoire.
+example :
+    [admitted (text { minLength := some 2, maxLength := some 2 }) "😀",
+      admitted (text { maxLength := some 1 }) "😀",
+      admitted (text { maxLength := some 2 } (some "[^0-9]{2}")) "😀a" twoNonDigits,
+      admitted (text { maxLength := some 3 } (some "[^0-9]{2}")) "😀a" twoNonDigits,
+      admitted (custom (some 2) (some 2)) "😀",
+      admitted (custom none (some 1)) "😀",
+      admitted (custom (some 3)) "😀"] =
+    [some true, some false, some false, some true, some true, some false, some false] := by
+  native_decide
+
+example :
+    [admitted (text { minLength := some 2, maxLength := some 2 }) " A",
+      admitted (text { maxLength := some 1 }) " A",
+      admitted (text { minLength := some 2 }) "é",
+      admitted (text { maxLength := some 1 }) "é",
+      admitted (custom (some 2) (some 2)) " A",
+      admitted (custom none (some 1)) " A",
+      admitted (custom (some 2)) "é",
+      admitted (custom none (some 1)) "é"] =
+    [some true, some false, some false, some true, some true, some false, some false, some true] := by
+  native_decide
+
 /- Number: the fraction's digit count against the declared bounds after `.` or `,`, the integer
    digits unasked even against a declared maximum of two, a minus admitted and a plus refused. -/
 example :
@@ -106,6 +158,20 @@ example :
       [some true, some true, some true, some false],
       [some false, some true, some true, some false],
       [some true]] := by
+  native_decide
+
+-- Source-backed Number shapes ask the ASCII fraction pattern alone, even for unsigned fields
+-- with zero and leading zeros forbidden in stored values (spec/08 §4).
+example :
+    let unsigned := { number 0 2 (some 1) with
+      policy := { kind := .number { scale := 2, signed := false } }
+      numericTargetConstraints := {
+        minFractionalDigits := 0, maxIntegerDigits := some 1,
+        zeroAllowed := false, leadingZerosAllowed := false } }
+    ["-0", "-0.00", "00", "000.0", "-0.000", "+0", " 0", "0 ", "٠", "0.٠"].map
+        (admitted unsigned ·) =
+      [some true, some true, some true, some true, some false, some false, some false,
+        some false, some false, some false] := by
   native_decide
 
 /- Boolean and Confirm: the literal words alone, case-sensitively. A Boolean with the custom

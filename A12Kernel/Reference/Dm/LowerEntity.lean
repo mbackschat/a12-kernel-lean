@@ -28,7 +28,7 @@ private def lowerIndexKey (index : FlatFieldDecl) (key : IndexKey) : Lowering Su
           | some pattern => match locallyExecutableStringPatternMatcher? pattern with
               | some matcher => pure matcher
               | none => refuse "SemanticIndex" "unsupported key pattern"
-        if index.indexKeyFits? matcher spelling != some true then
+        if index.indexKeyFits? matcher authored != some true then
           refuse "SemanticIndex" "invalid key shape"
         let token ← match index.policy.kind with
           | .number _ => do

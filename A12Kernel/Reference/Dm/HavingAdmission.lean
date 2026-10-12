@@ -156,7 +156,7 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
                 | some matcher => pure matcher
                 | none => do refuse "Having" "unsupported index pattern"
           let spelling := normalizeLinebreaks authored
-          let some applicable := index.indexKeyFits? matcher spelling | refuse "Having" "unsupported index kind"
+          let some applicable := index.indexKeyFits? matcher authored | refuse "Having" "unsupported index kind"
           pure (SemanticIndexAdmissionKey.constant spelling applicable)
       | .inr (.inl keyDeclaration, shape) => pure (.reference { shape with
           baseTypeMatchesIndexField :=

@@ -25,14 +25,14 @@
 <a id="gap-sg29"></a>
 ### SG29 — semantic-index reads beyond the scalar lookup
 
-- `state`: residual; D01 topology, D04 host cache, D05 key fit, D06 diagnostics, D18 transport and D22 output coordinates.
+- `state`: residual; D01 topology, D04 host cache, D06 diagnostics, D18 transport and D22 output coordinates.
 - `baseline`: [Semantic index](../implementation/repetition-and-paths.md#cap-semantic-index), [admission cascade](../implementation/cross-clause.md#cap-semantic-index-admission), [first-filled](../implementation/strings-and-enumerations.md#cap-first-filled-value) and [non-Number alternatives](../implementation/repeatable-computations.md#cap-non-number-alternatives) own current main forms.
 - `diagnostics`: key-before-operand ordering on additional readers, keyed lower-star Having/marked/group-count classes and broader source-slot combinations. Enumeration alternative tables exist; their presence does not calibrate every competing defect.
-- `evidence-needed`: constant-key UTF-16/code-point length differences, unusual Number decimal spellings/sign/padding/non-ASCII digits, temporal non-ASCII digits and custom String key types. [IndexKeyShape](../../A12Kernel/Elaboration/IndexKeyShape.lean) carries the fit contract; D05 preserves its unmeasured edges.
+- `evidence-needed`: temporal non-ASCII digit profiles. The current literal-fit source/evidence boundary belongs to the [semantic-index owner](../implementation/repetition-and-paths.md#cap-semantic-index); internal separators are not additional Kernel captures.
 - `remaining`: wider selected payload/filter profiles, deeper unindexed ancestry, partial-call extents and typed computation Having beyond their [implemented boundaries](../implementation/repetition-and-paths.md#cap-semantic-index). Multiple indexed ancestors retain explicit refusal, not an invented evaluator.
 - `evidence-needed`: validation lower-star Sum with no/duplicate selected key, indexed RuleGroup runtime compositions beyond static/readback evidence, and additional carrier-specific partial/profile calibration. Computation clearing does not independently measure validation UNKNOWN or empty folding.
 - `api-audit`: direct Date validity accepts caller-supplied FlatRelevance while temporal contexts augment scope with globals. A raw callback can therefore exclude a global direct component. Ordinary partial rules normalize relevance; settle the [low-level callback contract](../../A12Kernel/Elaboration/ValidationCondition/Evaluation.lean) before classifying this prediction as a defect.
-- `remaining`: selected error-field reanchoring, public structural-reference transport and wider partial message profiles. Structural and parallel consumers share the [cache boundary](#gap-sg29-cache-order); keyed condition support alone does not establish output correspondence.
+- `remaining`: public structural-reference transport and wider partial message profiles. Structural and parallel consumers share the [cache boundary](#gap-sg29-cache-order); keyed condition support alone does not establish output correspondence.
 - `consumer`: Execute needs selected cells and distinct absent/duplicate outcomes; Explain needs exact refusal and explicit insufficient context. Keys in different parents must stay independent.
 - `reopen-when`: a selected consumer needs one residual composition or current evidence falsifies a represented main form. No automatic post-checklist index programme.
 - `route-state`: discovery-required
@@ -48,7 +48,7 @@ Implemented SI1–SI5 material belongs to the [semantic-index owner](../implemen
 |---|---|---|
 | MC1 — additional population profiles | Reserved test-range callbacks, custom conversion, on-the-fly bypass sets and non-JSON ingress can alter admitted cache population. | [SG7](strings-and-messages.md#gap-sg7), D11/D16; ordinary full/partial JSON population is owned by the [cache calibration](../sources/message-cache-probes.md#src-message-cache-partial-topology). |
 | MC3 — host ordering | Tree-bin ties and capacity-dependent winners cannot be inferred from document bytes alone. | D04; retain actual cache context or explicit insufficient information. The [collision source](../sources/message-and-pointer-probes.md#src-message-cache-collision) rules out guessed first/last winners. |
-| Additional output/profile composition | Selected reanchoring, computation cache scheduling and wider partial-call outputs require their own selected contract. | SG29/SG10; shared structural and parallel consumers already accept context and use bucket-determined derivation where sufficient. |
+| Additional output/profile composition | Computation cache scheduling and wider partial-call outputs require their own selected contract. | SG29/SG10; shared structural and parallel consumers already accept context and use bucket-determined derivation where sufficient. |
 
 The [Execute/Explain readback](../consumer-probes/EXECUTE.md#run-message-cache-context-readback-01) covers the adopted context boundary. A complete host producer or another probe is not a remaining C01–C22 prerequisite. Identifier encoding, shared-consumer controls and implemented derivation live in the [message-pointer owner](../implementation/validation-messages-and-custom.md#cap-shared-message-pointer).
 

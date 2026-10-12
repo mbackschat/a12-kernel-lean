@@ -537,4 +537,71 @@ private def typedImplicitKeyControl (field : String) : Bool :=
 
 example : ["N", "Text", "Flag", "Stamp"].all typedImplicitKeyControl = true := by native_decide
 
+private def selectedErrorMessages (condition : String) (target : String := "Rows/N")
+    (partialCall : Bool := false) (key : String := "b") (payload : String := "5") :
+    Option (List String) := do
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let row (key : String) : Lean.Json := .mkObj [
+    ("Id", .str key), ("N", .str payload),
+    ("Body", .mkObj [("A", .str "7"), ("B", .str "8")])]
+  let parent (keys : List String) : Lean.Json := .mkObj [
+    ("Key", .str key), ("Anchor", .str "1"), ("Rows", .arr (keys.map row).toArray)]
+  let raw ← (readDocument dm (.mkObj [("Form", .mkObj [
+    ("Parents", .arr #[parent ["a", "b"], parent ["b", "a"]])])])).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" raw.data).toOption
+  let rule ← (checkRule dm .english {
+    group := ["Form", "Parents"], name := "SelectedError", errorCode := "SELECTED_ERROR",
+    severity := "ERROR", errorEntityRelPath := "../" ++ target, condition } world).toOption
+  let messages ← if partialCall then do
+    let .evaluated rows ← (rule.evalOrdinaryRepeatablePartial document
+      (.partialSet [RelevantEntityPattern.allInstances ["Form"]]) (some world)).toOption | none
+    pure (rows.filterMap fun (_, outcome) => match outcome with
+      | .evaluated outcome => outcome.message?
+      | .skipped => none)
+    else (runRule world document rule).toOption
+  pure (messages.map fun message => renderPointer model message.errorAddress)
+
+example : selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N For Key] > 0" =
+    some ["Form/Parents/Rows[2]/N", "Form/Parents[2]/Rows/N"] := by native_decide
+
+example : selectedErrorMessages "FieldFilled(Anchor) Or Sum(Rows/Body For Key) > 0" "Rows/Body/A" =
+    some ["Form/Parents/Rows[2]/Body/A", "Form/Parents[2]/Rows/Body/A"] := by native_decide
+
+example : [false, true].all (fun partialCall =>
+    selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N For Key] > 0" "Rows/N" partialCall ==
+      some ["Form/Parents/Rows[2]/N", "Form/Parents[2]/Rows/N"] &&
+    selectedErrorMessages "FieldFilled(Anchor) Or Sum(Rows/Body For Key) > 0" "Rows/Body/A" partialCall ==
+      some ["Form/Parents/Rows[2]/Body/A", "Form/Parents[2]/Rows/Body/A"] &&
+    selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N For Key] > 0" "Rows/N" partialCall "missing" ==
+      some ["/Form[1]/Parents[1]/Rows[-5]/N", "/Form[1]/Parents[2]/Rows[-5]/N"]) = true := by native_decide
+
+example : [false, true].all (fun partialCall =>
+    selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N For \"b\"] > 0" "Rows/N" partialCall ==
+      some ["Form/Parents/Rows[2]/N", "Form/Parents[2]/Rows/N"] &&
+    selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N For Key] > 0 Or [Rows/N For Key] > 0"
+      "Rows/N" partialCall ==
+      some ["Form/Parents/Rows[2]/N", "Form/Parents[2]/Rows/N"] &&
+    selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N For \"b\"] > 0 Or [Rows/N For \"b\"] > 0"
+      "Rows/N" partialCall ==
+      some ["Form/Parents/Rows[2]/N", "Form/Parents[2]/Rows/N"]) = true := by native_decide
+
+example : [false, true].all (fun partialCall =>
+    selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N For \"a\"] > 0 Or [Rows/N For \"b\"] > 0"
+      "Rows/N" partialCall ==
+      some ["Form/Parents/Rows/N", "Form/Parents[2]/Rows/N"] &&
+    selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N For \"b\"] > 0 Or [Rows/N For Key] > 0"
+      "Rows/N" partialCall ==
+      some ["Form/Parents/Rows/N", "Form/Parents[2]/Rows/N"]) = true := by native_decide
+
+example : [false, true].all (fun partialCall =>
+    selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N] > 0 Or [Rows/N For Key] > 0"
+      "Rows/N" partialCall ==
+      some ["Form/Parents/Rows/N", "Form/Parents/Rows[2]/N",
+        "Form/Parents[2]/Rows/N", "Form/Parents[2]/Rows[2]/N"]) = true := by native_decide
+
+example : [false, true].all (fun partialCall =>
+    selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N For Key] > 0" "Rows/N" partialCall "b" "bad" ==
+      some ["Form/Parents/Rows[2]/N", "Form/Parents[2]/Rows/N"]) = true := by native_decide
+
 end A12Kernel.Dm.SelectedMessageLocks
