@@ -1,6 +1,6 @@
 # Path, group and filter residuals
 
-[PLAN](../PLAN.md#reconciliation-checklist) selects correction work; its [fixed exclusions](../PLAN.md#deferred-work) remain in force. The [gap index](../SEMANTICS-GAPS.md) defines residual status. Reader support must be checked before treating an older low-level carrier limit as missing ordinary syntax.
+[K01–K22](../PLAN.md#remaining-conformance-checklist) selects the required closure work. The [routing table](../PLAN.md#remaining-gap-routing) maps every family and historical D exclusion to its current task or consumer phase. D labels below describe the former C scope, not a reason to skip a K obligation. The [gap index](../SEMANTICS-GAPS.md) defines residual status; implemented behavior stays in the linked capability owners. Task selection supersedes conditional reopening language for its named acceptance cases.
 
 <a id="gap-sg9"></a>
 ### SG9 — paths, indices, and static legality completion

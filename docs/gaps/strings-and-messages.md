@@ -1,6 +1,6 @@
 # String, enumeration and message residuals
 
-[PLAN](../PLAN.md#reconciliation-checklist) selects correction work; its [fixed exclusions](../PLAN.md#deferred-work) remain in force. The [gap index](../SEMANTICS-GAPS.md) defines residual status. Implemented behavior, sources and historical corrections belong to their linked owners rather than this open-only inventory.
+[K01–K22](../PLAN.md#remaining-conformance-checklist) selects the required closure work. The [routing table](../PLAN.md#remaining-gap-routing) maps every family and historical D exclusion to its current task or consumer phase. D labels below describe the former C scope, not a reason to skip a K obligation. The [gap index](../SEMANTICS-GAPS.md) defines residual status; implemented behavior stays in the linked capability owners. Task selection supersedes conditional reopening language for its named acceptance cases.
 
 <a id="gap-sg7"></a>
 ### SG7 — String, pattern, and custom-field completion
@@ -10,7 +10,7 @@
 - `remaining`: model-JSON restricted-charset ingestion beyond the library's admitted LegalCharset; wider raw-String check modes and additional category/partial/Custom-target expression calibration. These are distinct from ordinary pattern/length target execution.
 - `host-boundary`: patterns outside the built-in compiler require an injected compiler. Broader Java regex, grapheme and surrogate profiles are D10; missing preparation must remain explicit on the maintained checked route.
 - `evidence-needed`: repeatable/Custom pattern execution, stringMitNewline, and additional computed-target combinations beyond the [ordinary crossing capture](../sources/computation-placement-and-constant-probes.md#src-string-enumeration-crossings). A host-supplied pattern plus closed Enumeration domain is outside that ordinary DM declaration matrix.
-- `remaining`: registered custom callback outcomes beyond declarative constraints, including reserved test-range handling. The [test-range boundary](../sources/custom-field-probes.md#src-custom-test-range) and [pending handoff](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-12) own the missing cache-admission/finding/continuation matrix.
+- `remaining`: registered custom callback outcomes beyond declarative constraints, including reserved test-range handling. The [test-range checkpoint](../sources/custom-field-probes.md#src-custom-test-range) supplies the modern cache-admission/finding/continuation observations. Local adoption is K01; the [ledger remainder](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-12) is the unmeasured legacy unique-entity arm.
 - `remaining`: the shipped custom validators' ordered cascades, registry/factory-specific behavior and custom conversion invocation. The [vocabulary owner](../implementation/validation-messages-and-custom.md#cap-shipped-custom-field-type-vocabulary) covers names and message identities, not their algorithms.
 - `evidence-needed`: whether and where custom display/internal codecs run, the resulting text identity, length/charset-versus-custom ordering, and conversion-message behavior on accepted values. Measure invocation before changing stored-text or interpolation semantics.
 - `evidence-needed`: Enumeration stored token versus display text under named validity, the value-validation flag, wider operand containment, registered-Custom distinctness and Custom/String uniqueness. [Explicit validity](../implementation/validation-messages-and-custom.md#cap-explicit-validity-predicates) keeps source-grounded crossings distinct from measured String behavior.
@@ -36,9 +36,9 @@
 
 <a id="sg26--the-index-terminal-in-a-message-parameter"></a>
 <a id="gap-sg26"></a>
-### SG26 — excluded index-message diagnostic calibration
+### SG26 — index-message diagnostic calibration
 
-- `state`: excluded diagnostics; D08. Ordinary C13 index/group parameters are covered by the [implementation owner](../implementation/validation-messages-and-custom.md#cap-index-message-authoring-and-rendering).
+- `state`: diagnostic residual selected by K15; formerly D08. Ordinary C13 index/group parameters are covered by the [implementation owner](../implementation/validation-messages-and-custom.md#cap-index-message-authoring-and-rendering).
 - `remaining`: composed multi-field indices, same-name Enumeration indices differing in display mappings, mixed kinds under the shared name, and repeatability disagreement outside iteration. These discriminate the four additional INVALID_INDEX_FIELD classes.
 - `route-limit`: the normalized model has a single index field. The [refusal-class source](../sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes) and [cross-field witnesses](../sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates) distinguish model representation limits from authorable source-derived checker branches.
 - `reopen-when`: an adopted diagnostic consumer requires one of these classes and an otherwise-admissible witness isolates it from parser/read failures.

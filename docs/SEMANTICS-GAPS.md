@@ -1,6 +1,6 @@
 # Residual semantic obligations
 
-This is the open-only inventory of residual obligations toward complete conformance with A12 Kernel 30.8.1. It is not an executable work queue. The prior [C01–C22 checklist](PLAN.md#ordered-checklist) accepted a bounded ordinary scope; the owner-authorized [R01–R03 reconciliation](PLAN.md#reconciliation-checklist) selects the current correction. The [fixed exclusions](PLAN.md#deferred-work) remain outside that deliverable. Broad construct coverage and retained calibration do not imply all compositions, host profiles or consumers are closed.
+This is the open-only inventory of residual obligations toward conformance with A12 Kernel 30.8.1. [K01–K22](PLAN.md#remaining-conformance-checklist) is the owner-requested closure checklist, followed by [Rust and SMT consumer development](PLAN.md#consumer-development). C01–C22 and R01–R03 are completed baselines. Historical D identifiers in the shards no longer exclude required work: the [current routing table](PLAN.md#remaining-gap-routing) assigns every family and former exclusion. Broad coverage and calibration do not close all compositions.
 
 ## Query contract
 
@@ -9,7 +9,7 @@ This is the open-only inventory of residual obligations toward complete conforma
 - `remaining` and `diagnostics` identify residual behavior or exact output distinctions, bounded by the record's scope/exclusion links.
 - `evidence-needed` means additional correspondence is missing; it does not by itself mean executable support is absent.
 - `host-boundary` and `representation-boundary` preserve caller requirements or explicit limits of a named API. They are not permission to silently produce a wrong result.
-- `consumer-gated` identifies optional transport, proof or product work with no current adopted consumer.
+- `consumer-gated` identifies transport, proof or product work whose exact consumer contract must be selected in the planned consumer phase; it is not automatically evaluator work.
 - `verification-needed` and `api-audit` preserve an unresolved historical claim or predicted API distinction without promoting it to a confirmed current defect. A current reader discriminator must settle it before work is selected.
 - `reopen-when` states the trigger; `route-state: discovery-required` describes investigation readiness, not an instruction to resume. A reproduced accepted-scope defect belongs in the selected correction, never in an exclusion by relabelling.
 

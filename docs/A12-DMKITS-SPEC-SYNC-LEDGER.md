@@ -37,20 +37,24 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+The reviewed 2026-10-12 handback yields 18 `accepted`, five `answered` and one `handed-off` receipt across the 24 entries below. Stable IDs remain here; [the provenance record](sources/inbound-handbacks.md#src-inbound-2026-10-12) owns the reviewed revision, evidence routes and limits.
+
 <a id="spec-2026-10-10-01"></a>
 ### SPEC-2026-10-10-01 — explicit narrower guards qualify target-derived operand scope
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [computation formal inputs](../spec/09-computations.md) and [filter cache scope](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation) derive target subtrees from guard preprocessing, not an unconditional target expansion.
 - `delta`: the implicit nearest-repeatable-group guard is omitted when an authored computation already has a conditional-group profile protecting that row or a narrower containing group. A narrower guard can exclude outer siblings from expanded operand scope; explicit row guards still include them. Computed fields stay excluded from formal inputs.
 - `basis`: [three-model Kernel 30.8.1 matrix](sources/computation-scheduling-probes.md#src-computation-guard-operand-scope), 15 agreeing runtime rows, plus the source-owned common mechanism. Formal findings do not prevent the target computing. Cache consequences are source-derived, not newly runtime-measured.
-- `acceptance`: reconcile KF538's blanket target-subtree account and operand/cache collection with implicit, explicit-row and narrower-containing-group controls. Preserve per-authored-computation preprocessing and distinguish scheduling dependencies from operands. Retain nested/sparse/partial-validation limits. Introducing revision is the first commit containing this ID; no reviewed peer response yet.
+- `acceptance`: reconcile KF538's blanket target-subtree account and operand/cache collection with implicit, explicit-row and narrower-containing-group controls. Preserve per-authored-computation preprocessing and distinguish scheduling dependencies from operands. Retain nested/sparse/partial-validation limits. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Authored guard profiles reconcile formal operand scope and independent writers, preserving the declared nested/sparse/partial limits. `ComputeAuthoredGuardScopeDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 
 <a id="spec-2026-10-10-02"></a>
 ### SPEC-2026-10-10-02 — consumer-specific sparse filter traversal above 100 candidates
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [filter traversal](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
 - `delta`: Sparse-enabled consumers use phase-visible coordinate-prefix occupancy above 100 cache-bounded candidates. Initial/reset searches remain dense until a candidate is kept; rejection does not advance the kept cursor. Computation retains successor lookahead. First-filled, value counts and any-pair overlap remain dense; scalar-versus-list overlap opts into sparse traversal.
 - `basis`: [Kernel 30.8.1 computation matrices and source account](sources/group-and-iteration-probes.md#src-sparse-filter-traversal), both strategies agreeing. Sum/filled count, threshold/reset/occupancy controls, Number/String/Boolean value counts and exact/yearless overlap policies are measured. Distinct/extrema extensions and full validation remain source-derived.
@@ -61,46 +65,52 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reconcile`: iteration prose and consumer-specific evaluator traversal. Preserve the distinction between candidate cache scope, occupancy, filter execution and payload consumption; do not replace it with physical-row filtering.
 - `acceptance`: Review the canonical account against the retained matrix and source, reconcile the peer's supported surfaces, and state remaining predicate/prepass, partial-validation and external-calibration limits explicitly.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: pending.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Consumer-specific traversal, prefix stopping and uniqueness controls reconcile the measured full-validation/computation carriers; wider profiles and partial validation remain bounded. `SparseFilteredAggregateDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-03"></a>
 ### SPEC-2026-10-10-03 — selected error references retain authored identity and scope
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [ordinary iteration and error references](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) distinguish selected payloads, authored keys and implicit index-cache dependencies.
 - `delta`: A selected payload does not bind its selected row level, but retains ordinary ancestor bindings. A field-valued key keeps its own scope. Merely consulting the index column does not name that field for static error-field admission; explicitly selecting or guarding it does.
 - `basis`: [Source checkpoint](sources/having-filter-probes.md#src-having-reference-scope), from authored entity-map insertion through semantic-index coordinate marking to error-reference classification. Local reader controls cover independent field/group callers and admitted twins; this extension has no new Kernel capture.
-- `acceptance`: Reconcile static membership and per-level iteration separately from runtime dependency/message sets. Check selected field and group payloads, literal/field keys, explicit-index twins, bound ancestors, sibling versus own-error guards and unchanged computation admission. Introducing revision is the first commit containing this ID; no peer response yet.
+- `acceptance`: Reconcile static membership and per-level iteration separately from runtime dependency/message sets. Check selected field and group payloads, literal/field keys, explicit-index twins, bound ancestors, sibling versus own-error guards and unchanged computation admission. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Selected payload/key scope, explicit-index admission and surviving iteration levels are reconciled by admitted twins and runtime controls. `SelectedAuthoredScopeDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 
 <a id="spec-2026-10-10-04"></a>
 ### SPEC-2026-10-10-04 — numeric parallel lookup aliases can produce repeated visits
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Parallel iteration](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key) separates rendered iteration-token identity from numeric lookup identity.
 - `delta`: Equal Number values still match across declarations with different minimum fractional digits, but distinct rendered tokens both visit the same matched pair. Deduplicating by numeric value loses observable message multiplicity; treating the tokens as unmatched loses lookup semantics.
 - `basis`: [Kernel 30.8.1 source and seven-document two-strategy matrix](sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens), including positive/negative controls, aligned fractional values, numeric aliases, duplicates and empty groups.
 - `reconcile`: Parallel iteration prose and validation evaluator key-union/lookup representation. Preserve duplicate exclusion, invalid-column UNKNOWN and lexical token order; computation target iteration remains a separate consumer.
 - `acceptance`: Reproduce one-versus-two matched visits for equal/different minimum scales, one visit when natural fractional precision aligns both renderings, and unchanged unmatched/duplicate controls. State uncalibrated profiles explicitly.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: pending.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Rendered-token multiplicity and lexical visit order remain separate from numeric lookup identity on the measured validation profile. `NumericIndexKeyDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-05"></a>
 ### SPEC-2026-10-10-05 — parallel group operands and duplicate error pointers
 
-- `status`: pending
+- `status`: answered
 - `canonical`: [parallel iteration](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key) distinguishes group content, parent-local joins and duplicate pointer lookup from value admission.
 - `delta`: Group predicates read joined group content after index availability. Common outer coordinates partition key unions. Duplicate value unavailability does not force an unknown error coordinate when another branch fires; pointer lookup retains its separate cache association.
 - `evidence`: [Twelve static checks and ten runtime documents](sources/model-structure-and-declaration-probes.md#src-parallel-group-outer), both Kernel strategies. The existing selected-message checkpoint already establishes that physical first/last duplicate order is insufficient.
 - `request`: Reconcile the canonical parallel clause and consumer treatment of group references, outer dispatch and duplicate error addresses. No repeated capture is requested.
 - `acceptance`: An exact peer revision adopts the distinctions or supplies contrary Kernel evidence. Exact document-to-cache insertion order remains an explicit implementation obligation here.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Joined content, read availability and parent-local dispatch are reconciled; IF376 retains first-admitted duplicate pointers without exact Kernel winner parity or contrary evidence. `ParallelValidationDispatchDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 
 <a id="spec-2026-10-10-06"></a>
 ### SPEC-2026-10-10-06 — duplicate pointer selection depends on unrelated cache entries
 
-- `status`: pending
+- `status`: answered
 - `canonical`: [Selected message coordinates](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages) separate parent-local association identity from whole-cache population order.
 - `delta`: An unrelated valid field or empty repeatable group can change the selected duplicate coordinate; empty and malformed field controls do not. An added outer parent can change a parallel error address within another parent. Physical-row order and an index-column-only fold cannot reproduce these observations.
 - `basis`: [Ten-document, two-strategy Kernel 30.8.1 matrix and producer source](sources/message-and-pointer-probes.md#src-message-cache-population-order), reusing existing admitted models. Hash-bucket capacity predictions match the selected-reference and parallel-error separators.
@@ -110,23 +120,25 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `request`: Reconcile duplicate-address semantics for both consumers; preserve the separate unavailable value read. No repeated capture is requested.
 - `acceptance`: An exact peer revision adopts the distinctions or supplies contrary Kernel evidence; preserve the measured host-dependent collision boundary and retain default, partial-call and other host-profile limits until settled.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: pending.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Query/parent isolation and unavailable duplicate value reads are reconciled; IF376 deliberately retains first-admitted pointers rather than measured host-cache winners. No contrary Kernel evidence is supplied. `SelectedMessageReferenceDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-07"></a>
 ### SPEC-2026-10-10-07 — Document JSON compacts surviving object repetitions
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Runtime repetition topology](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) distinguishes JSON conversion from sparse V1 placement padding.
 - `delta`: Non-object repetition elements are discarded before assigning consecutive coordinates, independently within each surviving parent. Empty objects remain rows; field-null remains present-empty.
 - `basis`: [Nine-document, two-strategy Kernel matrix and source](sources/evaluation-and-application-routes.md#src-json-row-normalization) distinguish null prefix/suffix, mixed non-object kinds, explicit empty rows, two survivors and nested scope.
 - `request`: Reconcile consumer JSON ingestion and topology claims against this conversion. No repeated measurement is requested; deserializer diagnostic payloads remain outside this runtime projection.
 - `acceptance`: An exact peer revision adopts dense survivor coordinates or supplies contrary Kernel evidence for this route, preserving the separate V1 contract.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: pending.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Canonical JSON ingestion compacts surviving object rows independently per parent, preserves empty objects and valid siblings, and keeps sparse placement construction separate. `A12JsonIngressDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 ### SPEC-2026-10-10-08 — partial relevance filters message-cache population
 
-- `status`: pending
+- `status`: answered
 - `canonical`: [Selected message references](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
 - `delta`: Partial relevance filters admitted fields and touched ancestor-group placeholders before host ordering. Excluding one unrelated field changes the selected duplicate pointer; retaining just one index row selects that row.
 - `basis`: [Seven-row, two-strategy capture and source](sources/message-cache-probes.md#src-message-cache-partial-population), with unchanged full-validation controls.
@@ -134,156 +146,186 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `request`: Reconcile partial reference-cache production against the filtered population; reuse the retained observations. Keep cache associations separate from duplicate-invalid value reads and from rule-firing gates.
 - `acceptance`: An exact peer revision adopts this population boundary or supplies contrary Kernel evidence for the measured carrier; preserve explicit host context where ordering remains unsettled.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: pending.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Original relevance gates message associations independently of value reads and dispatch; IF376 retains first-admitted duplicate winners without exact Kernel pointer parity or contrary evidence. `SelectedMessageReferenceDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 ### SPEC-2026-10-10-09 — default cache associations survive index formal invalidity
 
-- `status`: pending
+- `status`: answered
 - `canonical`: [Selected message references](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
 - `delta`: Full calls append singleton defaults after original-population ordering. A formally invalid singleton index may acquire a default message association while its authored read remains UNKNOWN and its formal error persists. Partial calls append none. Empty declared S-value means no default.
 - `basis`: [Fourteen-row, two-strategy capture and source](sources/message-cache-probes.md#src-message-cache-default-and-names) cover default staging/capacity and renamed/reserved identifier controls on Kernel 30.8.1.
 - `request`: Reconcile message-cache default eligibility separately from evaluation availability; preserve the original population boundary and model-wide name reservations. Reuse the retained observations.
 - `acceptance`: An exact peer revision adopts the independent cache/read boundary and name effects or supplies contrary Kernel evidence; no change to invalid-cell authored availability is requested.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: pending.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Full-only invalid singleton defaults retain message associations beside formal errors and unavailable authored reads; duplicate name/capacity winner effects remain the IF376 difference, without contrary evidence. `SelectedMessageReferenceDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 ### SPEC-2026-10-10-10 — partial parallel dispatch and frame traversal
 
-- `status`: pending
+- `status`: answered
 - `canonical`: [Partial validation](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
 - `delta`: Parallel dispatch uses compressed error-field selectors, independently of leaf relevance. Concrete joined-row selectors suppress rules with ordinary outer iteration; differing selectors can restore dispatch. Unmatched reads require wildcard index/leaf coverage, and complete descendant coverage can establish group absence. One-sided frames reuse declared-product/occupied-prefix traversal on full and partial calls.
 - `basis`: [56-row, two-strategy capture and source](sources/model-structure-and-declaration-probes.md#src-partial-parallel), Kernel 30.8.1; root-repeatability, declaration-location, selector-union, negative-group, duplicate-cache and frame-bound 3/6 twins.
 - `request`: Reconcile the parallel dispatch gate separately from key membership and condition visibility; exercise empty frame slots before reusing physical-only traversal. Reuse the retained captures.
 - `acceptance`: An exact peer revision adopts these independently measured stages or supplies contrary Kernel evidence. Existing payload-only and excluded-index behavior must remain unchanged.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: pending.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Compressed dispatch, original operand relevance and declared frame traversal are reconciled independently; IF376 retains first-admitted duplicate associations without exact Kernel winner parity or contrary evidence. `ParallelValidationDispatchDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-11"></a>
 ### SPEC-2026-10-10-11 — custom validators receive raw text before evaluated normalization
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Custom-field ingestion](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation) separates original callback input from the accepted evaluated payload.
 - `delta`: Validate original stored text, then normalize CRLF once on acceptance. Lone CR survives. Subsequent Length, value and computation reads reuse the checked payload; dependent computations must not re-ingest it. Empty and absent cells bypass validation; ordinary rejected cells remain unavailable.
 - `basis`: [Source and eight-row runtime matrix](sources/custom-field-probes.md#src-custom-ingestion), with raw-sensitive/LF-only validators and repeated-CR direct/dependent computation controls. Both Kernel strategies agree. The correction fixes Lean's raw-text acceptance branch; it does not claim an existing peer implementation defect.
-- `acceptance`: Reconcile callback-input and evaluated-value contracts on the ordinary stored-document route. Retain separate test-range and conversion-enabled presentation obligations; do not generalize this matrix to arbitrary custom codecs. Introducing revision is the first commit containing this ID; no peer response yet.
+- `acceptance`: Reconcile callback-input and evaluated-value contracts on the ordinary stored-document route. Retain separate test-range and conversion-enabled presentation obligations; do not generalize this matrix to arbitrary custom codecs. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Raw callback input, one-pass checked payload normalization and dependent reuse are reconciled on ordinary stored-document routes; conversion/presentation and arbitrary codecs remain excluded. `CustomTestRangeLawsTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-12"></a>
 ### SPEC-2026-10-10-12 — measure reserved custom test-range outcomes and continuation
 
-- `status`: pending
+- `status`: handed-off
 - `request`: Supply a retained runtime matrix for a registered validator returning `testIDNummer`, ordinary rejection and acceptance. The [source boundary](sources/custom-field-probes.md#src-custom-test-range) predicts admitted cache text beside a reported finding, but also identifies whole-call continuation and unique-entity interactions. This is a measurement request, not a settled canonical correction.
 - `instrument`: The maintained declarative kernelProbe registry exposes only fixed pattern/length error keys. Existing custom rejection-code tests also fix their keys. Use a source-owned differential or extend the maintained observation route; no local harness copy is requested or authorized.
 - `matrix`: Cross full/partial validation and computation; direct value/Length reads and seeded copies; unrelated computations; with/without unique entities; full versus abort-on-formal-error validation mode; relevant/excluded, absent and empty controls. Include repeated-CR text to distinguish original callback input from one-pass evaluated normalization.
 - `acceptance`: Report exact findings/pointers, available values, changed and unchanged computation outcomes, whole-call abort/fault behavior, and relevant cache membership, separately for both strategies. Pin the producer revision and evidence. Preserve distinctions between observed behavior and source predictions; introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Partial response settles modern validation/computation and explicit core modes with hasUniqueEntities=false. Both indexed and unindexed controls assert false; the requested legacy true arm remains unmeasured. The original matrix stays open pending local scope/route resolution, with no new outbound entry or send. `CustomTestRangeLawsTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-13"></a>
 ### SPEC-2026-10-10-13 — retain empty authored pattern execution failure
 
-- `status`: pending
+- `status`: accepted
 - `change`: [Pattern execution](../spec/06-strings-and-enumerations.md#pattern-admission-and-execution) distinguishes an admitted empty authored pattern from an inactive empty declared pattern. A reached condition call fails before operand availability, escapes subsequent Boolean conditions and alternative tiers, and is caught by the enclosing validation/computation handler.
 - `evidence`: [Source and 56-row matrix](sources/computation-scheduling-probes.md#src-empty-pattern-execution), both strategies agreeing at the pinned clean producer. Direct and Having cases distinguish short circuit, formal-input prepass, partial relevance, empty/uninstantiated candidates, independent targets and nonempty controls. Indexed empty-source behavior is an internal specialization, not measured correspondence.
 - `request`: Reconcile consumer execution and canonical prose with this failure effect and its handler boundary. Preserve formal-input precheck precedence and inactive declared-empty policy; do not implement the authored case as a Boolean match result. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Reached failure, preceding short circuit and independent continuation reconcile the handler boundary; inactive declaration-owned patterns remain distinct. `EmptyAuthoredPatternDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-14"></a>
 ### SPEC-2026-10-10-14 — nested first-filled scans retain empty leading branches
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [First-filled selection](../spec/03-empty-and-required.md) retains missing-prefix provenance across nested stars, including an empty or omitted inner group under an earlier parent.
 - `delta`: Flattening physical leaf rows loses an observable distinction: a later matching value emits OMISSION after an empty leading branch, while an empty suffix preserves VALUE. Keep visited-prefix missingness separate from omitted-tail metadata.
 - `basis`: [Eleven-document, three-carrier matrix](sources/computation-scheduling-probes.md#src-first-filled-empty-prefix) covers String, Number and Boolean full validation with a filtered control, both Kernel strategies agreeing. This corrects Lean's physical-leaf projection; it does not assert an existing peer defect.
 - `extent extension`: The same checkpoint now retains 33 documents across five group/keyed forms and three carriers. Empty/omitted leading branches differ from suffixes in every form; unavailable key controls preserve ordinary-group results. Reuse these captures for reconciliation.
-- `acceptance`: Reconcile nested first-filled traversal and polarity using the retained observations. Preserve terminal hiding and unavailable-value handling; include the measured ordinary group, starred group and keyed lower-star/group/starred-group controls across String, Number and Boolean. Partial validation and wider profiles remain separately bounded. Introducing revision is the first commit containing this ID; no reviewed peer response yet.
+- `acceptance`: Reconcile nested first-filled traversal and polarity using the retained observations. Preserve terminal hiding and unavailable-value handling; include the measured ordinary group, starred group and keyed lower-star/group/starred-group controls across String, Number and Boolean. Partial validation and wider profiles remain separately bounded. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Nested missing-prefix provenance and suffix polarity are reconciled across the measured ordinary/starred/keyed String, Number and Boolean profiles; partial/wider claims remain bounded. `FirstFilledNestedPrefixDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-15"></a>
 ### SPEC-2026-10-10-15 — partial value lists accept complete concrete declared-slot coverage
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Partial value-list extent](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation) separates declared-slot coverage from relevant concrete witnesses and the runtime's separate USB gate.
 - `delta`: Concrete selectors covering rows one and two establish an ordinary capacity-two extent; the same selectors leave a capacity-three extent unknown even when its third row is absent. Do not require a wildcard at every repeated group or infer completeness from physical rows alone. Preserve the three quantifiers' side-specific UNKNOWN policy.
 - `basis`: [Two-capacity Number/String matrix](sources/group-list-and-capacity-probes.md#src-partial-list-declared-extent), 28 documents, field/group operands and both sides, with both strategies agreeing. Maintained reader-to-evaluator readback matches all 672 partial pointer/type comparisons after correcting 54 divergences.
 - `acceptance`: Reconcile the wildcard-only account against the retained capacity controls and source; retain distinct count/aggregate gates. Report exact adopted revision or contrary evidence. Nested/keyed, wider profiles and separate USB-host behavior remain explicitly uncalibrated. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Complete concrete declared-slot coverage reconciles ordinary value-list extent and side-specific UNKNOWN behavior while preserving distinct count/aggregate gates. `PartialDeclaredListExtentDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-16"></a>
 ### SPEC-2026-10-10-16 — selected lists cover lower declared slots and retain absent-list omission
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Selected partial coverage](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation) and [absent selected lists](../spec/08-paths-and-references.md#41-what-a-semantic-index-read-yields).
 - `delta`: A matched key binds the selected parent; lower declared slots may be covered concretely. No selection requires a wildcard at the parent, but not every lower level. No and values-side NotAll preserve absent-list OMISSION on full and partial validation.
 - `basis`: [Two-carrier selected-list matrix](sources/group-list-and-capacity-probes.md#src-selected-list-declared-extent), both strategies agreeing; 552 full and 552 partial exact pointer/type comparisons. This corrects Lean's shared extent/polarity adapters and does not assert a peer defect.
-- `acceptance`: Reconcile Number/String lower field/starred-group lists, both sides and all three quantifiers against retained selected, absent and excluded controls. Keep counts/aggregates separate; wider profiles and deeper topology remain uncalibrated. Introducing revision is the first commit containing this ID; no peer response yet.
+- `acceptance`: Reconcile Number/String lower field/starred-group lists, both sides and all three quantifiers against retained selected, absent and excluded controls. Keep counts/aggregates separate; wider profiles and deeper topology remain uncalibrated. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Selected-parent identity, lower-slot coverage and absent-list OMISSION are reconciled for measured Number/String field/group lists and both sides; counts and wider topology remain separate. `SelectedGroupValueListDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-17"></a>
 ### SPEC-2026-10-10-17 — nested group-count growth uses all reopened capacities
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Count extent and message polarity](../spec/10-validation-and-polarity.md#41-the-same-rule-fires-either-type).
 - `delta`: A starred group count's extent is the product of reopened capacities, not just its terminal group's maximum. Bound ancestors and descendants below the operand do not contribute. Full/partial rule polarity and implicit computation messages use the same extent.
 - `basis`: [Two-axis matrix](sources/group-count-topology.md#src-nested-group-count), both Kernel 30.8.1 strategies agreeing. Empty prefix/suffix and missing-parent controls count two against extent four; full capacity counts four. This corrects Lean's shared extent projection and does not assert an existing peer defect.
 - `acceptance`: Reconcile nested starred and below-star count growth with the retained rules, seeded computation values and implicit messages. Preserve partial first-instance gates and distinguish structural rows from fixed-group content. Report the adopted exact revision or contrary evidence; wider topology remains explicitly uncalibrated. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Reopened capacities multiply within an operand while authored positions add; bound-parent controls and computation observations preserve local extent and implicit-message polarity. `MultiLevelStarredGroupCountDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-18"></a>
 ### SPEC-2026-10-10-18 — excess descendant rows do not poison ancestor partial counts
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Partial group-count first-instance errors](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
 - `delta`: Capacity-invalid descendants report structural findings but are skipped before invalid-field-cache admission. They therefore do not mark ancestor groups erroneous or suppress an otherwise-decided partial count. In-capacity malformed descendants retain their error effect.
 - `basis`: [Bound/nested count matrix](sources/group-count-topology.md#src-bound-nested-count), both Kernel 30.8.1 strategies. Root and bound counts separate error propagation at two depths; excess-row and malformed-excess twins agree. This corrects Lean's shared group projection, not a demonstrated peer defect.
 - `acceptance`: Reconcile structural diagnostics separately from ancestor group-error state, preserving parent-local counting, declared capacities, in-capacity formal errors and excess-target clearing. Reuse retained observations; report an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Structural findings remain separate from ancestor error-cache admission; cache and occurrence controls preserve parent-local counts, in-capacity errors and computation operand scope. `OverRepetitionOccurrenceDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-19"></a>
 ### SPEC-2026-10-10-19 — later unavailable groups block partial counts
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Partial group-count walk](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
 - `delta`: After the stricter first-instance gate, every held instance still requires decided presence. A later malformed-only group or partly covered group without visible admitted content makes the count UNKNOWN. Admitted content beside an independent error still counts; clean fully covered absence contributes zero.
 - `basis`: [Operand multiplicity and independent-axis matrix](sources/group-count-topology.md#src-group-count-multiplicity), both Kernel 30.8.1 strategies agreeing. This corrects Lean's later-instance Boolean projection, not a demonstrated peer defect.
 - `acceptance`: Reconcile the later-instance rule while preserving first-instance strictness, repeated-operand multiplicity, structural row counts, capacity filtering and the computation arm. Reuse the retained controls; report an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Later held groups still require decided presence after the strict first-instance gate; malformed-only/hidden content, clean absence and admitted content beside errors remain distinct. `PartialGroupCountRelevanceDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-20"></a>
 ### SPEC-2026-10-10-20 — partial group predicates retain missing-position uncertainty
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Partial group presence](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
 - `delta`: The two starred group predicates combine relevance-selected presence over declared positions, including missing rows. Uncovered absence cannot prove `NoGroupFilled`. A covered descendant exposes an instantiated terminal row as structural content even when the descendant is empty; fixed below-star groups still need admitted content.
 - `basis`: [Mixed group-predicate matrix](sources/group-count-topology.md#src-mixed-group-predicates), both Kernel strategies on 99 rows. Lean's full route agreed; its partial route refused mixtures and could emit a negative message for an uncovered absent group. No peer defect is claimed.
 - `acceptance`: Reconcile declared-coordinate uncertainty, descendant relevance, repeated operands, independent mixtures and operand-order controls. Preserve capacity filtering, group-count first-instance strictness and computation's distinct semantics. Reuse retained observations; return an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Declared-coordinate uncertainty, positive witnesses and fixed-child state are reconciled for repeated/mixed operands without merging count or computation gates. `PartialStarredGroupCoverageDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 
 <a id="spec-2026-10-10-21"></a>
 ### SPEC-2026-10-10-21 — keyed lower-star group predicates retain declared coverage
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Selected-parent partial group predicates](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
 - `delta`: The two star-admitting group predicates bind the indexed parent and retain each lower declared group position. A missing parent needs wildcard coverage at the indexed level and complete lower-slot coverage; concrete lower coordinates can jointly cover finite capacity, while concrete parent coordinates cannot replace the wildcard. Terminal structural content and fixed-child content remain distinct.
 - `basis`: [Keyed-star predicate matrix](sources/group-count-topology.md#src-keyed-star-predicates), both Kernel strategies agreeing on 159 rows across one and two reopened levels, fixed and independent-star mixtures, key failure/absence and capacity controls. No peer defect is claimed.
 - `acceptance`: Reconcile selected-parent identity and missing-parent/lower-slot coverage for both predicates. Preserve the ordinary star-admission gates, duplicate-key unavailability and count/computation distinctions. Return an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Matched-parent identity and wildcard coverage for an unresolved parent remain separate from complete concrete lower products; duplicate-key and count/computation distinctions are preserved. `PartialStarredGroupCoverageDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-10-22"></a>
 ### SPEC-2026-10-10-22 — full group relevance combines concrete descendant coverage
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Partial group relevance](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation).
 - `delta`: Complete concrete coverage of finite repeatable children supplies full parent-group relevance, including coverage assembled from descendant fields across nested levels. Duplicate coordinates, out-of-capacity substitutes, missing fields and incomplete nested combinations do not suffice. Declared capacity, rather than held rows, sets the denominator.
 - `basis`: [Group relevance union matrix](sources/group-count-topology.md#src-group-relevance-union), both Kernel strategies agreeing on 126 rows across group presence, all five list predicates and fixed-list group counts. No peer defect is claimed.
 - `acceptance`: Reconcile the shared full-relevance product while preserving positive-content witnesses, malformed-input treatment, the count’s separate extent/first-instance gates and computation semantics. Return an exact adopted revision or contrary evidence. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Complete finite descendant products establish parent relevance; incomplete/duplicate/out-of-capacity controls preserve positive witnesses, malformed input and separate count gates. `PartialParentGroupCoverageDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-11-01"></a>
 ### SPEC-2026-10-11-01 — index substitution and keyed-group presence guards
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [message construction](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation).
 - `delta`: Preserve authored-path ancestry rather than expanded descendant membership in index/group reference metadata. Specify index value/category substitution from the firing context and distinguish keyed-group reference identity from the positive structural presence gate. Keyed group rendering reuses parent-scoped message-cache selection, including unknown and duplicate coordinates.
 - `basis`: [Kernel 30.8.1 source account](sources/message-and-pointer-probes.md#src-index-message-rendering); existing admission/group-coordinate/cache captures are controls, not a new rendering capture.
 - `reconcile`: message semantics and supported authoring/rendering consumers; preserve exact reference mode, guard algebra, conversion-versus-category behavior and host-cache boundaries.
 - `acceptance`: Review the linked clauses against the named service/runtime loci, reconcile supported peer surfaces and state empirical limits without equating a matching key with a presence guard.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: pending.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Authored ancestry, positive keyed-group presence and index-owner rendering are reconciled by admission twins and exact text/address controls; presentation-information, nonrepeatable defaults and computation messages remain excluded. `SelectedMessageReferenceDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
 
 <a id="spec-2026-10-11-02"></a>
 ### SPEC-2026-10-11-02 — preserve declaration co-notifications and formal-name suppression
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [declaration notifications](../spec/01-data-model.md#32-computations).
 - `delta`: absent/exactly-empty rule error code retains a codeless empty-code notification beside `MVK_ERROR_CODE_MISSING`; whitespace-only controls retain the named class alone. Formal name rejection suppresses `MVK_RULE_NAME_INVALID`, while independent code findings remain reportable.
 - `basis`: [twelve static observations](sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission), Kernel 30.8.1, maintained a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`. The peer's name-tier correction is consumed separately as inbound evidence, not re-issued here.
-- `acceptance`: preserve keyed and codeless findings in declaration reporting; reconcile empty versus whitespace-only codes and reserved-prefix versus formally invalid name twins. No notification-order or complete consistency-report claim. Introducing revision is the first commit containing this ID; no reviewed peer response yet.
+- `acceptance`: preserve keyed and codeless findings in declaration reporting; reconcile empty versus whitespace-only codes and reserved-prefix versus formally invalid name twins. No notification-order or complete consistency-report claim. Introducing revision is the first commit containing this ID.
+- `reviewed a12-dmkits revision`: `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`.
+- `disposition`: Exact declaration notification multisets preserve keyed/codeless findings and their locations; malformed reserved-name twins suppress the named class. Portable named-code projection is not the full codeless stream. `InvalidModelLoadDiagnosticTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).

@@ -1,28 +1,24 @@
-# Conformance acceptance and reconciliation
+# Conformance closure and consumer transition
 
-Owner-directed reset, 2026-10-10. The requested finish line is good-enough Lean coverage of Kernel 30.8.1: complete the substantial ordinary validation/computation behavior and leave the esoteric long tail out. The owner's “99–99.5%” describes that practical scope, not a measured percentage of all possible programs. Universal conformance remains a long-term aspiration, not a reason to continue this work indefinitely.
-
-C01–C22 fixed the acceptance cases for the agreed ordinary coverage target and are complete. Keep that scope frozen: no broadened acceptance cases, product launch, downstream adoption, new interpreter, SMT integration or qualification programme is a prerequisite. Consumer probes remain occasional checks that the semantics is usable. The separately authorized reconciliation below is the current finite correction; it is not a continuation of the long tail.
-
-C01–C22 are the prior accepted checklist. The owner subsequently authorized the bounded reconciliation below after an audit found stale gap records and a retained static-admission mismatch. This correction does not reopen the excluded long tail or depend on the pending peer handoffs.
+The active owner-requested programme is [K01–K22](#remaining-conformance-checklist), followed by [Rust and SMT consumer development](#consumer-development). The prior C01–C22 ordinary-scope checkpoint and R01–R03 reconciliation are complete. Their checked boxes do not imply the remaining kernel obligations are finished.
 
 <a id="reconciliation-checklist"></a>
 ## R01–R03 — owner-authorized reconciliation
 
-Owner direction, 2026-10-11: clean up the gap owners thoroughly and use a new finite checklist for verified tasks. These three outcomes are the complete correction scope. Use the existing applicable checks and review cadence; do not append a tail programme, new consumer qualification, or peer-handoff prerequisite.
+Owner direction, 2026-10-11: clean up the gap owners thoroughly and use a new finite checklist for verified tasks. These three outcomes were the complete reconciliation scope; the subsequent K checklist owns remaining conformance. Use the existing applicable checks and review cadence; do not append a tail programme, new consumer qualification, or peer-handoff prerequisite.
 
 - [x] **R01 — preserve reference scopes in iteration admission.** The retained unguarded mixed direct/filtered-star Max rule must report the negative-iteration refusal, while its positive-guard twin remains admitted. The shared Number entity classifier must also distinguish the Min, Sum, first-filled, distinct-count and value-count specializations, token/Boolean value-count companions with direct-field iteration scopes, operand reversal, both And orders and Or. Pure direct and existing selected/bound-parent controls remain admitted. The [retained binding matrix](sources/evaluation-and-application-routes.md#src-validation-iteration-domain) is the external discriminator; additional specializations are internal checks, not new calibration.
 - [x] **R02 — reconcile every existing gap family.** Remove completed history and superseded claims from the index and all six shards. Preserve live residual distinctions, evidence needs, host requirements and stable links in their existing owners. Separate accepted-scope defects from the fixed D01–D24 exclusions, optional consumer work and claims whose current implementation status needs verification. No residual may disappear merely because its family is broad or calibrated; no historical claim becomes a new task without a current discriminator.
 - [x] **R03 — enforce the open-only document contract.** The existing hygiene guard must reject completed-history bullets in both prose and backtick-keyed form. Adversarial controls must preserve legitimate residual, prerequisite and source-link bullets. All existing anchors and incoming links must resolve after reconciliation; the ordinary hygiene and source-sync checks must pass.
 
-Stop after these outcomes, the applicable integrated/evidence/trust checks and the triggered cold review are complete. The next consumer probe remains unselected: C01/C12 readbacks retain their bounded claim, and the present correction introduces no new consumer contract.
+This reconciliation checkpoint is complete. The active K checklist and its consumer transition below supersede its stop instruction; C01/C12 retain their bounded readback claim.
 
 <a id="single-track-breadth-queue"></a>
 ## Priority and closure rules
 
 Work in numbered order, one shared mechanism batch at a time. High-risk behavior comes first, including rare triggers: wrong computed values, stale data surviving clears, swallowed failures, cross-row selection leaks and silent admission/metadata loss. Then close ordinary accepted-language reach and consequential evidence gaps. This is an engineering judgment; no production-model frequency data is available.
 
-- Rarity and risk are separate. A high-risk failure of the promised coverage cannot be excluded as long tail. C01 owns the five named host/exclusion boundaries; the other tasks own their stated mechanisms. Resolve a discovered failure through its existing owner before accepting that task. Explicit unsupported/context requirements must not silently become wrong answers.
+- Rarity and risk are separate. A high-risk failure of the promised coverage cannot be excluded as long tail. K19 owns host/service boundary disposition; the other K tasks own their stated mechanisms. Resolve a discovered failure through its existing owner before accepting that task. Explicit unsupported/context requirements must not silently become wrong answers.
 - An unchecked item is a closure obligation, not automatically a missing implementation. Code-confirmed boundaries below were inspected for this plan. Recorded gaps need a focused current-code/evidence check at entry; calibration tasks need the stated external discriminator.
 - Inspect the named owners and existing separators once. If they already discharge the item, check it off with an evidence link and correct its stale gap claim. Do not implement, capture or rebuild it again.
 - Each task's listed acceptance matrix is frozen now. Fixture values and commands may be concretized at entry, but no semantic axis is added. Name the shared selection, observation, scheduling, admission or emission mechanism; use the listed contrasting cases to falsify it. Fix the mechanism across the named family, not one branch per example.
@@ -31,13 +27,213 @@ Work in numbered order, one shared mechanism batch at a time. High-risk behavior
 - Use retained observations first. A new capture needs an unresolved alternative and a finite matrix. Passing it ends the batch; no automatic “one more depth/kind/permutation.”
 - Completion requires the promised reader-to-evaluator/output result, evidence and honest exclusions. A known missing in-scope case cannot be checked off by relabelling it a limitation.
 - Good-enough coverage requires ordinary accepted inputs to be executable and ordinary outcomes to agree with their oracle. Unsupported ordinary inputs remain gaps; a high replay pass rate over only supported cases does not establish completion. Use existing coverage, gaps and evidence owners rather than creating a new percentage-measurement programme.
-- Keep the published order and scope. A necessary dependency correction may change execution order within these tasks but creates no new deliverable. Adjacency, curiosity and available tooling never authorize extra work. The prior coverage sequence stopped at C22; the separately authorized R01–R03 correction is finite and creates no subsequent tail programme.
+- Keep the published order and scope. A necessary dependency correction may change execution order within these tasks but creates no new deliverable. Adjacency, curiosity and available tooling never authorize extra work. The owner has now authorized K01–K22 and the subsequent consumer phase; do not append another automatic tail programme.
 - PLAN has no word limit for this owner-requested checklist. Detailed semantics remain in linked owners. This adds no tracking framework, harness or recurring verification loop.
 
-<a id="ordered-checklist"></a>
-## Checkpoint 1 — ordinary Execute/Explain reliability
+<a id="remaining-conformance-checklist"></a>
+## K01–K22 — remaining conformance before consumers
 
-C01–C12 are the required sequence. This checkpoint is a bounded consumer-reliability claim, not full conformance or public-protocol coverage.
+Owner direction, 2026-10-11, resumed with the 2026-10-12 handbacks: close the relevant remaining semantic obligations, then move to actual consumer development, including a Rust interpreter and SMT-backed analysis. C01–C22 and R01–R03 remain completed checkpoints; neither is the finish line for this new phase. All K items start unchecked: their status must follow verified outcomes, not the existence of a plan or a peer receipt.
+
+The denominator is the current residual mechanisms in all 24 SG families, including the concrete inbound corrections linked below. Each task fixes a finite separating matrix rather than a Cartesian product of every depth, kind and host profile. At entry, recover existing implementation, proofs and observations; sufficient existing evidence can discharge a row without new code. A stale gap is deleted only after that check. A task that only prepares prerequisites remains unchecked.
+
+An implementation task is done when its named reader-to-evaluator/output cases are settled, the shared mechanism and applicable laws/non-laws preserve them, needed correspondence is retained or precisely source-grounded, and applicable gates/review pass. Admission refusals require otherwise-admissible controls and exact promised classes; a generic refusal does not discharge a specific diagnostic obligation. New observations need independent discriminators, including a second composition. A peer implementation choice is not a Kernel oracle.
+
+### K01 — reserved Custom ingestion and continuation
+
+- [ ] Close the measured reserved-result behavior through validation, computation and cache admission. [SG7](gaps/strings-and-messages.md#gap-sg7), [test-range source](sources/custom-field-probes.md#src-custom-test-range).
+- Matrix: exact `testIDNummer`, ordinary rejection, acceptance and near-spelled keys; raw versus normalized text; absent/empty/relevant/excluded input; seeded/unchanged targets and an independent computation; full examination versus abort mode.
+- Done: finding, readable payload, invalid-pointer membership and continuation agree with the committed modern-route observations. Preserve callback invocation order and normalize once.
+- The original ledger's `hasUniqueEntities=true` arm is unresolved. Settle its reachable model/API profile separately from merely declaring an index. Keep this item open until that arm is observed or a verified profile boundary establishes why it is outside the evaluator contract; lack of an instrument alone is insufficient.
+
+### K02 — computation report assembly and whole-call failure
+
+- [ ] Reconcile duplicate diagnostic assembly after computation with the returned partitions and application boundary. [SG4](gaps/keystone.md#gap-sg4), [SG16](gaps/keystone.md#gap-sg16), [inbound evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12).
+- Matrix: two findings at the same full error pointer versus distinct physical rows; an independent callback computation; selected duplicate versus ordinary malformed source; root-only computation beside an unused custom index.
+- Done: computation execution, report assembly failure and availability of an applied snapshot remain distinct. No early abort, swallowed whole-call failure or invented applied result. Use the peer's committed duplicate-diagnostic controls before requesting a capture.
+
+### K03 — captured Having environments and ordered consumption
+
+- [ ] Close remaining binding and consumption compositions in [SG17](gaps/paths-and-groups.md#gap-sg17), [SG20](gaps/paths-and-groups.md#gap-sg20) and [SG23](gaps/numeric-and-temporal.md#gap-sg23).
+- Matrix: overlap and uniqueness with discriminating disjoint/mixed values under two enclosing rows; ordinary/indexed twins; two off-path captured references and a marked group; full/partial/computation callers; dense threshold and sparse successor versus unread later failure.
+- Done: enclosing and candidate rows cannot be interchanged, unavailable/filter-failure states stay distinct, and each consumer retains its scan policy. Reuse the inbound correlation and sparse-consumer observations; source equivalence can discharge another depth without another capture.
+
+### K04 — authored identity and static admission
+
+- [ ] Close the remaining reference-classification gates in [SG9](gaps/paths-and-groups.md#gap-sg9), [SG19](gaps/paths-and-groups.md#gap-sg19) and [SG29](gaps/paths-and-groups.md#gap-sg29).
+- Matrix: the retained `Other` companion's negative-iteration class and guarded twin; direct/selected/key-field references; group-as-field slots and category/root/duplicate precedence; target self-read before/after common guards; starred CurrentRepetition and repetition-uniqueness sibling fixed-group keys.
+- Done: authored identity survives lowering and ordinary levels bind only where admitted. Each distinct gate gets an isolated positive/negative pair; named competing-gate cases keep their precedence. This is not an exhaustive permutation of every diagnostic pair.
+
+### K05 — selected addressing and key fitting
+
+- [ ] Close key interpretation and selected row identity in [SG29](gaps/paths-and-groups.md#gap-sg29), including selected error-field reanchoring.
+- Matrix: literal/field keys; Number signed zero/scale and String padding/whitespace/UTF-16/non-ASCII distinctions; valid/missing/duplicate keys; same key under two parents; partial lower-star selection with complete/incomplete coverage; selected error/reference/fill coordinates.
+- Done: key fit, value availability and message association remain separate. Preserve selected ancestry through nested payload/filter and typed computation callers. Custom codecs receive an explicit contract rather than implicit String coercion.
+
+### K06 — group extent, relevance and capacity
+
+- [ ] Close the residual shared product/coverage mechanism in [SG13](gaps/paths-and-groups.md#gap-sg13) and [SG5 group runtime](gaps/numeric-and-temporal.md#gap-sg5-number-token-group-runtime).
+- Matrix: bound ancestor plus three reopened levels; independent and repeated operands; complete/diagonal/missing declared-slot selections; impossible fixed suffix coordinates; absent versus empty versus malformed-only content; capacity overflow with a valid sibling.
+- Matrix: Number, token/category and Boolean group callers; presence, counts, memberships, extrema/distinct and generated self-validation use their distinct gates. Include a fully covered negative large-domain control without requiring materialized products.
+- Done: current-reader outcomes and coordinates agree across full/partial/computation routes. Fixed-suffix and structural follow-on evidence is reconciled, and no generic coverage helper erases a consumer-specific gate.
+
+### K07 — parallel joins and cross-root dispatch
+
+- [ ] Close remaining parallel/cross-root runtime compositions in [SG9](gaps/paths-and-groups.md#gap-sg9), [SG29](gaps/paths-and-groups.md#gap-sg29) and [SG10](gaps/strings-and-messages.md#gap-sg10).
+- Matrix: two parents with reversed/same keys; unmatched and invalid keys; numeric lexical aliases; independent ordinary and parallel levels; differing partial selectors; cross-root operands and selected error targets.
+- Done: key visits, original leaf relevance, frame traversal and message multiplicity retain their separate identities. The peer's IF376 first-admitted policy is never used as an exact pointer oracle. Host-order-dependent winners remain explicit context requirements checked by K19.
+
+### K08 — computation guards, dependency reads and formal scope
+
+- [ ] Close the wider operation/guard compositions in [SG4](gaps/keystone.md#gap-sg4).
+- Matrix: indexed/correlated membership guard with a fresh computed key/payload; multiple alternatives and repeated targets; parallel operands from different declarations; mixed producer chain with an independent branch; false guard, reached poison and malformed unused operand.
+- Done: per-authored-operation preprocessing, dependency ordering, first-match selection and formal-input unions agree. Same-call dependents distinguish clean clear from poison, including equal formal-error inventories. Whole-model admission remains enforced; partial-plan stale storage cannot silently execute.
+
+### K09 — first-filled and cross-carrier value identity
+
+- [ ] Close first-filled list and value-identity boundaries in [SG4](gaps/keystone.md#gap-sg4), [SG8](gaps/strings-and-messages.md#gap-sg8) and [SG18](gaps/keystone.md#gap-sg18).
+- Matrix: own-level/foreign-root stars, nested missing prefix and multi-operand order; String/Enumeration and Boolean/Time carrier pairs with admitted/refused twins; category projection; selected missing/duplicate keys; first available value before a later failure.
+- Done: compatible carriers retain their value identity and target rendering, incompatible pairs retain the measured refusal, and scanning neither drops missing-prefix provenance nor evaluates an unread suffix.
+
+### K10 — result projection, application and later observation
+
+- [ ] Close the remaining observable application compositions in [SG16](gaps/keystone.md#gap-sg16) and [SG15](gaps/targets-and-derivation.md#gap-sg15).
+- Matrix: successful unchanged result versus omitted outcome versus clear; seeded/fresh target; target rejection; cross-group/materialized topology; same-model independent destination; subsequent generated/explicit validation and dependent read.
+- Done: result partitions, source-relative changes and applied state agree on each materially distinct carrier policy. Preserve original ingress identity where normalization loses it. Separate-destination/object-only observations use their existing source routes and retain API limits; no per-clear causal attribution is invented.
+
+### K11 — temporal loading, interpretation and target policy
+
+- [ ] Close declared temporal profile handling in [SG6](gaps/numeric-and-temporal.md#gap-sg6), [SG21](gaps/numeric-and-temporal.md#gap-sg21), [SG15](gaps/targets-and-derivation.md#gap-sg15) and [SG18](gaps/keystone.md#gap-sg18).
+- Matrix: format-less default versus explicit format; malformed versus outside-profile stored value; partial/yearless Date with BaseYear and leap boundary; fixed/row target copy versus render; DateTime model-zone discontinuity and omitted target component; world-backed Time components.
+- Done: loaded declaration metadata determines interpretation and rendering consistently. Closed formats reuse the shared temporal profile; pre-floor eras and unsupported host-zone data have the explicit boundary verified under K19.
+
+### K12 — temporal expressions and selected range compositions
+
+- [ ] Close recursive temporal expression composition in [SG6](gaps/numeric-and-temporal.md#gap-sg6), [SG23](gaps/numeric-and-temporal.md#gap-sg23) and [SG8](gaps/strings-and-messages.md#gap-sg8).
+- Matrix: nested Difference with BaseYear on one/both operands; selected/filtered partial Date extraction and ValueAsDate; DateFromDateTime through application; DateRange fragment endpoints with literal/field Number and String keys; missing/duplicate/invalid selected rows and unselected malformed controls.
+- Done: comparison, constructor, extraction, overlap, extrema and distinct adapters preserve precision, world context and reached failure. Wrong-kind component and selected-key precedence have admitted twins. Reuse evidence for equivalent profiles; no repeated search for an unwitnessed bare DateRange literal.
+
+### K13 — String, Enumeration and custom field contracts
+
+- [ ] Close remaining ingestion, formal checking and domain crossings in [SG7](gaps/strings-and-messages.md#gap-sg7) and [SG8](gaps/strings-and-messages.md#gap-sg8).
+- Matrix: raw/checked String and restricted character sets; reached versus bypassed empty pattern; repeated Custom values and newline normalization; Enumeration token versus display/category; membership numeric fallback; closed-domain containment, distinct and uniqueness; custom conversion before/after length/charset checks.
+- Done: runtime uses the intended internal value while diagnostics and display use their own representation. Registry/factory lookup, shipped-validator delegation and codecs have explicit invocation contracts; implementing arbitrary external validator algorithms is not required.
+
+### K14 — structural and generated findings
+
+- [ ] Close finding multiplicity, suppression and coordinates in [SG10](gaps/strings-and-messages.md#gap-sg10) and [SG7](gaps/strings-and-messages.md#gap-sg7).
+- Matrix: Enumeration declarations and withholding combinations; required/empty/default values; nonempty versus empty partial selection; repeated over-capacity present-null/empty fields; generated self-validation after computation; error/reference/fill-to-fix coordinates.
+- Done: observable code/type/severity/cardinality and full pointer identity are retained where promised. Independent notifications must not collapse merely because one code is absent. Localized catalog prose stays external.
+
+### K15 — message parameter grammar and rendering inputs
+
+- [ ] Close remaining ordinary authoring and structured rendering inputs in [SG25](gaps/strings-and-messages.md#gap-sg25), [SG26](gaps/strings-and-messages.md#gap-sg26) and [SG10](gaps/strings-and-messages.md#gap-sg10).
+- Matrix: parallel positive-presence guard and invalid hash/repetition parameter; repeatable names and deeper RuleGroup/multi-root references; selected/index/category parameters; four outstanding composed-index/type/display/repeatability refusal classes; empty/default/provider output and computation message context.
+- Done: parse success, admission and rendering context remain separate. Compare structured parameters and exact promised diagnostic classes; lexer offsets and all locale wording are not silently claimed. Protected message text is supplied by the host.
+
+### K16 — Number ingress and representation boundaries
+
+- [ ] Close material numeric representation distinctions in [SG5](gaps/numeric-and-temporal.md#gap-sg5) and [SG27](gaps/numeric-and-temporal.md#gap-sg27).
+- Matrix: authored scale versus rational equality; leading zeros/signed zero/plus/separators; wire overflow and scientific numeric strings; display-to-internal conversion; one-/three-decimal money formatting inputs; guarded versus reached conversion.
+- Done: declaration admission, stored validity, arithmetic and display conversion do not substitute for one another. Each supported public ingress preserves relevant original text; unsupported ingress has a named refusal/profile boundary. Money wording remains provider-owned.
+
+### K17 — model declarations and static denominator
+
+- [ ] Resolve the residual ordinary declaration surface and classify the six H-model classes in [SG28](gaps/targets-and-derivation.md#gap-sg28), with [SG8](gaps/strings-and-messages.md#gap-sg8), [SG9](gaps/paths-and-groups.md#gap-sg9) and [SG21](gaps/numeric-and-temporal.md#gap-sg21).
+- Matrix: empty fixed groups, variant/default declarations, all catalogued field-type bodies, table-backed Enumeration provider metadata, hint/sort references, rule/computation name and notification controls.
+- Done: every named declaration class is implemented, already evidenced, or tied to a measured/source-defined host/service boundary. Four classes living outside H packages cannot be excluded by package name. No ordinary supported declaration is silently dropped by the reader.
+
+### K18 — CustomCondition callback contract and calibration
+
+- [ ] Close the remaining callback invocation evidence in [SG11](gaps/strings-and-messages.md#gap-sg11) and [SG12](gaps/conformance-evidence.md#gap-sg12).
+- Matrix: successful/missing factory lookup and precedence; fixed/repeated/parallel contexts; full/partial relevance; exact row coordinates and invalid-pointer payload; reached versus bypassed call.
+- Done: the pure callback contract is usable by an independent interpreter, and the currently uncalibrated validation construct cell has retained correspondence evidence. Mutable host effects and arbitrary thrown exceptions remain explicit external behavior, not invented pure semantics.
+
+### K19 — host boundaries and relevance disposition
+
+- [ ] Discharge the remaining host/API boundaries and assign every residual bullet a concrete outcome, using all [gap owners](SEMANTICS-GAPS.md).
+- Matrix: missing regex/compiler/validator/provider; unavailable temporal profile; absent actual cache-order context beside an unaffected query; incomplete computation plan; non-JSON/object-only input; H-model service versus validation/computation; unobservable clear cause.
+- Done: each boundary has a named contract, discriminator and consumer consequence. A restriction is acceptable only when it expresses an actual host dependency, separate service or genuinely unobservable distinction. Missing instrumentation, rarity or an unchecked implementation is not a completion reason.
+- D13 mandatory-information analysis and D17 transformation theorems are assigned to the consumer phase below. Prove the required evaluator distinctions now; do not build an analyzer or optimizer as a prerequisite. Any material evaluator omission discovered here returns to its owning K task.
+
+### K20 — correspondence and held-out composition check
+
+- [ ] Reconcile [SG12](gaps/conformance-evidence.md#gap-sg12) against the completed K01–K19 matrices, current construct inventory and unchanged replay population.
+- Matrix: every formerly uncalibrated cell; each newly implemented observable branch; reported rows without artifacts; explicit host preparation refusals; full/partial/computation/application channels. Each absent row receives a case-level disposition rather than being hidden by admitted-only totals.
+- Done: retained evidence is current, material missing observations are resolved, and the applicable integrated, evidence and population gates pass. Use one coherent capture per unresolved family; no blanket recapture or measured-percentage claim.
+
+### K21 — consumer readiness at the semantic boundary
+
+- [ ] Run bounded independent Execute and Analyze/Synthesize readbacks against the material a Rust interpreter and SMT consumer will receive. [Use cases](USE-CASES.md), [implementer contract](IMPLEMENTER-GUIDE.md), [SMT proposal](SMT-SOLVER-SUPPORT-PROPOSAL.md).
+- Matrix: fresh producer/clear/poison; partial selected rows and duplicate host context; formal versus generated versus authored validity; error-condition reachability versus model acceptance; a finite witness with UNKNOWN/empty input and a computation before validation.
+- Done: an isolated consumer can reconstruct these decisions and identify host/bound assumptions without Kernel archaeology. Any missing semantic distinction returns to K01–K19; a missing consumer adapter or shipment is work for U01/U02. Readback success is not Rust or SMT implementation qualification.
+
+### K22 — final conformance acceptance and transition
+
+- [ ] Review K01–K21 against every live residual and the declared validation/computation contract. Complete the existing triggered final HIGH review and only invalidated gate reruns.
+- Done: all required tasks have evidence-linked dispositions; no known relevant evaluator behavior, static legality, output distinction or consequential evidence gap remains unresolved. Remaining host/service boundaries have K19 dispositions and consumer work has explicit ownership. A checkbox cannot be earned by moving an implementation gap into exclusions.
+- The intended report is: “Kernel coverage and convergence is reached as close as the available evidence and explicit host contracts permit; no known relevant semantic work remains before consumer development.” State any material limit alongside it. Do not claim universal equivalence, a measured percentage or that finite tests prove all possible compositions.
+- Then select U01. Do not append an automatic conformance-tail programme. A later consumer counterexample reopens its exact semantic owner; it does not restart a general completeness campaign.
+
+<a id="consumer-development"></a>
+## After K22 — consumer development
+
+This phase is owner-requested work, not an optional aspiration or another prerequisite for declaring K01–K22 complete. Rust first is the recommended order because an independent evaluator exercises the complete transport contract before SMT adds encoding and solver-trust obligations. Existing [Rust correlation work](IMPLEMENTER-KIT-CORRELATION.md#fresh-rust-runtime-consumer-probe) is a bounded prior asset, not a general interpreter; inspect and reuse it where its contract fits.
+
+- [ ] **U01 — Rust interpreter.** Freeze the evaluator shipment and implementation profile, then implement and qualify the agreed validation/computation surface in Rust, including exact numbers, row identity, partial relevance, computation state and host interfaces. Completion requires an actual runnable consumer and differential/property evidence, not another readback. Prepare concrete repository/session and dependency choices at entry under the [consumer handoff rules](IMPLEMENTER-GUIDE.md#lessons-from-the-first-cold-implementation); no downstream checkout is created by this planning change.
+- [ ] **U02 — SMT-backed analysis and synthesis.** Use the [existing proposal](SMT-SOLVER-SUPPORT-PROPOSAL.md) to settle a finite initial query profile, then implement its translation, solver interaction and checked results. Distinguish condition/rule reachability from model inhabitance and computation-alternative coverage. Replay decoded SAT witnesses through the accepted evaluator semantics; bound UNSAT claims by encoding completeness and solver/certificate trust. Resolve relevant mandatory-information and transformation needs here, instead of using them to defer consumer work indefinitely.
+
+The request adopts this sequencing and the two consumer objectives. It does not silently adopt every optional feature in the SMT proposal or choose new dependencies, repository creation, releases or public compatibility claims. Those concrete choices belong to the implementation boundary, with existing approval rules applied only where needed.
+
+<a id="remaining-gap-routing"></a>
+## Residual ownership and former exclusions
+
+The old D identifiers explain the C01–C22 boundary only. They no longer exclude a K task. Each SG family below has an executable-work destination; a residual not discharged there blocks K22 unless K19 establishes its explicit host/service boundary.
+
+| Gap family | Required K owners | Consumer-only continuation |
+|---|---|---|
+| SG4, SG18, SG16 | K02, K08–K12, K20 | U01 |
+| SG5, SG27 | K04, K06, K16 | U01 |
+| SG6, SG21, SG23 | K03, K11–K12, K19 | U01/U02 |
+| SG7, SG8 | K01, K09, K13–K14, K17 | U01 |
+| SG25, SG26, SG10 | K07, K14–K15 | U01 |
+| SG11 | K18 | U01/U02 |
+| SG9, SG29, SG19 | K04–K07, K17, K19 | U01 |
+| SG13, SG17, SG20 | K03, K06, K19 | U02 transformation/analysis only |
+| SG15 | K10–K12 | U01 |
+| SG14 | K19 service boundary | U02 mandatory-information analysis |
+| SG28 | K17, K19 | U01/U02 |
+| SG12 | K18, K20 | U01/U02 qualification |
+
+| Former exclusion | Current disposition |
+|---|---|
+| D01–D02 depth, arity and capacity | K03, K05–K06: settle mechanisms and separating depths/capacities; no arbitrary permutation campaign |
+| D03 calendar profiles | K11–K12 implementation; K19 explicit host floor/zone boundary |
+| D04 cache history | K05, K07 and K19 context contract; retain exact Kernel semantics despite peer IF376 |
+| D05 lexical key fitting | K05 |
+| D06 diagnostic combinations | K04, K15, K17; exact named gates, not every pairwise permutation or parser resource ceiling |
+| D07–D08 multiplicity and index classes | K14–K15 |
+| D09 provider/locale breadth | K14–K15 host inputs; catalog prose remains external under K19 |
+| D10 regex/Unicode | K13 semantics and K19 compiler/host contract |
+| D11 callbacks/codecs | K01, K13, K18; legacy custom arm remains open until K01 disposition |
+| D12 Number display ingress | K16 |
+| D13 mandatory-information service | K19 boundary, then U02 when its query profile needs the service |
+| D14 partial plans | K08 enforcement and K19 contract; no silent stale-field execution |
+| D15 application/explanation | K10; K19 distinguishes observability limits from evaluator state |
+| D16 declarations/importing | K11, K17; a general importer is a separate consumer |
+| D17 transformation theorem | Evaluator effects in K03; transformation-specific theorem/probe in U02 when adopted |
+| D18 legacy/public API breadth | K04–K07 and K14–K15 semantic distinctions; U01 owns needed transport, legacy API parity is not implied |
+| D19 declaration catalog | K17 |
+| D20 extra carriers/chains | K08–K12 and K20: material policy distinctions, not arbitrary extra lengths |
+| D21 temporal target/literal search | K11–K12: named target policies; unwitnessed syntax stays reachability-unknown |
+| D22 coordinates/cross-root/RNU | K04–K07 |
+| D23 capacity/category/filter calibration | K03, K06, K13 and K20 |
+| D24 structural faults/unobservable choices | K02, K08 and K19: preserve total semantics, require a discriminator before another measurement |
+
+<a id="ordered-checklist"></a>
+## Completed C checkpoint 1 — ordinary Execute/Explain reliability
+
+C01–C12 were the required sequence for this completed checkpoint. The following C records preserve accepted evidence, not current sequencing or stop instructions. This was a bounded consumer-reliability claim, not full conformance or public-protocol coverage.
 
 ### C01 — risk boundary check and independent consumer baseline
 
@@ -199,12 +395,12 @@ C13–C22 follow the reported first checkpoint and finish the ordinary-behavior 
 
 - Accepted: C01–C21 have checked dispositions and their triggered reviews are complete. Fresh HIGH C22 cold review found no actionable issue; final hygiene passes. All 217 catalog construct/arm cells remain broad; 216 are calibrated, with only the agreed D11 callback cell pending. The final replay matches all 71,994 admitted comparisons across 457 requests and 3,381 reported rows. There are no divergences, faults, unattributed results or per-instance tier-2 refusals.
 - Evidence limits: 217 reported rows remain without matching retained observations. The six unchanged preparation refusals are five missing host-validator bindings and one pattern outside the built-in compiler; they exercise the explicit context requirements checked by C01, not silently accepted wrong answers. Ordinary replay excludes partial/generated-message and application channels; C01/C03/C07/C08/C12/C21 retain their separate checks.
-- Supported conclusion: the frozen ordinary validation/computation scope is a useful Kernel 30.8.1 semantic reference for consumer implementation: checked conditions, selected/repeated addressing, first-match computation, fresh dependencies, clearing/poison, application, structured errors and the listed numeric/temporal/token compositions. The independent C01/C12 readbacks and C21 runtime controls support usability. This is neither a measured percentage of all programs nor certification of every downstream consumer. The fixed exclusions below remain the finish-line boundary.
+- Supported conclusion: the frozen ordinary validation/computation scope is a useful Kernel 30.8.1 semantic reference for consumer implementation: checked conditions, selected/repeated addressing, first-match computation, fresh dependencies, clearing/poison, application, structured errors and the listed numeric/temporal/token compositions. The independent C01/C12 readbacks and C21 runtime controls support usability. This is neither a measured percentage of all programs nor certification of every downstream consumer. The historical exclusions below bounded that C checkpoint; the current K checklist supersedes them.
 
 <a id="deferred-work"></a>
-## Excluded long tail — outside the good-enough finish line
+## Historical C01–C22 exclusions
 
-These are the fixed scope exclusions, not candidate tasks or a follow-on queue. C01 checks the five dangerous host/exclusion boundaries; failures of the promised coverage are corrected within the existing tasks. Keep the stated exclusions visible, but create no separate new-findings or limitations record and do not accumulate another work programme after C22. The rationale below explains each fixed boundary; none authorizes task additions or scope expansion.
+These exclusions record the prior C deliverable. The [current disposition table](#remaining-gap-routing) supersedes them for K01–K22; retain the IDs to interpret existing evidence and gap references. They cannot be used to dismiss a required K outcome.
 
 | ID | Specific work | Boundary rationale (no automatic work) | Owner |
 |---|---|---|---|
@@ -235,7 +431,7 @@ These are the fixed scope exclusions, not candidate tasks or a follow-on queue. 
 
 ## Reconciliation and coverage of the list
 
-Every one of the 24 existing SG family records has a destination above. C01–C22 and D01–D24 retain the original delivery boundary; R01–R03 owns the subsequently authorized correction. A residual inventory is not another task list, and a reproduced defect of the accepted scope must not be dismissed as excluded merely because C22 passed.
+Every one of the 24 SG family records is routed in the [current ownership table](#remaining-gap-routing). C and R completion is historical baseline evidence; K completion requires its own dispositions.
 
 Do not convert these stale blanket claims into work:
 
@@ -244,23 +440,23 @@ Do not convert these stale blanket claims into work:
 - [ComputationNumericGuard](../A12Kernel/Elaboration/ComputationNumericGuard.lean) already accepts indexed fields/keyed groups. C02 covers actual selected-star scheduling.
 - [Validation evaluation](../A12Kernel/Elaboration/ValidationCondition/Evaluation.lean) already preserves direct/indexed validity failures. C04 covers full callers and retained controls.
 
-Only CustomCondition validation remains uncalibrated, under the fixed D11 exclusion. C18–C20 closed the eleven ordinary calibration cells; the construct inventory now records 216 of 217 cells calibrated. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns the labels. A blocked reserved callback matrix does not mean every CustomCondition observation is blocked.
+CustomCondition validation remains uncalibrated and is now selected under K18. C18–C20 closed the eleven ordinary calibration cells; the construct inventory now records 216 of 217 cells calibrated. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns the labels. The reserved-custom handback supplies modern-route observations; its legacy-arm limit is distinct from CustomCondition calibration.
 
 <a id="active-unit"></a>
 ## Resumption and accepted baseline
 
-- Status: R01–R03 complete. The shared admission correction, all 24 residual-family records and open-only guard are verified; no task is active.
-- Baseline: C01–C22 remain the accepted ordinary-scope checklist, with the R01 admission correction applied. Acceptance does not imply universal semantic closure.
-- Residuals: the [gap index](SEMANTICS-GAPS.md) distinguishes behavior, evidence, host/API, optional-consumer and verification boundaries. D01–D24 remain excluded. The concrete companion refusal-class and parallel-message-authoring residuals remain visible in SG9/SG25.
-- Consumer: C01/C12 passed their bounded Execute/Explain readbacks. No further probe is selected; a new adopted consumer or compatibility claim must supply its own bounded trigger.
-- Peer work: handoffs remain pending with the owner. No request was sent and no peer completion is inferred.
-- Stop: this reconciliation is finished. Do not select another task from the residual inventory without new owner direction.
+- Status: K01–K22 are unchecked and selected as the remaining conformance programme. C01–C22 and R01–R03 are the accepted baseline, not evidence that the K tasks have already passed.
+- Next: K01 read-only route discovery against the [reserved-custom checkpoint](sources/custom-field-probes.md#src-custom-test-range), then focused red/green at the verified owning route. Inventory current implementation before editing; reuse the delivered modern observations.
+- Oracle: [October 12 inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints. Peer receipts do not silently become local implementation or replay gains.
+- Open dependency: the requested legacy custom unique-entity arm remains unmeasured. K01 owns its observation or verified profile disposition; other independent K work may proceed if that narrow arm needs another handback.
+- Consumer: K21 checks semantic transport. K22 transitions to U01 Rust and then U02 SMT; the implementation objectives are explicitly requested, while concrete repository/dependency choices remain at their existing decision boundaries.
+- Execution: one writer and one sequential track. Use MEDIUM for settled coherent batches, HIGH for semantic decisions and acceptance, and the existing cold-review triggers. No peer messages were sent.
+- Stop: stop this phase at K22 and select U01. A genuine blocker keeps its task unchecked; neither a documentation cleanup nor a peer receipt substitutes for semantic closure.
 
 ## Verified gate boundary
 
-- Executable boundary, R01: focused reader locks and integrated `lake build` passed (2,231 jobs); `lake test` matched all 51 compact non-public projections. The retained rejected Max rule produces negativeConditionInIteration and its guarded twin admits. Additional sibling operators are internal separators, not new external calibration.
-- Review boundary, R01–R03: fresh read-only HIGH review found no implementation blocker. Both actionable documentation findings are corrected in SG9 and SG25 and their source/implementation links remain intact. The iteration implementation-note cleanup is nonbehavioral; no outbound spec request is created.
-- Full replay, R01–R03: 71,994 matches (52,462 rules and 19,532 computations), zero divergence/fault/unattributed/per-instance tier-2 results, 3,381 reported rows across 457 requests, 217 without matching artifacts and six explicit preparation refusals. The [derived snapshot](CONFORMANCE-COVERAGE.md#axis-r--population-replay) is refreshed on the reviewed implementation; the unchanged population loses no admitted comparison.
-- Final trust: 3,027 theorem roots; 111,259 declarations in 891 modules. Documentation hygiene, incoming links, all explicit gap compatibility anchors, spec-sync classification and diff hygiene pass. The production history regex passes positive/negative controls including the previously missed backtick-keyed form.
-- Consumer boundary: [C12](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) passed all eleven frozen Execute/Explain scenario families. This establishes bounded semantic transport, not independent-evaluator or downstream-product qualification; no new consumer contract was introduced here.
-- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern any newly authorized work. The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) and [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) retain pending peer boundaries.
+- Current change: handback receipts, gap routing and the K/U plan only. No executable or canonical-spec change, new calibration, consumer qualification or replay gain is claimed.
+- Accepted executable baseline: R01 reader locks, integrated build, compact evidence, population replay and trust passed with the completed reconciliation review. The [coverage owner](CONFORMANCE-COVERAGE.md#axis-r--population-replay) retains exact population results and preparation limits; this documentation change does not invalidate those executable checks.
+- Current documentation checks: bounded records, open-only gaps, relative links/anchors, spec-sync classification, protected-prose and diff hygiene pass. The checklist has one ordered unchecked item per K task and routes every SG family; ledger status/revision totals and preserved request matrices were checked.
+- Consumer baseline: [C12](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) establishes bounded semantic transport, not independent-evaluator or downstream-product qualification. K21 and U01/U02 retain their separate future obligations.
+- [Command ladder](TESTING.md#command-ladder), [replay cadence](TESTING.md#population-replay-cadence) and [review disposition](TESTING.md#review-convergence-and-landing-gate) govern implementation. The [custom test-range route](sources/custom-field-probes.md#src-custom-test-range) and [sync ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md) own the remaining peer boundary and reviewed dispositions.

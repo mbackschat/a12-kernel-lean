@@ -1,11 +1,11 @@
 # Kernel-correspondence residual
 
-The [gap index](../SEMANTICS-GAPS.md) defines residual status; [PLAN](../PLAN.md#reconciliation-checklist) selects work. This record preserves the limit of finite evidence without scheduling universal recapture.
+[K01–K22](../PLAN.md#remaining-conformance-checklist) selects the required closure work. The [routing table](../PLAN.md#remaining-gap-routing) maps every family and historical D exclusion to its current task or consumer phase. D labels below describe the former C scope, not a reason to skip a K obligation. The [gap index](../SEMANTICS-GAPS.md) defines residual status; implemented behavior stays in the linked capability owners. Task selection supersedes conditional reopening language for its named acceptance cases.
 
 <a id="gap-sg12"></a>
 ### SG12 — retained Kernel correspondence coverage
 
-- `state`: evidence residual; no calibration campaign is active.
+- `state`: evidence residual selected by K18/K20; finite correspondence remains distinct from universal conformance.
 - `baseline`: [Evidence](../EVIDENCE.md), the [construct denominator](../CONFORMANCE-COVERAGE.md#axis-0--kernel-constructs-by-arm) and [population replay](../CONFORMANCE-COVERAGE.md#axis-r--population-replay) own the retained inventory and its distinct claim limits.
 - `remaining`: the CustomCondition validation cell under D11 lacks the construct-level retained calibration. Its callback invocation and phase-specific matrix remains [SG11](strings-and-messages.md#gap-sg11).
 - `remaining`: family-specific compositions and profiles without runtime observations remain in their semantic gap owners. A calibrated construct cell can be supported by static admission evidence alone; it does not certify every runtime composition.

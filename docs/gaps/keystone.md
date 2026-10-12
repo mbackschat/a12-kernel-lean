@@ -1,11 +1,11 @@
 # Computation residuals
 
-These records preserve unresolved boundaries of the full conformance ambition. They are not an active implementation queue. [PLAN](../PLAN.md#reconciliation-checklist) owns the selected correction work and [fixed exclusions](../PLAN.md#deferred-work); the [gap index](../SEMANTICS-GAPS.md) defines the status vocabulary. Implemented behavior and assurance belong to the linked capability owners.
+[K01–K22](../PLAN.md#remaining-conformance-checklist) selects the required closure work. The [routing table](../PLAN.md#remaining-gap-routing) maps every family and historical D exclusion to its current task or consumer phase. D labels below describe the former C scope, not a reason to skip a K obligation. The [gap index](../SEMANTICS-GAPS.md) defines residual status; implemented behavior stays in the linked capability owners. Task selection supersedes conditional reopening language for its named acceptance cases.
 
 <a id="gap-sg4"></a>
 ### SG4 — computation scheduling and state transition
 
-- `state`: residual; wider compositions and calibration outside the frozen acceptance matrices, chiefly D14/D20/D24.
+- `state`: residual selected by K02/K08/K09; wider compositions and calibration formerly tagged D14/D20/D24.
 - `baseline`: [Checked guards](../implementation/computations.md#cap-computation-conditions), [whole-model plans](../implementation/computations.md#cap-scalar-execution-plans), [mixed plans](../implementation/computations.md#cap-mixed-computation-plan) and [non-Number alternatives](../implementation/repeatable-computations.md#cap-non-number-alternatives) own execution and reader coverage.
 - `remaining`: wider guarded operation, indexed/correlated membership and whole-document multi-alternative/repeated-target compositions beyond those owners' admitted matrices. Preserve the distinction between a complete authored plan and a deliberately selected fragment.
 - `remaining`: wider parallel Number operand/guard shapes and cross-declaration topology calibration beyond [C14's matrix](../sources/computation-scheduling-probes.md#src-parallel-numeric-operations).
@@ -42,6 +42,7 @@ These records preserve unresolved boundaries of the full conformance ambition. T
 - `baseline`: [Result/application semantics](../implementation/computations.md#cap-result-and-application), [typed application](../implementation/repeatable-computations.md#cap-typed-result-application) and their family owners distinguish returned partitions, source-relative changes, applied state and later validation.
 - `remaining`: wider carrier/profile, cross-group and materialized-topology correspondence beyond those exact application matrices. A generic application function does not externally calibrate every target policy.
 - `remaining`: additional multi-operation formal-input unions and later-rule execution beyond the [direct-field](../implementation/computations.md#cap-checked-direct-field-formal-input) and [selected-preliminary](../implementation/computations.md#cap-selected-computation-preliminary) boundaries.
+- `host-boundary`: public Kernel result partitions erase clean-clear versus poison state and do not expose per-clear causal attribution. [The audited observation boundary](../sources/inbound-handbacks.md#src-computation-clear-observability) supports same-call dependent-read discriminators; formal operand inventory or missing error messages alone cannot recover that state.
 - `host-boundary`: noncanonical String-ingress identity for non-String targets outside the supported Number route must retain original source representation; parsed value or stored spelling alone cannot reconstruct it.
 - `consumer-gated`: addressed-index clear attribution, pointer-dialect rendering and source/destination model-compatibility certificates require a named consumer unable to supply the existing same-model precondition.
 - `evidence-needed`: separate-destination application beyond current source-grounded controls requires an observation with an independent destination. [computeResults](../sources/cross-layer-routes.md#src-runtime-observation-route) exposes full result partitions and same-source application; it does not supply that parameter.

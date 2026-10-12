@@ -541,3 +541,65 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `readback`: `ComputedDateStoredReadDiffTest` pins yearless Date rollover back to Base Year on dependent read. The range matrix compares dependent reads of cross-interpretation targets. Readback consumes target storage rather than preserving discarded expression components; [SG6](../gaps/numeric-and-temporal.md#gap-sg6) owns the executable audit.
 - `earlier-receipts`: No new executable receipt is issued for KF184 fill-to-fix scope, KF410 root spellings, KF522 fill-to-fix, KF416, KF109, KF527 or KF529. The earlier letter's acceptance of outbound entries does not establish these distinct obligations; keep the peer's reopened rows open pending exact guards.
 - `sync`: The [ledger at `e2bc04e5`](https://github.com/mbackschat/a12-kernel-lean/blob/e2bc04e5cefbcce7b380a1c8f0687b5c2cd4a730/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md) retains dispositions for SPEC-2026-10-09-09 through -12. These inbound additions create no outbound request. Canonical corrections are in [iteration](../../spec/07-repetition-and-iteration.md) and [computation](../../spec/09-computations.md).
+
+<a id="src-inbound-2026-10-12"></a>
+## Reviewed October 12 consolidated peer response
+
+- `source`: Owner-delivered `a12-kernel-lean-spec-corrections-2026-10-11a.md`, SHA-256 `df4973bc98f3032b6e914bdd7e71405d0b08ab60387541a531a94748837578b0`; the consolidated letter is dated 2026-10-12 and answers the 24 ledger entries below.
+- `revision`: Reviewed a12-dmkits `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`; every principal checkpoint below resolves and is its ancestor. Committed files were read with `git show` at this revision rather than from the sibling working tree.
+- `review`: Source-reading review inspected named peer clean-room test assertions and findings against each existing acceptance condition. No peer suites, Kernel calls or local replay were run for this receipt.
+- `receipt`: [The reconciliation ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue) owns 18 accepted, five answered and one handed-off disposition. Acceptance does not certify universal peer compatibility or widen the original finite profiles.
+- `if376`: [The peer policy](../../../a12-rulekit/docs/INTERPRETER-FINDINGS.md#if376) retains first-admitted duplicate selected/parallel pointers. Reviewed tests pin Kernel winners separately or project only a coherent concrete duplicate association; this is a compatibility difference, not contrary Kernel evidence.
+- `comparator`: `DocumentDifferential.MessageSignature` retains full error/reference/fill pointer coordinates, including group terminals. It does not compare severity or localized text; separate `assertMessageTexts` controls compare exact text and address. Reported retained replay totals were not independently checked here.
+- `reserved-limit`: `CustomTestRangeLawsTest` explicitly asserts `hasUniqueEntities=false` for indexed and unindexed controls. Modern routes and core report/abort modes are settled; the requested legacy true arm remains unmeasured and SPEC-2026-10-10-12 remains handed-off pending local scope/route resolution.
+- `canonical-limit`: [KF541](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf541) retains its canonical fold as pending. [The peer API contract](../../../a12-rulekit/docs/INTERPRETER-API-SPEC.md) carries raw callback input, one-pass evaluated normalization and the exact reserved result; the canonical kernel-truth prose has not explicitly folded `testIDNummer`.
+- `follow-on`: Enclosing-row Having and fixed-suffix relevance are reviewed candidate evidence routes for [path/group obligations](../gaps/paths-and-groups.md). Their local coverage remains to be checked under K03/K06; the receipt does not establish local conformance.
+- `follow-on`: Duplicate-result computation assembly is a reviewed candidate route for [computation/result obligations](../gaps/keystone.md), outside the 24 receipt decisions. K02 must check the local execution/report boundary.
+- `qualification`: Integration, JVM/Node, performance and mutant outcomes remain peer-reported. They were not rerun or certified by this source-reading review.
+
+| SPEC-2026 suffix | Checkpoint | Committed test class | Status |
+|---|---|---|---|
+| 10-10-01 | `282bb9c52` | `ComputeAuthoredGuardScopeDiffTest` | accepted |
+| 10-10-02 | `28749bce0` | `SparseFilteredAggregateDiffTest` | accepted |
+| 10-10-03 | `8299a1760` | `SelectedAuthoredScopeDiffTest` | accepted |
+| 10-10-04 | `d90ef09a8` | `NumericIndexKeyDiffTest` | accepted |
+| 10-10-05 | `1dc5d5dca` | `ParallelValidationDispatchDiffTest` | answered |
+| 10-10-06 | `1dc5d5dca` | `SelectedMessageReferenceDiffTest` | answered |
+| 10-10-07 | `38cdc9839` | `A12JsonIngressDiffTest` | accepted |
+| 10-10-08 | `1dc5d5dca` | `SelectedMessageReferenceDiffTest` | answered |
+| 10-10-09 | `1dc5d5dca` | `SelectedMessageReferenceDiffTest` | answered |
+| 10-10-10 | `1dc5d5dca` | `ParallelValidationDispatchDiffTest` | answered |
+| 10-10-11 | `0047d5e0c` | `CustomTestRangeLawsTest` | accepted |
+| 10-10-12 | `0047d5e0c` | `CustomTestRangeLawsTest` | handed-off |
+| 10-10-13 | `a4c920ca4` | `EmptyAuthoredPatternDiffTest` | accepted |
+| 10-10-14 | `67c7f0957` | `FirstFilledNestedPrefixDiffTest` | accepted |
+| 10-10-15 | `9da38987d` | `PartialDeclaredListExtentDiffTest` | accepted |
+| 10-10-16 | `717568297` | `SelectedGroupValueListDiffTest` | accepted |
+| 10-10-17 | `e72f3145a` | `MultiLevelStarredGroupCountDiffTest` | accepted |
+| 10-10-18 | `7511f051a` | `OverRepetitionOccurrenceDiffTest` | accepted |
+| 10-10-19 | `e72f3145a` | `PartialGroupCountRelevanceDiffTest` | accepted |
+| 10-10-20 | `28135b68b` | `PartialStarredGroupCoverageDiffTest` | accepted |
+| 10-10-21 | `28135b68b` | `PartialStarredGroupCoverageDiffTest` | accepted |
+| 10-10-22 | `a33993cce` | `PartialParentGroupCoverageDiffTest` | accepted |
+| 10-11-01 | `5d6900c42` | `SelectedMessageReferenceDiffTest` | accepted |
+| 10-11-02 | `2242a6141` | `InvalidModelLoadDiagnosticTest` | accepted |
+
+- `drill`: Runtime classes above are under `adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/` in the read-only [peer checkout](../../../a12-rulekit). `InvalidModelLoadDiagnosticTest` is under `cli/src/test/java/io/github/mbackschat/a12/dm/cli/`. The reviewed revision is authoritative when current files change.
+- `additional-locks`: SPEC-02 also uses `SparseFilteredFillDiffTest`, `SparseMembershipTraversalDiffTest`, `DenseUniquenessPrefixDiffTest` and `SparseOverlapPolicyDiffTest`.
+- `additional-locks`: SPEC-03 uses `SemanticKeyAddressAgreementTest`, `SelectedParallelUniquenessAgreementTest` and `SelectedContainmentAgreementTest`.
+- `additional-locks`: SPEC-17 includes `AncestorStarredGroupCountComputationDiffTest`.
+- `additional-locks`: SPEC-18 includes `OverRepetitionAncestorCacheDiffTest`.
+- `additional-locks`: SPEC-11-01 includes `RuleMessageParameterRenderingDiffTest` and `ParallelValidationDispatchDiffTest`.
+- `additional-locks`: SPEC-11-02 includes `RuleSlotLawsTest` and `ComputationSlotLawsTest`.
+
+<a id="src-computation-clear-observability"></a>
+#### Public result projection erases clear validity, audited October 12
+
+- `source`: Owner-delivered `a12-kernel-lean-spec-corrections-2026-10-12.md`, 407a87084bb8843fb494bfe92679a96cf1c716ff0cca90dd3b84bd868b0786a0-256 `407a87084bb8843fb494bfe92679a96cf1c716ff0cca90dd3b84bd868b0786a0`; exact peer revision `20a5f36b1e325ab597ad2349c840707a8a8d97ba`. This instrument response is separate from [the consolidated ledger response](#src-inbound-2026-10-12).
+- `review`: Inspected the committed KF240 correction, existing `DependencyClearKindDiffTest` and `ComputedDependencyCauseErasureDiffTest` routes, and the source-owned [CLI reproduction](../../../a12-rulekit/docs/KERNEL-PROBE-SPEC.md#distinguishing-cleared-targets). Existing Lean [dependency controls](../../A12Kernel/Conformance/NumericDependency.lean) already distinguish clean empty from poisoned reads.
+- `reported-observation`: The four-row Number source/guard batch retains seeded Target/Reader. A malformed source with an absent guard clears Target and yields Reader=0; an enabled guard clears both. Target flags and the source-error inventory agree between those rows. Valid source/guard is the positive control. The peer ran both strategies; this receipt adds no locally replayed artifact.
+- `mechanism`: At Kernel `cb66e51fa7ab90b650698f861bf670754e2e1e66`, `CalculationCache.getBerechneteFelder` exports values and clears without private invalid-field membership. `DocumentComputationResultImpl.init` synthesizes remaining clears as empty instances. Both loci and the public `IDocumentComputationResult` / `IComputedFieldInstance` interfaces were read locally.
+- `denominator`: The audited public computation-result and computed-instance APIs, their result assembly, and the existing validateFull/compute/computeResults probe projections. Internal cache instrumentation and hypothetical future API additions are outside this claim.
+- `claim`: These public result channels expose neither per-clear validity nor causal attribution. Error messages cover actual errored results; they do not restore silent poison. Formal operand errors are an inventory, not a cause graph.
+- `method`: Seed the target and a numeric-copy dependent in the same call. The dependent distinguishes clean emptiness from poison; it does not uniquely identify an originating cause. An unseeded aborted target can be absent from the change projection.
+- `disposition`: Instrument inquiry answered with an API boundary, not a missing adapter field. No inference field, new harness or outbound ledger entry is warranted. Reopen direct exposure only if the public API gains the information.

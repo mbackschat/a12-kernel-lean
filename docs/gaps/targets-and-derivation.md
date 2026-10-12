@@ -1,6 +1,6 @@
 # Target and derivation residuals
 
-These are full-conformance residuals, not an active queue. [PLAN](../PLAN.md#reconciliation-checklist) selects work and its [fixed exclusions](../PLAN.md#deferred-work) remain in force. The [gap index](../SEMANTICS-GAPS.md) defines the record states.
+[K01–K22](../PLAN.md#remaining-conformance-checklist) selects the required closure work. The [routing table](../PLAN.md#remaining-gap-routing) maps every family and historical D exclusion to its current task or consumer phase. D labels below describe the former C scope, not a reason to skip a K obligation. The [gap index](../SEMANTICS-GAPS.md) defines residual status; implemented behavior stays in the linked capability owners. Task selection supersedes conditional reopening language for its named acceptance cases.
 
 <a id="sg15--bare-constant-target-families"></a>
 <a id="gap-sg15"></a>

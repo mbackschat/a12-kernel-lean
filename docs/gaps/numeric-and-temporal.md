@@ -1,6 +1,6 @@
 # Numeric and temporal residuals
 
-[PLAN](../PLAN.md#reconciliation-checklist) owns selected work and the [fixed exclusions](../PLAN.md#deferred-work). These records retain specific residuals of full conformance; the [gap index](../SEMANTICS-GAPS.md) distinguishes evidence, host, consumer and unverified boundaries. Implemented behavior remains in the linked capability owners.
+[K01–K22](../PLAN.md#remaining-conformance-checklist) selects the required closure work. The [routing table](../PLAN.md#remaining-gap-routing) maps every family and historical D exclusion to its current task or consumer phase. D labels below describe the former C scope, not a reason to skip a K obligation. The [gap index](../SEMANTICS-GAPS.md) defines residual status; implemented behavior stays in the linked capability owners. Task selection supersedes conditional reopening language for its named acceptance cases.
 
 <a id="gap-sg5"></a>
 ### SG5 — numeric authoring and target completion
