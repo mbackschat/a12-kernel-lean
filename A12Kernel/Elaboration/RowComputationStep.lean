@@ -58,6 +58,7 @@ structure CheckedRowComputationStep (model : FlatModel) (compilePattern : String
   operationReferencesWith : FieldId → (CorrelatedHaving → Bool) → Bool
   excludesTarget : operationReferencesWith target (·.forbidsTarget target) = false
   protectionConditions : List (Option (CheckedComputationCondition model)) := [none]
+  sourceTable? : Option (CheckedRowComputationTable model) := none
   run : World → PreparedFlatStringPatterns model compilePattern → CheckedDocument model →
     Except RowComputationStepFault (List (CellAddr × DocumentTargetOutcome × CheckedCell))
 
@@ -81,12 +82,13 @@ private def checked? (target : FieldId) (family : DocumentTargetFamily) (reads :
     (run : ∀ compilePattern, World → PreparedFlatStringPatterns model compilePattern →
       CheckedDocument model →
       Except RowComputationStepFault (List (CellAddr × DocumentTargetOutcome × CheckedCell)))
-    (guards : List (Option (CheckedComputationCondition model)) := [none]) :
+    (guards : List (Option (CheckedComputationCondition model)) := [none])
+    (sourceTable? : Option (CheckedRowComputationTable model) := none) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
   if h : reads target (·.forbidsTarget target) = false then
     some fun compilePattern =>
       { target, family, operationReferencesWith := reads, excludesTarget := h,
-        protectionConditions := guards, run := run compilePattern }
+        protectionConditions := guards, sourceTable?, run := run compilePattern }
   else none
 
 /-- A table supplies its complete guard inventory to dependency analysis before execution. -/
@@ -94,7 +96,15 @@ def ofTable? (table : CheckedRowComputationTable model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
   checked? table.target table.family table.operationReferencesWith
     (fun _ world patterns document => (table.execute world patterns document).mapError .table)
-    table.protectionConditions
+    table.protectionConditions (some table)
+
+/-- Consolidation reuses the retained table so a selected empty/poisoned operation cannot fall
+through to another declaration merely because its public outcome has no value (spec/09 §2). -/
+def appendSameTarget? (left right : CheckedRowComputationStep model compilePattern) :
+    Option (CheckedRowComputationStep model compilePattern) := do
+  let table ← (← left.sourceTable?).appendSameTarget? (← right.sourceTable?)
+  let step ← ofTable? table
+  pure (step compilePattern)
 
 /-- A String constant written into every row of a repeatable String target. -/
 def ofRepeatableStringConstant (operation : CheckedRepeatableStringConstantComputation model) :

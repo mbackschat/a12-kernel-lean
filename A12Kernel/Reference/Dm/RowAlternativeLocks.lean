@@ -128,6 +128,27 @@ example : planHasCycle [unreachableCopy, definition "Source" [{ operation := "[E
     planHasCycle [unreachableCopy, definition "Source" [{ operation := "\"A\"", precondition := none }]] =
     some false := by native_decide
 
+private def plainBoxRight : DmComputation := {
+  boxDefinition "Right" "\"B\"" with alternatives := [{ operation := "\"B\"", precondition := none }] }
+
+example : planHasCycle [boxDefinition "Left" "\"A\"", boxDefinition "Right" "[Left]"] = some false ∧
+    planHasCycle [boxDefinition "Left" "\"A\"", boxDefinition "Right" "[Left]", plainBoxRight] =
+      some true := by native_decide
+
+private def splitUnreachableCopy : List DmComputation :=
+  unreachableCopy.alternatives.map fun alternative =>
+    { unreachableCopy with alternatives := [alternative] }
+
+example : planHasCycle (splitUnreachableCopy ++ [definition "Source" [{ operation := "[Enum]", precondition := none }]]) = some true ∧
+    planHasCycle (splitUnreachableCopy ++ [definition "Source" [{ operation := "\"A\"", precondition := none }]]) = some false := by native_decide
+
+example : run [count, definition "Text" [guarded "\"A\"" "FieldFilled(Gate)"],
+    definition "Text" [{ operation := "\"B\"", precondition := none }]] [""] =
+    some [("Form/Rows/Text", "value B"), ("Form/Out", "value 1")] ∧
+    run [count, definition "Text" [guarded "\"A\"" "FieldFilled(Gate)"],
+      definition "Text" [{ operation := "\"B\"", precondition := none }]] ["bad"] =
+    some [("Form/Rows/Text", "cleared"), ("Form/Out", "cleared")] := by native_decide
+
 private def fixedBooleanAlternatives (gate : String) (confirm : Bool := false)
     (first : String := "False") (common : Option String := none) (fresh : Bool := false)
     (firstGuard : Option String := some "[Gate] == 1") :

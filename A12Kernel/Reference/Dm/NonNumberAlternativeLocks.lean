@@ -15,7 +15,8 @@ private def model (rows : Bool) : FlatModel :=
         policy := { kind := .number { scale := 0, signed := true } } }]
     repeatableGroups := if rows then [{ level := 10, path := group, repeatability := some 2 }] else [] }
 
-private def run (rows : Bool) (alternatives : List DmAlternative) (gate : String := "1") :
+private def run (rows : Bool) (alternatives : List DmAlternative) (gate : String := "1")
+    (splitDeclarations : Bool := false) (downstream : Bool := false) :
     Option (List String) := do
   let fixture := model rows
   let group := if rows then ["Form", "Rows"] else ["Form"]
@@ -29,8 +30,12 @@ private def run (rows : Bool) (alternatives : List DmAlternative) (gate : String
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler fixture).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
-  let (_, operation) ← (lowerComputation fixture .english definition).toOption
-  pure ((← (runComputations world prepared document [operation]).toOption).map (·.outcome))
+  let definitions := if splitDeclarations then alternatives.map fun alternative =>
+    { definition with alternatives := [alternative] } else [definition]
+  let definitions := definitions ++ if downstream then [{ definition with
+    name := "After", targetRelPath := "../Bad", alternatives := [{ operation := "[Out] + \"!\"", precondition := none }] }] else []
+  let operations ← definitions.mapM fun definition => (lowerComputation fixture .english definition).toOption.map (·.2)
+  pure ((← (runComputations world prepared document operations).toOption).map (·.outcome))
 
 private def alternative (operation guard : String) : DmAlternative := {
   operation, precondition := some guard }
@@ -91,7 +96,8 @@ private def familyField (family : Family) (field : FlatFieldDecl) : FlatFieldDec
 
 private def runFamily (family : Family) (rows : Bool) (alternatives : List DmAlternative)
     (emptySources : Bool := false) (confirmTarget : Bool := false)
-    (observeReadback : Bool := false) : Option (List String) := do
+    (observeReadback : Bool := false) (splitDeclarations : Bool := false)
+    (common : Option String := none) : Option (List String) := do
   let group := if rows then ["Form", "Rows"] else ["Form"]
   let fixture := { model rows with
     fields := ((model rows).fields.map fun field =>
@@ -103,7 +109,7 @@ private def runFamily (family : Family) (rows : Bool) (alternatives : List DmAlt
     timeZoneId := "UTC" }
   let group := if rows then ["Form", "Rows"] else ["Form"]
   let definition : DmComputation := {
-    group, name := "Select", targetRelPath := "../Out", commonPrecondition := none,
+    group, name := "Select", targetRelPath := "../Out", commonPrecondition := common,
     alternatives, errorCodesToSuppress := [] }
   let dm : DmModel := { flat := fixture, rules := [], computations := [definition], conditionLanguage := "en_US", refusals := [] }
   let (left, right) := values family
@@ -120,12 +126,15 @@ private def runFamily (family : Family) (rows : Bool) (alternatives : List DmAlt
     group, name := "ReadBack", targetRelPath := "../After",
     commonPrecondition := some "FieldFilled(Out) Or FieldNotFilled(Out)",
     alternatives := [{ operation := "1", precondition := none }], errorCodesToSuppress := [] }
-  let definitions := if observeReadback then [after, definition] else [definition]
+  let definitions := if splitDeclarations then alternatives.map fun alternative =>
+    { definition with alternatives := [alternative] } else [definition]
+  let definitions := (if observeReadback then [after] else []) ++ definitions
   let steps ← definitions.mapM fun definition => do
     let (_, operation) ← (lowerComputation fixture .english definition).toOption
     match operation with
     | .rows step => some (MixedComputationStep.rows (step builtinStringPatternCompiler))
     | .number table _ => some (.number table)
+    | .document step => some (.document step)
     | _ => none
   let plan ← (certifyAuthoredMixedComputationPlan steps).toOption
   let outcomes ← (plan.execute world prepared.patterns document).toOption
@@ -140,7 +149,33 @@ private def runFamily (family : Family) (rows : Bool) (alternatives : List DmAlt
         | _ => "after cleared")
     | _ => none)
 
+example : run false [alternative first "[Gate] < 0", { operation := "\"C\"", precondition := none }] "1" true true =
+    some ["value C", "value C!"] := by native_decide
+
+example : run false [{ operation := first, precondition := none }] "1" false true =
+    some ["value A", "value A!"] := by native_decide
+
+example : [false, true].all (fun rows => run rows [
+    { operation := "\"\"", precondition := none },
+    { operation := "\"B\"", precondition := none }] "1" true ==
+      some (List.replicate (if rows then 2 else 1) "cleared")) = true := by native_decide
+
 private def families : List Family := [.enumeration, .boolean, .fullDate, .time, .dateTime, .dateRange]
+
+example : runFamily .boolean false [alternative "True" "[Gate] < 0", { operation := "False", precondition := none }]
+    false false true true = some ["value false", "after 1"] := by native_decide
+
+example : runFamily .fullDate false [alternative "\"01.01.2024\"" "[Gate] < 0", alternative "\"02.01.2024\"" "[Gate] > 0"] =
+    some ["value 2024-01-02"] := by native_decide
+
+example : runFamily .fullDate true [alternative "\"01.01.2024\"" "[Gate] < 0", alternative "\"02.01.2024\"" "[Gate] > 0"] =
+    some ["value 2024-01-02", "value 2024-01-02"] := by native_decide
+
+example : runFamily .fullDate false [alternative "\"01.01.2024\"" "[Gate] < 0", { operation := first, precondition := none }]
+    false false true true = some ["value 2024-01-01", "after 1"] := by native_decide
+
+example : run false [alternative first "[Gate] < 0", { operation := "\"C\"", precondition := none }] "1" true =
+    some ["value C"] := by native_decide
 
 example : families.all (fun family => [false, true].all (fun rows =>
     let (left, right) := values family
@@ -162,15 +197,26 @@ example : [false, true].all (fun rows =>
     runFamily .boolean rows [alternative first "[Gate] > 0", alternative bad "[Gate] > 0"] false true == none) = true := by native_decide
 
 example : (families ++ [Family.confirm]).all (fun family => [false, true].all (fun rows =>
+    [false, true].all (fun splitDeclarations =>
     let (left, right) := values family
     let selected := some (if rows then ["value " ++ left, "value " ++ right] else ["value " ++ left])
+    let reversed := some (if rows then ["value " ++ right, "value " ++ left] else ["value " ++ right])
     let cleared := some (List.replicate (if rows then 2 else 1) "cleared")
     let poison := some (List.replicate (if rows then 2 else 1) "poison")
-    runFamily family rows [alternative "[Bad]" "[Gate] < 0", alternative "[Left]" "[Gate] > 0"] == selected &&
-    runFamily family rows [alternative "[Left]" "[Gate] > 0", alternative "[Bad]" "[Gate] > 0"] == selected &&
-    runFamily family rows [alternative "[Left]" "[Gate] < 0", alternative "[Bad]" "[Gate] < 0"] == cleared &&
-    runFamily family rows [alternative "[Bad]" "[Gate] > 0", alternative "[Left]" "[Gate] > 0"] == poison &&
-    runFamily family rows [alternative "[Left]" "[Gate] > 0", alternative "[Right]" "[Gate] > 0"] true == cleared)) = true := by native_decide
+    runFamily family rows [alternative "[Bad]" "[Gate] < 0", alternative "[Left]" "[Gate] > 0"]
+      (splitDeclarations := splitDeclarations) == selected &&
+    runFamily family rows [alternative "[Left]" "[Gate] > 0", alternative "[Bad]" "[Gate] > 0"]
+      (splitDeclarations := splitDeclarations) == selected &&
+    runFamily family rows [alternative "[Left]" "[Gate] < 0", alternative "[Bad]" "[Gate] < 0"]
+      (splitDeclarations := splitDeclarations) == cleared &&
+    runFamily family rows [alternative "[Bad]" "[Gate] > 0", alternative "[Left]" "[Gate] > 0"]
+      (splitDeclarations := splitDeclarations) == poison &&
+    runFamily family rows [alternative "[Left]" "[Gate] > 0", alternative "[Bad]" "[Gate] > 0"]
+      true (splitDeclarations := splitDeclarations) == cleared &&
+    runFamily family rows [alternative "[Right]" "[Gate] > 0", alternative "[Left]" "[Gate] > 0"]
+      (splitDeclarations := splitDeclarations) == reversed &&
+    runFamily family rows [alternative "[Left]" "[Gate] > 0", alternative "[Bad]" "[Gate] > 0"]
+      (splitDeclarations := splitDeclarations) (common := some "[Gate] < 0") == cleared))) = true := by native_decide
 
 example : families.all (fun family => [false, true].all (fun rows =>
     let (left, right) := values family
@@ -178,10 +224,36 @@ example : families.all (fun family => [false, true].all (fun rows =>
       some (if rows then ["value " ++ left, "value " ++ right] else ["value " ++ left]))) = true := by native_decide
 
 example : (families ++ [Family.confirm]).all (fun family => [false, true].all (fun rows =>
+    [false, true].all (fun splitDeclarations =>
     let count := if rows then 2 else 1
     let expected := fun root after => some (List.replicate count root ++ List.replicate count after)
-    runFamily family rows [alternative "[Bad]" "[Gate] > 0", alternative "[Left]" "[Gate] > 0"] false false true == expected "poison" "after cleared" &&
-    runFamily family rows [alternative "[Left]" "[Gate] > 0", alternative "[Right]" "[Gate] > 0"] true false true == expected "cleared" "after 1" &&
-    runFamily family rows [alternative "[Bad]" "[Gate] < 0", alternative "[Left]" "[Gate] < 0"] false false true == expected "cleared" "after 1")) = true := by native_decide
+    runFamily family rows [alternative "[Bad]" "[Gate] > 0", alternative "[Left]" "[Gate] > 0"]
+      false false true splitDeclarations == expected "poison" "after cleared" &&
+    runFamily family rows [alternative "[Left]" "[Gate] > 0", alternative "[Bad]" "[Gate] > 0"]
+      true false true splitDeclarations == expected "cleared" "after 1" &&
+    runFamily family rows [alternative "[Bad]" "[Gate] < 0", alternative "[Left]" "[Gate] < 0"]
+      false false true splitDeclarations == expected "cleared" "after 1"))) = true := by native_decide
+
+example : [false, true].all (fun rows =>
+    let (left, right) := values .fullDate
+    let after := List.replicate (if rows then 2 else 1) "after 1"
+    runFamily .fullDate rows [{ operation := "\"02.01.2024\"", precondition := none }, alternative first "[Gate] > 0"]
+      (observeReadback := true) (splitDeclarations := true) ==
+        some (List.replicate (if rows then 2 else 1) "value 2024-01-02" ++ after) &&
+    runFamily .fullDate rows [alternative first "[Gate] > 0", { operation := "\"02.01.2024\"", precondition := none }]
+      (observeReadback := true) (splitDeclarations := true) ==
+        some ((if rows then ["value " ++ left, "value " ++ right] else ["value " ++ left]) ++ after)) = true := by native_decide
+
+example : [
+    ([alternative "\"01.01.2024\"" "[Gate] > 0", alternative "\"02.01.2024\"" "[Gate] > 0"], "value 2024-01-01"),
+    ([alternative "\"02.01.2024\"" "[Gate] > 0", alternative "\"01.01.2024\"" "[Gate] > 0"], "value 2024-01-02"),
+    ([alternative first "[Gate] < 0", { operation := "\"02.01.2024\"", precondition := none }], "value 2024-01-02")].all
+    (fun (alternatives, value) => runFamily .fullDate false alternatives
+      (observeReadback := true) (splitDeclarations := true) == some [value, "after 1"]) = true := by native_decide
+
+example : run false [alternative first "[Gate] > 0", { operation := "[Right] + \"!\"", precondition := none }]
+    "1" true true = some ["value A", "value A!"] ∧
+    run false [{ operation := "[Right] + \"!\"", precondition := none }, alternative first "[Gate] > 0"]
+      "1" true true = some ["value B!", "value B!!"] := by native_decide
 
 end A12Kernel.Dm.NonNumberAlternativeLocks

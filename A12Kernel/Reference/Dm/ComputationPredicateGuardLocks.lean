@@ -106,7 +106,8 @@ example : run "FieldValueIncludedInValueList([Flag], 1)" numericKind (.parsed (.
     run "FieldValueIncludedInValueList(Flag, [Flag])" numericKind (.parsed (.num 1)) = none := by
   native_decide
 
-private def capturedMembership (enumeration : Bool) (guard : String) (selection : String := "2") :
+private def capturedMembership (enumeration : Bool) (guard : String) (selection : String := "2")
+    (keepProducer : Bool := false) :
     Option (List String) := do
   let source : FlatFieldDecl := {
     id := 1, name := "A", groupPath := ["Form", "Rows"], repeatableScope := [10]
@@ -139,7 +140,13 @@ private def capturedMembership (enumeration : Bool) (guard : String) (selection 
     group := ["Form"], name := "Dependent", targetRelPath := "../Rows/After"
     commonPrecondition := none, alternatives := [{ precondition := none, operation := "[Rows/Out] + 1" }]
     errorCodesToSuppress := [] }).toOption
-  pure ((← (runComputations world prepared checked [step, dependent]).toOption).map (·.outcome))
+  let producer : DmComputation := {
+    group := ["Form"], name := "KeepProducer", targetRelPath := "../Rows/Keep"
+    commonPrecondition := none, alternatives := [{ precondition := none, operation := "2" }]
+    errorCodesToSuppress := [] }
+  let producers ← (if keepProducer then [producer] else []).mapM fun declaration =>
+    (lowerComputation model .english declaration).toOption.map (·.2)
+  pure ((← (runComputations world prepared checked ([step, dependent] ++ producers)).toOption).map (·.outcome))
 
 example : [false, true].all (fun enumeration =>
     ["Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep] In B",
@@ -149,6 +156,14 @@ example : [false, true].all (fun enumeration =>
       capturedMembership enumeration guard == some ["cleared", "value 1", "value 1", "value 2"] &&
       capturedMembership enumeration guard "bad" == some ["cleared", "cleared", "value 1", "cleared"] &&
       capturedMembership enumeration guard "0" == some ["cleared", "cleared", "value 1", "value 1"]) := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    ["Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep] In B",
+      "B In Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep]",
+      "Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep] In \"B\""].all fun operands =>
+      let guard := s!"AtLeastOneFieldValueIncludedInValueList({operands})"
+      ["0", "bad"].all fun selection => capturedMembership enumeration guard selection true ==
+        some ["value 2", "value 2", "value 1", "value 1", "value 2", "value 2"]) = true := by native_decide
 
 private def categoryDomain : EnumerationDeclaration := {
   storedTokens := ["A", "B"]

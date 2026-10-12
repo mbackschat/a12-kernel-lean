@@ -414,15 +414,20 @@ private def lowerComputationWith (allowParallelGuards : Bool)
     pure body
   let suppress ← if hasHaving then pure suppress else validatedSuppression
   let row := !target.repeatableScope.isEmpty
-  -- The checked step already owns guard evaluation; the reader preserves its single-operation boundary.
   let document : Lowering (FlatFieldDecl × LoweredComputation model) := do
-    let ([own], [operation]) := (guards, operations)
-      | refuse "DocumentStep" "alternatives"
-    let step ← lowerDocumentStep model computation.group target operation
-    let step ← match CheckedComputationCondition.withCommon common own with
-      | none => pure step
-      | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
-    pure (target, .document step)
+    if let ([own], [operation]) := (guards, operations) then
+      let step ← lowerDocumentStep model computation.group target operation
+      let step ← match CheckedComputationCondition.withCommon common own with
+        | none => pure step
+        | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
+      pure (target, .document step)
+    else
+      let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
+        let operation ← lowerDocumentStep model computation.group target expression
+        pure ({ precondition, operation := .document operation } : CheckedComputationAlternative model _)
+      let table ← elaborated "DocumentStep" (certifyRowComputationTable alternatives common)
+      let step ← (CheckedRowComputationStep.ofTable? table).getDM (refuse "DocumentStep" "target self-read")
+      pure (target, .rows step)
   if (row || operations.any (fun | .call "FirstFilledValue" _ none none => true | _ => false) || (target.policy.kind == .string && operations.any (fun expression =>
       (lowerSelectedStringExpr model computation.group expression).toOption.any fun source =>
         source.fields.any fun | .inr _ => true | .inl _ => false)) || target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .enumeration || target.policy.kind == .dateRange ||

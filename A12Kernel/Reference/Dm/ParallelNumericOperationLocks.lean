@@ -35,16 +35,16 @@ private def demand (key base stamp : String) : Json := Json.mkObj [
 private def supply (key amount : String) : Json := Json.mkObj [
   ("Department", Json.str key), ("Headcount", Json.str amount),
   ("SumOut", "999"), ("DayOut", "999"), ("Choice", "999")]
-private def run (demandRows supplyRows : List Json) : Option (List (String × String)) := do
+private def run (demandRows supplyRows : List Json) (computations := definitions) : Option (List (String × String)) := do
   let dm : DmModel := {
-    flat := model, rules := [], computations := definitions, conditionLanguage := "en_US", refusals := [] }
+    flat := model, rules := [], computations, conditionLanguage := "en_US", refusals := [] }
   let input ← (readDocument dm (Json.mkObj [("Staffing", Json.mkObj [
     ("Demand", Json.arr demandRows.toArray), ("Supply", Json.arr supplyRows.toArray)])])).toOption
   if !input.refusals.isEmpty then none
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let steps ← definitions.mapM fun definition => (lowerComputation model .english definition).toOption.map (·.2)
+  let steps ← computations.mapM fun definition => (lowerComputation model .english definition).toOption.map (·.2)
   pure (((← (runComputations world prepared checked steps).toOption).map fun value =>
     (value.pointer, value.outcome)).mergeSort fun a b => a.1 ≤ b.1)
 
@@ -83,5 +83,68 @@ example : [
     ("[/Staffing/Demand/Headcount]", some "[/Staffing/Demand/Department] > 10")].all (fun (operation, guard) =>
       !(lowerComputation model .english (definition "Supply" "SumOut"
         [{ operation, precondition := guard }])).isOk) = true := by native_decide
+
+private def guardedChoice (guard : String) : DmComputation :=
+  definition "Supply" "Choice" [{ operation := "7", precondition := some guard }]
+
+private def guardedChoiceFallback (guard : String) : DmComputation :=
+  definition "Supply" "Choice" [
+    { operation := "7", precondition := some guard },
+    { operation := "11", precondition := some "FieldFilled(Headcount)" }]
+
+example : run [demand "A" "9" "2026-10-03"] [supply "A" "2"]
+    [guardedChoice "Sum(/Staffing/Demand/Headcount, Headcount) > 10"] =
+    some [("Staffing/Supply/Choice", "value 7")] := by native_decide
+
+example : run [demand "A" "9" "2026-10-03"] [supply "A" "2"]
+    [guardedChoice "DayFromDate(/Staffing/Demand/Stamp) > 2"] =
+    some [("Staffing/Supply/Choice", "value 7")] := by native_decide
+
+-- These guard compositions are internal controls; the captured joined-operation matrix lives at
+-- docs/sources/computation-scheduling-probes.md#src-parallel-numeric-operations.
+example : [
+    ("Sum", "124", "125"), ("MinValue", "1", "2"),
+    ("MaxValue", "122", "123"), ("NumberOfDifferentValues", "1", "2")].all
+    (fun (operator, trueThreshold, falseThreshold) =>
+      run [demand "A" "9" "2026-10-03"] [supply "A" "2"]
+        [guardedChoice (operator ++ "(/Staffing/Demand/Headcount, Headcount) > " ++ trueThreshold)] ==
+          some [("Staffing/Supply/Choice", "value 7")] &&
+      run [demand "A" "9" "2026-10-03"] [supply "A" "2"]
+        [guardedChoice (operator ++ "(/Staffing/Demand/Headcount, Headcount) > " ++ falseThreshold)] ==
+          some [("Staffing/Supply/Choice", "cleared")]) = true := by native_decide
+
+example : run [demand "A" "9" "2026-10-03", demand "B" "19" "2026-10-08"]
+    [supply "B" "2", supply "A" "1"]
+    [guardedChoice "Sum(/Staffing/Demand/Headcount, Headcount) > 20",
+      definition "Demand" "Headcount" [{ operation := "[Base] + 1", precondition := none }]] = some [
+    ("Staffing/Demand/Headcount", "value 10"), ("Staffing/Demand[2]/Headcount", "value 20"),
+    ("Staffing/Supply/Choice", "value 7"), ("Staffing/Supply[2]/Choice", "cleared")] := by native_decide
+
+example : [
+    "DayFromDate(/Staffing/Demand/Stamp) > 2",
+    "FieldNotFilled(Headcount) And DayFromDate(/Staffing/Demand/Stamp) > 2",
+    "FieldFilled(Headcount) Or DayFromDate(/Staffing/Demand/Stamp) > 2"].map (fun guard =>
+      run [demand "A" "9" "bad"] [supply "A" "2"] [guardedChoiceFallback guard]) = [
+    some [("Staffing/Supply/Choice", "cleared")], some [("Staffing/Supply/Choice", "value 11")],
+    some [("Staffing/Supply/Choice", "value 7")]] := by native_decide
+
+example : [
+    ("C", "2026-10-03", "Sum(/Staffing/Demand/Headcount, Headcount) == 2"),
+    ("C", "2026-10-03", "DayFromDate(/Staffing/Demand/Stamp) == 0"),
+    ("A", "", "DayFromDate(/Staffing/Demand/Stamp) == 0"),
+    ("A", "bad", "DayFromDate(/Staffing/Demand/Stamp) == 0")].map (fun (key, stamp, guard) =>
+      run [demand "A" "9" stamp] [supply key "2"] [guardedChoiceFallback guard]) = [
+    some [("Staffing/Supply/Choice", "value 7")], some [("Staffing/Supply/Choice", "value 7")],
+    some [("Staffing/Supply/Choice", "value 7")], some [("Staffing/Supply/Choice", "cleared")]] := by native_decide
+
+example : [
+    ("DayFromDate(/Staffing/Demand/Headcount) > 2", "DayFromDate(/Staffing/Demand/Stamp) > 2"),
+    ("HoursFromTime(/Staffing/Demand/Stamp) > 2", "DayFromDate(/Staffing/Demand/Stamp) > 2"),
+    ("Sum(/Staffing/Demand/Headcount, /Staffing/Demand/Headcount) > 10", "Sum(/Staffing/Demand/Headcount, Headcount) > 10"),
+    ("Sum(/Staffing/Demand/Headcount) > 10", "Sum(/Staffing/Demand/Headcount, Headcount) > 10"),
+    ("Sum(/Staffing/Demand/Headcount, Choice) > 10", "Sum(/Staffing/Demand/Headcount, Headcount) > 10")].all
+    (fun (refused, admitted) =>
+      !(lowerComputation model .english (guardedChoice refused)).isOk &&
+      (lowerComputation model .english (guardedChoice admitted)).isOk) = true := by native_decide
 
 end A12Kernel.Dm.ParallelNumericOperationLocks

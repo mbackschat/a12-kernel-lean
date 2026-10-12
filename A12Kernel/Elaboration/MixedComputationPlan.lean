@@ -132,8 +132,15 @@ def certifyMixedComputationPlan (steps : List (MixedComputationStep model compil
       | none => .ok { authored := steps, execution := _, executionOrdered := rfl
                       uniqueTargets := hDuplicate, dependenciesOrdered := hForward }
 
-/-- Consolidate Number and String tables at their first target position using their existing
-checked append operations. Other step families have no alternative-table carrier here. -/
+private def MixedComputationStep.rowTable? : MixedComputationStep model compilePattern →
+    Option (CheckedRowComputationTable model)
+  | .rows step => step.sourceTable?
+  | .document step => CheckedRowComputationTable.ofDocument? step
+  | .string table => CheckedRowComputationTable.ofString? table
+  | .number _ | .parallel _ => none
+
+/-- Keep the first target position and concatenate checked alternatives; each operation retains
+its own addressing and target evaluator (spec/09 §§1.1, 5). -/
 private def insertMixedComputationStep (incoming : MixedComputationStep model compilePattern) :
     List (MixedComputationStep model compilePattern) →
       Except MixedComputationPlanError (List (MixedComputationStep model compilePattern))
@@ -153,7 +160,35 @@ private def insertMixedComputationStep (incoming : MixedComputationStep model co
             if policy : incoming.targetPolicy = current.targetPolicy then
               pure (.string (current.appendSameTarget incoming sameTarget policy) :: rest)
             else throw (.conflictingTargetPolicy current.targetField)
-        | _, _ => throw (.duplicateTarget current.targetField)
+        | .parallel incoming, .parallel current =>
+            have sameTarget : incoming.targetField = current.targetField := by
+              simpa [hIncoming, hCurrent, MixedComputationStep.targetField] using same
+            pure (.parallel (current.appendSameTarget incoming sameTarget) :: rest)
+        | .number incoming, .parallel current =>
+            have sameTarget : incoming.targetField = current.targetField := by
+              simpa [hIncoming, hCurrent, MixedComputationStep.targetField] using same
+            if incoming.targetPolicy == current.primary.targetPolicy then
+              pure (.parallel (current.withBoundTable incoming sameTarget false) :: rest)
+            else throw (.conflictingTargetPolicy current.targetField)
+        | .parallel incoming, .number current =>
+            have sameTarget : current.targetField = incoming.targetField := by
+              simpa [hIncoming, hCurrent, MixedComputationStep.targetField] using same.symm
+            if current.targetPolicy == incoming.primary.targetPolicy then
+              pure (.parallel (incoming.withBoundTable current sameTarget true) :: rest)
+            else throw (.conflictingTargetPolicy current.targetField)
+        | .rows incoming, .rows current =>
+            match current.appendSameTarget? incoming with
+            | some combined => pure (.rows combined :: rest)
+            | none => throw (.duplicateTarget current.target)
+        | _, _ =>
+            match (do
+              let left ← current.rowTable?
+              let right ← incoming.rowTable?
+              let table ← left.appendSameTarget? right
+              let step ← CheckedRowComputationStep.ofTable? table
+              pure (step compilePattern)) with
+            | some combined => pure (.rows combined :: rest)
+            | none => throw (.duplicateTarget current.targetField)
       else pure (current :: (← insertMixedComputationStep incoming rest))
 
 /-- Preserve authored alternative order before certifying one execution step per target. -/
@@ -187,18 +222,11 @@ def documentFor (plan : CheckedMixedComputationPlan model compilePattern)
     plan.authored.any fun step => step.targetField == field || step.operandField field)
     |>.overlayCells plan.targetFields (state.fixed.map (·.placement) ++ state.rows)
 
-/-- The String-family read of a fixed String table: a completed fixed target through its String
-cell, a pending one empty, as in the scalar plan. -/
+/-- The document overlay owns both fixed and row-table completions, including fixed targets
+executed by row tables. Its String projection also preserves Number formal-read text (spec/09 §3.1). -/
 def stringContext (plan : CheckedMixedComputationPlan model compilePattern)
     (state : MixedComputationState) (input : CheckedDocument model) : StringComputationContext :=
-  { (plan.documentFor state input).stringComputationContext with
-    read := fun field =>
-      match state.fixed.find? (·.targetField == field) with
-      | some completion => completion.stringCell
-      | none =>
-          if plan.targetFields.contains field then StringDependencyCell.empty.checked
-          else input.stringComputationContext.read field
-  }
+  (plan.documentFor state input).stringComputationContext
 
 private def numberCompletion (outcome : SourcedNumericTargetOutcome CellAddr) :
     ScalarComputationCompletion :=

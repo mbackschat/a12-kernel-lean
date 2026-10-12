@@ -7,8 +7,7 @@ import A12Kernel.Elaboration.DocumentComputationStep
 A computation whose target is neither a Number nor a String table's carrier, or a String
 `FirstFilledValue`, is lowered onto the whole-document step its operation names: `FirstFilledValue`
 by its target's kind, date literals with or without a year, Boolean/Confirm constants, the `Time(...)` construction, `DateFromDateTime` and `TimeFromDateTime`. A
-step carries one operation; the computation reader attaches checked guards, while a multi-alternative computation is
-refused here, as is every operation no step admits.
+step carries one operation; the computation reader attaches checked guards and assembles multiple alternatives through the checked target-instance table. Operations no step admits remain refused.
 -/
 
 namespace A12Kernel.Dm

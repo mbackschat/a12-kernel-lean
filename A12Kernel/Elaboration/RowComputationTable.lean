@@ -4,6 +4,8 @@ import A12Kernel.Elaboration.FirstFilledAlternative
 import A12Kernel.Elaboration.ScalarCopyComputation
 import A12Kernel.Elaboration.ComputationNumericGuard
 import A12Kernel.Elaboration.BooleanConstantComputation
+import A12Kernel.Elaboration.DateLiteralComputation
+import A12Kernel.Elaboration.StringComputationTable
 
 /-! # Checked alternatives at non-Number target instances
 
@@ -14,6 +16,9 @@ keep their certificates and evaluators; this table adds no token semantics or se
 namespace A12Kernel
 
 inductive CheckedRowComputationOperation (model : FlatModel) where
+  | document (operation : CheckedDocumentComputationStep model)
+  | fixedString (table : CheckedStringComputationTable model)
+      (alternative : CheckedStringComputationAlternative model table.targetField)
   | scalarCopy (operation : CheckedScalarCopyComputation model)
   | firstFilled (operation : CheckedFirstFilledAlternative model)
   | stringExpression (operation : CheckedRowStringExpression model)
@@ -23,11 +28,14 @@ inductive CheckedRowComputationOperation (model : FlatModel) where
   | booleanConstant (operation : CheckedRepeatableBooleanConstantComputation model)
   | fixedBooleanConstant (operation : CheckedBooleanConstantComputation model)
   | temporalExpression (operation : CheckedTemporalExpressionComputation model)
+  | dateLiteral (operation : CheckedDateLiteralComputation model)
   | dateRangeConstruction (operation : CheckedBoundDateRangeConstructionComputation model)
 
 namespace CheckedRowComputationOperation
 
 def target : CheckedRowComputationOperation model → FieldId
+  | .document operation => operation.target
+  | .fixedString table _ => table.targetField
   | .scalarCopy operation => operation.target.id
   | .firstFilled operation => operation.target.id
   | .stringExpression operation => operation.targetField
@@ -38,8 +46,10 @@ def target : CheckedRowComputationOperation model → FieldId
   | .fixedBooleanConstant operation => operation.target.id
   | .dateRangeConstruction operation => operation.target.source.id
   | .temporalExpression operation => operation.target
+  | .dateLiteral operation => operation.target.id
 
 def scope : CheckedRowComputationOperation model → List RepeatableLevel
+  | .document _ | .fixedString _ _ => []
   | .scalarCopy operation => operation.target.repeatableScope
   | .firstFilled operation => operation.target.repeatableScope
   | .stringExpression operation => operation.target.repeatableScope
@@ -50,8 +60,11 @@ def scope : CheckedRowComputationOperation model → List RepeatableLevel
   | .fixedBooleanConstant _ => []
   | .dateRangeConstruction operation => operation.target.declaration.repeatableScope
   | .temporalExpression operation => operation.scope
+  | .dateLiteral operation => operation.target.repeatableScope
 
 def family : CheckedRowComputationOperation model → DocumentTargetFamily
+  | .document operation => operation.family
+  | .fixedString _ _ => .string
   | .scalarCopy operation => operation.family
   | .firstFilled operation => operation.family
   | .stringExpression _ | .stringConstant _ => .string
@@ -59,8 +72,11 @@ def family : CheckedRowComputationOperation model → DocumentTargetFamily
   | .booleanConstant _ | .fixedBooleanConstant _ => .boolean
   | .dateRangeConstruction _ => .dateRange
   | .temporalExpression operation => operation.family
+  | .dateLiteral _ => .fullDate
 
 def referencesField : CheckedRowComputationOperation model → FieldId → Bool
+  | .document operation, field => operation.operationReferencesField field
+  | .fixedString _ alternative, field => alternative.expression.core.referencesField field
   | .scalarCopy operation, field => operation.source.id == field
   | .firstFilled operation, field => operation.referencesWith field (·.referencesField field)
   | .stringExpression operation, field => operation.expression.referencesField field
@@ -69,10 +85,12 @@ def referencesField : CheckedRowComputationOperation model → FieldId → Bool
   | .fixedEnumeration operation, field => operation.source.referencesField field
   | .dateRangeConstruction operation, field => operation.referencesField field
   | .temporalExpression operation, field => operation.expression.referencesField field
+  | .dateLiteral _, _ => false
 
 def referencesWith (operation : CheckedRowComputationOperation model) (field : FieldId)
     (filterReads : CorrelatedHaving → Bool) : Bool :=
   match operation with
+  | .document operation => operation.operationReferencesWith field filterReads
   | .firstFilled operation => operation.referencesWith field filterReads
   | .temporalExpression operation => operation.expression.referencesWith field filterReads
   | operation => operation.referencesField field
@@ -171,6 +189,14 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
     (patterns : PreparedFlatStringPatterns model compilePattern) (document : CheckedDocument model)
     (environment : Env) : Except RowComputationTableFault (DocumentTargetOutcome × CheckedCell) := do
   match operation with
+  | .document operation => (operation.runSelected world patterns.targetMatcher? document).mapError .readBack
+  | .fixedString table alternative => do
+      let some matcher := patterns.targetMatcher? table.targetField
+        | throw (.targetPatternUnavailable table.targetField)
+      let context := document.stringComputationContext
+      let store ← (alternative.expression.core.evaluate context).mapError .stringExpression
+      let outcome ← ((table.toResolved .empty).targetRegime.check table.targetPolicy matcher store context).mapError .stringExpression
+      pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
   | .scalarCopy operation => (operation.evaluateAt document environment).mapError .scalarCopy
   | .firstFilled operation => (operation.evaluateAt world patterns document environment).mapError .firstFilled
   | .stringExpression operation =>
@@ -192,6 +218,10 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
   | .temporalExpression operation =>
       let context := document.indexedComputationContextAt environment
       (operation.run (context.withWorld world)).mapError .readBack
+  | .dateLiteral operation =>
+      let outcome := operation.outcome
+      let cell ← (DocumentComputationReadBack.dateConstant operation.dateTarget outcome).mapError .readBack
+      pure (.fullDate outcome, cell)
   | .dateRangeConstruction operation =>
       let outcome ← (operation.evaluateWith (document.indexedComputationContextAt environment).read).mapError .dateRangeConstruction
       pure (.dateRange outcome, ← (DocumentComputationReadBack.dateRange model operation.target.policy outcome).mapError .readBack)
@@ -207,6 +237,38 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
 end CheckedRowComputationOperation
 
 namespace CheckedRowComputationTable
+
+/-- A fixed document carrier contributes its checked guard and operation separately to the
+same selector used by addressed alternatives (spec/09 §§1.1, 2). -/
+def ofDocument? (step : CheckedDocumentComputationStep model) : Option (CheckedRowComputationTable model) :=
+  (certifyRowComputationTable [{ operation := .document step, precondition := step.precondition.map (·.val) }]).toOption
+
+/-- Separately admitted declarations concatenate after their own guardedness check; their
+common conditions are already attached to each member (spec/09 §§1.1, 5). -/
+def appendSameTarget? (left right : CheckedRowComputationTable model) :
+    Option (CheckedRowComputationTable model) := do
+  if target : right.target = left.target then
+    if scope : right.scope = left.scope then
+      if family : right.family = left.family then
+        let members : List (CheckedRowComputationAlternative model left.target left.scope left.family) := by
+          simpa only [target, scope, family] using (right.first :: right.remaining)
+        pure { left with remaining := left.remaining ++ members }
+      else none
+    else none
+  else none
+
+/-- Fixed String expressions keep their original target regime and expression certificate when
+a sibling declaration uses an addressed source at that same fixed target (spec/09 §5). -/
+def ofString? (table : CheckedStringComputationTable model) : Option (CheckedRowComputationTable model) := do
+  let first ← (certifyRowComputationTable [{
+    operation := .fixedString table table.first
+    precondition := table.first.precondition }]).toOption
+  table.remaining.foldlM (fun combined alternative => do
+    let next ← (certifyRowComputationTable [{
+      operation := .fixedString table alternative
+      precondition := alternative.precondition }]).toOption
+    combined.appendSameTarget? next) first
+
 
 def alternatives (table : CheckedRowComputationTable model) :=
   (table.first :: table.remaining).map (·.toResolved)

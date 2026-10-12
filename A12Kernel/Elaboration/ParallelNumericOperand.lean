@@ -43,28 +43,6 @@ def CheckedParallelNumericClearingPlan.admitsGuardField
     (field : FieldId) : Bool :=
   route.asTargetRoute.admitsGuardField field
 
-/-- Whether every guard leaf belongs to one statically participating checked route. -/
-def parallelNumericDirectGuardAdmitted
-    (routes : List (CheckedParallelNumericTargetRoute model)) :
-    Option (CheckedComputationCondition model) → Bool
-  | none => true
-  | some condition => referencesOnly condition
-where
-  referencesOnly : CheckedComputationCondition model → Bool
-    | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
-        routes.any fun route => route.admitsGuardField field
-    | .leaf (.numeric comparison) => comparison.admittedWith
-        (fun atom => match atom with
-          | .numeric (.field declaration) =>
-              declaration.toNumberField?.isSome &&
-                routes.any (fun route => route.admitsGuardField declaration.id &&
-                  (model.lookupUniqueId declaration.id).toOption == some declaration)
-          | _ => false)
-        CheckedNumericComputationAtom.numericScaleSummary
-    | .leaf (.predicate _) | .leaf (.text _) | .leaf (.scalar _) | .leaf (.fieldFill _ _) | .leaf (.groupPresence _ _) => false
-    | .and left right | .or left right =>
-        referencesOnly left && referencesOnly right
-
 def parallelNumericGuardFields (condition : Option (CheckedComputationCondition model)) : List FieldId :=
   model.fields.filterMap fun declaration =>
     if condition.any (·.referencesField declaration.id) then some declaration.id else none
@@ -105,6 +83,29 @@ def parallelNumericAtomAdmitted (routes : List (CheckedParallelNumericTargetRout
       source.fields.all (fun field => (model.lookupUniqueId field.id).toOption.any (fun declaration =>
         parallelNumericDeclarationAdmitted routes declaration && declaration.toNumberField? == some field))
   | _ => false
+
+/-- Whether every guard leaf belongs to one statically participating checked route. -/
+def parallelNumericDirectGuardAdmitted
+    (routes : List (CheckedParallelNumericTargetRoute model)) :
+    Option (CheckedComputationCondition model) → Bool
+  | none => true
+  | some condition => referencesOnly condition
+where
+  referencesOnly : CheckedComputationCondition model → Bool
+    | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
+        routes.any fun route => route.admitsGuardField field
+    | .leaf (.numeric comparison) => comparison.admittedWith
+        (fun atom => match atom with
+          | .numeric (.field declaration) => parallelNumericAtomAdmitted routes (.field declaration)
+          | .numeric (.temporalFieldPart source part format) =>
+              parallelNumericAtomAdmitted routes (.temporalFieldPart source part format)
+          | .numeric (.aggregate op source) => source.directAggregateFields?.any fun fields =>
+              parallelNumericAtomAdmitted routes (.aggregate op fields)
+          | _ => false)
+        CheckedNumericComputationAtom.numericScaleSummary
+    | .leaf (.predicate _) | .leaf (.text _) | .leaf (.scalar _) | .leaf (.fieldFill _ _) | .leaf (.groupPresence _ _) => false
+    | .and left right | .or left right =>
+        referencesOnly left && referencesOnly right
 
 /-- Only authored direct fields participate here; a wildcard would need its own extent. -/
 def SurfaceNumericAtom.parallelFields : SurfaceNumericAtom → List SurfaceFieldPath
@@ -160,6 +161,32 @@ def FlatModel.resolveParallelNumericAtom (model : FlatModel) (group targetGroup 
           if !resolved.hasMultipleFields || !resolved.hasUniqueFields then throw .unsupportedExpression
           pure (.aggregate op resolved)
       | [] => throw .unsupportedExpression
+  | _ => throw .unsupportedExpression
+
+/-- Guard aggregates retain the ordinary checked list and scan. Their sibling scopes are bound
+by the parallel route certificate, not by a synthetic ordinary target scope (spec/09 §5). -/
+def FlatModel.resolveParallelNumericGuardAtom (model : FlatModel) (group targetGroup : GroupPath)
+    (atom : SurfaceNumericComputationAtom) :
+    Except ParallelNumericDirectPlanError (CheckedNumericComputationAtom model) := do
+  let some direct := atom.parallelAtom? | throw .guardNotLimitedToOperand
+  match ← model.resolveParallelNumericAtom group targetGroup direct with
+  | .field declaration => pure (.numeric (.field declaration))
+  | .temporalFieldPart source part format => pure (.numeric (.temporalFieldPart source part format))
+  | .aggregate op fields =>
+      let operands ← fields.fields.mapM fun field => do
+        let declaration ← model.lookupUniqueId field.id |>.mapError .expressionResolve
+        pure (ResolvedFieldEntityOperand.field declaration .stored (model := model))
+      let first :: rest := operands | throw .unsupportedExpression
+      if valid : model.validate.isOk = true then
+        if multiple : (EntityListArity.manyRequired.allowsSole || first.isAlreadyMany || !rest.isEmpty) = true then
+          if unique : firstDuplicateResolvedEntityOperand? (first :: rest) = none then
+            if disjoint : firstResolvedOperandOverlap? (first :: rest) = none then
+              let source ← certifyNumberEntityShape model group {
+                first, rest, modelWellFormed := valid, arity := .manyRequired
+                requiredMultiplicity := multiple, uniqueExactOperands := unique, disjointOperands := disjoint
+              } targetGroup |>.mapError fun _ => .unsupportedExpression
+              return .numeric (.aggregate op source)
+      throw .unsupportedExpression
   | _ => throw .unsupportedExpression
 
 end A12Kernel

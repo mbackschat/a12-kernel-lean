@@ -3,9 +3,9 @@
 <a id="active-unit"></a>
 ## Next action and accepted baseline
 
-- `status`: K01–K07 are accepted; K08–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
-- `next`: Select K08 and audit its frozen matrix against the existing computation lifecycle before implementation. K07 passed integrated build, retained evidence, population replay, trust/hygiene and triggered fresh HIGH review; its reproduced mixed-fill guard finding is closed. [Parallel coverage](implementation/repeatable-validation.md) and [source distinctions](sources/model-structure-and-declaration-probes.md#src-parallel-group-outer) own the accepted mechanism and evidence.
-- `sync`: [SPEC-2026-10-12-01](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-12-01) is pending and not handed off. It requests peer reconciliation of source-derived selected-error eligibility; no external wait blocks K08.
+- `status`: K01–K08 are accepted; K09–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
+- `next`: Start K09 by reconciling its first-filled matrix against the [typed carriers](implementation/strings-and-enumerations.md#cap-first-filled-value), [existing assurance](implementation/strings-and-enumerations.md#cap-first-filled-value-assurance) and [SG4](gaps/keystone.md#gap-sg4). Reuse K08’s accepted computation assembly and dependency overlay. Keep the two remaining joined-guard kinds in SG4’s required K19 disposition; they are unresolved implementation gaps, not accepted exclusions.
+- `sync`: [SPEC-2026-10-12-01](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-12-01) is pending and not handed off. It requests peer reconciliation of source-derived selected-error eligibility; no external wait blocks K09. Owner direction: at the next ledger edit, follow its existing retirement practice to remove accepted entries from the active ledger while preserving required provenance and unresolved requests.
 - `baseline`: Accepted ordinary implementation boundaries remain in [coverage](CONFORMANCE-COVERAGE.md#axis-r--population-replay). The [C12 readback](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) establishes bounded semantic transport, not independent-evaluator qualification.
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
@@ -100,7 +100,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 ### K08 — computation guards, dependency reads and formal scope
 
-- [ ] Close the wider operation/guard compositions in [SG4](gaps/keystone.md#gap-sg4).
+- [x] Close the wider operation/guard compositions in [SG4](gaps/keystone.md#gap-sg4). [Accepted mixed-plan coverage](implementation/computations.md#cap-mixed-computation-plan) and [non-Number tables](implementation/repeatable-computations.md#cap-non-number-alternatives) retain the execution and evidence boundaries.
 - Matrix: indexed/correlated membership guard with a fresh computed key/payload; multiple alternatives and repeated targets; parallel operands from different declarations; mixed producer chain with an independent branch; false guard, reached poison and malformed unused operand.
 - Done: per-authored-operation preprocessing, dependency ordering, first-match selection and formal-input unions agree. Same-call dependents distinguish clean clear from poison, including equal formal-error inventories. Whole-model admission remains enforced; partial-plan stale storage cannot silently execute.
 

@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.ParallelNumericDirectRunResult
 
 /-! # Checked parallel Number alternative tables
 
-This boundary consolidates two or more already-checked guarded parallel Number operations for one repeatable target. It reuses the shared first-selected condition scan and delegates only the selected row to the direct operation's target evaluator. Static route collection and target-row iteration remain with the next execution capsule.
+A source table requires guarded rows; consolidation of separately checked declarations also retains their unconditional singleton rows (spec/09 §§1.1, 3.1). Both reuse the shared first-selected scan and the selected operation's target evaluator, with every participating route retained for target iteration.
 -/
 
 namespace A12Kernel
@@ -13,12 +13,12 @@ inductive ParallelNumericAlternativeTableError where
   | targetMismatch (alternative : Nat) (expected actual : FieldId)
   deriving Repr, DecidableEq
 
-/-- One guarded parallel operation certified against the table's shared target. The complete checked operation remains intact because it owns expression, routes, scale directive, and target policy. -/
+/-- One parallel operation certified against the table's shared target. The complete checked operation remains intact because it owns expression, routes, scale directive, and target policy. -/
 structure CheckedParallelNumericAlternative (model : FlatModel)
     (target : FieldId) where
   operation : CheckedIsolatedParallelNumericDirectRun model
-  precondition : CheckedComputationCondition model
-  preconditionOwned : operation.precondition = some precondition
+  precondition : Option (CheckedComputationCondition model)
+  preconditionOwned : operation.precondition = precondition
   targetMatches : operation.route.targetField = target
 
 namespace CheckedParallelNumericAlternative
@@ -32,7 +32,7 @@ def toSelectable
 
 end CheckedParallelNumericAlternative
 
-/-- One already-flattened guarded table. Two rows are stored explicitly because a singleton has its existing optional-guard owner. -/
+/-- One already-flattened table. Two rows are stored explicitly because a singleton has its existing optional-guard owner. -/
 structure CheckedParallelNumericAlternativeTable (model : FlatModel) where
   targetField : FieldId
   first : CheckedParallelNumericAlternative model targetField
@@ -50,7 +50,7 @@ private def certifyParallelNumericAlternative
       if targetMatches : operation.route.targetField = target then
         .ok {
           operation
-          precondition
+          precondition := some precondition
           preconditionOwned := guarded
           targetMatches
         }
@@ -114,7 +114,7 @@ def WellFormed
   ∀ alternative ∈ table.alternatives,
     alternative.operation.WellFormed ∧
       alternative.operation.precondition =
-        some alternative.precondition ∧
+        alternative.precondition ∧
       alternative.operation.route.targetField = table.targetField
 
 private def appendRouteIfNew

@@ -4,8 +4,8 @@ import A12Kernel.Proofs.ParallelNumericDirectRun
 /-! # Target exclusion across parallel step forms -/
 namespace A12Kernel
 
-/-- Scheduling a singleton or a guarded table preserves every operation's full guard/expression
-self-reference exclusion; packing alternatives cannot change which target that certificate names. -/
+/-- Every joined operation retains full guard/expression self-reference exclusion after table
+assembly. Ordinary members retain their own target-ban certificates and containing-group exemptions. -/
 theorem parallelNumericStep_operations_exclude_target
     (step : CheckedParallelNumericStep model) :
     ∀ operation ∈ step.operations, operation.referencesField step.targetField = false := by
@@ -23,5 +23,17 @@ theorem parallelNumericStep_operations_exclude_target
       change alternative.operation.referencesField table.targetField = false
       simpa only [alternative.targetMatches] using
         checkedIsolatedParallelNumericDirectRun_excludes_target alternative.operation
+  | mixed table =>
+      intro operation member
+      change operation ∈ table.members.filterMap CheckedParallelNumericMember.joinedOperation? at member
+      obtain ⟨entry, _, selected⟩ := List.mem_filterMap.mp member
+      cases entry with
+      | bound policy alternative => simp [CheckedParallelNumericMember.joinedOperation?] at selected
+      | joined alternative =>
+          have same : alternative.operation = operation := Option.some.inj selected
+          subst operation
+          change alternative.operation.referencesField table.targetField = false
+          simpa only [alternative.targetMatches] using
+            checkedIsolatedParallelNumericDirectRun_excludes_target alternative.operation
 
 end A12Kernel

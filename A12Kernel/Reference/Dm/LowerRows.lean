@@ -73,7 +73,6 @@ def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : 
   else if target.temporalTargetPolicy.isSome then
     match expression with
     | .call "FirstFilledValue" _ _ _ => false
-    | .string text => (authoredDateLiteral? text).isNone
     | _ => true
   else if target.policy.kind == .string && (lowerSelectedStringExpr model group expression).isOk then true else
   match expression with
@@ -144,6 +143,10 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
     return .dateRangeConstruction (← elaborated "DateRange"
       (checkBoundDateRangeConstructionComputation model group target.id start finish))
   if target.temporalTargetPolicy.isSome then
+    if let .string literal := expression then
+      if let some source := authoredDateLiteral? literal then
+        return .dateLiteral (← elaborated "DateComputation"
+          (checkDateLiteralComputation model group target.id source))
     let surface ← lowerScalarTemporalExpression model group expression
     let checked ← elaborated "TemporalExpression"
       (elaborateScalarTemporalExpression model group surface (some target.groupPath))
