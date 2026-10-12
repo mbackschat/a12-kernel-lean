@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.Condition
+import A12Kernel.Semantics.NumericExpression
 
 /-! # Structural iteration guards
 
@@ -34,6 +34,21 @@ def or : IterationGuardStatus → IterationGuardStatus → IterationGuardStatus
   | _, _ => .unguarded
 
 end IterationGuardStatus
+
+/-- The comparison visitor's direct-field/list zero partition is independent of the iteration
+carrier (spec/07 §2; IterationNotValidVisitor). -/
+def NumericValidationOp.zeroSensitiveIteration : NumericValidationOp → Bool
+  | .ordinary .equal | .ordinary .lessEqual | .ordinary .greaterEqual => true
+  | _ => false
+
+/-- Classify a literal comparison after the operand owner supplies per-reference participation.
+Operation lists reject mixed iteration; a direct field supplies one participation bit. -/
+def NumericValidationOp.literalIterationGuard (op : NumericValidationOp) (literal : Int)
+    (references : List Bool) (rejectMixed : Bool := false) : IterationGuardStatus :=
+  if !references.any id then .noReference
+  else if rejectMixed && !references.all id then .unguarded
+  else if literal == 0 && op.zeroSensitiveIteration then .unguarded
+  else .guarded
 
 namespace ConditionTree
 

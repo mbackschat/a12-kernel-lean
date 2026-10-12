@@ -3,9 +3,9 @@
 <a id="active-unit"></a>
 ## Next action and accepted baseline
 
-- `status`: K01–K06 are accepted; K07–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
-- `next`: K07 — parallel joins and cross-root dispatch. Reconcile its frozen matrix with [SG9 and SG29](gaps/paths-and-groups.md) and [SG10](gaps/strings-and-messages.md#gap-sg10) before selecting the first unresolved distinction. K06 passed the integrated, compact-evidence, population, trust and fresh HIGH review gates; its implemented boundaries belong to [group presence](implementation/cross-clause.md#cap-resolved-group-presence-both-arms) and [group counts](implementation/cross-clause.md#cap-mixed-validation-filled-group-count).
-- `sync`: [SPEC-2026-10-12-01](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-12-01) is pending and not handed off. It requests peer reconciliation of source-derived selected-error eligibility; no external wait blocks K07.
+- `status`: K01–K07 are accepted; K08–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
+- `next`: Select K08 and audit its frozen matrix against the existing computation lifecycle before implementation. K07 passed integrated build, retained evidence, population replay, trust/hygiene and triggered fresh HIGH review; its reproduced mixed-fill guard finding is closed. [Parallel coverage](implementation/repeatable-validation.md) and [source distinctions](sources/model-structure-and-declaration-probes.md#src-parallel-group-outer) own the accepted mechanism and evidence.
+- `sync`: [SPEC-2026-10-12-01](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-12-01) is pending and not handed off. It requests peer reconciliation of source-derived selected-error eligibility; no external wait blocks K08.
 - `baseline`: Accepted ordinary implementation boundaries remain in [coverage](CONFORMANCE-COVERAGE.md#axis-r--population-replay). The [C12 readback](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) establishes bounded semantic transport, not independent-evaluator qualification.
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
@@ -94,7 +94,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 ### K07 — parallel joins and cross-root dispatch
 
-- [ ] Close remaining parallel/cross-root runtime compositions in [SG9](gaps/paths-and-groups.md#gap-sg9), [SG29](gaps/paths-and-groups.md#gap-sg29) and [SG10](gaps/strings-and-messages.md#gap-sg10).
+- [x] Close remaining parallel/cross-root runtime compositions in [SG9](gaps/paths-and-groups.md#gap-sg9), [SG29](gaps/paths-and-groups.md#gap-sg29) and [SG10](gaps/strings-and-messages.md#gap-sg10).
 - Matrix: two parents with reversed/same keys; unmatched and invalid keys; numeric lexical aliases; independent ordinary and parallel levels; differing partial selectors; cross-root operands and selected error targets.
 - Done: key visits, original leaf relevance, frame traversal and message multiplicity retain their separate identities. The peer's IF376 first-admitted policy is never used as an exact pointer oracle. Host-order-dependent winners remain explicit context requirements checked by K19.
 

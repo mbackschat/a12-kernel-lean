@@ -403,11 +403,7 @@ inductive IterationLegality where
   deriving Repr, DecidableEq
 
 /-- The kernel's direct Number/literal visitor treats exactly these ordinary operators as empty-zero negative conditions. Tolerance and the other ordinary directions remain admitted for this source shape. -/
-def directEmptyZeroIsUnguarded :
-    NumericValidationOp → Bool
-  | .ordinary .equal | .ordinary .lessEqual
-  | .ordinary .greaterEqual => true
-  | _ => false
+def directEmptyZeroIsUnguarded := NumericValidationOp.zeroSensitiveIteration
 
 def directOrdinaryZeroSensitiveScope?
     (model : FlatModel) :

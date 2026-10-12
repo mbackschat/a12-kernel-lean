@@ -29,13 +29,7 @@ private def orderedNumericScopedLiteralGuardAt
   let classify scopedExpr literalExpr := do
     let scope ← scopeOf scopedExpr
     let literal ← hostConvertedLiteralValue? literalExpr
-    if scope.contains level then
-      if literal == 0 && directEmptyZeroIsUnguarded comparison.op then
-        some .unguarded
-      else
-        some .guarded
-    else
-      some .noReference
+    some (comparison.op.literalIterationGuard literal [scope.contains level])
   match classify comparison.left comparison.right with
   | some status => some status
   | none => classify comparison.right comparison.left
@@ -101,11 +95,8 @@ private def orderedNumericDirectWrapperLiteralGuardAt
         | .mixed => some .unguarded
         | .allIterating =>
             let literal ← hostConvertedLiteralValue? literalExpr
-            if literal == 0 &&
-                directEmptyZeroIsUnguarded comparison.op then
-              some .unguarded
-            else
-              some .guarded
+            some (comparison.op.literalIterationGuard literal
+              (scopes.map (·.contains level)) true)
     | _ => none
   match classify comparison.left comparison.right with
   | some status => some status

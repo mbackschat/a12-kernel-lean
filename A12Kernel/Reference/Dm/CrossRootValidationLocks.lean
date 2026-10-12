@@ -1,7 +1,7 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.Document
 
-/-! # Cross-root full-validation admission and content gates
+/-! # Cross-root validation admission, content gates and selected error addresses
 
 The retained rule-bucket grid owns the two-root Number result. Additional fixed-child, typed-atom,
 connective and structural-coordinate cases are internal composition separators for spec/03 A.4.
@@ -81,5 +81,47 @@ example :
             "A12Kernel.NumericValidationElabError.currentRepetitionSource (A12Kernel.FixedGroupReferenceError.unboundOperandLevel"
         | .ok _ => false
       | .error _ => false) = true := by native_decide
+
+private def indexedModel : FlatModel := {
+  model with
+  fields := model.fields ++ [{
+    id := 8, name := "Key", groupPath := ["Other", "Rows"], repeatableScope := [10],
+    policy := { kind := .string } }]
+  repeatableGroups := model.repeatableGroups.map fun group => { group with indexField := some 8 } }
+
+private def selectedCrossRoot (partialCall : Bool) (key : String := "b")
+    (marker : String := "on") (payload : String := "2") : Except String (List String) := do
+  let dm : DmModel := { dm with flat := indexedModel }
+  let row := fun k => Json.mkObj [("Key", .str k), ("N", .str payload)]
+  let input ← (readDocument dm (.mkObj [
+    ("Form", .mkObj [("Marker", .str marker)]),
+    ("Other", .mkObj [("Rows", .arr #[row "a", row "b"])])])).mapError reprStr
+  if !input.refusals.isEmpty then throw (reprStr input.refusals)
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler indexedModel).mapError reprStr
+  let document ← (checkDocument prepared "en_US" input.data).mapError reprStr
+  let checked ← (checkRule dm .english {
+    group := ["Form"], name := "CrossSelected", errorCode := "CROSS", severity := "ERROR",
+    errorEntityRelPath := "/Other/Rows/N",
+    condition := "FieldFilled(Marker) Or [/Other/Rows/N For \"" ++ key ++ "\"] > 0" }).mapError reprStr
+  let messages ← if partialCall then do
+    let outcome ← (checked.evalOrdinaryOncePartial document (.partialSet [
+      RelevantEntityPattern.allInstances ["Form"], RelevantEntityPattern.allInstances ["Other"]])
+        (some world)).mapError reprStr
+    match outcome with
+    | .skipped => pure []
+    | .evaluated _ result => pure result.message?.toList
+    else (runRule world document checked).mapError reprStr
+  pure (messages.map fun message => renderPointer indexedModel message.errorAddress)
+
+example : [false, true].all (fun partialCall =>
+    (selectedCrossRoot partialCall).toOption == some ["Other/Rows[2]/N"] &&
+    (selectedCrossRoot partialCall "a").toOption == some ["Other/Rows/N"] &&
+    (selectedCrossRoot partialCall "missing").toOption == some ["/Other[1]/Rows[-5]/N"] &&
+    (selectedCrossRoot partialCall "b" "" "2").toOption == some ["Other/Rows[2]/N"] &&
+    (selectedCrossRoot partialCall "b" "on" "bad").toOption == some ["Other/Rows[2]/N"] &&
+    (selectedCrossRoot partialCall "b" "" "bad").toOption == some [] &&
+    (selectedCrossRoot partialCall "missing" "").toOption == some []) = true := by
+  native_decide
 
 end A12Kernel.Dm.CrossRootValidationLocks

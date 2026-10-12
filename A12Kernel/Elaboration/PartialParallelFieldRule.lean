@@ -114,9 +114,20 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
     rule.pair.evalWith rule.condition
       (fun rowOuter row _ =>
         rule.condition.evalVerdictExcept (ParallelFieldLeaf.evalWith rule.pair
-          (fun side => view.readParallelField
-            (match side with | .left => row.left | .right => row.right)
-            rowOuter (rule.pair.declaration side))
+          (fun field => do
+            let declaration := rule.pair.declaration field
+            if row.left.group.path.isPrefixOf declaration.groupPath then
+              view.readParallelField row.left rowOuter declaration
+            else if row.right.group.path.isPrefixOf declaration.groupPath then
+              view.readParallelField row.right rowOuter declaration
+            else
+              let path ← rowOuter.pathForScope declaration.repeatableScope
+                |>.mapError (fun error => .join (.environment error))
+              let address : CellAddr := { field := declaration.id, path }
+              if !view.isAddressRelevant address then pure none else
+                match ← view.readAuthoredValidation address |>.mapError .preliminary with
+                | .silentlyUnavailable => pure none
+                | .checked cell => pure (some (observeCell .validation cell)))
           (view.parallelGroupState row rowOuter)))
       view.index outer messageCache view.isAddressRelevant
       (rule.pair.admitsPartialOuter view.relevance))).flatten

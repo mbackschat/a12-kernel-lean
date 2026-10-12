@@ -16,34 +16,63 @@ inductive ParallelFieldSide where
   | right
   deriving Repr, BEq, DecidableEq
 
+/-- Anchors preserve the small pair API; explicit declarations retain every authored payload and
+bound scalar read independently of the topology anchors (spec/07 parallel iteration). -/
+inductive ParallelFieldOperand where
+  | left
+  | right
+  | field (declaration : FlatFieldDecl)
+  deriving Repr, DecidableEq
+
 inductive ParallelFieldLeafOf (Field : Type) where
   | groupPresence (op : GroupPresenceOperator) (reference : ResolvedGroupReference)
   | presence (side : Field) (op : RepeatableFieldPresenceOperator)
   | numeric (op : NumericComparisonOp) (left right : Field)
   | fill (op : FieldFillQuantifier) (left right : Field)
+  | comparison (value : NumericComparisonOf Field)
   deriving Repr, DecidableEq
 
-abbrev ParallelFieldLeaf := ParallelFieldLeafOf ParallelFieldSide
+abbrev ParallelFieldLeaf := ParallelFieldLeafOf ParallelFieldOperand
 
 abbrev ParallelFieldCondition := ConditionTree ParallelFieldLeaf
 
 def CheckedParallelFieldPair.declaration (pair : CheckedParallelFieldPair model) :
-    ParallelFieldSide → FlatFieldDecl
+    ParallelFieldOperand → FlatFieldDecl
   | .left => pair.leftDeclaration
   | .right => pair.rightDeclaration
+  | .field declaration => declaration
+
+def CheckedParallelFieldPair.admitsOperand (pair : CheckedParallelFieldPair model)
+    (operand : ParallelFieldOperand) : Bool :=
+  let declaration := pair.declaration operand
+  let scope := match pair.groups.outerScopePlan with
+    | .common common => common
+    | .framed _ common frame => common ++ frame
+  (model.lookupUniqueId declaration.id).toOption == some declaration &&
+    ((pair.groups.leftGroup.path.isPrefixOf declaration.groupPath &&
+        declaration.repeatableScope == pair.leftDeclaration.repeatableScope) ||
+     (pair.groups.rightGroup.path.isPrefixOf declaration.groupPath &&
+        declaration.repeatableScope == pair.rightDeclaration.repeatableScope) ||
+     declaration.repeatableScope.isPrefixOf scope)
 
 namespace ParallelFieldLeaf
 
-def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide) : ParallelFieldLeaf → Bool
-  | .groupPresence _ reference =>
-      let group := match side with | .left => pair.groups.leftGroup | .right => pair.groups.rightGroup
-      group.path.isPrefixOf reference.path
-  | .presence selected _ => side == selected
-  | .numeric _ lhs rhs => side == lhs || side == rhs
-  | .fill _ lhs rhs => side == lhs || side == rhs
+def fields : ParallelFieldLeaf → List ParallelFieldOperand
+  | .groupPresence _ _ => []
+  | .presence field _ => [field]
+  | .numeric _ lhs rhs | .fill _ lhs rhs => [lhs, rhs]
+  | .comparison value => value.left.atoms ++ value.right.atoms
+def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
+    (leaf : ParallelFieldLeaf) : Bool :=
+  let group := match side with | .left => pair.groups.leftGroup | .right => pair.groups.rightGroup
+  match leaf with
+  | .groupPresence _ reference => group.path.isPrefixOf reference.path
+  | _ => leaf.fields.any fun field => group.path.isPrefixOf (pair.declaration field).groupPath
 
-/-- The direct pair profile uses the existing exact-comparison scale warning and its sole suppression. -/
-def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool) : ParallelFieldLeaf → Bool
+/-- Every payload is model-owned and addressable from the join or frame; comparisons reuse the shared authoring and scale gates. -/
+def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
+    (leaf : ParallelFieldLeaf) : Bool :=
+  leaf.fields.all (CheckedParallelFieldPair.admitsOperand pair) && match leaf with
   | .numeric op lhs rhs =>
       match (pair.declaration lhs).toNumberField?, (pair.declaration rhs).toNumberField? with
       | some a, some b => (NumericValidationOp.ordinary op).acceptsScalesWithSuppression suppress
@@ -58,36 +87,78 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool) : Paralle
             scope == pair.rightDeclaration.repeatableScope) ||
          reference.path.isPrefixOf pair.groups.commonParent)
   | .presence _ _ => true
-  | .fill _ lhs rhs => lhs != rhs
+  | .fill _ lhs rhs => (pair.declaration lhs).id != (pair.declaration rhs).id
+  | .comparison value =>
+      { value with suppressExactScaleWarning := suppress }.admittedWith
+        (fun field => (pair.declaration field).toNumberField?.isSome)
+        (fun field => match (pair.declaration field).toNumberField? with
+          | some number => .field number.info.scale
+          | none => { scale := .unknown, canExpandScale := false })
+
+/-- Direct fields and operation-list wrappers retain the ordinary literal-sensitive guard;
+composite arithmetic has its own parse-tree branch (spec/07 §2). -/
+private def numericGuard (participates : ParallelFieldOperand → Bool)
+    (value : NumericComparisonOf ParallelFieldOperand) : IterationGuardStatus :=
+  let rec sensitive : AuthoredNumericExpr ParallelFieldOperand → Option Bool
+    | .group body => sensitive body
+    | .atom _ => some false
+    | .abs _ | .round _ _ _ | .extremum _ _ _ | .extremumCall _ _ => some true
+    | _ => none
+  let classify expression constant := do
+    let rejectMixed ← sensitive expression
+    let .literal literal := constant | none
+    let bits := expression.atoms.map participates
+    if !bits.any id then return IterationGuardStatus.noReference
+    if rejectMixed && !bits.all id then return .unguarded
+    let some converted := literal.javaRoundedInt32? | return .unclassified
+    pure (value.op.literalIterationGuard converted bits rejectMixed)
+  match classify value.left value.right with
+  | some result => result
+  | none => match classify value.right value.left with
+    | some result => result
+    | none => if (value.left.atoms ++ value.right.atoms).any participates then .guarded else .noReference
+
+/-- Presence quantifiers share one participation rule for ordinary and parallel iteration.
+The two mixed-sensitive operators require every operand to iterate (spec/07 §2; IterationNotValidVisitor). -/
+private def fillGuard (participates : ParallelFieldOperand → Bool)
+    (op : FieldFillQuantifier) (left right : ParallelFieldOperand) : IterationGuardStatus :=
+  if !(participates left || participates right) then .noReference else
+    match op with
+    | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled => .unguarded
+    | .atLeastOneFieldFilled | .fieldsNotCollectivelyFilled =>
+        if participates left && participates right then .guarded else .unguarded
+    | .allFieldsFilled | .moreThanOneFieldFilled => .guarded
 
 /-- For direct fields on the joined pair, the parallel guard follows the source operator's iteration test, not its runtime empty verdict (Kernel `IterationNotValidVisitor`). -/
 def guards (pair : CheckedParallelFieldPair model) : ParallelFieldLeaf → Bool
   | leaf@(.groupPresence .filled _) => leaf.uses pair .left || leaf.uses pair .right
   | .groupPresence .notFilled _ => false
-  | .presence _ .filled | .numeric _ _ _ => true
+  | leaf@(.presence _ .filled) | leaf@(.numeric _ _ _) =>
+      leaf.uses pair .left || leaf.uses pair .right
+  | .comparison value => decide (numericGuard (fun field =>
+      pair.groups.leftGroup.path.isPrefixOf (pair.declaration field).groupPath ||
+      pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) value = .guarded)
   | .presence _ .notFilled => false
-  | .fill op _ _ => match op with
-    | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled => false
-    | .allFieldsFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled
-    | .fieldsNotCollectivelyFilled => true
+  | .fill op left right => decide (fillGuard (fun field =>
+      pair.groups.leftGroup.path.isPrefixOf (pair.declaration field).groupPath ||
+      pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) op left right = .guarded)
 
 /-- A one-sided frame has ordinary iteration levels in addition to the parallel key level. Direct pair leaves specialize the existing iteration guard table at each such level. -/
 def guardAt (pair : CheckedParallelFieldPair model) (level : RepeatableLevel)
     (value : ParallelFieldLeaf) : IterationGuardStatus :=
   match value with
+  | .comparison value => numericGuard (fun field => (pair.declaration field).repeatableScope.contains level) value
   | .groupPresence op reference =>
       if !reference.boundRepeatableScope.contains level then .noReference
       else if op.canFireOnEmpty then .unguarded else .guarded
-  | _ =>
-    let left := value.uses pair .left && pair.leftDeclaration.repeatableScope.contains level
-    let right := value.uses pair .right && pair.rightDeclaration.repeatableScope.contains level
-    if !(left || right) then .noReference
-    else if value.guards pair then
-      match value with
-      | .fill .atLeastOneFieldFilled _ _ | .fill .fieldsNotCollectivelyFilled _ _ =>
-          if left && right then .guarded else .unguarded
-      | _ => .guarded
-    else .unguarded
+  | .fill op left right => fillGuard
+      (fun field => (pair.declaration field).repeatableScope.contains level) op left right
+  | .presence field op =>
+      if !(pair.declaration field).repeatableScope.contains level then .noReference
+      else match op with | .filled => .guarded | .notFilled => .unguarded
+  | .numeric _ left right =>
+      if (pair.declaration left).repeatableScope.contains level ||
+          (pair.declaration right).repeatableScope.contains level then .guarded else .noReference
 
 /-- Joined group reads preserve index unavailability before deriving physical group content; ancestors use the same outer coordinates without acquiring a join-level reference. -/
 private def groupState (row : ResolvedParallelIndexRow)
@@ -111,7 +182,7 @@ private def groupState (row : ResolvedParallelIndexRow)
 
 /-- Full and partial calls share scalar consumers; absent observations mean call-local unavailability without an invented formal cause. -/
 def evalWith (pair : CheckedParallelFieldPair model)
-    (read : ParallelFieldSide → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
+    (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
     (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState) :
     ParallelFieldLeaf → Except ParallelPresenceRuleEvaluationError Verdict
   | .groupPresence op reference => do
@@ -128,6 +199,16 @@ def evalWith (pair : CheckedParallelFieldPair model)
           pure (op.eval (left.asDirectNumericComparisonOperand a.info)
             (right.asDirectNumericComparisonOperand b.info))
       | _, _ => pure .unknown
+  | .comparison value => do
+      let observe := fun field => do
+        let some number := (pair.declaration field).toNumberField? | throw .unsupportedCondition
+        let observation ← read field
+        pure (observation.map (fun cell =>
+          (cell.asDirectNumericComparisonOperand number.info).toValidationArithmetic)
+          |>.getD (.error NumericValidationUnavailable.silentlyUnavailable))
+      let left ← value.left.mapM observe
+      let right ← value.right.mapM observe
+      pure ({ value with left, right }.evalWith id)
   | .fill op lhs rhs => do
       let unknown : ValidationFillTally := { filled := 0, empty := 0, unknown := 1, uninstantiated := 0 }
       let left ← read lhs
@@ -137,10 +218,20 @@ def evalWith (pair : CheckedParallelFieldPair model)
 
 /-- Missing and invalid joined sides enter the same scalar observation consumers as physical reads. -/
 def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
-    (preliminary : CheckedIndexPreliminary model) : ParallelFieldLeaf →
+    (preliminary : CheckedIndexPreliminary model) (outer : Env := []) : ParallelFieldLeaf →
     Except ParallelPresenceRuleEvaluationError Verdict :=
   evalWith pair
-    (fun side => (row.readValidation preliminary (pair.declaration side).id).map some |>.mapError .join)
+    (fun field => do
+      let declaration := pair.declaration field
+      if row.left.group.path.isPrefixOf declaration.groupPath ||
+          row.right.group.path.isPrefixOf declaration.groupPath then
+        (row.readValidation preliminary declaration.id).map some |>.mapError .join
+      else
+        let path ← outer.pathForScope declaration.repeatableScope
+          |>.mapError (fun error => .join (.environment error))
+        let cell ← preliminary.readAuthoredValidation { field := declaration.id, path }
+          |>.mapError (fun error => .join (.document error))
+        pure (some (observeCell .validation cell)))
     (groupState row preliminary)
 
 end ParallelFieldLeaf
@@ -172,10 +263,8 @@ def references (pair : CheckedParallelFieldPair model) : ParallelFieldCondition 
       ancestorOrEqual := reference.path.isPrefixOf
         (if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration.groupPath
          else pair.rightDeclaration.groupPath) }]
-  | .leaf (.presence side _) => [{ sameEntity := (pair.declaration side).id == pair.errorField }]
-  | .leaf (.numeric _ lhs rhs) | .leaf (.fill _ lhs rhs) =>
-      [{ sameEntity := (pair.declaration lhs).id == pair.errorField },
-       { sameEntity := (pair.declaration rhs).id == pair.errorField }]
+  | .leaf leaf => leaf.fields.map fun field =>
+      { sameEntity := (pair.declaration field).id == pair.errorField }
   | .and left right | .or left right => references pair left ++ references pair right
 
 def errorTargetRefusal (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition) :
@@ -218,8 +307,8 @@ def CheckedParallelFieldRule.evalFull (rule : CheckedParallelFieldRule model)
     (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
     (messageCache : Option MessageIndexContext := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) :=
-  rule.pair.evalFullWith rule.condition
-    (fun row view => rule.condition.evalVerdictExcept (ParallelFieldLeaf.eval rule.pair row view))
+  rule.pair.evalWith rule.condition
+    (fun outer row view => rule.condition.evalVerdictExcept (ParallelFieldLeaf.eval rule.pair row view outer))
     preliminary outer messageCache
 
 /-- Parallel unions are local to each in-capacity common outer row. An implicit outer row has no child index entries, hence no parallel evaluation to fabricate. -/

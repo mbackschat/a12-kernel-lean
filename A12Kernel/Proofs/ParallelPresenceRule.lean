@@ -72,9 +72,9 @@ theorem checkedParallelFieldPair_noRelevantError (pair : CheckedParallelFieldPai
 
 /-- Silent partial unavailability reaches both presence operators without inventing a formal cause. -/
 theorem parallelFieldPresence_silentUnavailable (pair : CheckedParallelFieldPair model)
-    (read : ParallelFieldSide → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
+    (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
     (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState)
-    (side : ParallelFieldSide) (op : RepeatableFieldPresenceOperator)
+    (side : ParallelFieldOperand) (op : RepeatableFieldPresenceOperator)
     (unavailable : read side = .ok none) :
     ParallelFieldLeaf.evalWith pair read readGroup (.presence side op) = .ok .unknown := by
   simp [ParallelFieldLeaf.evalWith, unavailable]
