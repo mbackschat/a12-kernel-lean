@@ -49,7 +49,7 @@ def evaluateOutcomeWithGuard (computation : StringAlternativeComputation Guard)
   | .poison cause => .ok (.poison cause)
   | .selected expression =>
       let store ← (expression.evaluate context).mapError operationError
-      pure (computation.targetRegime.check computation.targetPolicy wholeValueMatches? store)
+      (computation.targetRegime.check computation.targetPolicy wholeValueMatches? store context).mapError operationError
 
 def evaluateOutcomeWithPattern (computation : StringAlternativeComputation)
     (wholeValueMatches? : Option (String → Bool))

@@ -277,7 +277,7 @@ def ofCustomFirstFilled? (operation : CheckedCustomFirstFilledComputation model)
     firstFilledRows operation.target .string document
       (.firstFilledSite ∘ .targetRows) (.firstFilledSite ∘ .targetEnvironment) fun target environment => do
         let entry ← (operation.evaluateAt (world := some world) document document.read target environment).mapError .firstFilledSite
-        let outcome := entry.result.asExactStringTargetOutcome
+        let outcome := entry.outcome
         pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
 
 /-- A per-row Boolean `FirstFilledValue` over its checked source. -/

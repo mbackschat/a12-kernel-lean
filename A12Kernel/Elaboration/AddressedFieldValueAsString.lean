@@ -166,6 +166,7 @@ private def stringCell (cell : CheckedCell String) : CheckedCell := {
   rawPresent := cell.rawPresent
   parsed := cell.parsed.map Value.str
   findings := cell.findings
+  reports := cell.reports
 }
 
 /-- Project the immutable Number source through the storage-regime-preserving text boundary consumed by `FieldValueAsString`. -/

@@ -148,6 +148,7 @@ import A12Kernel.Conformance.CustomFieldCause
 import A12Kernel.Conformance.CustomFieldContext
 import A12Kernel.Conformance.CustomFieldElaboration
 import A12Kernel.Conformance.CustomFieldEvaluation
+import A12Kernel.Conformance.CustomFieldComputation
 import A12Kernel.Conformance.CustomFieldFormalMessage
 import A12Kernel.Conformance.CustomFieldMessage
 import A12Kernel.Conformance.CustomFieldType

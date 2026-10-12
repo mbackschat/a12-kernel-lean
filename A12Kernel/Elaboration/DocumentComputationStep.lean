@@ -702,8 +702,7 @@ private def ofStringFirstFilledAtRoot (operation : CheckedStringFirstFilledCompu
     let cell ← DocumentComputationReadBack.string entry.outcome
     pure (.string entry.outcome, cell)
 
-/-- A fixed-target Custom `FirstFilledValue` at its single instance, whose selected token its matching
-Custom declaration accepts unchecked, read back as a String completion is. -/
+/-- A fixed-target Custom `FirstFilledValue` retains target callback admission in its String completion. -/
 private def ofCustomFirstFilledAtRoot (operation : CheckedCustomFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.targetField
@@ -713,9 +712,8 @@ private def ofCustomFirstFilledAtRoot (operation : CheckedCustomFirstFilledCompu
   run world _ document := do
     let entry ← (operation.evaluateAt (world := some world) document document.read
       { field := operation.targetField, path := [] } []).mapError .firstFilledSite
-    let outcome := entry.result.asExactStringTargetOutcome
-    let cell ← DocumentComputationReadBack.string outcome
-    pure (.string outcome, cell)
+    let cell ← DocumentComputationReadBack.string entry.outcome
+    pure (.string entry.outcome, cell)
 
 /-- A whole-document step reads and writes the target's one root address, so a `FirstFilledValue`
 carrier becomes one only at a fixed target. Each carrier also serves a repeatable target, which runs

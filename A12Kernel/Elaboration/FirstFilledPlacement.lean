@@ -245,6 +245,7 @@ end FirstFilledFieldSource
 /-- A structural failure of a placed carrier's run: its target rows, a row's address, or a reached
 source read. -/
 inductive FirstFilledSiteFault where
+  | targetCheck (cause : StringComputationFault)
   | targetRows (cause : ActualRowEnvironmentError)
   | targetEnvironment (cause : EnvBindingError)
   | source (cause : CheckedAddressingError)

@@ -18,7 +18,13 @@ structure RegisteredCustomRejection where
   messageTemplate : Option String := none
   deriving Repr, DecidableEq
 
-/-- Why a checked cell is unavailable. The ordinary constructors are formal-invalidity sources routed through `formalCheck`; `computedDependency` is the cause-blind transient marker placed only in a computation overlay after an earlier computed target became invalid. -/
+/-- Kernel 30.8.1 reserves this exact callback code for a reported but readable value (spec/06 A.3). -/
+def RegisteredCustomRejection.testRangeCode : String := "testIDNummer"
+
+def RegisteredCustomRejection.admitsValue (rejection : RegisteredCustomRejection) : Bool :=
+  rejection.projectCode == RegisteredCustomRejection.testRangeCode
+
+/-- A formal finding payload; placement in `findings` makes a cell unavailable, while `reports` retains an admitted value. The ordinary constructors are formal-invalidity sources routed through `formalCheck`; `computedDependency` is the cause-blind transient marker placed only in a computation overlay after an earlier computed target became invalid. -/
 inductive FormalCause where
   | malformed                -- not well-formed for the field's type (bad date/number/…)
   | dateFormat               -- stored Date text does not match its declaration or a real calendar day
@@ -58,7 +64,13 @@ structure CheckedCell (α : Type := Value) where
   rawPresent : Bool
   parsed     : Option α
   findings   : List FormalCause
+  /-- Reports retained without making the value unavailable, as required by the reserved custom result (spec/06 A.3). -/
+  reports : List FormalCause := []
   deriving Repr, DecidableEq
+
+/-- Formal output includes nonblocking ingestion reports before later blocking findings. Phase reads consume only `findings`. -/
+def CheckedCell.formalReports (cell : CheckedCell α) : List FormalCause :=
+  cell.reports ++ cell.findings
 
 /-- A phase read of a cell. `unknown` / `poison` are the validation / computation faces of
     formal invalidity; there is **no** empty-substitution here — the operator applies it. -/

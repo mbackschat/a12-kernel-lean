@@ -449,10 +449,59 @@ example : customPopulationResult none = some (.inr 0) ∧
     customPopulationResult (some "BAD") = some (.inr 0) ∧
     customPopulationResult (some "OK") 2 = some (.inr 1) ∧
     customPopulationResult (some "OK") 2 false = some (.inr 0) ∧
-    customPopulationResult (some "TEST") = some (.inl (.customAdmission 1)) ∧
-    customPopulationResult (some "TEST") 2 = some (.inl (.customAdmission 2)) ∧
+    customPopulationResult (some "TEST") = some (.inr 1) ∧
+    customPopulationResult (some "TEST") 2 = some (.inr 1) ∧
     customPopulationResult (some "TEST") 2 false = some (.inr 0) := by
   native_decide
+
+private def customIndexModel : FlatModel := {
+  fields := [{
+    id := 1
+    name := "Key"
+    groupPath := ["Form", "Rows"]
+    repeatableScope := [10]
+    policy := { kind := .string }
+    customType := some { name := "CacheProbe" } }]
+  repeatableGroups := [{
+    level := 10
+    path := ["Form", "Rows"]
+    repeatability := some 2
+    indexField := some 1 }] }
+
+private def customIndexResult (values : List String) (code : String := "testIDNummer") :
+    Option ((Nat × Option SemanticIndexKey) × (CellObservation × CellObservation) ×
+      List FormalCause) := do
+  let world : World := {
+    now := { epochMillis := 0 }
+    customFieldValidator? := fun name => if name == "CacheProbe" then
+      some (fun _ _ => some { projectCode := code }) else none }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler customIndexModel).toOption
+  let input ← (checkDocument prepared "en_US" {
+    instantiatedRows := values.zipIdx.map fun (_, index) => { group := 10, path := [index + 1] }
+    cells := values.zipIdx.map fun (value, index) => {
+      address := { field := 1, path := [index + 1] }, stored := value,
+      raw := .parsed (.str value) } }).toOption
+  let population ← input.messageCachePopulation.toOption
+  let preliminary ← input.applyFullIndexPreliminary.toOption
+  let first : CellAddr := { field := 1, path := [1] }
+  let cell ← (preliminary.readAuthoredValidation first).toOption
+  pure ((population.length, input.messageKeyAt? first),
+    (observeCell .validation cell, observeCell .computation cell),
+    cell.formalReports)
+
+example : customIndexResult ["TEST"] = some (
+    (2, some (.text "TEST")), (.value (.str "TEST"), .value (.str "TEST")),
+    [.registeredCustomValidation { projectCode := "testIDNummer" }]) ∧
+    customIndexResult ["TEST", "TEST"] = some (
+      (4, some (.text "TEST")), (.unknown .duplicateIndex, .poison .duplicateIndex),
+      [.registeredCustomValidation { projectCode := "testIDNummer" }, .duplicateIndex]) ∧
+    customIndexResult ["TEST"] "cacheProbe.reject" = some (
+      (1, none), (.unknown (.registeredCustomValidation { projectCode := "cacheProbe.reject" }),
+      .poison (.registeredCustomValidation { projectCode := "cacheProbe.reject" })),
+      [.registeredCustomValidation { projectCode := "cacheProbe.reject" }]) := by
+  constructor
+  · native_decide
+  constructor <;> native_decide
 
 private def topologyModel : FlatModel := {
   fields := [{

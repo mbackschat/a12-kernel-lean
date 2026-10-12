@@ -51,7 +51,8 @@ def readScalarValueAsDate (phase : Phase) (source : CheckedZonedValueAsDateSourc
     (cell : CheckedCell) (stored : Option String) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
   let checked := source.toCheckedValueAsDateSource.checkSourceText {
-    rawPresent := cell.rawPresent, parsed := stored, findings := cell.findings }
+    rawPresent := cell.rawPresent, parsed := stored,
+    findings := cell.findings, reports := cell.reports }
   match source.toCheckedValueAsDateSource.observe phase checked with
   | .empty => pure .notEvaluated
   | .unavailable cause => pure (.unknown cause)

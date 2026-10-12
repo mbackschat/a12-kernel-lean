@@ -100,7 +100,7 @@ theorem checkedStringComputation_evaluateOutcome
       patterns.targetMatcher? operation.targetField = some matcher) :
     operation.evaluateOutcome patterns input = (do
       let store ← operation.expression.evaluate input
-      pure (declaration.checkStringExpressionTarget matcher store)) := by
+      declaration.checkStringExpressionTarget matcher store input.stringComputationContext) := by
   simp [CheckedStringComputationOperation.evaluateOutcome, preparedTarget, targetDeclaration]
 
 /-- A forged or incomplete prepared target plan fails closed instead of silently treating a required declared pattern as absent. -/

@@ -64,9 +64,10 @@ private def checkedWorld : World where
   customFieldValidator? := fun name =>
     if name == "ProjectCode" then some checkedValidator else none
 
-private def checkedOutput (relevant : Bool) (raw : RawCell String) :
+private def checkedOutput (relevant : Bool) (raw : RawCell String)
+    (world : World := checkedWorld) :
     Option CustomFieldValidationOutput :=
-  match elaborateCustomFieldType checkedWorld { name := "ProjectCode" } with
+  match elaborateCustomFieldType world { name := "ProjectCode" } with
   | .error _ => none
   | .ok checked =>
       checked.checkRelevantWithMessage "en_US" relevant raw address
@@ -111,5 +112,48 @@ example : checkedOutput true (.rejected .malformed) = some {
 /- Nonrelevance excludes the entire output before validator sampling or message projection. -/
 example : checkedOutput false (.parsed "rejected") = none := by
   native_decide
+
+private def reportedRejection : RegisteredCustomRejection := {
+  projectCode := "testIDNummer", messageTemplate := some "Test $<fieldName>$" }
+
+private def reportedWorld : World where
+  now := { epochMillis := 0 }
+  customFieldValidator? := fun name =>
+    if name == "ProjectCode" then some (fun _ _ => some reportedRejection) else none
+
+example : checkedOutput true (.parsed "A\r\nB") reportedWorld = some {
+    cell := {
+      rawPresent := true, parsed := some "A\nB", findings := [],
+      reports := [.registeredCustomValidation reportedRejection] }
+    message? := some {
+      errorAddress := address, errorCode := "testIDNummer", severity := .error,
+      messageType := .value, text := { text := "Test Account" } } } := by
+  native_decide
+
+example :
+    CustomFieldValidationMode.fullExamination.continuesAfterIngestion
+      ((checkedOutput true (.parsed "ABCD") reportedWorld).toList) = true ∧
+    CustomFieldValidationMode.abortOnFormalErrors.continuesAfterIngestion
+      ((checkedOutput true (.parsed "ABCD") reportedWorld).toList) = false := by native_decide
+
+private def continuationPair (relevant : Bool) (raw : RawCell String)
+    (world : World := checkedWorld) : Bool × Bool :=
+  let outputs := (checkedOutput relevant raw world).toList
+  (CustomFieldValidationMode.fullExamination.continuesAfterIngestion outputs,
+    CustomFieldValidationMode.abortOnFormalErrors.continuesAfterIngestion outputs)
+
+example : [
+    continuationPair true (.parsed "accepted"),
+    continuationPair true (.parsed "reported") reportedWorld,
+    continuationPair true (.parsed "rejected"),
+    continuationPair true .empty,
+    continuationPair true .presentEmpty,
+    continuationPair false (.parsed "rejected")] = [
+      (true, true), (true, false), (true, false),
+      (true, true), (true, true), (true, true)] := by native_decide
+
+example : (checkedOutput true .empty).map (·.cell.rawPresent) = some false ∧
+    (checkedOutput true .presentEmpty).map (·.cell.rawPresent) = some true ∧
+    checkedOutput false (.parsed "reported") reportedWorld = none := by native_decide
 
 end A12Kernel.Conformance.CustomFieldFormalMessage

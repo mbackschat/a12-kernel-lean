@@ -69,15 +69,17 @@ theorem acceptedDependency_reads_value (context : StringComputationContext)
     exact computation_observes_clean_value (Value.str stored.text)]
   simp [stored.nonempty, pure, Except.pure]
 
-/-- Every String target error becomes the same cause-blind computed-dependency poison when a later computation reads the target. -/
+/-- An unavailable String target error becomes cause-blind computed-dependency poison for a later read. -/
 theorem erroredDependency_reads_computedDependencyPoison
     (context : StringComputationContext) (field : FieldId)
-    (attempted : StoredString) (cause : StringTargetError) :
+    (attempted : StoredString) (cause : StringTargetError)
+    (unavailable : cause.admitsValue = false) :
     (context.withDependencyOutcome field (.errored attempted cause)).map
       (fun updated => updated.readTerm field) =
         .ok (.ok (.poison .computedDependency)) := by
   simp only [StringComputationContext.withDependencyOutcome,
-    StringDependencyCell.ofOutcome, pure, Except.pure, Except.map,
+    StringDependencyCell.ofOutcome, unavailable, Bool.false_eq_true, ite_false,
+    pure, Except.pure, Except.map,
     Except.ok.injEq]
   unfold StringComputationContext.readTerm
   rw [dependencyCell_shadows_target]
@@ -86,6 +88,22 @@ theorem erroredDependency_reads_computedDependencyPoison
         .poison .computedDependency by
     exact computation_observes_single_poison .computedDependency (by decide)]
   rfl
+
+/-- An admitted custom report has the same exact later read as an accepted attempted value. -/
+theorem reportedDependency_reads_value (context : StringComputationContext)
+    (field : FieldId) (attempted : StoredString) (cause : StringTargetError)
+    (admitted : cause.admitsValue = true) :
+    (context.withDependencyOutcome field (.errored attempted cause)).map
+      (fun updated => updated.readTerm field) = .ok (.ok (.text attempted.text)) := by
+  simpa only [StringComputationContext.withDependencyOutcome, StringDependencyCell.ofOutcome,
+    admitted, ite_true] using acceptedDependency_reads_value context field attempted
+
+/-- Dependency overlays retain the capability context required by later custom target callbacks. -/
+theorem dependencyCell_preserves_customContext (context : StringComputationContext)
+    (field : FieldId) (dependency : StringDependencyCell) :
+    (context.withDependencyCell field dependency).world = context.world ∧
+      (context.withDependencyCell field dependency).locale = context.locale := by
+  exact ⟨rfl, rfl⟩
 
 /-- Every reachable inherited producer poison is erased to the cause-blind computed-dependency marker before a later read. -/
 theorem inheritedDependency_reads_computedDependencyPoison
@@ -121,12 +139,13 @@ theorem requiredDependencyPoison_is_rejected
       .error .validationScopedRequired := by
   rfl
 
-/-- The attempted invalid payload is deliberately absent from the dependency representation. Only its target-error class affects the later read. -/
+/-- Unavailable target failures erase attempted payloads from the dependency representation. -/
 theorem erroredDependency_does_not_expose_attempt
-    (first second : StoredString) (cause : StringTargetError) :
+    (first second : StoredString) (cause : StringTargetError)
+    (unavailable : cause.admitsValue = false) :
     StringDependencyCell.ofOutcome (.errored first cause) =
       StringDependencyCell.ofOutcome (.errored second cause) := by
-  rfl
+  simp [StringDependencyCell.ofOutcome, unavailable]
 
 /-- Producer prior state does not participate in the checked outcome supplied to a dependent step. -/
 theorem stringStep_outcome_independent_of_prior
@@ -169,7 +188,7 @@ theorem holdingStringPrecondition_consumedInvalidField_poisons
   simp only [StringComputationStep.evaluateOutcomeWhen,
     StringComputationStep.evaluateOutcome,
     poisonedStringField_evaluates_poison context operand cause poisonedRead,
-    StringTargetRegime.check, StringFieldPolicy.checkTargetWithPattern]
+    StringTargetRegime.check, StringFieldPolicy.checkTargetWithPattern, pure, Except.pure]
 
 /-- Equal immediate deltas do not imply equal dependency states. Clean no-value and computed-dependency poison both clear the same prior target, but their consumer reads remain different. -/
 theorem same_delta_does_not_imply_same_dependency
@@ -182,16 +201,22 @@ theorem same_delta_does_not_imply_same_dependency
   · cases prior <;> rfl
   · decide
 
-/-- Equal value-only applied views also do not determine the dependency state. A rejected attempt and quiet no-value both apply no value, while the former must poison a dependent read. -/
+/-- Equal applied values do not determine the actual dependency state: an unavailable attempt poisons while quiet no-value remains empty. -/
 theorem same_appliedValue_does_not_imply_same_dependency
-    (attempted : StoredString) (cause : StringTargetError) :
+    (attempted : StoredString) (cause : StringTargetError)
+    (unavailable : cause.admitsValue = false) :
     (StringTargetOutcome.errored attempted cause).appliedValue =
         StringTargetOutcome.noValue.appliedValue ∧
-      (StringDependencyCell.poison .computedDependency).checked ≠
-        StringDependencyCell.empty.checked := by
+      (StringDependencyCell.ofOutcome (.errored attempted cause)).map (·.checked) ≠
+        (StringDependencyCell.ofOutcome .noValue).map (·.checked) := by
   constructor
   · rfl
-  · cases cause <;> decide
+  · simp only [StringDependencyCell.ofOutcome, unavailable, Bool.false_eq_true, ite_false,
+      pure, Except.pure, Except.map]
+    intro collapsed
+    have cells := Except.ok.inj collapsed
+    have placement := congrArg CheckedCell.rawPresent cells
+    cases placement
 
 /-- Quiet precondition clearing and consumed-operand poison have identical exact target placement, yet a later read still distinguishes clean empty from poison. -/
 theorem same_exact_application_does_not_imply_same_dependency_read

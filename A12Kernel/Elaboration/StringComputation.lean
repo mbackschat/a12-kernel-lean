@@ -25,11 +25,14 @@ def FlatFieldDecl.isStringExpressionTarget (declaration : FlatFieldDecl) : Bool 
     declaration.enumeration.isNone
 
 def FlatFieldDecl.stringTargetRegime (declaration : FlatFieldDecl) : StringTargetRegime :=
-  if declaration.customType.isSome then .custom else .ordinary
+  match declaration.customType with
+  | some customType => .custom customType
+  | none => .ordinary
 
 def FlatFieldDecl.checkStringExpressionTarget (declaration : FlatFieldDecl)
-    (matcher : Option (String → Bool)) (store : StringStore) : StringTargetOutcome :=
-  declaration.stringTargetRegime.check declaration.stringPolicy matcher store
+    (matcher : Option (String → Bool)) (store : StringStore)
+    (context : StringComputationContext) : Except StringComputationFault StringTargetOutcome :=
+  declaration.stringTargetRegime.check declaration.stringPolicy matcher store context
 
 /-- Fail-closed errors owned by checked String-computation expression lowering. Keeping this domain local avoids widening validation or public reference diagnostics. -/
 inductive StringComputationElabError where
@@ -379,7 +382,8 @@ def evaluateOutcome (operation : CheckedStringComputationOperation model)
   let declaration ← match model.lookupUniqueId operation.targetField with
     | .ok declaration => pure declaration
     | .error _ => throw (.fieldKindMismatch operation.targetField)
-  pure (declaration.checkStringExpressionTarget matcher (← operation.expression.evaluate input))
+  declaration.checkStringExpressionTarget matcher (← operation.expression.evaluate input)
+    input.stringComputationContext
 
 end CheckedStringComputationOperation
 

@@ -90,7 +90,7 @@ def findings (plan : CheckedComputationFormalInputPlan model)
     (input : CheckedDocument model) : List ComputationFormalInputFinding :=
   input.checkedCells.flatMap fun placement =>
     if plan.includesField placement.address.field then
-      placement.cell.findings.map fun cause => {
+      placement.cell.formalReports.map fun cause => {
         address := placement.address
         cause
       }

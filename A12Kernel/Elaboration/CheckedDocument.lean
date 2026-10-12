@@ -77,6 +77,8 @@ what stays source-derived. The source placement remains immutable in both. -/
 structure CheckedDocument (model : FlatModel) where
   private mk ::
   source : DocumentData
+  world : World
+  locale : String
   checkedCells : List CheckedCellPlacement
   modelWellFormed : model.validate.isOk = true
   rowsNodup : source.instantiatedRows.Nodup
@@ -336,6 +338,8 @@ def checkDocument (prepared : PreparedFlatStringContext model compilePattern)
   pure {
     source
     checkedCells
+    world := prepared.world
+    locale
     modelWellFormed := prepared.patterns.modelWellFormed
     rowsNodup := checkedRows.nodup
   }
@@ -573,7 +577,7 @@ def readStoredText (checked : CheckedDocument model) (address : CellAddr) :
   pure {
     rawPresent := cell.rawPresent
     parsed := if cell.parsed.isSome then checked.storedTextAt address else none
-    findings := cell.findings }
+    findings := cell.findings, reports := cell.reports }
 
 /-- Read one checked Number input as a typed cell carrying the regime-selected text. Empty, invalid, and over-limit states retain their ordinary checked-cell structure; the text is never reconstructed from the parsed rational. -/
 def readNumberFormalText (checked : CheckedDocument model)
@@ -591,6 +595,7 @@ def readNumberFormalText (checked : CheckedDocument model)
     rawPresent := cell.rawPresent
     parsed := if cell.parsed.isSome then formalRead else none
     findings := cell.findings
+    reports := cell.reports
   }
   pure textCell
 
@@ -630,11 +635,14 @@ def computationContextAt (checked : CheckedDocument model) (environment : Env) :
   storedText := checked.storedTextIn environment
   numberText := checked.computationFillContext.numberText environment
   row := environment
+  world := some checked.world
+  locale := some checked.locale
   addressed := some checked.computationFillContext
 
-/-- The checked document's complete computation context before a caller supplies its world. -/
+/-- The checked document's complete computation context from its ingestion world and locale. -/
 def computationContext (checked : CheckedDocument model) : ScalarComputationContext :=
   { read := checked.flatContext.read, storedText := checked.flatContext.storedText,
+    world := some checked.world, locale := some checked.locale,
     numberText := checked.computationFillContext.numberText []
     addressed := some checked.computationFillContext }
 
@@ -657,6 +665,7 @@ def stringComputationContext (checked : CheckedDocument model) :
                   rawPresent := cell.rawPresent
                   parsed := cell.parsed.map Value.str
                   findings := cell.findings
+                  reports := cell.reports
                 }
               | .error _ => malformedCheckedCell
           | _ => checked.flatContext.read field

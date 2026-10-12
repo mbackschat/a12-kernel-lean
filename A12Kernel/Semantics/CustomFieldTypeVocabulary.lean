@@ -1,3 +1,5 @@
+import A12Kernel.Cell
+
 /-! # The registered custom field types and their refusal vocabulary
 
 A condition may ask whether a field's value is a valid instance of a named predefined type — a German tax number, an IBAN, an identification number. The Kernel ships validators for thirteen such types, and this module records their observable refusal vocabulary.
@@ -95,7 +97,7 @@ def errorCode : CustomFieldType → String
   | .criminalFileReference => "ungueltigesStrafAktenzeichen"
 
 /-- The separate code the identification number surfaces for a value in the reserved test range. It is not any type's ordinary code, so a consumer enumerating `errorCode` alone misses it. -/
-def testRangeCode : String := "testIDNummer"
+def testRangeCode : String := RegisteredCustomRejection.testRangeCode
 
 /-- Every registered type. -/
 def all : List CustomFieldType :=

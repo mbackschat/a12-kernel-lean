@@ -22,6 +22,8 @@ structure ScalarComputationContext where
   /-- Regime-selected Number text for String coercion; supplied by the checked document. -/
   numberText : FieldId → Option String := fun _ => none
   world : Option World := none
+  /-- Locale supplied by checked ingestion for computed custom target callbacks. -/
+  locale : Option String := none
   /-- The repeatable target row being computed, empty for a fixed target. Only a structural
   `CurrentRepetition` operand reads it; every field read is already addressed by `read`. -/
   row : Env := []

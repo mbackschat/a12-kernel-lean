@@ -101,11 +101,11 @@ private def input? (sourceStored : Option String) : Option (CheckedDocument mode
   }).toOption
 
 private def result? (sourceStored : Option String) :
-    Option TokenComputationResult := do
+    Option StringTargetOutcome := do
   let operation ← checked? target.id (star "Code")
   let input ← input? sourceStored
   let [entry] ← operation.execute input |>.toOption | none
-  pure entry.result
+  pure entry.outcome
 
 private def document? (targetStored sourceStored : Option String)
     (unrelatedStored : String := "KEEP") : Option (CheckedDocument model) :=
@@ -131,12 +131,12 @@ private def root (field : FieldId) : CellAddr := { field, path := [] }
 /- The externally measured empty selection clears a seeded target, while the filled source reuses its checked payload. -/
 example :
     result? none = some .noValue ∧
-      result? (some "A7") = some (.value "A7") := by
+      result? (some "A7") = some (.accepted ⟨"A7", by decide⟩) := by
   native_decide
 
 example :
-    result? (some "A\r\nB") = some (.value "A\nB") ∧
-      result? (some "A\r\r\nB") = some (.value "A\r\nB") := by
+    result? (some "A\r\nB") = some (.accepted ⟨"A\nB", by decide⟩) ∧
+      result? (some "A\r\r\nB") = some (.accepted ⟨"A\r\nB", by decide⟩) := by
   native_decide
 
 /- A reached registered rejection poisons through the already prepared checked cell; this branch remains externally uncalibrated. -/
@@ -203,5 +203,25 @@ example : (do
   some ([], [], [root target.id], .presentEmpty,
     .presentValue ⟨"KEEP", by decide⟩) := by
   native_decide
+
+private def reportedTargetErrors (code : String) : Option (List (String × StringTargetError)) := do
+  let callbackWorld : World := {
+    now := { epochMillis := 0 }
+    customFieldValidator? := fun _ => some (fun value _ =>
+      if value == "A\nB" then some { projectCode := code } else none) }
+  let prepared ← (prepareFlatStringContext callbackWorld builtinStringPatternCompiler model).toOption
+  let input ← (checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := 10, path := [1] }]
+    cells := [{
+      address := { field := source.id, path := [1] }, stored := "A\r\nB",
+      raw := .parsed (.str "A\r\nB") }] }).toOption
+  let operation ← checked? target.id (star "Code")
+  let view ← (operation.executeResult input ([] : List FormalCause)).toOption
+  pure (view.string.withErrors.map fun error => (error.attempted.text, error.cause))
+
+example : reportedTargetErrors "testIDNummer" =
+    some [("A\nB", .custom { projectCode := "testIDNummer" })] ∧
+    reportedTargetErrors "REJECT" =
+    some [("A\nB", .custom { projectCode := "REJECT" })] := by native_decide
 
 end A12Kernel.Conformance.CustomFirstFilledComputation

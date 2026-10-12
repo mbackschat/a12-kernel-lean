@@ -1,6 +1,5 @@
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Semantics.MessageCacheOrder
-import A12Kernel.Semantics.CustomFieldTypeVocabulary
 
 namespace A12Kernel
 
@@ -8,7 +7,6 @@ inductive CheckedMessageCacheError where
   | model (error : ResolveError)
   | document (error : CheckedDocumentError)
   | binding (error : EnvBindingError)
-  | customAdmission (field : FieldId)
   | missingCapacity (group : GroupPath)
   | unknownGroup (group : RepeatableLevel)
   | coordinateRange
@@ -95,11 +93,6 @@ private def populationForScope (checked : CheckedDocument model)
     let environment := declaration.repeatableScope.zip placement.address.path
     if !relevance.coversCell model declaration.path environment then continue
     if !placement.cell.rawPresent || (placement.storedText.getD "").isEmpty then continue
-    -- Cache admission of test-range findings differs from the registered checker's unavailable-cell result; collapsing them would discard a hash contribution (SG7).
-    if placement.cell.findings.any (fun cause => match cause with
-        | .registeredCustomValidation rejection => rejection.projectCode == CustomFieldType.testRangeCode
-        | _ => false) then
-      throw (.customAdmission declaration.id)
     if !placement.cell.findings.isEmpty then continue
     let some (_, name) := names.find? (·.1 == declaration.id)
       | throw (.missingInternalName declaration.id)

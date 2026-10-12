@@ -46,38 +46,48 @@ def elaborateCustomFieldType (world : World)
   let validator ← requireCustomFieldValidator world declaration.name
   pure { declaration, validator }
 
-/-- Validate the raw stored String, then cache one CRLF-normalization pass on acceptance, matching kernel 30.8.1 `FormalChecker.checkAndConvertFieldValue`. Parsed empty remains semantic empty and never reaches the validator. -/
+/-- Classify the callback once, retaining its report independently of admitted evaluated text (spec/06 A.3). Parsed empty bypasses the validator. -/
 def CheckedCustomFieldType.classifyString (checked : CheckedCustomFieldType)
-    (locale value : String) : Except BaseFormalCause (Option String) :=
+    (locale value : String) : CheckedCell String :=
   if value.isEmpty then
-    .ok none
+    { rawPresent := true, parsed := none, findings := [] }
   else
     match checked.validator value
         (checked.declaration.validationContext locale) with
-    | none => .ok (some (normalizeEvaluatedString value))
-    | some rejection => .error (.registeredCustomValidation rejection)
+    | none => { rawPresent := true, parsed := some (normalizeEvaluatedString value), findings := [] }
+    | some rejection =>
+        if rejection.admitsValue then
+          { rawPresent := true, parsed := some (normalizeEvaluatedString value), findings := [],
+            reports := [.registeredCustomValidation rejection] }
+        else
+          { rawPresent := true, parsed := none, findings := [.registeredCustomValidation rejection] }
 
-/-- Lift the same custom String classifier into the heterogeneous flat value domain. Any incoherent non-String payload fails closed as malformed. -/
-def CheckedCustomFieldType.classifyValue (checked : CheckedCustomFieldType)
-    (locale : String) : Value → Except BaseFormalCause (Option Value)
-  | .str value =>
-      match checked.classifyString locale value with
-      | .ok none => .ok none
-      | .ok (some admitted) => .ok (some (.str admitted))
-      | .error cause => .error cause
-  | _ => .error .malformed
+/-- Preserve parser and placement decisions before sampling a custom validator. -/
+def CheckedCustomFieldType.checkStringRaw (checked : CheckedCustomFieldType)
+    (locale : String) : RawCell String → CheckedCell String
+  | .parsed value => checked.classifyString locale value
+  | .empty => { rawPresent := false, parsed := none, findings := [] }
+  | .presentEmpty => { rawPresent := true, parsed := none, findings := [] }
+  | .rejected cause => { rawPresent := true, parsed := none, findings := [cause.toFormalCause] }
 
 /-- Check one heterogeneous raw cell for a prepared flat custom String declaration. -/
 def CheckedCustomFieldType.checkValueRaw (checked : CheckedCustomFieldType)
-    (locale : String) (raw : RawCell) : CheckedCell :=
-  checkRawCellWith (checked.classifyValue locale) raw
+    (locale : String) : RawCell → CheckedCell
+  | .parsed (.str value) =>
+      let cell := checked.classifyString locale value
+      { rawPresent := cell.rawPresent, parsed := cell.parsed.map Value.str,
+        findings := cell.findings, reports := cell.reports }
+  | .parsed _ => { rawPresent := true, parsed := none, findings := [.malformed] }
+  | .empty => { rawPresent := false, parsed := none, findings := [] }
+  | .presentEmpty => { rawPresent := true, parsed := none, findings := [] }
+  | .rejected cause => { rawPresent := true, parsed := none, findings := [cause.toFormalCause] }
 
 /-- Sample the checked validator for one relevant concrete stored value. Nonrelevance returns no observation; physical/semantic emptiness and preceding parser rejection bypass the validator. A nonempty parsed value produces one ordinary checked cell that every later consumer can share. -/
 def CheckedCustomFieldType.checkRelevantRaw (checked : CheckedCustomFieldType)
     (locale : String) (relevant : Bool) (raw : RawCell String) :
     Option (CheckedCell String) :=
   if relevant then
-    some (checkRawCellWith (checked.classifyString locale) raw)
+    some (checked.checkStringRaw locale raw)
   else
     none
 

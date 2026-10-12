@@ -23,13 +23,26 @@ structure CustomFieldValidationOutput where
   message? : Option CustomFieldFormalMessage
   deriving Repr, DecidableEq
 
+/-- The two evidenced core validation modes differ in continuation after custom ingestion; value admission is independent (spec/06 A.3). -/
+inductive CustomFieldValidationMode where
+  | fullExamination
+  | abortOnFormalErrors
+  deriving Repr, DecidableEq
+
+/-- Decide the custom-ingestion contribution to continuation in the modern A12 profile. Both reserved reports and unavailable values are formal errors; other field families retain their own formal gates. -/
+def CustomFieldValidationMode.continuesAfterIngestion (mode : CustomFieldValidationMode)
+    (outputs : List CustomFieldValidationOutput) : Bool :=
+  match mode with
+  | .fullExamination => true
+  | .abortOnFormalErrors => outputs.all (·.cell.formalReports.isEmpty)
+
 namespace CheckedCell
 
-/-- Recover the registered custom rejection selected by the validation observation, if that is the cell's leading formal cause. -/
+/-- Recover the leading reported custom finding without mistaking its message for value unavailability (spec/06 A.3). -/
 def registeredCustomRejection? (cell : CheckedCell α) :
     Option RegisteredCustomRejection :=
-  match observeCell .validation cell with
-  | .unknown (.registeredCustomValidation rejection) => some rejection
+  match cell.formalReports.head? with
+  | some (.registeredCustomValidation rejection) => some rejection
   | _ => none
 
 end CheckedCell

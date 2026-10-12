@@ -50,8 +50,12 @@ theorem stringAlternatives_selected_delegates
     StringAlternativeComputation.evaluateOutcomeWithGuard,
     selectFirstWith_checked, selected,
     StringAlternativeComputation.selectedStep,
-    StringComputationStep.evaluateOutcome, StringFieldPolicy.checkTarget, Except.mapError, bind, Except.bind]
-  cases hResult : expression.evaluate context <;> simp <;> rfl
+    StringComputationStep.evaluateOutcome, Except.mapError, bind, Except.bind]
+  cases expression.evaluate context with
+  | error fault => rfl
+  | ok store =>
+      dsimp only
+      cases computation.targetRegime.check computation.targetPolicy none store context <;> rfl
 
 /-- Once the head precondition holds, its expression is evaluated and every suffix is irrelevant. -/
 theorem stringAlternatives_holdingHead_evaluates
@@ -69,8 +73,12 @@ theorem stringAlternatives_holdingHead_evaluates
     selectFirstWith_checked,
     ComputationAlternative.selectFirstChecked_cons, guarded, holds,
     StringAlternativeComputation.selectedStep,
-    StringComputationStep.evaluateOutcome, StringFieldPolicy.checkTarget, Except.mapError, bind, Except.bind]
-  cases hResult : head.operation.evaluate context <;> simp <;> rfl
+    StringComputationStep.evaluateOutcome, Except.mapError, bind, Except.bind]
+  cases head.operation.evaluate context with
+  | error fault => rfl
+  | ok store =>
+      dsimp only
+      cases computation.targetRegime.check computation.targetPolicy none store context <;> rfl
 
 /-- The payoff law: two arbitrary suffixes remain observationally equal after a holding head, even though evaluating the selected expression may yield no-value, target rejection, poison, or a fragment fault. -/
 theorem stringAlternatives_holdingHead_suffixIrrelevant

@@ -219,13 +219,13 @@ example : (do
     let operation ← operation?
     let input ← input?
     let outcomes ← operation.execute input |>.toOption
-    pure (outcomes.map fun entry => (entry.targetField, entry.result))) = some [
+    pure (outcomes.map fun entry => (entry.targetField, entry.outcome))) = some [
       (address target.id [2, 2], .poison (.registeredCustomValidation rejection)),
-      (address target.id [1, 1], .value "A7"),
+      (address target.id [1, 1], .accepted ⟨"A7", by decide⟩),
       (address target.id [3, 2], .noValue),
       (address target.id [2, 1], .poison (.registeredCustomValidation rejection)),
       (address target.id [3, 1], .noValue),
-      (address target.id [1, 2], .value "A7")] := by
+      (address target.id [1, 2], .accepted ⟨"A7", by decide⟩)] := by
   native_decide
 
 private structure ResultApplicationSummary where
@@ -292,23 +292,23 @@ private def formalInput? : Option (CheckedDocument model) :=
     cell target.id [1, 1] "A7", cell target.id [1, 2] "SEED",
     cell target.id [2, 1] "SEED", cell target.id [3, 1] "SEED"]
 
-private def preparedOutcomes? : Option (List (CellAddr × TokenComputationResult)) := do
+private def preparedOutcomes? : Option (List (CellAddr × StringTargetOutcome)) := do
   let operation ← operation?
   let input ← formalInput?
   let plan ← operation.formalInputPlan.toOption
   let prepared ← plan.prepare input |>.toOption
   let outcomes ← operation.executeWithRead input
     prepared.preliminary.readComputation |>.toOption
-  pure (outcomes.map fun outcome => (outcome.targetField, outcome.result))
+  pure (outcomes.map fun outcome => (outcome.targetField, outcome.outcome))
 
 /- Custom preparation preserves the already-checked registered rejection, while generated duplicate poison remains a distinct prepared source outcome. -/
 example : preparedOutcomes? = some [
     (address target.id [2, 2], .poison .duplicateIndex),
-    (address target.id [1, 1], .value "A7"),
+    (address target.id [1, 1], .accepted ⟨"A7", by decide⟩),
     (address target.id [3, 2], .poison (.registeredCustomValidation rejection)),
     (address target.id [2, 1], .poison .duplicateIndex),
     (address target.id [3, 1], .poison (.registeredCustomValidation rejection)),
-    (address target.id [1, 2], .value "A7")] := by
+    (address target.id [1, 2], .accepted ⟨"A7", by decide⟩)] := by
   native_decide
 
 private def formalFinding (path : List Nat)

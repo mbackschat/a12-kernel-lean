@@ -37,11 +37,13 @@ def poison (cause : FormalCause) : StringDependencyCell := {
     findings := [cause] }
   wellFormed := by simp [CheckedCell.WellFormed] }
 
-/-- Convert one completed target outcome into the cell observed by an explicitly later dependent computation. The runtime invalid-field set is cause-blind, so every reachable invalid producer becomes the same computed-dependency marker; attempted payloads and original formal causes are erased. -/
+/-- Convert one completed target outcome into the cell observed by an explicitly later dependent computation. Unavailable producers become the cause-blind computed-dependency marker; the reserved custom report retains its attempted value (spec/06 A.3). -/
 def ofOutcome : StringTargetOutcome → Except StringDependencyFault StringDependencyCell
   | .noValue => pure empty
   | .accepted stored => pure (value stored)
-  | .invalidNoValue | .errored _ _ => pure (poison .computedDependency)
+  | .invalidNoValue => pure (poison .computedDependency)
+  | .errored attempted cause =>
+      if cause.admitsValue then pure (value attempted) else pure (poison .computedDependency)
   | .poison .required =>
       throw .validationScopedRequired
   | .poison _ => pure (poison .computedDependency)
@@ -52,9 +54,9 @@ namespace StringComputationContext
 
 /-- Overlay one already-validated dependency cell at exactly one field. -/
 def withDependencyCell (context : StringComputationContext) (field : FieldId)
-    (dependency : StringDependencyCell) : StringComputationContext where
-  read candidate :=
-    if candidate == field then dependency.checked else context.read candidate
+    (dependency : StringDependencyCell) : StringComputationContext :=
+  { context with read := fun candidate =>
+      if candidate == field then dependency.checked else context.read candidate }
 
 /-- Shadow exactly one document read with a completed producer outcome. Other fields continue to read from the original context. -/
 def withDependencyOutcome (context : StringComputationContext) (field : FieldId)
@@ -88,7 +90,7 @@ def evaluateOutcome (step : StringComputationStep) (context : StringComputationC
     Except StringComputationFault StringTargetOutcome :=
   match step.expression.evaluate context with
   | .error fault => .error fault
-  | .ok store => .ok (step.targetRegime.check step.targetPolicy none store)
+  | .ok store => step.targetRegime.check step.targetPolicy none store context
 
 /-- Consume an already-evaluated computation condition before the body. Clean not-true yields quiet no-value, while poison is preserved as an invalid target outcome; both return before the body can read an operand. -/
 def evaluateOutcomeWhen (step : StringComputationStep)

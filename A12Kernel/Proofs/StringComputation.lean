@@ -22,10 +22,30 @@ theorem stringCategory_preserves_projection {Atom : Type} (address : Atom → Fi
     (StringExpr.category fieldId projection).evalOperandWithSource address phase read = .ok (.value text given) := by
   simp [StringExpr.evalOperandWithSource, selected, projected, bind, Except.bind, pure, Except.pure]
 
-/-- The reduced Custom regime cannot turn an attempted value into an ordinary format rejection. -/
+/-- A resolved custom callback acceptance retains the attempted payload without ordinary format checking. -/
 theorem customStringTarget_accepts_attempt (policy : StringFieldPolicy)
-    (matcher : Option (String → Bool)) (value : StoredString) :
-    StringTargetRegime.custom.check policy matcher (.produced value) = .accepted value := rfl
+    (matcher : Option (String → Bool)) (value : StoredString)
+    (declaration : CustomFieldTypeDeclaration) (context : StringComputationContext)
+    (world : World) (locale : String) (validator : RegisteredCustomFieldValidator)
+    (suppliedWorld : context.world = some world) (suppliedLocale : context.locale = some locale)
+    (resolved : world.resolveCustomFieldValidator? declaration.name = some validator)
+    (accepted : validator value.text (declaration.validationContext locale) = none) :
+    (StringTargetRegime.custom declaration).check policy matcher (.produced value) context =
+      .ok (.accepted value) := by
+  simp [StringTargetRegime.check, suppliedWorld, suppliedLocale, resolved, accepted, pure, Except.pure]
+
+/-- A resolved custom callback report retains both the exact attempted payload and rejection. -/
+theorem customStringTarget_reports_attempt (policy : StringFieldPolicy)
+    (matcher : Option (String → Bool)) (value : StoredString)
+    (declaration : CustomFieldTypeDeclaration) (context : StringComputationContext)
+    (world : World) (locale : String) (validator : RegisteredCustomFieldValidator)
+    (rejection : RegisteredCustomRejection)
+    (suppliedWorld : context.world = some world) (suppliedLocale : context.locale = some locale)
+    (resolved : world.resolveCustomFieldValidator? declaration.name = some validator)
+    (reported : validator value.text (declaration.validationContext locale) = some rejection) :
+    (StringTargetRegime.custom declaration).check policy matcher (.produced value) context =
+      .ok (.errored value (.custom rejection)) := by
+  simp [StringTargetRegime.check, suppliedWorld, suppliedLocale, resolved, reported, pure, Except.pure]
 
 /-- Any poisoned subtree aborts computation concatenation before the right expression. -/
 theorem stringOperand_computation_poison_aborts {Atom : Type} (address : Atom → FieldId)
@@ -244,18 +264,18 @@ theorem acceptedStringTarget_preserves_attempt (policy : StringFieldPolicy)
 /-- Every declaration-owned prepared target failure retains the exact attempted payload and first failure cause. -/
 theorem rejectedStringTargetWithPattern_preserves_attempt
     (policy : StringFieldPolicy) (wholeValueMatches? : Option (String → Bool))
-    (attempted : StoredString) (cause : StringTargetError)
+    (attempted : StoredString) (cause : StringFieldError)
     (rejected :
       policy.checkTextWithPattern wholeValueMatches? attempted.text = .error cause) :
     policy.checkTargetWithPattern wholeValueMatches? (.produced attempted) =
-      .errored attempted cause := by
+      .errored attempted (.ordinary cause) := by
   simp [StringFieldPolicy.checkTargetWithPattern, rejected]
 
 /-- The no-pattern target failure law remains an exact specialization. -/
 theorem rejectedStringTarget_preserves_attempt (policy : StringFieldPolicy)
-    (attempted : StoredString) (cause : StringTargetError)
+    (attempted : StoredString) (cause : StringFieldError)
     (rejected : policy.checkText attempted.text = .error cause) :
-    policy.checkTarget (.produced attempted) = .errored attempted cause := by
+    policy.checkTarget (.produced attempted) = .errored attempted (.ordinary cause) := by
   apply rejectedStringTargetWithPattern_preserves_attempt
   simpa [StringFieldPolicy.checkText] using rejected
 

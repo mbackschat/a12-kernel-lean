@@ -4,6 +4,7 @@ import A12Kernel.Semantics.String
 import A12Kernel.Semantics.Enumeration
 import A12Kernel.Semantics.StringFieldPolicy
 import A12Kernel.Document
+import A12Kernel.Semantics.CustomFieldType
 
 /-! # A12Kernel.Semantics.StringComputation — one-target-instance String computation
 
@@ -47,6 +48,8 @@ inductive StringComputationFault where
   | indexedReadUnavailable
   | emptyPattern
   | targetPatternUnavailable (field : FieldId)
+  | targetCustomContextUnavailable (name : String)
+  | targetCustomValidatorUnavailable (name : String)
   deriving Repr, DecidableEq
 
 /-- The String fragment uses the common checked scalar-computation read boundary without adding a second context representation. -/
@@ -207,10 +210,27 @@ def evaluate (expression : StringExpr FieldId) (context : StringComputationConte
 
 end StringExpr
 
-/-- Language-neutral first-failure cause for ordinary computed-String target checking. It is shared with the declaration-owned scalar policy because both use the same basic format clauses. -/
-abbrev StringTargetError := StringFieldError
+/-- Computed String targets retain either an ordinary format failure or the registered callback report, including its exact project payload. -/
+inductive StringTargetError where
+  | ordinary (cause : StringFieldError)
+  | custom (rejection : RegisteredCustomRejection)
+  deriving Repr, DecidableEq
 
-/-- Result after the root write attempt has passed through the ordinary target policy. Target rejection is an ordinary payloadful result, not a computation fault or poison. -/
+namespace StringTargetError
+
+@[match_pattern] abbrev lineBreak : StringTargetError := .ordinary .lineBreak
+@[match_pattern] abbrev pattern : StringTargetError := .ordinary .pattern
+@[match_pattern] abbrev tooShort : StringTargetError := .ordinary .tooShort
+@[match_pattern] abbrev tooLong : StringTargetError := .ordinary .tooLong
+
+/-- The reserved custom report retains dependency admission even though result application clears the target (spec/06 A.3). -/
+def admitsValue : StringTargetError → Bool
+  | .ordinary _ => false
+  | .custom rejection => rejection.admitsValue
+
+end StringTargetError
+
+/-- Result after the root write attempt has passed through declaration-owned target checking. Rejection retains the attempted payload and cause separately from computation faults and poison. -/
 inductive StringTargetOutcome where
   /-- A reached guard runtime failure has no attempted text and poisons dependents; the retained
   comparison grid distinguishes it from an inherited poison by its target value-error code. -/
@@ -221,13 +241,6 @@ inductive StringTargetOutcome where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- Reduced Custom target validation accepts the attempted payload without calling the registered
-validator or ordinary String format policy (spec/06 A.3, spec/09 §11). -/
-def StringStore.uncheckedTarget : StringStore → StringTargetOutcome
-  | .noValue => .noValue
-  | .poison cause => .poison cause
-  | .produced value => .accepted value
-
 /-- Apply the declaration-owned basic String clauses and optional prepared matcher to a root write attempt. Checking may normalize CRLF for pattern and length measurement, but an accepted or rejected result retains the exact attempted payload. No-value and poison bypass target validation unchanged. -/
 def StringFieldPolicy.checkTargetWithPattern (policy : StringFieldPolicy)
     (wholeValueMatches? : Option (String → Bool)) :
@@ -237,19 +250,32 @@ def StringFieldPolicy.checkTargetWithPattern (policy : StringFieldPolicy)
   | .produced attempted =>
       match policy.checkTextWithPattern wholeValueMatches? attempted.text with
       | .ok _ => .accepted attempted
-      | .error cause => .errored attempted cause
+      | .error cause => .errored attempted (.ordinary cause)
 
-/-- The target's reduced-check regime is part of a resolved computation, including erased tables. -/
+/-- Target validation keeps the Custom declaration through erased computation tables. -/
 inductive StringTargetRegime where
   | ordinary
-  | custom
+  | custom (declaration : CustomFieldTypeDeclaration)
   deriving Repr, DecidableEq
 
+/-- Check the attempted text exactly once; empty and poisoned roots never invoke a target callback. Custom validation reports retain the unnormalized attempted payload, as does ordinary target checking (spec/09 §11). -/
 def StringTargetRegime.check (regime : StringTargetRegime) (policy : StringFieldPolicy)
-    (matcher : Option (String → Bool)) (store : StringStore) : StringTargetOutcome :=
+    (matcher : Option (String → Bool)) (store : StringStore)
+    (context : StringComputationContext) : Except StringComputationFault StringTargetOutcome := do
   match regime with
-  | .ordinary => policy.checkTargetWithPattern matcher store
-  | .custom => store.uncheckedTarget
+  | .ordinary => pure (policy.checkTargetWithPattern matcher store)
+  | .custom declaration =>
+      match store with
+      | .noValue => pure .noValue
+      | .poison cause => pure (.poison cause)
+      | .produced attempted =>
+          let some world := context.world | throw (.targetCustomContextUnavailable declaration.name)
+          let some locale := context.locale | throw (.targetCustomContextUnavailable declaration.name)
+          let some validator := world.resolveCustomFieldValidator? declaration.name
+            | throw (.targetCustomValidatorUnavailable declaration.name)
+          match validator attempted.text (declaration.validationContext locale) with
+          | none => pure (.accepted attempted)
+          | some rejection => pure (.errored attempted (.custom rejection))
 
 /-- The ordinary no-pattern target specialization retained by the resolved computation and evidence boundaries. -/
 def StringFieldPolicy.checkTarget (policy : StringFieldPolicy) :

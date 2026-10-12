@@ -93,7 +93,7 @@ validator. -/
 def evaluateAt (operation : CheckedCustomFirstFilledComputation model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (target : CellAddr) (environment : Env) (world : Option World := none) :
-    Except FirstFilledSiteFault AddressedTokenComputationOutcome := do
+    Except FirstFilledSiteFault (SourcedStringTargetOutcome CellAddr) := do
   let resolved ← (operation.site.source.resolveAt input read environment world).mapError .source
   let result := evaluateFirstFilledSource resolved TokenComputationResult.poison fun resolved =>
     let side : ResolvedValueListSide .token := {
@@ -101,7 +101,11 @@ def evaluateAt (operation : CheckedCustomFirstFilledComputation model)
       hasUninstantiatedTail := resolved.hasOpenTail
       hasHaving := false }
     (evalFirstFilledToken side).asComputationResult
-  pure { targetField := target, result }
+  let context := { input.computationContextAt environment with
+    world := world.or (some input.world) }
+  let outcome ← ((StringTargetRegime.custom operation.customType).check {} none
+    result.asStringStore context).mapError .targetCheck
+  pure { targetField := target, outcome, source := input.sourceStringTargetStateAt target }
 
 
 /-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
@@ -109,24 +113,25 @@ scope with a clear at each over-limit row. -/
 def executeWithRead (operation : CheckedCustomFirstFilledComputation model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (world : Option World := none) :
-    Except FirstFilledSiteFault (List AddressedTokenComputationOutcome) :=
+    Except FirstFilledSiteFault (List (SourcedStringTargetOutcome CellAddr)) :=
   operation.site.instances input .targetRows .targetEnvironment
-    (fun target _ => pure { targetField := target, result := .noValue })
+    (fun target _ => pure {
+      targetField := target, outcome := .noValue,
+      source := input.sourceStringTargetStateAt target })
     (operation.evaluateAt (world := world) input read)
 
 def execute (operation : CheckedCustomFirstFilledComputation model)
     (input : CheckedDocument model) (world : Option World := none) :
-    Except FirstFilledSiteFault (List AddressedTokenComputationOutcome) :=
+    Except FirstFilledSiteFault (List (SourcedStringTargetOutcome CellAddr)) :=
   operation.executeWithRead input input.read world
 
-/-- Classify caller-view token outcomes against the immutable source target at the same addresses.
-The matching Custom declaration makes a separately rejected target outcome unreachable. -/
+/-- Retain target callback reports in the same source-relative result channels as ordinary computed Strings. -/
 def executeResultWithRead (operation : CheckedCustomFirstFilledComputation model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (residualMessages : List ResidualMessage) (world : Option World := none) :
     Except FirstFilledSiteFault (CustomFirstFilledComputationRunView model ResidualMessage) := do
   let outcomes ← operation.executeWithRead input read world
-  pure { operation, string := projectAddressedTokenResults input residualMessages outcomes }
+  pure { operation, string := StringComputationRunView.fromSourcedOutcomes residualMessages outcomes }
 
 def executeResult (operation : CheckedCustomFirstFilledComputation model)
     (input : CheckedDocument model) (residualMessages : List ResidualMessage) (world : Option World := none) :

@@ -57,6 +57,40 @@ private def phasePair (world : World) (decl : CustomFieldTypeDeclaration)
       (checked.checkRelevantRaw locale true (.parsed value)).map
         (fun cell => (observeCell .validation cell, observeCell .computation cell))
 
+example : phasePair (worldWith (fun _ _ => some (rejection "testIDNummer")))
+    (declaration none none) "en_US" "ABCD" =
+    some (.value "ABCD", .value "ABCD") := by native_decide
+
+example : phasePair (worldWith (fun _ _ => some (rejection "testIDNummer")))
+    (declaration none none) "en_US" "A\r\r\nB" =
+    some (.value "A\r\nB", .value "A\r\nB") := by native_decide
+
+private def reservedChecked : CheckedCustomFieldType := {
+  declaration := declaration none none
+  validator := fun _ _ => some (rejection "testIDNummer") }
+
+example : reservedChecked.checkRelevantRaw "en_US" true (.parsed "A\r\nB") = some {
+    rawPresent := true, parsed := some "A\nB", findings := [],
+    reports := [.registeredCustomValidation (rejection "testIDNummer")] } := by
+  native_decide
+
+example : ["TestIDNummer", "testIDNummerSuffix", " testIDNummer", "testIDNummer "].all
+    (fun code => phasePair (worldWith (fun _ _ => some (rejection code)))
+      (declaration none none) "en_US" "ABCD" ==
+        some (.unknown (.registeredCustomValidation (rejection code)),
+          .poison (.registeredCustomValidation (rejection code)))) = true := by
+  native_decide
+
+example : [RawCell.empty, .presentEmpty, .parsed ""].map
+    (reservedChecked.checkRelevantRaw "en_US" true) = [
+      some { rawPresent := false, parsed := none, findings := [] },
+      some { rawPresent := true, parsed := none, findings := [] },
+      some { rawPresent := true, parsed := none, findings := [] }] ∧
+    reservedChecked.checkRelevantRaw "en_US" true (.rejected .malformed) =
+      some { rawPresent := true, parsed := none, findings := [.malformed] } ∧
+    reservedChecked.checkRelevantRaw "en_US" false (.parsed "ABCD") = none := by
+  native_decide
+
 /- Authored and defaulted bounds, locale, and stored-value mode reach the registered validator exactly. -/
 example :
     causeOf (worldWith (validatorExpecting (expectedContext "de_DE" 3 5)))

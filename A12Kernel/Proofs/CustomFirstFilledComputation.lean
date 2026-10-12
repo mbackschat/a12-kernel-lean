@@ -41,12 +41,12 @@ theorem checkedCustomFirstFilled_executeWithRead_base
 theorem checkedCustomFirstFilled_executeResult_projects
     (operation : CheckedCustomFirstFilledComputation model)
     (input : CheckedDocument model) (messages : List ResidualMessage)
-    (outcomes : List AddressedTokenComputationOutcome)
+    (outcomes : List (SourcedStringTargetOutcome CellAddr))
     (view : CustomFirstFilledComputationRunView model ResidualMessage)
     (executed : operation.execute input = .ok outcomes)
     (produced : operation.executeResult input messages = .ok view) :
     view.operation = operation ∧
-      view.string = projectAddressedTokenResults input messages outcomes := by
+      view.string = StringComputationRunView.fromSourcedOutcomes messages outcomes := by
   rw [CheckedCustomFirstFilledComputation.executeResult,
     CheckedCustomFirstFilledComputation.executeResultWithRead]
     at produced
@@ -55,24 +55,6 @@ theorem checkedCustomFirstFilled_executeResult_projects
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩
-
-/-- Exact-token Custom selection cannot create an ordinary String target-rejection channel. -/
-theorem checkedCustomFirstFilled_executeResult_hasNoTargetErrors
-    (operation : CheckedCustomFirstFilledComputation model)
-    (input : CheckedDocument model) (messages : List ResidualMessage)
-    (outcomes : List AddressedTokenComputationOutcome)
-    (executed : operation.execute input = .ok outcomes) :
-    (operation.executeResult input messages).map
-      (fun view => view.string.withErrors) = .ok [] := by
-  rw [CheckedCustomFirstFilledComputation.executeResult,
-    CheckedCustomFirstFilledComputation.executeResultWithRead]
-  change operation.executeWithRead input input.read = .ok outcomes at executed
-  rw [executed]
-  change Except.ok
-    ((projectAddressedTokenResults input messages outcomes).withErrors) =
-      Except.ok []
-  exact congrArg Except.ok
-    (addressedTokenResults_haveNoTargetErrors outcomes input messages)
 
 /-- Checked application delegates to the established source-classified String fold. -/
 theorem customFirstFilledRun_applyToChecked_delegates

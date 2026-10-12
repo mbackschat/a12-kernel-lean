@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Elaboration.StringComputation
@@ -142,17 +143,7 @@ def checkStringFirstFilledComputation
         throw (.sourceNotOrdinaryString other.path)
     else throw (.targetNotOrdinaryString target.path)
 
-namespace TokenComputationResult
 
-/-- Convert selection into the ordinary String root-store domain before target policy runs. -/
-def asStringStore : TokenComputationResult → StringStore
-  | .value token =>
-      if nonempty : token ≠ "" then .produced { text := token, nonempty }
-      else .noValue
-  | .noValue => .noValue
-  | .poison cause => .poison cause
-
-end TokenComputationResult
 
 inductive StringFirstFilledComputationFault where
   | targetPatternUnavailable (field : FieldId)

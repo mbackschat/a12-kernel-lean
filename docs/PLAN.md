@@ -3,10 +3,10 @@
 <a id="active-unit"></a>
 ## Next action and accepted baseline
 
-- `status`: [K01–K22](#remaining-conformance-checklist) are unchecked and selected as the remaining conformance programme. Work in numbered risk order; peer receipts do not establish local task closure.
-- `next`: K01 route discovery against the [reserved-custom checkpoint](sources/custom-field-probes.md#src-custom-test-range), then focused red/green at the verified owning route. Inventory current implementation and reuse the delivered modern observations before editing.
+- `status`: K01 is accepted; K02–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
+- `next`: K02 report-assembly route discovery against the [inbound duplicate-diagnostic evidence](sources/inbound-handbacks.md#src-inbound-2026-10-12). Reuse the K01 custom-ingestion and result-boundary context; distinguish computation execution, report failure and applied-snapshot availability before editing.
 - `baseline`: Accepted ordinary implementation boundaries remain in [coverage](CONFORMANCE-COVERAGE.md#axis-r--population-replay). The [C12 readback](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) establishes bounded semantic transport, not independent-evaluator qualification.
-- `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; K01 modern-route implementation remains required.
+- `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
 - `sequence`: K21 checks semantic transport, K22 accepts conformance, then U01 implements the Rust interpreter and U02 the SMT consumer. Concrete repository, dependency and public-contract choices retain their existing decision boundaries.
 - `stop`: Stop the conformance phase at K22 and select U01. A genuine blocker keeps its task unchecked. Do not append an automatic conformance-tail programme or require the consumer products before K22.
@@ -55,10 +55,10 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 ### K01 — reserved Custom ingestion and continuation
 
-- [ ] Close the measured reserved-result behavior through validation, computation and cache admission. [SG7](gaps/strings-and-messages.md#gap-sg7), [test-range source](sources/custom-field-probes.md#src-custom-test-range).
+- [x] Close the measured reserved-result behavior through validation, computation and cache admission. [SG7](gaps/strings-and-messages.md#gap-sg7), [test-range source](sources/custom-field-probes.md#src-custom-test-range).
 - Matrix: exact `testIDNummer`, ordinary rejection, acceptance and near-spelled keys; raw versus normalized text; absent/empty/relevant/excluded input; seeded/unchanged targets and an independent computation; full examination versus abort mode.
 - Done: finding, readable payload, invalid-pointer membership and continuation agree with the committed modern-route observations. Preserve callback invocation order and normalize once.
-- The [verified legacy profile boundary](sources/custom-field-probes.md#src-custom-legacy-profile) removes the external profile blocker under the existing expanded-A12 contract. K01 remains unchecked until the local modern-route matrix and applicable gates close; the peer disposition does not implement it.
+- The [verified legacy profile boundary](sources/custom-field-probes.md#src-custom-legacy-profile) removes the external profile blocker under the existing expanded-A12 contract. This boundary does not claim the unmeasured legacy true-arm behavior.
 
 ### K02 — computation report assembly and whole-call failure
 

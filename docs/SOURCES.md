@@ -138,7 +138,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Computation placement and constants](sources/computation-placement-and-constant-probes.md), including [String/Enumeration crossings](sources/computation-placement-and-constant-probes.md#src-string-enumeration-crossings), [tolerance calibration](sources/computation-placement-and-constant-probes.md#src-tolerance-family-calibration) and [C21 independent controls](sources/computation-placement-and-constant-probes.md#src-peer-independent-controls-c21)
 - [Computation scheduling and guards](sources/computation-scheduling-probes.md), including [guard-derived operand scope](sources/computation-scheduling-probes.md#src-computation-guard-operand-scope) and [nested String first-filled sources](sources/computation-scheduling-probes.md#src-nested-string-first-filled); [empty-prefix provenance](sources/computation-scheduling-probes.md#src-first-filled-empty-prefix) covers the validation follow-up
 - [Evaluation and application](sources/evaluation-and-application-routes.md)
-- [Custom-field ingestion and outcomes](sources/custom-field-probes.md)
+- [Custom-field ingestion and outcomes](sources/custom-field-probes.md), including inbound [reserved-report admission, core validation modes and computed-target checks](sources/custom-field-probes.md#src-custom-test-range) from a12-dmkits `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`
 - [Messages and pointers](sources/message-and-pointer-probes.md)
 - [Message-cache population](sources/message-cache-probes.md)
 - [Inbound handbacks and historical Git stubs](sources/inbound-handbacks.md), including [2026-10-09 reconciliation and additional observations](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation)

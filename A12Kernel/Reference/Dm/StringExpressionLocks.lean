@@ -155,12 +155,14 @@ example : partialVerdicts "[S] + [E] == \"aba\"" true
     some [.unknown, .unknown] := by native_decide
 
 example : [false, true].all (fun repeated =>
+    execute "[S]" "ab" "1" repeated none true ==
+      some (List.replicate (if repeated then 2 else 1) "value ab") &&
     execute "[S] + \"x\"" "ab" "1" repeated none true ==
-      some (List.replicate (if repeated then 2 else 1) "value abx") &&
+      some (List.replicate (if repeated then 2 else 1) "errored abx") &&
     execute "[S] + \"x\"" "bad" "1" repeated none true ==
       some (List.replicate (if repeated then 2 else 1) "cleared") &&
     execute "\"a\n\" + \"b\"" "ab" "1" repeated none true ==
-      some (List.replicate (if repeated then 2 else 1) "value a\nb")) := by native_decide
+      some (List.replicate (if repeated then 2 else 1) "errored a\nb")) := by native_decide
 
 example : admitted "[L->Kind] == \"other\"" = true ∧
     admitted "[L->Kind] == \"outside\"" = false := by native_decide
