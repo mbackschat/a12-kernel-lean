@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "1b92fb1213116e4ca13c359d17b9b59cc5bac2c73dd031f12c0ee2e4983c07d0",
+  "observations" : [ {
+    "id" : "z00",
+    "inputHash" : "2bd24fdc08d7a551722e41e851b4ecbc8dd3dd9bcc3c0b4cdf320cdadb7e9a1e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "z01",
+    "inputHash" : "2f63faab6f17aeac034ed936e40cc3c7324a9722aaedf8562736e4e895031328",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_REP" ]
+  }, {
+    "id" : "z02",
+    "inputHash" : "dc398bc219f5031cebed250c932acb5ca00adf97a69f1c527233faead31fed7b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_NONREP_ENUM" ]
+  }, {
+    "id" : "z03",
+    "inputHash" : "03e0fe888746ab526086f96cf27577dc4e61fd110a293100db3a66b90b998633",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_NONREP_ENUM" ]
+  } ]
+}

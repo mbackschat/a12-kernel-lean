@@ -4,6 +4,7 @@ import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.RepetitionNotUnique
 import A12Kernel.Semantics.SemanticIndex
+import A12Kernel.Semantics.NumericInput
 
 /-! # Checked one-group semantic-index construction
 
@@ -222,6 +223,15 @@ same row address, while an additional repeatable level needs its own addressing 
 def FlatModel.semanticIndexGroupForPath? (model : FlatModel) (path : GroupPath) : Option RepeatableGroupDecl :=
   ((model.repeatableScopeForGroupPath path).filterMap fun level =>
     (model.repeatableGroupAtLevel? level).filter (·.indexField.isSome)).getLast?
+
+/-- The identity a literal key spelling has in `index`'s column. A Number index reads it as a decimal,
+taking a comma for the separator; any other index keeps the text. `none` is a spelling the Number
+column cannot read. -/
+def FlatFieldDecl.semanticIndexLiteral? (index : FlatFieldDecl) (spelling : String) :
+    Option SemanticIndexKey :=
+  match index.policy.kind with
+  | .number _ => (parseNumericFormalRead? (spelling.replace "," ".")).map (.number ·.value)
+  | _ => some (.text spelling)
 
 def FlatModel.admitsSemanticIndexTarget (model : FlatModel)
     (group : RepeatableGroupDecl) (declaration : FlatFieldDecl) : Bool :=

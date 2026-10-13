@@ -1,0 +1,62 @@
+[
+ {
+  "id": "z00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z00",
+   "--field",
+   "/Kp/ZRep/ZNote",
+   "--condition",
+   "FieldFilled(ZNote) And NumberOfFilledFields(/Kp/RRef*/Val) > 0",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "z01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z01",
+   "--field",
+   "/Kp/ZRep/ZNote",
+   "--condition",
+   "FieldFilled(ZNote) And NumberOfFilledFields(/Kp/RRef*/Val) > 0",
+   "--message",
+   "en_US=$index(Ref).value$"
+  ]
+ },
+ {
+  "id": "z02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z02",
+   "--field",
+   "/Kp/ZRep/ZNote",
+   "--condition",
+   "FieldFilled(ZNote)",
+   "--message",
+   "en_US=$index(Ref).value$"
+  ]
+ },
+ {
+  "id": "z03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z03",
+   "--field",
+   "/Kp/NRep/NNote",
+   "--condition",
+   "FieldFilled(NNote) And FieldFilled(/Kp/ZRep/ZNote)",
+   "--message",
+   "en_US=$index(Ref).value$"
+  ]
+ }
+]

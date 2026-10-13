@@ -36,10 +36,12 @@ distinction a later message-rendering consumer would have to reintroduce.
 category-mapping classes are measured
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes),
 [cross-field pairs](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)).
-`INVALID_INDEX_FIELD_ENUM_XML_TO_DISPLAY` and `INVALID_INDEX_FIELD_INCONSISTENT_TYPES` are
-**source-derived and unwitnessed**: the first needs two Enumeration index fields differing only in display
-labels, the second one Enumeration against another kind under a shared short name, and the Kernel's own
-source notes that the rule parser already refuses the second before this checker sees it.
+`INVALID_INDEX_FIELD_ENUM_XML_TO_DISPLAY` is measured on two parallel Enumeration index fields differing
+only in display labels, under `.value` while `->Category` stays admitted
+([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15), rows
+`d11`, `d12`). `INVALID_INDEX_FIELD_INCONSISTENT_TYPES` is **source-derived, no witness known**: on the
+routes searched a starred read draws the repeatability class first and a parallel read refuses the
+condition, as the Kernel's own source notes the rule parser does.
 
 This module carries no rendered message text, by the licensing boundary in [`CLAUDE.md`](../../CLAUDE.md).
 -/

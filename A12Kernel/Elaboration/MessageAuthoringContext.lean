@@ -128,5 +128,26 @@ def keyedGroupGuarded (condition : ValidationMessageCondition model)
   | .flat _ | .parallel _ _ => false
   | .rule checkedRule => checkedRule.condition.core.keyedMessageGroupGuarded group key
 
+/-- Whether a keyed message parameter may name `declaration` under `key`. The key belongs to the
+field's nearest indexed group, and the condition must select that group by the same key: either
+selecting this field, through a keyed field or a keyed group read containing it, or, for the group's
+declared index field, selecting any field of the group. Another field of the group is refused although
+the condition keys the group ([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15)). -/
+def messageKeyedMember? (condition : ValidationMessageCondition model) (declaration : FlatFieldDecl)
+    (key : CheckedSemanticIndexKey) : Option Bool :=
+  match model.semanticIndexGroupForPath? declaration.groupPath, condition with
+  | none, _ | _, .flat _ | _, .parallel _ _ => some false
+  | some group, .rule checkedRule =>
+      if group.indexField == some declaration.id then
+        condition.selectedGroupReferenced? group.path (some key)
+      else
+        checkedRule.condition.core.messageSelectedGroupReference? declaration.id group.path (some key)
+
+/-- The membership a message field reference needs: the unkeyed gate, or the keyed one under its key. -/
+def messageAdmits (condition : ValidationMessageCondition model) (declaration : FlatFieldDecl) :
+    Option CheckedSemanticIndexKey → Option Bool
+  | none => some (condition.messageMember declaration.id)
+  | some key => condition.messageKeyedMember? declaration key
+
 end ValidationMessageCondition
 end A12Kernel

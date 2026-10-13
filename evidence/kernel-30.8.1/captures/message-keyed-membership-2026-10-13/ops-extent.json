@@ -1,0 +1,115 @@
+[
+ {
+  "id": "a08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a08",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Gate For \"k1\"$"
+  ]
+ },
+ {
+  "id": "a09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a09",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Status->Band For \"k1\"$"
+  ]
+ },
+ {
+  "id": "a10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a10",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Gate.value For \"k1\"$"
+  ]
+ },
+ {
+  "id": "rg00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rg00",
+   "--field",
+   "/Kp/Box/Lines/Qty",
+   "--group",
+   "/Kp/Box",
+   "--condition",
+   "[Lines/Qty] > 5",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "rg01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rg01",
+   "--field",
+   "/Kp/Box/Lines/Qty",
+   "--group",
+   "/Kp/Box",
+   "--condition",
+   "[Lines/Qty] > 5",
+   "--message",
+   "en_US=$#RuleGroup$"
+  ]
+ },
+ {
+  "id": "rg02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rg02",
+   "--field",
+   "/Kp/Box/Lines/Qty",
+   "--group",
+   "/Kp/Box",
+   "--condition",
+   "[Lines/Qty] > 5",
+   "--message",
+   "en_US=$#Lines$"
+  ]
+ },
+ {
+  "id": "rg03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rg03",
+   "--field",
+   "/Kp/Box/Lines/Qty",
+   "--group",
+   "/Kp/Box",
+   "--condition",
+   "[Lines/Qty] > 5",
+   "--message",
+   "en_US=$#RootGroup$"
+  ]
+ }
+]

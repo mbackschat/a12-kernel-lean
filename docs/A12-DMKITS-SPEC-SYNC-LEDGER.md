@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Twelve corrections are `pending` below and have not been handed off. The 24 terminal receipts retired on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). [The consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own their reviewed revisions, evidence routes and limits.
+Thirteen corrections are `pending` below and have not been handed off. The 24 terminal receipts retired on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). [The consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own their reviewed revisions, evidence routes and limits.
 
 <a id="spec-2026-10-12-01"></a>
 ### SPEC-2026-10-12-01 — selected error addresses use the unique non-iterating key
@@ -157,4 +157,14 @@ Twelve corrections are `pending` below and have not been handed off. The 24 term
 - `delta`: A sort list longer than three draws one codeless capacity notice whatever its later entries name, `MVK_SORT_FIELD_DUPLICATE` judges the first three entries only, and each distinct name reports its own class once. With no declared locale a rule draws `MVK_ERROR_MESSAGE_MISSING` and no `RULE_HAS_NO_ERRORTEXT`. A group target is an ordinary declared entity, and an absent target's pair stands beside `MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING`. Under a restricted charset a supplementary scalar's high surrogate is rejected even inside a covering range while its low surrogate is judged alone, so the scalar counts once under a range covering its low surrogate, replacing the unconditional count of two.
 - `basis`: [Supplement checkpoint](sources/model-structure-and-declaration-probes.md#src-sort-list-capacity), 21 `model check` rows at a12-dmkits `a4091041`, Kernel 30.8.1.
 - `acceptance`: Reconcile the sort, presence, target and Enumeration character accounts with these rows. Do not claim why the high surrogate is rejected, a declared-but-unknown target, a lenient parse, a lone-surrogate range or a supplementary singleton atom, none of which was measured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-12"></a>
+### SPEC-2026-10-13-12 — keyed message membership by spelling, the rows message parameters render, and the reached index-message classes
+
+- `status`: pending
+- `canonical`: [rule error-text parameters](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation).
+- `delta`: A keyed group read admits a keyed parameter on every field of that group, and a keyed group in the name position draws `MVK_INDEX_FOR_ERROR_TEXT_INVALID`. A literal key matches the condition's by spelling, so on a Number index `"01"` and `"1.0"` do not match `"1"` in either position. A field-valued key must be the condition's own key field, and the key gate answers before a category gate. A keyed read satisfies the value suffix's asterisk gate while not counting for unkeyed membership. A value or category parameter renders the row it reads: the enclosing row, the parallel partner row or the key-selected row, a Number key selecting by value. A key selecting no row replaces the whole text with `ERROR_DURING_DATA_CHECK_EVAL`'s text. `INVALID_INDEX_FIELD_REP` and `INVALID_INDEX_FIELD_ENUM_XML_TO_DISPLAY` are reached, the repeatability class following full-name order, and `index(...).value` renders the stored index token.
+- `basis`: [static checkpoint](sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15), 83 `rule check` rows, and [runtime checkpoint](sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15), one document under both strategies, at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile keyed membership, key identity, rendered rows and the two index classes with these rows. Do not claim a witness for `INVALID_INDEX_FIELD_INCONSISTENT_TYPES` or `INVALID_INDEX_FIELD_COMPOSED_INDEX`, a rendering for a missing parallel partner, or keyed rendering on a nested indexed group, none of which was measured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

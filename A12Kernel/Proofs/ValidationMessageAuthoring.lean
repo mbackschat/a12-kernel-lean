@@ -44,10 +44,14 @@ theorem validationMessageTemplate_repertoireFailure_refused
     (elaborateValidationMessageTemplate model profile condition source).isOk = false :=
   withMessageRepertoire_repertoireFailure_refused _ _ _ failure
 
+/-- An unkeyed field parameter names a field its condition reads. A keyed one need not: the group's
+index field is admitted under a key the condition selects the group by. -/
 theorem checkedValidationMessageReference_usedByCondition
-    (reference : CheckedValidationMessageReference model condition) :
+    (reference : CheckedValidationMessageReference model condition) (unkeyed : reference.key = none) :
     condition.core.referencesField reference.declaration.id = true := by
   have member := reference.conditionReferenced
+  rw [unkeyed] at member
+  simp only [ValidationMessageCondition.messageAdmits, Option.some.injEq] at member
   unfold ValidationMessageCondition.messageMember at member
   exact (Bool.and_eq_true _ _).mp member |>.1
 
@@ -56,7 +60,7 @@ theorem checkedValidationMessage_fieldValue_present_isOpaque
     (reference : CheckedValidationMessageReference model condition)
     (inputs : ValidationMessageInputs) (value defaultDisplay : String)
     (selected :
-      inputs.fieldValue reference.declaration.id = {
+      inputs.fieldValue { field := reference.declaration.id, path := [] } = {
         displayValue := some value
         defaultDisplay
       })

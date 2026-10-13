@@ -51,7 +51,12 @@ private def ReferenceQuery.atPath (query : ReferenceQuery) (path : GroupPath)
     (scope : List RepeatableLevel) (isForm : Bool := false) : Bool :=
   query.acceptsPath path && query.binds scope isForm
 
+/-- Whether a message key names the condition's key. Two spelled literals compare by spelling, not by
+the decoded index value: on a Number index `"01"` does not match a condition's `"1"` in either
+parameter position ([checkpoint](../../../docs/sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15),
+rows `f12`, `f21`, `h02`). An unspelled literal keeps its decoded identity. -/
 def sameMessageKey : CheckedSemanticIndexKey → CheckedSemanticIndexKey → Bool
+  | .literal _ (some left), .literal _ (some right) => left == right
   | .literal left _, .literal right _ => left == right
   | .field left, .field right => left.id == right.id
   | _, _ => false
@@ -79,7 +84,8 @@ private def selectedReferenceAt (field : FieldId) (query : ReferenceQuery)
         selection.indexDeclaration.repeatableScope.dropLast.contains level
     | .unselected => false
     -- A selection replaces the selected level's wildcard; only a star written below it remains.
-    -- Unmeasured on this carrier: the retained star-gate rows read the field without a key.
+    -- Measured: a keyed read beside a starred one admits the unkeyed value suffix
+    -- (docs/sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15, row `s01`).
     | .unstarred _ => match source with
         | .inl _ => true
         | .inr source => match source.target with

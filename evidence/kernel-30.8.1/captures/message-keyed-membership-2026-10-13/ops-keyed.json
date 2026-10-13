@@ -1,0 +1,332 @@
+[
+ {
+  "id": "a00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a00",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "a01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a01",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Base For \"k1\"$"
+  ]
+ },
+ {
+  "id": "a02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a02",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Key For \"k1\"$"
+  ]
+ },
+ {
+  "id": "a03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a03",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows For \"k1\"$"
+  ]
+ },
+ {
+  "id": "a04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a04",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$#/Kp/Rows For \"k1\"$"
+  ]
+ },
+ {
+  "id": "a05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a05",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Base.value For \"k1\"$"
+  ]
+ },
+ {
+  "id": "a06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a06",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Base$"
+  ]
+ },
+ {
+  "id": "a07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a07",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Base.value$"
+  ]
+ },
+ {
+  "id": "b01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b01",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows For \"k1\"$"
+  ]
+ },
+ {
+  "id": "b02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b02",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k1\")",
+   "--message",
+   "en_US=$#/Kp/Rows For \"k1\"$"
+  ]
+ },
+ {
+  "id": "e00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e00",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Status For \"k1\")",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "e01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e01",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Status For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Status->Nope For \"k2\"$"
+  ]
+ },
+ {
+  "id": "e02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e02",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Status For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Base->Band For \"k1\"$"
+  ]
+ },
+ {
+  "id": "e03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e03",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Status For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Status->Band For \"k2\"$"
+  ]
+ },
+ {
+  "id": "f00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f00",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For 1)",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "f01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f01",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For 1)",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"1\"$"
+  ]
+ },
+ {
+  "id": "f02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f02",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For 1)",
+   "--message",
+   "en_US=$/Kp/NRows/V For 1$"
+  ]
+ },
+ {
+  "id": "f03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f03",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For 1)",
+   "--message",
+   "en_US=$/Kp/NRows/Num For \"1\"$"
+  ]
+ },
+ {
+  "id": "f10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f10",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For \"1\")",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "f11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f11",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For \"1\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"1\"$"
+  ]
+ },
+ {
+  "id": "s10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And NumberOfFilledFields(/Kp/Rows*/Base) > 0",
+   "--message",
+   "en_US=$/Kp/Rows/Base.value For \"k1\"$"
+  ]
+ },
+ {
+  "id": "k30",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k30",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For Anchor)",
+   "--message",
+   "en_US=$/Kp/Rows/Base For /Kp/NRep/NNote$"
+  ]
+ }
+]

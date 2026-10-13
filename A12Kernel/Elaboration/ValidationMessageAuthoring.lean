@@ -36,9 +36,9 @@ value or category suffix — that order is the grammar's, not a preference. Its 
 keyed field itself need not be a condition operand at all. That freedom is **narrower than it first
 measured**, and the correction is worth carrying here because the wide reading is the natural one.
 A keyed parameter may name a field the condition never references, but only one such field — the
-group's **declared index field** — so the admitted set is exactly the field the condition keys
-together with that index field, and a *third* field of the same group, keyed identically, is
-refused. What must match is the keyed group and key plus the displayed field being one of those two,
+group's **declared index field** — so the admitted set is exactly the fields the condition selects
+under that key, through a keyed field or a keyed group read, together with that index field, and a
+*third* field of the same group, keyed identically, is refused. What must match is the keyed group and key plus the displayed field being one of those two,
 not the group's fields at large; a fixture whose group declares only those two cannot tell the two
 readings apart, which is how both this project and a12-dmkits published the wide one
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-keyed-parameter-admits-the-index-field-only)). The unkeyed
@@ -49,9 +49,9 @@ unkeyed parameter.
 No flat condition reads a field under a key, so the flat entry point refuses every keyed parameter,
 `MVK_INDEX_FOR_ERROR_TEXT_INVALID` in the name position and `INVALID_GROUP` in the group position,
 both measured on the flat model; the grammar in front of that gate — suffix order, key spelling,
-nesting, whitespace — answers first. Rule-owned group parameters additionally retain the selected
-key and require its matching positive presence guard; ordinary keyed field parameters retain the
-flat resolver's boundary.
+nesting, whitespace — answers first. On a rule, a keyed field parameter is a member when the
+condition selects the field's nearest indexed group by the same spelled key, and it renders that
+selected row; a keyed group parameter additionally requires its matching positive presence guard.
 
 A parameter written `$#...$` occupies the **group position**, which is a different position from the
 name one and resolves the same words differently: bare `$RootGroup$` is an entity lookup and refused,
@@ -110,8 +110,22 @@ name — ambiguous, unread, read, or form-pointed — while the same model's con
 def FlatModel.messageNameModel (model : FlatModel) : FlatModel :=
   { model with fieldRefByShortNameAllowed := true }
 
+/-- A message key literal as `group`'s index column reads it. The authored spelling is kept because the
+key gate compares spellings, and the decoded token is what selects the rendered row: on a Number index
+`"2"` selects the row keyed 2 ([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15),
+rule `RNum`). A spelling the column cannot read keeps its text and matches no condition key. -/
+def messageLiteralKey (model : FlatModel) (group : Option RepeatableGroupDecl) (text : String) :
+    CheckedSemanticIndexKey :=
+  let token := (do
+    let index ← (← group).indexField
+    let declaration ← model.fields.find? (fun (field : FlatFieldDecl) => field.id == index)
+    declaration.semanticIndexLiteral? text).getD (.text text)
+  .literal token (some text)
+
 /-- One checked field reference of a message parameter. `parameter` retains the authored spelling for
-Explain, including any value suffix; `reference` is its decoded path, which is what resolved. -/
+Explain, including any value suffix; `reference` is its decoded path, which is what resolved. A keyed
+parameter's `key` selects the row it renders, and its membership is the keyed gate rather than the
+unkeyed one. -/
 structure CheckedValidationMessageReference
     (model : FlatModel) (condition : ValidationMessageCondition model) where
   parameter : String
@@ -120,8 +134,9 @@ structure CheckedValidationMessageReference
   resolved :
     model.messageNameModel.resolveFieldDeclarationUnchecked condition.rowGroup reference =
       .ok declaration
+  key : Option CheckedSemanticIndexKey := none
   conditionReferenced :
-    condition.messageMember declaration.id = true
+    condition.messageAdmits declaration key = some true
 
 /-- One checked form-pointer parameter. It is deliberately **not** a `CheckedValidationMessageReference`
 carrying a flag: the difference between the two is precisely that this one has no membership witness to
@@ -327,6 +342,10 @@ def checkMessageGroup {model : FlatModel} (condition : ValidationMessageConditio
           | .error error => .error error
           | .ok none => .error (.invalidGroupParameter parameter)
           | .ok (some key) => do
+              let key := match key with
+                | .literal _ (some text) =>
+                    messageLiteralKey model (model.repeatableGroups.find? (·.path == group)) text
+                | key => key
               let access ← admitMessageGroup condition parameter group
               checkMessageGroupMode condition parameter group (some key)
               if trailing then throw (.parameterSyntax parameter .unexpected)
@@ -443,23 +462,38 @@ private def resolveMessageGroupKeyEntity (model : FlatModel)
 private def resolveMessageReference (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
     (condition : ValidationMessageCondition model)
-    (parameter : String) (spec : MessageEntitySpec) :
+    (parameter : String) (spec : MessageEntitySpec) (keyHead : Option MessageKeyHead) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageReference model condition) := do
-  let entity ← match ← resolveMessageSpec model profile condition parameter spec with
-    | some (.inl entity) => pure entity
-    | some (.inr group) => throw (.groupInNamePosition parameter group)
-    | none => throw (.ruleGroupParameter parameter)
-  if hReferenced : condition.messageMember entity.declaration.id = true then
-    pure {
-      parameter
-      reference := entity.reference
-      declaration := entity.declaration
-      resolved := entity.resolved
-      conditionReferenced := hReferenced
-    }
-  else
-    throw (.fieldNotReferenced parameter entity.declaration.id)
+  let entity ← match ← resolveMessageSpec model profile condition parameter spec, keyHead with
+    | some (.inl entity), _ => pure entity
+    | some (.inr _), some (.entity .ruleGroup) => throw (.ruleGroupUnresolved parameter)
+    -- A keyed group meets the key's gate, measured beside a condition keying that group (row `b01`).
+    | some (.inr _), some _ => throw (.keyNotInCondition parameter)
+    | some (.inr group), none => throw (.groupInNamePosition parameter group)
+    | none, _ => throw (.ruleGroupParameter parameter)
+  let key ← keyHead.mapM fun
+    | .literal text =>
+        pure (messageLiteralKey model (model.semanticIndexGroupForPath? entity.declaration.groupPath) text)
+    | .entity .ruleGroup => throw (.ruleGroupUnresolved parameter)
+    | .entity keySpec => do
+        match ← resolveMessageSpec model profile condition parameter keySpec with
+        | some (.inl keyEntity) => pure (.field keyEntity.declaration)
+        | _ => throw (.keyNotInCondition parameter)
+  match hReferenced : condition.messageAdmits entity.declaration key with
+  | some true =>
+      pure {
+        parameter
+        reference := entity.reference
+        declaration := entity.declaration
+        resolved := entity.resolved
+        key
+        conditionReferenced := hReferenced
+      }
+  | some false =>
+      throw (if key.isSome then .keyNotInCondition parameter
+        else .fieldNotReferenced parameter entity.declaration.id)
+  | none => throw (.groupReferenceMetadataRequired parameter)
 
 /-- Check the category after entity resolution and condition membership, including an empty name.
 
@@ -516,30 +550,35 @@ private def runMessageEvents (model : FlatModel)
   | .nestedKey :: _ => throw (.nestedSemanticIndex parameter)
   | .fault fault :: _ => throw (.parameterSyntax parameter fault)
 
+/-- A resolved member reference's suffix gates. A keyed reference reads its selected row, which writes
+no wildcard, so its value suffix passes the star gate (rows `k06`, `k09`, `a05`). -/
+private def checkMessageFieldSuffix (condition : ValidationMessageCondition model)
+    (parameter : String) (suffix : MessageFieldSuffix)
+    (reference : CheckedValidationMessageReference model condition) :
+    Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition) :=
+  match suffix with
+  | .none => pure (.fieldName reference)
+  | .value =>
+      match valueAccessRefusal .a12 {
+          referencedWithoutStar := reference.key.isSome ||
+            condition.messageUnstarred? reference.declaration.id != some false
+          fieldIsString := reference.declaration.policy.kind == .string
+          noValueValidation := reference.declaration.isRawString } with
+      | some diagnostic => throw (.valueAccess parameter diagnostic)
+      | none => pure (.fieldValue reference)
+  | .category name => .fieldCategory <$> resolveMessageCategory reference parameter name
+
 /-- The field's own check, which the Kernel runs where the field's rule ends: the rule-group terminal
-first, then the key's gate, then the membership gate and the suffix's gates. -/
+first, then the membership gate, keyed or not, and the suffix's gates. A key's gate therefore answers
+before a category's ([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15),
+rows `e01`–`e03`). A literal key keeps its spelling, which is what the gate compares. -/
 private def checkMessageField (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
     (condition : ValidationMessageCondition model) (parameter : String)
-    (entity : MessageEntitySpec) (suffix : MessageFieldSuffix) :
-    Option MessageKeyHead →
-      Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition)
-  | some key =>
-      if entity == .ruleGroup then throw (.ruleGroupParameter parameter)
-      else if key == .entity .ruleGroup then throw (.ruleGroupUnresolved parameter)
-      else throw (.keyNotInCondition parameter)
-  | none => do
-      let reference ← resolveMessageReference model profile condition parameter entity
-      match suffix with
-      | .none => pure (.fieldName reference)
-      | .value =>
-          match valueAccessRefusal .a12 {
-              referencedWithoutStar := condition.messageUnstarred? reference.declaration.id != some false
-              fieldIsString := reference.declaration.policy.kind == .string
-              noValueValidation := reference.declaration.isRawString } with
-          | some diagnostic => throw (.valueAccess parameter diagnostic)
-          | none => pure (.fieldValue reference)
-      | .category name => pure (.fieldCategory (← resolveMessageCategory reference parameter name))
+    (entity : MessageEntitySpec) (suffix : MessageFieldSuffix) (keyHead : Option MessageKeyHead) :
+    Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition) := do
+  checkMessageFieldSuffix condition parameter suffix
+    (← resolveMessageReference model profile condition parameter entity keyHead)
 
 /-- Check one name-position parameter: its events, then its form's own check, then a fault the parser
 meets at the end it requires. -/
@@ -603,7 +642,7 @@ private def checkMessageParameter (model : FlatModel)
                 runMessageEvents model profile condition parameter true events
                 match key with
                 | none => pure none
-                | some (.literal text) => pure (some (.literal (.text text)))
+                | some (.literal text) => pure (some (.literal (.text text) (some text)))
                 | some (.entity spec) => resolveMessageGroupKeyEntity model profile condition parameter spec
             | _ => .ok none
           .group <$> checkMessageGroup condition parameter authored remainder keyCheck
@@ -654,41 +693,48 @@ def elaborateValidationMessageTemplate (model : FlatModel)
     pure { source, parts := ← (checkMessageSegments model profile condition segments).mapM id }
   withMessageRepertoire source checked
 
+/-- What the caller supplies for substitution. Values and stored tokens are read at a cell, because a
+parameter renders the row it reads: the firing row, an enclosing row, a parallel partner or a keyed
+selection ([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15)). -/
 structure ValidationMessageInputs where
   fieldName : FieldId → MessageNameInput
-  fieldValue : FieldId → MessageValueInput
-  /-- The field's current stored token. The category mapping is applied by the checked part, not by
+  fieldValue : CellAddr → MessageValueInput
+  /-- The cell's current stored token. The category mapping is applied by the checked part, not by
   the caller, because the mapping is the declaration's and is measured. -/
-  fieldStoredToken : FieldId → Option String
+  fieldStoredToken : CellAddr → Option String
   /-- What a form pointer renders. Caller-supplied because it is unmeasured; the field and which of
   the two terminals was written are both passed, so a caller need not re-derive either. -/
   formPointer : FieldId → MessageFormPointer → String
 
-/-- Render already-selected inputs. Repeatable callers must supply the resolved group coordinate;
-`toRenderPlanAt` owns the addressed selection before this final substitution. -/
+/-- Render already-selected inputs. Repeatable callers must supply the resolved group coordinate and
+each read reference's row path; `toRenderPlanAt` owns the addressed selection before this final
+substitution. -/
 def CheckedValidationMessagePart.toRenderPartWithGroupIndex
-    (inputs : ValidationMessageInputs) (groupIndex : GroupPath → Nat) :
+    (inputs : ValidationMessageInputs) (groupIndex : GroupPath → Nat)
+    (rowPath : CheckedValidationMessageReference model condition → List Nat) :
     CheckedValidationMessagePart model condition → MessageRenderPart
   | .text value => .text value
   | .fieldName reference => .fieldName (inputs.fieldName reference.declaration.id)
-  | .fieldValue reference => .fieldValue (inputs.fieldValue reference.declaration.id)
+  | .fieldValue reference =>
+      .fieldValue (inputs.fieldValue { field := reference.declaration.id, path := rowPath reference })
   | .fieldCategory access =>
       .fieldCategory {
         categoryToken :=
-          (inputs.fieldStoredToken access.reference.declaration.id).bind
+          (inputs.fieldStoredToken
+              { field := access.reference.declaration.id, path := rowPath access.reference }).bind
             (access.projection.declaration.categoryTokenFor? access.category) }
   | .baseYear _ year _ => .baseYear year
   | .group access => .group { repetitionIndex := groupIndex access.group }
   | .indexField access =>
       match access.suffix with
       | .value => .fieldValue {
-          displayValue := (inputs.fieldValue access.binding.declaration.id).displayValue
+          displayValue := (inputs.fieldValue { field := access.binding.declaration.id, path := [] }).displayValue
           defaultDisplay := "" }
       | .category name => .fieldCategory {
           categoryToken := do
             let source ← access.binding.declaration.enumeration
             let checked ← (elaborateEnumeration source).toOption
-            let stored ← inputs.fieldStoredToken access.binding.declaration.id
+            let stored ← inputs.fieldStoredToken { field := access.binding.declaration.id, path := [] }
             checked.categoryTokenFor? name stored }
       | .none => .text ""
   | .formPointer access =>
@@ -698,7 +744,7 @@ def CheckedValidationMessagePart.toRenderPart
     {condition : CheckedFlatCondition model}
     (inputs : ValidationMessageInputs)
     (part : CheckedValidationMessagePart model condition) : MessageRenderPart :=
-  part.toRenderPartWithGroupIndex inputs (fun _ => 1)
+  part.toRenderPartWithGroupIndex inputs (fun _ => 1) (fun _ => [])
 
 def CheckedValidationMessageTemplate.toRenderPlan
     {condition : CheckedFlatCondition model}

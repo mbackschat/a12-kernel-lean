@@ -1,0 +1,60 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "51b173b164773d458fed0a7f3174c5525fd254fb91c1b0dcfcc073d0bdbb1ef2",
+  "observations" : [ {
+    "id" : "f12",
+    "inputHash" : "6910032f01fac8f3612e422d00af71a08922766668c6baea9854e3e6e7bf8366",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_FOR_ERROR_TEXT_INVALID" ]
+  }, {
+    "id" : "f13",
+    "inputHash" : "57cef8d701f7338ee8111f5a4f077bb3038397f12605a84fc42219b259d377b1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_FOR_ERROR_TEXT_INVALID" ]
+  }, {
+    "id" : "f14",
+    "inputHash" : "29878d0ec094171a6802972c79b8677c93044a0f1e2132de10fe35570c45e41c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "f15",
+    "inputHash" : "23c1e02bdb8940bdc06cefa84ca1a37ae6ada4f33052a3f35680fed37e270c98",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_FOR_ERROR_TEXT_INVALID" ]
+  }, {
+    "id" : "f20",
+    "inputHash" : "cae20a924ab0a5b1869b4951ed9ce3adb29db4770a60bbfc92663b8048245f37",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "f21",
+    "inputHash" : "2decf7e37843df964115c0ddef2f2d6254161871110c97cab11b366e49984872",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_FOR_ERROR_TEXT_INVALID" ]
+  }, {
+    "id" : "f22",
+    "inputHash" : "90a9b88aa79cdc3756b4bdf62c32c6ce8e8940daa7f4d4699ac4f1843c75397b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "f16",
+    "inputHash" : "5d1f52d408017f80dde4f43c762f5c1e2c02c049d84e12b401db5551f1b755b6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_FOR_ERROR_TEXT_INVALID" ]
+  } ]
+}

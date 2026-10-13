@@ -37,9 +37,11 @@ condition that never mentions the index field it names.
 admitting shape are measured
 ([resolution and cross-check](../../docs/sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes),
 [non-repeatable gate](../../docs/sources/message-and-pointer-probes.md#src-nonrepeatable-index-field-gate)).
-`INVALID_INDEX_FIELD_COMPOSED_INDEX` and `INVALID_INDEX_FIELD_REP` are **source-derived and unwitnessed**:
-the first needs a group declaring several index-field names, which the A12 model surface has no spelling
-for, and the second needs a repeatability disagreement that survives the gates before it. The
+`INVALID_INDEX_FIELD_REP` is measured from both branches, and the class a non-repeatable error path draws
+follows the full-name order of the referenced index fields
+([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15), rows
+`r01`, `r11`, `z01`). `INVALID_INDEX_FIELD_COMPOSED_INDEX` is **source-derived, no witness known**: it
+needs a group declaring several index-field names, and the model format searched declares one. The
 Enumeration conjunct inside the non-repeatable shape is likewise read rather than measured, because only
 an Enumeration may declare a value set or an s-value at all — recorded with its denominator at the second
 checkpoint.

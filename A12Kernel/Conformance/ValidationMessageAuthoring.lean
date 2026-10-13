@@ -274,12 +274,12 @@ private def inputs : ValidationMessageInputs where
         debugDisplay := "/Order/Amount" }
     else
       { providerResult := none, modelLabel := none, debugDisplay := "Other" }
-  fieldValue field :=
-    if field == amount.id then
+  fieldValue cell :=
+    if cell.field == amount.id then
       { displayValue := some "$Other$", defaultDisplay := "0" }
     else
       { displayValue := none, defaultDisplay := "" }
-  fieldStoredToken field := if field == status.id then some "open" else none
+  fieldStoredToken cell := if cell.field == status.id then some "open" else none
   -- Distinct per terminal so a render case can tell which word was written, which is the only thing
   -- a caller can be asked for while what the Kernel renders here is unmeasured.
   formPointer _ pointer :=

@@ -1,0 +1,42 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "51b173b164773d458fed0a7f3174c5525fd254fb91c1b0dcfcc073d0bdbb1ef2",
+  "observations" : [ {
+    "id" : "h00",
+    "inputHash" : "f2e018658f1d858f4cfb9a98f2fede35ee400901014ec86c44aed467aff930e1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "h01",
+    "inputHash" : "644371820027dde4f15d016c58c29102bc2c50b39b8adcf127a13d24826366b2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "h02",
+    "inputHash" : "7ee1858c461ac3878374670fec54912ba43e6e8c0b0a4d14a9496e88656a89a9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "h03",
+    "inputHash" : "c427134e8b6f8031326d852a74d3130733f349bcd15884223031e6c9ae8a9e6e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "h04",
+    "inputHash" : "d107ace8dc35e5245494cae927ba45ddf0ce60b2090dbd28a236bd942a61f957",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_FOR_ERROR_TEXT_INVALID" ]
+  } ]
+}

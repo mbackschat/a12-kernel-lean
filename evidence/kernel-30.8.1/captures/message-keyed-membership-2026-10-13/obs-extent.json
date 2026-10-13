@@ -1,0 +1,54 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "51b173b164773d458fed0a7f3174c5525fd254fb91c1b0dcfcc073d0bdbb1ef2",
+  "observations" : [ {
+    "id" : "a08",
+    "inputHash" : "f69d70901292272e244159c26635aa7891492aa069894dbbe4dd394f5d0ad68b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "a09",
+    "inputHash" : "2fd8c84041636086392a6f3fbe4bd87a0d5e741958d25076cad7f00dbf1e199f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "a10",
+    "inputHash" : "bb752da493dffeb70d92b0fbd576f06fa844029ef147c28cb34ada9ce5fd2ff4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rg00",
+    "inputHash" : "edfac3fbfc68a0ac13060d91ad2c4f06728e99e07892bed2d13fab288cdebfe9",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rg01",
+    "inputHash" : "f1b2bbf40e8959c2b2e495d35c9d25cb806be90a4adb32c879febd6f348f6da9",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rg02",
+    "inputHash" : "38f58df92093362797ff2c88b5529a27b15029d6e8c4535fbe09816d72afb58c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rg03",
+    "inputHash" : "5125e7e1018c4a7a30ff03846576fe3abdc0ad4f16fcbf9545de275c62558919",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

@@ -1,0 +1,77 @@
+[
+ {
+  "id": "h00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h00",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/NRows For \"1\")",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "h01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h01",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/NRows For \"1\")",
+   "--message",
+   "en_US=$#/Kp/NRows For \"1\"$"
+  ]
+ },
+ {
+  "id": "h02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h02",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/NRows For \"1\")",
+   "--message",
+   "en_US=$#/Kp/NRows For \"01\"$"
+  ]
+ },
+ {
+  "id": "h03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h03",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/NRows For \"1\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"1\"$"
+  ]
+ },
+ {
+  "id": "h04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h04",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/NRows For \"1\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"01\"$"
+  ]
+ }
+]

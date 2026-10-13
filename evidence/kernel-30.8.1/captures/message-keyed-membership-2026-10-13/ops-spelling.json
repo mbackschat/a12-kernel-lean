@@ -1,0 +1,122 @@
+[
+ {
+  "id": "f12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f12",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For \"1\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"01\"$"
+  ]
+ },
+ {
+  "id": "f13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f13",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For \"1\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"1.0\"$"
+  ]
+ },
+ {
+  "id": "f14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f14",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For \"1\")",
+   "--message",
+   "en_US=$/Kp/NRows/Num For \"1\"$"
+  ]
+ },
+ {
+  "id": "f15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f15",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For \"1\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"2\"$"
+  ]
+ },
+ {
+  "id": "f20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f20",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For \"01\")",
+   "--message",
+   "en_US=plain text"
+  ]
+ },
+ {
+  "id": "f21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f21",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For \"01\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"1\"$"
+  ]
+ },
+ {
+  "id": "f22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f22",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For \"01\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"01\"$"
+  ]
+ },
+ {
+  "id": "f16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f16",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldNotFilled(/Kp/NRows/V For \"1\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"x\"$"
+  ]
+ }
+]

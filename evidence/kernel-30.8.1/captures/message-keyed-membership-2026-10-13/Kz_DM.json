@@ -1,0 +1,478 @@
+{
+ "header": {
+  "id": "Kz_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Kz_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Kp",
+     "name": "Kp",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Kp/Anchor",
+        "name": "Anchor",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/Box",
+        "name": "Box",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/Kp/Box/Lines",
+           "name": "Lines",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Kp/Box/Lines/Qty",
+              "name": "Qty",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/NRep",
+        "name": "NRep",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/NRep/Ref",
+           "name": "Ref",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/NRep/NNote",
+           "name": "NNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Ref"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/RRef",
+        "name": "RRef",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/RRef/Ref",
+           "name": "Ref",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/RRef/Val",
+           "name": "Val",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Ref"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/Rows/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/Rows/Base",
+           "name": "Base",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/Rows/Gate",
+           "name": "Gate",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/Rows/Err",
+           "name": "Err",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/Rows/Status",
+           "name": "Status",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Key"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/ERows",
+        "name": "ERows",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/ERows/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/ERows/X",
+           "name": "X",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Key"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/GA",
+        "name": "GA",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/GA/Grade",
+           "name": "Grade",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Alpha"
+                 }
+                ]
+               },
+               {
+                "value": "B",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Beta"
+                 }
+                ]
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/GA/GNote",
+           "name": "GNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Grade"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/GB",
+        "name": "GB",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/GB/Grade",
+           "name": "Grade",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Ace"
+                 }
+                ]
+               },
+               {
+                "value": "B",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Bee"
+                 }
+                ]
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/GB/GVal2",
+           "name": "GVal2",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Grade"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/NRows",
+        "name": "NRows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/NRows/Num",
+           "name": "Num",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/NRows/V",
+           "name": "V",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Num"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/ZRep",
+        "name": "ZRep",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/ZRep/Ref",
+           "name": "Ref",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/ZRep/ZNote",
+           "name": "ZNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Ref"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -38,12 +38,7 @@ private def lowerIndexKey (index : FlatFieldDecl) (key : IndexKey) : Lowering Su
               | none => refuse "SemanticIndex" "unsupported key pattern"
         if index.indexKeyFits? matcher authored != some true then
           refuse "SemanticIndex" "invalid key shape"
-        let token ← match index.policy.kind with
-          | .number _ => do
-              let some decoded := parseNumericFormalRead? (spelling.replace "," ".")
-                | refuse "SemanticIndex" "numeric key"
-              pure (SemanticIndexKey.number decoded.value)
-          | _ => pure (.text spelling)
+        let some token := index.semanticIndexLiteral? spelling | refuse "SemanticIndex" "numeric key"
         pure (SurfaceSemanticIndexKey.literal token (some spelling))
     | .reference { path := authored, index := none, category := none, filter := none } => do
         let some field := authored.toFieldPath? | refuse "SemanticIndex" "key path"

@@ -21,6 +21,9 @@ inductive ValidationMessageRenderingError where
   | unsupportedDisplayLocale (locale : String)
   | reference (error : ReferenceProjectionError)
   | invalidGroupBinding
+  /-- A keyed parameter's key selects no row. The Kernel faults rendering it: the finding keeps its code
+  and field while its whole text is replaced by the Kernel's evaluation-fault text (rule `RMiss`). -/
+  | unresolvedSelection
   deriving Repr, DecidableEq
 
 namespace ValidationMessageRowContext
@@ -78,7 +81,35 @@ def selectedGroupIndex (context : ValidationMessageRowContext model compilePatte
   let (_, coordinate, _) ← (inputs.resolveIndex declaration indexDeclaration key context.environment).mapError .reference
   pure coordinate
 
+/-- The row a read reference renders. An unkeyed one reads the firing environment's binding of its own
+levels, which a parallel caller extends with the joined partner row; a keyed one reads the row its key
+selects through the shared message cache ([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15)). -/
+def referencePath (context : ValidationMessageRowContext model compilePattern)
+    (reference : CheckedValidationMessageReference model condition) :
+    Except ValidationMessageRenderingError (List Nat) := do
+  match reference.key with
+  | none =>
+      (context.environment.pathForScope reference.declaration.repeatableScope).mapError .environment
+  | some key =>
+      let some inputs := context.references | throw (.reference .missingIndexContext)
+      let some group := model.semanticIndexGroupForPath? reference.declaration.groupPath
+        | throw .invalidGroupBinding
+      let some index := group.indexField | throw .invalidGroupBinding
+      let some indexDeclaration := model.fields.find? (·.id == index) | throw .invalidGroupBinding
+      match ← (inputs.resolveIndex group indexDeclaration key context.environment).mapError .reference with
+      | (parent, .concrete row, _) => pure (parent ++ [row])
+      | _ => throw .unresolvedSelection
+
 end ValidationMessageRowContext
+
+/-- The environment a parallel firing renders its message at: both joined rows' bindings, so a read
+of the partner group renders the joined row rather than the firing row's coordinate
+([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15), rule
+`RPar`). The two sides share their outer frame, whose binding is kept once. A side the join leaves
+missing binds nothing, so a read of it fails as an unbound level. -/
+def ResolvedParallelIndexRow.messageEnvironment (row : ResolvedParallelIndexRow) : Env :=
+  (row.left.environment.toList ++ row.right.environment.toList).foldl
+    (fun bound side => bound ++ side.filter fun (level, _) => !bound.any (·.1 == level)) []
 
 /-- Resolve message coordinates at the firing environment, then substitute opaque display text.
 Missing row bindings are structural failures, never invented row 1 coordinates. -/
@@ -94,18 +125,24 @@ def CheckedValidationMessagePart.toRenderPartAt
         | _, _ => pure none
       pure (part.toRenderPartWithGroupIndex { inputs with
         fieldValue := fun _ => { displayValue := display, defaultDisplay := "" }
-        fieldStoredToken := fun _ => token } (fun _ => 1))
+        fieldStoredToken := fun _ => token } (fun _ => 1) (fun _ => []))
   | .group access =>
       match access.key with
       | none =>
           let coordinate ← context.groupIndex access.group
-          pure (part.toRenderPartWithGroupIndex inputs (fun _ => coordinate))
+          pure (part.toRenderPartWithGroupIndex inputs (fun _ => coordinate) (fun _ => []))
       | some key =>
           match ← context.selectedGroupIndex access.group key with
           | .concrete coordinate => pure (.group { repetitionIndex := coordinate })
           | .unknown => pure (.text "?")
           | .wildcard => throw .invalidGroupBinding
-  | _ => pure (part.toRenderPartWithGroupIndex inputs (fun _ => 1))
+  | .fieldValue reference => do
+      let path ← context.referencePath reference
+      pure (part.toRenderPartWithGroupIndex inputs (fun _ => 1) (fun _ => path))
+  | .fieldCategory access => do
+      let path ← context.referencePath access.reference
+      pure (part.toRenderPartWithGroupIndex inputs (fun _ => 1) (fun _ => path))
+  | _ => pure (part.toRenderPartWithGroupIndex inputs (fun _ => 1) (fun _ => []))
 
 def CheckedValidationMessageTemplate.toRenderPlanAt
     (template : CheckedValidationMessageTemplate model condition)
