@@ -5,7 +5,7 @@ import A12Kernel.Semantics.RepetitionNotUnique
 
 /-! # Checked full and partial generated-preliminary findings
 
-This boundary derives generated index mandatory and uniqueness findings from one immutable checked document. One declaration/row/cell eligibility projection stages an Enumeration S-value only in the full validation view and turns the same address into cause-free silent unavailability in partial validation. The partial view selects index candidates before duplicate construction and combines the existing absolute nonrepeatable required evaluator without merging their roles. An empty ordinary required field remains computation-ignored while an empty index remains a distinct later formal-operand fact.
+This boundary derives generated index mandatory and uniqueness findings from one immutable checked document. One declaration/row/cell eligibility projection stages an Enumeration S-value only in the full validation view and turns the same address into cause-free silent unavailability in partial validation. The partial view selects index candidates before duplicate construction and combines the generated required evaluator without merging their roles. An empty ordinary required field remains computation-ignored while an empty index remains a distinct later formal-operand fact.
 -/
 
 namespace A12Kernel
@@ -371,10 +371,6 @@ private def FlatModel.normalizeRelevantEntities (model : FlatModel) :
       let rest ← model.normalizeRelevantEntities entities
       pure (entity :: rest)
 
-structure PartialRequiredEvaluation where
-  address : CellAddr
-  verdict : Verdict
-  deriving Repr, DecidableEq
 
 /-- A relevant partial-validation read either retains its checked cell or reports call-local silent unavailability without fabricating a formal cause. -/
 inductive PartialValidationCellRead where
@@ -396,7 +392,7 @@ structure CheckedPartialPreliminary (model : FlatModel) where
   relevance : ValidationRelevanceScope
   index : CheckedIndexPreliminary model
   silentlyUnavailable : List CellAddr
-  required : List PartialRequiredEvaluation
+  required : List RequiredEvaluation
   silentRelevant : ∀ address, address ∈ silentlyUnavailable →
     partialAddressRelevant model relevance address = true
 
@@ -412,7 +408,7 @@ def requiredVerdictAt? (view : CheckedPartialPreliminary model)
   (view.required.find? fun evaluation =>
     evaluation.address == address).map (·.verdict)
 
-/-- Apply only the separate absolute-required channel to an already index-annotated cell. -/
+/-- Apply only the separate generated-required channel to an already index-annotated cell. -/
 def annotateRequiredCell (view : CheckedPartialPreliminary model)
     (address : CellAddr) (cell : CheckedCell) : CheckedCell :=
   match view.requiredVerdictAt? address with
@@ -489,25 +485,6 @@ end CheckedPartialPreliminary
 
 namespace CheckedDocument
 
-private def partialRequiredEvaluations (checked : CheckedDocument model)
-    (relevance : ValidationRelevanceScope) :
-    List FlatFieldDecl →
-      Except CheckedIndexPreliminaryError (List PartialRequiredEvaluation)
-  | [] => pure []
-  | declaration :: declarations => do
-      let rest ← checked.partialRequiredEvaluations relevance declarations
-      let scope ← model.requirednessScopeFor declaration |>.mapError .model
-      match scope with
-      | some .absolute =>
-          let address : CellAddr := { field := declaration.id, path := [] }
-          if relevance.coversCell model declaration.path [] then
-            let result ← checked.applyAbsoluteRequiredAt declaration.id
-              |>.mapError .required
-            pure ({ address, verdict := result.mandatoryVerdict } :: rest)
-          else
-            pure rest
-      | none | some (.relativeTo _) => pure rest
-
 private def applyPartialGeneratedPreliminaryNormalized
     (checked : CheckedDocument model)
     (relevance : ValidationRelevanceScope) :
@@ -526,7 +503,10 @@ private def applyPartialGeneratedPreliminaryNormalized
     relevance
     index
     silentlyUnavailable
-    required := ← checked.partialRequiredEvaluations relevance model.fields
+    required := ← checked.requiredEvaluations relevance
+      (checked.source.instantiatedRows.filter (CheckedPartialPreliminary.relevanceCoversRow relevance model))
+      (checked.checkedCells.filter (partialAddressRelevant model relevance ·.address))
+      |>.mapError .required
     silentRelevant := by
       intro address member
       simpa using (List.mem_filter.mp member).2

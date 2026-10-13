@@ -1,0 +1,4392 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "Req_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "empty-document",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": [
+        "Req/AbsNum"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": [
+        "Req/AbsNum"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": [
+        "Req/AbsNum"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": [
+        "Req/AbsNum"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "abs-filled-control",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "ship-admitted-sibling",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "ship-malformed-only-sibling",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Req/Ship/Zip",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Zip"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Req/Ship/Zip",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Zip"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Req/Ship/Zip",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Zip"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Req/Ship/Zip",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Zip"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "ship-empty-object",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "items-empty-row",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "items-pack-admitted",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "items-pack-filled-control",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "items-over-limit",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items[2]/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items[3]/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Req/Items[4]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[4]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items[2]/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items[3]/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Req/Items[4]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[4]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items[2]/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items[3]/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Req/Items[4]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[4]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items[2]/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items[3]/Pack/Label",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Pack/Label"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Pack/Label"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Req/Items[4]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[4]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "box-empty-child-row",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Box/Tag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Box/Tag"
+       ],
+       "fillToFix": [
+        "Req/Box/Tag"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Box/Tag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Box/Tag"
+       ],
+       "fillToFix": [
+        "Req/Box/Tag"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Box/Tag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Box/Tag"
+       ],
+       "fillToFix": [
+        "Req/Box/Tag"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Box/Tag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Box/Tag"
+       ],
+       "fillToFix": [
+        "Req/Box/Tag"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "items-partial-qty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "items-partial-marker",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": []
+    }
+   ]
+  },
+  {
+   "name": "items-partial-empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Pack/Code",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Pack/Code"
+       ],
+       "fillToFix": [
+        "Req/Items/Pack/Code"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": []
+    }
+   ]
+  },
+  {
+   "name": "ship-partial-street-only",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "ship-partial-ship",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkAbs",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[2]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[2]/Qty"
+       ]
+      },
+      {
+       "code": "ChkQty",
+       "field": "Req/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Items[3]/Qty"
+       ],
+       "fillToFix": [
+        "Req/Items[3]/Qty"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "empty-partial-absnum",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": [
+        "Req/AbsNum"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "mandatoryField",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": [
+        "Req/AbsNum"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": [
+        "Req/AbsNum"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "mandatoryField",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": [
+        "Req/AbsNum"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "empty-partial-marker",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": [
+        "Req/AbsNum"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ],
+     "partialMessages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "ChkStreet",
+       "field": "Req/Ship/Street",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/Street"
+       ],
+       "fillToFix": [
+        "Req/Ship/Street"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/AbsNum",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/AbsNum"
+       ],
+       "fillToFix": [
+        "Req/AbsNum"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Req/Ship/AbsInShip",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Req/Ship/AbsInShip"
+       ],
+       "fillToFix": [
+        "Req/Ship/AbsInShip"
+       ]
+      }
+     ],
+     "partialMessages": []
+    }
+   ]
+  }
+ ]
+}

@@ -98,3 +98,13 @@ Four corrections are `pending` below and have not been handed off. The 24 termin
 - `basis`: [Occurrence-scope capture](sources/over-repetition-probes.md#src-over-repetition-occurrence-scope), eleven rows on both Kernel 30.8.1 strategies at clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`; Kernel source `CheckCommand.formalePruefung`, `ValidationCommand.processPartlyValidation` and `CalculationCommand.getEntityFullNamesNotRemovedFromData`. The validation-side occurrence and partial results corroborate the peer's `OverRepetitionOccurrenceDiffTest`; the sibling-coordinate twin, operand-path nonrepeatable group and computed-target ancestry are new measurements.
 - `acceptance`: Reconcile the structural emitter with per-entity own-ancestry checking, including nonrepeatable group instances, and the computation channel with the computed-target ancestry rule. Preserve position-selected codes, absorption and the empty-selection boundary; no emission order is claimed.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-06"></a>
+### SPEC-2026-10-13-06 — generated requiredness iterates instantiated in-capacity rows under partial relevance
+
+- `status`: pending
+- `canonical`: [The required property](../spec/03-empty-and-required.md#part-b--4-the-required-property).
+- `delta`: State that the generated `mandatoryField` rule runs per instantiated in-capacity row, never on uninstantiated or over-capacity rows, and under partial validation only where the field is selected, with its group gate reading only selected content.
+- `basis`: [Generated-requiredness capture](sources/model-structure-and-declaration-probes.md#src-generated-requiredness-k14), seventeen rows on both Kernel 30.8.1 strategies at clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`; authored-rule replay agrees on every row only when required-empty cells read as formally unavailable.
+- `acceptance`: Reconcile generated required-field evaluation with the row domain, capacity exclusion and partial relevance, and confirm that the full-validation authored-rule view carries required findings for parent-relative and repeatable requiredness. Preserve the base-view-first ordering and the computation asymmetry.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

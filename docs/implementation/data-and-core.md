@@ -206,10 +206,10 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 <a id="cap-requiredness-scope"></a>
 #### Requiredness scope
 
-- `boundary`: Absolute, nearest-repeatable, and direct-parent modes resolve without erasing the declaration gate
-- `owner`: [`Required.lean`](../../A12Kernel/Semantics/Required.lean), [`CheckedRequired.lean`](../../A12Kernel/Elaboration/CheckedRequired.lean)
-- `assurance`: E/P closed for resolved scope; selected C on absolute scalar cases
-- `remains`: Wider generated orchestration: [SG13](../SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion)
+- `boundary`: Absolute, nearest-repeatable, and direct-parent modes resolve without erasing the declaration gate. `CheckedDocument.requiredEvaluations` runs the generated rule per instantiated in-capacity row of the field's scope where the call's relevance covers the field, gating relative modes on the call's group-presence slice; `withRequiredFindings` gives full validation's authored rules the `.required` view and the partial preliminary view consumes the same evaluations.
+- `owner`: [`Required.lean`](../../A12Kernel/Semantics/Required.lean), [`CheckedRequired.lean`](../../A12Kernel/Elaboration/CheckedRequired.lean), [replay integration](../../A12Kernel/Reference/Dm/Replay.lean)
+- `assurance`: E/C closed against the [generated-requiredness capture](../sources/model-structure-and-declaration-probes.md#src-generated-requiredness-k14) through [reader locks](../../A12Kernel/Reference/Dm/GeneratedRequirednessLocks.lean) and authored-rule replay; P for resolved scope.
+- `remains`: Message text and field-owned requiredness grammar: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
 
 <a id="cap-generated-required-staging"></a>
 #### Generated required staging

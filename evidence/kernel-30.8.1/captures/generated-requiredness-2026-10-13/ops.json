@@ -1,0 +1,189 @@
+[
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req",
+  "name": "AbsNum",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  },
+  "required": true
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req",
+  "name": "Marker",
+  "kind": "STRING"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Req",
+  "name": "Ship"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Ship",
+  "name": "City",
+  "kind": "STRING"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Ship",
+  "name": "Zip",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Ship",
+  "name": "Street",
+  "kind": "STRING",
+  "required": "ifParentPresent"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Ship",
+  "name": "AbsInShip",
+  "kind": "STRING",
+  "required": true
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Req",
+  "name": "Items",
+  "repeatable": 3
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Items",
+  "name": "Qty",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  },
+  "required": true
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Items",
+  "name": "Note",
+  "kind": "STRING"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Req/Items",
+  "name": "Pack"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Items/Pack",
+  "name": "Size",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Items/Pack",
+  "name": "Label",
+  "kind": "STRING",
+  "required": "ifParentPresent"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Items/Pack",
+  "name": "Code",
+  "kind": "STRING",
+  "required": true
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Req",
+  "name": "Box"
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Box",
+  "name": "Tag",
+  "kind": "STRING",
+  "required": "ifParentPresent"
+ },
+ {
+  "target": "group",
+  "op": "add",
+  "parent": "/Req/Box",
+  "name": "Lines",
+  "repeatable": 2
+ },
+ {
+  "target": "field",
+  "op": "add",
+  "group": "/Req/Box/Lines",
+  "name": "Val",
+  "kind": "NUMBER",
+  "number": {
+   "maxFractionalDigits": 0
+  }
+ },
+ {
+  "target": "rule",
+  "op": "add",
+  "group": "/Req",
+  "field": "/Req/AbsNum",
+  "code": "ChkAbs",
+  "condition": "[AbsNum] < 100",
+  "messages": [
+   {
+    "locale": "en_US",
+    "text": "Probe"
+   }
+  ]
+ },
+ {
+  "target": "rule",
+  "op": "add",
+  "group": "/Req/Items",
+  "field": "/Req/Items/Qty",
+  "code": "ChkQty",
+  "condition": "[Qty] < 100",
+  "messages": [
+   {
+    "locale": "en_US",
+    "text": "Probe"
+   }
+  ]
+ },
+ {
+  "target": "rule",
+  "op": "add",
+  "group": "/Req/Ship",
+  "field": "/Req/Ship/Street",
+  "code": "ChkStreet",
+  "condition": "FieldNotFilled(Street)",
+  "messages": [
+   {
+    "locale": "en_US",
+    "text": "Probe"
+   }
+  ]
+ }
+]

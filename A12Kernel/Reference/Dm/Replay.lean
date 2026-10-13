@@ -40,6 +40,9 @@ def RuleStatus.detail : RuleStatus → String
 /-- Compare every rule of `model` on one checked document against the Kernel's messages. -/
 def replayRules (model : DmModel) (language : Language) (world : World)
     (checked : CheckedDocument model.flat) (kernel : List ObservedMessage) : List RuleVerdict :=
+  -- Authored rules read required-empty cells as formally unavailable (spec/03 §B.2), so they run
+  -- on the document carrying full validation's generated `.required` findings.
+  let authored := checked.fullRequiredEvaluations.map checked.withRequiredFindings
   model.rules.map fun rule =>
     let expected := (kernel.filter (·.code == rule.errorCode)).mergeSort (compare · · != .gt)
     -- Messages are attributed by code, so a code two rules share cannot be told apart.
@@ -48,7 +51,10 @@ def replayRules (model : DmModel) (language : Language) (world : World)
       else match checkValidationRule model language rule world with
       | .error refusal => .refused refusal
       | .ok checked' =>
-          match runValidationRule world checked checked' with
+          match authored with
+          | .error error => .runFault (repr error).pretty
+          | .ok document =>
+          match runValidationRule world document checked' with
           | .error detail => .runFault detail
           | .ok messages =>
               let actual := (messages.map (observe model.flat)).mergeSort (compare · · != .gt)

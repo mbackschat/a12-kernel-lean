@@ -1,0 +1,275 @@
+{
+  "header" : {
+    "id" : "Req_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Req_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Req",
+        "name" : "Req",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Req/AbsNum",
+            "name" : "AbsNum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              },
+              "requirednessConfig" : {
+                "mode" : "absoluteOrRelativeToNextRepAncestor"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Req/Marker",
+            "name" : "Marker",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Req/Ship",
+            "name" : "Ship",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Req/Ship/City",
+                "name" : "City",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Req/Ship/Zip",
+                "name" : "Zip",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Req/Ship/Street",
+                "name" : "Street",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  },
+                  "requirednessConfig" : {
+                    "mode" : "relativeToParent"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Req/Ship/AbsInShip",
+                "name" : "AbsInShip",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  },
+                  "requirednessConfig" : {
+                    "mode" : "absoluteOrRelativeToNextRepAncestor"
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Req/Ship/ChkStreet",
+                "name" : "ChkStreet",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Street",
+                  "errorCode" : "ChkStreet",
+                  "errorCondition" : "FieldNotFilled(Street)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe"
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Req/Items",
+            "name" : "Items",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Req/Items/Qty",
+                "name" : "Qty",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  },
+                  "requirednessConfig" : {
+                    "mode" : "absoluteOrRelativeToNextRepAncestor"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Req/Items/Note",
+                "name" : "Note",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Req/Items/Pack",
+                "name" : "Pack",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Req/Items/Pack/Size",
+                    "name" : "Size",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Req/Items/Pack/Label",
+                    "name" : "Label",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      },
+                      "requirednessConfig" : {
+                        "mode" : "relativeToParent"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Req/Items/Pack/Code",
+                    "name" : "Code",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      },
+                      "requirednessConfig" : {
+                        "mode" : "absoluteOrRelativeToNextRepAncestor"
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Req/Items/ChkQty",
+                "name" : "ChkQty",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Qty",
+                  "errorCode" : "ChkQty",
+                  "errorCondition" : "[Qty] < 100",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Probe"
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Req/Box",
+            "name" : "Box",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Req/Box/Tag",
+                "name" : "Tag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  },
+                  "requirednessConfig" : {
+                    "mode" : "relativeToParent"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Req/Box/Lines",
+                "name" : "Lines",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Req/Box/Lines/Val",
+                    "name" : "Val",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Req/ChkAbs",
+            "name" : "ChkAbs",
+            "Rule" : {
+              "errorEntityRelPath" : "../AbsNum",
+              "errorCode" : "ChkAbs",
+              "errorCondition" : "[AbsNum] < 100",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

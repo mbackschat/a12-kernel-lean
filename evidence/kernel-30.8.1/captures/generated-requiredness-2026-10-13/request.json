@@ -1,0 +1,334 @@
+{
+ "model": "Req_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "rows": [
+  {
+   "name": "empty-document",
+   "documentInline": {
+    "Req": {}
+   },
+   "relevant": [
+    {
+     "path": "/Req"
+    }
+   ]
+  },
+  {
+   "name": "abs-filled-control",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "AbsInShip": "a"
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req"
+    }
+   ]
+  },
+  {
+   "name": "ship-admitted-sibling",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "City": "x",
+      "AbsInShip": "a"
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req"
+    }
+   ]
+  },
+  {
+   "name": "ship-malformed-only-sibling",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "Zip": "bad"
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req"
+    }
+   ]
+  },
+  {
+   "name": "ship-empty-object",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {}
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req"
+    }
+   ]
+  },
+  {
+   "name": "items-empty-row",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "AbsInShip": "a"
+     },
+     "Items": [
+      {}
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req"
+    }
+   ]
+  },
+  {
+   "name": "items-pack-admitted",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "AbsInShip": "a"
+     },
+     "Items": [
+      {
+       "Qty": "5",
+       "Pack": {
+        "Size": "1"
+       }
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req"
+    }
+   ]
+  },
+  {
+   "name": "items-pack-filled-control",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "AbsInShip": "a"
+     },
+     "Items": [
+      {
+       "Qty": "5",
+       "Pack": {
+        "Size": "1",
+        "Label": "l",
+        "Code": "c"
+       }
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req"
+    }
+   ]
+  },
+  {
+   "name": "items-over-limit",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "AbsInShip": "a"
+     },
+     "Items": [
+      {
+       "Qty": "1",
+       "Pack": {
+        "Code": "c"
+       }
+      },
+      {
+       "Qty": "2",
+       "Pack": {
+        "Code": "c"
+       }
+      },
+      {
+       "Qty": "3",
+       "Pack": {
+        "Code": "c"
+       }
+      },
+      {}
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req"
+    }
+   ]
+  },
+  {
+   "name": "box-empty-child-row",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "AbsInShip": "a"
+     },
+     "Box": {
+      "Lines": [
+       {}
+      ]
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req"
+    }
+   ]
+  },
+  {
+   "name": "items-partial-qty",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "AbsInShip": "a"
+     },
+     "Items": [
+      {}
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req/Items/Qty"
+    }
+   ]
+  },
+  {
+   "name": "items-partial-marker",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "AbsInShip": "a"
+     },
+     "Items": [
+      {}
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req/Marker"
+    }
+   ]
+  },
+  {
+   "name": "items-partial-empty",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "AbsInShip": "a"
+     },
+     "Items": [
+      {}
+     ]
+    }
+   },
+   "relevant": []
+  },
+  {
+   "name": "ship-partial-street-only",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "City": "x",
+      "AbsInShip": "a"
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req/Ship/Street"
+    }
+   ]
+  },
+  {
+   "name": "ship-partial-ship",
+   "documentInline": {
+    "Req": {
+     "Marker": "m",
+     "AbsNum": "5",
+     "Ship": {
+      "City": "x",
+      "AbsInShip": "a"
+     }
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Req/Ship"
+    }
+   ]
+  },
+  {
+   "name": "empty-partial-absnum",
+   "documentInline": {
+    "Req": {}
+   },
+   "relevant": [
+    {
+     "path": "/Req/AbsNum"
+    }
+   ]
+  },
+  {
+   "name": "empty-partial-marker",
+   "documentInline": {
+    "Req": {}
+   },
+   "relevant": [
+    {
+     "path": "/Req/Marker"
+    }
+   ]
+  }
+ ]
+}

@@ -462,7 +462,7 @@ example :
       some true := by
   native_decide
 
-/- Optional and group-gated declarations are ignored by model-derived absolute staging rather than becoming mandatory. -/
+/- An optional declaration produces no generated rule, and a parent-gated one draws no finding while its parent holds no content; neither becomes mandatory. -/
 example :
     let optionalField := { requiredField with requiredness := none }
     let optionalModel : FlatModel := { fields := [optionalField] }
@@ -471,11 +471,11 @@ example :
     let parentModel : FlatModel := { fields := [parentField] }
     (partialFor optionalModel
         { instantiatedRows := [], cells := [] }
-        [relevantRequired]).map (fun view => view.required.isEmpty) =
+        [relevantRequired]).map (fun view => (RequiredEvaluation.mandatoryAddresses view.required).isEmpty) =
       some true ∧
     (partialFor parentModel
         { instantiatedRows := [], cells := [] }
-        [relevantRequired]).map (fun view => view.required.isEmpty) =
+        [relevantRequired]).map (fun view => (RequiredEvaluation.mandatoryAddresses view.required).isEmpty) =
       some true := by
   native_decide
 

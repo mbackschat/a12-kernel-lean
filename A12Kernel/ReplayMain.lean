@@ -76,6 +76,7 @@ import A12Kernel.Reference.Dm.ReaderLocks
 import A12Kernel.Reference.Dm.SupportedCharactersLocks
 import A12Kernel.Reference.Dm.EnumerationDeclarationNotificationLocks
 import A12Kernel.Reference.Dm.OverRepetitionOccurrenceLocks
+import A12Kernel.Reference.Dm.GeneratedRequirednessLocks
 import A12Kernel.Reference.Dm.DocumentNumberLocks
 import A12Kernel.Reference.Dm.NegateLocks
 import A12Kernel.Reference.Dm.LowerLocks
