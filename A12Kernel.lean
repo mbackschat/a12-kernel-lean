@@ -185,6 +185,7 @@ import A12Kernel.Elaboration.ParallelNumericDirectRunResult
 import A12Kernel.Elaboration.ParallelNumericRunRelation
 import A12Kernel.Elaboration.ParallelPresenceRule
 import A12Kernel.Elaboration.CheckedRequired
+import A12Kernel.Elaboration.CustomValidationInvocation
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.ValidationRuleGroupOperand
 import A12Kernel.Elaboration.JavaOtherCategory

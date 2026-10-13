@@ -1,0 +1,80 @@
+[
+ {
+  "id": "pc-control",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=CheckRule",
+   "--code=C",
+   "--field=/Staffing/Demand/Headcount",
+   "--group=/Staffing",
+   "--condition=FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "pc-and",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=CheckRule",
+   "--code=C",
+   "--field=/Staffing/Demand/Headcount",
+   "--group=/Staffing",
+   "--condition=FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount) And CustomCondition Check",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "pc-and-rev",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=CheckRule",
+   "--code=C",
+   "--field=/Staffing/Demand/Headcount",
+   "--group=/Staffing",
+   "--condition=CustomCondition Check And FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "pc-or",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=CheckRule",
+   "--code=C",
+   "--field=/Staffing/Demand/Headcount",
+   "--group=/Staffing",
+   "--condition=FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount) Or CustomCondition Check",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "pc-fill-presence",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=CheckRule",
+   "--code=C",
+   "--field=/Staffing/Demand/Headcount",
+   "--group=/Staffing",
+   "--condition=FieldFilled(Demand/Headcount) And CustomCondition Check",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "pc-two-negative",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=CheckRule",
+   "--code=C",
+   "--field=/Staffing/Demand/Headcount",
+   "--group=/Staffing",
+   "--condition=FieldNotFilled(Demand/Headcount) And FieldNotFilled(Supply/Headcount)",
+   "--message=en_US=x"
+  ]
+ }
+]

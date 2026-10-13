@@ -60,6 +60,11 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
   | .call name [.mk left none, .mk right none] none none => do
       let some op := fieldFillOp? name | refuse "ParallelRule" "field-fill pair required"
       pure (.leaf (.fill op (← pairField model group false left) (← pairField model group false right)))
+  | .custom name quoted => do
+      let spelling := if quoted then CustomConditionNameSpelling.quoted name else .unquoted name
+      let some checkedName := checkCustomConditionName (fun _ => false) spelling
+        | refuse "CustomCondition" "invalid name"
+      pure (.leaf (.customCondition checkedName))
   | _ => refuse "ParallelRule" "unsupported pair condition"
 
 private def pairReferences : ConditionTree (ParallelFieldLeafOf FieldId) → List FieldId
@@ -67,6 +72,7 @@ private def pairReferences : ConditionTree (ParallelFieldLeafOf FieldId) → Lis
   | .leaf (.presence field _) => [field]
   | .leaf (.numeric _ left right) | .leaf (.fill _ left right) => [left, right]
   | .leaf (.comparison value) => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
+  | .leaf (.customCondition _) => []
   | .and left right | .or left right => pairReferences left ++ pairReferences right
 
 private def bindPairLeaf (model : FlatModel) (left right : FieldId)
@@ -82,6 +88,7 @@ private def bindPairLeaf (model : FlatModel) (left right : FieldId)
   | .fill op a b => pure (.fill op (← operand a) (← operand b))
   | .comparison value => pure (.comparison { value with
       left := ← value.left.mapM (·.mapM operand), right := ← value.right.mapM (·.mapM operand) })
+  | .customCondition name => pure (.customCondition name)
 
 private def pairGroupReferences : ConditionTree (ParallelFieldLeafOf FieldId) → List GroupPath
   | .leaf (.groupPresence _ reference) => [reference.path]

@@ -296,6 +296,16 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `bytes`: [main capture](../../evidence/kernel-30.8.1/captures/model-consistency-2026-10-13/) and [bound-order capture](../../evidence/kernel-30.8.1/captures/model-consistency-bound-order-2026-10-13/), each with its base model, rows, redacted observations and `MANIFEST.sha256`.
 - `sync`: [SPEC-2026-10-13-14](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-13-14).
 
+<a id="src-parallel-custom-condition"></a>
+#### A CustomCondition leaf in a parallel rule is admitted beside the pair under And and refused under Or with the parallel-iteration class, measured 2026-10-14
+
+- `producer`: a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`, clean before and after; dmtool `0.13.0`, Kernel `30.8.1`; six `rule check` children of one `batch --observations` on the staffing pair model (repeatable `Demand` and `Supply` keyed by `Department`), error field `/Staffing/Demand/Headcount`, every row `KERNEL_CONFIRMED`.
+- `result`: `FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount)` with `And CustomCondition Check` on either side is admitted like the bare pair (`pc-control`, `pc-and`, `pc-and-rev`), and so is a presence conjunct beside the leaf (`pc-fill-presence`). The pair `Or CustomCondition Check` draws `MVK_PARALLEL_ITERATION_INVALID` (`pc-or`), as `FieldNotFilled` of both sides does (`pc-two-negative`).
+- `local`: the [parallel reader](../../A12Kernel/Reference/Dm/ParallelValidation.lean) lowers the leaf, the [assembly](../../A12Kernel/Elaboration/ParallelFieldRule.lean) refuses an unguarded admitted tree with the parallel-iteration class, and the [parallel custom locks](../../A12Kernel/Reference/Dm/ParallelCustomConditionLocks.lean) replay the rows and the per-row callback inputs; the [rule-check projection](../../A12Kernel/Evidence/RuleCheckProjection.lean) replays the verdicts.
+- `limit`: static admission only. The callback's runtime inputs in a parallel row, its reach and an unregistered name's runtime outcome are `external evidence pending`, because the runtime probe registers no custom condition ([K18](../PLAN.md#k18--customcondition-callback-contract-and-calibration)).
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/parallel-custom-condition-2026-10-14/) with model, ops, observations and `MANIFEST.sha256`.
+- `sync`: [SPEC-2026-10-14-01](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-01).
+
 <a id="src-field-declaration-notifications-k17"></a>
 #### The declaration-generation rule reports field-type, element-name, group and element-text classes as one unordered set over the variant-filtered model, measured 2026-10-13
 

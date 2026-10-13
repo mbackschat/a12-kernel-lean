@@ -5,6 +5,7 @@ import A12Kernel.Elaboration.ValidationCondition.ErrorSelection
 import A12Kernel.Elaboration.ValidationRule.AssemblyError
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Elaboration.CustomValidationInvocation
 import A12Kernel.Semantics.ValidationRule
 
 /-! # Checked assembly for resolved validation rules
@@ -101,12 +102,6 @@ abbrev CheckedResolvedValidationRule (model : FlatModel) :=
     (fun condition => condition.core)
     (fun condition field => condition.referencesErrorField field)
     ValidationCondition.ordinaryIterationScope
-
-abbrev CustomValidationInvocation (model : FlatModel) :=
-  CustomConditionInvocation (CheckedDocument model) ValidationRelevanceScope (List CellAddr)
-
-abbrev CustomValidationRegistry (model : FlatModel) :=
-  CustomConditionRegistry (CustomValidationInvocation model)
 
 namespace CheckedResolvedFlatRule
 
@@ -254,15 +249,12 @@ def withCustomConditions (rule : CheckedResolvedValidationRule model)
   let invoke := match context.input with
     | .legacy _ _ => fun _ => .error .unavailableInvocation
     | .checked document | .partialView document _ =>
-      let invocation : CustomValidationInvocation model := {
-        data := document
-        relevance
-        formallyIncorrect := ((document.checkedCells.filterMap fun cell =>
-          if cell.cell.findings.isEmpty then none else some cell.address) ++ generatedFormalFailures).eraseDups
-        errorPointer := {
-          field := rule.errorField
-          coordinates := rule.errorDeclaration.repeatableScope.map fun level =>
-            (context.outer.uniqueRowAt? level).map MessageRepetitionCoordinate.concrete |>.getD .unknown } }
+      let errorPointer : MessagePointer := {
+        field := rule.errorField
+        coordinates := rule.errorDeclaration.repeatableScope.map fun level =>
+          (context.outer.uniqueRowAt? level).map MessageRepetitionCoordinate.concrete |>.getD .unknown }
+      let invocation :=
+        CustomValidationInvocation.ofDocument document relevance errorPointer generatedFormalFailures
       fun name => registry.evaluate name invocation
   { context with scalar := { context.scalar with customConditions := invoke } }
 
@@ -381,12 +373,8 @@ private def evalOrdinaryPartialAdmittedAt
     outer := environment
     input := .partialView checked (partialValidationAddressedCell? preliminary)
   }
-  let generatedFormalFailures := preliminary.index.findings.map (·.address) ++
-    preliminary.required.filterMap fun evaluation =>
-      match evaluation.verdict with
-      | .fired _ => some evaluation.address
-      | _ => none
-  let context := rule.withCustomConditions context (.partialEntities scope) registry generatedFormalFailures
+  let context := rule.withCustomConditions context (.partialEntities scope) registry
+    preliminary.generatedFormalFailures
   let isRelevant : FlatRelevance := fun field =>
     scope.coversField model field environment
   let resolveGroup (groupPath : GroupPath) (current : Env) :=

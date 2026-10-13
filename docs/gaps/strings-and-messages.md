@@ -57,7 +57,7 @@
 
 - `state`: evidence/host residual; D11 callback implementations and wider invocation profiles.
 - `baseline`: [CustomCondition orchestration](../implementation/validation-messages-and-custom.md#cap-custom-condition-callback) owns checked names, registry resolution, invocation construction and fixed/ordinary-repeatable full/partial execution.
-- `remaining`: general parallel-rule integration and exact callback error coordinates beyond that runner. Keep unknown pointers explicit.
+- `remaining`: none internally; ordinary, repeatable and parallel carriers build the callback's inputs through one builder. Keep unknown pointers explicit.
 - `evidence-needed`: factory precedence, phase-dependent callback reach and partial/repeatable payloads. Mutable effects, thrown exceptions and concrete host APIs remain outside the declared pure successful-factory contract.
 - `consumer`: Execute/Qualify need callback payload/order/failure distinctions; Analyze/Transform cannot infer locality or monotonicity from ordinary field references.
 - `reopen-when`: an adopted callback consumer supplies the required host contract and a coherent observation matrix.

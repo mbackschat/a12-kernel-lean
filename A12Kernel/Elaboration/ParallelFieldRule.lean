@@ -1,4 +1,6 @@
+import A12Kernel.Elaboration.CustomCondition
 import A12Kernel.Elaboration.ParallelFieldPair
+import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Semantics.NumericExpression
 import A12Kernel.Semantics.ValidationFillQuantifier
 import A12Kernel.Elaboration.IterationGuard
@@ -8,7 +10,7 @@ import A12Kernel.Elaboration.TemporalNumericInput
 
 /-! # Parallel validation over one checked field/group pair
 
-The pair owns key identity, optional physical rows and error projection. Field leaves retain the existing scalar consumers; group leaves reuse resolved group content after index availability. Topology anchors never count as authored references. See spec/07 §2 and the parallel-group-outer source checkpoint.
+The pair owns key identity, optional physical rows and error projection. Field leaves retain the existing scalar consumers; group leaves reuse resolved group content after index availability. A custom-condition leaf reads no field and guards no iteration; its callback receives the same invocation channels as the ordinary carrier, with the error pointer taken at the joined row. Topology anchors never count as authored references. See spec/07 §2 and the parallel-group-outer source checkpoint.
 -/
 
 namespace A12Kernel
@@ -53,6 +55,7 @@ inductive ParallelFieldLeafOf (Field : Type) where
   | numeric (op : NumericComparisonOp) (left right : Field)
   | fill (op : FieldFillQuantifier) (left right : Field)
   | comparison (value : NumericComparisonOf (ParallelNumericAtomOf Field))
+  | customCondition (name : CheckedCustomConditionName)
   deriving Repr, DecidableEq
 
 abbrev ParallelFieldLeaf := ParallelFieldLeafOf ParallelFieldOperand
@@ -143,6 +146,7 @@ def fields : ParallelFieldLeaf → List ParallelFieldOperand
   | .presence field _ => [field]
   | .numeric _ lhs rhs | .fill _ lhs rhs => [lhs, rhs]
   | .comparison value => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
+  | .customCondition _ => []
 def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
     (leaf : ParallelFieldLeaf) : Bool :=
   let group := match side with | .left => pair.groups.leftGroup | .right => pair.groups.rightGroup
@@ -172,6 +176,7 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
   | .comparison value =>
       { value with suppressExactScaleWarning := suppress }.admittedWith
         (·.admitted pair) (·.scaleSummary pair)
+  | .customCondition _ => true
 
 /-- Direct fields and operation-list wrappers retain the ordinary literal-sensitive guard;
 composite arithmetic has its own parse-tree branch (spec/07 §2). A field list is an entity list in the
@@ -233,6 +238,7 @@ def guards (pair : CheckedParallelFieldPair model) : ParallelFieldLeaf → Bool
   | .fill op left right => decide (fillGuard (fun field =>
       pair.groups.leftGroup.path.isPrefixOf (pair.declaration field).groupPath ||
       pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) op left right = .guarded)
+  | .customCondition _ => false
 
 /-- A one-sided frame has ordinary iteration levels in addition to the parallel key level. Direct pair leaves specialize the existing iteration guard table at each such level. -/
 def guardAt (pair : CheckedParallelFieldPair model) (level : RepeatableLevel)
@@ -250,6 +256,7 @@ def guardAt (pair : CheckedParallelFieldPair model) (level : RepeatableLevel)
   | .numeric _ left right =>
       if (pair.declaration left).repeatableScope.contains level ||
           (pair.declaration right).repeatableScope.contains level then .guarded else .noReference
+  | .customCondition _ => .noReference
 
 /-- Joined group reads preserve index unavailability before deriving physical group content; ancestors use the same outer coordinates without acquiring a join-level reference. -/
 private def groupState (row : ResolvedParallelIndexRow)
@@ -271,11 +278,14 @@ private def groupState (row : ResolvedParallelIndexRow)
         erroneous := false
         relevance := if side.any (·.unavailableKey.isSome) then .noneRelevant else .fullyRelevant }
 
-/-- Full and partial calls share scalar consumers; absent observations mean call-local unavailability without an invented formal cause. -/
+/-- Full and partial calls share scalar consumers; absent observations mean call-local unavailability without an invented formal cause. The callback is consulted only for a custom leaf the fold reaches, and its truth is VALUE-typed; the default resolves nothing, so a reached name reports a missing registration. -/
 def evalWith (pair : CheckedParallelFieldPair model)
     (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
-    (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState) :
-    ParallelFieldLeaf → Except ParallelPresenceRuleEvaluationError Verdict
+    (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState)
+    (leaf : ParallelFieldLeaf)
+    (custom : String → Except CustomConditionLookupError Bool := fun name => .error (.missingRegistration name)) :
+    Except ParallelPresenceRuleEvaluationError Verdict :=
+  match leaf with
   | .groupPresence op reference => do
       pure (op.eval (← readGroup reference))
   | .presence side op => do
@@ -300,12 +310,15 @@ def evalWith (pair : CheckedParallelFieldPair model)
       let right ← read rhs
       pure ((op.evalValidation ((left.map (·.asValidationFillTally) |>.getD unknown).combine
         (right.map (·.asValidationFillTally) |>.getD unknown))).asConservativeVerdict)
+  | .customCondition name => do
+      pure (customConditionVerdict (← (custom name.value).mapError .customCondition))
 
 /-- Missing and invalid joined sides enter the same scalar observation consumers as physical reads. -/
 def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
-    (preliminary : CheckedIndexPreliminary model) (outer : Env := []) : ParallelFieldLeaf →
+    (preliminary : CheckedIndexPreliminary model) (outer : Env)
+    (custom : String → Except CustomConditionLookupError Bool) : ParallelFieldLeaf →
     Except ParallelPresenceRuleEvaluationError Verdict :=
-  evalWith pair
+  fun leaf => evalWith pair
     (fun field => do
       let declaration := pair.declaration field
       if row.left.group.path.isPrefixOf declaration.groupPath ||
@@ -317,7 +330,7 @@ def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow
         let cell ← preliminary.readAuthoredValidation { field := declaration.id, path }
           |>.mapError (fun error => .join (.document error))
         pure (some (observeCell .validation cell)))
-    (groupState row preliminary)
+    (groupState row preliminary) leaf custom
 
 end ParallelFieldLeaf
 
@@ -381,30 +394,50 @@ def checkParallelFieldRule (model : FlatModel)
   if hTarget : condition.errorTargetRefusal pair = none then
     if h : condition.admitted pair suppressExactScaleWarning = true then
       pure { pair, condition, suppressExactScaleWarning, errorTargetAllowed := hTarget, admitted := h }
+    -- A tree whose leaves are admitted and reach both sides but whose iteration is unguarded draws the
+    -- Kernel's parallel-iteration class (`FieldNotFilled(L) And FieldNotFilled(M)`, a pair `Or` a custom
+    -- leaf; `IterationNotValidVisitor`). Other incoherence keeps no class.
+    else if condition.allLeaves (ParallelFieldLeaf.admitted pair suppressExactScaleWarning) &&
+        condition.anyLeaf (ParallelFieldLeaf.uses pair .left) &&
+        condition.anyLeaf (ParallelFieldLeaf.uses pair .right) && !condition.guarded pair then
+      throw (.static .parallelIterationInvalid)
     else throw .incoherentCondition
   else
     match condition.errorTargetRefusal pair with
     | some diagnostic => throw (.static diagnostic)
     | none => throw .incoherentCondition
 
-/-- Execute the certified tree on the shared lexical join/frame traversal. Structural failures stay separate from semantic UNKNOWN. -/
+/-- The custom-condition callbacks of one joined row. Registry lookup runs when a reached leaf calls them, so an unregistered name is observable only on a row whose fold gets that far. -/
+def CheckedParallelFieldPair.customConditions (pair : CheckedParallelFieldPair model)
+    (registry : CustomValidationRegistry model) (document : CheckedDocument model)
+    (relevance : CustomConditionRelevance ValidationRelevanceScope) (generatedFormalFailures : List CellAddr)
+    (row : ResolvedParallelIndexRow) (outer : Env) : String → Except CustomConditionLookupError Bool :=
+  fun name => registry.evaluate name
+    (CustomValidationInvocation.ofDocument document relevance (pair.customErrorPointer row outer)
+      generatedFormalFailures)
+
+/-- Execute the certified tree on the shared lexical join/frame traversal. Structural failures stay separate from semantic UNKNOWN. Full validation hands a custom callback the all-relevant marker and the base document's own findings. -/
 def CheckedParallelFieldRule.evalFull (rule : CheckedParallelFieldRule model)
     (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
-    (messageCache : Option MessageIndexContext := none) :
+    (messageCache : Option MessageIndexContext := none)
+    (registry : CustomValidationRegistry model := {}) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) :=
   rule.pair.evalWith rule.condition
-    (fun outer row view => rule.condition.evalVerdictExcept (ParallelFieldLeaf.eval rule.pair row view outer))
+    (fun outer row view => rule.condition.evalVerdictExcept
+      (ParallelFieldLeaf.eval rule.pair row view outer
+        (rule.pair.customConditions registry view.base .all [] row outer)))
     preliminary outer messageCache
 
 /-- Parallel unions are local to each in-capacity common outer row. An implicit outer row has no child index entries, hence no parallel evaluation to fabricate. -/
 def CheckedParallelFieldRule.evalDocument (rule : CheckedParallelFieldRule model)
     (preliminary : CheckedIndexPreliminary model)
-    (messageCache : Option MessageIndexContext := none) :
+    (messageCache : Option MessageIndexContext := none)
+    (registry : CustomValidationRegistry model := {}) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
   let scope := match rule.pair.groups.outerScopePlan with
     | .common shared | .framed _ shared _ => shared
   let environments ← if scope.isEmpty then pure [[]]
     else preliminary.base.inCapacityRowEnvironments scope |>.mapError .rows
-  pure (← environments.mapM (fun outer => rule.evalFull preliminary outer messageCache)).flatten
+  pure (← environments.mapM (fun outer => rule.evalFull preliminary outer messageCache registry)).flatten
 
 end A12Kernel

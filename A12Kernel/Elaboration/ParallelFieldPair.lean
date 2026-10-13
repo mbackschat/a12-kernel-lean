@@ -1,4 +1,6 @@
 import A12Kernel.Elaboration.CheckedIndexColumn
+import A12Kernel.Semantics.CorrelationContext
+import A12Kernel.Semantics.CustomCondition
 import A12Kernel.Semantics.ValidationRule
 
 /-! # Checked field-pair ownership and traversal for parallel validation
@@ -26,6 +28,7 @@ inductive ParallelPresenceRuleEvaluationError where
   | group (error : CheckedGroupPresenceError)
   | rows (error : ActualRowEnvironmentError)
   | preliminary (error : CheckedIndexPreliminaryError)
+  | customCondition (error : CustomConditionLookupError)
   | unsupportedCondition
   deriving Repr, DecidableEq
 
@@ -78,6 +81,16 @@ def core (pair : CheckedParallelFieldPair model) (condition : Condition) : Resol
 private def errorSide (pair : CheckedParallelFieldPair model)
     (row : ResolvedParallelIndexRow) : ResolvedParallelIndexSide :=
   if pair.errorField == pair.leftDeclaration.id then row.left else row.right
+
+/-- The error pointer a custom-condition callback receives at one joined row: the error field's levels bound from the error side's environment, from the outer environment where that side is unmatched, and UNKNOWN wherever no unique row is bound (spec/11 §14). A duplicate-key side gets no cache-resolved coordinate here; the fired message keeps that projection in `evalRow`. -/
+def customErrorPointer (pair : CheckedParallelFieldPair model)
+    (row : ResolvedParallelIndexRow) (outer : Env) : MessagePointer :=
+  let declaration := if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration
+    else pair.rightDeclaration
+  let environment := (pair.errorSide row).environment.getD outer
+  { field := pair.errorField
+    coordinates := declaration.repeatableScope.map fun level =>
+      (environment.uniqueRowAt? level).map MessageRepetitionCoordinate.concrete |>.getD .unknown }
 
 private def evalRow (pair : CheckedParallelFieldPair model) (condition : Condition)
     (evaluate : ResolvedParallelIndexRow → CheckedIndexPreliminary model →

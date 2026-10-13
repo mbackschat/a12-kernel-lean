@@ -77,6 +77,7 @@ def reads (pair : CheckedParallelFieldPair model) (outer : Env) : ParallelFieldL
   | .comparison value =>
       let all := ((value.left.atoms ++ value.right.atoms).flatMap (·.operands)).map (.joined ∘ pair.declaration)
       pure ⟨all, if upwardOmissionCount isDistinctCount value then [] else all⟩
+  | .customCondition _ => pure ⟨[], []⟩
 
 end ParallelFieldLeaf
 

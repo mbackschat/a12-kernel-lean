@@ -29,6 +29,7 @@ def captures : List (String × String × String) := [
   ("captures/comparison-entry-gates/observations2.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/comparison-entry-gates/ops2.json"),
   ("captures/comparison-entry-gates/observations3.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/comparison-entry-gates/ops3.json"),
   ("captures/computation-message-members-2026-10-13/obs.json", "captures/computation-message-members-2026-10-13/Kc_DM.json", "captures/computation-message-members-2026-10-13/ops.json"),
+  ("captures/parallel-custom-condition-2026-10-14/obs.json", "captures/parallel-custom-condition-2026-10-14/Staffing_DM.json", "captures/parallel-custom-condition-2026-10-14/ops.json"),
   ("captures/computation-star-binding-gate/obs11.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops11.json"),
   ("captures/condition-class-projection-2026-10-01/obs-baseyear-review.json", "captures/condition-class-projection-2026-10-01/OrderBaseYear_DM.json", "captures/condition-class-projection-2026-10-01/ops-baseyear-review.json"),
   ("captures/condition-class-projection-2026-10-01/obs-baseyear.json", "captures/condition-class-projection-2026-10-01/OrderBaseYear_DM.json", "captures/condition-class-projection-2026-10-01/ops-baseyear.json"),
@@ -119,10 +120,17 @@ private def readJson (path : System.FilePath) : IO Json := do
   | .ok json => pure json
   | .error message => throw (IO.userError s!"{path}: {message}")
 
+/-- The values of `flag`, written either as a separate argument or joined by `=`; the instrument
+reads both forms. -/
 private def argsOf (args : List String) (flag : String) : List String :=
   match args with
-  | name :: value :: rest => (if name == flag then [value] else []) ++ argsOf (value :: rest) flag
-  | _ => []
+  | name :: rest =>
+      let joined := if name.startsWith (flag ++ "=") then [(name.drop (flag.length + 1)).toString] else []
+      let separate := match rest with
+        | value :: _ => if name == flag then [value] else []
+        | [] => []
+      joined ++ separate ++ argsOf rest flag
+  | [] => []
 
 private def segments (path : String) : List String := (path.splitOn "/").filter (· != "")
 
@@ -133,9 +141,12 @@ private def requestedRule (args : List String) : DmRule :=
   let group := match (argsOf args "--group").head? with
     | some path => segments path
     | none => field.dropLast
-  let ups := group.length - (field.length - 1) + 1
+  -- The path climbs from the rule to the deepest group the declaring group shares with the field, then
+  -- descends, so a field below the declaring group keeps its intermediate groups.
+  let shared := ((group.zip field.dropLast).takeWhile fun (a, b) => a == b).length
+  let ups := group.length - shared + 1
   { group, name := "Probe", severity := "ERROR"
-    errorEntityRelPath := String.intercalate "/" (List.replicate ups ".." ++ field.drop (field.length - 1))
+    errorEntityRelPath := String.intercalate "/" (List.replicate ups ".." ++ field.drop shared)
     errorCode := (argsOf args "--code").headD ""
     condition := (argsOf args "--condition").headD "" }
 

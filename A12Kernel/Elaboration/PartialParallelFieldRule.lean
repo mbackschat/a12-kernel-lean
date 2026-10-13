@@ -102,9 +102,10 @@ private def parallelGroupState (view : CheckedPartialPreliminary model)
 
 end CheckedPartialPreliminary
 
-/-- Partial calls use the same checked join and condition tree, selecting keys from relevant index addresses while preserving the uncompressed relevance set for leaf reads. -/
+/-- Partial calls use the same checked join and condition tree, selecting keys from relevant index addresses while preserving the uncompressed relevance set for leaf reads. A custom callback receives that uncompressed set and the call's generated formal failures, as in the ordinary partial carrier. -/
 def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRule model)
-    (view : CheckedPartialPreliminary model) (messageCache : Option MessageIndexContext := none) :
+    (view : CheckedPartialPreliminary model) (messageCache : Option MessageIndexContext := none)
+    (registry : CustomValidationRegistry model := {}) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
   let common := match rule.pair.groups.outerScopePlan with
     | .common shared | .framed _ shared _ => shared
@@ -113,7 +114,9 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
   pure (← environments.mapM (fun outer =>
     rule.pair.evalWith rule.condition
       (fun rowOuter row _ =>
-        rule.condition.evalVerdictExcept (ParallelFieldLeaf.evalWith rule.pair
+        let custom := rule.pair.customConditions registry view.index.base (.partialEntities view.relevance)
+          view.generatedFormalFailures row rowOuter
+        rule.condition.evalVerdictExcept (fun leaf => ParallelFieldLeaf.evalWith rule.pair
           (fun field => do
             let declaration := rule.pair.declaration field
             if row.left.group.path.isPrefixOf declaration.groupPath then
@@ -128,7 +131,7 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
                 match ← view.readAuthoredValidation address |>.mapError .preliminary with
                 | .silentlyUnavailable => pure none
                 | .checked cell => pure (some (observeCell .validation cell)))
-          (view.parallelGroupState row rowOuter)))
+          (view.parallelGroupState row rowOuter) leaf custom))
       view.index outer messageCache view.isAddressRelevant
       (rule.pair.admitsPartialOuter view.relevance))).flatten
 

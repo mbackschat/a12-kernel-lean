@@ -37,7 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Four corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Five corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+<a id="spec-2026-10-14-01"></a>
+### SPEC-2026-10-14-01 — a CustomCondition leaf in a parallel rule guards no iteration
+
+- `status`: pending
+- `canonical`: [spec/11 §14](../spec/11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch).
+- `delta`: Beside a parallel field pair a `CustomCondition` leaf is admitted under `And` in either order and refused under `Or` with `MVK_PARALLEL_ITERATION_INVALID`; its callback receives the joined row's error pointer, `UNKNOWN` where unbound.
+- `basis`: [parallel custom checkpoint](sources/model-structure-and-declaration-probes.md#src-parallel-custom-condition), six rows at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile the static admission with these rows. Do not claim the callback's runtime inputs in a parallel row, which no route measured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-13-13"></a>
 ### SPEC-2026-10-13-13 — quoted Number conversion, kept leading-zero text and the full formal cascade with its message keys
