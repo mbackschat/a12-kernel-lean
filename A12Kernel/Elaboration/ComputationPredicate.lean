@@ -632,7 +632,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
         (fun _ => readSelectedComparisonOperand context filterRead filterStoredText filterNumberText source.right)
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError temporalError
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
-  | .dateRangeComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
+  | .dateRangeComparison source => (source.evalComputation context).mapError .fieldKindMismatch
   | .fieldFill operator source =>
       source.evalCheckedWith operator context filterRead .fieldFill
         (fun indexed => do
@@ -766,7 +766,7 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
   | .fieldComparison op left right => .fieldComparison <$>
       (elaborateScalarFieldComparison model declaringGroup targetGroup op left right).mapError .comparison
   | .dateRangeComparison operator source => .dateRangeComparison <$>
-      (elaborateDateRangePredicate model (model.repeatableScopeForGroupPath targetGroup)
+      (elaborateDateRangePredicate model declaringGroup (model.repeatableScopeForGroupPath targetGroup)
         (model.resolveComputationOperandUnchecked declaringGroup targetGroup)
         (model.resolveComputationFieldValueRead declaringGroup targetGroup) operator source).mapError .dateRangeComparison
   | .entityValueList source => .valueList <$> elaborateEntityMembership model declaringGroup targetGroup source

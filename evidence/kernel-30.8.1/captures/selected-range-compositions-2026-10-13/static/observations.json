@@ -1,0 +1,40 @@
+[
+  {
+    "case": "admitted",
+    "admitted": true,
+    "codes": []
+  },
+  {
+    "case": "wrong-kind",
+    "admitted": false,
+    "codes": [
+      "MVK_WRONG_DATE_FORMAT_FOR_OP"
+    ]
+  },
+  {
+    "case": "wrong-key",
+    "admitted": false,
+    "codes": [
+      "MVK_INDEX_TYPE_INCONSISTENT"
+    ]
+  },
+  {
+    "case": "competing",
+    "admitted": false,
+    "codes": [
+      "MVK_INDEX_TYPE_INCONSISTENT"
+    ]
+  },
+  {
+    "case": "bad-literal",
+    "admitted": false,
+    "codes": [
+      "MVK_INDEX_VALUE_INVALID"
+    ]
+  },
+  {
+    "case": "good-literal",
+    "admitted": true,
+    "codes": []
+  }
+]

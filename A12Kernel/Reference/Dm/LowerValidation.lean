@@ -112,9 +112,10 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
     | .compare operator left right =>
         match lowerDateRangeComparison? model rowGroup operator left right with
         | none => []
-        | some (operator, source) => [do
+        | some lowered => [do
+            let (operator, source) ← lowered
             let checked ← elaborated "DateRangeComparison"
-              (elaborateDateRangePredicate model (model.repeatableScopeForGroupPath bindingGroup)
+              (elaborateDateRangePredicate model rowGroup (model.repeatableScopeForGroupPath bindingGroup)
                 (model.resolveFieldDeclarationUnchecked rowGroup)
                 (fun path => checkFieldValueRead (model.resolveFieldDeclarationUnchecked rowGroup path)
                   (model.ruleGroupRead rowGroup bindingGroup path)) operator source)

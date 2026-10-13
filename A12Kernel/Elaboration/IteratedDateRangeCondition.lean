@@ -126,6 +126,12 @@ end IteratedDateRangeConditionElabError
 
 namespace IteratedDateRangeCondition
 
+def constructionEndpoints : IteratedDateRangeCondition model → List (CheckedDateRangeEndpoint model)
+  | .constructionAgainstStored comparison => [comparison.construction.start, comparison.construction.finish]
+  | .constructionAgainstConstruction comparison =>
+      [comparison.left.start, comparison.left.finish, comparison.right.start, comparison.right.finish]
+  | _ => []
+
 /-- Every operand declaration this condition reads, in authored order. -/
 def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDecl
   | .storedEquality comparison =>
@@ -152,15 +158,12 @@ def operandDeclarations : IteratedDateRangeCondition model → List FlatFieldDec
         match operand with
         | .field declaration _ => some declaration
         | _ => none
-  | .constructionAgainstStored comparison =>
-      [comparison.construction.start.checked.declaration,
-        comparison.construction.finish.checked.declaration,
-        comparison.stored.declaration]
-  | .constructionAgainstConstruction comparison =>
-      [comparison.left.start.checked.declaration,
-        comparison.left.finish.checked.declaration,
-        comparison.right.start.checked.declaration,
-        comparison.right.finish.checked.declaration]
+  | condition@(.constructionAgainstStored comparison) =>
+      (condition.constructionEndpoints.filterMap fun endpoint =>
+        if endpoint.selection?.isSome then none else some endpoint.checked.declaration) ++ [comparison.stored.declaration]
+  | condition@(.constructionAgainstConstruction _) =>
+      condition.constructionEndpoints.filterMap fun endpoint =>
+        if endpoint.selection?.isSome then none else some endpoint.checked.declaration
 
 /-- Overlap keeps the authored selection and extent, whose caller scope differs from its payload. -/
 def overlapShape? : IteratedDateRangeCondition model → Option (CheckedFieldEntityShape model)
@@ -172,7 +175,9 @@ def overlapShape? : IteratedDateRangeCondition model → Option (CheckedFieldEnt
 def bindingScopes (condition : IteratedDateRangeCondition model) : List (List RepeatableLevel) :=
   match condition.overlapShape? with
   | some shape => shape.operands.flatMap (·.bindingScopes)
-  | none => condition.operandDeclarations.map (·.repeatableScope)
+  | none => condition.operandDeclarations.map (·.repeatableScope) ++
+      condition.constructionEndpoints.flatMap (fun endpoint =>
+        endpoint.selection?.toList.flatMap (fun selection => selection.val.bindingScopes))
 
 /-- The filters this condition's starred overlap operands carry, in authored order. -/
 def filters : IteratedDateRangeCondition model → List CorrelatedHaving
@@ -205,7 +210,8 @@ def referencesField (condition : IteratedDateRangeCondition model) (field : Fiel
         | .keyed source => source.referencesField field
         | operand => operand.expansionDeclarations.any (·.id == field)
     | none => condition.operandDeclarations.any (·.id == field)) ||
-    condition.filters.any (·.referencesField field)
+    condition.filters.any (·.referencesField field) ||
+    condition.constructionEndpoints.any (·.referencesField field)
 
 /-- Error-field membership includes selected operands and marked filter entities (spec/07 §3).
 Unlike `operandDeclarations`, this gate counts starred and group expansions without binding their
@@ -219,6 +225,7 @@ def referencesErrorField (condition : IteratedDateRangeCondition model)
         source.shape.operands.flatMap ResolvedFieldEntityOperand.expansionDeclarations
     | _ => condition.operandDeclarations
   declarations.any (·.id == field) ||
+    condition.constructionEndpoints.any (·.referencesErrorField field) ||
     condition.filters.any (fun condition => CorrelatedHaving.referencesMarkedEntityField model condition field)
 
 /-- The operands that actually cross a repeatable level. These are the declarations the enclosing
@@ -333,34 +340,19 @@ def verdictOf (condition : IteratedDateRangeCondition model)
         (YearlessDateRangesOverlapEvaluationError.toAddressing
           { field := source.scalar.declaration.id, path := [] })
   | .constructionAgainstStored comparison => do
-      let readAt (declaration : FlatFieldDecl) :
-          Except CheckedAddressingError CheckedCell := do
-        let path ← (outer.pathForScope declaration.repeatableScope).mapError
-          CheckedAddressingError.environment
-        (document.fullValidationRead { field := declaration.id, path }).mapError
-          CheckedAddressingError.document
-      let start ← readAt comparison.construction.start.checked.declaration
-      let finish ← readAt comparison.construction.finish.checked.declaration
+      let construction ← (comparison.construction.evaluateAt .validation document outer).mapError fun
+        | .addressing cause => cause
+        | _ => .operandPayload (address comparison.construction.start.checked.declaration)
       let storedObserved ←
         (comparison.stored.evaluateAt outer .validation document).mapError
-          (DirectDateRangeFault.toAddressing
-            (address comparison.stored.declaration))
-      pure (comparison.verdictOf
-        (comparison.construction.observeAt start finish) storedObserved)
+          (DirectDateRangeFault.toAddressing (address comparison.stored.declaration))
+      pure (comparison.verdictOf construction storedObserved)
   | .constructionAgainstConstruction comparison => do
-      let readAt (declaration : FlatFieldDecl) :
-          Except CheckedAddressingError CheckedCell := do
-        let path ← (outer.pathForScope declaration.repeatableScope).mapError
-          CheckedAddressingError.environment
-        (document.fullValidationRead { field := declaration.id, path }).mapError
-          CheckedAddressingError.document
-      let leftStart ← readAt comparison.left.start.checked.declaration
-      let leftFinish ← readAt comparison.left.finish.checked.declaration
-      let rightStart ← readAt comparison.right.start.checked.declaration
-      let rightFinish ← readAt comparison.right.finish.checked.declaration
-      pure (comparison.verdictOf
-        (comparison.left.observeAt leftStart leftFinish)
-        (comparison.right.observeAt rightStart rightFinish))
+      let read (source : CheckedDateRangeConstruction model) :=
+        (source.evaluateAt .validation document outer).mapError fun
+          | .addressing cause => cause
+          | _ => .operandPayload (address source.start.checked.declaration)
+      pure (comparison.verdictOf (← read comparison.left) (← read comparison.right))
 
 end IteratedDateRangeCondition
 
@@ -435,18 +427,11 @@ def elaborateIteratedBoundPair (model : FlatModel)
     throw (.formatsNotComparable left.components right.components)
 
 
-/-- Resolve one constructed range compared with one stored range, all three operands read at the
-rule's row. Every gate is the scalar carriers' — endpoint kind and profile, the construction's own
-component pair, and the cross-operand component match — and only the operand locus widens. -/
-def elaborateConstructionStoredComparisonIn (model : FlatModel)
-    (scope : List RepeatableLevel)
-    (start finish stored : FieldId) (position : DateRangeConstructionPosition)
-    (comparison : EqualityOp) :
-    Except IteratedDateRangeConditionElabError
-      (CheckedIteratedConstructionStoredComparison model) := do
-  let construction ←
-    (elaborateDateRangeConstructionIn model scope start finish).mapError
-      .construction
+/-- Certify the shared construction/stored component boundary after endpoint selection. -/
+def checkConstructionStoredComparisonIn (model : FlatModel) (scope : List RepeatableLevel)
+    (construction : CheckedDateRangeConstruction model) (stored : FieldId)
+    (position : DateRangeConstructionPosition) (comparison : EqualityOp) :
+    Except IteratedDateRangeConditionElabError (CheckedIteratedConstructionStoredComparison model) := do
   let storedSource ←
     (elaborateDateRangeSourceIn model scope stored).mapError .storedOperand
   if hComponents :
@@ -460,6 +445,20 @@ def elaborateConstructionStoredComparisonIn (model : FlatModel)
   else
     throw (.constructionComponentMismatch construction.start.format
       storedSource.format)
+
+/-- Resolve one constructed range compared with one stored range, all three operands read at the
+rule's row. Every gate is the scalar carriers' — endpoint kind and profile, the construction's own
+component pair, and the cross-operand component match — and only the operand locus widens. -/
+def elaborateConstructionStoredComparisonIn (model : FlatModel)
+    (scope : List RepeatableLevel)
+    (start finish stored : FieldId) (position : DateRangeConstructionPosition)
+    (comparison : EqualityOp) :
+    Except IteratedDateRangeConditionElabError
+      (CheckedIteratedConstructionStoredComparison model) := do
+  let construction ←
+    (elaborateDateRangeConstructionIn model scope start finish).mapError
+      .construction
+  checkConstructionStoredComparisonIn model scope construction stored position comparison
 
 def elaborateIteratedConstructionStoredComparison (model : FlatModel)
     (scope : List RepeatableLevel) (start finish stored : FieldId)

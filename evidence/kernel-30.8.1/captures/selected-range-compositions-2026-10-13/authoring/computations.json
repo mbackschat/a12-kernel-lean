@@ -1,0 +1,182 @@
+[
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "LastDayComp",
+    "computedField": "/Form/LastDay",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "MonthFromDate(EndOfDateRange(NumbersField))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "StringsLiteralComp",
+    "computedField": "/Form/StringsLiteral",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "DateRange(Strings/Start For \"b\",Strings/Finish For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "StringsFieldComp",
+    "computedField": "/Form/StringsField",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "DateRange(Strings/Start For StringsKeyStart,Strings/Finish For StringsKeyFinish)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "NumbersLiteralComp",
+    "computedField": "/Form/NumbersLiteral",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "DateRange(Numbers/Start For \"2\",Numbers/Finish For \"1\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "NumbersFieldComp",
+    "computedField": "/Form/NumbersField",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "DateRange(Numbers/Start For NumbersKeyStart,Numbers/Finish For NumbersKeyFinish)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "DirectComp",
+    "computedField": "/Form/Direct",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "DateRange(DirectStart,DirectFinish)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "DaysComp",
+    "computedField": "/Form/Days",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(AddDays(BaseYear,1),AddDays(BaseYear,2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "MonthsComp",
+    "computedField": "/Form/Months",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "DifferenceInMonths(AddMonths(BaseYear,1),AddMonths(BaseYear,2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "YearsComp",
+    "computedField": "/Form/Years",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "DifferenceInYears(AddYears(BaseYear,1),AddYears(BaseYear,2))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "NestedComp",
+    "computedField": "/Form/Nested",
+    "group": "/Form",
+    "alternatives": [
+      {
+        "operation": "DifferenceInDays(AddDays(BaseYear,DifferenceInDays(BaseYear,AddDays(BaseYear,2))),AddDays(BaseYear,3))"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  }
+]

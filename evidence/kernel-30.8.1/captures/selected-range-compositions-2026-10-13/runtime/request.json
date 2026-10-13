@@ -1,0 +1,358 @@
+{
+  "model": "Selection_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "ordinary",
+      "documentInline": {
+        "Form": {
+          "DirectStart": "2024-01",
+          "DirectFinish": "2024-06",
+          "Direct": "2000-01/2000-02",
+          "Strings": [
+            {
+              "Id": "a",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "b",
+              "Start": "2024-02",
+              "Finish": "2024-03"
+            }
+          ],
+          "StringsKeyStart": "b",
+          "StringsKeyFinish": "a",
+          "StringsLiteral": "2000-01/2000-02",
+          "StringsField": "2000-01/2000-02",
+          "Numbers": [
+            {
+              "Id": "1",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "2",
+              "Start": "2024-02",
+              "Finish": "2024-03"
+            }
+          ],
+          "NumbersKeyStart": "2",
+          "NumbersKeyFinish": "1",
+          "NumbersLiteral": "2024-02/2024-06",
+          "NumbersField": "2000-01/2000-02",
+          "Days": "99",
+          "Months": "99",
+          "Years": "99",
+          "Nested": "99",
+          "LastDay": "99",
+          "Mixed": "99",
+          "Pair": "99",
+          "MixedNext": "99",
+          "PairNext": "99"
+        }
+      }
+    },
+    {
+      "name": "missing",
+      "documentInline": {
+        "Form": {
+          "DirectStart": "2024-01",
+          "DirectFinish": "2024-06",
+          "Direct": "2000-01/2000-02",
+          "Strings": [
+            {
+              "Id": "a",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            }
+          ],
+          "StringsKeyStart": "b",
+          "StringsKeyFinish": "a",
+          "StringsLiteral": "2000-01/2000-02",
+          "StringsField": "2000-01/2000-02",
+          "Numbers": [
+            {
+              "Id": "1",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            }
+          ],
+          "NumbersKeyStart": "2",
+          "NumbersKeyFinish": "1",
+          "NumbersLiteral": "2024-02/2024-06",
+          "NumbersField": "2000-01/2000-02",
+          "Days": "99",
+          "Months": "99",
+          "Years": "99",
+          "Nested": "99",
+          "LastDay": "99",
+          "Mixed": "99",
+          "Pair": "99",
+          "MixedNext": "99",
+          "PairNext": "99"
+        }
+      }
+    },
+    {
+      "name": "duplicate",
+      "documentInline": {
+        "Form": {
+          "DirectStart": "2024-01",
+          "DirectFinish": "2024-06",
+          "Direct": "2000-01/2000-02",
+          "Strings": [
+            {
+              "Id": "b",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "b",
+              "Start": "2024-02",
+              "Finish": "2024-03"
+            }
+          ],
+          "StringsKeyStart": "b",
+          "StringsKeyFinish": "a",
+          "StringsLiteral": "2000-01/2000-02",
+          "StringsField": "2000-01/2000-02",
+          "Numbers": [
+            {
+              "Id": "2",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "2",
+              "Start": "2024-02",
+              "Finish": "2024-03"
+            }
+          ],
+          "NumbersKeyStart": "2",
+          "NumbersKeyFinish": "1",
+          "NumbersLiteral": "2024-02/2024-06",
+          "NumbersField": "2000-01/2000-02",
+          "Days": "99",
+          "Months": "99",
+          "Years": "99",
+          "Nested": "99",
+          "LastDay": "99",
+          "Mixed": "99",
+          "Pair": "99",
+          "MixedNext": "99",
+          "PairNext": "99"
+        }
+      }
+    },
+    {
+      "name": "selected-invalid",
+      "documentInline": {
+        "Form": {
+          "DirectStart": "2024-01",
+          "DirectFinish": "2024-06",
+          "Direct": "2000-01/2000-02",
+          "Strings": [
+            {
+              "Id": "a",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "b",
+              "Start": "bad",
+              "Finish": "2024-03"
+            }
+          ],
+          "StringsKeyStart": "b",
+          "StringsKeyFinish": "a",
+          "StringsLiteral": "2000-01/2000-02",
+          "StringsField": "2000-01/2000-02",
+          "Numbers": [
+            {
+              "Id": "1",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "2",
+              "Start": "bad",
+              "Finish": "2024-03"
+            }
+          ],
+          "NumbersKeyStart": "2",
+          "NumbersKeyFinish": "1",
+          "NumbersLiteral": "2024-02/2024-06",
+          "NumbersField": "2000-01/2000-02",
+          "Days": "99",
+          "Months": "99",
+          "Years": "99",
+          "Nested": "99",
+          "LastDay": "99",
+          "Mixed": "99",
+          "Pair": "99",
+          "MixedNext": "99",
+          "PairNext": "99"
+        }
+      }
+    },
+    {
+      "name": "unselected-invalid",
+      "documentInline": {
+        "Form": {
+          "DirectStart": "2024-01",
+          "DirectFinish": "2024-06",
+          "Direct": "2000-01/2000-02",
+          "Strings": [
+            {
+              "Id": "a",
+              "Start": "bad",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "b",
+              "Start": "2024-02",
+              "Finish": "2024-03"
+            }
+          ],
+          "StringsKeyStart": "b",
+          "StringsKeyFinish": "a",
+          "StringsLiteral": "2000-01/2000-02",
+          "StringsField": "2000-01/2000-02",
+          "Numbers": [
+            {
+              "Id": "1",
+              "Start": "bad",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "2",
+              "Start": "2024-02",
+              "Finish": "2024-03"
+            }
+          ],
+          "NumbersKeyStart": "2",
+          "NumbersKeyFinish": "1",
+          "NumbersLiteral": "2024-02/2024-06",
+          "NumbersField": "2000-01/2000-02",
+          "Days": "99",
+          "Months": "99",
+          "Years": "99",
+          "Nested": "99",
+          "LastDay": "99",
+          "Mixed": "99",
+          "Pair": "99",
+          "MixedNext": "99",
+          "PairNext": "99"
+        }
+      }
+    },
+    {
+      "name": "selected-empty",
+      "documentInline": {
+        "Form": {
+          "DirectStart": "2024-01",
+          "DirectFinish": "2024-06",
+          "Direct": "2000-01/2000-02",
+          "Strings": [
+            {
+              "Id": "a",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "b",
+              "Start": "",
+              "Finish": "2024-03"
+            }
+          ],
+          "StringsKeyStart": "b",
+          "StringsKeyFinish": "a",
+          "StringsLiteral": "2000-01/2000-02",
+          "StringsField": "2000-01/2000-02",
+          "Numbers": [
+            {
+              "Id": "1",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "2",
+              "Start": "",
+              "Finish": "2024-03"
+            }
+          ],
+          "NumbersKeyStart": "2",
+          "NumbersKeyFinish": "1",
+          "NumbersLiteral": "2024-02/2024-06",
+          "NumbersField": "2000-01/2000-02",
+          "Days": "99",
+          "Months": "99",
+          "Years": "99",
+          "Nested": "99",
+          "LastDay": "99",
+          "Mixed": "99",
+          "Pair": "99",
+          "MixedNext": "99",
+          "PairNext": "99"
+        }
+      }
+    },
+    {
+      "name": "empty-key",
+      "documentInline": {
+        "Form": {
+          "DirectStart": "2024-01",
+          "DirectFinish": "2024-06",
+          "Direct": "2000-01/2000-02",
+          "Strings": [
+            {
+              "Id": "a",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "b",
+              "Start": "2024-02",
+              "Finish": "2024-03"
+            }
+          ],
+          "StringsKeyStart": "",
+          "StringsKeyFinish": "a",
+          "StringsLiteral": "2000-01/2000-02",
+          "StringsField": "2000-01/2000-02",
+          "Numbers": [
+            {
+              "Id": "1",
+              "Start": "2024-01",
+              "Finish": "2024-06"
+            },
+            {
+              "Id": "2",
+              "Start": "2024-02",
+              "Finish": "2024-03"
+            }
+          ],
+          "NumbersKeyStart": "",
+          "NumbersKeyFinish": "1",
+          "NumbersLiteral": "2024-02/2024-06",
+          "NumbersField": "2000-01/2000-02",
+          "Days": "99",
+          "Months": "99",
+          "Years": "99",
+          "Nested": "99",
+          "LastDay": "99",
+          "Mixed": "99",
+          "Pair": "99",
+          "MixedNext": "99",
+          "PairNext": "99"
+        }
+      }
+    }
+  ]
+}

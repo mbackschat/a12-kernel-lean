@@ -1,0 +1,4662 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Selection_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "ordinary",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedRule",
+              "field": "Form/NumbersKeyStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/NumbersKeyFinish",
+                "Form/NumbersKeyStart",
+                "Form/NumbersLiteral",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumbersFieldComp",
+              "field": "Form/NumbersField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/NumbersField",
+                "Form/NumbersKeyFinish",
+                "Form/NumbersKeyStart",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairComp",
+              "field": "Form/Pair",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start",
+                "Form/Pair",
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairRule",
+              "field": "Form/StringsKeyStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start",
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsKeyStart",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "StringsFieldComp",
+              "field": "Form/StringsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsField",
+                "Form/StringsKeyFinish",
+                "Form/StringsKeyStart",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "StringsLiteralComp",
+              "field": "Form/StringsLiteral",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsLiteral",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "value": "6"
+              },
+              {
+                "field": "Form/Mixed",
+                "value": "1"
+              },
+              {
+                "field": "Form/MixedNext",
+                "value": "2"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Pair",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsField",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": 6,
+                "Mixed": 1,
+                "MixedNext": 2,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": "2024-02/2024-06",
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": "2024-02/2024-06",
+                "Pair": 1,
+                "PairNext": 2,
+                "StringsField": "2024-02/2024-06",
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": "2024-02/2024-06",
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": "2024-02"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": "2024-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedRule",
+              "field": "Form/NumbersKeyStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/NumbersKeyFinish",
+                "Form/NumbersKeyStart",
+                "Form/NumbersLiteral",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumbersFieldComp",
+              "field": "Form/NumbersField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/NumbersField",
+                "Form/NumbersKeyFinish",
+                "Form/NumbersKeyStart",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairComp",
+              "field": "Form/Pair",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start",
+                "Form/Pair",
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairRule",
+              "field": "Form/StringsKeyStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start",
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsKeyStart",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "StringsFieldComp",
+              "field": "Form/StringsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsField",
+                "Form/StringsKeyFinish",
+                "Form/StringsKeyStart",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "StringsLiteralComp",
+              "field": "Form/StringsLiteral",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsLiteral",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "value": "6"
+              },
+              {
+                "field": "Form/Mixed",
+                "value": "1"
+              },
+              {
+                "field": "Form/MixedNext",
+                "value": "2"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Pair",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsField",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": 6,
+                "Mixed": 1,
+                "MixedNext": 2,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": "2024-02/2024-06",
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": "2024-02/2024-06",
+                "Pair": 1,
+                "PairNext": 2,
+                "StringsField": "2024-02/2024-06",
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": "2024-02/2024-06",
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": "2024-02"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": "2024-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "missing",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "value": "0"
+              },
+              {
+                "field": "Form/MixedNext",
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "value": "1"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": 0,
+                "Mixed": null,
+                "MixedNext": 1,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": null,
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": null,
+                "Pair": null,
+                "PairNext": 1,
+                "StringsField": null,
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": null,
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "2024-01"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "2024-01"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "value": "0"
+              },
+              {
+                "field": "Form/MixedNext",
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "value": "1"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": 0,
+                "Mixed": null,
+                "MixedNext": 1,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": null,
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": null,
+                "Pair": null,
+                "PairNext": 1,
+                "StringsField": null,
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": null,
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "2024-01"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "2024-01"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "duplicate",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Numbers/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Numbers[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers[2]/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Strings/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Strings[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Numbers/Id",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Numbers/Id"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Numbers[2]/Id",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Numbers[2]/Id"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Strings/Id",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Strings/Id"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Strings[2]/Id",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Strings[2]/Id"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": null,
+                "Mixed": null,
+                "MixedNext": null,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": null,
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": null,
+                "Pair": null,
+                "PairNext": null,
+                "StringsField": null,
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": null,
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 2,
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": "2024-02"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "b",
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": "2024-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Numbers/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Numbers[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers[2]/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Strings/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Id"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "Form/Strings[2]/Id",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings[2]/Id"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Numbers/Id",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Numbers/Id"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Numbers[2]/Id",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Numbers[2]/Id"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Strings/Id",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Strings/Id"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "uniqueIndex",
+                "field": "Form/Strings[2]/Id",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Strings[2]/Id"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": null,
+                "Mixed": null,
+                "MixedNext": null,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": null,
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": null,
+                "Pair": null,
+                "PairNext": null,
+                "StringsField": null,
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": null,
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 2,
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": "2024-02"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "b",
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": "2024-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "selected-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Numbers[2]/Start",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Strings[2]/Start",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Numbers[2]/Start",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Numbers[2]/Start"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Strings[2]/Start",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Strings[2]/Start"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": null,
+                "Mixed": null,
+                "MixedNext": null,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": null,
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": null,
+                "Pair": null,
+                "PairNext": null,
+                "StringsField": null,
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": null,
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": "bad"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": "bad"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Numbers[2]/Start",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Strings[2]/Start",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Numbers[2]/Start",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Numbers[2]/Start"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Strings[2]/Start",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Strings[2]/Start"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": null,
+                "Mixed": null,
+                "MixedNext": null,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": null,
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": null,
+                "Pair": null,
+                "PairNext": null,
+                "StringsField": null,
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": null,
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": "bad"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": "bad"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "unselected-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedRule",
+              "field": "Form/NumbersKeyStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/NumbersKeyFinish",
+                "Form/NumbersKeyStart",
+                "Form/NumbersLiteral",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumbersFieldComp",
+              "field": "Form/NumbersField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/NumbersField",
+                "Form/NumbersKeyFinish",
+                "Form/NumbersKeyStart",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairComp",
+              "field": "Form/Pair",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start",
+                "Form/Pair",
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairRule",
+              "field": "Form/StringsKeyStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start",
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsKeyStart",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "StringsFieldComp",
+              "field": "Form/StringsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsField",
+                "Form/StringsKeyFinish",
+                "Form/StringsKeyStart",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "StringsLiteralComp",
+              "field": "Form/StringsLiteral",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsLiteral",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Numbers/Start",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Strings/Start",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Numbers/Start",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Numbers/Start"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Strings/Start",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Strings/Start"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "value": "6"
+              },
+              {
+                "field": "Form/Mixed",
+                "value": "1"
+              },
+              {
+                "field": "Form/MixedNext",
+                "value": "2"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Pair",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsField",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": 6,
+                "Mixed": 1,
+                "MixedNext": 2,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": "2024-02/2024-06",
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": "2024-02/2024-06",
+                "Pair": 1,
+                "PairNext": 2,
+                "StringsField": "2024-02/2024-06",
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": "2024-02/2024-06",
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "bad"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": "2024-02"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "bad"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": "2024-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedRule",
+              "field": "Form/NumbersKeyStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/NumbersKeyFinish",
+                "Form/NumbersKeyStart",
+                "Form/NumbersLiteral",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumbersFieldComp",
+              "field": "Form/NumbersField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/NumbersField",
+                "Form/NumbersKeyFinish",
+                "Form/NumbersKeyStart",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairComp",
+              "field": "Form/Pair",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start",
+                "Form/Pair",
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairRule",
+              "field": "Form/StringsKeyStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start",
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsKeyStart",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "StringsFieldComp",
+              "field": "Form/StringsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsField",
+                "Form/StringsKeyFinish",
+                "Form/StringsKeyStart",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "StringsLiteralComp",
+              "field": "Form/StringsLiteral",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsLiteral",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Numbers/Start",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Strings/Start",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Start"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Numbers/Start",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Numbers/Start"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Strings/Start",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Strings/Start"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "value": "6"
+              },
+              {
+                "field": "Form/Mixed",
+                "value": "1"
+              },
+              {
+                "field": "Form/MixedNext",
+                "value": "2"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Pair",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsField",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": 6,
+                "Mixed": 1,
+                "MixedNext": 2,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": "2024-02/2024-06",
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": "2024-02/2024-06",
+                "Pair": 1,
+                "PairNext": 2,
+                "StringsField": "2024-02/2024-06",
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": "2024-02/2024-06",
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "bad"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": "2024-02"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "bad"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": "2024-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "selected-empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "value": "0"
+              },
+              {
+                "field": "Form/MixedNext",
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "value": "1"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": 0,
+                "Mixed": null,
+                "MixedNext": 1,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": null,
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": null,
+                "Pair": null,
+                "PairNext": 1,
+                "StringsField": null,
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": null,
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": null
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "value": "0"
+              },
+              {
+                "field": "Form/MixedNext",
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "value": "1"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": 0,
+                "Mixed": null,
+                "MixedNext": 1,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": null,
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": 2,
+                "NumbersLiteral": null,
+                "Pair": null,
+                "PairNext": 1,
+                "StringsField": null,
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "b",
+                "StringsLiteral": null,
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": null
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": null
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-key",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairComp",
+              "field": "Form/Pair",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start",
+                "Form/Pair",
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "StringsLiteralComp",
+              "field": "Form/StringsLiteral",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsLiteral",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "value": "0"
+              },
+              {
+                "field": "Form/MixedNext",
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Pair",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": 0,
+                "Mixed": null,
+                "MixedNext": 1,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": null,
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": null,
+                "NumbersLiteral": "2024-02/2024-06",
+                "Pair": 1,
+                "PairNext": 2,
+                "StringsField": null,
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "",
+                "StringsLiteral": "2024-02/2024-06",
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": "2024-02"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": "2024-02"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DaysComp",
+              "field": "Form/Days",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Days"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DirectComp",
+              "field": "Form/Direct",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Direct",
+                "Form/DirectFinish",
+                "Form/DirectStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LastDayComp",
+              "field": "Form/LastDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/LastDay",
+                "Form/NumbersField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedNextComp",
+              "field": "Form/MixedNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Mixed",
+                "Form/MixedNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthsComp",
+              "field": "Form/Months",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Months"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedComp",
+              "field": "Form/Nested",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Nested"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairComp",
+              "field": "Form/Pair",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Numbers/Finish",
+                "Form/Numbers/Id",
+                "Form/Numbers[2]/Id",
+                "Form/Numbers[2]/Start",
+                "Form/Pair",
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PairNextComp",
+              "field": "Form/PairNext",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pair",
+                "Form/PairNext"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "StringsLiteralComp",
+              "field": "Form/StringsLiteral",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Strings/Finish",
+                "Form/Strings/Id",
+                "Form/StringsLiteral",
+                "Form/Strings[2]/Id",
+                "Form/Strings[2]/Start"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearsComp",
+              "field": "Form/Years",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Years"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Days",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Mixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MixedNext",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Pair",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Days",
+                "value": "1"
+              },
+              {
+                "field": "Form/Direct",
+                "value": "2024-01/2024-06"
+              },
+              {
+                "field": "Form/LastDay",
+                "value": "0"
+              },
+              {
+                "field": "Form/MixedNext",
+                "value": "1"
+              },
+              {
+                "field": "Form/Months",
+                "value": "1"
+              },
+              {
+                "field": "Form/Nested",
+                "value": "1"
+              },
+              {
+                "field": "Form/NumbersLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Pair",
+                "value": "1"
+              },
+              {
+                "field": "Form/PairNext",
+                "value": "2"
+              },
+              {
+                "field": "Form/StringsLiteral",
+                "value": "2024-02/2024-06"
+              },
+              {
+                "field": "Form/Years",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Days": 1,
+                "Direct": "2024-01/2024-06",
+                "DirectFinish": "2024-06",
+                "DirectStart": "2024-01",
+                "LastDay": 0,
+                "Mixed": null,
+                "MixedNext": 1,
+                "Months": 1,
+                "Nested": 1,
+                "NumbersField": null,
+                "NumbersKeyFinish": 1,
+                "NumbersKeyStart": null,
+                "NumbersLiteral": "2024-02/2024-06",
+                "Pair": 1,
+                "PairNext": 2,
+                "StringsField": null,
+                "StringsKeyFinish": "a",
+                "StringsKeyStart": "",
+                "StringsLiteral": "2024-02/2024-06",
+                "Years": 1,
+                "Numbers": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": 1,
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": 2,
+                    "Start": "2024-02"
+                  }
+                ],
+                "Strings": [
+                  {
+                    "Finish": "2024-06",
+                    "Id": "a",
+                    "Start": "2024-01"
+                  },
+                  {
+                    "Finish": "2024-03",
+                    "Id": "b",
+                    "Start": "2024-02"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

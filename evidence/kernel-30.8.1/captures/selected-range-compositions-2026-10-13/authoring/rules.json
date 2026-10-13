@@ -1,0 +1,86 @@
+[
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Form",
+    "field": "/Form/NumbersKeyStart",
+    "code": "MixedRule",
+    "condition": "FieldFilled(NumbersKeyStart) And (DateRange(Numbers/Start For NumbersKeyStart,Numbers/Finish For NumbersKeyFinish) == [NumbersLiteral])",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "MixedNext",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Form",
+    "name": "MixedNextComp",
+    "computedField": "/Form/MixedNext",
+    "alternatives": [
+      {
+        "operation": "[Mixed]+1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Form",
+    "field": "/Form/StringsKeyStart",
+    "code": "PairRule",
+    "condition": "FieldFilled(StringsKeyStart) And (DateRange(Numbers/Start For \"2\",Numbers/Finish For \"1\") == DateRange(Strings/Start For \"b\",Strings/Finish For \"a\"))",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "PairNext",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Form",
+    "name": "PairNextComp",
+    "computedField": "/Form/PairNext",
+    "alternatives": [
+      {
+        "operation": "[Pair]+1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  }
+]

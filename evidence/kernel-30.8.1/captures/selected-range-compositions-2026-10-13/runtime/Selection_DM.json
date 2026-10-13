@@ -1,0 +1,704 @@
+{
+  "header": {
+    "id": "Selection_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "Selection_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false,
+      "baseYear": "2024"
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Group",
+                "id": "/Form/Strings",
+                "name": "Strings",
+                "Group": {
+                  "repeatability": 3,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/Strings/Id",
+                      "name": "Id",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Strings/Start",
+                      "name": "Start",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Strings/Finish",
+                      "name": "Finish",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "indexFieldName": "Id"
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/StringsKeyStart",
+                "name": "StringsKeyStart",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/StringsKeyFinish",
+                "name": "StringsKeyFinish",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/StringsLiteral",
+                "name": "StringsLiteral",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy-MM",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/StringsField",
+                "name": "StringsField",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy-MM",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Form/Numbers",
+                "name": "Numbers",
+                "Group": {
+                  "repeatability": 3,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/Numbers/Id",
+                      "name": "Id",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Numbers/Start",
+                      "name": "Start",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Numbers/Finish",
+                      "name": "Finish",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "indexFieldName": "Id"
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/NumbersKeyStart",
+                "name": "NumbersKeyStart",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/NumbersKeyFinish",
+                "name": "NumbersKeyFinish",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/NumbersLiteral",
+                "name": "NumbersLiteral",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy-MM",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/NumbersField",
+                "name": "NumbersField",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy-MM",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/DirectStart",
+                "name": "DirectStart",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/DirectFinish",
+                "name": "DirectFinish",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Direct",
+                "name": "Direct",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy-MM",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Days",
+                "name": "Days",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Months",
+                "name": "Months",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Years",
+                "name": "Years",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Nested",
+                "name": "Nested",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/LastDay",
+                "name": "LastDay",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/LastDayComp",
+                "name": "LastDayComp",
+                "Computation": {
+                  "computedFieldRelPath": "../LastDay",
+                  "computationAlternatives": [
+                    {
+                      "operation": "MonthFromDate(EndOfDateRange(NumbersField))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/StringsLiteralComp",
+                "name": "StringsLiteralComp",
+                "Computation": {
+                  "computedFieldRelPath": "../StringsLiteral",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateRange(Strings/Start For \"b\",Strings/Finish For \"a\")"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/StringsFieldComp",
+                "name": "StringsFieldComp",
+                "Computation": {
+                  "computedFieldRelPath": "../StringsField",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateRange(Strings/Start For StringsKeyStart,Strings/Finish For StringsKeyFinish)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/NumbersLiteralComp",
+                "name": "NumbersLiteralComp",
+                "Computation": {
+                  "computedFieldRelPath": "../NumbersLiteral",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateRange(Numbers/Start For \"2\",Numbers/Finish For \"1\")"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/NumbersFieldComp",
+                "name": "NumbersFieldComp",
+                "Computation": {
+                  "computedFieldRelPath": "../NumbersField",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateRange(Numbers/Start For NumbersKeyStart,Numbers/Finish For NumbersKeyFinish)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/DirectComp",
+                "name": "DirectComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Direct",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateRange(DirectStart,DirectFinish)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/DaysComp",
+                "name": "DaysComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Days",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DifferenceInDays(AddDays(BaseYear,1),AddDays(BaseYear,2))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MonthsComp",
+                "name": "MonthsComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Months",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DifferenceInMonths(AddMonths(BaseYear,1),AddMonths(BaseYear,2))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YearsComp",
+                "name": "YearsComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Years",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DifferenceInYears(AddYears(BaseYear,1),AddYears(BaseYear,2))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/NestedComp",
+                "name": "NestedComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Nested",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DifferenceInDays(AddDays(BaseYear,DifferenceInDays(BaseYear,AddDays(BaseYear,2))),AddDays(BaseYear,3))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Mixed",
+                "name": "Mixed",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MixedComp",
+                "name": "MixedComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Mixed",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "DateRange(Numbers/Start For NumbersKeyStart,Numbers/Finish For NumbersKeyFinish) == [NumbersField]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Pair",
+                "name": "Pair",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/PairComp",
+                "name": "PairComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Pair",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "DateRange(Numbers/Start For \"2\",Numbers/Finish For \"1\") == DateRange(Strings/Start For \"b\",Strings/Finish For \"a\")"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MixedRule",
+                "name": "MixedRule",
+                "Rule": {
+                  "errorEntityRelPath": "../NumbersKeyStart",
+                  "errorCode": "MixedRule",
+                  "errorCondition": "FieldFilled(NumbersKeyStart) And (DateRange(Numbers/Start For NumbersKeyStart,Numbers/Finish For NumbersKeyFinish) == [NumbersLiteral])",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MixedNext",
+                "name": "MixedNext",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MixedNextComp",
+                "name": "MixedNextComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MixedNext",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Mixed]+1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/PairRule",
+                "name": "PairRule",
+                "Rule": {
+                  "errorEntityRelPath": "../StringsKeyStart",
+                  "errorCode": "PairRule",
+                  "errorCondition": "FieldFilled(StringsKeyStart) And (DateRange(Numbers/Start For \"2\",Numbers/Finish For \"1\") == DateRange(Strings/Start For \"b\",Strings/Finish For \"a\"))",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/PairNext",
+                "name": "PairNext",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/PairNextComp",
+                "name": "PairNextComp",
+                "Computation": {
+                  "computedFieldRelPath": "../PairNext",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Pair]+1"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

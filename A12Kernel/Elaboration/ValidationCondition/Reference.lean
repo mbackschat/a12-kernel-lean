@@ -667,8 +667,11 @@ def ValidationConditionLeaf.referencePointers (environment : Env)
       | some shape =>
           if !condition.filters.isEmpty then .error .filteredStarOperand else
             entityShapePointers shape environment inputs
-      | none => condition.operandDeclarations.mapM fun declaration =>
-          concreteFieldPointer declaration environment
+      | none => do
+          let direct ← condition.operandDeclarations.mapM fun declaration => concreteFieldPointer declaration environment
+          let selected ← condition.constructionEndpoints.filterMap (fun endpoint => endpoint.selection?.map (·.val)) |>.mapM fun selection =>
+            selection.referencePointers environment inputs
+          pure (direct ++ selected.flatten)
   | .constructedDateValidity _ source =>
       temporalExpressionPointers source.scalarCore environment inputs
   | .indexedCustomFieldValidity source => source.source.selection.referencePointers environment inputs

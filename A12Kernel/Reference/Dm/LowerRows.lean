@@ -139,10 +139,10 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
   if target.policy.kind == .dateRange then
     let .call "DateRange" [.mk start none, .mk finish none] none none := expression
       | refuse "DateRange" "constructor operands"
-    let some start := start.fieldEntity? | refuse "DateRange" "start operand"
-    let some finish := finish.fieldEntity? | refuse "DateRange" "finish operand"
+    let start ← lowerDateRangeEndpoint model group start
+    let finish ← lowerDateRangeEndpoint model group finish
     return .dateRangeConstruction (← elaborated "DateRange"
-      (checkBoundDateRangeConstructionComputation model group target.id start finish))
+      (checkBoundDateRangeConstructionSources model group target.id start finish))
   if target.temporalTargetPolicy.isSome then
     if let .string literal := expression then
       if let some source := authoredDateLiteral? literal then

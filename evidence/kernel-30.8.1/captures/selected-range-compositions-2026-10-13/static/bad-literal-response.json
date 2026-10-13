@@ -1,0 +1,64 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "rejected",
+  "ok": false,
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "<redacted>",
+  "data": {
+    "ops": 2,
+    "committed": false,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "<redacted>",
+        "changed": {
+          "added": "/Form/Probe",
+          "kind": "DATE_RANGE"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "computation",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "<redacted>",
+        "changed": {
+          "computation": "/Form/ProbeComp"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "model",
+        "op": "validate",
+        "outcome": "rejected",
+        "ok": false,
+        "valid": false,
+        "verification": "KERNEL_CONFIRMED",
+        "summary": "<redacted>",
+        "diagnostics": [
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_INDEX_VALUE_INVALID",
+            "summary": "<redacted>",
+            "where": {
+              "rule": "/Form/ProbeComp"
+            }
+          }
+        ],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

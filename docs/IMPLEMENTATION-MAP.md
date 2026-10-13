@@ -208,8 +208,10 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Checked DateRange declaration and admission](implementation/date-range.md#cap-date-range-checked-declaration)
 <a id="cap-date-range-construction-computation"></a>
 - [Direct DateRange construction computation](implementation/date-range.md#cap-date-range-construction-computation)
+<a id="cap-selected-date-range-composition"></a>
+- [Selected endpoints in ordinary DateRange constructors and comparisons](implementation/date-range.md#cap-selected-date-range-composition)
 <a id="cap-indexed-date-range-construction-computation"></a>
-- [String-keyed DateRange construction computation](implementation/date-range.md#cap-indexed-date-range-construction-computation)
+- [Legacy bounded String-keyed DateRange construction API](implementation/date-range.md#cap-indexed-date-range-construction-computation)
 <a id="cap-checked-date-range-bound"></a>
 - [Checked direct DateRange bound extraction, fixed-Date comparison, and components](implementation/date-range.md#cap-checked-date-range-bound)
 <a id="cap-stored-date-range-equality"></a>

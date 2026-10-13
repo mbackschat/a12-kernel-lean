@@ -707,7 +707,7 @@ example : (do
     let operation ← (checkBoundDateRangeConstructionComputation model ["Order"] target.id
       { base := .relative 0, groups := [], field := "Start" }
       { base := .relative 0, groups := [], field := "Finish" }).toOption
-    operation.evaluateWith (fun _ => { rawPresent := true, parsed := none, findings := [.required] }) |>.toOption) =
+    operation.evaluateWith { read := fun _ => { rawPresent := true, parsed := none, findings := [.required] } } |>.toOption) =
       some .noValue := by native_decide
 
 end A12Kernel.Conformance.DateRangeConstructionComputation

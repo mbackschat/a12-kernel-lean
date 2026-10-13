@@ -1,0 +1,31 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Probe",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "name": "ProbeComp",
+    "group": "/Form",
+    "computedField": "/Form/Probe",
+    "alternatives": [
+      {
+        "operation": "DateRange(Numbers/Start For NumbersKeyStart,Numbers/Finish For \"1\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  }
+]

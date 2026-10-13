@@ -170,30 +170,37 @@ structure CheckedBoundDateRangeConstructionComputation (model : FlatModel) where
     construction.start.format target.format = some format
 
 /-- Resolve authored endpoints at the lexical group and bind their reads at the target (spec/05, spec/09). -/
-def checkBoundDateRangeConstructionComputation (model : FlatModel) (group : GroupPath)
-    (targetField : FieldId) (start finish : SurfaceFieldPath) :
+def checkBoundDateRangeConstructionSources (model : FlatModel) (group : GroupPath)
+    (targetField : FieldId) (start finish : SurfaceDateRangeEndpoint) :
     Except BoundDateRangeConstructionElabError (CheckedBoundDateRangeConstructionComputation model) := do
   let declaration ← (model.lookupUniqueId targetField).mapError .resolve
   if !GroupPath.isValid group then throw (.resolve (.invalidRuleGroup group))
   if !declaration.repeatableScope.isEmpty then
     let _ ← (checkAddressedRepeatableTarget model group targetField).mapError .placement
-  let start ← (model.resolveFieldDeclarationUnchecked group start).mapError .resolve
-  let finish ← (model.resolveFieldDeclarationUnchecked group finish).mapError .resolve
-  let construction ← (elaborateDateRangeConstructionIn model declaration.repeatableScope start.id finish.id).mapError .construction
+  let start ← (elaborateDateRangeEndpointSource model group declaration.repeatableScope start).mapError
+    (BoundDateRangeConstructionElabError.construction ∘ DateRangeConstructionElabError.start)
+  let finish ← (elaborateDateRangeEndpointSource model group declaration.repeatableScope finish).mapError
+    (BoundDateRangeConstructionElabError.construction ∘ DateRangeConstructionElabError.finish)
+  let construction ← (checkDateRangeConstructionEndpoints start finish).mapError .construction
   let target ← (elaborateDateRangeSourceIn model declaration.repeatableScope targetField).mapError .target
   match owned : DateRangeConstructionTargetFormat.ofProfiles? construction.start.format target.format with
   | none => throw .profileMismatch
   | some format => pure { construction, target, format, profileOwned := owned }
 
+def checkBoundDateRangeConstructionComputation (model : FlatModel) (group : GroupPath)
+    (targetField : FieldId) (start finish : SurfaceFieldPath) :
+    Except BoundDateRangeConstructionElabError (CheckedBoundDateRangeConstructionComputation model) :=
+  checkBoundDateRangeConstructionSources model group targetField (.field start) (.field finish)
+
 namespace CheckedBoundDateRangeConstructionComputation
 
 def referencesField (operation : CheckedBoundDateRangeConstructionComputation model) (field : FieldId) : Bool :=
-  operation.construction.start.checked.target.id == field || operation.construction.finish.checked.target.id == field
+  operation.construction.start.referencesField field || operation.construction.finish.referencesField field
 
 /-- Computation observes endpoint poison before empty suppression and renders through the target's own profile. -/
 def evaluateWith (operation : CheckedBoundDateRangeConstructionComputation model)
-    (read : FieldId → CheckedCell) : Except DateRangeConstructionComputationFault DateRangeTargetOutcome := do
-  let observation ← (operation.construction.evaluateWith .computation (fun field => pure (read field))).mapError .construction
+    (context : ScalarComputationContext) : Except DateRangeConstructionComputationFault DateRangeTargetOutcome := do
+  let observation ← (operation.construction.evaluateInContext .computation context).mapError .construction
   (model.evaluateDateRangeTarget operation.target.source.id observation.asComputationResult).mapError .target
 
 end CheckedBoundDateRangeConstructionComputation

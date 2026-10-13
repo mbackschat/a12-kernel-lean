@@ -1,0 +1,60 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Mixed",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Form",
+    "name": "MixedComp",
+    "computedField": "/Form/Mixed",
+    "alternatives": [
+      {
+        "operation": "1",
+        "precondition": "DateRange(Numbers/Start For NumbersKeyStart,Numbers/Finish For NumbersKeyFinish) == [NumbersField]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Pair",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Form",
+    "name": "PairComp",
+    "computedField": "/Form/Pair",
+    "alternatives": [
+      {
+        "operation": "1",
+        "precondition": "DateRange(Numbers/Start For \"2\",Numbers/Finish For \"1\") == DateRange(Strings/Start For \"b\",Strings/Finish For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  }
+]

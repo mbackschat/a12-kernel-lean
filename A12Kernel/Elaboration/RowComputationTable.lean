@@ -223,7 +223,7 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
       let cell ← (DocumentComputationReadBack.dateConstant operation.dateTarget outcome).mapError .readBack
       pure (.fullDate outcome, cell)
   | .dateRangeConstruction operation =>
-      let outcome ← (operation.evaluateWith (document.indexedComputationContextAt environment).read).mapError .dateRangeConstruction
+      let outcome ← (operation.evaluateWith (document.indexedComputationContextAt environment)).mapError .dateRangeConstruction
       pure (.dateRange outcome, ← (DocumentComputationReadBack.dateRange model operation.target.policy outcome).mapError .readBack)
   | .enumeration operation =>
       let result ← (operation.evaluateAtWithRead document.read environment).mapError .enumeration

@@ -8,27 +8,40 @@ import A12Kernel.Elaboration.DateRangePredicate
 
 namespace A12Kernel.Dm
 
-private def rangeConstruction? : Expr → Option (SurfaceFieldPath × SurfaceFieldPath)
+def lowerDateRangeEndpoint (model : FlatModel) (group : GroupPath)
+    (expression : Expr) : Lowering SurfaceDateRangeEndpoint := do
+  match expression with
+  | .entity { path, index := some key, category := none, filter := none } =>
+      pure (.indexed (← lowerIndexedSource model group path key))
+  | _ =>
+      let some path := expression.fieldEntity? | refuse "DateRange" "endpoint operand"
+      pure (.field path)
+
+private def rangeConstruction? : Expr → Option (Expr × Expr)
   | .braces source => rangeConstruction? source
-  | .call "DateRange" [.mk start none, .mk finish none] none none => do
-      pure (← start.fieldEntity?, ← finish.fieldEntity?)
+  | .call "DateRange" [.mk start none, .mk finish none] none none => some (start, finish)
   | _ => none
 
-/-- Preserve source-slot versus stored-value grammar before choosing a range comparison carrier. -/
+/-- Preserve source-slot versus stored-value grammar and selected-key refusals before choosing a range comparison carrier. -/
 def lowerDateRangeComparison? (model : FlatModel) (group : GroupPath)
-    (operator : CompareOp) (left right : Expr) : Option (EqualityOp × SurfaceDateRangeComparison) := do
+    (operator : CompareOp) (left right : Expr) : Option (Lowering (EqualityOp × SurfaceDateRangeComparison)) := do
   let operator ← match operator with | .eq => some EqualityOp.equal | .ne => some .notEqual | _ => none
-  let source ← match rangeConstruction? left, rangeConstruction? right with
-    | some (start, finish), some (otherStart, otherFinish) =>
-        some (.constructed start finish otherStart otherFinish)
-    | some (start, finish), none => (.mixed start finish · .left) <$> right.fieldValue?
-    | none, some (start, finish) => (.mixed start finish · .right) <$> left.fieldValue?
+  let endpoint := lowerDateRangeEndpoint model group
+  let source : Lowering SurfaceDateRangeComparison ← match rangeConstruction? left, rangeConstruction? right with
+    | some (start, finish), some (otherStart, otherFinish) => some (do
+        pure (.constructed (← endpoint start) (← endpoint finish) (← endpoint otherStart) (← endpoint otherFinish)))
+    | some (start, finish), none => do
+        let stored ← right.fieldValue?
+        some (do pure (.mixed (← endpoint start) (← endpoint finish) stored .left))
+    | none, some (start, finish) => do
+        let stored ← left.fieldValue?
+        some (do pure (.mixed (← endpoint start) (← endpoint finish) stored .right))
     | none, none => do
         let left ← left.fieldValue?
         let right ← right.fieldValue?
         let declaration ← (model.resolveFieldDeclarationUnchecked group left).toOption
-        if declaration.policy.kind != .dateRange then none else some (.stored left right)
-  pure (operator, source)
+        if declaration.policy.kind != .dateRange then none else some (pure (.stored left right))
+  pure (do pure (operator, ← source))
 
 private def fieldOperand (model : FlatModel) (group : GroupPath) (construct : String) (expr : Expr) :
     Lowering FlatFieldDecl := do

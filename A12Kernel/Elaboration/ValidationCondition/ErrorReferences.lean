@@ -273,8 +273,10 @@ private def overlapReferenceAt? (field : FieldId) (query : ReferenceQuery)
   | .pluralOverlap source => shapeReferenceAt? field query source.shape condition.filters
   | .yearlessOverlap source | .yearlessPluralOverlap source =>
       shapeReferenceAt? field query source.shape condition.filters
-  | _ => some (condition.operandDeclarations.any fun declaration =>
-      declaration.id == field && query.binds declaration.repeatableScope)
+  | _ => some ((condition.operandDeclarations.any fun declaration =>
+      declaration.id == field && query.binds declaration.repeatableScope) ||
+      condition.constructionEndpoints.any (fun endpoint => endpoint.selection?.any fun selection =>
+        selectedReferenceAt field query (.inl selection.val)))
 
 private def leafErrorReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (leaf : ValidationConditionLeaf model) : Option Bool :=

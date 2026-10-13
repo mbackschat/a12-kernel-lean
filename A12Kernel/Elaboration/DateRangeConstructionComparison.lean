@@ -2,10 +2,11 @@ import A12Kernel.Elaboration.DateRangeBound
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.DateRangeInput
 import A12Kernel.Semantics.DateRangeConstruction
+import A12Kernel.Elaboration.CheckedStarDocument
 
 /-! # Checked DateRange construction comparison
 
-This capsule certifies two nonrepeatable Date endpoints per `DateRange` construction, including exact `yyyy`, `yyyy-MM`, Base-Year-resolved `MM` and `MM-dd`, and yearless `MM` and `MM-dd` DateFragment profiles. It composes two component-compatible constructions or one full-Date, year-bearing, Base-Year-resolved, or yearless construction with a matching direct stored DateRange and reads each checked operand through one immutable document in authored order. Exact construction labels are completed by endpoint position and re-resolved under their declaration's model-zone profile; yearless execution retains only the authored components. Both delegate to the shared equality seam. Semantic-index endpoints, repeatable placement, computation, rendering, overlap, and bound extraction remain separate.
+The endpoint certificate retains declaration precision, model-zone interpretation and optional checked semantic-index selection. Direct and selected sources share positional completion and component admission; comparisons and computation constructors supply their phase and current read context. Selected payload rows remain distinct from the caller's binding scope. The fixed direct APIs retain their original input and result boundaries.
 -/
 
 namespace A12Kernel
@@ -35,12 +36,15 @@ structure CheckedDateRangeEndpoint (model : FlatModel) where
   profile : ModelZone.ConcreteProfile
   formatMatches : DateRangeEndpointFormat.ofPolicy? model.baseYear checked.policy = some format
   profileMatches : ModelZone.ConcreteProfile.ofId? checked.timeZoneId = some profile
+  selection? : Option { source : CheckedSemanticIndexSource model //
+    source.targetDeclaration.id = checked.target.id } := none
 
 inductive DateRangeEndpointElabError where
   | targetPolicy (cause : TemporalTargetElabError)
   | unsupportedPolicy (target : FieldId) (mode : TemporalPartialMode)
       (format : String)
   | unsupportedZone (zoneId : String)
+  | selection (cause : SemanticIndexElabError)
   deriving Repr, DecidableEq
 
 namespace DateRangeEndpointElabError
@@ -56,6 +60,7 @@ def diagnostic? : DateRangeEndpointElabError → Option KernelStaticDiagnostic
   | .unsupportedPolicy _ _ _ => some .wrongDateFormatForOp
   | .targetPolicy (.targetNotTemporal _ _) => some .wrongDateFormatForOp
   | .targetPolicy (.resolve error) => error.diagnostic?
+  | .selection error => error.diagnostic?
   | .targetPolicy _ | .unsupportedZone _ => none
 
 end DateRangeEndpointElabError
@@ -83,6 +88,41 @@ def elaborateDateRangeEndpoint (model : FlatModel) (field : FieldId) :
     Except DateRangeEndpointElabError (CheckedDateRangeEndpoint model) :=
   elaborateDateRangeEndpointIn model [] field
 
+inductive SurfaceDateRangeEndpoint where
+  | field (path : SurfaceFieldPath)
+  | indexed (source : SurfaceSemanticIndex)
+
+/-- Selection establishes the endpoint row before its declaration supplies precision and zone
+(spec/05 §8; spec/08 §4.2). The selected payload does not bind the caller to that row. -/
+def elaborateDateRangeEndpointSource (model : FlatModel) (group : GroupPath)
+    (scope : List RepeatableLevel) (source : SurfaceDateRangeEndpoint) :
+    Except DateRangeEndpointElabError (CheckedDateRangeEndpoint model) := do
+  match source with
+  | .field path =>
+      let declaration ← (model.resolveFieldDeclarationUnchecked group path).mapError
+        (DateRangeEndpointElabError.targetPolicy ∘ TemporalTargetElabError.resolve)
+      elaborateDateRangeEndpointIn model scope declaration.id
+  | .indexed authored =>
+      let selection ← (elaborateSemanticIndexSource model group authored (some scope)).mapError .selection
+      let endpoint ← elaborateDateRangeEndpointIn model selection.targetDeclaration.repeatableScope
+        selection.targetDeclaration.id
+      if same : selection.targetDeclaration.id = endpoint.checked.target.id then
+        pure { endpoint with selection? := some ⟨selection, same⟩ }
+      else throw (.selection .incoherentCore)
+
+def CheckedDateRangeEndpoint.referencesField (source : CheckedDateRangeEndpoint model)
+    (field : FieldId) : Bool :=
+  match source.selection? with
+  | none => source.checked.target.id == field
+  | some selection => selection.val.referencesField field
+
+def CheckedDateRangeEndpoint.referencesErrorField (source : CheckedDateRangeEndpoint model)
+    (field : FieldId) : Bool :=
+  source.checked.target.id == field || source.selection?.any fun selection =>
+    match selection.val.key with
+    | .literal .. => false
+    | .field declaration => declaration.id == field
+
 structure CheckedDateRangeConstruction (model : FlatModel) where
   start : CheckedDateRangeEndpoint model
   finish : CheckedDateRangeEndpoint model
@@ -105,6 +145,12 @@ def diagnostic? : DateRangeConstructionElabError → Option KernelStaticDiagnost
 
 end DateRangeConstructionElabError
 
+def checkDateRangeConstructionEndpoints (start finish : CheckedDateRangeEndpoint model) :
+    Except DateRangeConstructionElabError (CheckedDateRangeConstruction model) :=
+  if same : start.format.sameComponents finish.format then
+    pure { start, finish, componentsMatch := same }
+  else throw (.componentMismatch start.format finish.format)
+
 /-- Certify one pair of construction endpoints once for every checked comparison consumer. `scope`
 is the reading rule's iteration scope, so an endpoint inside a level the rule iterates is admitted
 and every other gate stays unchanged. -/
@@ -116,13 +162,7 @@ def elaborateDateRangeConstructionIn (model : FlatModel)
     |>.mapError .start
   let checkedFinish ← elaborateDateRangeEndpointIn model scope finish
     |>.mapError .finish
-  if hComponents : checkedStart.format.sameComponents checkedFinish.format then
-    pure {
-      start := checkedStart
-      finish := checkedFinish
-      componentsMatch := hComponents }
-  else
-    throw (.componentMismatch checkedStart.format checkedFinish.format)
+  checkDateRangeConstructionEndpoints checkedStart checkedFinish
 
 /-- The scalar instance: a construction read where the reading rule iterates no level. -/
 def elaborateDateRangeConstruction (model : FlatModel)
@@ -191,6 +231,7 @@ inductive DateRangeConstructionFault where
   | document (cause : CheckedDocumentError)
   | endpointValueKind (source : FieldId)
   | endpointDateUnavailable (source : FieldId) (value : DateValue)
+  | addressing (cause : CheckedAddressingError)
   deriving Repr, DecidableEq
 
 namespace CheckedDateRangeConstruction
@@ -212,13 +253,15 @@ namespace CheckedDateRangeConstruction
 
 private def evaluateEndpoint (source : CheckedDateRangeEndpoint model)
     (bound : DateRangeBound) (phase : Phase)
-    (read : FieldId → Except DateRangeConstructionFault CheckedCell) :
+    (read : FieldId → Except DateRangeConstructionFault CheckedCell)
+    (select : CheckedSemanticIndexSource model → Except DateRangeConstructionFault CellObservation) :
     Except DateRangeConstructionFault
       (CellObservation DateRangeConstructionEndpointValue) := do
   let field := source.checked.target.id
-  let cell ← read field
-  source.format.evaluateObservation source.profile field bound
-    (observeCell phase cell)
+  let observation ← match source.selection? with
+    | none => observeCell phase <$> read field
+    | some selection => select selection.val
+  source.format.evaluateObservation source.profile field bound observation
 
 /-- Observe both endpoints from cells already read at the consuming row. A payload the endpoint
 projection rejects collapses to UNKNOWN rather than claiming a fault channel a row-reading consumer
@@ -238,18 +281,40 @@ def observeAt (construction : CheckedDateRangeConstruction model)
 
 /-- Fixed and bound consumers share phase-sensitive, start-before-finish completion (spec/05). -/
 def evaluateWith (construction : CheckedDateRangeConstruction model) (phase : Phase)
-    (read : FieldId → Except DateRangeConstructionFault CheckedCell) :
+    (read : FieldId → Except DateRangeConstructionFault CheckedCell)
+    (select : CheckedSemanticIndexSource model → Except DateRangeConstructionFault CellObservation :=
+      fun source => throw (.addressing (.checkedDocumentRequired source.group.path))) :
     Except DateRangeConstructionFault DateRangeConstructionObservation := do
-  let start ← evaluateEndpoint construction.start .start phase read
-  let finish ← evaluateEndpoint construction.finish .finish phase read
+  let start ← evaluateEndpoint construction.start .start phase read select
+  let finish ← evaluateEndpoint construction.finish .finish phase read select
   pure { start, finish }
+
+def evaluateInContext (construction : CheckedDateRangeConstruction model) (phase : Phase)
+    (context : ScalarComputationContext) :
+    Except DateRangeConstructionFault DateRangeConstructionObservation :=
+  construction.evaluateWith phase (fun field => pure (context.read field)) fun source =>
+    (source.observeColumnWith phase context.semanticIndexColumnReader context.row
+      context.read context.storedText).mapError .addressing
+
+/-- Immutable readers preserve the selected row and phase while direct endpoints use the caller's address. -/
+def evaluateAt (construction : CheckedDateRangeConstruction model)
+    (phase : Phase) (input : CheckedDocument model) (outer : Env) :
+    Except DateRangeConstructionFault DateRangeConstructionObservation :=
+  let read := if phase == .validation then input.fullValidationRead else input.read
+  construction.evaluateWith phase
+    (fun field => (input.checkedCellWithRead read outer field).mapError .addressing)
+    (fun source => (source.observeColumnWith phase (input.resolveSemanticIndexColumnWith read)
+      outer (input.computationCellAt read outer) (input.storedTextWithRead read outer)).mapError .addressing)
 
 /-- Read each certified endpoint once from one immutable checked document. -/
 def evaluate (construction : CheckedDateRangeConstruction model)
     (phase : Phase) (input : CheckedDocument model) :
     Except DateRangeConstructionFault DateRangeConstructionObservation :=
-  construction.evaluateWith phase fun field =>
-    (input.read { field, path := [] }).mapError .document
+  let context := input.computationContextAt []
+  construction.evaluateWith phase
+    (fun field => (input.read { field, path := [] }).mapError .document)
+    (fun source => (source.observeColumnWith phase (input.resolveSemanticIndexColumnWith input.read)
+      [] context.read context.storedText).mapError .addressing)
 
 end CheckedDateRangeConstruction
 

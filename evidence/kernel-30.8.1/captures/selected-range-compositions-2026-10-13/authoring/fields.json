@@ -1,0 +1,250 @@
+[
+  {
+    "target": "config",
+    "op": "modify",
+    "base-year": 2024,
+    "time-zone": "Europe/Berlin"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Strings",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Strings",
+    "name": "Id",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Strings",
+    "name": "Start",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Strings",
+    "name": "Finish",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM"
+    }
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Form/Strings",
+    "index-field": "Id"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "StringsKeyStart",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "StringsKeyFinish",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "StringsLiteral",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "StringsField",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Numbers",
+    "repeatable": 3
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Numbers",
+    "name": "Id",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Numbers",
+    "name": "Start",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Numbers",
+    "name": "Finish",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM"
+    }
+  },
+  {
+    "target": "group",
+    "op": "modify",
+    "groupPathInModel": "/Form/Numbers",
+    "index-field": "Id"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NumbersKeyStart",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NumbersKeyFinish",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NumbersLiteral",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "NumbersField",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "DirectStart",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "DirectFinish",
+    "kind": "DATE",
+    "date": {
+      "format": "yyyy-MM"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Direct",
+    "kind": "DATERANGE",
+    "dateRange": {
+      "format": "yyyy-MM",
+      "separator": "/"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Days",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Months",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Years",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Nested",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "LastDay",
+    "kind": "NUMBER",
+    "number": {
+      "maxFractionalDigits": 0
+    }
+  }
+]

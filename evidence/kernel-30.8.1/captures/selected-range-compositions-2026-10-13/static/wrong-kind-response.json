@@ -1,0 +1,65 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "rejected",
+  "ok": false,
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "<redacted>",
+  "data": {
+    "ops": 2,
+    "committed": false,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "<redacted>",
+        "changed": {
+          "added": "/Form/Probe",
+          "kind": "DATE_RANGE"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "computation",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "<redacted>",
+        "changed": {
+          "computation": "/Form/ProbeComp"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "model",
+        "op": "validate",
+        "outcome": "rejected",
+        "ok": false,
+        "valid": false,
+        "verification": "KERNEL_CONFIRMED",
+        "summary": "<redacted>",
+        "diagnostics": [
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_WRONG_DATE_FORMAT_FOR_OP",
+            "summary": "<redacted>",
+            "where": {
+              "rule": "/Form/ProbeComp"
+            },
+            "fix": "this code is raised by more than one construct; the corrective depends on which you used — AddDays needs a date value whose format carries a day component; AddHours needs a date-time; combine a resolved date with a time using DateTime(...) or use AddDays; HoursFromTime needs a time or date-time source; Today is date-only; MinutesFromTime needs a time or date-time source; Today is date-only; SecondsFromTime needs a time or date-time source; Today is date-only"
+          }
+        ],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}
