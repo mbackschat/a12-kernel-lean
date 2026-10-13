@@ -44,11 +44,13 @@ structure MessagePresence where
 nonblank judged text. The prefixed class asks whether any declared locale is answered; the
 unprefixed one whether a declared locale is left with no text or an empty one, so a blank text
 counts as present for it and absent for the prefixed one. Blankness is Java's, as for the other
-declaration members (spec/01 §3); the measured blank texts are spaces. A model with no declared
-locale does not build, and asks nothing. -/
+declaration members (spec/01 §3); the measured blank texts are spaces. With no declared locale no
+locale is answered, so the prefixed class stands whatever is written, beside the model's own
+`MVK_SUPP_LANGUAGES_MISSING`, while the unprefixed one asks nothing (rows `n-no-locale` and
+`n-no-locale-nomsg` of the [sort-list supplement](../../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity)). -/
 def messagePresence (declaredLocales : List String) (entries : List (String × String)) :
     MessagePresence :=
-  if declaredLocales.isEmpty then {} else
+  if declaredLocales.isEmpty then { prefixed := [.errorMessageMissing] } else
   let answered := declaredLocales.filter fun locale =>
     (judgedText entries locale).any (!ExecutableDeclaration.blank ·)
   { prefixed :=

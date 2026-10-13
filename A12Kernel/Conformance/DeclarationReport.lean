@@ -10,8 +10,11 @@ Every expected list is the code list of one row of the
 [declaration-report capture](../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14),
 compared as a multiset because the Kernel interleaves members. The rule sits in `/Form`, targets
 `Value` and reads `Value` unless the row says otherwise, under the code `CODE` with one English text.
-The condition's class and the template's classes come from their own checkers, so each row also
-exercises the producer feeding the report. -/
+The condition's class, the template's classes and the reference gate's relational class come from
+their own checkers, so each rule row also exercises the producer feeding the report; a row names
+only the references the gate reads. A computation's operation class is supplied. The no-locale,
+group-target, two-locale target and repeated-locale rows are the
+[R1 supplement](../../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity). -/
 
 namespace A12Kernel.Conformance.DeclarationReport
 
@@ -45,14 +48,17 @@ private def tab : String := "a\tb"
 
 private def rule (name : String := "Probe") (code : String := "CODE")
     (target : ErrorFieldDeclaration := .declared true) (condition : SurfaceCondition := readsValue)
-    (relational : List KernelStaticDiagnostic := []) (locales : List String := ["en_US"])
+    (references : List ConditionReference := [{ sameEntity := true }])
+    (locales : List String := ["en_US"])
     (entries : List (String × String) := [("en_US", "plain text")]) : List String :=
   let declaration : ExecutableDeclaration := { group := ["Form"], name, kind := .rule (.text code) }
   let verdicts : DeclarationVerdicts := {
     slots := declaration.notifications.filterMap (·.kind.diagnostic?)
     target := targetClasses false target
     firstRaised := conditionClass condition
-    relational
+    relational := match target with
+      | .absent => []
+      | .declared _ => (conditionSideRefusal { declaration := target, references }).toList
     presence := messagePresence locales entries
     errorText := errorTextClasses locales entries templateClasses }
   (verdicts.report.map (·.kernelCode)).mergeSort (compare · · != .gt)
@@ -93,16 +99,40 @@ example :
   native_decide
 
 /- The relational class withholds the error text like any refusal, and gives way to a positioned
-   class. Its producer is the target cascade, so these rows supply it. -/
+   class. A group target is an ordinary declared entity: reading another field draws the relational
+   class and nothing about the target. -/
 example :
-    rule (condition := .fieldFilled (bare "Other")) (relational := [.errorFieldNotReferenced])
+    rule (condition := .fieldFilled (bare "Other")) (references := [{}])
         (entries := [("en_US", tab)]) = kernel ["MVK_ERROR_FIELD_NOT_REFERENCED"] ∧
-    rule (condition := .fieldFilled (bare "Other")) (relational := [.errorFieldNotReferenced])
+    rule (condition := .fieldFilled (bare "Other")) (references := [{}])
         (entries := []) = kernel ["MVK_ERROR_MESSAGE_MISSING", "MVK_ERROR_FIELD_NOT_REFERENCED"] ∧
     rule (condition := .and (.fieldFilled (bare "Other")) unknownName)
-        (relational := [.errorFieldNotReferenced]) = kernel ["MVK_INVALID_ENTITY"] ∧
+        (references := [{}]) = kernel ["MVK_INVALID_ENTITY"] ∧
     rule (condition := .and (.and unknownName (.fieldFilled (bare "Nope2"))) readsValue) =
-      kernel ["MVK_INVALID_ENTITY"] := by
+      kernel ["MVK_INVALID_ENTITY"] ∧
+    rule (references := [{}]) = kernel ["MVK_ERROR_FIELD_NOT_REFERENCED"] ∧
+    rule (references := [{}]) (entries := [("en_US", tab)]) = kernel ["MVK_ERROR_FIELD_NOT_REFERENCED"] ∧
+    rule (references := [{}]) (condition := unknownName) = kernel ["MVK_INVALID_ENTITY"] := by
+  native_decide
+
+/- The admitted controls, and the slots standing beside a refused condition with a sound text. -/
+example :
+    rule = [] ∧
+    rule (condition := unknownName) (name := "vk_vkProbe") (code := " ") =
+      kernel ["MVK_ERROR_CODE_MISSING", "MVK_RULE_NAME_INVALID", "MVK_INVALID_ENTITY"] := by
+  native_decide
+
+/- With no declared locale the prefixed class stands whether or not a text is written; the
+   model-level `MVK_SUPP_LANGUAGES_MISSING` is no member's. The last entry written for a locale is
+   the one judged, by the template checker and by both presence checks. -/
+example :
+    rule (locales := []) = kernel ["MVK_ERROR_MESSAGE_MISSING"] ∧
+    rule (locales := []) (entries := []) = kernel ["MVK_ERROR_MESSAGE_MISSING"] ∧
+    rule (entries := [("en_US", tab), ("en_US", "plain text")]) = [] ∧
+    rule (entries := [("en_US", "plain text"), ("en_US", tab)]) = kernel ["INVALID_CHARACTERS"] ∧
+    rule (entries := [("en_US", "plain text"), ("en_US", "")]) =
+      kernel ["MVK_ERROR_MESSAGE_MISSING", "RULE_HAS_NO_ERRORTEXT"] ∧
+    rule (entries := [("en_US", ""), ("en_US", "plain text")]) = [] := by
   native_decide
 
 /- Every slot reports, and the missing-text pair splits over the declared locales: a blank text
@@ -130,7 +160,10 @@ example :
     rule (locales := twoLocales) (entries := [("en_US", ""), ("de_DE", " ")]) =
       kernel ["MVK_ERROR_MESSAGE_MISSING", "RULE_HAS_NO_ERRORTEXT"] ∧
     rule (locales := twoLocales) (condition := unknownName) (entries := [("en_US", "x")]) =
-      kernel ["MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING", "MVK_INVALID_ENTITY"] := by
+      kernel ["MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING", "MVK_INVALID_ENTITY"] ∧
+    rule (locales := twoLocales) (target := .absent) (entries := [("en_US", "x")]) =
+      kernel ["MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING", "MVK_ERROR_FIELD_MISSING",
+        "MVK_MISSING_ERROR_FIELD"] := by
   native_decide
 
 /- Each failing parameter reports unless the character gate stops the text, and each declared
@@ -142,7 +175,8 @@ example :
       kernel ["INVALID_CHARACTERS", "INVALID_FIELD"] := by
   native_decide
 
-/- A computation has no target and no error code; its operation's class withholds its template. -/
+/- A computation has no target and no error code; its operation's class withholds its template, and
+   the sound one is the admitted control. -/
 example :
     let computation (firstRaised : Option KernelStaticDiagnostic) (entries : List (String × String)) :=
       kernel (({ slots := [], firstRaised
@@ -150,7 +184,8 @@ example :
                  errorText := errorTextClasses ["en_US"] entries templateClasses } :
                 DeclarationVerdicts).report.map (·.kernelCode))
     computation (some .invalidEntity) [] = kernel ["MVK_INVALID_ENTITY", "MVK_ERROR_MESSAGE_MISSING"] ∧
-    computation (some .invalidEntity) [("en_US", tab)] = kernel ["MVK_INVALID_ENTITY"] := by
+    computation (some .invalidEntity) [("en_US", tab)] = kernel ["MVK_INVALID_ENTITY"] ∧
+    computation none [("en_US", "plain text")] = [] := by
   native_decide
 
 end A12Kernel.Conformance.DeclarationReport

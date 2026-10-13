@@ -386,8 +386,9 @@ example : holds emptySelection = true := by native_decide
 example : holds markerSelection = true := by native_decide
 example : holds memoSelection = true := by native_decide
 
-/-- A malformed over-limit operand draws only the structural findings: the number-format finding
-belongs to another channel and does not appear here. -/
+/-- A malformed over-limit operand draws only the structural findings. The retained row reports no
+Number-format finding in any channel: over-repetition replaces the cell's formal cause, which the
+example after this row asserts on the read cell. -/
 private def malformedOperand : Row where
   document := document [emptyRow, detailRow (Json.str "bad")]
   full := [zeile rows 3, kontextGroup detail 3, kontextCell detail "Qty2" 3]
@@ -395,6 +396,15 @@ private def malformedOperand : Row where
   compute := [zeile rows 3, kontextGroup detail 3, kontextCell detail "Qty2" 3]
 
 example : holds malformedOperand = true := by native_decide
+
+example : (model?.bind fun dm => do
+    let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
+    let raw ← (readDocument dm malformedOperand.document).toOption
+    let checked ← (checkDocument prepared "en_US" raw.data).toOption
+    let qty2 ← dm.flat.fields.find? fun field => field.groupPath == detail && field.name == "Qty2"
+    (checked.read { field := qty2.id, path := [3] }).toOption.map (·.findings)) =
+    some [.overRepetition] := by
+  native_decide
 
 /-- A sibling repeatable group whose own row 3 is within capacity shares the over-capacity row's
 leading coordinate. `Notes[3]` holds a written cell and draws nothing, which kills a

@@ -2,6 +2,7 @@ import Lean.Data.Json
 import A12Kernel.Reference.Dm.ModelComputation
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Elaboration.CheckedIndexPreliminary
+import A12Kernel.Reference.Dm.ParallelValidation
 
 /-! # Reader-to-finding locks for generated requiredness
 
@@ -509,5 +510,30 @@ private def emptyPartialMarker : Row where
   partialSet := []
 
 example : holds emptyPartialMarker = true := by native_decide
+
+/-- The authored messages full validation reports, each `code pointer`, from every authored rule run
+on `fullValidationDocument`. -/
+private def fullAuthored (document : String) : Option (List String) := do
+  let dm ← model?
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
+  let raw ← (readDocument dm (← (Json.parse document).toOption)).toOption
+  if !raw.refusals.isEmpty then none
+  let checked ← (checkDocument prepared "en_US" raw.data).toOption
+  let validated ← checked.fullValidationDocument.toOption
+  let messages ← dm.rules.flatMapM fun rule => do
+    let plan ← (checkValidationRule dm .english rule).toOption
+    (runValidationRule world validated plan).toOption
+  pure ((messages.map fun message =>
+    let observed := observe dm.flat message
+    s!"{observed.code} {observed.pointer}").mergeSort (compare · · != .gt))
+
+/- Authored rules read a required-empty cell as formally unavailable: `FieldNotFilled(Street)` fires
+   only while `Street` draws no generated finding, and `[AbsNum] < 100` only once `AbsNum` is filled.
+   The retained full-validation messages of `empty-document` and `abs-filled-control`. -/
+example :
+    fullAuthored emptyDocument.document = some ["ChkStreet Req/Ship/Street"] ∧
+    fullAuthored absFilledControl.document = some ["ChkAbs Req/AbsNum", "ChkQty Req/Items/Qty",
+      "ChkQty Req/Items[2]/Qty", "ChkQty Req/Items[3]/Qty"] := by
+  native_decide
 
 end A12Kernel.Dm.GeneratedRequirednessLocks

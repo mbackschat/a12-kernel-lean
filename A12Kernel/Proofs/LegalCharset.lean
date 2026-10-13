@@ -23,6 +23,16 @@ theorem utf16CodeUnits_ne_nil (character : Char) : utf16CodeUnits character ≠ 
   unfold utf16CodeUnits
   split <;> simp
 
+/-- A rejected character reports at least its first unit, so the per-index account still leaves a
+trace for every rejection. -/
+theorem rejectedUnits_ne_nil (ranges : List LegalCharRange) (character : Char) :
+    rejectedUnits ranges character ≠ [] := by
+  unfold rejectedUnits
+  have nonempty := utf16CodeUnits_ne_nil character
+  split
+  · simp
+  · assumption
+
 /-- The continuing scan and the stopping scan agree on emptiness for every fuel and input: the rejected-unit list is empty exactly when `scanRestricted` consumes the input. -/
 theorem scanRestrictedRejected_isEmpty (ranges : List LegalCharRange)
     (atoms : List LegalCharAtom) (fuel : Nat) (input : List Char) :
@@ -47,8 +57,8 @@ theorem scanRestrictedRejected_isEmpty (ranges : List LegalCharRange)
           · exact ih _
           · split
             · exact ih _
-            · have nonempty := utf16CodeUnits_ne_nil leading
-              cases units : utf16CodeUnits leading with
+            · have nonempty := rejectedUnits_ne_nil ranges leading
+              cases units : rejectedUnits ranges leading with
               | nil => exact absurd units nonempty
               | cons _ _ => rfl
 

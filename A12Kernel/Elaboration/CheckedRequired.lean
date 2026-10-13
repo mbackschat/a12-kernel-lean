@@ -97,6 +97,12 @@ def withRequiredFindings (checked : CheckedDocument model)
     | some placement => { placement with cell := placement.cell.withFinding .required }
     | none => { address, cell := (checkAdmittedRawCell .empty).withFinding .required })
 
+/-- **The document full validation's authored rules run on** (spec/03 §B.2): the checked document
+carrying its own generated mandatory findings. -/
+def fullValidationDocument (checked : CheckedDocument model) :
+    Except CheckedRequiredError (CheckedDocument model) :=
+  checked.fullRequiredEvaluations.map checked.withRequiredFindings
+
 end CheckedDocument
 
 end A12Kernel

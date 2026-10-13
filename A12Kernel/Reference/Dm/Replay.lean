@@ -137,7 +137,7 @@ def replayRules (model : DmModel) (language : Language) (world : World)
     (kernelReferences : List ObservedReferences := []) : List RuleVerdict :=
   -- Rules read required-empty cells as formally unavailable (spec/03 §B.2), so they run on the
   -- document carrying full validation's generated `.required` findings.
-  let validated := checked.fullRequiredEvaluations.map checked.withRequiredFindings
+  let validated := checked.fullValidationDocument
   let rules := validationRules model language
   rules.map fun rule =>
     let attributed (message : ObservedMessage) :=

@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Four corrections are `pending` below and have not been handed off. The 24 terminal receipts retired on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). [The consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own their reviewed revisions, evidence routes and limits.
+Twelve corrections are `pending` below and have not been handed off. The 24 terminal receipts retired on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). [The consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own their reviewed revisions, evidence routes and limits.
 
 <a id="spec-2026-10-12-01"></a>
 ### SPEC-2026-10-12-01 — selected error addresses use the unique non-iterating key
@@ -139,6 +139,7 @@ Four corrections are `pending` below and have not been handed off. The 24 termin
 - `acceptance`: Reconcile the RNU reference account with these rows. Do not claim an RNU leaf that fires OMISSION beside a VALUE sibling that wins, which these rows do not test.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
+<a id="spec-2026-10-13-10"></a>
 ### SPEC-2026-10-13-10 — uniqueness guard slots for selections, groups and the temporal overload
 
 - `status`: pending
@@ -146,4 +147,14 @@ Four corrections are `pending` below and have not been handed off. The 24 termin
 - `delta`: The uniqueness guard's slot count extends from direct fields and wildcards to semantic-index selections and group operands: each field they read weighs the declared limits of its repeatable levels below the selected row or group, identically across the Number, String and temporal overloads.
 - `basis`: [Uniqueness iteration-guard checkpoint](sources/having-filter-probes.md#src-uniqueness-iteration-guard): 44 model-check rows at a12-dmkits `a4091041`, Kernel 30.8.1.
 - `acceptance`: Reconcile the guard account with these rows, including the nested repeatable rows `GDEEP1`, `GDEEP2`, `SELDEEP` and `ROWDEEP`.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-11"></a>
+### SPEC-2026-10-13-11 — sort-list capacity, declaration-report presence without a locale and per-unit charset multiplicity
+
+- `status`: pending
+- `canonical`: [index and sort nominations](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique), [Enumeration declaration blocks](../spec/06-strings-and-enumerations.md#b2-categories-via--), [rule error-text locales](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation) and the [error-target gate](../spec/07-repetition-and-iteration.md).
+- `delta`: A sort list longer than three draws one codeless capacity notice whatever its later entries name, `MVK_SORT_FIELD_DUPLICATE` judges the first three entries only, and each distinct name reports its own class once. With no declared locale a rule draws `MVK_ERROR_MESSAGE_MISSING` and no `RULE_HAS_NO_ERRORTEXT`. A group target is an ordinary declared entity, and an absent target's pair stands beside `MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING`. A restricted charset judges each UTF-16 unit alone, so a supplementary scalar counts once under a range covering its low surrogate, replacing the unconditional count of two.
+- `basis`: [Supplement checkpoint](sources/model-structure-and-declaration-probes.md#src-sort-list-capacity), 21 `model check` rows at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile the sort, presence, target and Enumeration character accounts with these rows. Do not claim a declared-but-unknown target, a lenient parse or a lone-surrogate range, none of which was measured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

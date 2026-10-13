@@ -2053,6 +2053,7 @@ run_cmd do
 #print axioms A12Kernel.legalCharset_defaultBmp_accepts_iff
 #print axioms A12Kernel.legalCharset_accepts_empty
 #print axioms A12Kernel.utf16CodeUnits_ne_nil
+#print axioms A12Kernel.rejectedUnits_ne_nil
 #print axioms A12Kernel.scanRestrictedRejected_isEmpty
 #print axioms A12Kernel.restrictedRejectedUnits_isEmpty_iff_accepts
 #print axioms A12Kernel.legalCharAtom_length_positive

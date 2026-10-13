@@ -1,0 +1,74 @@
+{
+  "header" : {
+    "id" : "Store_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Store_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Store",
+        "name" : "Store",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Store/Reference",
+            "name" : "Reference",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Store/Tier",
+            "name" : "Tier",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "AA"
+                  }, {
+                    "value" : "BB"
+                  }, {
+                    "value" : "CC"
+                  } ],
+                  "categories" : [ {
+                    "name" : "Band",
+                    "values" : [ "X", "Y", "Z" ]
+                  }, {
+                    "name" : "Segment",
+                    "values" : [ "P", "Q", "R" ]
+                  } ]
+                }
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

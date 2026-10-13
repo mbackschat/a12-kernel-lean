@@ -21,6 +21,14 @@ levels are numbered in the order their groups are reached.
 
 namespace A12Kernel.Dm
 
+/-- The notification as the declaration-report captures label it: its Kernel code, or the class
+name of one of the two codeless classes. -/
+def _root_.A12Kernel.EnumerationDeclarationNotification.observedLabel : EnumerationDeclarationNotification → String
+  | .supplementaryCharacter => "codeless:supplementary-character"
+  | .repeatedValue _ => "codeless:repeated-value"
+  | notification => notification.kernelCode?.getD "codeless:unclassified"
+
+
 open Lean
 
 /-- One validation rule, its condition and error entity kept as authored. -/
@@ -292,7 +300,7 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         | .ok declaration => modify fun state => { state with fields := state.fields.push declaration }
         | .error reason => modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
       else
-        let codes := (notifications.map fun notification => notification.kernelCode?.getD "codeless").eraseDups
+        let codes := (notifications.map (·.observedLabel)).eraseDups
         modify fun state => { state with
           refusals := state.refusals.push
             (path ++ [name], s!"EnumerationType notifications {String.intercalate ", " codes}")

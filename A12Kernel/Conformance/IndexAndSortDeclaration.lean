@@ -55,34 +55,53 @@ example :
       rowFieldDeclarationRefusals { index := some (.field false false), sort := [] } = [] := by
   native_decide
 
-/- Each sort nomination is checked on its own, so the list's refusals track its members positionally
-   rather than collapsing to one: two disqualified fields draw two classes, against a first-only or
-   once-per-class report. A field named twice draws its class beside the list's duplicate class, which
-   is reported once for a name written three times. Kernel rows `s-two-opaque`, `s-invalid-then-opaque`,
-   `s-same-opaque-twice` and `s-same-plain-thrice` of the
-   [declaration-report capture](../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14). -/
-example :
-    rowFieldDeclarationRefusals
-        { sort := [("K", .field false false), ("../Value", .unresolved), ("NVV", .field true false)] } =
-      [.nameUnresolved .sortField, .valueValidationOff .sortField] ∧
-    rowFieldDeclarationRefusals { sort := [("NVV", .field true false), ("NVV2", .field true false)] } =
-      [.valueValidationOff .sortField, .valueValidationOff .sortField] ∧
-    rowFieldDeclarationRefusals { sort := [("NVV", .field true false), ("NVV", .field true false)] } =
-      [.valueValidationOff .sortField, .valueValidationOff .sortField, .sortFieldDuplicate] ∧
-    rowFieldDeclarationRefusals
-        { sort := [("K", .field false false), ("K", .field false false), ("K", .field false false)] } =
-      [.sortFieldDuplicate] := by
+/- Every sort row of the [declaration-report](../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14)
+   and [sort-list](../../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity) captures, compared as a
+   multiset of codes with `none` for the codeless capacity notification. They separate per-entry from
+   per-name judgement (`s-same-opaque-twice`, `s-opaque-thrice`), a whole-list from a three-entry
+   duplicate window (`s-dup-at-fourth`), and an unjudged from a judged fourth entry (`s-invalid-at-fourth`). -/
+private def nominated : String → NominatedTarget
+  | "NVV" | "NVV2" => .field true false
+  | "../Value" | "../Other" => .unresolved
+  | _ => .field false false
+
+private def sortRows : List (String × Option String × List String × List (Option String)) := [
+  ("s-control", none, ["K"], []),
+  ("s-two-opaque", none, ["NVV", "NVV2"], [some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", some "MVK_SORT_FIELD_NO_VALUE_VALIDATION"]),
+  ("s-second-opaque", none, ["K", "NVV"], [some "MVK_SORT_FIELD_NO_VALUE_VALIDATION"]),
+  ("s-same-opaque-twice", none, ["NVV", "NVV"], [some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", some "MVK_SORT_FIELD_DUPLICATE"]),
+  ("s-same-plain-twice", none, ["K", "K"], [some "MVK_SORT_FIELD_DUPLICATE"]),
+  ("s-two-dup-pairs", none, ["K", "K", "V", "V"], [none, some "MVK_SORT_FIELD_DUPLICATE"]),
+  ("s-same-plain-thrice", none, ["K", "K", "K"], [some "MVK_SORT_FIELD_DUPLICATE"]),
+  ("s-invalid-then-opaque", none, ["../Value", "NVV"], [some "MVK_INVALID_SORT_FIELD", some "MVK_SORT_FIELD_NO_VALUE_VALIDATION"]),
+  ("s-opaque-then-invalid", none, ["NVV", "../Value"], [some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", some "MVK_INVALID_SORT_FIELD"]),
+  ("s-two-invalid", none, ["../Value", "../Other"], [some "MVK_INVALID_SORT_FIELD", some "MVK_INVALID_SORT_FIELD"]),
+  ("s-index-and-sort-opaque", some "NVV", ["NVV"], [some "MVK_INDEX_FIELD_NO_VALUE_VALIDATION", some "MVK_SORT_FIELD_NO_VALUE_VALIDATION"]),
+  ("s-index-opaque-two-sorts-opaque", some "NVV", ["NVV", "NVV2"], [some "MVK_INDEX_FIELD_NO_VALUE_VALIDATION", some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", some "MVK_SORT_FIELD_NO_VALUE_VALIDATION"]),
+  ("s-three-control", none, ["K", "V", "W"], []),
+  ("s-four-distinct", none, ["K", "V", "W", "X"], [none]),
+  ("s-dup-at-fourth", none, ["K", "V", "W", "K"], [none]),
+  ("s-dup-in-three", none, ["K", "K", "V"], [some "MVK_SORT_FIELD_DUPLICATE"]),
+  ("s-opaque-at-first-and-fourth", none, ["NVV", "V", "W", "NVV"], [some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", none]),
+  ("s-invalid-at-fourth", none, ["K", "V", "W", "../Value"], [some "MVK_INVALID_SORT_FIELD", none]),
+  ("s-opaque-thrice", none, ["NVV", "NVV", "NVV"], [some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", some "MVK_SORT_FIELD_DUPLICATE"])]
+
+example : sortRows.all (fun (_, index, sort, expected) =>
+    let actual := (rowFieldDeclarationRefusals
+      { index := index.map nominated, sort := sort.map fun name => (name, nominated name) }).map (·.kernelCode?)
+    actual.length == expected.length && expected.all fun code => actual.count code == expected.count code) = true := by
   native_decide
 
-/- Six distinct keys across two roles and the list. The index and sort spellings differ by more than a prefix,
-   so a consumer deriving one from the other by substitution gets a key the Kernel never emits. -/
+/- Six distinct keys across two roles and the list, beside the codeless capacity class. The index and sort
+   spellings differ by more than a prefix, so a consumer deriving one from the other by substitution gets a
+   key the Kernel never emits. -/
 example :
-    (RowFieldRefusal.all.map (·.catalogKey)).eraseDups.length = 6 ∧
-      RowFieldRefusal.all.length = 6 ∧
-      (RowFieldRefusal.valueValidationOff .indexField).catalogKey =
-        "MVK_INDEX_FIELD_NO_VALUE_VALIDATION" ∧
-      (RowFieldRefusal.valueValidationOff .sortField).catalogKey =
-        "MVK_SORT_FIELD_NO_VALUE_VALIDATION" := by
+    (RowFieldRefusal.all.filterMap (·.kernelCode?)).eraseDups.length = 6 ∧
+      RowFieldRefusal.all.length = 7 ∧
+      (RowFieldRefusal.valueValidationOff .indexField).kernelCode? =
+        some "MVK_INDEX_FIELD_NO_VALUE_VALIDATION" ∧
+      (RowFieldRefusal.valueValidationOff .sortField).kernelCode? =
+        some "MVK_SORT_FIELD_NO_VALUE_VALIDATION" := by
   native_decide
 
 /- The peer's ordering-lookup model: a root `/Order/Key` beside a repeatable `/Order/Items` holding

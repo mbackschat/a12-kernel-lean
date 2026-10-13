@@ -82,7 +82,18 @@ def scanRestricted (ranges : List LegalCharRange)
           else
             false
 
-/-- The continuing counterpart of `scanRestricted`: it follows the identical atom-then-singleton steps but records the UTF-16 units of each rejected character and resumes after it instead of stopping. Input length is sufficient fuel, so the stranded-character arm of exhausted fuel is unreachable; it reports that character so that emptiness agrees with `scanRestricted` for every fuel. -/
+/-- The units one rejected character reports. The Kernel judges every UTF-16 index on its own: a
+supplementary scalar is rejected at its high unit, since a model declaring a supplementary range does
+not build, and its low unit is judged alone, so a range spanning the low-surrogate block admits that
+unit ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity),
+rows `e-bmp-range-supp`, `e-bmp-range-two-supp`, `e-az-supp` and `e-supp-range`). -/
+def rejectedUnits (ranges : List LegalCharRange) (character : Char) : List Nat :=
+  match utf16CodeUnits character with
+  | [high, low] =>
+      high :: if ranges.any (fun range => range.first.toNat ≤ low && low ≤ range.last.toNat) then [] else [low]
+  | units => units
+
+/-- The continuing counterpart of `scanRestricted`: it follows the identical atom-then-singleton steps but records the rejected UTF-16 units of each rejected character and resumes after it instead of stopping. Input length is sufficient fuel, so the stranded-character arm of exhausted fuel is unreachable; it reports that character so that emptiness agrees with `scanRestricted` for every fuel. -/
 def scanRestrictedRejected (ranges : List LegalCharRange)
     (atoms : List LegalCharAtom) : Nat → List Char → List Nat
   | 0, [] => []
@@ -95,9 +106,9 @@ def scanRestrictedRejected (ranges : List LegalCharRange)
           if restrictedAllows ranges leading then
             scanRestrictedRejected ranges atoms fuel remaining
           else
-            utf16CodeUnits leading ++ scanRestrictedRejected ranges atoms fuel remaining
+            rejectedUnits ranges leading ++ scanRestrictedRejected ranges atoms fuel remaining
 
-/-- Every UTF-16 code unit a restricted set rejects in a value, in scan order. A rejected supplementary-plane scalar contributes both of its units, matching the three notifications the Kernel raised for a stored token of one rejected BMP character plus one supplementary scalar (retained capture `enumeration-declaration-findings-2026-10-13`, row `bad-supplementary-character`). This is the multiplicity behind the Enumeration-declaration invalid-character notifications; `LegalCharset.accepts` answers only whether the list is empty. -/
+/-- Every UTF-16 code unit a restricted set rejects in a value, in scan order. A rejected supplementary-plane scalar contributes its high unit, and its low unit unless a range spans it ([`rejectedUnits`](A12Kernel.rejectedUnits)). This is the multiplicity behind the Enumeration-declaration invalid-character notifications; `LegalCharset.accepts` answers only whether the list is empty. -/
 def restrictedRejectedUnits (ranges : List LegalCharRange) (atoms : List LegalCharAtom)
     (value : String) : List Nat :=
   scanRestrictedRejected ranges atoms value.toList.length value.toList

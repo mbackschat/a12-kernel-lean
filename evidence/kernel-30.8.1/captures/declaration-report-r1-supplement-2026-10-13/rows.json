@@ -1,0 +1,396 @@
+[
+ {
+  "id": "s-three-control",
+  "base": "Wh_DM.json",
+  "group": "/Form/Items",
+  "addFields": [
+   "W",
+   "X"
+  ],
+  "sortFields": [
+   "K",
+   "V",
+   "W"
+  ]
+ },
+ {
+  "id": "s-four-distinct",
+  "base": "Wh_DM.json",
+  "group": "/Form/Items",
+  "addFields": [
+   "W",
+   "X"
+  ],
+  "sortFields": [
+   "K",
+   "V",
+   "W",
+   "X"
+  ]
+ },
+ {
+  "id": "s-dup-at-fourth",
+  "base": "Wh_DM.json",
+  "group": "/Form/Items",
+  "addFields": [
+   "W",
+   "X"
+  ],
+  "sortFields": [
+   "K",
+   "V",
+   "W",
+   "K"
+  ]
+ },
+ {
+  "id": "s-dup-in-three",
+  "base": "Wh_DM.json",
+  "group": "/Form/Items",
+  "addFields": [
+   "W",
+   "X"
+  ],
+  "sortFields": [
+   "K",
+   "K",
+   "V"
+  ]
+ },
+ {
+  "id": "s-opaque-at-first-and-fourth",
+  "base": "Wh_DM.json",
+  "group": "/Form/Items",
+  "addFields": [
+   "W",
+   "X"
+  ],
+  "sortFields": [
+   "NVV",
+   "V",
+   "W",
+   "NVV"
+  ]
+ },
+ {
+  "id": "s-invalid-at-fourth",
+  "base": "Wh_DM.json",
+  "group": "/Form/Items",
+  "addFields": [
+   "W",
+   "X"
+  ],
+  "sortFields": [
+   "K",
+   "V",
+   "W",
+   "../Value"
+  ]
+ },
+ {
+  "id": "s-opaque-thrice",
+  "base": "Wh_DM.json",
+  "group": "/Form/Items",
+  "addFields": [
+   "W",
+   "X"
+  ],
+  "sortFields": [
+   "NVV",
+   "NVV",
+   "NVV"
+  ]
+ },
+ {
+  "id": "n-no-locale",
+  "base": "Wh_DM.json",
+  "locales": [],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "n-no-locale-nomsg",
+  "base": "Wh_DM.json",
+  "locales": [],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR"
+   }
+  }
+ },
+ {
+  "id": "t-group-target",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Items",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "t-group-target-cond-bad",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Items",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Nope)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "t-group-target-tab",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Items",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "a\tb"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "t-absent-two-locales-one-text",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US",
+   "de_DE"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Nope",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "x"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-tab-then-plain",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "a\tb"
+     },
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-plain-then-tab",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     },
+     {
+      "locale": "en_US",
+      "text": "a\tb"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-plain-then-empty",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     },
+     {
+      "locale": "en_US",
+      "text": ""
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-empty-then-plain",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": ""
+     },
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "e-bmp-range-supp",
+  "base": "Store_DM.json",
+  "supportedCharacters": [
+   " -�"
+  ],
+  "tierValues": [
+   "😀",
+   "BB"
+  ]
+ },
+ {
+  "id": "e-bmp-range-two-supp",
+  "base": "Store_DM.json",
+  "supportedCharacters": [
+   " -�"
+  ],
+  "tierValues": [
+   "😀😁",
+   "BB"
+  ]
+ },
+ {
+  "id": "e-az-supp",
+  "base": "Store_DM.json",
+  "supportedCharacters": [
+   "A-Z"
+  ],
+  "tierValues": [
+   "A😀",
+   "BB"
+  ]
+ },
+ {
+  "id": "e-supp-range",
+  "base": "Store_DM.json",
+  "supportedCharacters": [
+   "A-Z",
+   "😀-🙏"
+  ],
+  "tierValues": [
+   "A😀",
+   "BB"
+  ]
+ }
+]

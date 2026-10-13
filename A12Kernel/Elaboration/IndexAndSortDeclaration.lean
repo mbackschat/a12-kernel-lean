@@ -32,26 +32,29 @@ inductive RowFieldRefusal where
   | valueValidationOff (role : RowFieldRole)
   /-- An index field is a table enumeration. Has no sort-field counterpart. -/
   | indexFieldTableEnum
-  /-- A sort list naming one field more than once. A judgement of the list, so it is reported once
-  however many names repeat. -/
+  /-- A sort list naming one field more than once among its first three entries. A judgement of the
+  list, so it is reported once however many names repeat. -/
   | sortFieldDuplicate
+  /-- A sort list of more than three entries. The Kernel's notification carries no code. -/
+  | sortListCapacity
   deriving Repr, DecidableEq
 
 namespace RowFieldRefusal
 
-/-- The exact catalog key. -/
-def catalogKey : RowFieldRefusal → String
-  | .nameUnresolved .indexField => "MVK_INVALID_INDEX_FIELD"
-  | .nameUnresolved .sortField => "MVK_INVALID_SORT_FIELD"
-  | .valueValidationOff .indexField => "MVK_INDEX_FIELD_NO_VALUE_VALIDATION"
-  | .valueValidationOff .sortField => "MVK_SORT_FIELD_NO_VALUE_VALIDATION"
-  | .indexFieldTableEnum => "MVK_INDEX_FIELD_NO_TABLE_ENUM"
-  | .sortFieldDuplicate => "MVK_SORT_FIELD_DUPLICATE"
+/-- The exact catalog key, `none` for the codeless capacity notification. -/
+def kernelCode? : RowFieldRefusal → Option String
+  | .nameUnresolved .indexField => some "MVK_INVALID_INDEX_FIELD"
+  | .nameUnresolved .sortField => some "MVK_INVALID_SORT_FIELD"
+  | .valueValidationOff .indexField => some "MVK_INDEX_FIELD_NO_VALUE_VALIDATION"
+  | .valueValidationOff .sortField => some "MVK_SORT_FIELD_NO_VALUE_VALIDATION"
+  | .indexFieldTableEnum => some "MVK_INDEX_FIELD_NO_TABLE_ENUM"
+  | .sortFieldDuplicate => some "MVK_SORT_FIELD_DUPLICATE"
+  | .sortListCapacity => none
 
 /-- Every class of the family. -/
 def all : List RowFieldRefusal :=
   [.nameUnresolved .indexField, .valueValidationOff .indexField, .indexFieldTableEnum,
-   .nameUnresolved .sortField, .valueValidationOff .sortField, .sortFieldDuplicate]
+   .nameUnresolved .sortField, .valueValidationOff .sortField, .sortFieldDuplicate, .sortListCapacity]
 
 end RowFieldRefusal
 
@@ -116,15 +119,25 @@ structure RowFieldDeclarations where
   sort : List (String × NominatedTarget) := []
   deriving Repr, DecidableEq
 
-/-- Every refusal the group's declarations draw: the index nomination's, each sort nomination's in
-order, then one duplicate class for the sort list. A list rather than a first match, because the
-Kernel checks every nomination ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14)):
-two disqualified sort fields draw two classes, and a field named twice draws its own class beside
-the duplicate. A repeated name is the written one, measured on identical spellings. -/
+/-- Keep an entry unless its name is already kept, so each name is judged at its first entry. -/
+def keepFirstName (kept : List (String × NominatedTarget)) (entry : String × NominatedTarget) :
+    List (String × NominatedTarget) :=
+  if kept.any (·.1 == entry.1) then kept else kept ++ [entry]
+
+/-- Every refusal the group's declarations draw: the index nomination's, then each distinct sort
+name's once in written order, then the list's two judgements. A list rather than a first match,
+because the Kernel judges every name, a fourth entry's included: two disqualified sort fields draw two
+classes, while a field named twice draws its own class once. The duplicate class reads only the first
+three entries, so a name repeated only at the fourth draws none, and a list longer than three draws
+one codeless capacity notification ([declaration-report](../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14)
+and [sort-list](../../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity) rows). A repeated
+name is the written one, measured on identical spellings. -/
 def rowFieldDeclarationRefusals (declarations : RowFieldDeclarations) : List RowFieldRefusal :=
-  let names := declarations.sort.map (·.1)
+  let distinct := declarations.sort.foldl keepFirstName []
+  let leading := (declarations.sort.take 3).map (·.1)
   (declarations.index.bind (rowFieldRefusal .indexField)).toList ++
-    declarations.sort.filterMap (rowFieldRefusal .sortField ·.2) ++
-    if names.eraseDups.length < names.length then [.sortFieldDuplicate] else []
+    distinct.filterMap (rowFieldRefusal .sortField ·.2) ++
+    (if leading.Nodup then [] else [.sortFieldDuplicate]) ++
+    if 3 < declarations.sort.length then [.sortListCapacity] else []
 
 end A12Kernel

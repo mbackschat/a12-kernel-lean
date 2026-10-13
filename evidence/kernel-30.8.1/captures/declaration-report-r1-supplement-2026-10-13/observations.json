@@ -1,0 +1,176 @@
+[
+ {
+  "case": "s-three-control",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "s-four-distinct",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "codeless:sort-list-capacity"
+  ]
+ },
+ {
+  "case": "s-dup-at-fourth",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "codeless:sort-list-capacity"
+  ]
+ },
+ {
+  "case": "s-dup-in-three",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_SORT_FIELD_DUPLICATE"
+  ]
+ },
+ {
+  "case": "s-opaque-at-first-and-fourth",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION",
+   "codeless:sort-list-capacity"
+  ]
+ },
+ {
+  "case": "s-invalid-at-fourth",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_INVALID_SORT_FIELD",
+   "codeless:sort-list-capacity"
+  ]
+ },
+ {
+  "case": "s-opaque-thrice",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION",
+   "MVK_SORT_FIELD_DUPLICATE"
+  ]
+ },
+ {
+  "case": "n-no-locale",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_SUPP_LANGUAGES_MISSING",
+   "MVK_ERROR_MESSAGE_MISSING"
+  ]
+ },
+ {
+  "case": "n-no-locale-nomsg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_SUPP_LANGUAGES_MISSING",
+   "MVK_ERROR_MESSAGE_MISSING"
+  ]
+ },
+ {
+  "case": "t-group-target",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_ERROR_FIELD_NOT_REFERENCED"
+  ]
+ },
+ {
+  "case": "t-group-target-cond-bad",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "t-group-target-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_ERROR_FIELD_NOT_REFERENCED"
+  ]
+ },
+ {
+  "case": "t-absent-two-locales-one-text",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING",
+   "MVK_ERROR_FIELD_MISSING",
+   "MVK_MISSING_ERROR_FIELD"
+  ]
+ },
+ {
+  "case": "l-tab-then-plain",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "l-plain-then-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "INVALID_CHARACTERS"
+  ]
+ },
+ {
+  "case": "l-plain-then-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING",
+   "RULE_HAS_NO_ERRORTEXT"
+  ]
+ },
+ {
+  "case": "l-empty-then-plain",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "e-bmp-range-supp",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+   "codeless:supplementary-character"
+  ]
+ },
+ {
+  "case": "e-bmp-range-two-supp",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+   "codeless:supplementary-character"
+  ]
+ },
+ {
+  "case": "e-az-supp",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+   "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+   "codeless:supplementary-character"
+  ]
+ },
+ {
+  "case": "e-supp-range",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "codeless:model-not-built"
+  ]
+ }
+]

@@ -16,12 +16,13 @@ namespace A12Kernel.Dm.EnumerationDeclarationNotificationLocks
 open Lean A12Kernel
 
 /-- One retained declaration: stored tokens, categories, a display text for chosen tokens, whether the
-model restricts its supported characters to `A-Z`, and the ordered notification classes observed. -/
+model restricts its supported characters, to `charset`, and the ordered notification classes observed. -/
 private structure Row where
   values : List String
   categories : List (String × List String) := []
   labels : List (String × String) := []
   restricted : Bool := false
+  charset : List String := ["A-Z"]
   expected : List String
 
 private def missingCategory : String := "MVK_MISSING_CATEGORY_VALUE"
@@ -31,11 +32,6 @@ private def internalDuplicate : String := "MVK_INTERNAL_VALUES_DUPLICATE"
 private def invalidCharacter : String := "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER"
 private def supplementary : String := "codeless:supplementary-character"
 private def repeated : String := "codeless:repeated-value"
-
-private def rendered : EnumerationDeclarationNotification → String
-  | .supplementaryCharacter => supplementary
-  | .repeatedValue _ => repeated
-  | notification => notification.kernelCode?.getD "unexpected codeless class"
 
 private def valueEntry (labels : List (String × String)) (value : String) : Json :=
   Json.mkObj ([("value", .str value)] ++ (labels.lookup value).toList.map fun text =>
@@ -54,7 +50,7 @@ private def field (name typeName : String) (body : Json := Json.mkObj []) : Json
 private def source (row : Row) : Json :=
   Json.mkObj [("content", Json.mkObj [
     ("modelConfig", Json.mkObj (if row.restricted then
-      [("supportedCharacters", toJson (["A-Z"] : List String))] else [])),
+      [("supportedCharacters", toJson row.charset)] else [])),
     ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [
       ("type", "Group"), ("name", "Store"),
       ("Group", Json.mkObj [("repeatability", toJson (1 : Nat)),
@@ -72,7 +68,7 @@ private def matchesObservation (row : Row) : Bool :=
   match readModel (source row) with
   | .error _ => false
   | .ok dm =>
-      let classes := (dm.enumerationNotifications.flatMap (·.2)).map rendered
+      let classes := (dm.enumerationNotifications.flatMap (·.2)).map (·.observedLabel)
       let keepsTier := dm.flat.fields.any (·.name == "Tier")
       classes == row.expected &&
         (if row.expected.isEmpty then
@@ -84,7 +80,7 @@ private def matchesObservation (row : Row) : Bool :=
 private def disagreeing (rows : List (String × Row)) : List String :=
   (rows.filter fun (_, row) => !matchesObservation row).map (·.1)
 
-/-- Arity direction and multiplicity, the duplicate classes, and their one-per-category product. The last row mixes a surplus category with a shortfall category and so is the only retained row fixing the shortfall block before the surplus block. -/
+/-- Arity direction and multiplicity, the duplicate classes, and their one-per-category product. The mixed rows, `surplus-category-with-duplicate` and `surplus-shortfall-surplus` above all, fix the shortfall block before the surplus block. -/
 private def arityAndDuplicateRows : List (String × Row) := [
   ("control", { values := ["AA", "BB", "CC"], categories := [("Band", ["X", "Y", "Z"]), ("Segment", ["P", "Q", "R"])], expected := [] }),
   ("one-category-short-two", { values := ["AA", "BB", "CC"], categories := [("Band", ["X"])], expected := [missingCategory, missingCategory] }),
@@ -118,7 +114,13 @@ private def restrictedCharsetRows : List (String × Row) := [
   ("bad-before-short-category", { values := ["AA", "pq"], categories := [("Band", ["X"])], restricted := true, expected := [invalidCharacter, invalidCharacter, missingCategory] }),
   ("bad-charset-control", { values := ["AA", "BB"], categories := [("Band", ["X", "Y"])], restricted := true, expected := [] }),
   ("lowercase-default-charset", { values := ["AA", "pq"], expected := [] }),
-  ("bad-supplementary-character", { values := ["AA", "p😀"], restricted := true, expected := [invalidCharacter, invalidCharacter, invalidCharacter, supplementary] })]
+  ("bad-supplementary-character", { values := ["AA", "p😀"], restricted := true, expected := [invalidCharacter, invalidCharacter, invalidCharacter, supplementary] }),
+  -- A range spanning the low-surrogate block admits a supplementary scalar's low unit, and two scalars
+  -- sharing a high unit collapse to one class: rows of the retained capture
+  -- `declaration-report-r1-supplement-2026-10-13`, which starts from this capture's model.
+  ("e-bmp-range-supp", { values := ["😀", "BB"], restricted := true, charset := [" -\uFFFD"], expected := [invalidCharacter, supplementary] }),
+  ("e-bmp-range-two-supp", { values := ["😀😁", "BB"], restricted := true, charset := [" -\uFFFD"], expected := [invalidCharacter, supplementary] }),
+  ("e-az-supp", { values := ["A😀", "BB"], restricted := true, expected := [invalidCharacter, invalidCharacter, supplementary] })]
 
 example : disagreeing restrictedCharsetRows = [] := by native_decide
 
