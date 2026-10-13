@@ -404,6 +404,7 @@ import A12Kernel.Conformance.JavaOtherCategory
 import A12Kernel.Conformance.StringPatternMessage
 import A12Kernel.Conformance.FieldMessageCheck
 import A12Kernel.Conformance.FieldTypeDeclarationNotification
+import A12Kernel.Conformance.ElementNameNotification
 import A12Kernel.Conformance.StringToNumberComputationRun
 import A12Kernel.Conformance.TemporalEntityGroupOperand
 import A12Kernel.Conformance.TemporalFormat

@@ -15,7 +15,7 @@ The input is a small read-model of the field's body after type-definition resolu
 
 Choices no row separates, recorded where they are made: a declared but refused integer count is not replaced by the amount-derived one; two label entries for one value and locale are both counted; a repeated hint-list locale is judged whether or not the model declares it; the label texts of every declared locale are pooled for the tab, pipe and line-break classes, and a text shared by two locales is one notification.
 
-Not claimed: element-name, group, rule, computation and annotation classes, the encoding class, empty groups, the Date-fragment and Time partial modes, notification order, a variant-filtered field (the caller does not ask), and the Enumeration invalid-character class under a restricted charset beyond what `EnumerationDeclaration.notifications` already answers.
+Not claimed: element-name, group, rule, computation and annotation classes ([`ElementNameNotification`](ElementNameNotification.lean) owns them), the Date-fragment and Time partial modes, notification order, a variant-filtered field (the caller does not ask), and the Enumeration invalid-character class under a restricted charset beyond what `EnumerationDeclaration.notifications` already answers.
 -/
 
 namespace A12Kernel
@@ -209,11 +209,14 @@ inductive FieldTypeDeclaration where
   | other
   deriving Repr, DecidableEq
 
-/-- What the laws take from the model besides the field: its declared locales, the field message tokens of its condition language, and its charset. -/
+/-- What the laws take from the model and its path besides the field: its declared locales, the field message tokens of its condition language, its charset and whether the path above lets the field's messages be reported. -/
 structure FieldTypeContext where
   declaredLocales : List String
   messageTokens : StringPatternMessageTokens
   charset : LegalCharset := .defaultBmp
+  /-- Whether the field's own messages are reached. A field whose name carries a path class, or sits
+  below a group whose name does, reports none of them (`pa-f-content`, spec/11). -/
+  messagesReached : Bool := true
 
 /-- The capture label of the notification. -/
 def FieldTypeNotification.label : FieldTypeNotification → String
@@ -297,6 +300,19 @@ private def raiseIf (condition : Bool) (kind : FieldTypeNotificationKind)
 private def refusals (readings : List MemberReading) : List FieldTypeNotification :=
   readings.filterMap fun reading => reading.refusal?.map (.declared · [])
 
+/-- A field's own message classes, none when its messages are not reached. A text asked for a declared
+locale is also a repertoire carrier: a supplementary scalar in it is the field's one codeless
+notification (`we-s`, `we-e`, [spec/01 §1.1](../../spec/01-data-model.md#11-the-two-special-model-level-configurations)),
+which a String message with no pattern is assumed to share with the pattern message; no row measures
+that carrier. -/
+private def messageNotifications (context : FieldTypeContext) (carrier : FieldMessageCarrier)
+    (entries : List FieldMessageEntry) : List FieldTypeNotification :=
+  (fieldMessageDiagnostics context.messageTokens context.declaredLocales carrier entries
+      context.messagesReached).map .message ++
+    raiseIf (context.messagesReached &&
+      (context.declaredLocales.filterMap (FieldMessageEntry.askedFor? entries)).any
+        hasSupplementaryScalar) .supplementaryCharacter
+
 /-- Whether both bounds are in range and the minimum exceeds the maximum. -/
 private def minExceedsMax : MemberReading → MemberReading → Bool
   | .admitted lowest, .admitted highest => highest < lowest
@@ -345,8 +361,7 @@ private def stringNotifications (compilePattern : StringPatternCompiler) (contex
     raiseIf (minExceedsMax minLength maxLength) .minLengthBiggerMaxLength ++
     raiseIf patternRefused .patternInvalid ++
     hintValueNotifications context minLength maxLength declaration.hintList ++
-    (fieldMessageDiagnostics context.messageTokens context.declaredLocales carrier
-      declaration.messages).map .message
+    messageNotifications context carrier declaration.messages
 
 /-! ## Number -/
 
@@ -494,8 +509,7 @@ private def enumerationNotifications (context : FieldTypeContext)
     raiseIf ((tokens ++ countedTexts ++ categoryTokens).any hasLineBreak) .lineBreak ++
     raiseIf (declaration.sValue.any fun sValue =>
       !ExecutableDeclaration.blank sValue && !tokens.contains sValue) .sValueInvalid ++
-    (fieldMessageDiagnostics context.messageTokens locales .enumerationInvalidValue
-      declaration.messages).map .message
+    messageNotifications context .enumerationInvalidValue declaration.messages
 
 /-! ## The judgement of one field -/
 

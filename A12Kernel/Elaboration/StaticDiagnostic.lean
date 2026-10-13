@@ -460,6 +460,8 @@ inductive KernelStaticDiagnostic where
   | errorMessageAndNoPattern
   /-- A field or rule message that answers one declared locale and leaves another unanswered. -/
   | errorMessageForLanguageMissing
+  /-- A field message text carrying a lone UTF-16 surrogate, which the encoding gate refuses before any character gate; see [`FieldMessageCheck`](FieldMessageCheck.lean). -/
+  | wrongEncoding
   /-- A rule or computation message leaving every declared locale without a nonblank text. -/
   | errorMessageMissing
   | missingMessageCategory
@@ -705,6 +707,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .errorMessageAndPatternInvalid => "MVK_ERROR_MESSAGE_AND_PATTERN_INVALID"
   | .errorMessageAndNoPattern => "MVK_ERROR_MESSAGE_AND_NO_PATTERN"
   | .errorMessageForLanguageMissing => "MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING"
+  | .wrongEncoding => "WRONG_ENCODING"
   | .errorMessageMissing => "MVK_ERROR_MESSAGE_MISSING"
   | .missingMessageCategory => "NO_CATEGORY"
   | .lexerStandardError => "MVK_LEXER_STANDARD_ERROR"
@@ -794,7 +797,7 @@ def all : List KernelStaticDiagnostic :=
     .messageInvalidRootGroup, .messageInvalidEntity, .messageFieldNameNotUnique,
     .ruleGroupImmediatelyBelowRoot,
     .invalidMessageParameter, .errorMessageAndPatternInvalid, .errorMessageAndNoPattern,
-    .errorMessageForLanguageMissing, .errorMessageMissing,
+    .errorMessageForLanguageMissing, .wrongEncoding, .errorMessageMissing,
     .missingMessageCategory,
     .lexerStandardError, .incompleteInput, .expectedTokenNotFound, .unexpectedToken]
 

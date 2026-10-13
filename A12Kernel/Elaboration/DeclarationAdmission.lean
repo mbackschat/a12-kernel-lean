@@ -4,7 +4,8 @@ import A12Kernel.Elaboration.StaticDiagnostic
 
 An importer or Explain consumer must distinguish unreadable members, failed model construction,
 and actual notifications, including notifications without a class key. These checks cover rule and
-computation names and a rule's error code; they do not claim a complete model consistency report.
+computation names, a rule's error code and a computation name's code content; they do not claim a
+complete model consistency report.
 The phase and competing-slot evidence is owned by the C17 declaration checkpoint in
 [model declarations](../../docs/sources/model-structure-and-declaration-probes.md).
 -/
@@ -79,8 +80,11 @@ private def codeAdmitted (code : String) : Bool :=
 
 def path (declaration : ExecutableDeclaration) : List String := declaration.group ++ [declaration.name]
 
-/-- Notifications from independent slots coexist. The sequence is a stable local projection,
-not a claim about Kernel notification order or unrelated consistency checks. -/
+/-- Notifications from independent slots coexist. A computation's name is judged by the error-code
+content law as well as the name law: `C-x` draws both classes, `Cä` and `1C` the name class alone
+(capture rows `cpn-dash`, `cpn-umlaut`, `cpn-digit`), while a rule's name meets the name law only.
+The sequence is a stable local projection, not a claim about Kernel notification order or unrelated
+consistency checks. -/
 def notifications (declaration : ExecutableDeclaration) : List DeclarationNotification := Id.run do
   let mut findings := []
   let add := fun kind => ({ declaration := declaration.path, kind } : DeclarationNotification)
@@ -88,6 +92,8 @@ def notifications (declaration : ExecutableDeclaration) : List DeclarationNotifi
     findings := findings ++ [add .nameContent]
   else if declaration.name.toLower.startsWith "vk_vk" then
     findings := findings ++ [add .reservedName]
+  if declaration.kind == .computation && !codeAdmitted declaration.name then
+    findings := findings ++ [add .codeContent]
   if let .rule (.text code) := declaration.kind then
     if blank code then findings := findings ++ [add .missingCode]
     else if !codeAdmitted code then findings := findings ++ [add .codeContent]

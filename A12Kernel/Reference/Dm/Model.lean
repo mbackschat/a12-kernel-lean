@@ -331,7 +331,9 @@ private def readAlternative (json : Json) : Except String DmAlternative := do
     operation := ← json.getObjValAs? String "operation"
     toleranceRangeOp := ← computationString? json "toleranceRangeOp" }
 
-private def ruleCode (body : Json) : DeclarationStringValue :=
+/-- A rule's error code as the file writes it: an absent member is the empty text, a string, number or
+Boolean its text, and anything else unreadable. -/
+def ruleCode (body : Json) : DeclarationStringValue :=
   match (body.getObjVal? "errorCode").toOption with
   | none => .text ""
   | some (.str value) => .text value
@@ -515,7 +517,7 @@ private def readSupportedCharacters (config : Json)
 
 /-- A written index or sort nomination as a path: leading `../` steps count parents, a leading `/`
 makes it absolute, and the last segment names the field. -/
-private def nominationPath (nomination : String) : SurfaceFieldPath :=
+def nominationPath (nomination : String) : SurfaceFieldPath :=
   let absolute := nomination.startsWith "/"
   let segments := (nomination.splitOn "/").filter (!·.isEmpty)
   let parents := (segments.takeWhile (· == "..")).length

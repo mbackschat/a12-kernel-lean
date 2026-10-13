@@ -89,6 +89,16 @@ example : computation "Ordinary" = some (true, none) := by native_decide
 example : computation "Vk_VkCalculation" = some (false, some (.notifications [
     { declaration := ["Form", "Vk_VkCalculation"], kind := .reservedName }])) := by native_decide
 
+-- A computation's name meets the error-code content law as well as the name law (`cpn-dash`,
+-- `cpn-umlaut`, `cpn-digit`); the code alphabet admits an umlaut and a digit but not a hyphen.
+example : computation "Calc-x" = some (false, some (.notifications [
+    { declaration := ["Form", "Calc-x"], kind := .nameContent },
+    { declaration := ["Form", "Calc-x"], kind := .codeContent }])) := by native_decide
+example : computation "Calcä" = some (false, some (.notifications [
+    { declaration := ["Form", "Calcä"], kind := .nameContent }])) := by native_decide
+example : computation "1Calc" = some (false, some (.notifications [
+    { declaration := ["Form", "1Calc"], kind := .nameContent }])) := by native_decide
+
 example : (match ExecutableDeclaration.admitAll [
     { group := ["Form"], name := "vk_vkRule", kind := .rule (.text "") },
     { group := ["Form"], name := "Other", kind := .rule .unreadable }] with

@@ -23,7 +23,12 @@ The model check reads them as one field, not one text at a time
   its characters fail
   ([`kf318`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf318));
 - a String message answering one declared locale and not another, a blank text counting as
-  unanswered, draws `MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING` on either arm.
+  unanswered, draws `MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING` on either arm;
+- a text carrying a lone surrogate meets the encoding gate first: `WRONG_ENCODING` stands in place of
+  the character or parameter class that text would otherwise draw, one per field from the first failing
+  declared locale (rows `we-s`, `we-e`, [spec/11](../../spec/11-messages-and-custom.md)). A JSON file
+  cannot carry a lone surrogate through a parser that replaces it, so the model reader rewrites each to
+  `loneSurrogateStandIn` before parsing and this gate reads that scalar.
 
 Each text's gates are [`StringPatternMessage`](StringPatternMessage.lean)'s; this module owns only
 which texts are asked, the pairing classes and the locale class.
@@ -50,13 +55,19 @@ def FieldMessageEntry.askedFor? (entries : List FieldMessageEntry) (locale : Str
     Option String :=
   (entries.filter (·.locale == locale)).getLast?.map (·.text)
 
+/-- The scalar the model reader writes in place of a lone UTF-16 surrogate. It is the last Unicode
+scalar, so it is outside every repertoire a message may use; the one collision is an authored `U+10FFFF`,
+which reads as a lone surrogate. -/
+def loneSurrogateStandIn : Char := Char.ofNat 0x10FFFF
+
 /-- A text's named class under the pattern message's gates. An empty text draws none here: whether
 a message is there at all is the presence rule's question below. -/
 private def fieldMessageTextDiagnostic? (tokens : StringPatternMessageTokens) (text : String) :
     Option KernelStaticDiagnostic :=
-  match elaborateStringPatternMessageTemplate tokens text with
-  | .ok _ | .error .emptyTemplate => none
-  | .error error => error.namedStringPatternDiagnostic?
+  if text.toList.contains loneSurrogateStandIn then some .wrongEncoding
+  else match elaborateStringPatternMessageTemplate tokens text with
+    | .ok _ | .error .emptyTemplate => none
+    | .error error => error.namedStringPatternDiagnostic?
 
 /-- Blank as the rows measure it, on spaces and a tab; the other whitespace characters Lean counts
 are unmeasured. -/
