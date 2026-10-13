@@ -166,6 +166,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 - [ ] Close the remaining callback invocation evidence in [SG11](gaps/strings-and-messages.md#gap-sg11) and [SG12](gaps/conformance-evidence.md#gap-sg12).
 - Matrix: successful/missing factory lookup and precedence; fixed/repeated/parallel contexts; full/partial relevance; exact row coordinates and invalid-pointer payload; reached versus bypassed call.
 - Done: the pure callback contract is usable by an independent interpreter, and the currently uncalibrated validation construct cell has retained correspondence evidence. Mutable host effects and arbitrary thrown exceptions remain explicit external behavior, not invented pure semantics.
+- `Blocked on`: the calibration half. The maintained `:adapter:kernelProbe` registers no custom condition at the measurement pin `a4091041` or at a12-dmkits `8addfd0bf`, so no registered CustomCondition rule is observable; the instrument request went to the owner as dated feedback on 2026-10-14. The pure contract and parallel-rule integration proceed meanwhile.
 
 ### K19 — host boundaries and relevance disposition
 
