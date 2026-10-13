@@ -1,0 +1,14 @@
+{
+ "computedField": "/Kp/CT",
+ "alternatives": [
+  {
+   "operation": "Sum(/Kp/Rows*/RA)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "$/Kp/Rows/RA$"
+  }
+ ]
+}

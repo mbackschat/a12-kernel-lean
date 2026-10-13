@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Elaboration.ValidationMessageRendering
+import A12Kernel.Reference.Dm.GeneratedComputationRule
 
 /-! # Reader-to-render locks for the row a message parameter reads
 
@@ -45,7 +46,8 @@ private def model : FlatModel := {
     string 7 "SubV" ["Kp", "Rows", "Sub"] [10, 11],
     enumeration 8 "Grade" ["Kp", "GA"] [20], string 9 "GNote" ["Kp", "GA"] [20],
     enumeration 10 "Grade" ["Kp", "GB"] [30], number 11 "GVal2" ["Kp", "GB"] [30],
-    number 12 "Num" ["Kp", "NRows"] [40], string 13 "V" ["Kp", "NRows"] [40]]
+    number 12 "Num" ["Kp", "NRows"] [40], string 13 "V" ["Kp", "NRows"] [40],
+    number 14 "RA" ["Kp", "Rows"] [10], number 15 "RT" ["Kp", "Rows"] [10]]
   repeatableGroups := [
     { level := 10, path := ["Kp", "Rows"], repeatability := some 5, indexField := some 3 },
     { level := 11, path := ["Kp", "Rows", "Sub"], repeatability := some 3 },
@@ -61,15 +63,16 @@ private def world : World := { now := { epochMillis := 0 } }
 private def row (cells : List (String × String)) (members : List (String × Json) := []) : Json :=
   .mkObj (cells.map (fun (name, value) => (name, Json.str value)) ++ members)
 
-/-- The capture's document, without the groups no rule here reads. -/
+/-- The capture's document, without the groups no rule here reads, with the computation capture's
+`RA` and `RT` values merged into its `Rows`, which no other rule here reads. -/
 private def documentJson : Json :=
   .mkObj [("Kp", .mkObj [
     ("Anchor", .str "a"), ("Pick", .str "k0"),
     ("Rows", .arr #[
-      row [("Key", "k0"), ("Base", "b0"), ("Status", "A")],
-      row [("Key", "k1"), ("Base", "b1"), ("Status", "B")]
+      row [("Key", "k0"), ("Base", "b0"), ("Status", "A"), ("RA", "2"), ("RT", "4")],
+      row [("Key", "k1"), ("Base", "b1"), ("Status", "B"), ("RA", "3"), ("RT", "7")]
         [("Sub", .arr #[row [("SubV", "s1")], row [("SubV", "s2")]])],
-      row [("Key", "k2"), ("Status", "A")]]),
+      row [("Key", "k2"), ("Status", "A"), ("RA", "5"), ("RT", "1")]]),
     ("GA", .arr #[row [("Grade", "A"), ("GNote", "n1")], row [("Grade", "B"), ("GNote", "n2")]]),
     ("GB", .arr #[row [("Grade", "B"), ("GVal2", "7")], row [("Grade", "A"), ("GVal2", "5")]]),
     ("NRows", .arr #[row [("Num", "1"), ("V", "v1")], row [("Num", "2"), ("V", "v2")]])])]
@@ -80,7 +83,7 @@ private def inputs (document : Document) : ValidationMessageInputs := {
     debugDisplay := ((model.fields.find? (·.id == field)).map (·.name)).getD "" }
   fieldValue := fun cell => {
     displayValue := document.rawCells cell
-    defaultDisplay := if cell.field == 11 || cell.field == 12 then "0" else "" }
+    defaultDisplay := if [11, 12, 14, 15].contains cell.field then "0" else "" }
   fieldStoredToken := document.rawCells
   formPointer := fun _ _ => "" }
 
@@ -165,5 +168,20 @@ example : rendered (rule ["Kp"] "RK2" "../Anchor"
 text with its evaluation-fault text. -/
 example : rendered (rule ["Kp"] "RMiss" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k9\")")
       "m=[$/Kp/Rows/Base.value For \"k9\"$]" = some (.inl .unresolvedSelection) := by native_decide
+
+/-- A computation's message is its generated rule's: it fires only on the filled row whose holding
+alternative disagrees, the second, and renders that row's cells and coordinate
+(`evidence/kernel-30.8.1/captures/computation-message-members-2026-10-13/`). -/
+private def computation : DmComputation where
+  group := ["Kp", "Rows"]
+  name := "RTComp"
+  targetRelPath := "../RT"
+  commonPrecondition := none
+  errorCodesToSuppress := []
+  alternatives := [{ precondition := some "FieldFilled(Base)", operation := "[RA] * 2" }]
+
+example : (computation.generatedRule? .english).bind (rendered ·
+      "row=[$#RuleGroup$] t=[$RT.value$] a=[$RA.value$] b=[$Base.value$] i=[$index(Key).value$] up=[$#RootGroup$]") =
+    some (.inr ["row=[2] t=[7] a=[3] b=[b1] i=[k1] up=[1]"]) := by native_decide
 
 end A12Kernel.Dm.MessageRowRenderingLocks

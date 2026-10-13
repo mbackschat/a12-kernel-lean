@@ -17,22 +17,11 @@
 
 - `state`: residual; D06 lexical/diagnostic detail, D09 provider/rendering breadth and D18 public transport.
 - `baseline`: [Whole-rule templates](../implementation/validation-messages-and-custom.md#cap-whole-rule-authoring-and-rendering), [index/group authoring](../implementation/validation-messages-and-custom.md#cap-index-message-authoring-and-rendering) and [field-pattern messages](../implementation/validation-messages-and-custom.md#cap-string-pattern-field-messages) own current checks.
-- `remaining`: the computation-message carrier: parameter admission against a computation's own reads and its rendering. The [carrier checkpoint](../sources/message-and-pointer-probes.md#src-terminal-bundle-on-the-computation-carrier) measures only the shared terminal bundle.
 - `remaining`: successful partial template parses and lexer character positions. [Token/position provenance](../sources/message-and-pointer-probes.md#src-parameter-token-versus-group-declaration-alphabet) fixes the position convention without requiring every consumer to carry offsets.
-- `evidence-needed`: repertoire co-reporting on computation messages and source-derived String-pattern producer combinations beyond the retained rule matrix. Each authored refusal must keep its written order.
+- `evidence-needed`: source-derived String-pattern producer combinations beyond the retained rule matrix. Each authored refusal must keep its written order. The computation carrier shares the rule template checker, its named class standing beside a repertoire failure ([row `c10`](../sources/message-parameter-rendering-probes.md#src-computation-message-members-k15)).
 - `host-boundary`: non-message model texts and undeclared-locale exemptions need a model-text carrier; field-local messages currently receive locale entries and default-variant reach from the caller. [Field-message source](../sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates) owns the wider path gates.
 - `diagnostics`: RuleGroup form-name/line spellings retain explicit unclassed refusal where retained Kernel observations fault internally. A consumer must not infer successful rendering or a portable Kernel internal-error contract.
 - `reopen-when`: a selected authoring/rendering consumer needs one residual grammar or provider distinction.
-- `route-state`: discovery-required
-
-<a id="sg26--the-index-terminal-in-a-message-parameter"></a>
-<a id="gap-sg26"></a>
-### SG26 — index-message diagnostic calibration
-
-- `state`: diagnostic residual selected by K15; formerly D08. Ordinary C13 index/group parameters are covered by the [implementation owner](../implementation/validation-messages-and-custom.md#cap-index-message-authoring-and-rendering).
-- `remaining`: composed multi-field indices, same-name Enumeration indices differing in display mappings, mixed kinds under the shared name, and repeatability disagreement outside iteration. These discriminate the four additional INVALID_INDEX_FIELD classes.
-- `route-limit`: the normalized model has a single index field. The [refusal-class source](../sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes) and [cross-field witnesses](../sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates) distinguish model representation limits from authorable source-derived checker branches.
-- `reopen-when`: an adopted diagnostic consumer requires one of these classes and an otherwise-admissible witness isolates it from parser/read failures.
 - `route-state`: discovery-required
 
 <a id="gap-sg8"></a>

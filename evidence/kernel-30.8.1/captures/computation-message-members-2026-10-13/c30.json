@@ -1,0 +1,20 @@
+{
+ "computedField": "/Kp/CT",
+ "alternatives": [
+  {
+   "precondition": "FieldFilled(CB)",
+   "operation": "[CA] + 1"
+  },
+  {
+   "precondition": "FieldNotFilled(CB)",
+   "operation": "[CD] + 2"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "$CD.value$"
+  }
+ ],
+ "commonPrecondition": "FieldFilled(CC)"
+}

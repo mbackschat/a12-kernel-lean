@@ -2,6 +2,7 @@ import Lean.Data.Json
 import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Elaboration.ValidationMessageDiagnostic
 import A12Kernel.Elaboration.DeclarationReport
+import A12Kernel.Reference.Dm.GeneratedComputationRule
 
 /-! # Retained rule-check observations through the reader and the message checker
 
@@ -27,6 +28,7 @@ def captures : List (String × String × String) := [
   ("captures/comparison-entry-gates/observations.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/comparison-entry-gates/ops.json"),
   ("captures/comparison-entry-gates/observations2.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/comparison-entry-gates/ops2.json"),
   ("captures/comparison-entry-gates/observations3.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/comparison-entry-gates/ops3.json"),
+  ("captures/computation-message-members-2026-10-13/obs.json", "captures/computation-message-members-2026-10-13/Kc_DM.json", "captures/computation-message-members-2026-10-13/ops.json"),
   ("captures/computation-star-binding-gate/obs11.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops11.json"),
   ("captures/condition-class-projection-2026-10-01/obs-baseyear-review.json", "captures/condition-class-projection-2026-10-01/OrderBaseYear_DM.json", "captures/condition-class-projection-2026-10-01/ops-baseyear-review.json"),
   ("captures/condition-class-projection-2026-10-01/obs-baseyear.json", "captures/condition-class-projection-2026-10-01/OrderBaseYear_DM.json", "captures/condition-class-projection-2026-10-01/ops-baseyear.json"),
@@ -153,22 +155,48 @@ private def reported (model : FlatModel) (profile : ValidationMessageKeywordProf
         (firstUnsupportedMessageTemplateCharacter? text).toList.length]).sum
   (verdicts.report.map (·.kernelCode), unclassed)
 
+/-- The computation a `computation add` spec authors, placed in its `group` or else its computed
+field's group, the target addressed from the computation element one level below that group. -/
+private def requestedComputation (spec : Json) : DmComputation :=
+  let field := segments ((spec.getObjValAs? String "computedField").toOption.getD "")
+  let group := match (spec.getObjValAs? String "group").toOption with
+    | some path => segments path
+    | none => field.dropLast
+  let ups := group.length - (field.length - 1) + 1
+  let alternatives := ((spec.getObjValAs? (Array Json) "alternatives").toOption.getD #[]).toList.map
+    fun alternative => {
+      precondition := (alternative.getObjValAs? String "precondition").toOption
+      operation := (alternative.getObjValAs? String "operation").toOption.getD ""
+      toleranceRangeOp := (alternative.getObjValAs? String "toleranceRangeOp").toOption }
+  { group, name := "Probe", alternatives, errorCodesToSuppress := []
+    targetRelPath := String.intercalate "/" (List.replicate ups ".." ++ field.drop (field.length - 1))
+    commonPrecondition := (spec.getObjValAs? String "commonPrecondition").toOption }
+
+/-- A computation spec's written texts, with the instrument's placeholder for each omitted locale. -/
+private def specEntries (locales : List String) (spec : Json) : List (String × String) :=
+  let written := ((spec.getObjValAs? (Array Json) "messages").toOption.getD #[]).toList.map fun entry =>
+    ((entry.getObjValAs? String "locale").toOption.getD "", (entry.getObjValAs? String "text").toOption.getD "")
+  (locales.filter (fun locale => !written.any (·.1 == locale))).map (·, "placeholder") ++ written
+
 inductive Outcome where
   | skipped
   | agrees
   | diverges (detail : String)
 
-private def compare (dm : DmModel) (locales : List String) (request observation : Json) : Outcome :=
-  match observation.getObjValAs? Bool "valid" with
-  | .error _ => .skipped
-  | .ok valid =>
-  let args := ((request.getObjValAs? (Array String) "args").toOption.getD #[]).toList
+/-- Compare one declaration with its Kernel verdict: a `rule check` row's own rule, or the rule a
+`computation add` row's computation generates, whose message is the computation's. -/
+private def compare (dm : DmModel) (locales : List String) (rule : DmRule)
+    (entries : List (String × String)) (observation : Json) (preview : Bool) : Outcome :=
+  -- A computation preview reports only `ok` for an admitted spec; a rule check without `valid` was
+  -- stopped by the instrument before the Kernel answered.
+  let okVerdict := if preview then (observation.getObjValAs? Bool "ok").toOption else none
+  match (observation.getObjValAs? Bool "valid").toOption <|> okVerdict with
+  | none => .skipped
+  | some valid =>
   let kernel := ((observation.getObjValAs? (Array String) "codes").toOption.getD #[]).toList.filter
     (!·.startsWith "RK_")
   let language := if dm.conditionLanguage.startsWith "de" then Language.german else .english
   let profile := language.messageKeywordProfile
-  let entries := messageEntries locales args
-  let rule := requestedRule args
   let outcome := match checkValidationRule dm language rule with
     | .error refusal => if valid then some s!"refused {refusal.construct}" else none
     | .ok checked =>
@@ -198,15 +226,26 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
     let locales := (((modelJson.getObjValD "header").getObjValAs? (Array Json) "locales").toOption.getD #[]).toList.filterMap
       fun locale => (locale.getObjValAs? String "code").toOption
     let batch := ((← readJson (root / observations)).getObjValAs? (Array Json) "observations").toOption.getD #[]
+    let language := if dm.conditionLanguage.startsWith "de" then Language.german else .english
     for request in ((← readJson (root / requests)).getArr?).toOption.getD #[] do
-      -- A batch may interleave other verbs; only a rule check is a rule's static verdict.
-      if (request.getObjValAs? String "verb").toOption != some "rule" ||
-          ((request.getObjValAs? (Array String) "args").toOption.bind (·[0]?)) != some "check" then continue
+      let args := ((request.getObjValAs? (Array String) "args").toOption.getD #[]).toList
+      -- A batch may interleave other verbs. A rule check is its rule's static verdict; a computation
+      -- preview is compared only when its message carries a parameter, since the computation's own
+      -- members are other families' obligations.
+      let declaration ← match (request.getObjValAs? String "verb").toOption, args with
+        | some "rule", "check" :: _ => pure (some (requestedRule args, messageEntries locales args, false))
+        | some "computation", "add" :: file :: _ => do
+            let spec ← readJson ((root / requests).parent.getD root / file)
+            let entries := specEntries locales spec
+            pure (if entries.any (·.2.contains '$') then
+              ((requestedComputation spec).generatedRule? language).map (·, entries, true) else none)
+        | _, _ => pure none
+      let some (rule, entries, preview) := declaration | continue
       let id := (request.getObjValAs? String "id").toOption.getD ""
       let some observation := batch.find? (fun row => (row.getObjValAs? String "id").toOption == some id)
         | continue
       let key := s!"{(observations.drop "captures/".length)}#{id}"
-      match compare dm locales request observation, deferred.lookup key with
+      match compare dm locales rule entries observation preview, deferred.lookup key with
       | .skipped, _ => skipped := skipped + 1
       | .agrees, none => agreeing := agreeing + 1
       | .agrees, some owner => failures := failures.push s!"{key}: deferred to {owner} but agrees"

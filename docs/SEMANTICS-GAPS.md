@@ -90,12 +90,6 @@ The former SG1 → SG2 → SG4 construction sequence is represented. [Checked-do
 <a id="gap-sg25"></a>
 - [residual record](gaps/strings-and-messages.md#gap-sg25)
 
-<a id="sg26--the-index-terminal-in-a-message-parameter"></a>
-### SG26 — the `index(...)` terminal in a message parameter
-
-<a id="gap-sg26"></a>
-- [residual record](gaps/strings-and-messages.md#gap-sg26)
-
 ### SG8 — Enumeration and value-list completion
 
 <a id="gap-sg8"></a>

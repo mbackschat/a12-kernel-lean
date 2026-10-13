@@ -1,0 +1,14 @@
+{
+ "computedField": "/Kp/Rows/RT",
+ "alternatives": [
+  {
+   "operation": "[RA] * 2"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "$RT.value$"
+  }
+ ]
+}

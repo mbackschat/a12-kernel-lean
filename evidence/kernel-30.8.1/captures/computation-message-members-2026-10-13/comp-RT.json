@@ -1,0 +1,15 @@
+{
+ "computedField": "/Kp/Rows/RT",
+ "alternatives": [
+  {
+   "precondition": "FieldFilled(Base)",
+   "operation": "[RA] * 2"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "row=[$#RuleGroup$] t=[$RT.value$] a=[$RA.value$] b=[$Base.value$] i=[$index(Key).value$] up=[$#RootGroup$]"
+  }
+ ]
+}

@@ -144,7 +144,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 ### K15 — message parameter grammar and rendering inputs
 
-- [ ] Close remaining ordinary authoring and structured rendering inputs in [SG25](gaps/strings-and-messages.md#gap-sg25), [SG26](gaps/strings-and-messages.md#gap-sg26) and [SG10](gaps/strings-and-messages.md#gap-sg10).
+- [ ] Close remaining ordinary authoring and structured rendering inputs in [SG25](gaps/strings-and-messages.md#gap-sg25), SG26 and [SG10](gaps/strings-and-messages.md#gap-sg10).
 - Matrix: parallel positive-presence guard and invalid hash/repetition parameter; repeatable names and deeper RuleGroup/multi-root references; selected/index/category parameters; four outstanding composed-index/type/display/repeatability refusal classes; empty/default/provider output and computation message context.
 - Done: parse success, admission and rendering context remain separate. Compare structured parameters and exact promised diagnostic classes; lexer offsets and all locale wording are not silently claimed. Protected message text is supplied by the host.
 
