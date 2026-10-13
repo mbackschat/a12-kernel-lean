@@ -1,0 +1,278 @@
+{
+ "header": {
+  "id": "ParRefs_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "ParRefs_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Form/Mid",
+        "name": "Mid",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Mid/M",
+           "name": "M",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Form/Mid/L",
+           "name": "L",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Form/Mid/L/Key",
+              "name": "Key",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Form/Mid/L/N",
+              "name": "N",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/Form/Mid/L/Sub",
+              "name": "Sub",
+              "Group": {
+               "repeatability": 2,
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/Form/Mid/L/Sub/S",
+                 "name": "S",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                }
+               ]
+              }
+             }
+            ],
+            "indexFieldName": "Key"
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Form/Mid/R",
+           "name": "R",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Form/Mid/R/Key",
+              "name": "Key",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Form/Mid/R/N",
+              "name": "N",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ],
+            "indexFieldName": "Key"
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ANCPOS",
+        "name": "ANCPOS",
+        "Rule": {
+         "errorEntityRelPath": "../Mid/L/N",
+         "errorCode": "ANCPOS",
+         "errorCondition": "GroupFilled(/Form/Mid) And [/Form/Mid/L/N] > [/Form/Mid/R/N]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Parallel reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/SUBPOS",
+        "name": "SUBPOS",
+        "Rule": {
+         "errorEntityRelPath": "../Mid/L/N",
+         "errorCode": "SUBPOS",
+         "errorCondition": "GroupFilled(/Form/Mid/L) And [/Form/Mid/L/N] > [/Form/Mid/R/N]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Parallel reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/SUBNEG",
+        "name": "SUBNEG",
+        "Rule": {
+         "errorEntityRelPath": "../Mid/L/N",
+         "errorCode": "SUBNEG",
+         "errorCondition": "GroupNotFilled(/Form/Mid/L) And FieldFilled(/Form/Mid/R/N)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Parallel reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ANCNEGAND",
+        "name": "ANCNEGAND",
+        "Rule": {
+         "errorEntityRelPath": "../Mid/L/N",
+         "errorCode": "ANCNEGAND",
+         "errorCondition": "GroupNotFilled(/Form/Mid) And [/Form/Mid/L/N] > [/Form/Mid/R/N]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Parallel reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ROOTNEGAND",
+        "name": "ROOTNEGAND",
+        "Rule": {
+         "errorEntityRelPath": "../Mid/L/N",
+         "errorCode": "ROOTNEGAND",
+         "errorCondition": "GroupNotFilled(/Form) And [/Form/Mid/L/N] > [/Form/Mid/R/N]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Parallel reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ROOTPOS",
+        "name": "ROOTPOS",
+        "Rule": {
+         "errorEntityRelPath": "../Mid/L/N",
+         "errorCode": "ROOTPOS",
+         "errorCondition": "GroupFilled(/Form) And [/Form/Mid/L/N] > [/Form/Mid/R/N]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Parallel reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/CTRL",
+        "name": "CTRL",
+        "Rule": {
+         "errorEntityRelPath": "../Mid/L/N",
+         "errorCode": "CTRL",
+         "errorCondition": "[/Form/Mid/L/N] > [/Form/Mid/R/N]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Parallel reference probe."
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

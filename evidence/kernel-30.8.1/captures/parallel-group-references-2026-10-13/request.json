@@ -1,0 +1,88 @@
+{
+ "model": "ParRefs_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "matched",
+   "documentInline": {
+    "Form": {
+     "Mid": {
+      "M": 1,
+      "L": [
+       {
+        "Key": "a",
+        "N": 9,
+        "Sub": [
+         {
+          "S": 1
+         }
+        ]
+       },
+       {
+        "Key": "b",
+        "N": 9
+       }
+      ],
+      "R": [
+       {
+        "Key": "a",
+        "N": 1
+       },
+       {
+        "Key": "b",
+        "N": 1
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "left-only",
+   "documentInline": {
+    "Form": {
+     "Mid": {
+      "M": 1,
+      "L": [
+       {
+        "Key": "a",
+        "N": 9,
+        "Sub": [
+         {
+          "S": 1
+         }
+        ]
+       }
+      ],
+      "R": [
+       {
+        "Key": "z",
+        "N": 1
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "right-only",
+   "documentInline": {
+    "Form": {
+     "Mid": {
+      "M": 1,
+      "L": [],
+      "R": [
+       {
+        "Key": "z",
+        "N": 1
+       }
+      ]
+     }
+    }
+   }
+  }
+ ]
+}

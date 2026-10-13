@@ -1,0 +1,562 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "ParRefs_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "matched",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ANCPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[0]/Key",
+                "/Form[1]/Mid[1]/L[0]/N",
+                "/Form[1]/Mid[1]/L[0]/Sub[0]/S",
+                "/Form[1]/Mid[1]/R[0]/Key",
+                "/Form[1]/Mid[1]/R[0]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N",
+                "Form/Mid/M",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ANCPOS",
+              "field" : "Form/Mid/L[2]/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[0]/Key",
+                "/Form[1]/Mid[1]/L[0]/N",
+                "/Form[1]/Mid[1]/L[0]/Sub[0]/S",
+                "/Form[1]/Mid[1]/R[0]/Key",
+                "/Form[1]/Mid[1]/R[0]/N",
+                "Form/Mid/L[2]/Key",
+                "Form/Mid/L[2]/N",
+                "Form/Mid/M",
+                "Form/Mid/R[2]/Key",
+                "Form/Mid/R[2]/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CTRL",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CTRL",
+              "field" : "Form/Mid/L[2]/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "Form/Mid/L[2]/Key",
+                "Form/Mid/L[2]/N",
+                "Form/Mid/R[2]/Key",
+                "Form/Mid/R[2]/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROOTPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROOTPOS",
+              "field" : "Form/Mid/L[2]/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "Form/Mid/L[2]/Key",
+                "Form/Mid/L[2]/N",
+                "Form/Mid/R[2]/Key",
+                "Form/Mid/R[2]/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SUBPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[1]/Sub[0]/S",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SUBPOS",
+              "field" : "Form/Mid/L[2]/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[2]/Sub[0]/S",
+                "Form/Mid/L[2]/Key",
+                "Form/Mid/L[2]/N",
+                "Form/Mid/R[2]/Key",
+                "Form/Mid/R[2]/N"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ANCPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[0]/Key",
+                "/Form[1]/Mid[1]/L[0]/N",
+                "/Form[1]/Mid[1]/L[0]/Sub[0]/S",
+                "/Form[1]/Mid[1]/R[0]/Key",
+                "/Form[1]/Mid[1]/R[0]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N",
+                "Form/Mid/M",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ANCPOS",
+              "field" : "Form/Mid/L[2]/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[0]/Key",
+                "/Form[1]/Mid[1]/L[0]/N",
+                "/Form[1]/Mid[1]/L[0]/Sub[0]/S",
+                "/Form[1]/Mid[1]/R[0]/Key",
+                "/Form[1]/Mid[1]/R[0]/N",
+                "Form/Mid/L[2]/Key",
+                "Form/Mid/L[2]/N",
+                "Form/Mid/M",
+                "Form/Mid/R[2]/Key",
+                "Form/Mid/R[2]/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CTRL",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CTRL",
+              "field" : "Form/Mid/L[2]/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "Form/Mid/L[2]/Key",
+                "Form/Mid/L[2]/N",
+                "Form/Mid/R[2]/Key",
+                "Form/Mid/R[2]/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROOTPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROOTPOS",
+              "field" : "Form/Mid/L[2]/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "Form/Mid/L[2]/Key",
+                "Form/Mid/L[2]/N",
+                "Form/Mid/R[2]/Key",
+                "Form/Mid/R[2]/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SUBPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[1]/Sub[0]/S",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "SUBPOS",
+              "field" : "Form/Mid/L[2]/N",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[2]/Sub[0]/S",
+                "Form/Mid/L[2]/Key",
+                "Form/Mid/L[2]/N",
+                "Form/Mid/R[2]/Key",
+                "Form/Mid/R[2]/N"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "left-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ANCPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[0]/Key",
+                "/Form[1]/Mid[1]/L[0]/N",
+                "/Form[1]/Mid[1]/L[0]/Sub[0]/S",
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "/Form[1]/Mid[1]/R[0]/Key",
+                "/Form[1]/Mid[1]/R[0]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N",
+                "Form/Mid/M"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ]
+            },
+            {
+              "code" : "CTRL",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ]
+            },
+            {
+              "code" : "ROOTPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ]
+            },
+            {
+              "code" : "SUBNEG",
+              "field" : "/Form[1]/Mid[1]/L[-5]/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[-5]/Key",
+                "/Form[1]/Mid[1]/L[-5]/N",
+                "/Form[1]/Mid[1]/L[-5]/Sub[0]/S",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/L[-5]/Key",
+                "/Form[1]/Mid[1]/L[-5]/N",
+                "/Form[1]/Mid[1]/L[-5]/Sub[0]/S"
+              ]
+            },
+            {
+              "code" : "SUBPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[1]/Sub[0]/S",
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ANCPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[0]/Key",
+                "/Form[1]/Mid[1]/L[0]/N",
+                "/Form[1]/Mid[1]/L[0]/Sub[0]/S",
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "/Form[1]/Mid[1]/R[0]/Key",
+                "/Form[1]/Mid[1]/R[0]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N",
+                "Form/Mid/M"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ]
+            },
+            {
+              "code" : "CTRL",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ]
+            },
+            {
+              "code" : "ROOTPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ]
+            },
+            {
+              "code" : "SUBNEG",
+              "field" : "/Form[1]/Mid[1]/L[-5]/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[-5]/Key",
+                "/Form[1]/Mid[1]/L[-5]/N",
+                "/Form[1]/Mid[1]/L[-5]/Sub[0]/S",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/L[-5]/Key",
+                "/Form[1]/Mid[1]/L[-5]/N",
+                "/Form[1]/Mid[1]/L[-5]/Sub[0]/S"
+              ]
+            },
+            {
+              "code" : "SUBPOS",
+              "field" : "Form/Mid/L/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[1]/Sub[0]/S",
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/R[-5]/Key",
+                "/Form[1]/Mid[1]/R[-5]/N",
+                "Form/Mid/L/Key",
+                "Form/Mid/L/N"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "right-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SUBNEG",
+              "field" : "/Form[1]/Mid[1]/L[-5]/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[-5]/Key",
+                "/Form[1]/Mid[1]/L[-5]/N",
+                "/Form[1]/Mid[1]/L[-5]/Sub[0]/S",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/L[-5]/Key",
+                "/Form[1]/Mid[1]/L[-5]/N",
+                "/Form[1]/Mid[1]/L[-5]/Sub[0]/S"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SUBNEG",
+              "field" : "/Form[1]/Mid[1]/L[-5]/N",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Parallel reference probe.",
+              "referenced" : [
+                "/Form[1]/Mid[1]/L[-5]/Key",
+                "/Form[1]/Mid[1]/L[-5]/N",
+                "/Form[1]/Mid[1]/L[-5]/Sub[0]/S",
+                "Form/Mid/R/Key",
+                "Form/Mid/R/N"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Mid[1]/L[-5]/Key",
+                "/Form[1]/Mid[1]/L[-5]/N",
+                "/Form[1]/Mid[1]/L[-5]/Sub[0]/S"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

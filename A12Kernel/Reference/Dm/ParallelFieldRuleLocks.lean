@@ -304,9 +304,9 @@ example : referencesOf (rule "GroupFilled(/Form) And FieldFilled(L/N) And FieldF
       ("R", .arr #[rightRow "Alpha" "8" "2024-03-15"])])]) =
     some [("Form/L/N", .inr (["Form/L/Key", "Form/L/N", "Form/R/Key", "Form/R/N"], []))] := by native_decide
 
--- Group expansions the retained populations do not settle are refused, each beside an admitted twin
--- that differs only in the refused feature: a group above the joined groups, and a repeatable
--- descendant below the joined level.
+-- A group above the joined groups expands with every joined level wildcarded beside the joined-row
+-- reads, and a group at the joined level wildcards only its own repeatable child. Kernel oracle: rows
+-- `ANCPOS` and `SUBPOS` of the retained parallel-group-references capture.
 private def midModel : FlatModel :=
   let base := model
   { base with
@@ -325,8 +325,9 @@ example : midRun "[Mid/L/N] < [Mid/R/N]" =
     some [("Form/Mid/L/N", .inr (
       ["Form/Mid/L/Key", "Form/Mid/L/N", "Form/Mid/R/Key", "Form/Mid/R/N"], []))] := by native_decide
 
-example : midRun "GroupFilled(Mid) And [Mid/L/N] < [Mid/R/N]" = some [("Form/Mid/L/N", .inl (.groupAboveJoin ["Form", "Mid"]))] := by
-  native_decide
+example : midRun "GroupFilled(Mid) And [Mid/L/N] < [Mid/R/N]" = some [("Form/Mid/L/N", .inr (
+    ["/Form[1]/Mid[1]/L[0]/Key", "/Form[1]/Mid[1]/L[0]/N", "/Form[1]/Mid[1]/R[0]/Key", "/Form[1]/Mid[1]/R[0]/N",
+      "Form/Mid/L/Key", "Form/Mid/L/N", "Form/Mid/R/Key", "Form/Mid/R/N"], []))] := by native_decide
 
 private def nestedModel : FlatModel :=
   let base := model
@@ -347,7 +348,7 @@ example : nestedModel.validate.isOk = true := by native_decide
 example : nestedRun "GroupFilled(R) And [L/N] < [R/N]" = some [("Form/L/N", .inr (
     ["Form/L/Key", "Form/L/N", "Form/R/Key", "Form/R/N"], []))] := by native_decide
 
-example : nestedRun "GroupFilled(L) And [L/N] < [R/N]" = some [("Form/L/N", .inl (.repeatableBelowJoin 7))] := by
-  native_decide
+example : nestedRun "GroupFilled(L) And [L/N] < [R/N]" = some [("Form/L/N", .inr (
+    ["/Form[1]/L[1]/Sub[0]/Q", "Form/L/Key", "Form/L/N", "Form/R/Key", "Form/R/N"], []))] := by native_decide
 
 end A12Kernel.Dm.ParallelFieldRuleLocks
