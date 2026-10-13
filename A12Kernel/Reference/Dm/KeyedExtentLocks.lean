@@ -200,6 +200,14 @@ example : numberFamily "Packages/Items*/Weight For Key" "missing" ["0", "0", "0"
     computation "FirstFilledValue(Packages/Items*/Weight For Key,Packages/Header For \"P1\")"
       "FieldFilled(Key)" "missing" = some "value 1" := by native_decide
 
+/-- A key selecting no package leaves the starred list absent, an open extent like an uninstantiated
+tail, so a fired comparison is OMISSION; the matched package's exhausted `Items` stays VALUE. Kernel
+calibration: the generated self-validation rows of the retained nested-semantic-index,
+selected-message-references and index-text-normalization captures. -/
+example : validationVerdict "[Out] != Sum(Packages/Items*/Weight For Key)" "missing" = some (.fired .omission) ∧
+    validationVerdict "[Out] != Sum(Packages/Items*/Weight For Key)" "P1" = some (.fired .value) := by
+  native_decide
+
 example : ["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].all (fun operator =>
     validation (operator ++ "(Packages/Items*/Weight For Key) == 7") "P1" false true == some false &&
     computation (operator ++ "(Packages/Items*/Weight For Key)") "FieldFilled(Key)" "P1" false true == some "cleared" &&
@@ -238,7 +246,7 @@ example : computation "NumberOfValueInFields(2 In Packages/Items* For Key)" "Fie
     computation "NumberOfValueInFields(2 In Packages/Items* For Key)" "FieldFilled(Key)" "P1" false false true = some "cleared" := by native_decide
 
 example : ["Sum", "MinValue", "MaxValue"].all (fun operator =>
-    validationVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0") "missing" == some (.fired .value) &&
+    validationVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0") "missing" == some (.fired .omission) &&
     validationVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0") "P2" false false false true == some (.fired .omission)) := by native_decide
 
 private def partialOutcome (expression : String) (coverage : List RelevantEntityPattern)
@@ -364,7 +372,7 @@ example : (["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].zip ["7", 
 
 example : ["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].all (fun operator =>
     partialVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0")
-      [relevant ["Key"], relevant ["Packages"]] "missing" == some (.fired .value) &&
+      [relevant ["Key"], relevant ["Packages"]] "missing" == some (.fired .omission) &&
     partialVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0")
       [relevant ["Key"], concreteRow 1, concreteRow 2] "missing" == some .unknown &&
     partialVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0")

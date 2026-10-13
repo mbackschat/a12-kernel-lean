@@ -156,7 +156,8 @@ import A12Kernel.Elaboration.StringContext
 
 Each argument is a `kernelProbe` request file. The process reads its model and its Kernel artifact
 (`artifact<suffix>.json` beside `req<suffix>.json` or `request<suffix>.json`, the suffix led by `-` or `.`), then for every document
-row replays every rule and prints one tab-separated line per rule:
+row replays every authored rule and every computation's generated rule, then every computation, and
+prints one tab-separated line per instance:
 
 `request  row  rule  code  tier  construct  detail`
 

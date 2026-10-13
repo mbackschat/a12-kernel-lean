@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.GeneratedComputationRule
 
 /-! # Replaying one retained observation row through Lean
 
@@ -37,21 +38,55 @@ def RuleStatus.detail : RuleStatus → String
   | .refused refusal => s!"{refusal.construct}\t{oneLine refusal.detail}"
   | .runFault detail => s!"Fault\t{oneLine detail}"
 
-/-- Compare every rule of `model` on one checked document against the Kernel's messages. -/
+/-- The rules full validation runs: the authored ones, then each computation's generated rule. A
+computation whose target path has no group-relative reading keeps an unparsable condition, so it is
+refused rather than silently dropped. -/
+def validationRules (model : DmModel) (language : Language) : List DmRule :=
+  model.rules ++ model.computations.map fun computation =>
+    (computation.generatedRule? language).getD
+      { group := computation.group, name := computation.name, errorEntityRelPath := computation.targetRelPath
+        errorCode := computation.name, condition := "(", severity := "ERROR" }
+
+/-- The model path of a rule's error field as an unindexed message pointer spells it. The path is
+written relative to the rule element, one level below its declaring group. -/
+def errorFieldPath (rule : DmRule) : String :=
+  let segments := rule.errorEntityRelPath.splitOn "/"
+  let path := if segments.head? == some "" then segments.drop 1 else
+    let ups := (segments.takeWhile (· == "..")).length
+    rule.group.take (rule.group.length + 1 - ups) ++ segments.drop ups
+  "/".intercalate path
+
+/-- A message pointer without its row coordinates or partial-pointer prefix. -/
+def unindexedPointer (pointer : String) : String :=
+  "/".intercalate (((pointer.splitOn "/").filter (· != "")).map fun segment => (segment.splitOn "[").head!)
+
+private def errorAt (group : GroupPath) (errorEntityRelPath : String) : DmRule :=
+  { group, name := "", errorEntityRelPath, errorCode := "", condition := "", severity := "" }
+
+example : errorFieldPath (errorAt ["Form", "Rows"] "../../Total") = "Form/Total" ∧
+    errorFieldPath (errorAt ["Form"] "../Rows/X") = "Form/Rows/X" ∧
+    unindexedPointer "/Form[1]/Rows[0]/X" = "Form/Rows/X" := by native_decide
+
+/-- Compare every authored and generated rule of `model` on one checked document against the
+Kernel's messages, attributed by code and error field. -/
 def replayRules (model : DmModel) (language : Language) (world : World)
     (checked : CheckedDocument model.flat) (kernel : List ObservedMessage) : List RuleVerdict :=
-  -- Authored rules read required-empty cells as formally unavailable (spec/03 §B.2), so they run
-  -- on the document carrying full validation's generated `.required` findings.
-  let authored := checked.fullRequiredEvaluations.map checked.withRequiredFindings
-  model.rules.map fun rule =>
-    let expected := (kernel.filter (·.code == rule.errorCode)).mergeSort (compare · · != .gt)
-    -- Messages are attributed by code, so a code two rules share cannot be told apart.
-    let shared := (model.rules.filter (·.errorCode == rule.errorCode)).length > 1
+  -- Rules read required-empty cells as formally unavailable (spec/03 §B.2), so they run on the
+  -- document carrying full validation's generated `.required` findings.
+  let validated := checked.fullRequiredEvaluations.map checked.withRequiredFindings
+  let rules := validationRules model language
+  rules.map fun rule =>
+    let attributed (message : ObservedMessage) :=
+      message.code == rule.errorCode && unindexedPointer message.pointer == errorFieldPath rule
+    let expected := (kernel.filter attributed).mergeSort (compare · · != .gt)
+    -- A message names its code and error field, so only two rules sharing both cannot be told apart.
+    let shared := (rules.filter fun other =>
+      other.errorCode == rule.errorCode && errorFieldPath other == errorFieldPath rule).length > 1
     let status := if shared then .refused { construct := "ErrorCode", detail := s!"{rule.errorCode} is shared" }
       else match checkValidationRule model language rule world with
       | .error refusal => .refused refusal
       | .ok checked' =>
-          match authored with
+          match validated with
           | .error error => .runFault (repr error).pretty
           | .ok document =>
           match runValidationRule world document checked' with

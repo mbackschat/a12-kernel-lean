@@ -140,10 +140,12 @@ def resolvePartialSelectedAddresses
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
     (document : CheckedDocument model) (scope : ValidationRelevanceScope) (outer : Env)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
-    (extentRelevant : FlatFieldDecl → List RepeatableLevel → List RepeatableLevel → Env → Bool := fun _ _ _ _ => true) :
+    (extentRelevant : FlatFieldDecl → List RepeatableLevel → List RepeatableLevel → Env → Bool := fun _ _ _ _ => true)
+    (missingStarIsOmitted : Bool := false) :
     Except CheckedAddressingError
       (Option (CellObservation (List (FlatFieldDecl × Env) × Bool))) := do
-  match ← resolvePartialSelectedExtent source document scope outer read (.consumer extentRelevant) (requireComplete := true) with
+  match ← resolvePartialSelectedExtent source document scope outer read (.consumer extentRelevant) (requireComplete := true)
+      (missingStarIsOmitted := missingStarIsOmitted) with
   | none => pure none
   | some .empty => pure (some .empty)
   | some (.unknown cause) => pure (some (.unknown cause))

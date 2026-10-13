@@ -104,7 +104,8 @@ private def resolvedSelectedPartialAggregateSide
       (Sum (ResolvedValueListSide .number) PartialValidationNumberAggregateResult) := do
   let selected ← (resolvePartialSelectedAddresses source.source document scope outer read
     (fun declaration bound reopened environment =>
-      scope.coversAggregateExtent model declaration.path bound reopened environment)).mapError .addressing
+      scope.coversAggregateExtent model declaration.path bound reopened environment)
+    (missingStarIsOmitted := true)).mapError .addressing
   match selected with
   | none => pure (.inr .nonRelevant)
   | some (.unknown cause) | some (.poison cause) => pure (.inr (.evaluated (.unknown cause)))
@@ -226,8 +227,11 @@ def resolvedCheckedDocumentValidationAggregateSide
     Except CheckedAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   do
+    -- A key selecting no row leaves the starred list absent: an open extent, as spec/10 §4 counts an
+    -- uninstantiated tail, so the aggregate stays fillable (generated self-validation rows,
+    -- docs/sources/model-structure-and-declaration-probes.md#src-generated-self-validation-k14).
     if let .selected source := checked then
-      return .inl (← source.sideIn .validation document outer)
+      return .inl (← source.sideIn .validation document outer (missingStarIsOmitted := true))
     let resolved ← checked.resolveCheckedValidationOperand document outer world traversalMode
     let side := match checked with
       | .selected _ | .star _ | .starHaving _ | .group _ =>

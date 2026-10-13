@@ -108,3 +108,13 @@ Four corrections are `pending` below and have not been handed off. The 24 termin
 - `basis`: [Generated-requiredness capture](sources/model-structure-and-declaration-probes.md#src-generated-requiredness-k14), seventeen rows on both Kernel 30.8.1 strategies at clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`; authored-rule replay agrees on every row only when required-empty cells read as formally unavailable.
 - `acceptance`: Reconcile generated required-field evaluation with the row domain, capacity exclusion and partial relevance, and confirm that the full-validation authored-rule view carries required findings for parent-relative and repeatable requiredness. Preserve the base-view-first ordering and the computation asymmetry.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-07"></a>
+### SPEC-2026-10-13-07 — an unmatched selection keeps a starred aggregate fillable
+
+- `status`: pending
+- `canonical`: [Keyed lookup](../spec/08-paths-and-references.md#41-what-a-semantic-index-read-yields).
+- `delta`: A key selecting no row leaves `Sum` over a starred list below the key at the both-directional all-empty identity, so a fired comparison over it is OMISSION rather than VALUE.
+- `basis`: [Generated self-validation replay](sources/model-structure-and-declaration-probes.md#src-generated-self-validation-k14): six retained Kernel 30.8.1 rows of the nested-semantic-index, selected-message-references and index-text-normalization captures type the generated `Sum(… For Key)` mismatch OMISSION for a key matching no row, an empty key and a key differing by a lone carriage return.
+- `acceptance`: Reconcile the selected aggregate's missingness with the value-list absence already recorded. Do not claim `MinValue`, `MaxValue`, `NumberOfDifferentValues` or partial validation, which share the read but are unmeasured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
