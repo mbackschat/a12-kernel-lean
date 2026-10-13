@@ -37,4 +37,14 @@ example :
       (ParameterToken.ofParameter keywords "index(Key).value")).form.isNone = true := by
   native_decide
 
+-- A word after the closing parenthesis that is not the suffix is an unexpected token, not the
+-- truncated input a dotted field name would be: the retained rows `de-Wert`, `cap-Value`, `g-value`,
+-- `dm-value` and `em-wert` of the two index captures.
+example :
+    (decoded "index(Key).Wert").events = [.fault .unexpected] ∧
+    (decoded "index(Key).Value").events = [.fault .unexpected] ∧
+    (decodeMessageName keywords { terminals with valueSuffix := "Wert" }
+      (ParameterToken.ofParameter keywords "index(Key).value")).events = [.fault .unexpected] := by
+  native_decide
+
 end A12Kernel.Conformance.IndexMessageAuthoring

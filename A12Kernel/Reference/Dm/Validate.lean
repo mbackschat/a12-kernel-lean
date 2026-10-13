@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.Model
 import A12Kernel.Reference.Dm.Parser
 import A12Kernel.Reference.Dm.LowerValidation
+import A12Kernel.Elaboration.ValidationMessageTypes
 
 /-! # Running a DM model's rules over one document
 
@@ -28,6 +29,11 @@ structure ObservedMessage where
 
 instance : ToString ObservedMessage where
   toString message := s!"{message.code}@{message.pointer}:{message.messageType}/{message.severity}"
+
+/-- The message-parameter terminals a model's condition language selects. -/
+def Language.messageKeywordProfile : Language → ValidationMessageKeywordProfile
+  | .english => .english
+  | .german => .german
 
 def severity? : String → Option ValidationSeverity
   | "ERROR" => some .error

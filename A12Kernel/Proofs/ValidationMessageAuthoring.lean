@@ -46,8 +46,10 @@ theorem validationMessageTemplate_repertoireFailure_refused
 
 theorem checkedValidationMessageReference_usedByCondition
     (reference : CheckedValidationMessageReference model condition) :
-    condition.core.referencesField reference.declaration.id = true :=
-  reference.conditionReferenced
+    condition.core.referencesField reference.declaration.id = true := by
+  have member := reference.conditionReferenced
+  unfold ValidationMessageCondition.messageMember at member
+  exact (Bool.and_eq_true _ _).mp member |>.1
 
 theorem checkedValidationMessage_fieldValue_present_isOpaque
     {condition : CheckedFlatCondition model}
@@ -184,8 +186,9 @@ theorem checkMessageGroup_rootGroup_resolvesToChainRoot
     (checkMessageGroup (ValidationMessageCondition.flat condition) parameter .rootGroup).map
         (fun access => access.group) = .ok (condition.rowGroup.take 1) := by
   simp only [checkMessageGroup, ValidationMessageCondition.rowGroup, resolveMessageGroup,
-    admitMessageGroup, groupPath_isValid_take_one valid, messageGroupAvailable,
-    groupPath_take_isPrefixOf, Bool.true_or, dite_true]
+    ValidationMessageCondition.parallelIteration, hashParameterRefusal, Bool.not_true,
+    Bool.false_eq_true, if_false, admitMessageGroup, groupPath_isValid_take_one valid,
+    messageGroupAvailable, groupPath_take_isPrefixOf, Bool.true_or, dite_true]
   rfl
 
 end A12Kernel

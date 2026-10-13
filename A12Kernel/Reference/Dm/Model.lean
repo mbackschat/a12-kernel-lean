@@ -244,6 +244,8 @@ private structure ReadState where
   declarations : Array ExecutableDeclaration := #[]
   /-- Index-field names to resolve once every field id is known, by repeatable level. -/
   indexFields : Array (RepeatableLevel × GroupPath × String) := #[]
+  /-- A non-repeatable group's index-field name, resolved the same way. -/
+  nonrepeatableIndexFields : Array (GroupPath × String) := #[]
   /-- The model's supported characters, read before the walk because an Enumeration declaration's notifications depend on them. -/
   legalCharset : LegalCharset := .defaultBmp
   enumerationNotifications : Array (List String × List EnumerationDeclarationNotification) := #[]
@@ -289,7 +291,11 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
           if let some index := str? body "indexFieldName" then
             modify fun state => { state with indexFields := state.indexFields.push (level, groupPath, index) }
           pure (scope ++ [level])
-        else pure scope
+        else do
+          if let some index := str? body "indexFieldName" then
+            modify fun state => { state with
+              nonrepeatableIndexFields := state.nonrepeatableIndexFields.push (groupPath, index) }
+          pure scope
       for child in (← body.getObjValAs? (Array Json) "elements") do
         readElement groupPath scope child
   | "Field" =>
@@ -385,10 +391,16 @@ private def readModelCore (json : Json)
           refusals := refusals ++ [(groupPath, s!"indexFieldName {index} names no field")]
         groups := groups ++ [{ group with indexField := fieldId groupPath index }]
     | none => groups := groups ++ [group]
+  let mut nonrepeatableIndexFields := []
+  for (groupPath, index) in state.nonrepeatableIndexFields.toList do
+    match fieldId groupPath index with
+    | some field => nonrepeatableIndexFields := nonrepeatableIndexFields ++ [(groupPath, field)]
+    | none => refusals := refusals ++ [(groupPath, s!"indexFieldName {index} names no field")]
   pure ({
     flat := {
       fields := state.fields.toList
       repeatableGroups := groups
+      nonrepeatableIndexFields
       legalCharset
       fieldRefByShortNameAllowed := (bool? config "fieldRefByShortNameAllowed").getD false
       baseYear

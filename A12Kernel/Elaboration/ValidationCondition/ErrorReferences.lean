@@ -15,6 +15,11 @@ private inductive ReferenceKind where
   | nonWildcard (level : RepeatableLevel)
   | unkeyed (level : RepeatableLevel)
   | selected (group : GroupPath) (key : Option CheckedSemanticIndexKey)
+  /-- A reference that is not a semantic-index selection of the queried field. -/
+  | unselected
+  /-- A reference binding every level of `scope`, the queried field's own repeatable scope: one
+  written without a wildcard on any of them. -/
+  | unstarred (scope : List RepeatableLevel)
 
 /-- Error-field membership expands a group, but message index ancestry follows the authored
 entity path (ReferencedIdsUtil.createAllIndexFieldEntityIds). The optional path restriction
@@ -39,6 +44,8 @@ private def ReferenceQuery.binds (query : ReferenceQuery) (scope : List Repeatab
   | .nonWildcard level => scope.contains level
   | .unkeyed _ => true
   | .selected _ _ => false
+  | .unselected => true
+  | .unstarred fieldScope => fieldScope.all scope.contains
 
 private def ReferenceQuery.atPath (query : ReferenceQuery) (path : GroupPath)
     (scope : List RepeatableLevel) (isForm : Bool := false) : Bool :=
@@ -70,6 +77,14 @@ private def selectedReferenceAt (field : FieldId) (query : ReferenceQuery)
     | .unkeyed level => selection.group.level != level
     | .nonWildcard level => selection.group.level == level ||
         selection.indexDeclaration.repeatableScope.dropLast.contains level
+    | .unselected => false
+    -- A selection replaces the selected level's wildcard; only a star written below it remains.
+    -- Unmeasured on this carrier: the retained star-gate rows read the field without a key.
+    | .unstarred _ => match source with
+        | .inl _ => true
+        | .inr source => match source.target with
+            | .group _ => true
+            | .starredGroup _ | .star _ => false
     | _ => query.binds selection.indexDeclaration.repeatableScope.dropLast isForm
   let key := match selection.key with
     | .literal .. => false
@@ -127,6 +142,9 @@ private def markedReferenceAt (model : FlatModel) (field : FieldId) (query : Ref
           | .nonWildcard level => (slot.outerIterationScope? model).any (·.contains level)
           | .unkeyed _ => true
           | .selected _ _ => false
+          | .unselected => true
+          | .unstarred fieldScope =>
+              (slot.outerIterationScope? model).any (fun scope => fieldScope.all scope.contains)
 
 private def rawOperandReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (operand : ResolvedFieldEntityOperand model) : Option Bool :=
@@ -193,7 +211,9 @@ private def temporalNumericReferenceAt? (field : FieldId) (query : ReferenceQuer
     | .nonIteration level => (slot.bindingScope? model).map (!·.contains level)
     | .nonWildcard level => (slot.bindingScope? model).map (·.contains level)
     | .unkeyed _ => some true
-    | .selected _ _ => some false)
+    | .selected _ _ => some false
+    | .unselected => some true
+    | .unstarred fieldScope => (slot.bindingScope? model).map (fun scope => fieldScope.all scope.contains))
 
 private def temporalReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (source : ScalarTemporalExpression model) : Option Bool :=
@@ -315,7 +335,9 @@ private def leafErrorReferenceAt? (field : FieldId) (query : ReferenceQuery)
           | .nonIteration level => !operand.iterationScope.any (·.contains level)
           | .nonWildcard level => operand.iterationScope.any (·.contains level)
           | .unkeyed _ => true
-          | .selected _ _ => false))
+          | .selected _ _ => false
+          | .unselected => true
+          | .unstarred fieldScope => operand.iterationScope.any (fun scope => fieldScope.all scope.contains)))
   | .fieldFill _ source => fillReferenceAt? field query source
   | .valuesNotUnique (.number source) => numberReferenceAt? field query source
   | .valuesNotUnique (.token source) => tokenReferenceAt? field query source.source
@@ -400,5 +422,22 @@ def messageSelectedGroupReference? (condition : ValidationCondition model)
 def messageUnkeyedReference? (condition : ValidationCondition model)
     (field : FieldId) (group : GroupPath) (level : RepeatableLevel) : Option Bool :=
   errorReferenceFor? condition field { kind := .unkeyed level, within := some group }
+
+/-- Whether the condition reads `field` other than through a semantic-index selection of it. An
+unkeyed message parameter is a member only through such a read: a keyed read of the same field does
+not license it ([checkpoint](../../../docs/sources/message-and-pointer-probes.md#src-rule-message-semantic-index),
+`membership-claim`). -/
+def messageUnselectedReference? (condition : ValidationCondition model) (field : FieldId) :
+    Option Bool :=
+  errorReferenceFor? condition field { kind := .unselected }
+
+/-- Whether some read of `field` binds every one of its repeatable levels, so that no wildcard was
+written on its path. The value suffix needs one; a read only through a star does not supply it, while
+a plain group read containing the field does
+([parameter surface](../../../docs/sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates),
+[group footprint](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-30a-message-reference-admission)). -/
+def messageUnstarredReference? (condition : ValidationCondition model) (field : FieldId) :
+    Option Bool :=
+  errorReferenceFor? condition field { kind := .unstarred (model.fieldRepeatableScope field) }
 
 end A12Kernel.ValidationCondition

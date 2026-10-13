@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ValidationMessageTypes
 import A12Kernel.Elaboration.MessageGroupArgument
 
 /-! # Message group argument syntax conformance locks
@@ -19,20 +20,8 @@ namespace A12Kernel.Conformance.MessageGroupArgument
 
 open A12Kernel
 
-/-- The en_US parameter terminals, read off the Kernel's own English terminal bundle. -/
-def englishReservedTerminals : List String :=
-  ["For", "index", "RootGroup", "RuleGroup", "Usb", "Vordruckname", "Vordruckzeile", "BaseYear",
-    "value", "Zeile"]
-
-/-- The seven terminals this producer historically accepts unquoted inside an entity name. -/
-def englishUnquotedTerminals : List String :=
-  ["value", "RootGroup", "Zeile", "Usb", "index", "Vordruckzeile", "Vordruckname"]
-
 private def keywords : MessageParameterKeywords :=
-  { reserved := englishReservedTerminals, exempt := englishUnquotedTerminals,
-    exemptNonFinal := ["value", "Vordruckzeile", "Vordruckname"],
-    ruleGroup := "RuleGroup", rootGroup := "RootGroup", retired := ["Zeile", "Usb"],
-    offset := ["Zeile"], forTerminal := "For" }
+  ValidationMessageKeywordProfile.english.parameterKeywords
 
 private def refused (argument : String) : Option MessageGroupArgumentRefusal :=
   match decodeMessageGroupArgument keywords argument with
@@ -153,15 +142,8 @@ example :
         fun argument => decoded argument = some (.relative 0 none ["Head"], .trailing)) = true := by
   native_decide
 
-/-- The de_DE parameter terminals, read off the Kernel's own German terminal bundle, with the quoting
-exemption and the non-final exempt words in the same grammar roles as the English ones. -/
 private def germanKeywords : MessageParameterKeywords :=
-  { reserved := ["Fuer", "index", "LfdNr", "RegelKontext", "Usb", "Vordruckname",
-      "Vordruckzeile", "Referenzjahr", "Wert", "Zeile"],
-    exempt := ["Wert", "LfdNr", "Zeile", "Usb", "index", "Vordruckzeile", "Vordruckname"],
-    exemptNonFinal := ["Wert", "Vordruckzeile", "Vordruckname"],
-    ruleGroup := "RegelKontext", rootGroup := "LfdNr", retired := ["Zeile", "Usb"],
-    offset := ["Zeile"], forTerminal := "Fuer" }
+  ValidationMessageKeywordProfile.german.parameterKeywords
 
 private def decodedGerman (argument : String) :
     Option (AuthoredMessageGroup × MessageGroupRemainder) :=

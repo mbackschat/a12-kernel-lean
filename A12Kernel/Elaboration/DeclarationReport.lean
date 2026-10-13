@@ -64,8 +64,8 @@ def messagePresence (declaredLocales : List String) (entries : List (String × S
 /-- The error-text checker's template classes over every declared locale's nonempty judged text, in
 locale order. A text for a locale the model does not declare is not asked (spec/11). `check` is the
 template checker, reporting each failing parameter or the character gate that stops them. -/
-def errorTextClasses (declaredLocales : List String) (entries : List (String × String))
-    (check : String → List KernelStaticDiagnostic) : List KernelStaticDiagnostic :=
+def errorTextClasses {α : Type} (declaredLocales : List String) (entries : List (String × String))
+    (check : String → List α) : List α :=
   declaredLocales.flatMap fun locale => match judgedText entries locale with
     | some text => if text.isEmpty then [] else check text
     | none => []

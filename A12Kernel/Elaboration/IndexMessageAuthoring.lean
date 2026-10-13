@@ -6,22 +6,28 @@ import A12Kernel.Elaboration.IndexParameterSuffix
 namespace A12Kernel
 
 structure MessageIndexBinding where
-  group : RepeatableGroupDecl
+  groupPath : GroupPath
+  /-- The indexed group's repeatable declaration; `none` for a non-repeatable indexed group, whose
+  parameter meets the declaration-shape gate instead of the iteration one. -/
+  repeatable : Option RepeatableGroupDecl
   declaration : FlatFieldDecl
   deriving Repr, DecidableEq
 
 /-- Index parameters resolve short names only on the error path
-(FullChecks_ErrorTextParameterParser.checkIndexFieldRef). -/
+(FullChecks_ErrorTextParameterParser.checkIndexFieldRef), whether or not the indexed group repeats. -/
 def messageIndexBindings (model : FlatModel) (name : String) : List MessageIndexBinding :=
-  model.repeatableGroups.filterMap fun group => do
-    let field ← group.indexField
-    let declaration ← model.fields.find? (·.id == field)
-    if declaration.name == name then some { group, declaration } else none
+  let named (field : FieldId) := (model.fields.find? (·.id == field)).filter (·.name == name)
+  (model.repeatableGroups.filterMap fun group => do
+    let declaration ← named (← group.indexField)
+    some { groupPath := group.path, repeatable := some group, declaration }) ++
+  model.nonrepeatableIndexFields.filterMap fun (groupPath, field) => do
+    let declaration ← named field
+    some { groupPath, repeatable := none, declaration }
 
 def messageErrorPathIndices (condition : ValidationMessageCondition model)
     (name : String) : List MessageIndexBinding :=
   (messageIndexBindings model name).filter fun binding =>
-    condition.errorDeclaration?.any (binding.group.path.isPrefixOf ·.groupPath)
+    condition.errorDeclaration?.any (binding.groupPath.isPrefixOf ·.groupPath)
 
 inductive IndexMessageAuthoringError where
   | contextRequired
@@ -32,7 +38,7 @@ inductive IndexMessageAuthoringError where
   deriving Repr, DecidableEq
 
 private def MessageIndexBinding.repeats (binding : MessageIndexBinding) : Bool :=
-  binding.group.repeatability.any (· > 1)
+  binding.repeatable.any (·.repeatability.any (· > 1))
 
 private def MessageIndexBinding.fieldType (binding : MessageIndexBinding) : IndexFieldType :=
   match binding.declaration.enumeration with
@@ -61,10 +67,13 @@ def messageReferencedIndices (condition : ValidationMessageCondition model) (nam
   let candidates := (messageIndexBindings model name).mergeSort fun left right =>
     String.intercalate "/" left.declaration.path ≤ String.intercalate "/" right.declaration.path
   let entries ← candidates.mapM fun binding => do
-    let some referenced := condition.indexReferenced? binding.group.path
+    let some referenced := condition.indexReferenced? binding.groupPath
       | throw .unsupportedReferenceMetadata
     if !referenced then pure none else
-      let some nonIterating := condition.indexNonIterating? binding.group.path binding.group.level
+      -- Only the repeatable branch reads iteration (`repeatabilityRefusal`).
+      let some nonIterating := match binding.repeatable with
+          | some group => condition.indexNonIterating? binding.groupPath group.level
+          | none => some false
         | throw .unsupportedReferenceMetadata
       pure (some (binding, {
         repeatable := binding.repeats

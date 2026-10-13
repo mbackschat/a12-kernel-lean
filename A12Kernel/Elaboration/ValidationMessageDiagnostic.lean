@@ -21,6 +21,7 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
   | .oddDollarCount => some .wrongNumberOfDollars
   | .noBaseYear => some .noMessageBaseYear
   | .fieldNotReferenced _ _ => some .messageFieldNotReferenced
+  | .valueAccess _ diagnostic => some diagnostic
   | .missingCategoryName _ => some .missingMessageCategory
   | .categoryFieldNotEnumeration _ _ => some .indexFieldNoEnumeration
   | .category _ (.unknownCategory _) => some .indexFieldCategoryUnknown

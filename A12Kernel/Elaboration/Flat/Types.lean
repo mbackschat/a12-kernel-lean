@@ -407,6 +407,10 @@ structure FlatModel where
   group's own fields in depth-first order. -/
   fields : List FlatFieldDecl
   repeatableGroups : List RepeatableGroupDecl := []
+  /-- The index field a non-repeatable group declares, by group path. The Kernel admits the declaration,
+  and only a message's `index(...)` parameter is known to read it
+  ([checkpoint](../../../docs/sources/message-and-pointer-probes.md#src-nonrepeatable-index-field-gate)). -/
+  nonrepeatableIndexFields : List (GroupPath × FieldId) := []
   /-- Admitted full-input charset; computed target checks omit this baseline (spec/06 §A.2). -/
   legalCharset : LegalCharset := .defaultBmp
   fieldRefByShortNameAllowed : Bool := false

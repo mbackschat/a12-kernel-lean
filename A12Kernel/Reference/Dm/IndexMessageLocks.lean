@@ -44,11 +44,7 @@ example : indexCheck "[/Form/Rows/Amount] > 0" = some none ∧
     indexCheck "[/Form/Rows/Amount] > 0 And Sum(Rows*/Amount) > 0" =
       some (some (.diagnostic .indexFieldNotIterating)) := by native_decide
 
-private def profile : ValidationMessageKeywordProfile := {
-  path := { reserved := ["For", "RuleGroup", "BaseYear"] }
-  baseYearTerminal := "BaseYear", forTerminal := "For", valueSuffixTerminal := "value"
-  rootGroupTerminal := "RootGroup", ruleGroupTerminal := "RuleGroup"
-  formLineTerminal := "Vordruckzeile", formNameTerminal := "Vordruckname" }
+private def profile : ValidationMessageKeywordProfile := .english
 
 private def authored (source : String) : Option Bool := do
   let checked ← checkedRule "[/Form/Rows/Amount] > 0"
@@ -231,13 +227,8 @@ private def locale : Language → String
   | .english => "en_US"
   | .german => "de_DE"
 
-private def languageProfile : Language → ValidationMessageKeywordProfile
-  | .english => profile
-  | .german => {
-      path := { reserved := ["Fuer", "RegelKontext", "Referenzjahr"] }
-      baseYearTerminal := "Referenzjahr", forTerminal := "Fuer", valueSuffixTerminal := "Wert"
-      rootGroupTerminal := "LfdNr", ruleGroupTerminal := "RegelKontext"
-      formLineTerminal := "Vordruckzeile", formNameTerminal := "Vordruckname" }
+private def languageProfile : Language → ValidationMessageKeywordProfile :=
+  Language.messageKeywordProfile
 
 private def nestedRule (kind : IndexKind) (language : Language) :
     Option (CheckedResolvedValidationRule (nestedModel kind)) :=

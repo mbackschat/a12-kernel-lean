@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.IndexMessageAuthoring
 import A12Kernel.Elaboration.MessageGroupArgument
 import A12Kernel.Elaboration.JavaOtherCategory
+import A12Kernel.Elaboration.ErrorTextParameterAddressing
 
 /-! Shared message-template errors, language profile and lexical gates. These gates also serve
 field-pattern messages; checked rule-parameter resolution belongs to ValidationMessageAuthoring. -/
@@ -36,6 +37,9 @@ inductive ValidationMessageTemplateError where
   ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-carriers)). -/
   | groupInFormPointer (parameter : String) (group : GroupPath)
   | fieldNotReferenced (parameter : String) (field : FieldId)
+  /-- A value suffix refused by one of its two gates, `PARAM_VALUE_WITH_STARREFERENCE` or
+  `INVALID_NO_VALUE_VALIDATION` (`valueAccessRefusal`). -/
+  | valueAccess (parameter : String) (diagnostic : KernelStaticDiagnostic)
   /-- A category suffix was written with no category name after the arrow. -/
   | missingCategoryName (parameter : String)
   /-- A category suffix was applied to a field that is not an Enumeration declaration. -/
@@ -161,6 +165,42 @@ structure ValidationMessageKeywordProfile where
   English condition language, where `Usb` takes none. -/
   offsetGroupTerminals : List String := []
   deriving Repr, DecidableEq
+
+/-- The en_US parameter terminals, read off the Kernel's own English terminal bundle, with the seven
+this producer historically accepts unquoted inside an entity name; only `For`, `RuleGroup` and
+`BaseYear` therefore need the quote escape
+([parameter surface](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)). -/
+def ValidationMessageKeywordProfile.english : ValidationMessageKeywordProfile := {
+  path := { reserved := ["For", "index", "RootGroup", "RuleGroup", "Usb", "Vordruckname",
+    "Vordruckzeile", "BaseYear", "value", "Zeile"] }
+  unquotedTerminals := ["value", "RootGroup", "Zeile", "Usb", "index", "Vordruckzeile", "Vordruckname"]
+  baseYearTerminal := "BaseYear"
+  forTerminal := "For"
+  valueSuffixTerminal := "value"
+  rootGroupTerminal := "RootGroup"
+  ruleGroupTerminal := "RuleGroup"
+  formLineTerminal := "Vordruckzeile"
+  formNameTerminal := "Vordruckname"
+  retiredGroupTerminals := ["Zeile", "Usb"]
+  offsetGroupTerminals := ["Zeile"] }
+
+/-- The de_DE parameter terminals, read off the Kernel's German terminal bundle in the same grammar
+roles; a German condition language selects them whatever the message's locale, and the retired
+terminals are shared ([German terminals](../../docs/sources/message-and-pointer-probes.md#src-german-condition-language-terminals),
+[index suffix](../../docs/sources/message-and-pointer-probes.md#src-index-german-suffix)). -/
+def ValidationMessageKeywordProfile.german : ValidationMessageKeywordProfile := {
+  path := { reserved := ["Fuer", "index", "LfdNr", "RegelKontext", "Usb", "Vordruckname",
+    "Vordruckzeile", "Referenzjahr", "Wert", "Zeile"] }
+  unquotedTerminals := ["Wert", "LfdNr", "Zeile", "Usb", "index", "Vordruckzeile", "Vordruckname"]
+  baseYearTerminal := "Referenzjahr"
+  forTerminal := "Fuer"
+  valueSuffixTerminal := "Wert"
+  rootGroupTerminal := "LfdNr"
+  ruleGroupTerminal := "RegelKontext"
+  formLineTerminal := "Vordruckzeile"
+  formNameTerminal := "Vordruckname"
+  retiredGroupTerminals := ["Zeile", "Usb"]
+  offsetGroupTerminals := ["Zeile"] }
 
 /-- The words the parameter decoder distinguishes, read off the profile: the path grammar's reserved
 words, and the exemption from quoting that keeps a reserved word a name. -/

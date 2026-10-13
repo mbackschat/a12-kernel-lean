@@ -558,9 +558,12 @@ where
     | .ok (entity, .closeParenthesis :: after) =>
         match after with
         | [] => { events := [], form := some (.indexField entity .none) }
+        -- After the closing parenthesis the grammar takes the suffix keyword alone, not a dotted
+        -- name, so any other word there is an unexpected token: the other language's suffix and a
+        -- capitalised one alike ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-index-german-suffix)).
         | .dot :: .name word false :: rest =>
             if word == terminals.valueSuffix then finishIndex entity .value rest
-            else refusedName (continuationFault keywords after)
+            else refusedName .unexpected
         | .arrow :: token :: rest =>
             match token.name? with
             | some (name, _) => finishIndex entity (.category name) rest

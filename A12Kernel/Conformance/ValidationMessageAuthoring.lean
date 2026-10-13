@@ -75,22 +75,7 @@ def model : FlatModel :=
 def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-/-- The exact en_US parameter terminal set, read off the Kernel's own English terminal bundle, together
-with the seven this producer historically accepts unquoted inside an entity name. Only `For`,
-`RuleGroup`, and `BaseYear` therefore need the quote escape here. -/
-def keywordProfile : ValidationMessageKeywordProfile := {
-  path := { reserved := MessageGroupArgument.englishReservedTerminals }
-  unquotedTerminals := MessageGroupArgument.englishUnquotedTerminals
-  baseYearTerminal := "BaseYear"
-  forTerminal := "For"
-  valueSuffixTerminal := "value"
-  rootGroupTerminal := "RootGroup"
-  ruleGroupTerminal := "RuleGroup"
-  formLineTerminal := "Vordruckzeile"
-  formNameTerminal := "Vordruckname"
-  retiredGroupTerminals := ["Zeile", "Usb"]
-  offsetGroupTerminals := ["Zeile"]
-}
+def keywordProfile : ValidationMessageKeywordProfile := .english
 
 private def condition? : Option (CheckedFlatCondition model) :=
   (elaborate model ["Order"] (.fieldFilled (bare "Amount"))).toOption

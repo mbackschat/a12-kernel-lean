@@ -81,9 +81,14 @@ is why the checked part has no membership witness to carry rather than an unset 
 renders is unmeasured and stays caller-supplied.
 
 The index terminal uses the checked rule's actual error declaration and condition-reference modes.
-Its resolution and suffix gates are owned by `IndexMessageAuthoring`; ordinary field parameters
-still use the nonrepeatable resolver. The declaration's "no value validation" flag remains outside
-that ordinary-field boundary.
+Its resolution and suffix gates are owned by `IndexMessageAuthoring`.
+
+A name resolves wherever its path leads, a repeatable field included: the rule's group, a deeper or a
+starred group, all resolve alike, and membership in the condition decides
+([iteration checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)).
+A read only through a semantic-index selection does not make an unkeyed parameter a member. The value
+suffix then asks two questions the name form does not: whether some read of the field writes no
+wildcard, and whether a String field skips value validation, each refused on its own class.
 -/
 
 namespace A12Kernel
@@ -113,10 +118,10 @@ structure CheckedValidationMessageReference
   reference : SurfaceFieldPath
   declaration : FlatFieldDecl
   resolved :
-    model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
+    model.messageNameModel.resolveFieldDeclarationUnchecked condition.rowGroup reference =
       .ok declaration
   conditionReferenced :
-    condition.core.referencesField declaration.id = true
+    condition.messageMember declaration.id = true
 
 /-- One checked form-pointer parameter. It is deliberately **not** a `CheckedValidationMessageReference`
 carrying a flag: the difference between the two is precisely that this one has no membership witness to
@@ -129,7 +134,7 @@ structure CheckedValidationMessageFormPointer
   declaration : FlatFieldDecl
   pointer : MessageFormPointer
   resolved :
-    model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
+    model.messageNameModel.resolveFieldDeclarationUnchecked condition.rowGroup reference =
       .ok declaration
 
 /-- One checked category access: the field reference beside the resolved projection, with witnesses
@@ -198,7 +203,7 @@ private def checkMessageGroupMode (condition : ValidationMessageCondition model)
   match condition with
   | .flat _ =>
       if key.isSome then throw (.invalidGroupParameter parameter)
-  | .rule _ =>
+  | .rule _ | .parallel _ _ =>
       match model.repeatableGroups.find? (·.path == group) with
       | none => if key.isSome then throw (.invalidGroupParameter parameter)
       | some declaration =>
@@ -260,7 +265,11 @@ def resolveMessageGroup {model : FlatModel} (condition : ValidationMessageCondit
         .error (.ruleGroupImmediatelyBelowRoot parameter)
       else
         .ok condition.rowGroup
-  | .rootGroup => .ok (condition.rowGroup.take 1)
+  -- The root shorthand is the serial parameter, whose one gate is the condition's parallel iteration.
+  | .rootGroup =>
+      match hashParameterRefusal .a12 { parallelIteration := condition.parallelIteration } .serial with
+      | some diagnostic => .error (.groupReferenceMode parameter diagnostic)
+      | none => .ok (condition.rowGroup.take 1)
   | .absolute [] => .error (.invalidGroupParameter parameter)
   | .absolute (root :: rest) =>
       if !model.hasGroupPath [root] then
@@ -361,7 +370,7 @@ private structure ResolvedMessageEntity
   reference : SurfaceFieldPath
   declaration : FlatFieldDecl
   resolved :
-    model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference =
+    model.messageNameModel.resolveFieldDeclarationUnchecked condition.rowGroup reference =
       .ok declaration
 
 private def lowerMessagePath (profile : ValidationMessageKeywordProfile)
@@ -390,7 +399,7 @@ private def resolveMessageEntity (model : FlatModel)
       (ResolvedMessageEntity model condition ⊕ GroupPath) := do
   let reference ← lowerMessagePath profile parameter authored
   match hResolved :
-      model.messageNameModel.resolveNonrepeatableFieldUnchecked condition.rowGroup reference with
+      model.messageNameModel.resolveFieldDeclarationUnchecked condition.rowGroup reference with
   | .error error =>
       match error.isGroupDisplaceableMiss, model.groupNamedBy? condition.rowGroup reference with
       | true, some group => pure (.inr group)
@@ -441,8 +450,7 @@ private def resolveMessageReference (model : FlatModel)
     | some (.inl entity) => pure entity
     | some (.inr group) => throw (.groupInNamePosition parameter group)
     | none => throw (.ruleGroupParameter parameter)
-  if hReferenced :
-      condition.core.referencesField entity.declaration.id = true then
+  if hReferenced : condition.messageMember entity.declaration.id = true then
     pure {
       parameter
       reference := entity.reference
@@ -524,7 +532,13 @@ private def checkMessageField (model : FlatModel)
       let reference ← resolveMessageReference model profile condition parameter entity
       match suffix with
       | .none => pure (.fieldName reference)
-      | .value => pure (.fieldValue reference)
+      | .value =>
+          match valueAccessRefusal .a12 {
+              referencedWithoutStar := condition.messageUnstarred? reference.declaration.id != some false
+              fieldIsString := reference.declaration.policy.kind == .string
+              noValueValidation := reference.declaration.isRawString } with
+          | some diagnostic => throw (.valueAccess parameter diagnostic)
+          | none => pure (.fieldValue reference)
       | .category name => pure (.fieldCategory (← resolveMessageCategory reference parameter name))
 
 /-- Check one name-position parameter: its events, then its form's own check, then a fault the parser
