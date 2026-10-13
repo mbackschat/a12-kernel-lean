@@ -1,0 +1,247 @@
+{
+ "header": {
+  "id": "UniqDeep_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "UniqDeep_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Form/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Rows/N",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Form/Rows/RG",
+           "name": "RG",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Form/Rows/RG/R1",
+              "name": "R1",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/Form/Rows/RG/RD",
+              "name": "RD",
+              "Group": {
+               "repeatability": 2,
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/Form/Rows/RG/RD/R2",
+                 "name": "R2",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                }
+               ]
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/GR1",
+        "name": "GR1",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/Form/GR1/Deep",
+           "name": "Deep",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Form/GR1/Deep/D1",
+              "name": "D1",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/GR2",
+        "name": "GR2",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/GR2/E1",
+           "name": "E1",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Form/GR2/Deep",
+           "name": "Deep",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Form/GR2/Deep/D2",
+              "name": "D2",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/K",
+        "name": "K",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/K/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Form/K/KD",
+           "name": "KD",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Group",
+              "id": "/Form/K/KD/KR",
+              "name": "KR",
+              "Group": {
+               "repeatability": 2,
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/Form/K/KD/KR/K1",
+                 "name": "K1",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                }
+               ]
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "Key"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

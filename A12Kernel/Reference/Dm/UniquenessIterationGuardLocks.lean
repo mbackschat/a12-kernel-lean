@@ -50,8 +50,8 @@ private def model : FlatModel :=
       { level := 20, path := ["Form", "W"], repeatability := some 2 },
       { level := 30, path := ["Form", "K"], repeatability := some 3, indexField := some 500 }] }
 
-private def verdict (target condition : String) : String :=
-  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+private def verdictIn (flat : FlatModel) (target condition : String) : String :=
+  let dm : DmModel := { flat, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   match checkRule dm .english {
       group := ["Form"], name := "Guard", errorCode := "GUARD", errorEntityRelPath := target,
       condition, severity := "ERROR" } with
@@ -59,6 +59,8 @@ private def verdict (target condition : String) : String :=
   | .error refusal =>
       if refusal.detail.startsWith "A12Kernel.FlatRuleAssemblyError.negativeConditionInIteration"
       then "MVK_NEG_CONDITION_IN_ITERATION" else refusal.detail
+
+private def verdict := verdictIn model
 
 private def admitted := "admitted"
 private def refused := "MVK_NEG_CONDITION_IN_ITERATION"
@@ -72,6 +74,32 @@ private def rows : List (String × String × String) := [
   ("ROOTGRP1", "H{x}", admitted), ("ROOTGRP1F", "H{x}, O{x}1", refused)]
 
 example : model.validate.isOk = true := by native_decide
+
+private def number (id : FieldId) (name : String) (group : GroupPath) (scope : List RepeatableLevel) :
+    FlatFieldDecl := policy 'N' { id, name, groupPath := group, repeatableScope := scope, policy := { kind := .string } }
+
+/-- A repeatable level inside a group or below a selection weighs its fields by its capacity, and a
+group inside the iterated row still supplies none. -/
+private def nestedModel : FlatModel :=
+  { model with
+    fields := model.fields ++ [
+      number 900 "R1" ["Form", "Rows", "RG"] [10], number 901 "R2" ["Form", "Rows", "RG", "RD"] [10, 40],
+      number 902 "D1" ["Form", "GR1", "Deep"] [50], number 903 "E1" ["Form", "GR2"] [],
+      number 904 "D2" ["Form", "GR2", "Deep"] [60], number 905 "K1" ["Form", "K", "KD", "KR"] [30, 70]]
+    repeatableGroups := model.repeatableGroups ++ [
+      { level := 40, path := ["Form", "Rows", "RG", "RD"], repeatability := some 2 },
+      { level := 50, path := ["Form", "GR1", "Deep"], repeatability := some 2 },
+      { level := 60, path := ["Form", "GR2", "Deep"], repeatability := some 2 },
+      { level := 70, path := ["Form", "K", "KD", "KR"], repeatability := some 2 }] }
+
+example : nestedModel.validate.isOk = true := by native_decide
+
+example :
+    let verdict := fun condition => verdictIn nestedModel "../Rows/N" condition
+    verdict "FieldValuesNotUnique(Rows/N, GR1)" = refused ∧
+    verdict "FieldValuesNotUnique(Rows/N, GR2)" = refused ∧
+    verdict "FieldValuesNotUnique(Rows/N, K/KD For \"k1\")" = refused ∧
+    verdict "FieldValuesNotUnique(Rows/N, Rows/RG)" = admitted := by native_decide
 
 example : kinds.all (fun kind =>
     let x := kind.toString

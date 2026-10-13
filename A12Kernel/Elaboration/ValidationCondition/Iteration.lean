@@ -275,23 +275,25 @@ private def fieldFillIterationExtents? (source : CheckedFieldFillList model) :
     | .star source => starIterationExtent? source.source
     | .indexed _ | .keyed _ | .group _ => none
 
-/-- A group operand supplies one slot per field it expands to. A repeatable level inside the group
-would need a capacity weighting no observation settles, so it stays unclassified. -/
-private def groupIterationExtents? (model : FlatModel) (groupPath : GroupPath) : Option (List (List RepeatableLevel × Nat)) :=
-  let fields := model.groupSubtreeFields groupPath
-  let scope := model.repeatableScopeForGroupPath groupPath
-  if fields.all (·.repeatableScope == scope) then some (fields.map (·.repeatableScope, 1)) else none
+/-- A group operand supplies, per field it expands to, the row combinations its repeatable levels
+below the group reach, as a wildcard does below its star. -/
+private def groupIterationExtents? (model : FlatModel) (groupPath : GroupPath) :
+    Option (List (List RepeatableLevel × Nat)) :=
+  let enclosing := (model.repeatableScopeForGroupPath groupPath).length
+  (model.groupSubtreeFields groupPath).mapM fun declaration =>
+    (model.declarationSlots? enclosing declaration).map (declaration.repeatableScope, ·)
 
-/-- A semantic-index selection reads one row, so each selected field supplies one slot. -/
+/-- A semantic-index selection reads one row of its keyed level; each selected field supplies the
+row combinations of its repeatable levels below that row. -/
 private def selectedIterationExtents?
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
     Option (List (List RepeatableLevel × Nat)) :=
-  match (match source with | .inl source => [source.targetDeclaration] | .inr source => source.declarations) with
-  | [] => none
-  | declarations@(first :: _) =>
-      if declarations.all (·.repeatableScope == first.repeatableScope) then
-        some (declarations.map (·.repeatableScope, 1))
-      else none
+  let (enclosing, declarations) := match source with
+    | .inl source => ((model.repeatableScopeForGroupPath source.group.path).length, [source.targetDeclaration])
+    | .inr source =>
+        ((model.repeatableScopeForGroupPath source.selection.group.path).length, source.declarations)
+  declarations.mapM fun declaration =>
+    (model.declarationSlots? enclosing declaration).map (declaration.repeatableScope, ·)
 
 /-- Every overload weighs its operands alike: direct fields and wildcards as for field fill,
 selections and groups by the fields they read (`uniqueness-iteration-guard-2026-10-13`). -/

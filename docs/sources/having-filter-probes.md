@@ -515,12 +515,12 @@ The filter's leaf domain, connectives, correlation, scope gate, and two-arm beha
 #### The uniqueness guard counts the fields a selection or group reads, identically for Number, String and temporal operands, measured 2026-10-13
 
 - `revision`: Clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`, dmtool 0.13.0, built/runtime Kernel 30.8.1; measurement checkout unchanged before and after.
-- `matrix`: For each carrier, `FieldValuesNotUnique` reported on the iterated `Rows` field beside one or two root fields, a two-row wildcard, one or two semantic-index selections, a selection plus a root field, a row-level group, a root group of two fields or one field, a selected group, and a row group alone or with a root field. Each row is one rule appended to its named base model.
+- `matrix`: For each carrier, `FieldValuesNotUnique` reported on the iterated `Rows` field beside one or two root fields, a two-row wildcard, one or two semantic-index selections, a selection plus a root field, a row-level group, a root group of two fields or one field, a selected group, a row group alone or with a root field, and groups or selections holding a two-row repeatable child. Each row is one rule appended to its named base model.
 - `claim`: A selection supplies one slot per field it reads and a group one slot per field it expands to; a group inside the iterated row supplies none. The threshold of two slots holds for all three overloads, so the temporal guard is the Number one.
 - `negative`: A group mixing kinds is refused as `MVK_VARYING_TYPES_NOT_ALLOWED` before the guard, so the group rows use single-kind groups; a starred group of capacity one draws `MVK_INVALID_WILDCARD`.
-- `limits`: No row holds a repeatable level inside a group or below a selection; those shapes stay unclassified.
+- `nested`: A root group whose one field sits in a two-row repeatable child, a root group adding a direct field to such a child, and a selection reaching a two-row level below its key each fail the guard, so a nested field weighs its capacity as a wildcard does; a row group with a repeatable child still supplies none. The guard is unclassified only for an undeclared limit.
 - `implementation`: [Iteration extents](../../A12Kernel/Elaboration/ValidationCondition/Iteration.lean) and [reader locks](../../A12Kernel/Reference/Dm/UniquenessIterationGuardLocks.lean).
-- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/uniqueness-iteration-guard-2026-10-13/) retains the three base models and the row verdicts. [Manifest](../../evidence/kernel-30.8.1/captures/uniqueness-iteration-guard-2026-10-13/MANIFEST.sha256).
+- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/uniqueness-iteration-guard-2026-10-13/) retains the four base models and the row verdicts. [Manifest](../../evidence/kernel-30.8.1/captures/uniqueness-iteration-guard-2026-10-13/MANIFEST.sha256).
 
 <a id="src-having-iteration-guards"></a>
 #### Field-fill and uniqueness iteration gates depend on ordinary references and wildcard capacity, measured 2026-10-09

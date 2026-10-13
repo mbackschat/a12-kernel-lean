@@ -277,6 +277,44 @@
    "codes": [
     "MVK_NEG_CONDITION_IN_ITERATION"
    ]
+  },
+  "GDEEP1": {
+   "condition": "FieldValuesNotUnique(Rows/N, GR1)",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ],
+   "model": "UniqGuardDeep_DM.json"
+  },
+  "GDEEP2": {
+   "condition": "FieldValuesNotUnique(Rows/N, GR2)",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ],
+   "model": "UniqGuardDeep_DM.json"
+  },
+  "GDEEPSTAR": {
+   "condition": "FieldValuesNotUnique(Rows/N, GR1/Deep*)",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ],
+   "model": "UniqGuardDeep_DM.json"
+  },
+  "SELDEEP": {
+   "condition": "FieldValuesNotUnique(Rows/N, K/KD For \"k1\")",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ],
+   "model": "UniqGuardDeep_DM.json"
+  },
+  "ROWDEEP": {
+   "condition": "FieldValuesNotUnique(Rows/N, Rows/RG)",
+   "target": "../Rows/N",
+   "codes": [],
+   "model": "UniqGuardDeep_DM.json"
   }
  }
 }
