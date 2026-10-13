@@ -275,18 +275,44 @@ private def fieldFillIterationExtents? (source : CheckedFieldFillList model) :
     | .star source => starIterationExtent? source.source
     | .indexed _ | .keyed _ | .group _ => none
 
+/-- A group operand supplies one slot per field it expands to. A repeatable level inside the group
+would need a capacity weighting no observation settles, so it stays unclassified. -/
+private def groupIterationExtents? (model : FlatModel) (groupPath : GroupPath) : Option (List (List RepeatableLevel × Nat)) :=
+  let fields := model.groupSubtreeFields groupPath
+  let scope := model.repeatableScopeForGroupPath groupPath
+  if fields.all (·.repeatableScope == scope) then some (fields.map (·.repeatableScope, 1)) else none
+
+/-- A semantic-index selection reads one row, so each selected field supplies one slot. -/
+private def selectedIterationExtents?
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+    Option (List (List RepeatableLevel × Nat)) :=
+  match (match source with | .inl source => [source.targetDeclaration] | .inr source => source.declarations) with
+  | [] => none
+  | declarations@(first :: _) =>
+      if declarations.all (·.repeatableScope == first.repeatableScope) then
+        some (declarations.map (·.repeatableScope, 1))
+      else none
+
+/-- Every overload weighs its operands alike: direct fields and wildcards as for field fill,
+selections and groups by the fields they read (`uniqueness-iteration-guard-2026-10-13`). -/
 private def uniquenessIterationExtents? : CheckedValuesNotUniqueCondition model →
     Option (List (List RepeatableLevel × Nat))
-  | .number source => source.operands.mapM fun
-      | .field source => some (source.declaration.repeatableScope, 1)
-      | .star source => starIterationExtent? source.source
-      | .starHaving source => starIterationExtent? source.source.source
-      | .selected _ | .group _ => none
-  | .token source => source.source.operands.mapM fun
-      | .field source => some (source.declaration.repeatableScope, 1)
-      | .star source => starIterationExtent? source.source
-      | .selected _ | .group _ => none
-  | .temporal _ => none
+  | .number source => (·.flatten) <$> source.operands.mapM fun
+      | .field source => some [(source.declaration.repeatableScope, 1)]
+      | .star source => (starIterationExtent? source.source).map ([·])
+      | .starHaving source => (starIterationExtent? source.source.source).map ([·])
+      | .selected source => selectedIterationExtents? source.source
+      | .group source => groupIterationExtents? model source.source.groupPath
+  | .token source => (·.flatten) <$> source.source.operands.mapM fun
+      | .field source => some [(source.declaration.repeatableScope, 1)]
+      | .star source => (starIterationExtent? source.source).map ([·])
+      | .selected source => selectedIterationExtents? source.source
+      | .group source => groupIterationExtents? model source.source.groupPath
+  | .temporal source => (·.flatten) <$> source.operands.mapM fun
+      | .field source => some [(source.declaration.repeatableScope, 1)]
+      | .star path _ _ => (starIterationExtent? path).map ([·])
+      | .selected source _ => selectedIterationExtents? source.source
+      | .group source => groupIterationExtents? model source.source.groupPath
 
 private def independentIterationSlots (level : RepeatableLevel)
     (extents : List (List RepeatableLevel × Nat)) : Nat :=

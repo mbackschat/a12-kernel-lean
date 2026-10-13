@@ -1,0 +1,101 @@
+{
+ "model": "FilteredStarRefs_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "mixed",
+   "documentInline": {
+    "Form": {
+     "Flag": "on",
+     "Rows": [
+      {
+       "N": 1,
+       "T": "a",
+       "B": true,
+       "C": true,
+       "D": "2024-01-01"
+      },
+      {
+       "N": 2,
+       "T": "b",
+       "B": false,
+       "D": "2024-01-02"
+      },
+      {
+       "N": 0,
+       "T": "a",
+       "B": true,
+       "C": true,
+       "D": "2024-01-01"
+      },
+      {
+       "N": 3,
+       "T": "a",
+       "D": "2024-01-01"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "duplicates",
+   "documentInline": {
+    "Form": {
+     "Flag": "on",
+     "Rows": [
+      {
+       "N": 1,
+       "T": "a",
+       "B": true,
+       "C": true,
+       "D": "2024-01-01"
+      },
+      {
+       "N": 1,
+       "T": "a",
+       "B": true,
+       "C": true,
+       "D": "2024-01-01"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "filtered-out",
+   "documentInline": {
+    "Form": {
+     "Flag": "on",
+     "Rows": [
+      {
+       "N": 0,
+       "T": "a",
+       "B": true,
+       "C": true,
+       "D": "2024-01-01"
+      },
+      {
+       "N": 0,
+       "T": "b",
+       "B": false,
+       "C": true,
+       "D": "2024-01-02"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "empty",
+   "documentInline": {
+    "Form": {
+     "Flag": "on",
+     "Rows": []
+    }
+   }
+  }
+ ]
+}

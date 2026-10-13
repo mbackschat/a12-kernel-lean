@@ -511,6 +511,17 @@ The filter's leaf domain, connectives, correlation, scope gate, and two-arm beha
 - `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/having-error-reference-2026-10-09/) retains the model, operations, computation specifications, 222 message-free observations and sanitized readback. [Manifest](../../evidence/kernel-30.8.1/captures/having-error-reference-2026-10-09/MANIFEST.sha256) SHA-256 `197f6cf806191d01a0f813768767680806366119c0012cfa1c33f2364ad6cfb3`.
 
 
+<a id="src-uniqueness-iteration-guard"></a>
+#### The uniqueness guard counts the fields a selection or group reads, identically for Number, String and temporal operands, measured 2026-10-13
+
+- `revision`: Clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`, dmtool 0.13.0, built/runtime Kernel 30.8.1; measurement checkout unchanged before and after.
+- `matrix`: For each carrier, `FieldValuesNotUnique` reported on the iterated `Rows` field beside one or two root fields, a two-row wildcard, one or two semantic-index selections, a selection plus a root field, a row-level group, a root group of two fields or one field, a selected group, and a row group alone or with a root field. Each row is one rule appended to its named base model.
+- `claim`: A selection supplies one slot per field it reads and a group one slot per field it expands to; a group inside the iterated row supplies none. The threshold of two slots holds for all three overloads, so the temporal guard is the Number one.
+- `negative`: A group mixing kinds is refused as `MVK_VARYING_TYPES_NOT_ALLOWED` before the guard, so the group rows use single-kind groups; a starred group of capacity one draws `MVK_INVALID_WILDCARD`.
+- `limits`: No row holds a repeatable level inside a group or below a selection; those shapes stay unclassified.
+- `implementation`: [Iteration extents](../../A12Kernel/Elaboration/ValidationCondition/Iteration.lean) and [reader locks](../../A12Kernel/Reference/Dm/UniquenessIterationGuardLocks.lean).
+- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/uniqueness-iteration-guard-2026-10-13/) retains the three base models and the row verdicts. [Manifest](../../evidence/kernel-30.8.1/captures/uniqueness-iteration-guard-2026-10-13/MANIFEST.sha256).
+
 <a id="src-having-iteration-guards"></a>
 #### Field-fill and uniqueness iteration gates depend on ordinary references and wildcard capacity, measured 2026-10-09
 

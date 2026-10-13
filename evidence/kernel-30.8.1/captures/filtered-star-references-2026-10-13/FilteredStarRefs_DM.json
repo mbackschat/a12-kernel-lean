@@ -1,0 +1,377 @@
+{
+ "header": {
+  "id": "FilteredStarRefs_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "FilteredStarRefs_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Flag",
+        "name": "Flag",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Rows/N",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/T",
+           "name": "T",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/B",
+           "name": "B",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/C",
+           "name": "C",
+           "Field": {
+            "fieldType": {
+             "type": "ConfirmType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/D",
+           "name": "D",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd",
+              "datePrecision": "FULL"
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ELBALO",
+        "name": "ELBALO",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "ELBALO",
+         "errorCondition": "FieldFilled(Flag) And AtLeastOneFieldFilled(Rows*/B Having [Rows/N] > 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ELCALL",
+        "name": "ELCALL",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "ELCALL",
+         "errorCondition": "FieldFilled(Flag) And AllFieldsFilled(Rows*/C Having [Rows/N] > 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ELBNONE",
+        "name": "ELBNONE",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "ELBNONE",
+         "errorCondition": "FieldFilled(Flag) And NoFieldFilled(Rows*/B Having [Rows/N] > 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ELCNOTALL",
+        "name": "ELCNOTALL",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "ELCNOTALL",
+         "errorCondition": "FieldFilled(Flag) And NotAllFieldsFilled(Rows*/C Having [Rows/N] > 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ELNALO",
+        "name": "ELNALO",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "ELNALO",
+         "errorCondition": "FieldFilled(Flag) And AtLeastOneFieldFilled(Rows*/N Having [Rows/N] > 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/CNTB",
+        "name": "CNTB",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "CNTB",
+         "errorCondition": "FieldFilled(Flag) And NumberOfFilledFields(Rows*/B Having [Rows/N] > 0) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/CNTC",
+        "name": "CNTC",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "CNTC",
+         "errorCondition": "FieldFilled(Flag) And NumberOfFilledFields(Rows*/C Having [Rows/N] > 0) < 9",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/DVT",
+        "name": "DVT",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "DVT",
+         "errorCondition": "FieldFilled(Flag) And NumberOfDifferentValues(Rows*/T Having [Rows/N] > 0) == 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/DVTLT",
+        "name": "DVTLT",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "DVTLT",
+         "errorCondition": "FieldFilled(Flag) And NumberOfDifferentValues(Rows*/T Having [Rows/N] > 0) < 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/DVD",
+        "name": "DVD",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "DVD",
+         "errorCondition": "FieldFilled(Flag) And NumberOfDifferentValues(Rows*/D Having [Rows/N] > 0) == 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/DVDLT",
+        "name": "DVDLT",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "DVDLT",
+         "errorCondition": "FieldFilled(Flag) And NumberOfDifferentValues(Rows*/D Having [Rows/N] > 0) < 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/DVN",
+        "name": "DVN",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "DVN",
+         "errorCondition": "FieldFilled(Flag) And NumberOfDifferentValues(Rows*/N Having [Rows/N] > 0) == 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/UQD",
+        "name": "UQD",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "UQD",
+         "errorCondition": "FieldFilled(Flag) And FieldValuesNotUnique(Rows*/D Having [Rows/N] > 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/UQT",
+        "name": "UQT",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "UQT",
+         "errorCondition": "FieldFilled(Flag) And FieldValuesNotUnique(Rows*/T Having [Rows/N] > 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/UQN",
+        "name": "UQN",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "UQN",
+         "errorCondition": "FieldFilled(Flag) And FieldValuesNotUnique(Rows*/N Having [Rows/N] > 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Filtered star reference probe."
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

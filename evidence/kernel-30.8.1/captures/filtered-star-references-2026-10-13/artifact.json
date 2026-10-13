@@ -1,0 +1,1050 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FilteredStarRefs_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "mixed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CNTB",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "CNTC",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVD",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVDLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code" : "DVTLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code" : "ELBALO",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELCNOTALL",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELNALO",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "UQD",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "UQT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CNTB",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "CNTC",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVD",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVDLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code" : "DVTLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code" : "ELBALO",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELCNOTALL",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELNALO",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "UQD",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "UQT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "duplicates",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CNTB",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "CNTC",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVDLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVTLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code" : "ELBALO",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELCALL",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELNALO",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "UQD",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "UQN",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "UQT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CNTB",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "CNTC",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVDLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVTLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code" : "ELBALO",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELCALL",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELNALO",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "UQD",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "UQN",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "UQT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "filtered-out",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CNTC",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVDLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVTLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code" : "ELBNONE",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELCALL",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CNTC",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVDLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVTLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code" : "ELBNONE",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELCALL",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CNTC",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVDLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVTLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code" : "ELBNONE",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELCALL",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CNTC",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVDLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "DVTLT",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code" : "ELBNONE",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/B",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code" : "ELCALL",
+              "field" : "Form/Flag",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Filtered star reference probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "/Form[1]/Rows[0]/N",
+                "Form/Flag"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

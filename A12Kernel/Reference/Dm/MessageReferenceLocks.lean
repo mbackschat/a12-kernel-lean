@@ -180,7 +180,8 @@ private def temporalRowsModel : FlatModel :=
       { id := 2, name := "Keep", groupPath := ["G", "Rows"], repeatableScope := [10]
         policy := { kind := .number { scale := 0, signed := true } } },
       { id := 3, name := "MaxFiltered", groupPath := ["G"]
-        policy := { kind := .temporal .date .fullDate }, temporalTargetPolicy := some { format := "yyyy-MM-dd" } }]
+        policy := { kind := .temporal .date .fullDate }, temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+      { id := 4, name := "T", groupPath := ["G", "Rows"], repeatableScope := [10], policy := { kind := .string } }]
     repeatableGroups := [{ level := 10, path := ["G", "Rows"], repeatability := some 3 }] }
 
 /-- A filtered temporal star refers to its selected column and to every filter read, wildcarded at
@@ -195,6 +196,26 @@ example : (do
     let pointers ← (rule.condition.core.referencePointers []).toOption
     pure ((pointers.map (renderPointer temporalRowsModel)).mergeSort (compare · · != .gt))) =
     some ["/G[1]/Rows[0]/A", "/G[1]/Rows[0]/Keep", "G/MaxFiltered"] := by
+  native_decide
+
+private def filteredReferences (condition : String) : Option (List String) := do
+  let dm : DmModel := { flat := temporalRowsModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let rule ← (checkRule dm .english {
+    name := "Filtered", group := ["G"], errorCode := "Filtered", errorEntityRelPath := "../MaxFiltered",
+    severity := "ERROR", condition := "FieldFilled(MaxFiltered) And " ++ condition }).toOption
+  let pointers ← (rule.condition.core.referencePointers []).toOption
+  pure ((pointers.map (renderPointer temporalRowsModel)).mergeSort (compare · · != .gt))
+
+/-- Temporal uniqueness, an ordered temporal distinct count and an ordered token distinct count
+project a filtered star the same way. Kernel oracle: rows `UQD`, `DVDLT` and `DVTLT` of the
+retained filtered-star-references capture. -/
+example :
+    filteredReferences "FieldValuesNotUnique(Rows*/A Having [Rows/Keep] > 0)" =
+      some ["/G[1]/Rows[0]/A", "/G[1]/Rows[0]/Keep", "G/MaxFiltered"] ∧
+    filteredReferences "NumberOfDifferentValues(Rows*/A Having [Rows/Keep] > 0) < 5" =
+      some ["/G[1]/Rows[0]/A", "/G[1]/Rows[0]/Keep", "G/MaxFiltered"] ∧
+    filteredReferences "NumberOfDifferentValues(Rows*/T Having [Rows/Keep] > 0) < 5" =
+      some ["/G[1]/Rows[0]/Keep", "/G[1]/Rows[0]/T", "G/MaxFiltered"] := by
   native_decide
 
 end A12Kernel.Dm.MessageReferenceLocks

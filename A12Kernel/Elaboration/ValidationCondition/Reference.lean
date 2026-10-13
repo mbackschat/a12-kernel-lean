@@ -429,15 +429,17 @@ def CheckedRepetitionNotUniqueSource.firingPointers (source : CheckedRepetitionN
         else pure []
     | _ => pure []
 
-/-- Temporal predicates and counts share the certified slot's references. Filter coordinates
-remain refused until temporal-carrier observations establish their projection. -/
+/-- Temporal predicates and counts share the certified slot's references. A filtered star adds its
+filter reads as every other carrier does (`filtered-star-references-2026-10-13`, rows `UQD` and
+`DVDLT`). -/
 def CheckedTemporalUniquenessOperand.referencePointers (environment : Env)
     (operand : CheckedTemporalUniquenessOperand model) (inputs : Option MessageReferenceInputs := none) :
     Except ReferenceProjectionError (List MessagePointer) := match operand with
   | .selected source _ => selectedEntityPointers source.source environment inputs
   | .field source => (concreteFieldPointer source.declaration environment).map ([·])
   | .star path _ none => (starFieldPointer path environment).map ([·])
-  | .star _ _ (some _) => .error .filteredStarOperand
+  | .star path _ (some filter) => do
+      pure ((← starFieldPointer path environment) :: (← path.filterReferencePointers environment filter))
   | .group source => source.source.referencePointers environment
 
 def CheckedTemporalDistinctCountOperand.referencePointers (environment : Env)
@@ -599,11 +601,9 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env)
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       source.referencePointers environment inputs
   | .tokenValueCount source => source.referencePointers environment inputs
-  -- The token filter coordinates are measured for `NumberOfValueInFields` and do not cross to the
-  -- distinct count unmeasured, so a filtered star is refused as the temporal arm refuses it.
+  -- Filtered token stars are measured for the distinct count too (`filtered-star-references-2026-10-13`).
   | .tokenDistinctCount source =>
-      if source.hasHaving then .error .filteredStarOperand
-      else (·.flatten) <$> source.operands.mapM (fun operand => operand.referencePointers environment inputs)
+      (·.flatten) <$> source.operands.mapM (fun operand => operand.referencePointers environment inputs)
   | .temporalDistinctCount run =>
       (·.flatten) <$> run.source.operands.mapM (fun operand => operand.referencePointers environment inputs)
   | .booleanValueCount source => source.referencePointers environment inputs

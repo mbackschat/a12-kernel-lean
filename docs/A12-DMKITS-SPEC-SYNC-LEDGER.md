@@ -138,3 +138,12 @@ Four corrections are `pending` below and have not been handed off. The 24 termin
 - `basis`: [Population replay](sources/model-structure-and-declaration-probes.md#src-generated-self-validation-k14): the retained validation-iteration-domain `nested-2x2` and `nested-2x3` rows `missing-child` and `sibling-fills-missing-child` refer to the sibling's `N` alone, while the firing rows of the same captures carry the full duplicate cluster.
 - `acceptance`: Reconcile the RNU reference account with these rows. Do not claim an RNU leaf that fires OMISSION beside a VALUE sibling that wins, which these rows do not test.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+### SPEC-2026-10-13-10 — uniqueness guard slots for selections, groups and the temporal overload
+
+- `status`: pending
+- `canonical`: [iteration guard slots](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands).
+- `delta`: The uniqueness guard's slot count extends from direct fields and wildcards to semantic-index selections (one slot per selected field) and group operands (one slot per expanded field), identically across the Number, String and temporal overloads.
+- `basis`: [Uniqueness iteration-guard checkpoint](sources/having-filter-probes.md#src-uniqueness-iteration-guard): 33 model-check rows at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile the guard account with these rows. Do not claim a group or selection holding a repeatable level below the operand, which the rows do not test.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

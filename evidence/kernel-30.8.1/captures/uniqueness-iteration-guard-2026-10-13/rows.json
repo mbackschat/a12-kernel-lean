@@ -1,0 +1,282 @@
+{
+ "oracle": "dmtool 0.13.0 model check, Kernel 30.8.1, a12-dmkits a4091041fe4d0de02053517f11d12f480b5c2cbc CLEAN",
+ "method": "each row is the named base model with exactly that one rule appended to /Form",
+ "rows": {
+  "NROOT1": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, ON1)",
+   "target": "../Rows/N",
+   "codes": []
+  },
+  "NROOT2": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, ON1, ON2)",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "NSTAR2": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, W*/N)",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "NSEL1": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, K/N For \"k1\")",
+   "target": "../Rows/N",
+   "codes": []
+  },
+  "NSEL2": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, K/N For \"k1\", K/N For \"k2\")",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "NSELROOT": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, K/N For \"k1\", ON1)",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "NROWGRP": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, Rows/PairN)",
+   "target": "../Rows/N",
+   "codes": []
+  },
+  "NROOTGRP": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, GN)",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "NROWGRPONLY": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/PairN)",
+   "target": "../Rows/PairN/PN1",
+   "codes": []
+  },
+  "NSELGRP": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, K/KGN For \"k1\")",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "NROWGRPROOT": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/PairN, ON1)",
+   "target": "../Rows/PairN/PN1",
+   "codes": []
+  },
+  "TROOT1": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, OT1)",
+   "target": "../Rows/T",
+   "codes": []
+  },
+  "TROOT2": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, OT1, OT2)",
+   "target": "../Rows/T",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "TSTAR2": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, W*/T)",
+   "target": "../Rows/T",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "TSEL1": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, K/T For \"k1\")",
+   "target": "../Rows/T",
+   "codes": []
+  },
+  "TSEL2": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, K/T For \"k1\", K/T For \"k2\")",
+   "target": "../Rows/T",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "TSELROOT": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, K/T For \"k1\", OT1)",
+   "target": "../Rows/T",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "TROWGRP": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, Rows/PairT)",
+   "target": "../Rows/T",
+   "codes": []
+  },
+  "TROOTGRP": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, GT)",
+   "target": "../Rows/T",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "TROWGRPONLY": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/PairT)",
+   "target": "../Rows/PairT/PT1",
+   "codes": []
+  },
+  "TSELGRP": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, K/KGT For \"k1\")",
+   "target": "../Rows/T",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "TROWGRPROOT": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/PairT, OT1)",
+   "target": "../Rows/PairT/PT1",
+   "codes": []
+  },
+  "DROOT1": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, OD1)",
+   "target": "../Rows/D",
+   "codes": []
+  },
+  "DROOT2": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, OD1, OD2)",
+   "target": "../Rows/D",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "DSTAR2": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, W*/D)",
+   "target": "../Rows/D",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "DSEL1": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, K/D For \"k1\")",
+   "target": "../Rows/D",
+   "codes": []
+  },
+  "DSEL2": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, K/D For \"k1\", K/D For \"k2\")",
+   "target": "../Rows/D",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "DSELROOT": {
+   "model": "UniqGuard_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, K/D For \"k1\", OD1)",
+   "target": "../Rows/D",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "DROWGRP": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, Rows/PairD)",
+   "target": "../Rows/D",
+   "codes": []
+  },
+  "DROOTGRP": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, GD)",
+   "target": "../Rows/D",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "DROWGRPONLY": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/PairD)",
+   "target": "../Rows/PairD/PD1",
+   "codes": []
+  },
+  "DSELGRP": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, K/KGD For \"k1\")",
+   "target": "../Rows/D",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "DROWGRPROOT": {
+   "model": "UniqGuardGroups_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/PairD, OD1)",
+   "target": "../Rows/PairD/PD1",
+   "codes": []
+  },
+  "NROOTGRP1": {
+   "model": "UniqGuardSingle_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, HN)",
+   "target": "../Rows/N",
+   "codes": []
+  },
+  "TROOTGRP1": {
+   "model": "UniqGuardSingle_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, HT)",
+   "target": "../Rows/T",
+   "codes": []
+  },
+  "DROOTGRP1": {
+   "model": "UniqGuardSingle_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, HD)",
+   "target": "../Rows/D",
+   "codes": []
+  },
+  "NROOTGRP1F": {
+   "model": "UniqGuardSingle_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/N, HN, ON1)",
+   "target": "../Rows/N",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "TROOTGRP1F": {
+   "model": "UniqGuardSingle_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/T, HT, OT1)",
+   "target": "../Rows/T",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "DROOTGRP1F": {
+   "model": "UniqGuardSingle_DM.json",
+   "condition": "FieldValuesNotUnique(Rows/D, HD, OD1)",
+   "target": "../Rows/D",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  }
+ }
+}
