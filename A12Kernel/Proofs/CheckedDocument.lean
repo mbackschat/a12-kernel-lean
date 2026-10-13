@@ -402,65 +402,65 @@ theorem checkedDocument_validationRowEnvironments_singleton
       checked.actualRowEnvironments [level] := by
   rfl
 
-/-- **Absorption, as a property rather than by example.** Every row the finding set names with the
-row code is itself over its declared repeatability, and no such row lies beneath another one, so a
-nested violation can never contribute a second row code however deep it sits. The by-example cases
-fix the count on particular documents; this fixes the shape for every document. -/
-theorem checkedDocument_overRepetitionFindings_rowCode_outermost
-    (checked : CheckedDocument model) (row : RowAddr)
-    (named : row ∈ checked.outermostOverLimitRows) :
-    checked.rowOverLimit row = true ∧
-      ∀ other ∈ checked.outermostOverLimitRows,
-        other.path.length < row.path.length →
-          row.path.take other.path.length ≠ other.path := by
-  unfold CheckedDocument.outermostOverLimitRows at named
-  rw [List.mem_filter] at named
-  obtain ⟨violated, notBeneath⟩ := named
-  rw [List.mem_filter] at violated
-  refine ⟨by simpa using violated.2, ?_⟩
-  intro other otherNamed shorter prefixEq
-  unfold CheckedDocument.outermostOverLimitRows at otherNamed
-  rw [List.mem_filter] at otherNamed
-  have : (checked.source.instantiatedRows.filter (checked.rowOverLimit ·)).any
-      fun candidate => CheckedDocument.extendsRow candidate row.path := by
-    refine List.any_eq_true.mpr ⟨other, otherNamed.1, ?_⟩
-    simp [CheckedDocument.extendsRow, shorter, prefixEq]
-  simp [this] at notBeneath
+/-- **Soundness of the finding set.** Every finding names a node the document writes, and is
+exactly the finding that node draws on its own ancestry; no finding is synthesized from another
+node's coordinates. -/
+theorem checkedDocument_overRepetitionFindings_sound (checked : CheckedDocument model)
+    (finding : OverRepetitionFinding) (member : finding ∈ checked.overRepetitionFindings) :
+    finding.node ∈ checked.writtenNodes ∧ finding.node.finding? model = some finding := by
+  unfold CheckedDocument.overRepetitionFindings at member
+  obtain ⟨node, written, found⟩ := List.mem_filterMap.mp member
+  have same : finding.node = node := by
+    unfold OverRepetitionNode.finding? at found
+    cases haxis : node.violatedAxis? model with
+    | none => simp [haxis] at found
+    | some axis =>
+        cases hgroup : model.repeatableGroupAtLevel? axis.level with
+        | none => simp [haxis, hgroup] at found
+        | some declared =>
+            simp only [haxis, hgroup, bind, Option.bind, pure, Option.some.injEq] at found
+            rw [← found]
+  rw [same]
+  exact ⟨written, same ▸ found⟩
 
-/-- **Vacuity, in the direction a consumer skips on.** The finding set is empty exactly when no
-outermost violation exists, because each named row contributes its own row code before any node
-written beneath it — so no arrangement of written nodes can produce an empty set from a nonempty
-row list, and none can produce a finding from an empty one.
+/-- **Absorption, as a property rather than by example.** A row whose first violated level is an
+ancestor's, not its own, draws the descendant-position code of that ancestor level, so a nested
+violation can never contribute a second row code however deep it sits. -/
+theorem checkedDocument_overRepetitionFinding_absorbed (model : FlatModel)
+    (row : RowAddr) (axis : StarAxis)
+    (violated : (OverRepetitionNode.row row).violatedAxis? model = some axis)
+    (inherited : axis.level ≠ row.group) (finding : OverRepetitionFinding)
+    (found : (OverRepetitionNode.row row).finding? model = some finding) :
+    ∃ declared, model.repeatableGroupAtLevel? axis.level = some declared ∧
+      finding.code = .ofPosition (violatedLevelDescendantPosition declared.path.length) := by
+  unfold OverRepetitionNode.finding? at found
+  cases hgroup : model.repeatableGroupAtLevel? axis.level with
+  | none => simp [violated, hgroup] at found
+  | some declared =>
+      simp only [violated, hgroup, bind, Option.bind, pure, Option.some.injEq] at found
+      refine ⟨declared, rfl, ?_⟩
+      rw [← found]
+      have notOwn : (OverRepetitionNode.row row).ownsLevel axis.level = false := by
+        simp [OverRepetitionNode.ownsLevel, Ne.symm inherited]
+      simp [notOwn]
 
-That makes the emptiness test evidence about the *document's shape* rather than about what its rows
-contain, which is what lets a consumer take the fast path on the test alone. The complementary half
-— that every context-coded finding names a node strictly beneath a named row — cannot be stated
-here while `writtenBeneath` stays private to its own module, and is not worth exposing a
-construction internal for until a second consumer needs it. -/
-theorem checkedDocument_overRepetitionFindings_empty_iff
-    (checked : CheckedDocument model) :
-    checked.overRepetitionFindings = [] ↔
-      checked.outermostOverLimitRows = [] := by
-  unfold CheckedDocument.overRepetitionFindings
-  cases h : checked.outermostOverLimitRows with
-  | nil => simp
-  | cons row rest =>
-    have hmem : row ∈ checked.outermostOverLimitRows := by
-      rw [h]; exact List.mem_cons_self ..
-    have hsome := CheckedDocument.violatedContainerDepth?_isSome checked row
-      (CheckedDocument.rowOverLimit_of_mem_outermost checked row hmem)
-    cases hdepth : checked.violatedContainerDepth? row with
-    | none => rw [hdepth] at hsome; simp at hsome
-    | some depth => simp [hdepth]
+/-- **Partial selection never narrows the structural set.** An empty selection reports nothing and
+every nonempty one reports exactly what full validation does, because the Kernel's index check runs
+before relevance is consulted. -/
+theorem checkedDocument_overRepetitionFindingsUnder_eq (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope) :
+    checked.overRepetitionFindingsUnder scope =
+      if scope = .partialSet [] then [] else checked.overRepetitionFindings := by
+  cases scope with
+  | full => rfl
+  | partialSet entities => cases entities <;> rfl
 
-/-- **The computation channel only ever removes.** Whatever operand paths a computation carries, the
-findings it reports are a sublist of the ones the document draws under full validation — so the
-narrower channel can drop a finding but never invent one, and can never name a node or code the
-document does not. The measured rows fix which findings survive on particular documents; this fixes
-that nothing else can appear, which is the half a per-document case cannot reach. -/
+/-- **The computation channel only ever removes.** Whatever operand and anchor fields a computation
+carries, its structural findings are a sublist of the ones full validation reports, so the narrower
+channel can drop a finding but never invent one or change its code. -/
 theorem checkedDocument_computationOverRepetitionFindings_sublist
-    (checked : CheckedDocument model) (operandGroupPaths : List GroupPath) :
-    (checked.computationOverRepetitionFindings operandGroupPaths).Sublist
+    (checked : CheckedDocument model) (operandFields anchorFields : List FieldId) :
+    (checked.computationOverRepetitionFindings operandFields anchorFields).Sublist
       checked.overRepetitionFindings :=
   List.filter_sublist
 
@@ -484,26 +484,42 @@ private theorem filter_sublist_filter {α : Type} (l : List α) (p q : α → Bo
           simp [hp, hq]
           exact ih
 
-/-- **Reading more operands never loses a finding.** A computation whose operand paths include
-another's reports at least what that other reports, in the same order. With the sublist law above
-this brackets the channel from both sides for every document: it is monotone in the operand set and
-bounded by the validation set, so the empty operand list and the full document are its two ends.
-
-The hypothesis is membership rather than sublist inclusion, because the filter reads the operand list
-through `any` and neither order nor multiplicity can affect it — a consumer that reorders or
-deduplicates its operands is covered without a separate law. -/
+/-- **Retaining more fields never loses a finding.** With the sublist law above this brackets the
+channel from both sides: it is monotone in both field sets and bounded by the validation set. The
+hypotheses are membership rather than sublist inclusion, because the filter reads both lists through
+`contains`/`any`, so order and multiplicity cannot affect it. -/
 theorem checkedDocument_computationOverRepetitionFindings_mono
-    (checked : CheckedDocument model) (narrow wide : List GroupPath)
-    (covers : ∀ path ∈ narrow, path ∈ wide) :
-    (checked.computationOverRepetitionFindings narrow).Sublist
-      (checked.computationOverRepetitionFindings wide) := by
+    (checked : CheckedDocument model) (narrowOperands wideOperands narrowAnchors wideAnchors : List FieldId)
+    (operands : ∀ field ∈ narrowOperands, field ∈ wideOperands)
+    (anchors : ∀ field ∈ narrowAnchors, field ∈ wideAnchors) :
+    (checked.computationOverRepetitionFindings narrowOperands narrowAnchors).Sublist
+      (checked.computationOverRepetitionFindings wideOperands wideAnchors) := by
   unfold CheckedDocument.computationOverRepetitionFindings
   refine filter_sublist_filter _ _ _ ?_
   intro finding held
-  split at held
-  · exact absurd held (by simp)
-  · rcases List.any_eq_true.mp held with ⟨candidate, member, hit⟩
-    exact List.any_eq_true.mpr ⟨candidate, covers candidate member, hit⟩
+  have anchorsMono : ∀ path, OverRepetitionNode.retainedFor.anchors model narrowAnchors path = true →
+      OverRepetitionNode.retainedFor.anchors model wideAnchors path = true := by
+    intro path hit
+    unfold OverRepetitionNode.retainedFor.anchors at hit ⊢
+    rcases List.any_eq_true.mp hit with ⟨field, member, matched⟩
+    exact List.any_eq_true.mpr ⟨field, anchors field member, matched⟩
+  cases hnode : finding.node with
+  | cell address =>
+      rw [hnode] at held
+      simp only [OverRepetitionNode.retainedFor, List.contains_iff_mem] at held ⊢
+      exact operands _ held
+  | row address =>
+      rw [hnode] at held
+      simp only [OverRepetitionNode.retainedFor] at held ⊢
+      cases hdeclared : model.repeatableGroupAtLevel? address.group with
+      | none => simp [hdeclared] at held
+      | some declared =>
+          simp only [hdeclared] at held ⊢
+          exact anchorsMono _ held
+  | group occurrence =>
+      rw [hnode] at held
+      simp only [OverRepetitionNode.retainedFor] at held ⊢
+      exact anchorsMono _ held
 
 /-- An overlay read at a valid address returns the placement the overlay finds there. -/
 theorem checkedDocument_overlay_read_found

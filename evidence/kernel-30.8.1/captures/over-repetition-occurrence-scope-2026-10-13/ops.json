@@ -1,0 +1,16 @@
+[
+ {"target":"field","op":"add","group":"/Occ","name":"Marker","kind":"STRING"},
+ {"target":"field","op":"add","group":"/Occ","name":"Total","kind":"NUMBER","number":{"maxFractionalDigits":0}},
+ {"target":"group","op":"add","parent":"/Occ","name":"Rows","repeatable":2},
+ {"target":"field","op":"add","group":"/Occ/Rows","name":"Qty","kind":"NUMBER","number":{"maxFractionalDigits":0}},
+ {"target":"field","op":"add","group":"/Occ/Rows","name":"Unread","kind":"STRING"},
+ {"target":"group","op":"add","parent":"/Occ/Rows","name":"Detail"},
+ {"target":"field","op":"add","group":"/Occ/Rows/Detail","name":"Qty2","kind":"NUMBER","number":{"maxFractionalDigits":0}},
+ {"target":"group","op":"add","parent":"/Occ","name":"Notes","repeatable":5},
+ {"target":"field","op":"add","group":"/Occ/Notes","name":"Memo","kind":"STRING"},
+ {"target":"group","op":"add","parent":"/Occ","name":"Wide","repeatable":5},
+ {"target":"group","op":"add","parent":"/Occ/Wide","name":"Fix"},
+ {"target":"field","op":"add","group":"/Occ/Wide/Fix","name":"Calc","kind":"NUMBER","number":{"maxFractionalDigits":0}},
+ {"target":"computation","op":"add","group":"/Occ","computedField":"/Occ/Total","alternatives":[{"operation":"Sum(Rows*/Detail/Qty2)"}],"messages":[{"locale":"en_US","text":"Probe"}]},
+ {"target":"computation","op":"add","group":"/Occ/Wide/Fix","computedField":"/Occ/Wide/Fix/Calc","alternatives":[{"operation":"1"}],"messages":[{"locale":"en_US","text":"Probe"}]}
+]

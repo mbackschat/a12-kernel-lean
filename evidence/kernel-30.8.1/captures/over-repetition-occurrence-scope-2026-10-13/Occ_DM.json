@@ -1,0 +1,183 @@
+{
+  "header" : {
+    "id" : "Occ_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Occ_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Occ",
+        "name" : "Occ",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Occ/Marker",
+            "name" : "Marker",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Occ/Total",
+            "name" : "Total",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Occ/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Occ/Rows/Qty",
+                "name" : "Qty",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Occ/Rows/Unread",
+                "name" : "Unread",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Occ/Rows/Detail",
+                "name" : "Detail",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Occ/Rows/Detail/Qty2",
+                    "name" : "Qty2",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Occ/Notes",
+            "name" : "Notes",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Occ/Notes/Memo",
+                "name" : "Memo",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Occ/Wide",
+            "name" : "Wide",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Occ/Wide/Fix",
+                "name" : "Fix",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Occ/Wide/Fix/Calc",
+                    "name" : "Calc",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Occ/Wide/Fix/CalcComp",
+                    "name" : "CalcComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../Calc",
+                      "computationAlternatives" : [ {
+                        "operation" : "1"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Probe"
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Occ/TotalComp",
+            "name" : "TotalComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Total",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/Detail/Qty2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

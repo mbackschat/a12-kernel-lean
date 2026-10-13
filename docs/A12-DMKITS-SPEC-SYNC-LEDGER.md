@@ -88,3 +88,13 @@ Four corrections are `pending` below and have not been handed off. The 24 termin
 - `basis`: [Retained 37-row consistency capture](sources/model-structure-and-declaration-probes.md#src-enumeration-declaration-notifications), real Kernel 30.8.1 through structured authoring at clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`; Lean reader locks replay every row.
 - `acceptance`: Reconcile declaration checking with the six-block order and per-unit/per-value multiplicity, keeping the two codeless classes distinct from coded ones. Do not claim an order inside the arity or category-duplicate blocks, supplementary scalars in category names or tokens, or table-backed Enumerations.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-05"></a>
+### SPEC-2026-10-13-05 — over-repetition findings are per written entity, partial-insensitive and operand-inventory scoped
+
+- `status`: pending
+- `canonical`: [Over-repetition row](../spec/02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state) and [computation formal input scope](../spec/09-computations.md#33-what-compute-reports).
+- `delta`: Count written nonrepeatable group instances and present null/empty cells; judge each entity on its own ancestry rather than by coordinate-prefix containment; report the full set for every nonempty partial selection and none for an empty one; scope the computation channel to uncomputed operand cells plus ancestor instances of operand and computed fields.
+- `basis`: [Occurrence-scope capture](sources/over-repetition-probes.md#src-over-repetition-occurrence-scope), eleven rows on both Kernel 30.8.1 strategies at clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`; Kernel source `CheckCommand.formalePruefung`, `ValidationCommand.processPartlyValidation` and `CalculationCommand.getEntityFullNamesNotRemovedFromData`. The validation-side occurrence and partial results corroborate the peer's `OverRepetitionOccurrenceDiffTest`; the sibling-coordinate twin, operand-path nonrepeatable group and computed-target ancestry are new measurements.
+- `acceptance`: Reconcile the structural emitter with per-entity own-ancestry checking, including nonrepeatable group instances, and the computation channel with the computed-target ancestry rule. Preserve position-selected codes, absorption and the empty-selection boundary; no emission order is claimed.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

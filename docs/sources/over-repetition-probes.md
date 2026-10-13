@@ -2,6 +2,21 @@
 
 The structural over-repetition family: which findings an over-capacity row draws, how deep its absorption and suppression reach, and which physical rows the starred numeric domains then exclude. Split out of [`group-and-iteration-probes.md`](group-and-iteration-probes.md) when that document reached its size ceiling; the checkpoints are unchanged and keep their anchors.
 
+<a id="src-over-repetition-occurrence-scope"></a>
+#### Every written entity is index-checked on its own ancestry, partial selection never narrows the set, and the computation channel is the operand inventory's retained nodes, measured locally 2026-10-13
+
+- `producer`: a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`, clean before and after; dmtool `0.13.0`, Kernel `30.8.1` built/runtime. One `:adapter:kernelProbe` request observing `validateFull`, `validatePart` and `compute`; both codegen strategies agree on all eleven rows.
+- `model`: structured-authored `Occ`: root `Marker`, computed `Total = Sum(Rows*/Detail/Qty2)`, `Rows` max 2 with `Qty`, `Unread` and nonrepeatable `Detail/Qty2`, sibling `Notes` max 5 with `Memo`, and `Wide` max 5 with nonrepeatable `Fix` holding computed `Calc = 1`.
+- `source`: `CheckCommand.formalePruefung` index-checks every data entity, group instances included, before relevance; `ValidationCommand.processPartlyValidation` returns before any check on an empty selection; `CalculationCommand.getEntityFullNamesNotRemovedFromData` keeps uncomputed operand fields plus every ancestor group of operand and computed fields.
+- `occurrences`: an excess `Rows[3]` holding only `Detail:{}` draws the row code plus one context code on `Detail`; adding `null` `Qty`/`Qty2` and an empty `Unread` adds one context code for each. A malformed `Qty2` there draws the context code and no Number-format finding.
+- `own-ancestry`: with `Rows[3]` in excess, `Notes[3]/Memo` and `Wide[3]/Fix` share its leading coordinate but are within their own caps and draw nothing, so containment is not decided by coordinate prefix.
+- `partial`: on the five-finding document, an empty selection reports nothing, while `/Occ`, `/Occ/Marker` and the unrelated `/Occ/Notes/Memo` all report the full set.
+- `computation`: the operand channel reports the row code, `Detail` and `Detail/Qty2` but not the unread `Qty` and `Unread`. With `Wide[6]` in excess, it reports `Wide[6]` and `Wide[6]/Fix` but not the computed `Calc`, although no operand reaches `Wide`; validation reports all three. `Total` stays `5` on every row, from the in-capacity row.
+- `local-readback`: [Reader locks](../../A12Kernel/Reference/Dm/OverRepetitionOccurrenceLocks.lean) replay every row through the DM reader on all three channels; [cases](../../A12Kernel/Conformance/OverRepetitionFindings.lean) add the sibling-coordinate separator, which the replaced prefix-containment account failed with three findings instead of one.
+- `limit`: capacities 2 and 5, scale-0 Numbers and Strings, one nonrepeatable level under a repeatable row, `en_US`. Rendered text is redacted; nested nonrepeatable groups, a nonrepeatable group on a repeatable root, and group-count operands beyond the multiplicity artifact are not varied here.
+- `bytes`: [model](../../evidence/kernel-30.8.1/captures/over-repetition-occurrence-scope-2026-10-13/Occ_DM.json), [operations](../../evidence/kernel-30.8.1/captures/over-repetition-occurrence-scope-2026-10-13/ops.json), [request](../../evidence/kernel-30.8.1/captures/over-repetition-occurrence-scope-2026-10-13/request.json), [artifact](../../evidence/kernel-30.8.1/captures/over-repetition-occurrence-scope-2026-10-13/artifact.json) and [hashes](../../evidence/kernel-30.8.1/captures/over-repetition-occurrence-scope-2026-10-13/MANIFEST.sha256).
+- `sync`: [SPEC-2026-10-13-05](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-13-05).
+
 <a id="src-over-limit-finite-prefix-handback"></a>
 #### Finite-prefix structural occurrences remain independent of descendant capacity
 

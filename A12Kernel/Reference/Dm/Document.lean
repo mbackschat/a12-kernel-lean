@@ -164,6 +164,7 @@ def classifyStored (model : FlatModel) (declaration : FlatFieldDecl) (address : 
 private structure DocumentState where
   rows : Array RowAddr := #[]
   cells : Array ClassifiedCellInput := #[]
+  groups : Array GroupOccurrence := #[]
   refusals : Array (List String × String) := #[]
 
 private def refuse (path : List String) (reason : String) : StateM DocumentState Unit :=
@@ -197,7 +198,8 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
         | none, .obj members =>
             if model.refusals.any (·.1 == childPath) then refuse childPath "declaration refused by the model reader"
             -- A nonrepeatable group is known by the fields declared below it.
-            else if model.flat.fields.any (childPath.isPrefixOf ·.groupPath) then
+            else if model.flat.fields.any (childPath.isPrefixOf ·.groupPath) then do
+              modify fun state => { state with groups := state.groups.push { path := childPath, coordinates := path } }
               readInstance model childPath path members.toList
             else refuse childPath "member the model does not declare"
         | _, _ =>
@@ -208,7 +210,8 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
 def readDocument (model : DmModel) (json : Json) : Except String DmDocument := do
   let .obj roots := json | throw "document is no object"
   let ((), state) := (readInstance model [] [] roots.toList).run {}
-  pure { data := { instantiatedRows := state.rows.toList, cells := state.cells.toList }
+  pure { data := { instantiatedRows := state.rows.toList, cells := state.cells.toList,
+                    groupOccurrences := state.groups.toList }
          refusals := state.refusals.toList }
 
 end A12Kernel.Dm

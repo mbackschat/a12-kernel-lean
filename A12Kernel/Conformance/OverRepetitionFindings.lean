@@ -72,6 +72,7 @@ private def sorted (findings : Option (List OverRepetitionFinding)) :
   findings.map fun entries => (entries.map fun entry =>
     (entry.code, match entry.node with
       | .row address => address.path
+      | .group occurrence => occurrence.coordinates
       | .cell address => address.path)).mergeSort
       fun left right => decide (left.2.length ≤ right.2.length)
 
@@ -174,11 +175,28 @@ example : sorted (findings?
           (.contextNumberTooLarge, [4, 1])] := by
   native_decide
 
-private def scoped? (operands : List (List String)) (rows : List RowAddr)
+/- **A node is judged on its own ancestry, never by coordinate prefix.** `A[3]` exceeds `max 2` while
+   the sibling `Mid[3]` is within `max 3`; `Mid[3]`'s `Rows` row and cell share `A[3]`'s leading
+   coordinate yet draw nothing. A prefix-containment account stamped both under `A[3]` (three
+   findings); the Kernel draws the row code alone on the measured sibling twin
+   ([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-repetition-occurrence-scope)). -/
+example : findings?
+    [{ group := 30, path := [1] }, { group := 30, path := [2] }, { group := 30, path := [3] },
+     { group := 10, path := [1] }, { group := 10, path := [2] }, { group := 10, path := [3] },
+     { group := 20, path := [3, 1] }]
+    [emptyCell deepValue.id [3, 1]] =
+    some [{ code := .rowNumberTooLarge, node := .row { group := 30, path := [3] } }] := by
+  native_decide
+
+/-- The computation channel for a call whose expanded uncomputed operands are `operands` and which
+computes nothing else, so its anchors are exactly those operands. A group operand enters as the
+fields it expands to. -/
+private def scoped? (operands : List FlatFieldDecl) (rows : List RowAddr)
     (cells : List ClassifiedCellInput) :
     Option (List (OverRepetitionCode × List Nat)) :=
+  let ids := operands.map (·.id)
   sorted ((checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption.map
-    (·.computationOverRepetitionFindings operands))
+    (·.computationOverRepetitionFindings ids ids))
 
 /- The document above, read through the **computation** channel instead of the validation one. It is
    the separating shape: two over-limit subtrees, and a computation whose operands name only one of
@@ -199,10 +217,10 @@ private def bothViolatedRows : List RowAddr :=
    { group := 20, path := [4, 1] }]
 
 example :
-    scoped? [["Probe", "ShellDeep"]] bothViolatedRows [emptyCell deepValue.id [4, 1]] =
+    scoped? [deepValue, deepValue2] bothViolatedRows [emptyCell deepValue.id [4, 1]] =
       some [(.rowNumberTooLarge, [4]), (.contextNumberTooLarge, [4, 1]),
             (.contextNumberTooLarge, [4, 1])] ∧
-    scoped? [["Probe", "Tri"]] bothViolatedRows [emptyCell deepValue.id [4, 1]] =
+    scoped? [triValue] bothViolatedRows [emptyCell deepValue.id [4, 1]] =
       some [(.rowNumberTooLarge, [3]), (.contextNumberTooLarge, [3, 1])] ∧
     scoped? [] bothViolatedRows [emptyCell deepValue.id [4, 1]] = some [] := by
   native_decide
@@ -210,10 +228,10 @@ example :
 /-- The retained artifact's own operand set, read off its probe model's three computations rather
 than chosen: `NumberOfFilledGroups(/Probe/ShellOne, /Probe/Flat)`,
 `NumberOfFilledGroups(/Probe/ShellDeep, /Probe/Flat)`, and `NumberOfFilledGroups(/Probe/ShellDeep/Mid*)`.
-Two of the four groups exist in no fixture here and are kept anyway, because an operand naming a
-group with no finding is what shows the filter runs per finding rather than per operand. -/
-private def probeOperands : List (List String) :=
-  [["Probe", "ShellOne"], ["Probe", "Flat"], ["Probe", "ShellDeep"], ["Probe", "ShellDeep", "Mid"]]
+Each group operand enters as the uncomputed fields it expands to; `ShellOne` and `Flat` declare none in
+this fixture, so the call retains exactly the ShellDeep fields and their ancestry. -/
+private def probeOperands : List FlatFieldDecl :=
+  [deepValue, deepValue2]
 
 private def triOnlyRows : List RowAddr :=
   [{ group := 30, path := [1] }, { group := 30, path := [2] },
@@ -238,13 +256,10 @@ example :
       some [(.rowNumberTooLarge, [3]), (.contextNumberTooLarge, [3, 1])] := by
   native_decide
 
-/- An operand **beneath** the violated row keeps it: the scope is comparability with the operand's
-   path, not containment of the finding within it. The `Mid*` operand of the probe model is exactly
-   this shape — the violated row is `Mid[4]` itself — and an over-limit row strictly above an operand
-   is the peer's measured half rather than this project's, so it is stated in the clause and not
-   locked by a row here. -/
+/- An operand **beneath** the violated row keeps it: the call retains every ancestor group of its
+   operand fields, so `Mid[4]` and its `Rows` row are named although the operand is a `Rows` field. -/
 example :
-    scoped? [["Probe", "ShellDeep", "Mid", "Rows"]] bothViolatedRows
+    scoped? [deepValue] bothViolatedRows
         [emptyCell deepValue.id [4, 1]] =
       some [(.rowNumberTooLarge, [4]), (.contextNumberTooLarge, [4, 1]),
             (.contextNumberTooLarge, [4, 1])] := by

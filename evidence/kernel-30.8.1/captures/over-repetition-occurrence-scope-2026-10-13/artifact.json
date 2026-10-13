@@ -1,0 +1,2468 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "Occ_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "control-in-capacity",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Occ/Wide/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "partialMessages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Occ/Wide/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "partialMessages": []
+    }
+   ]
+  },
+  {
+   "name": "fixed-group-empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "fixed-group-null-siblings",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail/Qty2",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail/Qty2"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail/Qty2",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail/Qty2"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "fixed-group-null-siblings-empty-partial",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail/Qty2",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail/Qty2"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail/Qty2",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail/Qty2"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": []
+    }
+   ]
+  },
+  {
+   "name": "fixed-group-null-siblings-marker-partial",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail/Qty2",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail/Qty2"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail/Qty2",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail/Qty2"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "fixed-group-null-siblings-memo-partial",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail/Qty2",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail/Qty2"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail/Qty2",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail/Qty2"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Unread",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Unread"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "malformed-operand-over-limit",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail/Qty2",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail/Qty2"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Rows[3]/Detail/Qty2",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]/Detail/Qty2"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Rows[3]/Detail/Qty2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]/Detail/Qty2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sibling-coordinate-twin",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sibling-coordinate-twin-nested",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Occ/Wide/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[2]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[3]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Occ/Wide/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[2]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[3]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Rows[3]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Rows[3]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "target-ancestry-over-limit",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix/Calc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix/Calc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Wide[6]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Occ/Wide/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[2]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[3]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[4]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[5]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Wide[6]/Fix",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Wide[6]/Fix"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Wide[6]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Wide[6]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix/Calc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix/Calc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Wide[6]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix/Calc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix/Calc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Wide[6]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Occ/Wide/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[2]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[3]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[4]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[5]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Wide[6]/Fix",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Wide[6]/Fix"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Wide[6]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Wide[6]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix/Calc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix/Calc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Wide[6]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "target-ancestry-over-limit-empty-fix",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Wide[6]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Occ/Wide/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[2]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[3]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[4]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[5]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Wide[6]/Fix",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Wide[6]/Fix"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Wide[6]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Wide[6]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Wide[6]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Wide[6]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Occ/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Occ/Wide/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[2]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[3]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[4]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Occ/Wide[5]/Fix/Calc",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Occ/Wide[6]/Fix",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Wide[6]/Fix"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Occ/Wide[6]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Occ/Wide[6]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "partialMessages": [
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Occ/Wide[6]/Fix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]/Fix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Occ/Wide[6]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Occ/Wide[6]"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

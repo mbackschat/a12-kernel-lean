@@ -1,50 +1,34 @@
 import A12Kernel.Elaboration.AddressFormalLegality
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.ComputationFormalInput
+import A12Kernel.Elaboration.ValidationRelevance
 
-/-! # The over-repetition finding set a document draws **under full validation**
+/-! # The over-repetition structural finding set and its validation and computation channels
 
 A row instantiated beyond its group's declared repeatability does not merely lose its computed
 values ([`CheckedDocument.computationRowOutcomes`](CheckedDocument.lean)); it makes the document
-report a specific, countable set of structural findings. This module owns that set and nothing else:
-which nodes are named, with which of the two codes, and how a nested violation is absorbed.
+report a countable set of structural findings. This module owns that set and its two projections.
 
-**The arm is part of the claim.** Everything below is the full-validation channel. A computation
-reports its own over-repetition errors through a **second, narrower** channel scoped to what its
-operands reach, and the two disagree on documents this project already holds: in the multiplicity
-capture's own artifact the nested document draws **ten** validation findings and **zero** operand
-errors, and the two-independent document draws eight against four
+**One per-node rule.** The Kernel index-checks every entity the document writes — each repeatable
+row, each nonrepeatable group instance, and each present cell, a present-empty one included — against
+that entity's own repeatable ancestry (`CheckCommand.formalePruefung` →
+`FormalChecker.checkIndices`). A node draws one finding when some level of its own scope exceeds its
+cap, coded by the **first** such level's container depth through
+[`AddressFormalLegality`](AddressFormalLegality.lean)'s positional rule: the row whose own level is
+violated draws `zuGrosseZeile`, every node beneath draws `zuGrosseKontextnummer`, and a violated
+repeatable root group draws `zuGrosseLfdNummer` throughout. The familiar "one row code plus one
+context code per written node beneath it" count, the absorption of nested violations
+([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-absorption-depth)) and the
+serial-root case ([checkpoint](../../docs/sources/over-repetition-probes.md#src-address-index-position-classes))
+all follow from it; an absent cell and an unwritten declaration draw nothing
 ([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity)).
-So this set must not be read as what a computation sees. That channel is owned separately below, by
-[`computationOverRepetitionFindings`](#A12Kernel.CheckedDocument.computationOverRepetitionFindings),
-as a projection of this set rather than as a second traversal.
 
-**One rule replaces the special cases.** An over-limit row draws one row-level code on itself, plus
-one context-level code for every node the document instantiates beneath it, at any depth
-([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity)). A
-node is a descendant row or a placed cell, and the multiplicity counts **cells, not groups**: one
-descendant row writing two cell keys contributes three findings, not one.
+**The channels differ by scope, never by code.** Validation reports the whole set, unless a partial
+call's selection is empty. A computation reports only the nodes its prepared data retains: uncomputed
+operand cells and the ancestor groups of operand and computed fields
+([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-repetition-occurrence-scope)).
 
-**Which codes those are is decided by the violated level's depth, not by the row/descendant split**,
-and this module consumes [`AddressFormalLegality`](AddressFormalLegality.lean)'s positional rule rather
-than restating it. A container level sits at the last position of its own group's address and at an
-interior position of every deeper one, which is where `zuGrosseZeile` and `zuGrosseKontextnummer` come
-from — **except at container depth one, where that same position is also position 0 and the serial
-class wins throughout.** So an over-instantiated repeatable **root group** draws `zuGrosseLfdNummer` on
-the row *and* on every node beneath it, and no row or context code anywhere; the familiar pair is the
-deeper-than-root case rather than the whole rule
-([checkpoint](../../docs/sources/over-repetition-probes.md#src-address-index-position-classes)).
-
-**The outermost violation absorbs every nested one, not only its immediate child**
-([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-absorption-depth)), and that
-absorption is the positional scan's first-match-wins rather than a rule of its own: every address
-reports its own earliest violating position, which is the outermost violated level. Three nested
-over-limit levels therefore draw exactly one row-level code, on the outermost, and the inner rows are
-named with the context code like any other descendant.
-
-Two boundaries this module does **not** claim. The Kernel's emission order is not reproduced — the
-retained observations are compared as sets, because nothing measured fixes an order. And a cell is
-counted when the document places it, which the retained rows cannot separate from "declared by the
-model", since every measured document writes every declared key of the rows it instantiates.
+The Kernel's emission order is not reproduced; the retained observations are compared as sets.
 -/
 
 namespace A12Kernel
@@ -72,10 +56,12 @@ def OverRepetitionCode.ofPosition : IndexPosition → OverRepetitionCode
   | .row => .rowNumberTooLarge
   | .context => .contextNumberTooLarge
 
-/-- A node the document writes: a row or a placed cell. The finding set names both, so a consumer
-cannot collapse them without losing the per-cell multiplicity. -/
+/-- A node the document writes: a repeatable row, a nonrepeatable group instance, or a placed cell.
+The finding set names all three, so a consumer cannot collapse them without losing the per-node
+multiplicity. -/
 inductive OverRepetitionNode where
   | row (address : RowAddr)
+  | group (occurrence : GroupOccurrence)
   | cell (address : CellAddr)
   deriving Repr, DecidableEq
 
@@ -84,193 +70,112 @@ structure OverRepetitionFinding where
   node : OverRepetitionNode
   deriving Repr, DecidableEq
 
+namespace OverRepetitionNode
+
+/-- The node's own repeatable scope and coordinates. A node whose declaration the model does not
+resolve has none and so draws nothing, which keeps an unresolvable node out of the finding set
+instead of putting a guess into it. -/
+def scope? (model : FlatModel) : OverRepetitionNode → Option (List RepeatableLevel × List Nat)
+  | .row address => do
+      let declared ← model.repeatableGroupAtLevel? address.group
+      pure (model.repeatableScopeForGroupPath declared.path, address.path)
+  | .group occurrence =>
+      some (model.repeatableScopeForGroupPath occurrence.path, occurrence.coordinates)
+  | .cell address => do
+      let declaration ← model.fields.find? (·.id == address.field)
+      pure (declaration.repeatableScope, address.path)
+
+/-- The first repeatable level of the node's **own** scope whose coordinate exceeds its cap,
+outermost first: the level the Kernel's positional scan stops at. Each node is judged against its own
+ancestry, never by coordinate-prefix containment in another row, so a sibling group's node at the
+same coordinates as an over-capacity row is untouched
+([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-repetition-occurrence-scope)). -/
+def violatedAxis? (model : FlatModel) (node : OverRepetitionNode) : Option StarAxis := do
+  let (scope, path) ← node.scope? model
+  let axes ← model.repeatableAxesForScope? scope
+  let violated ← (axes.zip (scope.zip path)).find? fun pair => pair.1.bindingOverLimit pair.2
+  pure violated.1
+
+/-- Whether a level is the node's own last position. Only a row occupies its own repeatable level;
+a nonrepeatable group or a cell always sits strictly beneath every repeatable level it reports. -/
+def ownsLevel (node : OverRepetitionNode) (level : RepeatableLevel) : Bool :=
+  match node with
+  | .row address => address.group == level
+  | .group _ | .cell _ => false
+
+/-- The finding one written node draws, if any. The code follows the violated level's container
+depth through the shared positional rule; absorption is that rule's first-match-wins, because an
+inner over-capacity row whose ancestor is also violated reports the ancestor's position. -/
+def finding? (model : FlatModel) (node : OverRepetitionNode) : Option OverRepetitionFinding := do
+  let axis ← node.violatedAxis? model
+  let declared ← model.repeatableGroupAtLevel? axis.level
+  let depth := declared.path.length
+  let position := if node.ownsLevel axis.level then violatedLevelOwnPosition depth
+    else violatedLevelDescendantPosition depth
+  pure { code := .ofPosition position, node }
+
+/-- Whether a computation call's prepared data retains the node. The Kernel filters the document
+before its formal check to the uncomputed operand fields plus every ancestor group of an operand or
+computed field (`CalculationCommand.getEntityFullNamesNotRemovedFromData`), so an unread sibling
+field and an unread nonrepeatable subtree draw nothing while the target's own ancestry does
+([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-repetition-occurrence-scope)). -/
+def retainedFor (model : FlatModel) (operandFields anchorFields : List FieldId) :
+    OverRepetitionNode → Bool
+  | .cell address => operandFields.contains address.field
+  | .row address => match model.repeatableGroupAtLevel? address.group with
+      | some declared => anchors declared.path
+      | none => false
+  | .group occurrence => anchors occurrence.path
+where
+  anchors (path : GroupPath) : Bool := anchorFields.any fun field =>
+    match model.fields.find? (·.id == field) with
+    | some declaration => path.isPrefixOf declaration.groupPath
+    | none => false
+
+end OverRepetitionNode
+
 namespace CheckedDocument
 
-/-- The repeatable scope of one instantiated row's own group, or none when the model declares no
-such level. A row whose group is unknown cannot be placed in the capacity order and is skipped. -/
-private def rowScope? (model : FlatModel) (row : RowAddr) : Option (List RepeatableLevel) := do
-  let group ← model.repeatableGroupAtLevel? row.group
-  pure (model.repeatableScopeForGroupPath group.path)
+/-- Every node the document writes: rows, then nonrepeatable group instances, then cells, each in
+document order. Present-empty cells are written nodes; absent ones are not. -/
+def writtenNodes (checked : CheckedDocument model) : List OverRepetitionNode :=
+  checked.source.instantiatedRows.map .row ++ checked.source.groupOccurrences.map .group ++
+    checked.source.cells.map (.cell ·.address)
 
-/-- Whether a node at `innerPath` lies strictly beneath the row `outer` in the written tree: its
-coordinates extend `outer`'s and it is not `outer` itself. Scope containment is not consulted
-separately because the coordinate prefix already carries it — a deeper row's path is longer by
-exactly its extra levels. Exposed because the absorption law below is stated in terms of it. -/
-def extendsRow (outer : RowAddr) (innerPath : List Nat) : Bool :=
-  innerPath.length > outer.path.length && innerPath.take outer.path.length == outer.path
+/-- The complete structural finding set full validation reports. Order is **not** claimed: no
+retained observation fixes an emission order, so compare this as a set. -/
+def overRepetitionFindings (checked : CheckedDocument model) : List OverRepetitionFinding :=
+  checked.writtenNodes.filterMap (·.finding? model)
 
-/-- Whether a cell placed at `cellPath` lies within the row `outer`.
+/-- The structural finding set one validation call reports. The index check runs before relevance
+is consulted, so every nonempty partial selection reports the full set, while an empty selection
+ends the call before any check (`ValidationCommand.processPartlyValidation`) and reports nothing
+([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-repetition-occurrence-scope)). -/
+def overRepetitionFindingsUnder (checked : CheckedDocument model) :
+    ValidationRelevanceScope → List OverRepetitionFinding
+  | .full => checked.overRepetitionFindings
+  | .partialSet [] => []
+  | .partialSet (_ :: _) => checked.overRepetitionFindings
 
-**Equality counts here where it does not for a descendant row.** A cell's coordinate vector is its
-declaring group's repeatable scope, so a cell of the violated row *itself* has a vector of exactly the
-row's length — and the Kernel names it like any other node beneath the row. Requiring strict extension
-drops precisely the cells a field declared directly in the violated group contributes, measured on a
-repeatable root group whose direct field is reported alongside its nested one
-([checkpoint](../../docs/sources/over-repetition-probes.md#src-address-index-position-classes)). -/
-def cellWithinRow (outer : RowAddr) (cellPath : List Nat) : Bool :=
-  cellPath.length ≥ outer.path.length && cellPath.take outer.path.length == outer.path
-
-/-- Whether one instantiated row exceeds its group's declared repeatability on any of its axes. An
-unknown scope answers false, matching `rowScope?`. -/
-def rowOverLimit (checked : CheckedDocument model) (row : RowAddr) : Bool :=
-  let _ := checked
-  match rowScope? model row with
-  | none => false
-  | some scope => model.addressOverLimit? scope row.path == some true
-
-/-- The violated rows that are not themselves beneath another violated row. This is the absorption:
-only an outermost violation draws `zuGrosseZeile`, and an inner one is named with the context code
-like any other written node. -/
-def outermostOverLimitRows (checked : CheckedDocument model) : List RowAddr :=
-  let violated := checked.source.instantiatedRows.filter (checked.rowOverLimit ·)
-  violated.filter fun row =>
-    !violated.any fun other => extendsRow other row.path
-
-/-- The container depth of the first repeatable level of a row's own scope whose coordinate exceeds
-its cap, outermost first — that is, the length of that level's declared group path.
-
-It is the level the Kernel's positional scan stops at, and its depth is what selects the codes. Only
-repeatable levels are examined because a nonrepeatable level's coordinate is always its cap, so it
-never stops the scan even though it occupies a position. -/
-def violatedContainerDepth? (checked : CheckedDocument model) (row : RowAddr) : Option Nat := do
-  let _ := checked
-  let scope ← rowScope? model row
-  let axes ← model.repeatableAxesForScope? scope
-  let violated ← (axes.zip (scope.zip row.path)).find? fun pair => pair.1.bindingOverLimit pair.2
-  let group ← model.repeatableGroupAtLevel? violated.1.level
-  pure group.path.length
-
-/-- Every axis a resolved scope produces names a level the model declares, because the resolution
-itself is what looked that level up. Stated so the depth lookup below can be shown total on a violated
-row rather than defaulted. -/
-private theorem repeatableGroup_isSome_of_mem_axes (model : FlatModel) (scope : List RepeatableLevel) :
-    ∀ (axes : List StarAxis), model.repeatableAxesForScope? scope = some axes →
-      ∀ axis ∈ axes, (model.repeatableGroupAtLevel? axis.level).isSome := by
-  induction scope with
-  | nil =>
-    intro axes h axis hmem
-    simp only [FlatModel.repeatableAxesForScope?, Option.some.injEq] at h
-    subst h; simp at hmem
-  | cons level levels ih =>
-    intro axes h axis hmem
-    unfold FlatModel.repeatableAxesForScope? at h
-    cases hgroup : model.repeatableGroupAtLevel? level with
-    | none => simp [hgroup] at h
-    | some group =>
-      cases hrest : model.repeatableAxesForScope? levels with
-      | none => simp [hgroup, hrest] at h
-      | some rest =>
-        simp only [hgroup, hrest, bind, Option.bind, pure, Option.some.injEq] at h
-        subst h
-        rcases List.mem_cons.mp hmem with rfl | hmem'
-        · exact Option.isSome_of_eq_some hgroup
-        · exact ih rest hrest axis hmem'
-
-/-- **The depth lookup is total on a violated row**, so the finding builder's unresolved arm is
-unreachable from a checked document. Over-limit already required the scope to resolve and some axis to
-be exceeded, and a resolved scope's axes all name declared levels — so the three lookups the depth
-needs are exactly the ones over-limit already made. -/
-theorem violatedContainerDepth?_isSome (checked : CheckedDocument model) (row : RowAddr)
-    (h : checked.rowOverLimit row = true) : (checked.violatedContainerDepth? row).isSome := by
-  unfold rowOverLimit at h
-  cases hscope : rowScope? model row with
-  | none => simp [hscope] at h
-  | some scope =>
-    simp only [hscope] at h
-    unfold FlatModel.addressOverLimit? at h
-    cases haxes : model.repeatableAxesForScope? scope with
-    | none => simp [haxes] at h
-    | some axes =>
-      simp only [haxes, bind, Option.bind, pure, beq_iff_eq, Option.some.injEq] at h
-      unfold violatedContainerDepth?
-      simp only [hscope, haxes, bind, Option.bind, pure]
-      have hexists : ((axes.zip (scope.zip row.path)).find? fun pair =>
-          pair.1.bindingOverLimit pair.2).isSome := by
-        rw [List.find?_isSome]
-        exact List.any_eq_true.mp h
-      cases hfind : (axes.zip (scope.zip row.path)).find? fun pair =>
-          pair.1.bindingOverLimit pair.2 with
-      | none => rw [hfind] at hexists; simp at hexists
-      | some violated =>
-        have hmem : violated.1 ∈ axes :=
-          List.of_mem_zip (List.mem_of_find?_eq_some hfind) |>.1
-        have hgroup := repeatableGroup_isSome_of_mem_axes model scope axes haxes violated.1 hmem
-        cases hlookup : model.repeatableGroupAtLevel? violated.1.level with
-        | none => rw [hlookup] at hgroup; simp at hgroup
-        | some group => simp [hlookup]
-
-/-- A named outermost row is over its limit, which is the filter that produced it. -/
-theorem rowOverLimit_of_mem_outermost (checked : CheckedDocument model) (row : RowAddr)
-    (h : row ∈ checked.outermostOverLimitRows) : checked.rowOverLimit row = true := by
-  unfold outermostOverLimitRows at h
-  exact (List.mem_filter.mp (List.mem_filter.mp h).1).2
-
-/-- Every node the document writes beneath one row, rows before cells, each in document order. -/
-private def writtenBeneath (checked : CheckedDocument model) (row : RowAddr) :
-    List OverRepetitionNode :=
-  (checked.source.instantiatedRows.filter (extendsRow row ·.path)).map .row ++
-    (checked.source.cells.filter (cellWithinRow row ·.address.path)).map (.cell ·.address)
-
-/-- The complete structural finding set one document draws for over-repetition.
-
-Order is **not** claimed: no retained observation fixes an emission order, so compare this as a set.
-
-A row whose violated level cannot be resolved contributes nothing rather than a defaulted code, which
-keeps an unresolvable model out of the finding set instead of putting a guess into it. `rowOverLimit`
-already answers false for such a row, so the arm is unreachable from a checked document. -/
-def overRepetitionFindings (checked : CheckedDocument model) :
-    List OverRepetitionFinding :=
-  checked.outermostOverLimitRows.flatMap fun row =>
-    match checked.violatedContainerDepth? row with
-    | none => []
-    | some depth =>
-      { code := .ofPosition (violatedLevelOwnPosition depth), node := .row row } ::
-        (checked.writtenBeneath row).map fun node =>
-          { code := .ofPosition (violatedLevelDescendantPosition depth), node }
-
-/-- The group path a finding's node belongs to: a row's own declared group, or a cell's declaring
-group. A node whose owner the model does not declare has no path and is therefore outside every
-operand's scope, which keeps an unresolvable node out of the narrower channel rather than into it. -/
-private def nodeGroupPath? (model : FlatModel) : OverRepetitionNode → Option GroupPath
-  | .row address => (model.repeatableGroupAtLevel? address.group).map (·.path)
-  | .cell address => (model.fields.find? (·.id == address.field)).map (·.groupPath)
-
-/-- Whether two group paths lie on one root-to-leaf line: either may be the ancestor. -/
-private def comparableGroupPath (left right : GroupPath) : Bool :=
-  left.isPrefixOf right || right.isPrefixOf left
-
-/-- The over-repetition findings a **computation** reports, which is not the set the document draws.
-
-    Full validation reports every over-limit row in the document
-    ([`overRepetitionFindings`](#A12Kernel.CheckedDocument.overRepetitionFindings)); a computation
-    reports only what its own operands reach, so the two differ whenever a violated subtree is
-    unread. In this project's retained multiplicity artifact the nested document draws ten validation
-    findings and **zero** operand errors, and the two-independent document eight against four
-    ([checkpoint](../../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity)).
-
-    **The scope is comparability, and its two halves have different provenance.** A finding at or
-    beneath an operand is measured here: that artifact's probe model names `/Probe/ShellDeep`,
-    `/Probe/ShellDeep/Mid*`, and `/Probe/ShellOne` and no operand names `/Probe/Tri`, so one document
-    holding both an over-limit `Mid[4]` and an over-limit `A[3]` reports the first and not the
-    second. A finding **strictly above** an operand is a12-dmkits' measurement rather than this
-    project's
-    ([checkpoint](../../docs/sources/inbound-group-operand-batches.md#src-starred-field-operand-peer-reproduction)):
-    an operand two repetition levels down under an over-limit outer row draws three messages. Both
-    halves are one comparability test, so the clause is stated once; only its evidence is split.
-
-    Takes the operand group paths rather than a checked computation, so that it stays a projection
-    over the finding set instead of a consumer of one. For a group-count computation the supply is
-    already settled and needs nothing new: `CheckedGroupCountOperand.groupPath` gives one path per
-    operand for both the fixed and the starred form, and is the same accessor the containment and
-    rootness gates read. What no atom yet exposes is a path list for an *arbitrary* checked
-    computation expression, whose field operands would each contribute their declaring group. -/
+/-- The over-repetition findings a **computation** reports in its operand channel: the validation
+set restricted to the nodes its prepared data retains. `operandFields` are the uncomputed operand
+fields, after group-operand and implicit-guard expansion; `anchorFields` are every operand and
+computed field whose ancestor groups the call retains. -/
 def computationOverRepetitionFindings (checked : CheckedDocument model)
-    (operandGroupPaths : List GroupPath) : List OverRepetitionFinding :=
-  checked.overRepetitionFindings.filter fun finding =>
-    match nodeGroupPath? model finding.node with
-    | none => false
-    | some path => operandGroupPaths.any (comparableGroupPath path ·)
+    (operandFields anchorFields : List FieldId) : List OverRepetitionFinding :=
+  checked.overRepetitionFindings.filter (·.node.retainedFor model operandFields anchorFields)
 
 end CheckedDocument
+
+/-- The structural part of one computation call's `formalErrorsInOperands` channel, scoped by the
+same checked plan whose cell findings form the rest of that channel. The plan's coarse
+`.overRepetition` cell entries name the same over-capacity operand cells; these findings carry their
+Kernel codes and add the retained ancestor rows and group instances. -/
+def CheckedComputationFormalInputPlan.structuralFindings
+    (plan : CheckedComputationFormalInputPlan model) (input : CheckedDocument model) :
+    List OverRepetitionFinding :=
+  input.computationOverRepetitionFindings plan.selectedFields
+    (plan.operandFields ++ plan.computedFields)
+
 
 end A12Kernel

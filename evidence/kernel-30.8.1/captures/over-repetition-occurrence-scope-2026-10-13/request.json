@@ -1,0 +1,331 @@
+{
+ "model": "Occ_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "control-in-capacity",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      },
+      {
+       "Detail": {}
+      }
+     ],
+     "Notes": [
+      {},
+      {},
+      {
+       "Memo": "x"
+      }
+     ],
+     "Wide": [
+      {
+       "Fix": {}
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Occ"
+    }
+   ]
+  },
+  {
+   "name": "fixed-group-empty",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      },
+      {},
+      {
+       "Detail": {}
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Occ"
+    }
+   ]
+  },
+  {
+   "name": "fixed-group-null-siblings",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      },
+      {},
+      {
+       "Detail": {
+        "Qty2": null
+       },
+       "Qty": null,
+       "Unread": ""
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Occ"
+    }
+   ]
+  },
+  {
+   "name": "fixed-group-null-siblings-empty-partial",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      },
+      {},
+      {
+       "Detail": {
+        "Qty2": null
+       },
+       "Qty": null,
+       "Unread": ""
+      }
+     ]
+    }
+   },
+   "relevant": []
+  },
+  {
+   "name": "fixed-group-null-siblings-marker-partial",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      },
+      {},
+      {
+       "Detail": {
+        "Qty2": null
+       },
+       "Qty": null,
+       "Unread": ""
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Occ/Marker"
+    }
+   ]
+  },
+  {
+   "name": "fixed-group-null-siblings-memo-partial",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      },
+      {},
+      {
+       "Detail": {
+        "Qty2": null
+       },
+       "Qty": null,
+       "Unread": ""
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Occ/Notes/Memo"
+    }
+   ]
+  },
+  {
+   "name": "malformed-operand-over-limit",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      },
+      {},
+      {
+       "Detail": {
+        "Qty2": "bad"
+       }
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Occ"
+    }
+   ]
+  },
+  {
+   "name": "sibling-coordinate-twin",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      },
+      {},
+      {}
+     ],
+     "Notes": [
+      {},
+      {},
+      {
+       "Memo": "x"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Occ"
+    }
+   ]
+  },
+  {
+   "name": "sibling-coordinate-twin-nested",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      },
+      {},
+      {}
+     ],
+     "Notes": [
+      {},
+      {},
+      {
+       "Memo": "x"
+      }
+     ],
+     "Wide": [
+      {},
+      {},
+      {
+       "Fix": {}
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Occ"
+    }
+   ]
+  },
+  {
+   "name": "target-ancestry-over-limit",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      }
+     ],
+     "Wide": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {
+       "Fix": {
+        "Calc": null
+       }
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Occ"
+    }
+   ]
+  },
+  {
+   "name": "target-ancestry-over-limit-empty-fix",
+   "documentInline": {
+    "Occ": {
+     "Marker": "ready",
+     "Rows": [
+      {
+       "Detail": {
+        "Qty2": "5"
+       }
+      }
+     ],
+     "Wide": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {
+       "Fix": {}
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Occ"
+    }
+   ]
+  }
+ ]
+}

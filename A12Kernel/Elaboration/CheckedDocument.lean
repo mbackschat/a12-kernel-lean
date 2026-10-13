@@ -34,10 +34,18 @@ structure ClassifiedCellInput where
   sourceRepresentation : SourceRepresentation := .classified
   deriving Repr, DecidableEq
 
-/-- Finite immutable document data. Rows remain independent of placed cells. -/
+/-- One written instance of a **nonrepeatable** group, addressed by its declared path and the coordinates of its enclosing repeatable levels. Repeatable instances are rows. The Kernel index-checks every written group instance like a field, so an instance beneath an over-capacity row draws its own structural finding even when it holds nothing (spec/02 §3 over-repetition). -/
+structure GroupOccurrence where
+  path : GroupPath
+  coordinates : List Nat
+  deriving Repr, DecidableEq
+
+/-- Finite immutable document data. Rows and nonrepeatable group instances remain independent of placed cells. -/
 structure DocumentData where
   instantiatedRows : List RowAddr
   cells : List ClassifiedCellInput
+  /-- Written nonrepeatable group instances. Only structural findings read them; presence semantics derive from rows and admitted content. -/
+  groupOccurrences : List GroupOccurrence := []
   deriving Repr, DecidableEq
 
 namespace DocumentData
@@ -67,6 +75,8 @@ inductive CheckedDocumentError where
   | nonNumericField (address : CellAddr)
   /-- The stored-text read was asked for a declaration whose stored text is not its whole input. -/
   | nonPartialDateField (address : CellAddr)
+  /-- A nonrepeatable group instance whose path declares no field beneath it, names a repeatable group, repeats, or whose coordinates do not address instantiated enclosing rows. -/
+  | incoherentGroupOccurrence (occurrence : GroupOccurrence)
   deriving Repr, DecidableEq
 
 /-- Structural failures while projecting one repeatable scope's physically instantiated rows into complete named environments. -/
@@ -173,6 +183,19 @@ where
         let path := priorPath ++ [coordinate]
         { group := level, path } :: go levels remaining path
     | _, _, _ => []
+
+private def validateGroupOccurrences (model : FlatModel) (rows : List RowAddr)
+    (occurrences : List GroupOccurrence) : Except CheckedDocumentError Unit := do
+  for (occurrence, index) in occurrences.zipIdx do
+    let scope := model.repeatableScopeForGroupPath occurrence.path
+    let coherent :=
+      model.fields.any (occurrence.path.isPrefixOf ·.groupPath) &&
+      !model.repeatableGroups.any (·.path == occurrence.path) &&
+      !(occurrences.take index).contains occurrence &&
+      occurrence.coordinates.length == scope.length &&
+      !occurrence.coordinates.any (· == 0) &&
+      (repeatableAncestorRowsFor scope occurrence.coordinates).all rows.contains
+    if !coherent then throw (.incoherentGroupOccurrence occurrence)
 
 private def validateCellAddressShape (model : FlatModel)
     (address : CellAddr) : Except CheckedDocumentError FlatFieldDecl := do
@@ -344,6 +367,7 @@ def checkDocument (prepared : PreparedFlatStringContext model compilePattern)
     (locale : String) (source : DocumentData) :
     Except CheckedDocumentError (CheckedDocument model) := do
   let checkedRows ← validateRows model source.instantiatedRows
+  validateGroupOccurrences model source.instantiatedRows source.groupOccurrences
   match firstDuplicateCell? source.cells with
   | some address => throw (.duplicateCell address)
   | none => pure ()
