@@ -1,0 +1,192 @@
+{
+ "header": {
+  "id": "MinPolarity_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "MinPolarity_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/TA",
+        "name": "TA",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TB",
+        "name": "TB",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TC",
+        "name": "TC",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Rows/A",
+           "name": "A",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "minValue": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/B",
+           "name": "B",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": true
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/C",
+           "name": "C",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/TAComp",
+        "name": "TAComp",
+        "Computation": {
+         "computedFieldRelPath": "../TA",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/A)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Declared minimum polarity probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/TBComp",
+        "name": "TBComp",
+        "Computation": {
+         "computedFieldRelPath": "../TB",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/B)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Declared minimum polarity probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/TCComp",
+        "name": "TCComp",
+        "Computation": {
+         "computedFieldRelPath": "../TC",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/C)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Declared minimum polarity probe."
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

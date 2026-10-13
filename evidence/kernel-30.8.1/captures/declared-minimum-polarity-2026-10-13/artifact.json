@@ -1,0 +1,452 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "MinPolarity_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "above-seed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TAComp",
+              "field" : "Form/TA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/A",
+                "Form/TA"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/A",
+                "Form/TA"
+              ]
+            },
+            {
+              "code" : "TBComp",
+              "field" : "Form/TB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "Form/TB"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TCComp",
+              "field" : "Form/TC",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "Form/TC"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "Form/TC"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/TA",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/TB",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/TC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TAComp",
+              "field" : "Form/TA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/A",
+                "Form/TA"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/A",
+                "Form/TA"
+              ]
+            },
+            {
+              "code" : "TBComp",
+              "field" : "Form/TB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "Form/TB"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TCComp",
+              "field" : "Form/TC",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "Form/TC"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "Form/TC"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/TA",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/TB",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/TC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "below-seed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TAComp",
+              "field" : "Form/TA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/A",
+                "Form/TA"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/A",
+                "Form/TA"
+              ]
+            },
+            {
+              "code" : "TBComp",
+              "field" : "Form/TB",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "Form/TB"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/B",
+                "Form/TB"
+              ]
+            },
+            {
+              "code" : "TCComp",
+              "field" : "Form/TC",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "Form/TC"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "Form/TC"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/TA",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/TB",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/TC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TAComp",
+              "field" : "Form/TA",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/A",
+                "Form/TA"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/A",
+                "Form/TA"
+              ]
+            },
+            {
+              "code" : "TBComp",
+              "field" : "Form/TB",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "Form/TB"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/B",
+                "Form/TB"
+              ]
+            },
+            {
+              "code" : "TCComp",
+              "field" : "Form/TC",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "Form/TC"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/C",
+                "Form/TC"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/TA",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/TB",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/TC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "full-above",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "TAComp",
+              "field" : "Form/TA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/A",
+                "Form/TA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TBComp",
+              "field" : "Form/TB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "Form/TB"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TCComp",
+              "field" : "Form/TC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "Form/TC"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/TA",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/TB",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/TC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "TAComp",
+              "field" : "Form/TA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/A",
+                "Form/TA"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TBComp",
+              "field" : "Form/TB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/B",
+                "Form/TB"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TCComp",
+              "field" : "Form/TC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Declared minimum polarity probe.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/C",
+                "Form/TC"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/TA",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/TB",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/TC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

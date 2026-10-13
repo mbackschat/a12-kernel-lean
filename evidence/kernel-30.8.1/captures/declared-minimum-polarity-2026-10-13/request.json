@@ -1,0 +1,73 @@
+{
+ "model": "MinPolarity_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "above-seed",
+   "documentInline": {
+    "Form": {
+     "TA": 5,
+     "TB": 5,
+     "TC": 5,
+     "Rows": [
+      {
+       "A": 9,
+       "B": 9,
+       "C": 9
+      },
+      {}
+     ]
+    }
+   }
+  },
+  {
+   "name": "below-seed",
+   "documentInline": {
+    "Form": {
+     "TA": 5,
+     "TB": 5,
+     "TC": 5,
+     "Rows": [
+      {
+       "A": 1,
+       "B": 1,
+       "C": 1
+      },
+      {}
+     ]
+    }
+   }
+  },
+  {
+   "name": "full-above",
+   "documentInline": {
+    "Form": {
+     "TA": 5,
+     "TB": 5,
+     "TC": 5,
+     "Rows": [
+      {
+       "A": 9,
+       "B": 9,
+       "C": 9
+      },
+      {
+       "A": 0,
+       "B": 0,
+       "C": 0
+      },
+      {
+       "A": 0,
+       "B": 0,
+       "C": 0
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

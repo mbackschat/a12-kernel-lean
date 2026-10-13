@@ -66,7 +66,6 @@ Selected-overlap implementation and assurance live in the [shared overlap owner]
 - `remaining`: very large fully covered negative extents still scan lazily; wider negative-scan cost and a safe coverage bound are unmeasured. Positive and unavailable prefixes do not settle that cost. D02 owns this boundary.
 - `consumer-gated`: CheckedDocument verifies dense rows and parent existence executably without exporting both as proof certificates. Add a certificate only for a named proof consumer; do not create another prerequisite campaign.
 - `representation-boundary`: raw aggregate adapters may traverse complete physical rows where checked routes use admitted capacity. Unbounded declared field-fill selections and raw group readers retain explicit unsupported/unavailable boundaries; do not generalize the checked-document result to those APIs.
-- `remaining`: generated self-validation type for declared minima. Message type and references are separate observations.
 - `reopen-when`: a selected consumer observes a remaining extent, diagnostic or cost distinction. The pure negative-presence false/unknown choice has no known separating output; reopen it only with a channel observing that state, as bounded by [the non-true-row source](../sources/having-filter-probes.md#src-having-filter-nontrue-row).
 - `consumer`: Execute/Explain need exact product/count, environment, relevance and reached failure; Analyze needs order and decisive prefix. Validation and computation must keep their distinct scan effects.
 - `route-state`: discovery-required
