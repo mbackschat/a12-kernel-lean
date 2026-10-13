@@ -5,6 +5,7 @@ import A12Kernel.Elaboration.EnumerationDeclarationNotification
 import A12Kernel.Elaboration.DeclarationAdmission
 import A12Kernel.Elaboration.LegalCharset
 import A12Kernel.Elaboration.IndexAndSortDeclaration
+import A12Kernel.Semantics.NumberBound
 
 /-! # Reading a DM-JSON document model
 
@@ -95,7 +96,7 @@ private def bool? (json : Json) (key : String) : Option Bool :=
 
 /-- A DM decimal bound, written as a JSON number or an integer string; absent is `none`, and any
 other value refuses the declaration rather than dropping the bound. -/
-private def rat? (json : Json) (key : String) : Except String (Option Rat) :=
+def decimalMember? (json : Json) (key : String) : Except String (Option Rat) :=
   match json.getObjVal? key with
   | .ok (.num number) => pure (some (Rat.ofScientific number.mantissa.natAbs true number.exponent *
       (if number.mantissa < 0 then -1 else 1)))
@@ -174,13 +175,17 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         stringPatternSource := str? body "pattern"
         stringValueMode := if (bool? body "noValueValidation").getD false then .raw else .evaluated }
   | "NumberType" =>
-      -- A negative fractional member is A12's no-bound sentinel, which takes the pair out of the
-      -- ordering gate (spec/04 digit table) and changes which runtime fractional checks arm; it has
-      -- no account here, so refuse it rather than read it as absent.
-      for key in ["minFractionalDigits", "maxFractionalDigits"] do
-        if let .ok (value : Int) := body.getObjValAs? Int key then
-          if value < 0 then throw s!"NumberType {key} {value}: the no-bound sentinel is not represented"
-      let scale := (nat? body "maxFractionalDigits").getD 0
+      -- An absent fractional member reads as `0` and `-1` is the no-bound sentinel (spec/04 §4): the
+      -- declared pair becomes an ordinary one, except that `-1` beside a zero maximum leaves stored
+      -- text's separator and fractional count unchecked. Both written `-1` is a declaration refusal.
+      let fractional (key : String) : Except String Int := match body.getObjValAs? Int key with
+        | .ok value => if value < -1 then throw s!"NumberType {key} {value}" else pure value
+        | .error _ => pure 0
+      let minimumDigits ← fractional "minFractionalDigits"
+      let maximumDigits ← fractional "maxFractionalDigits"
+      if minimumDigits = -1 && maximumDigits = -1 then throw "MVK_FRACT_DIGITS_MISSING"
+      let minFractionalDigits := minimumDigits.toNat
+      let scale := if maximumDigits = -1 then minFractionalDigits else maximumDigits.toNat
       -- The amount trait caps integer digits at `15 - scale` behind an explicit `maxIntegerDigits`,
       -- reported as the same cause (spec §4 digit table, §9 fit order), and on stored input turns a
       -- signed zero into the zero class on an unsigned, zero-forbidding field (peer kf276).
@@ -188,16 +193,25 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         | none => pure none
         | some "amount" => pure (some (15 - scale))
         | some other => throw s!"NumberType trait {other}"
+      -- The runtime bound is the text generated code receives, printed from the authored bound's
+      -- nearest double, not the authored decimal (spec/04 §4).
+      let printedBound (key : String) : Except String (Option Rat) := do
+        match ← decimalMember? body key with
+        | none => pure none
+        | some authored => match NumberBound.printedValue? authored minimumDigits maximumDigits with
+          | some value => pure (some value)
+          | none => throw s!"NumberType {key} lies outside the normal double range"
       pure { base with
         policy := { kind := .number { scale, signed := !(bool? body "positivesOnly").getD false } }
         numericTargetConstraints := {
-          minFractionalDigits := (nat? body "minFractionalDigits").getD 0
+          minFractionalDigits
           maxIntegerDigits := (nat? body "maxIntegerDigits").orElse fun _ => traitCap
           zeroAllowed := !(bool? body "zeroNotAllowed").getD false
           leadingZerosAllowed := (bool? body "leadingZerosAllowed").getD false
           amount := traitCap.isSome
           minStoredLength := nat? body "minLength", maxStoredLength := nat? body "maxLength"
-          minimum := ← rat? body "minValue", maximum := ← rat? body "maxValue" } }
+          minimum := ← printedBound "minValue", maximum := ← printedBound "maxValue"
+          fractionalDigitsChecked := !(minimumDigits = -1 && maximumDigits = 0) } }
   | "BooleanType" => pure { base with policy := { kind := .boolean } }
   | "ConfirmType" => pure { base with policy := { kind := .confirm } }
   | "EnumerationType" =>
@@ -299,7 +313,7 @@ private def ruleCode (body : Json) : DeclarationStringValue :=
 at the default variant, which names nothing, the filter type alone decides. Any other filter shape
 fails the whole model, as the Kernel's build does (spec/01 §3). A `variants` member that is neither
 absent, `null` nor a list of names is refused too, which no measurement covers. -/
-private def acceptedByVariant (variant : Option String) (body : Json) : Except String Bool := do
+def acceptedByVariant (variant : Option String) (body : Json) : Except String Bool := do
   match body.getObjVal? "variantFilter" with
   | .error _ | .ok .null => pure true
   | .ok filter@(.obj _) =>
@@ -319,7 +333,7 @@ private def acceptedByVariant (variant : Option String) (body : Json) : Except S
 /-- A field's body with a `TypeDefType` replaced by the inline definition it names, so every check
 reads the base kind, as the Kernel's effective type does (typedef base-kind checkpoint). A definition
 imported from another model is not in this one and is refused with an unknown id. -/
-private def resolveTypeDefinition (definitions : List (String × Json)) (fieldJson : Json) :
+def resolveTypeDefinition (definitions : List (String × Json)) (fieldJson : Json) :
     Except String Json := do
   let fieldType ← fieldJson.getObjVal? "fieldType"
   if (fieldType.getObjValAs? String "type").toOption != some "TypeDefType" then return fieldJson

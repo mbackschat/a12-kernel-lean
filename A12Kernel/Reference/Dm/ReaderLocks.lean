@@ -302,14 +302,34 @@ private def numberBodyRefusals (body : List (String × Json)) : Option (List Str
   let json := Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group])])])]
   (readModel json).toOption.map fun model => model.refusals.map (·.2)
 
-/- The no-bound sentinel `-1` is not an absent member: read as one, a minimum of one beside it would be
-refused as inverted, which the Kernel admits. The reader refuses the field instead; its nonnegative
-twins read. -/
+/-- The resolved scale, minimum fractional count and whether stored text meets the fractional arms,
+for the one field of a model whose Number body is `body`. -/
+private def numberBodyFractional (body : List (String × Json)) : Option (Nat × Nat × Bool) := do
+  let field := Json.mkObj [("type", "Field"), ("name", "N"), ("Field", Json.mkObj [("fieldType",
+    Json.mkObj [("type", "NumberType"), ("NumberType", Json.mkObj body)])])]
+  let group := Json.mkObj [("type", "Group"), ("name", "G"),
+    ("Group", Json.mkObj [("repeatability", (1 : Nat)), ("elements", Json.arr #[field])])]
+  let json := Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group])])])]
+  let model ← (readModel json).toOption
+  let declaration ← model.flat.fields.head?
+  let .number info := declaration.policy.kind | none
+  pure (info.scale, declaration.numericTargetConstraints.minFractionalDigits,
+    declaration.numericTargetConstraints.fractionalDigitsChecked)
+
+/- The no-bound sentinel `-1` is not an absent member: it resolves into an ordinary pair, a `-1`
+maximum fixing the count at the minimum, except that a `-1` minimum beside a zero maximum leaves the
+fractional arms unchecked; both written `-1` is refused (rows `s-*` of the `model-consistency` and
+the stored rows of the `number-declaration-bounds` capture). -/
 example :
-    (numberBodyRefusals [("minFractionalDigits", (-1 : Int))]).map (·.length) = some 1 ∧
-      (numberBodyRefusals [("maxFractionalDigits", (-1 : Int)), ("minFractionalDigits", (1 : Nat))]).map
-        (·.length) = some 1 ∧
-      numberBodyRefusals [("minFractionalDigits", (0 : Nat))] = some [] ∧
+    numberBodyFractional [("minFractionalDigits", (-1 : Int)), ("maxFractionalDigits", (2 : Nat))] =
+        some (2, 0, true) ∧
+      numberBodyFractional [("maxFractionalDigits", (-1 : Int)), ("minFractionalDigits", (1 : Nat))] =
+        some (1, 1, true) ∧
+      numberBodyFractional [("maxFractionalDigits", (-1 : Int))] = some (0, 0, true) ∧
+      numberBodyFractional [("minFractionalDigits", (-1 : Int))] = some (0, 0, false) ∧
+      numberBodyFractional [("minFractionalDigits", (-1 : Int)), ("maxFractionalDigits", (-1 : Int))] = none ∧
+      numberBodyRefusals [("minFractionalDigits", (-1 : Int)), ("maxFractionalDigits", (-1 : Int))] =
+        some ["MVK_FRACT_DIGITS_MISSING"] ∧
       numberBodyRefusals [("maxFractionalDigits", (2 : Nat)), ("minFractionalDigits", (1 : Nat))] =
         some [] := by
   native_decide

@@ -1,0 +1,885 @@
+[
+ {
+  "case": "v0-ok",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "v0-max",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-max-value-exceeded",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "v0-min-neg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-min-value-exceeded",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "v0-min-pos",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-min-value-exceeded",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "v0-both",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-max-value-exceeded",
+   "codeless:number-min-value-exceeded",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "v2-ok",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "v2-over",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-max-value-exceeded"
+  ]
+ },
+ {
+  "case": "v2-fine",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "v2-fine-over",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-max-value-exceeded",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "v14-ok",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "v14-fine-over",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-max-value-exceeded",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "v14-over",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-max-value-exceeded"
+  ]
+ },
+ {
+  "case": "v-filtered",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-max-value-exceeded"
+  ]
+ },
+ {
+  "case": "v-typedef",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-max-value-exceeded",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "v-typedef-unused",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "bp-short-min",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "bp-16sig",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "bp-var-wide",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "bp-fixed-round",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "bp-fixed-half",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "bp-fixed-int",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "bp-negzero-fixed",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:metamodel-formal:ZAHL_NULL_ENTHAELT_VORZEICHEN"
+  ]
+ },
+ {
+  "case": "bp-negzero-var",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "bp-frac14",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "bp-frac15",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "bp-tiny",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "bp-filtered",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "s-min-1",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "s-max-1",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "s-both-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_FRACT_DIGITS_MISSING"
+  ]
+ },
+ {
+  "case": "s-max-1-bound",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "s-min-1-fixed2",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "v-neg-fine",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "s-max-absent",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "s-max-absent-min2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_FRACT_DIGITS_INVALID"
+  ]
+ },
+ {
+  "case": "i-empty-id2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-not-unique",
+   "codeless:id-not-unique",
+   "codeless:id-empty",
+   "codeless:id-empty"
+  ]
+ },
+ {
+  "case": "i-empty-id1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-empty"
+  ]
+ },
+ {
+  "case": "i-root-id",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-not-unique",
+   "codeless:id-not-unique"
+  ]
+ },
+ {
+  "case": "a-content-typedef",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "b-field-name-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:model-not-built"
+  ]
+ },
+ {
+  "case": "b-error-entity-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_FIELD_MISSING",
+   "MVK_MISSING_ERROR_FIELD",
+   "codeless:error-entity-not-set"
+  ]
+ },
+ {
+  "case": "b-error-condition-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_CONDITION_MISSING",
+   "MVK_INCOMPLETE_INPUT",
+   "codeless:error-condition-empty"
+  ]
+ },
+ {
+  "case": "b-computed-field-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:model-not-built"
+  ]
+ },
+ {
+  "case": "b-operation-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INCOMPLETE_INPUT",
+   "codeless:computation-operation-empty"
+  ]
+ },
+ {
+  "case": "b-enum-dup-categories",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:model-not-built"
+  ]
+ },
+ {
+  "case": "b-localized-null",
+  "admitted": null,
+  "verification": null,
+  "severities": [],
+  "notifications": [
+   "instrument:model-input-invalid"
+  ]
+ },
+ {
+  "case": "b-index-name-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:model-not-built"
+  ]
+ },
+ {
+  "case": "b-sort-name-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:model-not-built"
+  ]
+ },
+ {
+  "case": "b-typedef-ref-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:model-not-built"
+  ]
+ },
+ {
+  "case": "b-typedef-id-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-empty"
+  ]
+ },
+ {
+  "case": "b-typedef-name-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:typedef-name-empty"
+  ]
+ },
+ {
+  "case": "i-dup2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-not-unique",
+   "codeless:id-not-unique"
+  ]
+ },
+ {
+  "case": "i-dup3",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-not-unique",
+   "codeless:id-not-unique",
+   "codeless:id-not-unique"
+  ]
+ },
+ {
+  "case": "i-dup-rule",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-not-unique",
+   "codeless:id-not-unique"
+  ]
+ },
+ {
+  "case": "i-dup-group",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-not-unique",
+   "codeless:id-not-unique"
+  ]
+ },
+ {
+  "case": "i-dup-filtered",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-not-unique",
+   "codeless:id-not-unique"
+  ]
+ },
+ {
+  "case": "i-dup-comp",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-not-unique",
+   "codeless:id-not-unique"
+  ]
+ },
+ {
+  "case": "i-dup-two-ids",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:id-not-unique",
+   "codeless:id-not-unique",
+   "codeless:id-not-unique",
+   "codeless:id-not-unique"
+  ]
+ },
+ {
+  "case": "ms-ok",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "ms-string",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "ms-rule",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "ms-fixed",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:multi-select-repeatable-group"
+  ]
+ },
+ {
+  "case": "ms-no-field",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:multi-select-required-field"
+  ]
+ },
+ {
+  "case": "ms-two-fields",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:multi-select-required-field"
+  ]
+ },
+ {
+  "case": "ms-number",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:multi-select-fieldtype"
+  ]
+ },
+ {
+  "case": "ms-no-req",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:multi-select-required-flag"
+  ]
+ },
+ {
+  "case": "ms-index",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:multi-select-index-field"
+  ]
+ },
+ {
+  "case": "ms-subgroup",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:multi-select-other-elements"
+  ]
+ },
+ {
+  "case": "ms-filtered-second",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:multi-select-required-field"
+  ]
+ },
+ {
+  "case": "ms-all",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:multi-select-repeatable-group",
+   "codeless:multi-select-required-flag",
+   "codeless:multi-select-fieldtype",
+   "codeless:multi-select-other-elements"
+  ]
+ },
+ {
+  "case": "a-ok",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "a-missing-field",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:attachment-missing-field"
+  ]
+ },
+ {
+  "case": "a-missing-two",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:attachment-missing-field"
+  ]
+ },
+ {
+  "case": "a-content-config",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:attachment-content-config",
+   "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK"
+  ]
+ },
+ {
+  "case": "a-content-string",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:attachment-content-config"
+  ]
+ },
+ {
+  "case": "a-missing-rule",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:attachment-required-rules"
+  ]
+ },
+ {
+  "case": "a-rule-spacing",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:attachment-required-rules"
+  ]
+ },
+ {
+  "case": "a-content-number",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "a-rule-case",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:attachment-required-rules"
+  ]
+ },
+ {
+  "case": "a-extra",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "a-filtered-field",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "a-de-ok",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "a-de-en-order",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:attachment-required-rules"
+  ]
+ },
+ {
+  "case": "ms-typedef-enum",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "a-all",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:attachment-missing-field",
+   "codeless:attachment-required-rules",
+   "codeless:attachment-content-config"
+  ]
+ }
+]

@@ -1,0 +1,71 @@
+[
+ {
+  "case": "d1-min-negzero-max-long",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-max-value-exceeded",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG",
+   "codeless:metamodel-formal:ZAHL_NULL_ENTHAELT_VORZEICHEN"
+  ]
+ },
+ {
+  "case": "d2-two-fields-long",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "d3a-min-fifteen-max-negzero",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:metamodel-formal:ZAHL_NULL_ENTHAELT_VORZEICHEN"
+  ]
+ },
+ {
+  "case": "d3-min-long-max-negzero",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-min-value-exceeded",
+   "codeless:metamodel-formal:ZAHL_NULL_ENTHAELT_VORZEICHEN",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ },
+ {
+  "case": "d4-min-long-max-long-distinct",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR",
+   "ERROR",
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:number-max-value-exceeded",
+   "codeless:number-min-value-exceeded",
+   "codeless:metamodel-formal:STELLIGKEIT_ZU_LANG"
+  ]
+ }
+]

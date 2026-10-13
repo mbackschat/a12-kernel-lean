@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-One correction is `pending` below and has not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Three corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
 
 <a id="spec-2026-10-13-13"></a>
 ### SPEC-2026-10-13-13 — quoted Number conversion, kept leading-zero text and the full formal cascade with its message keys
@@ -47,4 +47,26 @@ One correction is `pending` below and has not been handed off. The 13 terminal r
 - `delta`: Quoted Number text converts by the host decimal grammar (sign, BMP decimal digits, fraction, exponent); unconvertible text and, on a `leadingZerosAllowed` field, text with an ASCII leading zero stay verbatim. A scale outside 32 bits keeps the text; an extreme in-range scale can fault validation. The cascade gains a leading plus first, signed zero, missing separator and leading zero at their positions, and a negative zero on an unsigned zero-forbidding amount field reports `zahlIstNull`. The lexical checks are reached by kept text, not only by display conversion, which this replaces. Message keys additionally read sign and plain fractional shape.
 - `basis`: [ingress checkpoint](sources/domain-ingestion-probes.md#src-number-ingress-k16), four runtime requests over fourteen documents at a12-dmkits `a4091041`, Kernel 30.8.1, plus the retained `FormalNum` captures; peer kf276 for the money exception.
 - `acceptance`: Reconcile conversion, retention and cascade order with these rows. Do not claim a measured grouping-separator route, a separated sign variant of any message key, or a conversion outcome for a scale magnitude between 100,000 and the faulting `2147483648`.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-14"></a>
+
+### SPEC-2026-10-13-14 — the model consistency rule set, its order and the authored versus filtered model it reads
+
+- `status`: pending
+- `canonical`: [model consistency rules](../spec/01-data-model.md#12-model-consistency-rules).
+- `delta`: A built model meets identifier uniqueness, Number value limits, attachment and multi-select group shapes, the generation of the declaration with the printed-bound formal check, and basic member checks, in that order, each notification reported in walk order; a model drawing any is refused. Every rule but the bound check reads the authored model, variant-filtered fields included. Duplicated identifiers report every occurrence; the value limit compares doubles at the raw declared maximum fraction digits; a field's bound check reports the maximum before the minimum and an identical class once. Six empty or repeated members fail the build with no class.
+- `basis`: [consistency checkpoint](sources/model-structure-and-declaration-probes.md#src-model-consistency-k17), 89 rows at a12-dmkits `a4091041`, Kernel 30.8.1, with source reading at Kernel `cb66e51`.
+- `acceptance`: Reconcile rule order, multiplicity and the authored/filtered split with these rows. Do not claim an order across distinct duplicated identifiers, attachment texts under another condition language, or two build failures in one model.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-15"></a>
+
+### SPEC-2026-10-13-15 — runtime Number bounds as printed double text and the runtime account of the fractional sentinel
+
+- `status`: pending
+- `canonical`: [other numeric constraints](../spec/04-numbers-and-decimals.md#4-other-numeric-constraints).
+- `delta`: A declared `minValue`/`maxValue` is compared at runtime as the text printed from its nearest double, with fixed places rounding half up when both fractional members equal `n ≥ 0` and the plain shortest decimal otherwise. The `-1` sentinel resolves into an ordinary pair (`-1` minimum to zero, `-1` maximum to the minimum), except that a `-1` minimum beside a zero maximum arms neither the separator nor the fractional-count test.
+- `basis`: [bounds checkpoint](sources/domain-ingestion-probes.md#src-number-declaration-bounds-k17), two requests at a12-dmkits `a4091041`, Kernel 30.8.1, both strategies agreeing.
+- `acceptance`: Reconcile the printed bound and sentinel resolution with these rows. Do not claim a measured computed fractional result into a `(-1, 0)` field.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

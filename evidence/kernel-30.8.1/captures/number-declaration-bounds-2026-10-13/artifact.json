@@ -1,0 +1,472 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "K17S_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "s1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "s15",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "K17/SMax0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMax0"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "K17/SMax0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMax0"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "s155",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zahlFalscheAnzahlNachkommastellen",
+       "field": "K17/SMaxFix1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMaxFix1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "K17/SMax0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMax0"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zahlFalscheAnzahlNachkommastellen",
+       "field": "K17/SMaxFix1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMaxFix1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "K17/SMax0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMax0"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "s1555",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zahlFalscheAnzahlNachkommastellen",
+       "field": "K17/SMaxFix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMaxFix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlFalscheAnzahlNachkommastellen",
+       "field": "K17/SMaxFix1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMaxFix1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlFalscheAnzahlNachkommastellen",
+       "field": "K17/SMin",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMin"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "K17/SMax0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMax0"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zahlFalscheAnzahlNachkommastellen",
+       "field": "K17/SMaxFix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMaxFix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlFalscheAnzahlNachkommastellen",
+       "field": "K17/SMaxFix1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMaxFix1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlFalscheAnzahlNachkommastellen",
+       "field": "K17/SMin",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMin"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "K17/SMax0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMax0"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "s150",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "K17/SMax0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMax0"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "K17/SMax0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMax0"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sneg",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "K17/SMax0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMax0"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "K17/SMax0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/SMax0"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "s0",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "s100",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "bin",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "bout",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zahlZuGross",
+       "field": "K17/BHalf",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/BHalf"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlZuGross",
+       "field": "K17/BInt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/BInt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlZuGross",
+       "field": "K17/BRoundFix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/BRoundFix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlZuKlein",
+       "field": "K17/BShort",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/BShort"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zahlZuGross",
+       "field": "K17/BHalf",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/BHalf"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlZuGross",
+       "field": "K17/BInt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/BInt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlZuGross",
+       "field": "K17/BRoundFix",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/BRoundFix"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlZuKlein",
+       "field": "K17/BShort",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "K17/BShort"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bmid",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  }
+ ]
+}

@@ -129,6 +129,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Model declaration legality](implementation/data-and-core.md#cap-model-declaration-legality)
 <a id="cap-model-reader-declaration-surface"></a>
 - [Model reader declaration surface](implementation/data-and-core.md#cap-model-reader-declaration-surface)
+<a id="cap-model-consistency-rules"></a>
+- [Model consistency rules](implementation/data-and-core.md#cap-model-consistency-rules)
 <a id="cap-group-content-gate"></a>
 - [Group-content gate](implementation/data-and-core.md#cap-group-content-gate)
 
@@ -162,6 +164,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Universal formal pre-check](implementation/numeric.md#cap-universal-value-formal-precheck)
 <a id="cap-number-formal-cascade"></a>
 - [Ordered Number formal cascade](implementation/numeric.md#cap-number-formal-cascade)
+<a id="cap-number-declaration-bounds"></a>
+- [Declared Number bounds and the fractional sentinel at runtime](implementation/numeric.md#cap-number-declaration-bounds)
 <a id="cap-runtime-formal-message-keys"></a>
 - [Runtime formal-error message keys and their parameter contract](implementation/numeric.md#cap-runtime-formal-message-keys)
 <a id="resolved-date-range-overlap-truth-and-operator-scans"></a>

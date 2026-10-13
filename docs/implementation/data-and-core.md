@@ -260,3 +260,13 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `case`: [model-surface locks](../../A12Kernel/Reference/Dm/ModelSurfaceLocks.lean) pin each member against the reading that ignores it, including the named-variant flip, the filtered rule whose malformed name draws nothing beside its refused unfiltered twin, and each nomination class.
 - `evidence`: source-grounded; the Kernel probe routes run the default variant only, so a named variant is a reader parameter without an observation route. Filter, type-definition and nomination reading are `external evidence pending` apart from the nomination cascade, which the [index and sort checkpoint](../sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration) calibrates.
 - `remains`: K17 continues in the [plan](../PLAN.md#k17--model-declarations-and-static-denominator).
+
+<a id="cap-model-consistency-rules"></a>
+#### Model consistency rules
+
+- `boundary`: The six ordered consistency rules a built model meets, their codeless classes and multiplicities, and the build failures that precede them ([spec/01 §1.2](../../spec/01-data-model.md#12-model-consistency-rules)). Every rule but the printed-bound check reads the authored model, variant-filtered fields included. The `MVK_*` classes of the generation rule, the empty-code and repeated-value classes of the basic rule, and the schema-version rules stay with their own owners.
+- `owner`: [`ModelConsistency.lean`](../../A12Kernel/Elaboration/ModelConsistency.lean) (`ModelConsistency.check`) over the authored tree that [`ModelConsistencyRead.lean`](../../A12Kernel/Reference/Dm/ModelConsistencyRead.lean) reads; the value limit and printed bounds come from [`NumberBound.lean`](../../A12Kernel/Semantics/NumberBound.lean).
+- `case`: [consistency locks](../../A12Kernel/Reference/Dm/ModelConsistencyLocks.lean) replay all 89 retained rows by rule family, plus four examples pinning the attached paths, which no capture observes.
+- `assurance`: E closed for the measured rows. No law is stated: each rule is a finite predicate over one walk, and its content is the order and multiplicity the rows fix.
+- `evidence`: [consistency checkpoint](../sources/model-structure-and-declaration-probes.md#src-model-consistency-k17), with its unmeasured choices listed there.
+- `remains`: the replay reader's admission does not consult this checker; a consumer judging model acceptance calls both.

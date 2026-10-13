@@ -22,6 +22,10 @@ structure NumericTargetConstraints where
   maxStoredLength : Option Nat := none
   minimum : Option Rat := none
   maximum : Option Rat := none
+  /-- Whether stored text meets the separator and fractional-count arms at all. A declaration pairing
+  the `-1` minimum sentinel with a zero maximum arms neither, so stored text of any scale passes them
+  (spec/04 §4); every other declaration arms them. -/
+  fractionalDigitsChecked : Bool := true
   deriving Repr, DecidableEq
 
 /-- Resolved Number target constraints consumed after separate assignment-scale admission. Input-only leading-zero policy is absent because canonical computed rendering cannot reach it. Warning suppression selects an evaluator entry point rather than changing this policy. -/

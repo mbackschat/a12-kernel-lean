@@ -1,0 +1,53 @@
+{
+ "model": "K17S_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "s1",
+   "document": "s1.json"
+  },
+  {
+   "name": "s15",
+   "document": "s15.json"
+  },
+  {
+   "name": "s155",
+   "document": "s155.json"
+  },
+  {
+   "name": "s1555",
+   "document": "s1555.json"
+  },
+  {
+   "name": "s150",
+   "document": "s150.json"
+  },
+  {
+   "name": "sneg",
+   "document": "sneg.json"
+  },
+  {
+   "name": "s0",
+   "document": "s0.json"
+  },
+  {
+   "name": "s100",
+   "document": "s100.json"
+  },
+  {
+   "name": "bin",
+   "document": "bin.json"
+  },
+  {
+   "name": "bout",
+   "document": "bout.json"
+  },
+  {
+   "name": "bmid",
+   "document": "bmid.json"
+  }
+ ]
+}

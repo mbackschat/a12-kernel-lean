@@ -189,13 +189,13 @@ def firstFormalReadError? (constraints : NumericTargetConstraints)
   else if parsed.negative && !info.signed then
     if parsed.value = 0 && !constraints.zeroAllowed && constraints.amount then some .zeroNotAllowed
     else some .negativeNotAllowed
-  else if info.scale = 0 && parsed.hasDecimalSeparator then
+  else if constraints.fractionalDigitsChecked && info.scale = 0 && parsed.hasDecimalSeparator then
     some .decimalSeparatorForbidden
   else if 0 < constraints.minFractionalDigits &&
       !parsed.hasDecimalSeparator then
     some .decimalSeparatorRequired
-  else if parsed.fractionalDigits < constraints.minFractionalDigits ||
-      info.scale < parsed.fractionalDigits then
+  else if constraints.fractionalDigitsChecked && (parsed.fractionalDigits < constraints.minFractionalDigits ||
+      info.scale < parsed.fractionalDigits) then
     some .fractionalDigitsOutOfRange
   else if constraints.maxIntegerDigits.any
       (fun maximum => maximum < parsed.integerDigits) then
