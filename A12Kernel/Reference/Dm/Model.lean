@@ -1,6 +1,7 @@
 import Lean.Data.Json
 import A12Kernel.Elaboration.Flat.Types
 import A12Kernel.Elaboration.Enumeration
+import A12Kernel.Elaboration.EnumerationDeclarationNotification
 import A12Kernel.Elaboration.DeclarationAdmission
 import A12Kernel.Elaboration.LegalCharset
 
@@ -59,6 +60,8 @@ structure DmModel where
   conditionLanguage : String
   /-- Each declaration this reader could not map, by its path, with the reason. -/
   refusals : List (List String × String)
+  /-- The notifications each refused ordinary Enumeration declaration raised under the model's supported characters, by field path in field order. A declaration raising none has no entry. -/
+  enumerationNotifications : List (List String × List EnumerationDeclarationNotification) := []
   deriving Repr
 
 def DmRule.declaration (rule : DmRule) : ExecutableDeclaration :=
@@ -97,6 +100,46 @@ private def partialMode? : Option String → Except String TemporalPartialMode
   | some "MONTH_OPTIONAL" => pure .monthOptional
   | some "YEAR_OPTIONAL" => pure .yearOptional
   | some other => throw s!"datePrecision {other}"
+
+/-- The ordinary Enumeration declaration of a DM `EnumerationType` body. The one parse behind both the field's declaration and its notification pass, so the two cannot read different declarations. -/
+private def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclaration := do
+  let defaultStoredToken ← match (body.getObjVal? "sValue").toOption with
+    | none | some .null => pure none
+    | some (.str value) => pure (if value.isEmpty then none else some value)
+    | some _ => throw "EnumerationType sValue must be a string"
+  let entries := (← body.getObjValAs? (Array Json) "values").toList
+  let values ← entries.mapM (·.getObjValAs? String "value")
+  -- Copy admission compares effective display mappings (spec/09 §1); discarding labels
+  -- here would turn a remapped Enumeration into an unlabelled one before that check.
+  let displayFacts ← entries.mapM fun entry => do
+    let stored ← entry.getObjValAs? String "value"
+    let labels ← match (entry.getObjVal? "label").toOption with
+      | none => pure #[]
+      | some labels => labels.getArr?
+    labels.toList.mapM fun label => do
+      let locale ← label.getObjValAs? String "locale"
+      let display ← label.getObjValAs? String "text"
+      pure ({ stored, locale, display } : EnumerationDisplayFact)
+  let categories ← ((body.getObjValAs? (Array Json) "categories").toOption.getD #[]).toList.mapM
+    fun category => do
+      let name ← category.getObjValAs? String "name"
+      let tokens ← category.getObjValAs? (Array String) "values"
+      pure ({ name, tokens := tokens.toList } : EnumerationCategoryDeclaration)
+  pure { storedTokens := values, displayFacts := displayFacts.flatten, categories, defaultStoredToken }
+
+/-- The notifications the Kernel raises for a field's ordinary Enumeration declaration, empty for any other field type and for a body this reader cannot parse (`readFieldType` reports that failure). -/
+private def fieldEnumerationNotifications (charset : LegalCharset) (fieldJson : Json) :
+    List EnumerationDeclarationNotification :=
+  match fieldJson.getObjVal? "fieldType" with
+  | .error _ => []
+  | .ok fieldType =>
+      match fieldType.getObjValAs? String "type" with
+      | .ok "EnumerationType" =>
+          let body := (fieldType.getObjVal? "EnumerationType").toOption.getD (Json.mkObj [])
+          match readEnumerationDeclaration body with
+          | .ok declaration => declaration.notifications charset
+          | .error _ => []
+      | _ => []
 
 /-- The declaration of one field from its DM field type. -/
 def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
@@ -138,30 +181,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
   | "BooleanType" => pure { base with policy := { kind := .boolean } }
   | "ConfirmType" => pure { base with policy := { kind := .confirm } }
   | "EnumerationType" =>
-      let defaultStoredToken ← match (body.getObjVal? "sValue").toOption with
-        | none | some .null => pure none
-        | some (.str value) => pure (if value.isEmpty then none else some value)
-        | some _ => throw "EnumerationType sValue must be a string"
-      let entries := (← body.getObjValAs? (Array Json) "values").toList
-      let values ← entries.mapM (·.getObjValAs? String "value")
-      -- Copy admission compares effective display mappings (spec/09 §1); discarding labels
-      -- here would turn a remapped Enumeration into an unlabelled one before that check.
-      let displayFacts ← entries.mapM fun entry => do
-        let stored ← entry.getObjValAs? String "value"
-        let labels ← match (entry.getObjVal? "label").toOption with
-          | none => pure #[]
-          | some labels => labels.getArr?
-        labels.toList.mapM fun label => do
-          let locale ← label.getObjValAs? String "locale"
-          let display ← label.getObjValAs? String "text"
-          pure ({ stored, locale, display } : EnumerationDisplayFact)
-      let categories ← ((body.getObjValAs? (Array Json) "categories").toOption.getD #[]).toList.mapM
-        fun category => do
-          let name ← category.getObjValAs? String "name"
-          let tokens ← category.getObjValAs? (Array String) "values"
-          pure ({ name, tokens := tokens.toList } : EnumerationCategoryDeclaration)
-      let enumeration : EnumerationDeclaration := {
-        storedTokens := values, displayFacts := displayFacts.flatten, categories, defaultStoredToken }
+      let enumeration ← readEnumerationDeclaration body
       let _ ← enumeration.validate.mapError (fun error => s!"EnumerationType {repr error}")
       pure { base with
         policy := { kind := .enumeration }
@@ -216,6 +236,9 @@ private structure ReadState where
   declarations : Array ExecutableDeclaration := #[]
   /-- Index-field names to resolve once every field id is known, by repeatable level. -/
   indexFields : Array (RepeatableLevel × GroupPath × String) := #[]
+  /-- The model's supported characters, read before the walk because an Enumeration declaration's notifications depend on them. -/
+  legalCharset : LegalCharset := .defaultBmp
+  enumerationNotifications : Array (List String × List EnumerationDeclarationNotification) := #[]
 
 /-- KF297's optional computation members default only on absence/null; scalar coercion must
 still reach closed-set admission, while containers are reader errors. -/
@@ -263,9 +286,17 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         readElement groupPath scope child
   | "Field" =>
       let id := (← get).fields.size
-      match readFieldType id path name scope body with
-      | .ok declaration => modify fun state => { state with fields := state.fields.push declaration }
-      | .error reason => modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
+      let notifications := fieldEnumerationNotifications (← get).legalCharset body
+      if notifications.isEmpty then
+        match readFieldType id path name scope body with
+        | .ok declaration => modify fun state => { state with fields := state.fields.push declaration }
+        | .error reason => modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
+      else
+        let codes := (notifications.map fun notification => notification.kernelCode?.getD "codeless").eraseDups
+        modify fun state => { state with
+          refusals := state.refusals.push
+            (path ++ [name], s!"EnumerationType notifications {String.intercalate ", " codes}")
+          enumerationNotifications := state.enumerationNotifications.push (path ++ [name], notifications) }
   | "Rule" =>
       let code := ruleCode body
       modify fun state => { state with
@@ -322,7 +353,8 @@ private def readModelCore (json : Json)
   let config := (content.getObjVal? "modelConfig").toOption.getD (Json.mkObj [])
   let info := (content.getObjVal? "modelInfo").toOption.getD (Json.mkObj [])
   let roots ← (← content.getObjVal? "modelRoot").getObjValAs? (Array Json) "rootGroups"
-  let ((), state) ← (roots.toList.forM (readElement [] [])).run {}
+  let legalCharset ← readSupportedCharacters config graphemeClusters?
+  let ((), state) ← (roots.toList.forM (readElement [] [])).run { legalCharset }
   let fieldId (group : GroupPath) (name : String) : Option FieldId :=
     (state.fields.find? fun field => field.groupPath == group && field.name == name).map (·.id)
   -- The file writes the Base Year as a string; an unreadable one fails the read rather than leave
@@ -336,7 +368,6 @@ private def readModelCore (json : Json)
         | .ok year => pure (some year)
         | .error _ => throw "baseYear is no integer"
   let mut refusals := state.refusals.toList
-  let legalCharset ← readSupportedCharacters config graphemeClusters?
   let mut groups := []
   for group in state.groups.toList do
     match state.indexFields.find? (·.1 == group.level) with
@@ -357,7 +388,8 @@ private def readModelCore (json : Json)
     rules := state.rules.toList
     computations := state.computations.toList
     conditionLanguage := ((config.getObjVal? "conditionLanguage").toOption.bind (str? · "code")).getD "en_US"
-    refusals }, state.declarations.toList)
+    refusals
+    enumerationNotifications := state.enumerationNotifications.toList }, state.declarations.toList)
 
 /-- An adapter limitation is not evidence of a Kernel reader failure. Only the established
 declaration checks attach the semantic phase or actual notification classes. -/

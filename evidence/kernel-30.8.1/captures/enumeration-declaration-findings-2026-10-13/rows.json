@@ -1,0 +1,610 @@
+[
+ {
+  "id": "control",
+  "values": [
+   "AA",
+   "BB",
+   "CC"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y",
+     "Z"
+    ]
+   ],
+   [
+    "Segment",
+    [
+     "P",
+     "Q",
+     "R"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "one-category-short-two",
+  "values": [
+   "AA",
+   "BB",
+   "CC"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "two-categories-short-two",
+  "values": [
+   "AA",
+   "BB",
+   "CC"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X"
+    ]
+   ],
+   [
+    "Segment",
+    [
+     "P"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "empty-category",
+  "values": [
+   "AA",
+   "BB",
+   "CC"
+  ],
+  "categories": [
+   [
+    "Band",
+    []
+   ]
+  ]
+ },
+ {
+  "id": "repeated-unclassified-value",
+  "values": [
+   "AA",
+   "BB",
+   "BB"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "repeated-unclassified-two-categories",
+  "values": [
+   "AA",
+   "BB",
+   "BB"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X"
+    ]
+   ],
+   [
+    "Segment",
+    [
+     "P"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "surplus-repeated-token",
+  "values": [
+   "AA"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y",
+     "Y"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "surplus-distinct-tokens",
+  "values": [
+   "AA"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y",
+     "Z"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "repeated-category-tokens",
+  "values": [
+   "AA",
+   "BB"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "X"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "duplicate-without-category",
+  "values": [
+   "AA",
+   "AA"
+  ],
+  "categories": null
+ },
+ {
+  "id": "triple-duplicate",
+  "values": [
+   "AA",
+   "AA",
+   "AA"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y",
+     "Z"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "two-duplicates-two-categories",
+  "values": [
+   "AA",
+   "AA",
+   "BB",
+   "BB"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y"
+    ]
+   ],
+   [
+    "Segment",
+    [
+     "P",
+     "Q"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "bad-distinct-characters",
+  "values": [
+   "AA",
+   "pq"
+  ],
+  "categories": null,
+  "charset": [
+   "A-Z"
+  ]
+ },
+ {
+  "id": "bad-repeated-character",
+  "values": [
+   "AA",
+   "pp"
+  ],
+  "categories": null,
+  "charset": [
+   "A-Z"
+  ]
+ },
+ {
+  "id": "bad-repeated-value",
+  "values": [
+   "AA",
+   "pq",
+   "pq"
+  ],
+  "categories": null,
+  "charset": [
+   "A-Z"
+  ]
+ },
+ {
+  "id": "bad-before-short-category",
+  "values": [
+   "AA",
+   "pq"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X"
+    ]
+   ]
+  ],
+  "charset": [
+   "A-Z"
+  ]
+ },
+ {
+  "id": "bad-charset-control",
+  "values": [
+   "AA",
+   "BB"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y"
+    ]
+   ]
+  ],
+  "charset": [
+   "A-Z"
+  ]
+ },
+ {
+  "id": "lowercase-default-charset",
+  "values": [
+   "AA",
+   "pq"
+  ],
+  "categories": null
+ },
+ {
+  "id": "bad-supplementary-character",
+  "values": [
+   "AA",
+   "p😀"
+  ],
+  "categories": null,
+  "charset": [
+   "A-Z"
+  ]
+ },
+ {
+  "id": "duplicate-mapped-earlier",
+  "values": [
+   "AA",
+   "AA"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "surplus-token-repeats-mapped",
+  "values": [
+   "AA"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "X"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "duplicate-unmapped-then-mapped",
+  "values": [
+   "BB",
+   "AA",
+   "BB"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "surplus-two-repeat-one",
+  "values": [
+   "AA",
+   "BB"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y",
+     "Z",
+     "Z",
+     "W"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "signs-value-under-full-category",
+  "values": [
+   "AA",
+   "😀"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "signs-value-duplicated",
+  "values": [
+   "😀",
+   "😀"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "signs-value-first",
+  "values": [
+   "😀",
+   "AA"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "two-supplementary-values",
+  "values": [
+   "😀",
+   "🙂"
+  ],
+  "categories": null
+ },
+ {
+  "id": "supplementary-in-label",
+  "values": [
+   "AA"
+  ],
+  "labels": {
+   "AA": "x😀"
+  },
+  "categories": null
+ },
+ {
+  "id": "bmp-non-ascii-default",
+  "values": [
+   "Ä",
+   "é"
+  ],
+  "categories": null
+ },
+ {
+  "id": "supplementary-twice-one-value",
+  "values": [
+   "😀😀"
+  ],
+  "categories": null
+ },
+ {
+  "id": "signs-with-arity-and-duplicate",
+  "values": [
+   "AA",
+   "AA",
+   "😀"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "signs-with-restricted-arity-duplicate",
+  "values": [
+   "pq",
+   "pq",
+   "😀"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X"
+    ]
+   ]
+  ],
+  "charset": [
+   "A-Z"
+  ]
+ },
+ {
+  "id": "signs-value-duplicated-unclassified",
+  "values": [
+   "AA",
+   "😀",
+   "😀"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "surplus-category-with-duplicate",
+  "values": [
+   "AA",
+   "AA"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y",
+     "Z"
+    ]
+   ],
+   [
+    "Segment",
+    [
+     "P"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "shortfall-then-surplus",
+  "values": [
+   "AA",
+   "BB"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "P"
+    ]
+   ],
+   [
+    "Segment",
+    [
+     "X",
+     "Y",
+     "Z"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "surplus-shortfall-surplus",
+  "values": [
+   "AA",
+   "BB"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "X",
+     "Y",
+     "Z"
+    ]
+   ],
+   [
+    "Segment",
+    [
+     "P"
+    ]
+   ],
+   [
+    "Extra",
+    [
+     "Q",
+     "R",
+     "S"
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "shortfall-surplus-shortfall",
+  "values": [
+   "AA",
+   "BB"
+  ],
+  "categories": [
+   [
+    "Band",
+    [
+     "P"
+    ]
+   ],
+   [
+    "Segment",
+    [
+     "X",
+     "Y",
+     "Z"
+    ]
+   ],
+   [
+    "Extra",
+    [
+     "Q"
+    ]
+   ]
+  ]
+ }
+]

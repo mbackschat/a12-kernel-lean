@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Enumeration
+import A12Kernel.Elaboration.EnumerationDeclarationNotification
 
 /-! # A12Kernel.Conformance.EnumerationElaboration — ordinary closed declaration locks -/
 
@@ -71,26 +72,37 @@ example : rejectsWith (declaration ["A", "B"] []
     [category "Kind" ["X"]]) (.categoryArityMismatch "Kind" 2 1) := by native_decide
 
 /-- **The arity mismatch surfaces two codes, and the direction picks which.** A shortfall and a
-surplus are one local error because the payload separates them, so the pair is asserted rather than
-left to a reader to infer from the constructor's name — which names neither direction. The surplus
-row is the one an account keyed on "a category is missing a value" gets wrong. -/
+surplus are one local validator error because the payload separates them, but the Kernel reports a
+notification per element: the unclassified stored values on the shortfall side and the surplus
+category tokens on the other. The surplus row is the one an account keyed on "a category is missing a
+value" gets wrong. -/
 example :
     (declaration ["A", "B"] [] [category "Kind" ["X"]]).validate.toOption.isNone ∧
-    (EnumerationDeclarationError.categoryArityMismatch "Kind" 2 1).kernelCode? =
+    (declaration ["A", "B"] [] [category "Kind" ["X"]]).notifications .defaultBmp =
+      [.missingCategoryValue "Kind" "B"] ∧
+    (declaration ["A", "B"] [] [category "Kind" ["X", "Y", "Z", "W"]]).notifications .defaultBmp =
+      [.missingInternalValue "Kind" "Z", .missingInternalValue "Kind" "W"] ∧
+    (EnumerationDeclarationNotification.missingCategoryValue "Kind" "B").kernelCode? =
       some "MVK_MISSING_CATEGORY_VALUE" ∧
-    (EnumerationDeclarationError.categoryArityMismatch "Kind" 2 3).kernelCode? =
-      some "MVK_MISSING_INTERNAL_VALUE" ∧
-    (EnumerationDeclarationError.emptyStoredDomain).kernelCode? = none := by
+    (EnumerationDeclarationNotification.missingInternalValue "Kind" "Z").kernelCode? =
+      some "MVK_MISSING_INTERNAL_VALUE" := by
   native_decide
 
-/-- An empty category token list is a shortfall rather than a class of its own, so it draws the same
-code as any other short list. The Kernel reports it once per unclassified value where this validator
-reports once; [`Enumeration.lean`](../Elaboration/Enumeration.lean) owns why the multiplicity is not
-representable here, and this row locks the class it does decide. -/
+/-- An empty category token list is a shortfall rather than a class of its own, so it draws the
+shortfall code once per stored value, which the first-refusal validator cannot express. -/
 example : rejectsWith (declaration ["A", "B"] [] [category "Kind" []])
       (.categoryArityMismatch "Kind" 2 0) ∧
-    (EnumerationDeclarationError.categoryArityMismatch "Kind" 2 0).kernelCode? =
-      some "MVK_MISSING_CATEGORY_VALUE" := by native_decide
+    (declaration ["A", "B"] [] [category "Kind" []]).notifications .defaultBmp =
+      [.missingCategoryValue "Kind" "A", .missingCategoryValue "Kind" "B"] := by
+  native_decide
+
+/-- The two classes the Kernel raises without a code carry no code here either, and an empty stored
+domain raises nothing because the Kernel never builds such a model. -/
+example :
+    EnumerationDeclarationNotification.supplementaryCharacter.kernelCode? = none ∧
+    (EnumerationDeclarationNotification.repeatedValue "A").kernelCode? = none ∧
+    (declaration [] [] [category "Kind" ["X"]]).notifications .defaultBmp = [] := by
+  native_decide
 
 example : rejectsWith (declaration ["A", "B"] []
     [category "Kind" ["X", ""]]) (.emptyCategoryToken "Kind" 1) := by native_decide

@@ -157,6 +157,7 @@ import A12Kernel.Proofs.Enumeration
 import A12Kernel.Proofs.EnumerationComparability
 import A12Kernel.Proofs.EnumerationComputation
 import A12Kernel.Proofs.EnumerationComputationResult
+import A12Kernel.Proofs.EnumerationDeclarationNotification
 import A12Kernel.Proofs.EnumerationElaboration
 import A12Kernel.Proofs.EnumerationFirstFilledComputation
 import A12Kernel.Proofs.EnumerationRepetitionNotUnique

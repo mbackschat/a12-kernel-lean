@@ -68,7 +68,7 @@ def restrictedAllows (ranges : List LegalCharRange) (character : Char) : Bool :=
   ranges.any (·.contains character)
 
 /-- A fuel-bounded left-to-right scan. Checked atomic constructors consume two or three characters, while the fallback consumes exactly one, so input length is sufficient fuel and every successful step advances. -/
-private def scanRestricted (ranges : List LegalCharRange)
+def scanRestricted (ranges : List LegalCharRange)
     (atoms : List LegalCharAtom) : Nat → List Char → Bool
   | 0, [] => true
   | 0, _ :: _ => false
@@ -81,6 +81,26 @@ private def scanRestricted (ranges : List LegalCharRange)
             scanRestricted ranges atoms fuel remaining
           else
             false
+
+/-- The continuing counterpart of `scanRestricted`: it follows the identical atom-then-singleton steps but records the UTF-16 units of each rejected character and resumes after it instead of stopping. Input length is sufficient fuel, so the stranded-character arm of exhausted fuel is unreachable; it reports that character so that emptiness agrees with `scanRestricted` for every fuel. -/
+def scanRestrictedRejected (ranges : List LegalCharRange)
+    (atoms : List LegalCharAtom) : Nat → List Char → List Nat
+  | 0, [] => []
+  | 0, character :: _ => utf16CodeUnits character
+  | _ + 1, [] => []
+  | fuel + 1, input@(leading :: remaining) =>
+      match longestMatchingAtom? atoms input with
+      | some atom => scanRestrictedRejected ranges atoms fuel (input.drop atom.length)
+      | none =>
+          if restrictedAllows ranges leading then
+            scanRestrictedRejected ranges atoms fuel remaining
+          else
+            utf16CodeUnits leading ++ scanRestrictedRejected ranges atoms fuel remaining
+
+/-- Every UTF-16 code unit a restricted set rejects in a value, in scan order. A rejected supplementary-plane scalar contributes both of its units, matching the three notifications the Kernel raised for a stored token of one rejected BMP character plus one supplementary scalar (retained capture `enumeration-declaration-findings-2026-10-13`, row `bad-supplementary-character`). This is the multiplicity behind the Enumeration-declaration invalid-character notifications; `LegalCharset.accepts` answers only whether the list is empty. -/
+def restrictedRejectedUnits (ranges : List LegalCharRange) (atoms : List LegalCharAtom)
+    (value : String) : List Nat :=
+  scanRestrictedRejected ranges atoms value.toList.length value.toList
 
 namespace LegalCharset
 

@@ -78,3 +78,13 @@ Four corrections are `pending` below and have not been handed off. The 24 termin
 - `basis`: [Thirteen retained static cases](sources/domain-ingestion-probes.md#src-membership-read-order-k13) with admitted Number/String controls, missing-name/unbound field and group twins, Custom operands, a competing duplicate and an isolated mixed-kind refusal. All actual-model Lean readbacks agree.
 - `acceptance`: Reconcile operand-local binding with authored read order and fallback projection. An earlier unbound operand reports `MVK_NO_WILDCARD`; an earlier missing name reports `MVK_INVALID_ENTITY`. Preserve existing intra-operand gates and whole-list checks; no exhaustive diagnostic permutation is claimed.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-04"></a>
+### SPEC-2026-10-13-04 — Enumeration declaration notifications are collected in six ordered blocks
+
+- `status`: pending
+- `canonical`: [Category declaration pairing](../spec/06-strings-and-enumerations.md#b2-categories-via--).
+- `delta`: Add restricted-charset invalid-character notifications per rejected UTF-16 unit, the field-level codeless supplementary-plane notification, all shortfalls before all surpluses, value/category and value duplicates, the codeless repeated-value notification, supplementary-value skips and identical-notification collapse.
+- `basis`: [Retained 37-row consistency capture](sources/model-structure-and-declaration-probes.md#src-enumeration-declaration-notifications), real Kernel 30.8.1 through structured authoring at clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`; Lean reader locks replay every row.
+- `acceptance`: Reconcile declaration checking with the six-block order and per-unit/per-value multiplicity, keeping the two codeless classes distinct from coded ones. Do not claim an order inside the arity or category-duplicate blocks, supplementary scalars in category names or tokens, or table-backed Enumerations.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

@@ -40,28 +40,6 @@ inductive EnumerationDeclarationError where
   | emptyCategoryToken (name : String) (index : Nat)
   deriving Repr, DecidableEq
 
-/-- The Kernel code a declaration refusal surfaces, where one is measured.
-
-The arity mismatch is the only arm with a measured code, and it surfaces **two** chosen by
-*direction*: a category listing fewer tokens than the enumeration has values draws
-`MVK_MISSING_CATEGORY_VALUE`, and a longer one `MVK_MISSING_INTERNAL_VALUE`. One local error covers
-both because the direction is recoverable from its payload, which is why the constructor carries
-`expected` and `actual` rather than a bare flag.
-
-**What this cannot express is the multiplicity, and the difference is observable.** The Kernel
-reports the shortfall code *once per unclassified value* rather than once for the declaration, and
-the per-element behaviour holds on the surplus side too. `EnumerationDeclaration.validate` answers in
-`Except`, so it yields the first refusal and never a collection — a consumer counting findings will
-see one where the Kernel emits several. That is a collection-shape limit of the validator rather than
-a wrong verdict, and closing it means giving the whole validator a finding list, so it is recorded
-here rather than worked around at this arm. -/
-def EnumerationDeclarationError.kernelCode? :
-    EnumerationDeclarationError → Option String
-  | .categoryArityMismatch _ expected actual =>
-      some (if actual < expected then "MVK_MISSING_CATEGORY_VALUE"
-        else "MVK_MISSING_INTERNAL_VALUE")
-  | _ => none
-
 private def firstEmptyIndex? : List String → Nat → Option Nat
   | [], _ => none
   | value :: remaining, index =>
@@ -148,6 +126,56 @@ def EnumerationDeclaration.validate (declaration : EnumerationDeclaration) :
                         match invalidCategory? declaration.storedTokens.length declaration.categories 0 with
                         | some error => .error error
                         | none => .ok ()
+
+private theorem firstDuplicate?_eq_none_nodup :
+    ∀ tokens : List String, firstDuplicate? tokens = none → tokens.Nodup
+  | [], _ => List.nodup_nil
+  | value :: remaining, none_ => by
+      unfold firstDuplicate? at none_
+      split at none_
+      · contradiction
+      · exact List.nodup_cons.mpr
+          ⟨by simpa using ‹¬remaining.contains value = true›,
+            firstDuplicate?_eq_none_nodup remaining none_⟩
+
+private theorem invalidCategory?_eq_none_arity (expectedArity : Nat) :
+    ∀ (categories : List EnumerationCategoryDeclaration) (index : Nat),
+      invalidCategory? expectedArity categories index = none →
+        ∀ category ∈ categories, category.tokens.length = expectedArity
+  | [], _, _ => by simp
+  | category :: remaining, index, none_ => by
+      unfold invalidCategory? at none_
+      split at none_
+      · contradiction
+      · split at none_
+        · contradiction
+        · split at none_
+          · contradiction
+          · have sameArity : category.tokens.length = expectedArity := by
+              simpa using ‹¬(category.tokens.length != expectedArity) = true›
+            split at none_
+            · contradiction
+            · intro candidate member
+              cases List.mem_cons.mp member with
+              | inl same => subst same; exact sameArity
+              | inr later =>
+                  exact invalidCategory?_eq_none_arity expectedArity remaining (index + 1)
+                    none_ candidate later
+
+/-- A validated declaration lists each stored token once and gives every category exactly one token per stored token. Declaration-notification laws consume this shape instead of re-deriving it from the ordered refusal chain. -/
+theorem EnumerationDeclaration.validate_ok_shape (declaration : EnumerationDeclaration)
+    (valid : declaration.validate = .ok ()) :
+    declaration.storedTokens.Nodup ∧
+      ∀ category ∈ declaration.categories,
+        category.tokens.length = declaration.storedTokens.length := by
+  unfold EnumerationDeclaration.validate at valid
+  dsimp only at valid
+  repeat' split at valid
+  all_goals first
+    | contradiction
+    | exact ⟨firstDuplicate?_eq_none_nodup _ ‹firstDuplicate? declaration.storedTokens = none›,
+        invalidCategory?_eq_none_arity _ _ _
+          ‹invalidCategory? declaration.storedTokens.length declaration.categories 0 = none›⟩
 
 /-- The proof-bearing declaration consumed by the existing resolved Enumeration boundaries. -/
 structure CheckedEnumerationDeclaration where

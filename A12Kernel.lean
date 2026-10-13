@@ -337,5 +337,6 @@ import A12Kernel.Elaboration.ValidationCondition.Omission
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.EnumerationComparability
 import A12Kernel.Elaboration.Enumeration
+import A12Kernel.Elaboration.EnumerationDeclarationNotification
 import A12Kernel.Proofs
 import A12Kernel.Conformance

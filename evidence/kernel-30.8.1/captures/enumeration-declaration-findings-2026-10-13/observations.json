@@ -1,0 +1,457 @@
+[
+  {
+    "case": "control",
+    "admitted": true,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [],
+    "notifications": []
+  },
+  {
+    "case": "one-category-short-two",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_CATEGORY_VALUE"
+    ]
+  },
+  {
+    "case": "two-categories-short-two",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_CATEGORY_VALUE"
+    ]
+  },
+  {
+    "case": "empty-category",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_CATEGORY_VALUE"
+    ]
+  },
+  {
+    "case": "repeated-unclassified-value",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "repeated-unclassified-two-categories",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "surplus-repeated-token",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_INTERNAL_VALUE"
+    ]
+  },
+  {
+    "case": "surplus-distinct-tokens",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_INTERNAL_VALUE",
+      "MVK_MISSING_INTERNAL_VALUE"
+    ]
+  },
+  {
+    "case": "repeated-category-tokens",
+    "admitted": true,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [],
+    "notifications": []
+  },
+  {
+    "case": "duplicate-without-category",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "triple-duplicate",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "two-duplicates-two-categories",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "bad-distinct-characters",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER"
+    ]
+  },
+  {
+    "case": "bad-repeated-character",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER"
+    ]
+  },
+  {
+    "case": "bad-repeated-value",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "bad-before-short-category",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "MVK_MISSING_CATEGORY_VALUE"
+    ]
+  },
+  {
+    "case": "bad-charset-control",
+    "admitted": true,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [],
+    "notifications": []
+  },
+  {
+    "case": "lowercase-default-charset",
+    "admitted": true,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [],
+    "notifications": []
+  },
+  {
+    "case": "bad-supplementary-character",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "codeless:supplementary-character"
+    ]
+  },
+  {
+    "case": "duplicate-mapped-earlier",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "surplus-token-repeats-mapped",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_INTERNAL_VALUE"
+    ]
+  },
+  {
+    "case": "duplicate-unmapped-then-mapped",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "surplus-two-repeat-one",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_INTERNAL_VALUE",
+      "MVK_MISSING_INTERNAL_VALUE"
+    ]
+  },
+  {
+    "case": "signs-value-under-full-category",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "codeless:supplementary-character"
+    ]
+  },
+  {
+    "case": "signs-value-duplicated",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "codeless:supplementary-character",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "signs-value-first",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "codeless:supplementary-character",
+      "MVK_MISSING_CATEGORY_VALUE"
+    ]
+  },
+  {
+    "case": "two-supplementary-values",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "codeless:supplementary-character"
+    ]
+  },
+  {
+    "case": "supplementary-in-label",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "codeless:supplementary-character"
+    ]
+  },
+  {
+    "case": "bmp-non-ascii-default",
+    "admitted": true,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [],
+    "notifications": []
+  },
+  {
+    "case": "supplementary-twice-one-value",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "codeless:supplementary-character"
+    ]
+  },
+  {
+    "case": "signs-with-arity-and-duplicate",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "codeless:supplementary-character",
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "signs-with-restricted-arity-duplicate",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "MVK_ENUM_VALUE_WITH_INVALID_CHARACTER",
+      "codeless:supplementary-character",
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "signs-value-duplicated-unclassified",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "codeless:supplementary-character",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "surplus-category-with-duplicate",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_INTERNAL_VALUE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_CATEGORY_VALUE_DUPLICATE",
+      "MVK_INTERNAL_VALUES_DUPLICATE",
+      "codeless:repeated-value"
+    ]
+  },
+  {
+    "case": "shortfall-then-surplus",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_INTERNAL_VALUE"
+    ]
+  },
+  {
+    "case": "surplus-shortfall-surplus",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_INTERNAL_VALUE",
+      "MVK_MISSING_INTERNAL_VALUE"
+    ]
+  },
+  {
+    "case": "shortfall-surplus-shortfall",
+    "admitted": false,
+    "verification": "KERNEL_CONFIRMED",
+    "severities": [
+      "ERROR"
+    ],
+    "notifications": [
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_CATEGORY_VALUE",
+      "MVK_MISSING_INTERNAL_VALUE"
+    ]
+  }
+]

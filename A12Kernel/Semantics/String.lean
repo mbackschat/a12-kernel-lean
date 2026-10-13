@@ -17,6 +17,14 @@ def utf16CodeUnitLength (value : String) : Nat :=
   value.foldl (fun units character =>
     units + if character.toNat < 0x10000 then 1 else 2) 0
 
+/-- The UTF-16 code units one scalar occupies: itself below `0x10000`, otherwise the high then low surrogate of its offset into the supplementary planes. -/
+def utf16CodeUnits (character : Char) : List Nat :=
+  if character.toNat < 0x10000 then
+    [character.toNat]
+  else
+    let offset := character.toNat - 0x10000
+    [0xD800 + (offset >>> 10), 0xDC00 + (offset &&& 0x3FF)]
+
 /-- Split a scalar String at an exact UTF-16 code-unit boundary. Lean Strings cannot represent a cut through one surrogate pair, so such an offset fails closed. -/
 def splitAtUtf16CodeUnits : List Char → Nat → Option (List Char × List Char)
   | characters, 0 => some ([], characters)

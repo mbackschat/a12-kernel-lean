@@ -427,7 +427,7 @@ inductive KernelStaticDiagnostic where
   | errorEmptyPrecondition
   /-- A computation whose computed field is a repeatable group's declared index field. -/
   | errorIndexAsCalculatedField
-  /-- An Enumeration value carrying a character outside the model's declared supported set. This class belongs to the Kernel's **code-generation** check family, and it is reachable from ordinary authoring because the consistency check runs the validation code generator: one registered consistency rule generates the validator and turns every notification it collects into a consistency problem. The Kernel reports one diagnostic per offending **character**, not one per value. -/
+  /-- An Enumeration value carrying a character outside the model's declared supported set. This class belongs to the Kernel's **code-generation** check family, and it is reachable from ordinary authoring because the consistency check runs the validation code generator: one registered consistency rule generates the validator and turns every notification it collects into a consistency problem. The Kernel reports one diagnostic per rejected UTF-16 code unit of each stored value, not one per value; [`EnumerationDeclaration.notifications`](EnumerationDeclarationNotification.lean) owns that multiplicity. -/
   | enumValueWithInvalidCharacter
   | ruleHasNoErrorText
   | invalidMessageLinebreak

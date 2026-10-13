@@ -69,4 +69,26 @@ example :
       [.unsupportedCharacter] := by
   native_decide
 
+/- The rejected-unit scan reports where `accepts` only stops: it keeps scanning after a rejected character, and a supplementary-plane scalar contributes both of its UTF-16 units. -/
+example :
+    (utf16CodeUnits 'A', utf16CodeUnits '\uFFFF', utf16CodeUnits (Char.ofNat 0x10000),
+      utf16CodeUnits '😀', utf16CodeUnits (Char.ofNat 0x10FFFF)) =
+      ([0x41], [0xFFFF], [0xD800, 0xDC00], [0xD83D, 0xDE00], [0xDBFF, 0xDFFF]) := by
+  native_decide
+
+example :
+    (.restricted [upper] [] : LegalCharset).accepts "aBc" = false ∧
+    restrictedRejectedUnits [upper] [] "aBc" = [0x61, 0x63] := by
+  native_decide
+
+example : restrictedRejectedUnits [upper] [] "A😀Z" = [0xD83D, 0xDE00] := by
+  native_decide
+
+/- A consumed atom contributes nothing, while a stranded atom component is rejected and the scan then resumes after it. -/
+example :
+    restrictedRejectedUnits [upper] [.pair 'e' acute] ("A" ++ eAcute ++ "Z") = [] ∧
+    restrictedRejectedUnits [upper] [.pair 'e' acute] ("A" ++ String.ofList [acute] ++ "b") =
+      [0x301, 0x62] := by
+  native_decide
+
 end A12Kernel.Conformance.LegalCharset
