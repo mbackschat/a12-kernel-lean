@@ -3,6 +3,8 @@ import A12Kernel.Semantics.NumericExpression
 import A12Kernel.Semantics.ValidationFillQuantifier
 import A12Kernel.Elaboration.IterationGuard
 import A12Kernel.Elaboration.ErrorTargetDeclaration
+import A12Kernel.Elaboration.NumericAggregate.Fields
+import A12Kernel.Elaboration.TemporalNumericInput
 
 /-! # Parallel validation over one checked field/group pair
 
@@ -24,12 +26,33 @@ inductive ParallelFieldOperand where
   | field (declaration : FlatFieldDecl)
   deriving Repr, DecidableEq
 
+/-- One numeric comparison operand over the joined rows: a Number field, a numeric component of a temporal field, or a fixed list of Number fields. Each keeps the ordinary validation atom's fold; the kind-specific declarations are recovered from the pair, so a payload of the wrong kind fails admission rather than evaluation. -/
+inductive ParallelNumericAtomOf (Field : Type) where
+  | field (operand : Field)
+  | temporalPart (operand : Field) (part : TemporalNumericPart)
+  | aggregate (op : NumericAggregateOp) (operands : List Field)
+  deriving Repr, DecidableEq
+
+namespace ParallelNumericAtomOf
+
+/-- Every field the atom reads, in authored order. -/
+def operands : ParallelNumericAtomOf Field → List Field
+  | .field operand | .temporalPart operand _ => [operand]
+  | .aggregate _ operands => operands
+
+def mapM [Monad m] (bind : Field → m Target) : ParallelNumericAtomOf Field → m (ParallelNumericAtomOf Target)
+  | .field operand => .field <$> bind operand
+  | .temporalPart operand part => (.temporalPart · part) <$> bind operand
+  | .aggregate op operands => .aggregate op <$> operands.mapM bind
+
+end ParallelNumericAtomOf
+
 inductive ParallelFieldLeafOf (Field : Type) where
   | groupPresence (op : GroupPresenceOperator) (reference : ResolvedGroupReference)
   | presence (side : Field) (op : RepeatableFieldPresenceOperator)
   | numeric (op : NumericComparisonOp) (left right : Field)
   | fill (op : FieldFillQuantifier) (left right : Field)
-  | comparison (value : NumericComparisonOf Field)
+  | comparison (value : NumericComparisonOf (ParallelNumericAtomOf Field))
   deriving Repr, DecidableEq
 
 abbrev ParallelFieldLeaf := ParallelFieldLeafOf ParallelFieldOperand
@@ -55,13 +78,71 @@ def CheckedParallelFieldPair.admitsOperand (pair : CheckedParallelFieldPair mode
         declaration.repeatableScope == pair.rightDeclaration.repeatableScope) ||
      declaration.repeatableScope.isPrefixOf scope)
 
+namespace ParallelNumericAtomOf
+
+/-- The aggregate's resolved Number list, or none when any operand is not a Number field. -/
+def aggregateFields? (pair : CheckedParallelFieldPair model) (operands : List ParallelFieldOperand) :
+    Option ResolvedNumericAggregateFields :=
+  match operands.mapM fun operand => (pair.declaration operand).toNumberField? with
+  | some (first :: rest) => some { first, rest }
+  | _ => none
+
+/-- The temporal gates are the ordinary ones; the stored-component decoder is the model's own, so the atom carries none. -/
+def admitted (pair : CheckedParallelFieldPair model) : ParallelNumericAtomOf ParallelFieldOperand → Bool
+  | .field operand => (pair.declaration operand).toNumberField?.isSome
+  | .temporalPart operand part =>
+      match (pair.declaration operand).toTemporalField? with
+      | some source => model.admitsTemporalNumericPart source part (model.temporalNumericPartialFormat source.id)
+      | none => false
+  | .aggregate _ operands => (aggregateFields? pair operands).any fun source =>
+      source.hasMultipleFields && source.hasUniqueFields
+
+def scaleSummary (pair : CheckedParallelFieldPair model) :
+    ParallelNumericAtomOf ParallelFieldOperand → NumericScaleSummary
+  | .field operand =>
+      match (pair.declaration operand).toNumberField? with
+      | some number => .field number.info.scale
+      | none => { scale := .unknown, canExpandScale := false }
+  | .temporalPart .. => .field 0
+  | .aggregate op operands =>
+      match aggregateFields? pair operands with
+      | some source => op.scaleSummary source
+      | none => { scale := .unknown, canExpandScale := false }
+
+/-- An absent joined observation is call-local unavailability without an invented formal cause; a present one enters the ordinary validation fold, so empty and invalid operands stay UNKNOWN or substituted rather than poisoning. -/
+def resolveValidation (pair : CheckedParallelFieldPair model)
+    (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation)) :
+    ParallelNumericAtomOf ParallelFieldOperand →
+      Except ParallelPresenceRuleEvaluationError (Except NumericValidationUnavailable NumericArithmeticOutcome)
+  | .field operand => do
+      let some number := (pair.declaration operand).toNumberField? | throw .unsupportedCondition
+      pure (((← read operand).map fun cell =>
+        (cell.asDirectNumericComparisonOperand number.info).toValidationArithmetic).getD
+          (.error NumericValidationUnavailable.silentlyUnavailable))
+  | .temporalPart operand part => do
+      let some source := (pair.declaration operand).toTemporalField? | throw .unsupportedCondition
+      pure (((← read operand).map fun cell =>
+        (cell.asStoredTemporalNumericOperand source part
+          (model.temporalNumericPartialFormat source.id)).toValidationArithmetic).getD
+            (.error NumericValidationUnavailable.silentlyUnavailable))
+  | .aggregate op operands => do
+      let some source := aggregateFields? pair operands | throw .unsupportedCondition
+      let observed ← operands.mapM fun operand => do
+        pure ((pair.declaration operand).id, ← read operand)
+      match observed.mapM fun (id, cell) => cell.map (id, ·) with
+      | none => pure (.error NumericValidationUnavailable.silentlyUnavailable)
+      | some cells => pure (source.evaluate op
+          (fun id => (cells.lookup id).getD (.unknown .malformed))).toValidationArithmetic
+
+end ParallelNumericAtomOf
+
 namespace ParallelFieldLeaf
 
 def fields : ParallelFieldLeaf → List ParallelFieldOperand
   | .groupPresence _ _ => []
   | .presence field _ => [field]
   | .numeric _ lhs rhs | .fill _ lhs rhs => [lhs, rhs]
-  | .comparison value => value.left.atoms ++ value.right.atoms
+  | .comparison value => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
 def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
     (leaf : ParallelFieldLeaf) : Bool :=
   let group := match side with | .left => pair.groups.leftGroup | .right => pair.groups.rightGroup
@@ -90,33 +171,43 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
   | .fill _ lhs rhs => (pair.declaration lhs).id != (pair.declaration rhs).id
   | .comparison value =>
       { value with suppressExactScaleWarning := suppress }.admittedWith
-        (fun field => (pair.declaration field).toNumberField?.isSome)
-        (fun field => match (pair.declaration field).toNumberField? with
-          | some number => .field number.info.scale
-          | none => { scale := .unknown, canExpandScale := false })
+        (·.admitted pair) (·.scaleSummary pair)
 
 /-- Direct fields and operation-list wrappers retain the ordinary literal-sensitive guard;
-composite arithmetic has its own parse-tree branch (spec/07 §2). -/
+composite arithmetic has its own parse-tree branch (spec/07 §2). A field list is an entity list in the
+ordinary guard: it rejects mixed references like a wrapper. A bare distinct count against a literal
+stays unclassified, because the ordinary carrier gives it a positive-threshold rule this carrier has not
+measured. -/
 private def numericGuard (participates : ParallelFieldOperand → Bool)
-    (value : NumericComparisonOf ParallelFieldOperand) : IterationGuardStatus :=
-  let rec sensitive : AuthoredNumericExpr ParallelFieldOperand → Option Bool
+    (value : NumericComparisonOf (ParallelNumericAtomOf ParallelFieldOperand)) : IterationGuardStatus :=
+  let rec sensitive : AuthoredNumericExpr (ParallelNumericAtomOf ParallelFieldOperand) → Option Bool
     | .group body => sensitive body
+    | .atom (.aggregate ..) => some true
     | .atom _ => some false
     | .abs _ | .round _ _ _ | .extremum _ _ _ | .extremumCall _ _ => some true
     | _ => none
+  let rec distinctCount : AuthoredNumericExpr (ParallelNumericAtomOf ParallelFieldOperand) → Bool
+    | .group body => distinctCount body
+    | .atom (.aggregate .distinctCount _) => true
+    | _ => false
+  let atomOperands := fun (expression : AuthoredNumericExpr (ParallelNumericAtomOf ParallelFieldOperand)) =>
+    expression.atoms.flatMap (·.operands)
   let classify expression constant := do
     let rejectMixed ← sensitive expression
     let .literal literal := constant | none
-    let bits := expression.atoms.map participates
+    let bits := (atomOperands expression).map participates
     if !bits.any id then return IterationGuardStatus.noReference
     if rejectMixed && !bits.all id then return .unguarded
+    if distinctCount expression then return .unclassified
     let some converted := literal.javaRoundedInt32? | return .unclassified
     pure (value.op.literalIterationGuard converted bits rejectMixed)
   match classify value.left value.right with
   | some result => result
   | none => match classify value.right value.left with
     | some result => result
-    | none => if (value.left.atoms ++ value.right.atoms).any participates then .guarded else .noReference
+    | none =>
+        if (atomOperands value.left ++ atomOperands value.right).any participates then .guarded
+        else .noReference
 
 /-- Presence quantifiers share one participation rule for ordinary and parallel iteration.
 The two mixed-sensitive operators require every operand to iterate (spec/07 §2; IterationNotValidVisitor). -/
@@ -200,14 +291,8 @@ def evalWith (pair : CheckedParallelFieldPair model)
             (right.asDirectNumericComparisonOperand b.info))
       | _, _ => pure .unknown
   | .comparison value => do
-      let observe := fun field => do
-        let some number := (pair.declaration field).toNumberField? | throw .unsupportedCondition
-        let observation ← read field
-        pure (observation.map (fun cell =>
-          (cell.asDirectNumericComparisonOperand number.info).toValidationArithmetic)
-          |>.getD (.error NumericValidationUnavailable.silentlyUnavailable))
-      let left ← value.left.mapM observe
-      let right ← value.right.mapM observe
+      let left ← value.left.mapM (·.resolveValidation pair read)
+      let right ← value.right.mapM (·.resolveValidation pair read)
       pure ({ value with left, right }.evalWith id)
   | .fill op lhs rhs => do
       let unknown : ValidationFillTally := { filled := 0, empty := 0, unknown := 1, uninstantiated := 0 }

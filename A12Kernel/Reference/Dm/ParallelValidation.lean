@@ -6,11 +6,26 @@ import A12Kernel.Elaboration.CheckedMessageCache
 
 namespace A12Kernel.Dm
 
+private def pairPath (model : FlatModel) (group : GroupPath) (path : SurfaceFieldPath) :
+    Lowering FieldId := do
+  pure (← elaborated "ParallelRule" (model.resolveFieldDeclarationUnchecked group path)).id
+
 private def pairField (model : FlatModel) (group : GroupPath) (value : Bool)
     (expression : Expr) : Lowering FieldId := do
   let some path := if value then expression.fieldValue? else expression.fieldEntity?
     | refuse "ParallelRule" "plain field operand required"
-  pure (← elaborated "ParallelRule" (model.resolveFieldDeclarationUnchecked group path)).id
+  pairPath model group path
+
+/-- A comparison atom is a bracketed field, a temporal component of one field, or an aggregate over a direct field list. Surface shapes reuse the ordinary validation lowering, so starred, filtered and indexed operands are refused there before any pair resolution. -/
+private def pairNumericAtom (model : FlatModel) (group : GroupPath) (expression : Expr) :
+    Lowering (ParallelNumericAtomOf FieldId) := do
+  if expression.fieldValue?.isSome then
+    return .field (← pairField model group true expression)
+  match ← lowerValidationNumericAtom expression with
+  | .temporalFieldPart path part => pure (.temporalPart (← pairPath model group path) part)
+  | .aggregate op source =>
+      pure (.aggregate op (← (source.first :: source.rest).mapM (pairPath model group)))
+  | _ => refuse "ParallelRule" "plain field operand required"
 
 private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr →
     Lowering (ConditionTree (ParallelFieldLeafOf FieldId))
@@ -24,7 +39,7 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
   | .compare op left right => do
       let some comparison := op.toNumeric?
         | refuse "ParallelRule" "Number comparison required"
-      let lower := lowerNumericExpr (pairField model group true) (pairField model group true)
+      let lower := lowerNumericExpr (pairNumericAtom model group) ((.field ·) <$> pairField model group true ·)
       pure (.leaf (.comparison { op := comparison, left := ← lower left, right := ← lower right }))
   | .call name [.mk field none] none none => do
       if let some op := (match name with
@@ -50,7 +65,7 @@ private def pairReferences : ConditionTree (ParallelFieldLeafOf FieldId) → Lis
   | .leaf (.groupPresence _ _) => []
   | .leaf (.presence field _) => [field]
   | .leaf (.numeric _ left right) | .leaf (.fill _ left right) => [left, right]
-  | .leaf (.comparison value) => value.left.atoms ++ value.right.atoms
+  | .leaf (.comparison value) => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
   | .and left right | .or left right => pairReferences left ++ pairReferences right
 
 private def bindPairLeaf (model : FlatModel) (left right : FieldId)
@@ -65,7 +80,7 @@ private def bindPairLeaf (model : FlatModel) (left right : FieldId)
   | .numeric op a b => pure (.numeric op (← operand a) (← operand b))
   | .fill op a b => pure (.fill op (← operand a) (← operand b))
   | .comparison value => pure (.comparison { value with
-      left := ← value.left.mapM operand, right := ← value.right.mapM operand })
+      left := ← value.left.mapM (·.mapM operand), right := ← value.right.mapM (·.mapM operand) })
 
 private def pairGroupReferences : ConditionTree (ParallelFieldLeafOf FieldId) → List GroupPath
   | .leaf (.groupPresence _ reference) => [reference.path]
