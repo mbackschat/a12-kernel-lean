@@ -1,0 +1,87 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Witness",
+    "kind": "STRING"
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "DistinctRows",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Form",
+    "name": "CDistinctRows",
+    "computedField": "/Form/DistinctRows",
+    "alternatives": [
+      {
+        "operation": "NumberOfDifferentValues(Rows*/Value)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Computed."
+      }
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "DistinctMixed",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Form",
+    "name": "CDistinctMixed",
+    "computedField": "/Form/DistinctMixed",
+    "alternatives": [
+      {
+        "operation": "NumberOfDifferentValues(Custom, Plain)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Computed."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Form",
+    "field": "/Form/Witness",
+    "condition": "FieldFilled(Witness) And FieldValuesNotUnique(Rows*/Value)",
+    "code": "UNIQUE_ROWS",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Duplicate."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Form",
+    "field": "/Form/Witness",
+    "condition": "FieldFilled(Witness) And FieldValuesNotUnique(Custom, Plain)",
+    "code": "UNIQUE_MIXED",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Duplicate."
+      }
+    ]
+  }
+]

@@ -299,7 +299,7 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
       -- operand, in either slot, answers ahead of it
       -- ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-list-reads)).
       let scalarOperand ←
-        resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
+        resolveFieldEntityListOperandIn model declaringGroup scope authored.scalar
             (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup)
           |>.mapError .shape
       let _ ← resolveFieldEntityOperands model declaringGroup scope fixedTargetGroup? writtenGroup
@@ -391,7 +391,7 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     Except YearlessDateRangesOverlapElabError
       (CheckedYearlessAtLeastOneDateRangeOverlapsSource model) := do
   let scalarOperand ←
-    resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
+    resolveFieldEntityListOperandIn model declaringGroup scope authored.scalar
         (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup)
       |>.mapError fun error => .source (.shape error)
   -- As on the canonical route, every operand is read before the scalar's own gate.

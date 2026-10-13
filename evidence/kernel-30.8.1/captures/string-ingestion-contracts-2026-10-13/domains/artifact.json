@@ -1,0 +1,4040 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Domain_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "valid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Copy",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctMixed",
+              "field": "Form/DistinctMixed",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom",
+                "Form/DistinctMixed",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_CUSTOM",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_PATTERN",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_PLAIN",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UNIQUE_MIXED",
+              "field": "Form/Witness",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom",
+                "Form/Plain",
+                "Form/Witness"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UNIQUE_ROWS",
+              "field": "Form/Witness",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/Witness"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctMixed",
+                "value": "1"
+              },
+              {
+                "field": "Form/DistinctRows",
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "2"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "AB",
+                "DistinctMixed": 1,
+                "DistinctRows": 1,
+                "Out": "z",
+                "Pattern": "AB",
+                "Plain": "AB",
+                "Raw": "AB",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Copy",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctMixed",
+              "field": "Form/DistinctMixed",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom",
+                "Form/DistinctMixed",
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_CUSTOM",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_PATTERN",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_PLAIN",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UNIQUE_MIXED",
+              "field": "Form/Witness",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom",
+                "Form/Plain",
+                "Form/Witness"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UNIQUE_ROWS",
+              "field": "Form/Witness",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/Witness"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctMixed",
+                "value": "1"
+              },
+              {
+                "field": "Form/DistinctRows",
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "2"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "AB",
+                "DistinctMixed": 1,
+                "DistinctRows": 1,
+                "Out": "z",
+                "Pattern": "AB",
+                "Plain": "AB",
+                "Raw": "AB",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "charset",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ZeichenNichtImZeichensatz",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ZeichenNichtImZeichensatz",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ZeichenNichtImZeichensatz",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ZeichenNichtImZeichensatz",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "ZeichenNichtImZeichensatz",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "ZeichenNichtImZeichensatz",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "ZeichenNichtImZeichensatz",
+                "field": "Form/Rows/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Rows/Value"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "ab",
+                "DistinctMixed": null,
+                "DistinctRows": null,
+                "Out": "z",
+                "Pattern": "ab",
+                "Plain": "ab",
+                "Raw": "ab",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": null,
+                    "Size": null,
+                    "Value": "ab"
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ZeichenNichtImZeichensatz",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ZeichenNichtImZeichensatz",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ZeichenNichtImZeichensatz",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ZeichenNichtImZeichensatz",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "ZeichenNichtImZeichensatz",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "ZeichenNichtImZeichensatz",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "ZeichenNichtImZeichensatz",
+                "field": "Form/Rows/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Rows/Value"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "ab",
+                "DistinctMixed": null,
+                "DistinctRows": null,
+                "Out": "z",
+                "Pattern": "ab",
+                "Plain": "ab",
+                "Raw": "ab",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": null,
+                    "Size": null,
+                    "Value": "ab"
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "pattern",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Copy",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_PLAIN",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "12"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "customFieldType.pattern",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctRows",
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "value": "12"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "2"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "12",
+                "DistinctMixed": null,
+                "DistinctRows": 2,
+                "Out": "z",
+                "Pattern": "12",
+                "Plain": "12",
+                "Raw": "12",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": "12",
+                    "Size": 2,
+                    "Value": "12"
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Copy",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_PLAIN",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "12"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "customFieldType.pattern",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctRows",
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "value": "12"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "2"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "12",
+                "DistinctMixed": null,
+                "DistinctRows": 2,
+                "Out": "z",
+                "Pattern": "12",
+                "Plain": "12",
+                "Raw": "12",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": "12",
+                    "Size": 2,
+                    "Value": "12"
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "newline",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Copy",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UNIQUE_ROWS",
+              "field": "Form/Witness",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/Witness"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringMitNewline",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringMitNewline",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "customFieldType.pattern",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringMitNewline",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctRows",
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "3"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "3"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "A\r\nB",
+                "DistinctMixed": null,
+                "DistinctRows": 1,
+                "Out": "z",
+                "Pattern": "A\r\nB",
+                "Plain": "A\r\nB",
+                "Raw": "A\r\nB",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": "A\nB",
+                    "Size": 3,
+                    "Value": "A\r\nB"
+                  },
+                  {
+                    "Copy": "A\nB",
+                    "Size": 3,
+                    "Value": "A\nB"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Copy",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "UNIQUE_ROWS",
+              "field": "Form/Witness",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/Witness"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringMitNewline",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringMitNewline",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "customFieldType.pattern",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringMitNewline",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctRows",
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "3"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "3"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "A\r\nB",
+                "DistinctMixed": null,
+                "DistinctRows": 1,
+                "Out": "z",
+                "Pattern": "A\r\nB",
+                "Plain": "A\r\nB",
+                "Raw": "A\r\nB",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": "A\nB",
+                    "Size": 3,
+                    "Value": "A\r\nB"
+                  },
+                  {
+                    "Copy": "A\nB",
+                    "Size": 3,
+                    "Value": "A\nB"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "crcrlf",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Copy",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringMitNewline",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringMitNewline",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "customFieldType.pattern",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringMitNewline",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctRows",
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "4"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "3"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "A\r\r\nB",
+                "DistinctMixed": null,
+                "DistinctRows": 2,
+                "Out": "z",
+                "Pattern": "A\r\r\nB",
+                "Plain": "A\r\r\nB",
+                "Raw": "A\r\r\nB",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": "A\r\nB",
+                    "Size": 4,
+                    "Value": "A\r\r\nB"
+                  },
+                  {
+                    "Copy": "A\nB",
+                    "Size": 3,
+                    "Value": "A\nB"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Copy",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.pattern",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringMitNewline",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringMitNewline",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "customFieldType.pattern",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringMitNewline",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctRows",
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "value": "A\r\nB"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "4"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "A\nB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "3"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "A\r\r\nB",
+                "DistinctMixed": null,
+                "DistinctRows": 2,
+                "Out": "z",
+                "Pattern": "A\r\r\nB",
+                "Plain": "A\r\r\nB",
+                "Raw": "A\r\r\nB",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": "A\r\nB",
+                    "Size": 4,
+                    "Value": "A\r\r\nB"
+                  },
+                  {
+                    "Copy": "A\nB",
+                    "Size": 3,
+                    "Value": "A\nB"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "space",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fuehrendesBlank",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fuehrendesBlank",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fuehrendesBlank",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fuehrendesBlank",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "fuehrendesBlank",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "fuehrendesBlank",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "fuehrendesBlank",
+                "field": "Form/Rows/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Rows/Value"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": " AB",
+                "DistinctMixed": null,
+                "DistinctRows": null,
+                "Out": "z",
+                "Pattern": " AB",
+                "Plain": " AB",
+                "Raw": " AB",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": null,
+                    "Size": null,
+                    "Value": " AB"
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fuehrendesBlank",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fuehrendesBlank",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fuehrendesBlank",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fuehrendesBlank",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "fuehrendesBlank",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "fuehrendesBlank",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "fuehrendesBlank",
+                "field": "Form/Rows/Value",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Rows/Value"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": " AB",
+                "DistinctMixed": null,
+                "DistinctRows": null,
+                "Out": "z",
+                "Pattern": " AB",
+                "Plain": " AB",
+                "Raw": " AB",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": null,
+                    "Size": null,
+                    "Value": " AB"
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "long",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Copy",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_PATTERN",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.maxLength",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringZuLang",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "ABCDE"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "customFieldType.maxLength",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringZuLang",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctRows",
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "value": "ABCDE"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "5"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "ABCDE",
+                "DistinctMixed": null,
+                "DistinctRows": 2,
+                "Out": "z",
+                "Pattern": "ABCDE",
+                "Plain": "ABCDE",
+                "Raw": "ABCDE",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": "ABCDE",
+                    "Size": 5,
+                    "Value": "ABCDE"
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Copy",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_PATTERN",
+              "field": "Form/Pattern",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Pattern"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_RAW",
+              "field": "Form/Raw",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Raw"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "customFieldType.maxLength",
+              "field": "Form/Custom",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringZuLang",
+              "field": "Form/Plain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Plain"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "ABCDE"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "customFieldType.maxLength",
+                "field": "Form/Custom",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Custom"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringZuLang",
+                "field": "Form/Plain",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "<redacted>",
+                "referenced": [
+                  "Form/Plain"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctRows",
+                "value": "2"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "value": "ABCDE"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "5"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "ABCDE",
+                "DistinctMixed": null,
+                "DistinctRows": 2,
+                "Out": "z",
+                "Pattern": "ABCDE",
+                "Plain": "ABCDE",
+                "Raw": "ABCDE",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": "ABCDE",
+                    "Size": 5,
+                    "Value": "ABCDE"
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctMixed",
+              "field": "Form/DistinctMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom",
+                "Form/DistinctMixed",
+                "Form/Plain"
+              ],
+              "fillToFix": [
+                "Form/Custom",
+                "Form/DistinctMixed",
+                "Form/Plain"
+              ]
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ]
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ]
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctMixed",
+                "value": "0"
+              },
+              {
+                "field": "Form/DistinctRows",
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "0"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "",
+                "DistinctMixed": 0,
+                "DistinctRows": 1,
+                "Out": "z",
+                "Pattern": "",
+                "Plain": "",
+                "Raw": "",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": null,
+                    "Size": 0,
+                    "Value": ""
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CCopy",
+              "field": "Form/Rows[2]/Copy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Copy",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CDistinctMixed",
+              "field": "Form/DistinctMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Custom",
+                "Form/DistinctMixed",
+                "Form/Plain"
+              ],
+              "fillToFix": [
+                "Form/Custom",
+                "Form/DistinctMixed",
+                "Form/Plain"
+              ]
+            },
+            {
+              "code": "CDistinctRows",
+              "field": "Form/DistinctRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Value",
+                "Form/DistinctRows"
+              ]
+            },
+            {
+              "code": "COut",
+              "field": "Form/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Out"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows/Size",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ],
+              "fillToFix": [
+                "Form/Rows/Size",
+                "Form/Rows/Value"
+              ]
+            },
+            {
+              "code": "CSize",
+              "field": "Form/Rows[2]/Size",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Size",
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FILLED_VALUE",
+              "field": "Form/Rows[2]/Value",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Value"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DistinctMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/DistinctRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Copy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "cleared": false,
+                "errored": false,
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DistinctMixed",
+                "value": "0"
+              },
+              {
+                "field": "Form/DistinctRows",
+                "value": "1"
+              },
+              {
+                "field": "Form/Out",
+                "value": "z"
+              },
+              {
+                "field": "Form/Rows/Size",
+                "value": "0"
+              },
+              {
+                "field": "Form/Rows[2]/Copy",
+                "value": "AB"
+              },
+              {
+                "field": "Form/Rows[2]/Size",
+                "value": "2"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Custom": "",
+                "DistinctMixed": 0,
+                "DistinctRows": 1,
+                "Out": "z",
+                "Pattern": "",
+                "Plain": "",
+                "Raw": "",
+                "Witness": "AB",
+                "Rows": [
+                  {
+                    "Copy": null,
+                    "Size": 0,
+                    "Value": ""
+                  },
+                  {
+                    "Copy": "AB",
+                    "Size": 2,
+                    "Value": "AB"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

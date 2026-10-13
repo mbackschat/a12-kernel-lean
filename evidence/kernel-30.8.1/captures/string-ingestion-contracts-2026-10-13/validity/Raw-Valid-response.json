@@ -1,0 +1,53 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "rejected",
+  "ok": false,
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "<redacted>",
+  "data": {
+    "ops": 1,
+    "committed": false,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "rule",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "<redacted>",
+        "changed": {
+          "rule": "/Form/PROBE"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "model",
+        "op": "validate",
+        "outcome": "rejected",
+        "ok": false,
+        "valid": false,
+        "verification": "KERNEL_CONFIRMED",
+        "summary": "<redacted>",
+        "diagnostics": [
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_INVALID_RAW_TYPE",
+            "summary": "<redacted>",
+            "where": {
+              "rule": "/Form/PROBE"
+            },
+            "fix": "The condition (or computation) reads the VALUE of a field that declares noValueValidation (a raw-type string) — the kernel forbids every value use of such a field: comparisons, value lists, computations, even $field.value$ in a message. Test PRESENCE instead (FieldFilled / FieldNotFilled and the quantifiers work normally), or drop noValueValidation from the field (`field modify`) if its value must participate.",
+            "explain": "<redacted>"
+          }
+        ],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

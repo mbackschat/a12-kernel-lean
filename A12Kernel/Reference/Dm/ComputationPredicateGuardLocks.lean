@@ -354,4 +354,47 @@ example : run "FirstFilledValue(Flag,Left/A) != \"a\"" .string .empty .empty
     run "FirstFilledValue(Flag,Left/A) == \"a\"" .string (.rejected .malformed) (.parsed (.str "a"))
       .empty true "\"a\"" (listKind := .string) = some ["value a", "value 2"] := by native_decide
 
+private def membershipAdmissionModel : FlatModel := {
+  fields := [
+    { id := 1, name := "N", groupPath := ["Form"], policy := { kind := numericKind } },
+    { id := 2, name := "M", groupPath := ["Form"], policy := { kind := numericKind } },
+    { id := 3, name := "Text", groupPath := ["Form"], policy := { kind := .string } },
+    { id := 4, name := "Other", groupPath := ["Form"], policy := { kind := .string } },
+    { id := 5, name := "N", groupPath := ["Form", "Rows"], repeatableScope := [10],
+      policy := { kind := numericKind } },
+    { id := 6, name := "Value", groupPath := ["Form", "Rows"], repeatableScope := [10],
+      policy := { kind := .string }, customType := some { name := "Loose" } }]
+  repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2 }] }
+
+private def membershipAdmission (arguments : String) : Option String := do
+  let parsed ← (parseText .english
+    ("AtLeastOneFieldValueIncludedInValueList(" ++ arguments ++ ")")).toOption
+  let .predicate source ← (lowerGuard membershipAdmissionModel ["Form"] false parsed.body).toOption | none
+  match membershipAdmissionModel.elaborateComputationPredicate ["Form"] ["Form"] source with
+  | .ok _ => some "admitted"
+  | .error (.token error) => error.diagnostic?.map (·.kernelCode)
+  | .error _ => none
+
+example : membershipAdmissionModel.validate.isOk = true ∧
+    membershipAdmission "N In M" = some "admitted" ∧
+    membershipAdmission "Text In Other" = some "admitted" := by native_decide
+
+/- Keep the competing-defect twins in both orders: the retained Kernel static matrix at
+docs/sources/domain-ingestion-probes.md#src-membership-read-order-k13 distinguishes
+per-operand binding from delayed whole-list checking, including Number-to-token fallback. -/
+example : ([
+    ("N In Missing", .invalidEntity),
+    ("N In Rows/N", .noWildcard),
+    ("N In Missing,Rows/N", .invalidEntity),
+    ("N In Rows/N,Missing", .noWildcard),
+    ("N,N In Missing", .invalidEntity),
+    ("N In Text", .varyingTypesNotAllowed),
+    ("Rows/N In Missing", .noWildcard),
+    ("N In Rows,Missing", .noWildcard),
+    ("N In Missing,Rows", .invalidEntity),
+    ("Text In Rows/Value,Missing", .noWildcard),
+    ("Text In Missing,Rows/Value", .invalidEntity)] : List (String × KernelStaticDiagnostic)).all
+    (fun (arguments, expected) => membershipAdmission arguments == some expected.kernelCode) = true := by
+  native_decide
+
 end A12Kernel.Dm.ComputationPredicateGuardLocks

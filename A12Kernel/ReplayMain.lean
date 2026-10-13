@@ -73,6 +73,7 @@ import A12Kernel.Reference.Dm.RecursiveReferenceAdmissionLocks
 import A12Kernel.Reference.Dm.FilterReferenceInventoryLocks
 import A12Kernel.Reference.Dm.HavingGroupAdmissionLocks
 import A12Kernel.Reference.Dm.ReaderLocks
+import A12Kernel.Reference.Dm.SupportedCharactersLocks
 import A12Kernel.Reference.Dm.DocumentNumberLocks
 import A12Kernel.Reference.Dm.NegateLocks
 import A12Kernel.Reference.Dm.LowerLocks

@@ -1,0 +1,89 @@
+[
+  {
+    "case": "group-missing-first",
+    "admitted": false,
+    "codes": [
+      "MVK_INVALID_ENTITY"
+    ]
+  },
+  {
+    "case": "group-unbound",
+    "admitted": false,
+    "codes": [
+      "MVK_NO_WILDCARD"
+    ]
+  },
+  {
+    "case": "missing-before-unbound",
+    "admitted": false,
+    "codes": [
+      "MVK_INVALID_ENTITY"
+    ]
+  },
+  {
+    "case": "missing",
+    "admitted": false,
+    "codes": [
+      "MVK_INVALID_ENTITY"
+    ]
+  },
+  {
+    "case": "mixed",
+    "admitted": false,
+    "codes": [
+      "MVK_VARYING_TYPES_NOT_ALLOWED"
+    ]
+  },
+  {
+    "case": "number-control",
+    "admitted": true,
+    "codes": []
+  },
+  {
+    "case": "repeat-before-missing",
+    "admitted": false,
+    "codes": [
+      "MVK_INVALID_ENTITY"
+    ]
+  },
+  {
+    "case": "subject-unbound",
+    "admitted": false,
+    "codes": [
+      "MVK_NO_WILDCARD"
+    ]
+  },
+  {
+    "case": "token-control",
+    "admitted": true,
+    "codes": []
+  },
+  {
+    "case": "token-missing-first",
+    "admitted": false,
+    "codes": [
+      "MVK_INVALID_ENTITY"
+    ]
+  },
+  {
+    "case": "token-unbound",
+    "admitted": false,
+    "codes": [
+      "MVK_NO_WILDCARD"
+    ]
+  },
+  {
+    "case": "unbound-before-missing",
+    "admitted": false,
+    "codes": [
+      "MVK_NO_WILDCARD"
+    ]
+  },
+  {
+    "case": "unbound",
+    "admitted": false,
+    "codes": [
+      "MVK_NO_WILDCARD"
+    ]
+  }
+]

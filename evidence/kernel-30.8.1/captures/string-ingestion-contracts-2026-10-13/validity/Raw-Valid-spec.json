@@ -1,0 +1,16 @@
+[
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Form",
+    "field": "/Form/Raw",
+    "condition": "Valid(Raw,\"Loose\")",
+    "code": "PROBE",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  }
+]

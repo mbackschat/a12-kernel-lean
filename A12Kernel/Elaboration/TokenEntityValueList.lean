@@ -394,7 +394,7 @@ def assembleTokenEntityValueListSource
 
 /-- A shape refusal raised as one operand is read, rather than by a check over the whole list. -/
 private def FieldEntityShapeElabError.isOperandRead : FieldEntityShapeElabError → Bool
-  | .resolve _ | .starPath _ | .groupReference _ | .starredGroup _ => true
+  | .resolve _ | .starPath _ | .groupReference _ | .starredGroup _ | .unboundOperandLevel _ => true
   | _ => false
 
 /-- Check both stored-projection entity-list sides in operator order, then apply the operation-wide
@@ -405,8 +405,9 @@ private def FieldEntityShapeElabError.isOperandRead : FieldEntityShapeElabError 
     lists is read before those gates, so a name resolving to nothing in the value list answers ahead
     of the field list's gates: opposite a raw String it draws the entity class
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
-    No row places it beside the field list's own repeat, and a value-side star or group reference is
-    read first on the same account, unmeasured.
+    A missing member also preempts duplicate subject operands in the retained computation matrix
+    ([checkpoint](../../docs/sources/domain-ingestion-probes.md#src-membership-read-order-k13)).
+    Wider value-side star/group competing gates remain outside that matrix.
 
     Each side admits a sole field: the construct does not share the entity-list arity gate
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)). -/

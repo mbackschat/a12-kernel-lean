@@ -108,15 +108,12 @@ example : admission? 7 = some .noStringOrEnumOrExtEnum := by native_decide
    admit the set its message names. -/
 example : admitted 2 = true := by native_decide
 
-/- A **raw** String is refused by this theory rather than by an observed Kernel gate: it exposes no
-   evaluation value, so no observation could reach a validator. It is also the nearest
-   representable candidate for the *value-validation* qualifier the canonical clause puts on this
-   operand, which no authored declaration was able to separate — recorded as a candidate, claimed
-   as nothing. The evaluated String at id 1 is the control that keeps this row about the value
-   mode. -/
+/- The ordinary String at id 1 is the admitted twin for the raw flag. Both named-type polarities
+   draw the raw-type class in the retained K13 authoring matrix
+   ([checkpoint](../../docs/sources/domain-ingestion-probes.md#src-checked-string-ingestion-k13)). -/
 example : admitted 8 = false := by native_decide
 
-example : admission? 8 = none := by native_decide
+example : admission? 8 = some .rawTypeOperandInvalid := by native_decide
 
 /-! ## The leaf reads its operand's **checked** cell, not the stored text
 

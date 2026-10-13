@@ -2,6 +2,7 @@ import Lean.Data.Json
 import A12Kernel.Elaboration.Flat.Types
 import A12Kernel.Elaboration.Enumeration
 import A12Kernel.Elaboration.DeclarationAdmission
+import A12Kernel.Elaboration.LegalCharset
 
 /-! # Reading a DM-JSON document model
 
@@ -289,9 +290,34 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         errorCodesToSuppress := ((body.getObjValAs? (Array String) "errorCodesToSuppress").toOption.getD #[]).toList } }
   | other => modify fun state => { state with refusals := state.refusals.push (path ++ [name], s!"element {other}") }
 
+private def readSupportedCharacters (config : Json)
+    (graphemeClusters? : Option (String → List String)) : Except String LegalCharset := do
+  let entries ← match config.getObjVal? "supportedCharacters" with
+    | .error _ | .ok .null => pure []
+    | .ok (.arr entries) => entries.toList.mapM Json.getStr?
+    | .ok _ => throw "supportedCharacters is not an array"
+  let clustersOf ← match graphemeClusters? with
+    | some clustersOf => pure clustersOf
+    | none =>
+        let requiresPreparation := entries.any fun entry =>
+          if !(entry.toList.all isBmpScalar) then false
+          else match entry.toList with
+            | [_, _] => true
+            | [_, middle, _] => middle != '-'
+            | _ => false
+        if requiresPreparation then
+          throw "supportedCharacters requires Java-compatible grapheme preparation"
+        -- Spec/06 §A.2 singles, ranges, and bounded failures never consult clustering.
+        -- The shape guard above ensures this callback is never invoked.
+        pure (fun _ => [])
+  (admitSupportedCharacters clustersOf entries).mapError
+    (fun error => s!"supportedCharacters definition: {repr error}")
+
 /-- Read a DM-JSON model. A structural fault in the file fails the whole read; an unmappable
 declaration is refused alone. -/
-private def readModelCore (json : Json) : Except String (DmModel × List ExecutableDeclaration) := do
+private def readModelCore (json : Json)
+    (graphemeClusters? : Option (String → List String)) :
+    Except String (DmModel × List ExecutableDeclaration) := do
   let content ← json.getObjVal? "content"
   let config := (content.getObjVal? "modelConfig").toOption.getD (Json.mkObj [])
   let info := (content.getObjVal? "modelInfo").toOption.getD (Json.mkObj [])
@@ -310,12 +336,7 @@ private def readModelCore (json : Json) : Except String (DmModel × List Executa
         | .ok year => pure (some year)
         | .error _ => throw "baseYear is no integer"
   let mut refusals := state.refusals.toList
-  match config.getObjVal? "supportedCharacters" with
-  | .error _ | .ok .null => pure ()
-  | .ok (.arr entries) =>
-      if !entries.isEmpty then
-        refusals := refusals ++ [([], "restricted supportedCharacters requires an admitted charset")]
-  | .ok _ => throw "supportedCharacters is not an array"
+  let legalCharset ← readSupportedCharacters config graphemeClusters?
   let mut groups := []
   for group in state.groups.toList do
     match state.indexFields.find? (·.1 == group.level) with
@@ -329,6 +350,7 @@ private def readModelCore (json : Json) : Except String (DmModel × List Executa
     flat := {
       fields := state.fields.toList
       repeatableGroups := groups
+      legalCharset
       fieldRefByShortNameAllowed := (bool? config "fieldRefByShortNameAllowed").getD false
       baseYear
       timeZoneId := (str? config "timeZone").getD "UTC" }
@@ -345,16 +367,21 @@ inductive ModelReadFailure where
   deriving Repr, BEq, DecidableEq
 
 /-- Read a model with structured declaration admission. Other model checks remain the
-responsibility of their checked carriers; success is not a complete consistency certificate. -/
-def readModelWithAdmission (json : Json) : Except ModelReadFailure DmModel := do
-  let (model, declarations) ← (readModelCore json).mapError .input
+responsibility of their checked carriers; success is not a complete consistency certificate.
+Combined supported-character entries require a caller-supplied Java-compatible grapheme classifier;
+its absence is a host-preparation failure rather than a malformed-definition verdict. -/
+def readModelWithAdmission (json : Json)
+    (graphemeClusters? : Option (String → List String) := none) :
+    Except ModelReadFailure DmModel := do
+  let (model, declarations) ← (readModelCore json graphemeClusters?).mapError .input
   (ExecutableDeclaration.admit declarations).mapError .declaration
   pure model
 
 /-- Compatibility projection for replay callers. Consumers explaining a refusal use
 `readModelWithAdmission` to retain its phase and codeless notifications. -/
-def readModel (json : Json) : Except String DmModel :=
-  (readModelWithAdmission json).mapError fun
+def readModel (json : Json) (graphemeClusters? : Option (String → List String) := none) :
+    Except String DmModel :=
+  (readModelWithAdmission json graphemeClusters?).mapError fun
     | .input reason => reason
     | .declaration failure => s!"declaration admission: {repr failure}"
 

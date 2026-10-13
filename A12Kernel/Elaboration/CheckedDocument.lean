@@ -311,10 +311,14 @@ private def checkPlacedCell
   let base :=
     if overLimit then
       checkAdmittedRawCell input.raw
+    else if declaration.stringValueMode == .raw then
+      (prepared.checkContext locale raw).read input.address.field
+    else if !model.legalCharset.accepts input.stored then
+      { rawPresent := true, parsed := none, findings := [.unsupportedCharacter] }
+    else if input.stored.startsWith " " || input.stored.endsWith " " then
+      { rawPresent := true, parsed := none, findings := [.leadingOrTrailingSpace] }
     else
       (prepared.checkContext locale raw).read input.address.field
-  let base := if overLimit || model.legalCharset.accepts input.stored then base
-    else base.withFinding .unsupportedCharacter
   let numericInput := match declaration.policy.kind with
     | .number _ =>
         if input.stored.isEmpty then none

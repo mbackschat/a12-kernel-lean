@@ -34,7 +34,7 @@ inductive CustomFieldValidityOperandElabError where
   | inadmissibleKind (source : FieldId) (actual : SurfaceScalarKind)
   /-- A String declaration carrying a registered custom type. Refused, and measured. -/
   | customDeclaredOperand (source : FieldId)
-  /-- A raw String, which exposes no evaluation value and so could not reach a validator. A representation limit of this theory, not an observed Kernel gate; see the module note on the spec's *value-validation* qualifier. -/
+  /-- The value-validation gate refuses a raw String before consulting its named validator (spec/06 §A.1 and CheckEntityUtils.checkIsValueValidation). -/
   | rawStringOperand (source : FieldId)
   | resolve (error : ResolveError)
   deriving Repr, DecidableEq
@@ -75,11 +75,11 @@ def elaborateCustomFieldValidityOperand (model : FlatModel) (source : FieldId) :
 
 namespace CustomFieldValidityOperandElabError
 
-/-- Every kind refusal at this slot draws one class. Only this theory's own raw-String limit claims none, because it is a representation boundary rather than an observed Kernel gate. -/
+/-- Preserve the raw value-validation gate separately from declared-kind refusals (spec/06 §A.1/A.3). -/
 def diagnostic? : CustomFieldValidityOperandElabError → Option KernelStaticDiagnostic
   | .inadmissibleKind _ _ => some .noStringOrEnumOrExtEnum
   | .customDeclaredOperand _ => some .noStringOrEnumOrExtEnum
-  | .rawStringOperand _ => none
+  | .rawStringOperand _ => some .rawTypeOperandInvalid
   | .resolve error => error.diagnostic?
 
 end CustomFieldValidityOperandElabError

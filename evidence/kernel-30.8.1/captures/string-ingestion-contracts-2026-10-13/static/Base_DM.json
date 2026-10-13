@@ -1,0 +1,373 @@
+{
+  "header": {
+    "id": "Ingestion_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "Ingestion_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true,
+      "supportedCharacters": [
+        "A-Z",
+        "0-9",
+        "\r",
+        "\n",
+        " "
+      ]
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Raw",
+                "name": "Raw",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "lineBreaksPermitted": true,
+                      "noValueValidation": true
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Plain",
+                "name": "Plain",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 2
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Pattern",
+                "name": "Pattern",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "errorMessage": [
+                        {
+                          "locale": "en_US",
+                          "text": "Pattern."
+                        }
+                      ],
+                      "pattern": "[A-Z]+"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Custom",
+                "name": "Custom",
+                "Field": {
+                  "fieldType": {
+                    "type": "CustomFieldType",
+                    "CustomFieldType": {
+                      "name": "Upper",
+                      "minLength": 2,
+                      "maxLength": 4
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Out",
+                "name": "Out",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Form/Rows",
+                "name": "Rows",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Value",
+                      "name": "Value",
+                      "Field": {
+                        "fieldType": {
+                          "type": "CustomFieldType",
+                          "CustomFieldType": {
+                            "name": "Loose"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Copy",
+                      "name": "Copy",
+                      "Field": {
+                        "fieldType": {
+                          "type": "CustomFieldType",
+                          "CustomFieldType": {
+                            "name": "Loose"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Size",
+                      "name": "Size",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/CCopy",
+                      "name": "CCopy",
+                      "Computation": {
+                        "computedFieldRelPath": "../Copy",
+                        "computationAlternatives": [
+                          {
+                            "operation": "[Value]"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Computed."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/CSize",
+                      "name": "CSize",
+                      "Computation": {
+                        "computedFieldRelPath": "../Size",
+                        "computationAlternatives": [
+                          {
+                            "operation": "Length(Value)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Computed."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/FILLED_VALUE",
+                      "name": "FILLED_VALUE",
+                      "Rule": {
+                        "errorEntityRelPath": "../Value",
+                        "errorCode": "FILLED_VALUE",
+                        "errorCondition": "FieldFilled(Value)",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Filled."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/N",
+                      "name": "N",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/COut",
+                "name": "COut",
+                "Computation": {
+                  "computedFieldRelPath": "../Out",
+                  "computationAlternatives": [
+                    {
+                      "operation": "\"z\""
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Computed."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FILLED_RAW",
+                "name": "FILLED_RAW",
+                "Rule": {
+                  "errorEntityRelPath": "../Raw",
+                  "errorCode": "FILLED_RAW",
+                  "errorCondition": "FieldFilled(Raw)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Filled."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FILLED_PLAIN",
+                "name": "FILLED_PLAIN",
+                "Rule": {
+                  "errorEntityRelPath": "../Plain",
+                  "errorCode": "FILLED_PLAIN",
+                  "errorCondition": "FieldFilled(Plain)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Filled."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FILLED_PATTERN",
+                "name": "FILLED_PATTERN",
+                "Rule": {
+                  "errorEntityRelPath": "../Pattern",
+                  "errorCode": "FILLED_PATTERN",
+                  "errorCondition": "FieldFilled(Pattern)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Filled."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FILLED_CUSTOM",
+                "name": "FILLED_CUSTOM",
+                "Rule": {
+                  "errorEntityRelPath": "../Custom",
+                  "errorCode": "FILLED_CUSTOM",
+                  "errorCondition": "FieldFilled(Custom)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Filled."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/N",
+                "name": "N",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/M",
+                "name": "M",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Text",
+                "name": "Text",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Other",
+                "name": "Other",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

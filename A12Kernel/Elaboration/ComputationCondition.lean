@@ -243,9 +243,6 @@ def FlatModel.elaborateComputationGroupListWith (model : FlatModel)
   let scope := model.repeatableScopeForGroupPath targetGroup
   let operands ← (resolveFieldEntityOperands model declaringGroup scope (some targetGroup)
     targetGroup (authored.first :: authored.rest)).mapError .shape
-  if let some unbound := model.firstUnboundComputationLevel? declaringGroup targetGroup
-      (operands.map ResolvedFieldEntityOperand.bindingScope) then
-    throw (.shape (.unboundOperandLevel unbound))
   if let some duplicate := firstDuplicateResolvedEntityOperand? operands then
     throw (.shape (match duplicate with
       | .field (field, _) | .indexed (field, _) => .duplicateOperand field

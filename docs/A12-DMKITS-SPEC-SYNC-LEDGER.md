@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Two corrections are `pending` below and have not been handed off. The 24 terminal receipts retired on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). [The consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own their reviewed revisions, evidence routes and limits.
+Four corrections are `pending` below and have not been handed off. The 24 terminal receipts retired on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). [The consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own their reviewed revisions, evidence routes and limits.
 
 <a id="spec-2026-10-12-01"></a>
 ### SPEC-2026-10-12-01 — selected error addresses use the unique non-iterating key
@@ -57,4 +57,24 @@ Two corrections are `pending` below and have not been handed off. The 24 termina
 - `delta`: Remove the false refusal of crossed ISO/dotted Date formats. First-filled sources retain the list's exact-profile gate; target compatibility uses the temporal comparison gate, and the target renders the selected Date, including component omission.
 - `basis`: Kernel 30.8.1, [target-profile checkpoint](sources/repeatable-temporal-computation-probes.md#src-temporal-target-profiles-k11). Both strategies agree on fixed/repeated dotted-to-ISO, full-to-year and year-month-to-year results, fallback, reached poison and independent rows. The same checkpoint retains compact-format execution, yearless Base-Year completion, checked-source admission and source-rejection versus target-rejection controls. DateTime-to-Date refusals remain distinct.
 - `acceptance`: Reconcile the canonical first-filled assignment account and any source/target profile-identity restriction. Preserve the exact-profile source-list gate, source-order short circuit, target-owned formatting and rejection, source-format partial completion, and year-presence/Base-Year comparison rule. Existing sufficient evidence can discharge the peer work; no duplicate capture is requested.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-02"></a>
+### SPEC-2026-10-13-02 — full-input checking precedes registered validation and optional conversion
+
+- `status`: pending
+- `canonical`: [String input checks](../spec/06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching) and [custom conversion](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation).
+- `delta`: State raw-String bypass and the charset → ASCII-edge-space → basic-format sequence. Replace unresolved custom length/charset/conversion ordering with the source-owned invocation contract, preserving the distinction between ordinary measured validation and opt-in codec source characterization.
+- `basis`: [Ordered ingestion and domain checkpoint](sources/domain-ingestion-probes.md#src-checked-string-ingestion-k13), pinned Kernel 30.8.1 source and both-strategy artifacts. Registered repeated Custom and mixed Custom/String distinct/uniqueness use the once-normalized accepted value. The converter selects the two-argument result's converted text without consuming its optional error message.
+- `acceptance`: Reconcile the canonical input ordering and custom invocation contract. Preserve raw bypass, single first input failure, original validator input, declared bounds in callback context, default conversion-off behavior, opt-in direction and normalized conversion input. Reuse sufficient existing tests; no arbitrary validator or codec implementation is requested.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-03"></a>
+### SPEC-2026-10-13-03 — computation binding errors retain authored operand order
+
+- `status`: pending
+- `canonical`: [Computation membership admission](../spec/06-strings-and-enumerations.md#b5-computation-preconditions-preserve-reached-errors-and-traversal-order).
+- `delta`: Check each operand's computation binding before reading the next operand, retaining that first read error through Number-to-token fallback. Whole-list duplicate and kind checks remain later.
+- `basis`: [Thirteen retained static cases](sources/domain-ingestion-probes.md#src-membership-read-order-k13) with admitted Number/String controls, missing-name/unbound field and group twins, Custom operands, a competing duplicate and an isolated mixed-kind refusal. All actual-model Lean readbacks agree.
+- `acceptance`: Reconcile operand-local binding with authored read order and fallback projection. An earlier unbound operand reports `MVK_NO_WILDCARD`; an earlier missing name reports `MVK_INVALID_ENTITY`. Preserve existing intra-operand gates and whole-list checks; no exhaustive diagnostic permutation is claimed.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

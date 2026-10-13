@@ -379,10 +379,10 @@ end CheckedFieldEntityShape
     rule iterating a level may read an operand inside it. Starred and group operands carry their own
     topology and are unaffected.
 
-    On a fixed-target list neither an unstarred field nor a fixed group is judged here: both keep
-    their levels for the list's own unbound-level gate, which picks the class by where the target
-    lies and by the outermost level. Judging the field here reported the missing star where an
-    index-keyed level draws its index class ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
+    Fixed-target resolution retains levels for its caller: computation lists check binding before
+    advancing to the next operand, while Having defers candidate binding until after list admission.
+    Target placement and index classes retain the shared computation-binding decision
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 def resolveFieldEntityOperandIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel) (authored : SurfaceFieldEntityOperand)
     (fixedTargetGroup? : Option GroupPath := none) (writtenGroup : GroupPath)
@@ -397,8 +397,7 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   -- as a bracketed category read does. It is measured inside `Sum`, the two DateRange overlaps,
   -- `FieldValuesNotUnique` and the value list, and every other list sharing this shape asks it on
   -- that account ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
-  -- A fixed-target list asks its walk list-wide later, an order no row measures. A category its
-  -- Enumeration does not declare draws `MVK_CATEGORY_UNKOWN` at the same read, ahead of every list
+  -- A category its Enumeration does not declare draws `MVK_CATEGORY_UNKOWN` at the same read, ahead of every list
   -- gate: it is the second gate of the category check the non-Enumeration class opens
   -- ([`kf359`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf359)), and beside a Number in a value
   -- list it pre-empts the varying-types gate (the 2026-09-18 extension under
@@ -456,6 +455,21 @@ def resolveFieldEntityOperandIn (model : FlatModel)
       | .terminalRepeatable source => pure (.starredGroup source)
       | .terminalPresence source => pure (.starredGroupPresence source)
 
+/-- Computation lists check each operand's binding before the next read. Having uses the
+lower-level resolver because its candidate-scope gate follows list admission (spec/07 §3). -/
+def resolveFieldEntityListOperandIn (model : FlatModel)
+    (declaringGroup : GroupPath) (scope : List RepeatableLevel) (authored : SurfaceFieldEntityOperand)
+    (fixedTargetGroup? : Option GroupPath := none) (writtenGroup : GroupPath)
+    (groupReadScope : FixedGroupReadScope := .scalar) :
+    Except FieldEntityShapeElabError (ResolvedFieldEntityOperand model) := do
+  let operand ← resolveFieldEntityOperandIn model declaringGroup scope authored
+    fixedTargetGroup? writtenGroup groupReadScope
+  if let some targetGroup := fixedTargetGroup? then
+    if let some unbound := model.firstUnboundComputationLevel? declaringGroup targetGroup
+        operand.bindingScopes then
+      throw (.unboundOperandLevel unbound)
+  pure operand
+
 /-- The scalar instance: an operand read where no repeatable level is bound, beside an error field
     in the rule's own group. -/
 def resolveFieldEntityOperandUnchecked (model : FlatModel)
@@ -475,12 +489,12 @@ def resolveFieldEntityOperands (model : FlatModel)
   match authored with
   | [] => pure []
   | operand :: remaining => do
-      pure ((← resolveFieldEntityOperandIn model declaringGroup scope operand fixedTargetGroup?
+      pure ((← resolveFieldEntityListOperandIn model declaringGroup scope operand fixedTargetGroup?
           writtenGroup groupReadScope) ::
         (← resolveFieldEntityOperands model declaringGroup scope fixedTargetGroup? writtenGroup
           remaining groupReadScope))
 
-/-- Validate the common entity-list shape: model, path resolution and its star gate, on a fixed-target arm the list-wide unbound-level gate, the category gate where the carrier asks it ahead of the repeat, exact duplicates in authored encounter order, ancestor/descendant overlap, the root-group gate, the category gate where the carrier asks it behind that, then the multiple-slots-or-one-already-many cardinality gate.
+/-- Validate the common entity-list shape: model, ordered operand resolution including computation binding, the category gate where the carrier asks it ahead of the repeat, exact duplicates in authored encounter order, ancestor/descendant overlap, the root-group gate, the category gate where the carrier asks it behind that, then the multiple-slots-or-one-already-many cardinality gate.
 
     Path resolution precedes the whole-list gates and the kind scan follows them. Every exact non-wildcard identity shares one scan, independent of field/group class; strict ancestor overlap follows it. Cardinality is structurally separate on this typed surface: its singleton direct-field input cannot also contain a repeated or overlapping pair, and a root slot is already-many, so the root gate and cardinality never both fire.
 
@@ -496,15 +510,11 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
   | .error error => .error (.resolve error)
   | .ok () => do
       let first ←
-        resolveFieldEntityOperandIn model declaringGroup scope authored.first fixedTargetGroup?
+        resolveFieldEntityListOperandIn model declaringGroup scope authored.first fixedTargetGroup?
           writtenGroup groupReadScope
       let rest ←
         resolveFieldEntityOperands model declaringGroup scope fixedTargetGroup? writtenGroup
           authored.rest groupReadScope
-      if let some targetGroup := fixedTargetGroup? then
-        if let some unbound := model.firstUnboundComputationLevel? declaringGroup targetGroup
-            ((first :: rest).flatMap ResolvedFieldEntityOperand.bindingScopes) then
-          throw (.unboundOperandLevel unbound)
       if categoryGate == .aheadOfRepeat then
         if let some path := (first :: rest).findSome? ResolvedFieldEntityOperand.categoryPath? then
           throw (.categoryNotAllowed path)
@@ -629,7 +639,7 @@ theorem elaborateFieldEntityShapeIn_declaringGroupValid
     (ok : elaborateFieldEntityShapeIn model declaringGroup scope authored arity fixedTargetGroup?
       writtenGroup .absent groupReadScope = .ok checked) :
     GroupPath.isValid declaringGroup = true := by
-  unfold elaborateFieldEntityShapeIn at ok
+  unfold elaborateFieldEntityShapeIn resolveFieldEntityListOperandIn at ok
   split at ok
   · cases ok
   · cases hFirst :

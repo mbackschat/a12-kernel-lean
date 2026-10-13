@@ -1,0 +1,66 @@
+{
+  "target": "apply",
+  "op": "run",
+  "outcome": "rejected",
+  "ok": false,
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "<redacted>",
+  "data": {
+    "ops": 2,
+    "committed": false,
+    "failedAt": null,
+    "results": [
+      {
+        "target": "field",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "<redacted>",
+        "changed": {
+          "added": "/Form/Probe",
+          "kind": "NUMBER"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "computation",
+        "op": "add",
+        "outcome": "staged",
+        "ok": true,
+        "summary": "<redacted>",
+        "changed": {
+          "computation": "/Form/ProbeComp"
+        },
+        "diagnostics": [],
+        "written": false
+      },
+      {
+        "target": "model",
+        "op": "validate",
+        "outcome": "rejected",
+        "ok": false,
+        "valid": false,
+        "verification": "KERNEL_CONFIRMED",
+        "summary": "<redacted>",
+        "diagnostics": [
+          {
+            "severity": "ERROR",
+            "source": "KERNEL",
+            "code": "MVK_VARYING_TYPES_NOT_ALLOWED",
+            "summary": "<redacted>",
+            "where": {
+              "rule": "/Form/ProbeComp"
+            },
+            "fix": "list only same-type fields — here a string and a number field are mixed",
+            "explain": "True iff at least one of the listed fields holds one of the listed values."
+          }
+        ],
+        "written": false
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

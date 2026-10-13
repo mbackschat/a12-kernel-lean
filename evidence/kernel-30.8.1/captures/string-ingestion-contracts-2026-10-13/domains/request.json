@@ -1,0 +1,237 @@
+{
+  "model": "Domain_DM.json",
+  "locale": "en_US",
+  "customFieldTypes": {
+    "Upper": {
+      "pattern": "[A-Z]+",
+      "minLength": 2,
+      "maxLength": 4
+    },
+    "Loose": {
+      "pattern": "(?s).*"
+    }
+  },
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "valid",
+      "documentInline": {
+        "Form": {
+          "Raw": "AB",
+          "Plain": "AB",
+          "Pattern": "AB",
+          "Custom": "AB",
+          "Out": "SEED",
+          "Rows": [
+            {
+              "Value": "AB",
+              "Copy": "SEED",
+              "Size": "99"
+            },
+            {
+              "Value": "AB",
+              "Copy": "SEED",
+              "Size": "99"
+            }
+          ],
+          "DistinctRows": "99",
+          "DistinctMixed": "99",
+          "Witness": "AB"
+        }
+      }
+    },
+    {
+      "name": "charset",
+      "documentInline": {
+        "Form": {
+          "Raw": "ab",
+          "Plain": "ab",
+          "Pattern": "ab",
+          "Custom": "ab",
+          "Out": "SEED",
+          "Rows": [
+            {
+              "Value": "ab",
+              "Copy": "SEED",
+              "Size": "99"
+            },
+            {
+              "Value": "AB",
+              "Copy": "SEED",
+              "Size": "99"
+            }
+          ],
+          "DistinctRows": "99",
+          "DistinctMixed": "99",
+          "Witness": "AB"
+        }
+      }
+    },
+    {
+      "name": "pattern",
+      "documentInline": {
+        "Form": {
+          "Raw": "12",
+          "Plain": "12",
+          "Pattern": "12",
+          "Custom": "12",
+          "Out": "SEED",
+          "Rows": [
+            {
+              "Value": "12",
+              "Copy": "SEED",
+              "Size": "99"
+            },
+            {
+              "Value": "AB",
+              "Copy": "SEED",
+              "Size": "99"
+            }
+          ],
+          "DistinctRows": "99",
+          "DistinctMixed": "99",
+          "Witness": "AB"
+        }
+      }
+    },
+    {
+      "name": "newline",
+      "documentInline": {
+        "Form": {
+          "Raw": "A\r\nB",
+          "Plain": "A\r\nB",
+          "Pattern": "A\r\nB",
+          "Custom": "A\r\nB",
+          "Out": "SEED",
+          "Rows": [
+            {
+              "Value": "A\r\nB",
+              "Copy": "SEED",
+              "Size": "99"
+            },
+            {
+              "Value": "A\nB",
+              "Copy": "SEED",
+              "Size": "99"
+            }
+          ],
+          "DistinctRows": "99",
+          "DistinctMixed": "99",
+          "Witness": "AB"
+        }
+      }
+    },
+    {
+      "name": "crcrlf",
+      "documentInline": {
+        "Form": {
+          "Raw": "A\r\r\nB",
+          "Plain": "A\r\r\nB",
+          "Pattern": "A\r\r\nB",
+          "Custom": "A\r\r\nB",
+          "Out": "SEED",
+          "Rows": [
+            {
+              "Value": "A\r\r\nB",
+              "Copy": "SEED",
+              "Size": "99"
+            },
+            {
+              "Value": "A\nB",
+              "Copy": "SEED",
+              "Size": "99"
+            }
+          ],
+          "DistinctRows": "99",
+          "DistinctMixed": "99",
+          "Witness": "AB"
+        }
+      }
+    },
+    {
+      "name": "space",
+      "documentInline": {
+        "Form": {
+          "Raw": " AB",
+          "Plain": " AB",
+          "Pattern": " AB",
+          "Custom": " AB",
+          "Out": "SEED",
+          "Rows": [
+            {
+              "Value": " AB",
+              "Copy": "SEED",
+              "Size": "99"
+            },
+            {
+              "Value": "AB",
+              "Copy": "SEED",
+              "Size": "99"
+            }
+          ],
+          "DistinctRows": "99",
+          "DistinctMixed": "99",
+          "Witness": "AB"
+        }
+      }
+    },
+    {
+      "name": "long",
+      "documentInline": {
+        "Form": {
+          "Raw": "ABCDE",
+          "Plain": "ABCDE",
+          "Pattern": "ABCDE",
+          "Custom": "ABCDE",
+          "Out": "SEED",
+          "Rows": [
+            {
+              "Value": "ABCDE",
+              "Copy": "SEED",
+              "Size": "99"
+            },
+            {
+              "Value": "AB",
+              "Copy": "SEED",
+              "Size": "99"
+            }
+          ],
+          "DistinctRows": "99",
+          "DistinctMixed": "99",
+          "Witness": "AB"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "Raw": "",
+          "Plain": "",
+          "Pattern": "",
+          "Custom": "",
+          "Out": "SEED",
+          "Rows": [
+            {
+              "Value": "",
+              "Copy": "SEED",
+              "Size": "99"
+            },
+            {
+              "Value": "AB",
+              "Copy": "SEED",
+              "Size": "99"
+            }
+          ],
+          "DistinctRows": "99",
+          "DistinctMixed": "99",
+          "Witness": "AB"
+        }
+      }
+    }
+  ]
+}

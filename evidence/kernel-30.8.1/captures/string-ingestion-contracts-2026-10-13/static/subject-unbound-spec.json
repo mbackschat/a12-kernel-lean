@@ -1,0 +1,28 @@
+[
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Probe",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Form",
+    "name": "ProbeComp",
+    "computedField": "/Form/Probe",
+    "commonPrecondition": "AtLeastOneFieldValueIncludedInValueList(Rows/N In Missing)",
+    "alternatives": [
+      {
+        "operation": "1"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Probe."
+      }
+    ]
+  }
+]

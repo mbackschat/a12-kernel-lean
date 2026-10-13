@@ -1,0 +1,222 @@
+[
+  {
+    "target": "config",
+    "op": "modify",
+    "supported-character": [
+      "A-Z",
+      "0-9",
+      "\r",
+      "\n",
+      " "
+    ]
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Raw",
+    "kind": "STRING",
+    "string": {
+      "noValueValidation": true,
+      "lineBreaks": true
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Plain",
+    "kind": "STRING",
+    "string": {
+      "maxLength": 2
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Pattern",
+    "kind": "STRING",
+    "string": {
+      "pattern": "[A-Z]+",
+      "patternMessage": "Pattern."
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Custom",
+    "kind": "CUSTOM",
+    "custom": {
+      "typeName": "Upper",
+      "minLength": 2,
+      "maxLength": 4
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form",
+    "name": "Out",
+    "kind": "STRING"
+  },
+  {
+    "target": "group",
+    "op": "add",
+    "parent": "/Form",
+    "name": "Rows",
+    "repeatable": 2
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Value",
+    "kind": "CUSTOM",
+    "custom": {
+      "typeName": "Loose"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Copy",
+    "kind": "CUSTOM",
+    "custom": {
+      "typeName": "Loose"
+    }
+  },
+  {
+    "target": "field",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "Size",
+    "kind": "NUMBER"
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Form",
+    "name": "COut",
+    "computedField": "/Form/Out",
+    "alternatives": [
+      {
+        "operation": "\"z\""
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Computed."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "CCopy",
+    "computedField": "/Form/Rows/Copy",
+    "alternatives": [
+      {
+        "operation": "[Value]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Computed."
+      }
+    ]
+  },
+  {
+    "target": "computation",
+    "op": "add",
+    "group": "/Form/Rows",
+    "name": "CSize",
+    "computedField": "/Form/Rows/Size",
+    "alternatives": [
+      {
+        "operation": "Length(Value)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Computed."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Form",
+    "field": "/Form/Raw",
+    "condition": "FieldFilled(Raw)",
+    "code": "FILLED_RAW",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Filled."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Form",
+    "field": "/Form/Plain",
+    "condition": "FieldFilled(Plain)",
+    "code": "FILLED_PLAIN",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Filled."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Form",
+    "field": "/Form/Pattern",
+    "condition": "FieldFilled(Pattern)",
+    "code": "FILLED_PATTERN",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Filled."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Form",
+    "field": "/Form/Custom",
+    "condition": "FieldFilled(Custom)",
+    "code": "FILLED_CUSTOM",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Filled."
+      }
+    ]
+  },
+  {
+    "target": "rule",
+    "op": "add",
+    "group": "/Form/Rows",
+    "field": "/Form/Rows/Value",
+    "condition": "FieldFilled(Value)",
+    "code": "FILLED_VALUE",
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "Filled."
+      }
+    ]
+  }
+]
