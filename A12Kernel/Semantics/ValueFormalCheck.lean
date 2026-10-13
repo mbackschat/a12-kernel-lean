@@ -2,7 +2,7 @@ import A12Kernel.Semantics.String
 
 /-! # The universal formal pre-check every stored value passes
 
-[`NumberFormalCheck.lean`](NumberFormalCheck.lean) owns the ordered cascade a *Number* declaration applies. That cascade is not the first thing a stored value meets: the Kernel runs a type-independent pre-check first, and only reaches the declaration's own cascade when every step of it passes. A consumer that implements the per-type cascade alone reports the wrong refusal for a value that fails earlier, and reports one at all for a value the pre-check would have waved through unchecked.
+[`NumericInput.lean`](NumericInput.lean) owns the ordered formal-read cascade a *Number* declaration applies. That cascade is not the first thing a stored value meets: the Kernel runs a type-independent pre-check first, and only reaches the declaration's own cascade when every step of it passes. A consumer that implements the per-type cascade alone reports the wrong refusal for a value that fails earlier, and reports one at all for a value the pre-check would have waved through unchecked.
 
 The pre-check is a first-match-wins sequence like its per-type successors, so the order below is observable and not an implementation detail:
 

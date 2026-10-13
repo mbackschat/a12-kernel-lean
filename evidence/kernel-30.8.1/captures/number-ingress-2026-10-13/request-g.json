@@ -1,0 +1,17 @@
+{
+ "model": "K16N_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "e11",
+   "document": "e11.json"
+  },
+  {
+   "name": "e12",
+   "document": "e12.json"
+  }
+ ]
+}

@@ -1,9 +1,9 @@
-import A12Kernel.Semantics.NumberFormalCheck
+import A12Kernel.Semantics.NumericInput
 
 /-! # Runtime formal-error message keys and their parameter contract
 
 A runtime formal refusal surfaces two things independently: the **code**, owned by
-`NumberFormalCheck` and its siblings, and the **message**, selected from the Kernel's own
+`NumericInput`'s formal-read cascade and its siblings, and the **message**, selected from the Kernel's own
 runtime formal-error bundle. This capsule owns the message side's structure — which bundle key a
 refusal selects, and which parameters that key interpolates.
 
@@ -275,68 +275,111 @@ end RuntimeFormalMessageKey
 
 /-- Which of the three message families a Number declaration draws its text from. This is **not** the
 same split as the field-type name: the Kernel selects the with-cents family at exactly two declared
-fractional places, while it names the type for cents at any nonzero count, so a one- or three-place
-money field is `moneyWithoutCents` here and `GeldBetragMitCent` there. -/
+minimum fractional places, while it names the type for cents at any nonzero count, so a one- or
+three-place money field is `moneyWithoutCents` here and `GeldBetragMitCent` there. -/
 inductive NumberArt where
   | plain
   | moneyWithCents
   | moneyWithoutCents
   deriving Repr, DecidableEq, Inhabited
 
-/-- Read the message family off the declaration. -/
-def NumberFormalDeclaration.art (declaration : NumberFormalDeclaration) : NumberArt :=
-  if !declaration.amount then .plain
-  else if declaration.minFractionalDigits == 2 then .moneyWithCents
+/-- How a plain Number declares its fractional places, which splits the unreadable-text keys. Over
+nonnegative members the admission gate keeps the minimum at or below the maximum (`info.scale`), so
+these three cases are exhaustive there. The Kernel's bare fallback key belongs to the `-1` no-bound
+sentinel, which the DM reader refuses rather than represent. -/
+inductive NumberFractionShape where
+  | integer
+  | variable
+  | fixed
+  deriving Repr, DecidableEq, Inhabited
+
+namespace NumericTargetConstraints
+
+/-- Read the message family off the declaration's amount trait and minimum fractional places. -/
+def art (constraints : NumericTargetConstraints) : NumberArt :=
+  if !constraints.amount then .plain
+  else if constraints.minFractionalDigits == 2 then .moneyWithCents
   else .moneyWithoutCents
 
-/-- The message key a Number refusal selects, given its declaration.
+/-- Read the fractional shape off the declared minimum and maximum (`info.scale`) places. -/
+def fractionShape (constraints : NumericTargetConstraints) (info : NumField) : NumberFractionShape :=
+  if constraints.minFractionalDigits < info.scale then .variable
+  else if constraints.minFractionalDigits == 0 then .integer
+  else .fixed
 
-Two facts here are invisible from the catalog alone and are what a reimplementer gets wrong. The
-unreadable-value and fractional-count refusals split their key by **sign**, so one refusal on one art
-still has two keys. And the zero refusal **leaves its own family**: on a money declaration it selects
-the plain `ZAHL_IST_NULL` keys rather than a with- or without-cents one, which is the single place the
-three families are not parallel. -/
-def numberMessageKey (declaration : NumberFormalDeclaration) :
-    NumberFormalRefusal → RuntimeFormalMessageKey :=
-  let signed := !declaration.positivesOnly
-  fun refusal =>
-    match declaration.art, refusal with
-    | _, .tooManyDigits => .textStelligkeitZuLang
-    | .plain, .unreadable => .textZahlMitUngueltigenZeichen
-    | .plain, .signedValue => .textZahlEnthaeltVorzeichen
-    | .plain, .separatorNotAllowed => .textZahlHatDezimaltrenner
-    | .plain, .fractionalDigitCount => .textZahlMitUngueltigenZeichen
-    | .plain, .tooManyIntegerDigits =>
-        if signed then .textZahlZuvieleVorkommastellenMvz else .textZahlZuvieleVorkommastellenOvz
-    | .plain, .zeroNotAllowed => if signed then .textZahlIstNull else .textZahlIstNullOvz
-    | .plain, .tooShort => .textZahlZuKurz
-    | .plain, .tooLong => .textZahlZuLang
+end NumericTargetConstraints
+
+/-- The message key a Number formal-read refusal selects, given its declaration.
+
+The code is the refusal's alone (`NumericFormalReadError.errorCode`); the key additionally reads the
+art, the declared sign and, for a plain Number, the fractional shape. Four facts here are invisible
+from the catalog and are what a reimplementer gets wrong. The plus refusal on an unsigned
+declaration selects the sign key, not the plus key. The unreadable-text, missing-separator and
+fractional-count refusals share one key per art, which on a plain Number is split by fractional
+shape and on a money Number by declared sign. The separator refusal leaves its key on a money
+Number, joining the unreadable-text key there. And the zero refusal leaves its family altogether: on
+both money arts it selects the plain `ZAHL_IST_NULL` keys.
+
+Basis: read from the 30.8.1 runtime Number format's per-art key choice
+([checkpoint](../../docs/sources/domain-ingestion-probes.md#src-number-ingress-k16)); each arm the K16 capture reaches was
+identified by its rendered text at measurement, which the retained artifact redacts. -/
+def numberMessageKey (constraints : NumericTargetConstraints) (info : NumField) :
+    NumericFormalReadError → RuntimeFormalMessageKey :=
+  let signed := info.signed
+  let bySign := fun (withSign withoutSign : RuntimeFormalMessageKey) =>
+    if signed then withSign else withoutSign
+  let zero := bySign .textZahlIstNull .textZahlIstNullOvz
+  fun error =>
+    match constraints.art, error with
+    | _, .totalDigitsTooLong => .textStelligkeitZuLang
+    | _, .zeroNotAllowed => zero
+    | .plain, .leadingPlus => bySign .textZahlEnthaeltPlus .textZahlEnthaeltVorzeichen
+    | .plain, .malformed | .plain, .decimalSeparatorRequired
+    | .plain, .fractionalDigitsOutOfRange =>
+        match constraints.fractionShape info with
+        | .integer => .textZahlMitUngueltigenZeichenOnk
+        | .variable => .textZahlMitUngueltigenZeichenVnk
+        | .fixed => bySign .textZahlMitUngueltigenZeichenFnkpvz .textZahlMitUngueltigenZeichenFnkovz
+    | .plain, .negativeNotAllowed => .textZahlEnthaeltVorzeichen
+    | .plain, .signedZero => .textZahlNullEnthaeltVorzeichen
+    | .plain, .decimalSeparatorForbidden => .textZahlHatDezimaltrenner
+    | .plain, .integerDigitsTooLong =>
+        if constraints.fractionShape info == .integer then
+          bySign .textZahlZuvieleVorkommastellenMvzonk .textZahlZuvieleVorkommastellenOvzonk
+        else bySign .textZahlZuvieleVorkommastellenMvz .textZahlZuvieleVorkommastellenOvz
+    | .plain, .leadingZerosNotAllowed => .textZahlHatFuehrendeNullen
+    | .plain, .textTooShort => .textZahlZuKurz
+    | .plain, .textTooLong => .textZahlZuLang
     | .plain, .belowMinimum => .textZahlZuKlein
     | .plain, .aboveMaximum => .textZahlZuGross
-    | .moneyWithCents, .unreadable =>
-        if signed then .textGbmcMitUngueltigenZeichenMvz else .textGbmcMitUngueltigenZeichenOvz
-    | .moneyWithCents, .signedValue => .textGbmcEnthaeltVorzeichen
-    | .moneyWithCents, .separatorNotAllowed => .textZahlHatDezimaltrenner
-    | .moneyWithCents, .fractionalDigitCount =>
-        if signed then .textGbmcMitUngueltigenZeichenMvz else .textGbmcMitUngueltigenZeichenOvz
-    | .moneyWithCents, .tooManyIntegerDigits =>
-        if signed then .textGbmcZuvieleVorkommastellenMvz else .textGbmcZuvieleVorkommastellenOvz
-    | .moneyWithCents, .zeroNotAllowed => if signed then .textZahlIstNull else .textZahlIstNullOvz
-    | .moneyWithCents, .tooShort => .textGbmcZuKurz
-    | .moneyWithCents, .tooLong => .textGbmcZuLang
+    | .moneyWithCents, .leadingPlus => bySign .textGbmcEnthaeltPlus .textGbmcEnthaeltVorzeichen
+    | .moneyWithCents, .malformed | .moneyWithCents, .decimalSeparatorRequired
+    | .moneyWithCents, .fractionalDigitsOutOfRange =>
+        bySign .textGbmcMitUngueltigenZeichenMvz .textGbmcMitUngueltigenZeichenOvz
+    -- The with-cents family has no separator arm and falls to its catalog default, which does not
+    -- read the sign; two declared places exclude the refusal in every admitted declaration.
+    | .moneyWithCents, .decimalSeparatorForbidden => .textGbmcMitUngueltigenZeichenOvz
+    | .moneyWithCents, .negativeNotAllowed => .textGbmcEnthaeltVorzeichen
+    | .moneyWithCents, .signedZero => .textGbmcNullEnthaeltVorzeichen
+    | .moneyWithCents, .integerDigitsTooLong =>
+        bySign .textGbmcZuvieleVorkommastellenMvz .textGbmcZuvieleVorkommastellenOvz
+    | .moneyWithCents, .leadingZerosNotAllowed => .textGbmcHatFuehrendeNullen
+    | .moneyWithCents, .textTooShort => .textGbmcZuKurz
+    | .moneyWithCents, .textTooLong => .textGbmcZuLang
     | .moneyWithCents, .belowMinimum => .textGbmcZuKlein
     | .moneyWithCents, .aboveMaximum => .textGbmcZuGross
-    | .moneyWithoutCents, .unreadable =>
-        if signed then .textGbocMitUngueltigenZeichenMvz else .textGbocMitUngueltigenZeichenOvz
-    | .moneyWithoutCents, .signedValue => .textGbocEnthaeltVorzeichen
-    | .moneyWithoutCents, .separatorNotAllowed => .textZahlHatDezimaltrenner
-    | .moneyWithoutCents, .fractionalDigitCount =>
-        if signed then .textGbocMitUngueltigenZeichenMvz else .textGbocMitUngueltigenZeichenOvz
-    | .moneyWithoutCents, .tooManyIntegerDigits =>
-        if signed then .textGbocZuvieleVorkommastellenMvz else .textGbocZuvieleVorkommastellenOvz
-    | .moneyWithoutCents, .zeroNotAllowed => if signed then .textZahlIstNull else .textZahlIstNullOvz
-    | .moneyWithoutCents, .tooShort => .textGbocZuKurz
-    | .moneyWithoutCents, .tooLong => .textGbocZuLang
+    | .moneyWithoutCents, .leadingPlus => bySign .textGbocEnthaeltPlus .textGbocEnthaeltVorzeichen
+    | .moneyWithoutCents, .malformed | .moneyWithoutCents, .decimalSeparatorForbidden
+    | .moneyWithoutCents, .decimalSeparatorRequired
+    | .moneyWithoutCents, .fractionalDigitsOutOfRange =>
+        bySign .textGbocMitUngueltigenZeichenMvz .textGbocMitUngueltigenZeichenOvz
+    | .moneyWithoutCents, .negativeNotAllowed => .textGbocEnthaeltVorzeichen
+    | .moneyWithoutCents, .signedZero => .textGbocNullEnthaeltVorzeichen
+    | .moneyWithoutCents, .integerDigitsTooLong =>
+        bySign .textGbocZuvieleVorkommastellenMvz .textGbocZuvieleVorkommastellenOvz
+    | .moneyWithoutCents, .leadingZerosNotAllowed => .textGbocHatFuehrendeNullen
+    | .moneyWithoutCents, .textTooShort => .textGbocZuKurz
+    | .moneyWithoutCents, .textTooLong => .textGbocZuLang
     | .moneyWithoutCents, .belowMinimum => .textGbocZuKlein
     | .moneyWithoutCents, .aboveMaximum => .textGbocZuGross
 

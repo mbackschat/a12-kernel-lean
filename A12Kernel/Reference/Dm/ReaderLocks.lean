@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.Model
 
 /-! # Locks for the DM-JSON document reader
 
@@ -14,15 +15,28 @@ namespace A12Kernel.Dm.ReaderLocks
 open Lean A12Kernel A12Kernel.Dm
 
 /- The conversion grammar is Java `BigDecimal`'s: a sign, an exponent and a bare point are accepted,
-and the scale is the written fraction less the exponent. -/
+the scale is the written fraction less the exponent, and the digits are Java's BMP decimal digits. A
+scale beyond the measured profile is refused rather than read, while a scale outside `int`, here
+reached once through the fraction alone, keeps the text (K16 rows `d01`, `e01`, `e07`, `e11`, `e12`). -/
 example :
-    [convertedDecimal? "30" == some { unscaled := 30, scale := 0 },
-     convertedDecimal? "+5" == some { unscaled := 5, scale := 0 },
-     convertedDecimal? "-2.50" == some { unscaled := -250, scale := 2 },
-     convertedDecimal? "1e5" == some { unscaled := 1, scale := -5 },
-     convertedDecimal? ".5" == some { unscaled := 5, scale := 1 },
-     convertedDecimal? "12a" == none,
-     convertedDecimal? "" == none].all id := by
+    [convertDocumentNumber "30" == .decimal { unscaled := 30, scale := 0 },
+     convertDocumentNumber "+5" == .decimal { unscaled := 5, scale := 0 },
+     convertDocumentNumber "-2.50" == .decimal { unscaled := -250, scale := 2 },
+     convertDocumentNumber "1e5" == .decimal { unscaled := 1, scale := -5 },
+     convertDocumentNumber ".5" == .decimal { unscaled := 5, scale := 1 },
+     convertDocumentNumber "\u0663.\u0665" == .decimal { unscaled := 35, scale := 1 },
+     convertDocumentNumber "1e1001" == .decimal { unscaled := 1, scale := -1001 },
+     convertDocumentNumber "1e-100000" == .decimal { unscaled := 1, scale := 100000 },
+     convertDocumentNumber "1e100001" == .beyondProfile,
+     convertDocumentNumber "1e2147483648" == .beyondProfile,
+     convertDocumentNumber "1e-2147483647" == .beyondProfile,
+     convertDocumentNumber "1e2147483649" == .text,
+     convertDocumentNumber "1e-2147483648" == .text,
+     convertDocumentNumber "0.5e-2147483647" == .text,
+     convertDocumentNumber "12a" == .text,
+     convertDocumentNumber "1e" == .text,
+     convertDocumentNumber "1.2.3" == .text,
+     convertDocumentNumber "" == .text].all id := by
   native_decide
 
 private def amount (constraints : NumericTargetConstraints) : FlatFieldDecl :=
@@ -278,5 +292,26 @@ example : temporalRead "DateType" none "2024-02-30" = some (.rejected .dateForma
     temporalRead "DateType" (some "yyyy-MM-dd") "2024-02-30" = some (.rejected .dateFormat) ∧
     temporalRead "DateType" (some "yyyy-MM-dd") "1500-01-01" = some (.rejected .dateInvalid) ∧
     temporalRead "DateType" (some "yyyy-MM-dd") "2024-05-06" "unsupported-zone" = none := by native_decide
+
+/-- A one-field model whose Number body is `body`, returning the reader's refusals of that field. -/
+private def numberBodyRefusals (body : List (String × Json)) : Option (List String) :=
+  let field := Json.mkObj [("type", "Field"), ("name", "N"), ("Field", Json.mkObj [("fieldType",
+    Json.mkObj [("type", "NumberType"), ("NumberType", Json.mkObj body)])])]
+  let group := Json.mkObj [("type", "Group"), ("name", "G"),
+    ("Group", Json.mkObj [("repeatability", (1 : Nat)), ("elements", Json.arr #[field])])]
+  let json := Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group])])])]
+  (readModel json).toOption.map fun model => model.refusals.map (·.2)
+
+/- The no-bound sentinel `-1` is not an absent member: read as one, a minimum of one beside it would be
+refused as inverted, which the Kernel admits. The reader refuses the field instead; its nonnegative
+twins read. -/
+example :
+    (numberBodyRefusals [("minFractionalDigits", (-1 : Int))]).map (·.length) = some 1 ∧
+      (numberBodyRefusals [("maxFractionalDigits", (-1 : Int)), ("minFractionalDigits", (1 : Nat))]).map
+        (·.length) = some 1 ∧
+      numberBodyRefusals [("minFractionalDigits", (0 : Nat))] = some [] ∧
+      numberBodyRefusals [("maxFractionalDigits", (2 : Nat)), ("minFractionalDigits", (1 : Nat))] =
+        some [] := by
+  native_decide
 
 end A12Kernel.Dm.ReaderLocks

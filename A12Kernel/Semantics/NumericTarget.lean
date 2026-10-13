@@ -15,6 +15,9 @@ structure NumericTargetConstraints where
   zeroAllowed : Bool := true
   /-- Input-only lexical permission. Canonical computed rendering never has leading zeros. -/
   leadingZerosAllowed : Bool := false
+  /-- The amount trait. On stored input it turns a minus on a zero into the zero class on an
+  unsigned, zero-forbidding field (peer kf276); otherwise it only selects message text. -/
+  amount : Bool := false
   minStoredLength : Option Nat := none
   maxStoredLength : Option Nat := none
   minimum : Option Rat := none

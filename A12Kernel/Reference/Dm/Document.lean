@@ -26,6 +26,13 @@ structure DmDocument where
   refusals : List (List String × String)
   deriving Repr
 
+/-- The scale the document conversion profile represents. The Kernel converts quoted and native
+values out to `1e±100000` and reports them by their digit count (K16 rows `e07`, `e08`, `e10`), but
+an extreme `int` scale faults validation (row `e03`) or exhausts the host's memory, with no threshold
+known, so this profile refuses a wider scale instead of answering it. A scale outside `int` is not
+converted at all (`javaIntScale`). -/
+def documentNumberScaleBound : Nat := 100000
+
 /-- Scalar node text before field conversion. Parsed numbers represent the probe's plain-serialized
 inline route; raw document bytes must use `parseDocumentJson` to retain negative decimal scale. -/
 def storedText? : Json → Option String
@@ -33,47 +40,63 @@ def storedText? : Json → Option String
   | .bool true => some "true"
   | .bool false => some "false"
   | .num number =>
-      if number.exponent > 1000 then none
+      if number.exponent > documentNumberScaleBound then none
       else some (NumericInputDecimal.wireText { unscaled := number.mantissa, scale := number.exponent })
   | .null => some ""
   | _ => none
 
-/-- The decimal the Kernel's document conversion makes of a Number text: Java `BigDecimal`'s string
-grammar, an optional sign, digits around an optional point and an optional exponent, with at least
-one digit. A decimal scale outside the bounded conversion profile is left as text, as an
-unparseable value is. The bound follows scale rather than exponent spelling because canonical
-scientific text moves the point without changing decimal identity. -/
-def convertedDecimal? (text : String) : Option NumericInputDecimal := do
-  let chars := text.toList
-  let (negative, chars) := match chars with
+/-- What the Kernel's document conversion makes of one Number text. -/
+inductive DocumentNumberConversion where
+  /-- The text parses, so the cell is decimal-valued. -/
+  | decimal (value : NumericInputDecimal)
+  /-- The text does not parse, so the cell keeps it verbatim. -/
+  | text
+  /-- The text parses to a scale beyond `documentNumberScaleBound` that the host still converts. -/
+  | beyondProfile
+  deriving Repr, DecidableEq
+
+/-- Whether a scale fits Java's `int`, outside which the host decimal constructor refuses the text,
+so the cell keeps it verbatim (K16 rows `e11`, `e12`). -/
+def javaIntScale (scale : Int) : Bool :=
+  -2147483648 ≤ scale && scale ≤ 2147483647
+
+/-- The Kernel's document Number conversion, Java `BigDecimal`'s string grammar: an optional sign,
+digits around at most one point with at least one digit, and an optional `e` or `E` exponent with an
+optional sign and at least one digit. Digits on both sides are Java's BMP decimal digits, so `٣.٥`
+converts to `3.5` (K16 row `d01`). The scale is the written fraction less the exponent and must fit
+`javaIntScale`. -/
+def convertDocumentNumber (text : String) : DocumentNumberConversion :=
+  let (negative, characters) := match text.toList with
     | '-' :: rest => (true, rest)
     | '+' :: rest => (false, rest)
-    | _ => (false, chars)
-  let (mantissa, exponent) := match chars.splitOn 'e', chars.splitOn 'E' with
-    | [mantissa, exponent], _ => (mantissa, some exponent)
-    | _, [mantissa, exponent] => (mantissa, some exponent)
-    | _, _ => (chars, none)
-  let exponent ← match exponent with
-    | none => pure (0 : Int)
-    | some ('+' :: digits) => (String.ofList digits).toNat? |>.map Int.ofNat
-    | some digits => (String.ofList digits).toInt?
-  let (integer, fraction) ← match mantissa.splitOn '.' with
-    | [integer] => pure (integer, [])
-    | [integer, fraction] => pure (integer, fraction)
-    | _ => none
-  let scale : Int := fraction.length - exponent
-  if scale.natAbs > 1000 then none
-  let digits := integer ++ fraction
-  if digits.isEmpty || !digits.all Char.isDigit then none
-  let magnitude ← (String.ofList digits).toNat?
-  pure { unscaled := if negative then -(magnitude : Int) else magnitude
-         scale }
+    | rest => (false, rest)
+  let (mantissa, exponentPart) := characters.span fun character => character != 'e' && character != 'E'
+  let exponent? : Option Int := match exponentPart with
+    | [] => some 0
+    | _ :: written =>
+        let (negativeExponent, digits) := match written with
+          | '-' :: rest => (true, rest)
+          | '+' :: rest => (false, rest)
+          | rest => (false, rest)
+        (parseJava21BmpNatural? (String.ofList digits)).map fun magnitude =>
+          if negativeExponent then -(magnitude : Int) else magnitude
+  let (integer, afterPoint) := mantissa.span (· != '.')
+  let fraction? := match afterPoint with
+    | [] => some []
+    | _ :: fraction => if fraction.contains '.' then none else some fraction
+  match exponent?, fraction?, parseJava21BmpNatural? (String.ofList (integer ++ (fraction?.getD []))) with
+  | some exponent, some fraction, some magnitude =>
+      let scale : Int := fraction.length - exponent
+      if !javaIntScale scale then .text
+      else if documentNumberScaleBound < scale.natAbs then .beyondProfile
+      else .decimal { unscaled := if negative then -(magnitude : Int) else magnitude, scale }
+  | _, _, _ => .text
 
 private inductive DocumentLexState where
   | plain | quoted | escaped | number
 
 private def numberTokenText (token : String) : Except String String := do
-  let some value := convertedDecimal? token
+  let .decimal value := convertDocumentNumber token
     | throw "native JSON number exceeds the represented decimal conversion profile"
   pure ("\"" ++ value.wireText ++ "\"")
 
@@ -114,9 +137,15 @@ def parseDocumentJson (text : String) : Except String Json := do
   | _ => pure ()
   Json.parse output
 
+/-- The Kernel's leading-zero test on a text it parsed: after one optional sign, a `0` followed by any
+character but the point. So `0e5` has leading zeros while `٠٣`, led by another zero digit, does not
+(K16 rows `d04`, `d01`). -/
 private def hasLeadingZeros (text : String) : Bool :=
-  match (text.toList.dropWhile (fun c => c == '+' || c == '-')) with
-  | '0' :: next :: _ => next.isDigit
+  let unsigned := match text.toList with
+    | '+' :: rest | '-' :: rest => rest
+    | rest => rest
+  match unsigned with
+  | '0' :: next :: _ => next != '.'
   | _ => false
 
 /-- The cell one declaration takes for its stored text, or the reason none is derivable. A Number
@@ -130,14 +159,17 @@ def classifyStored (model : FlatModel) (declaration : FlatFieldDecl) (address : 
   match declaration.policy.kind with
   | .number info =>
       let constraints := declaration.numericTargetConstraints
-      let decimal := if constraints.leadingZerosAllowed && hasLeadingZeros stored then none
-        else convertedDecimal? stored
-      match decimal with
-      | some value =>
-          let input := NumericStoredInput.decimal value
-          pure { address, stored := input.storedText, raw := constraints.classifyFormalRead info input
-                 numericDecimal := some value }
-      | none => pure (cell (constraints.classifyFormalRead info (.text stored)))
+      let verbatim := cell (constraints.classifyFormalRead info (.text stored))
+      match convertDocumentNumber stored with
+      | .text => pure verbatim
+      | conversion =>
+          if constraints.leadingZerosAllowed && hasLeadingZeros stored then pure verbatim else
+          match conversion with
+          | .decimal value =>
+              let input := NumericStoredInput.decimal value
+              pure { address, stored := input.storedText, raw := constraints.classifyFormalRead info input
+                     numericDecimal := some value }
+          | _ => throw s!"Number text {stored} exceeds the represented decimal conversion profile"
   | .boolean =>
       let token := match stored.toLower with | "true" => "true" | "false" => "false" | _ => stored
       pure { address, stored := token, raw := classifyStoredBooleanText token }

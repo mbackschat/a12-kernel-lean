@@ -1,0 +1,504 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "K16N_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "d01",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "d02",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zahlMitPlus",
+              "field": "K16/LzS0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzS0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlMitVorzeichen",
+              "field": "K16/LzPos",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzPos"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlOhneDezimalTrenner",
+              "field": "K16/LzMin2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzMin2"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zahlMitPlus",
+              "field": "K16/LzS0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzS0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlMitVorzeichen",
+              "field": "K16/LzPos",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzPos"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlOhneDezimalTrenner",
+              "field": "K16/LzMin2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzMin2"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "d03",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zahlMitPlus",
+              "field": "K16/LzMin2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzMin2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlMitVorzeichen",
+              "field": "K16/LzPos",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzPos"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlNullEnthaeltVorzeichen",
+              "field": "K16/LzS0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzS0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlNullEnthaeltVorzeichen",
+              "field": "K16/LzS2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzS2"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zahlMitPlus",
+              "field": "K16/LzMin2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzMin2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlMitVorzeichen",
+              "field": "K16/LzPos",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzPos"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlNullEnthaeltVorzeichen",
+              "field": "K16/LzS0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzS0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlNullEnthaeltVorzeichen",
+              "field": "K16/LzS2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzS2"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "d04",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "K16/Big",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/Big"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "K16/LzS0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzS0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "K16/LzS2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzS2"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "K16/Big",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/Big"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "K16/LzS0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzS0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "K16/LzS2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/LzS2"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "d05",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "fault": {
+            "observation": "validateFull",
+            "chain": [
+              {
+                "type": "com.mgmtp.a12.model.repository.FaultException",
+                "message": "Unable to invoke validation"
+              },
+              {
+                "type": "java.lang.ArithmeticException",
+                "message": "Underflow"
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "fault": {
+            "observation": "validateFull",
+            "chain": [
+              {
+                "type": "com.mgmtp.a12.model.repository.FaultException",
+                "message": "Unable to invoke validation"
+              },
+              {
+                "type": "java.lang.ArithmeticException",
+                "message": "Underflow"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "d06",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "stelligkeitZuLang",
+              "field": "K16/Big",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/Big"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stelligkeitZuLang",
+              "field": "K16/P0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/P0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stelligkeitZuLang",
+              "field": "K16/P2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/P2"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "stelligkeitZuLang",
+              "field": "K16/Big",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/Big"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stelligkeitZuLang",
+              "field": "K16/P0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/P0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stelligkeitZuLang",
+              "field": "K16/P2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/P2"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "d07",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zahlFalscheAnzahlNachkommastellen",
+              "field": "K16/M1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/M1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlFalscheAnzahlNachkommastellen",
+              "field": "K16/M2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/M2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlFalscheAnzahlNachkommastellen",
+              "field": "K16/M3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/M3"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zahlFalscheAnzahlNachkommastellen",
+              "field": "K16/M1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/M1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlFalscheAnzahlNachkommastellen",
+              "field": "K16/M2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/M2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlFalscheAnzahlNachkommastellen",
+              "field": "K16/M3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced": [
+                "K16/M3"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

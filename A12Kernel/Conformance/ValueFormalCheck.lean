@@ -1,11 +1,11 @@
 import A12Kernel.Semantics.ValueFormalCheck
-import A12Kernel.Semantics.NumberFormalCheck
+import A12Kernel.Semantics.NumericInput
 
 /-! # Locks on the universal formal pre-check
 
 Each case below fixes one step of the pipeline against the reading a consumer would otherwise adopt: that the declaration's cascade runs first, that a declared maximum is the only length gate, that normalisation happens before the cascade sees the text, or that switching value validation off is merely a pass.
 
-The composition cases use the already-modelled Number cascade as the declaration stage, which is the point of parameterising the pipeline: the Number capsule is unchanged and gains its missing prefix.
+The composition cases use the Number formal-read cascade as the declaration stage, which is the point of parameterising the pipeline: the Number capsule is unchanged and gains its missing prefix.
 -/
 
 namespace A12Kernel.Conformance.ValueFormalCheck
@@ -19,15 +19,18 @@ private def anyCharset : ValueFormalEnvironment := { charsetAdmits := fun _ => t
 private def noExclamation : ValueFormalEnvironment :=
   { charsetAdmits := fun value => !(value.contains '!') }
 
-/-- The Number declaration from the existing cascade, used here only as a composition partner. -/
-private def integerDeclaration : NumberFormalDeclaration := { maxFractionalDigits := some 0 }
+/-- The Number formal-read cascade on an integer declaration, applied to a fixed admitted value. -/
+private def numberCheck (constraints : NumericTargetConstraints) : Option NumericFormalReadError :=
+  match constraints.checkFormalRead { scale := 0, signed := true } (.decimal { unscaled := 42, scale := 0 }) with
+  | .error error => some error
+  | .ok _ => none
 
-/- The Number cascade consumes a parsed `StoredNumber`, so the text-to-number parse sits between the
-   pre-check and the cascade and is not this clause's to own. This stand-in therefore ignores the
-   text; the case that locks *which* text a stage receives uses `lengthReportingStage` instead,
-   because a stage that ignores its argument cannot witness that distinction at all. -/
-private def numberStage (_value : String) : Option NumberFormalRefusal :=
-  numberFormalCheck integerDeclaration (.value { unscaled := 42, scale := 0 })
+/- The pre-check cases are about which text reaches the declaration stage, not about parsing it, so
+   this stand-in ignores the text; the case that locks *which* text a stage receives uses
+   `lengthReportingStage` instead, because a stage that ignores its argument cannot witness that
+   distinction at all. -/
+private def numberStage (_value : String) : Option NumericFormalReadError :=
+  numberCheck {}
 
 /-- Reports the length of the text it is handed, which is what makes the raw-versus-normalised
 choice observable: a CRLF counts twice before normalisation and once after. -/
@@ -113,8 +116,7 @@ example :
    its own constructor, distinct from every pre-check refusal, and keeps its own code. -/
 example :
     valueFormalCheck anyCharset
-        (fun _ => numberFormalCheck { integerDeclaration with maxValue := some { unscaled := 1, scale := 0 } }
-          (.value { unscaled := 42, scale := 0 })) "42" =
+        (fun _ => numberCheck { maximum := some 1 }) "42" =
       .refusedByDeclaration .aboveMaximum := by
   native_decide
 

@@ -11,58 +11,80 @@ namespace A12Kernel.Conformance.RuntimeFormalMessageKey
 
 open A12Kernel
 
-private def plain : NumberFormalDeclaration :=
-  { maxFractionalDigits := some 0 }
+private def integer : NumField := { scale := 0, signed := true }
+private def twoPlaces : NumField := { scale := 2, signed := true }
 
-private def withCents : NumberFormalDeclaration :=
-  { amount := true, minFractionalDigits := 2, maxFractionalDigits := some 2 }
+private def key (constraints : NumericTargetConstraints) (info : NumField)
+    (error : NumericFormalReadError) : String :=
+  (numberMessageKey constraints info error).bundleKey
 
-private def withoutCents : NumberFormalDeclaration :=
-  { amount := true, minFractionalDigits := 0, maxFractionalDigits := some 0 }
-
-/- The art is read from the declaration, and the with-cents family is selected at exactly two
-   fractional places — one and three fall to the without-cents family despite also carrying cents. -/
+/- The with-cents family is selected at exactly two minimum fractional places; one and three fall to
+   the without-cents family, which is what the K16 money row separates by rendered text. -/
 example :
-    plain.art = .plain ∧
-      withCents.art = .moneyWithCents ∧
-      withoutCents.art = .moneyWithoutCents ∧
-      { amount := true, minFractionalDigits := 1 : NumberFormalDeclaration }.art =
-        .moneyWithoutCents ∧
-      { amount := true, minFractionalDigits := 3 : NumberFormalDeclaration }.art =
-        .moneyWithoutCents := by
+    ({} : NumericTargetConstraints).art = .plain ∧
+      ({ amount := true, minFractionalDigits := 2 } : NumericTargetConstraints).art = .moneyWithCents ∧
+      [1, 3].all (fun places =>
+        ({ amount := true, minFractionalDigits := places } : NumericTargetConstraints).art ==
+          .moneyWithoutCents) := by
   native_decide
 
-/- One refusal, one code, three keys. This is the pairing the whole capsule exists to separate: an
-   implementation deriving its code from the message key would report three distinct codes here. -/
+/- One refusal, one code, three keys: an implementation deriving its code from the key would report
+   three codes here. -/
 example :
-    (numberMessageKey plain .tooLong).bundleKey = "ZAHL_ZU_LANG" ∧
-      (numberMessageKey withCents .tooLong).bundleKey = "GBMC_ZU_LANG" ∧
-      (numberMessageKey withoutCents .tooLong).bundleKey = "GBOC_ZU_LANG" ∧
-      NumberFormalRefusal.tooLong.errorCode = "zahlZuLang" := by
+    key {} integer .textTooLong = "ZAHL_ZU_LANG" ∧
+      key { amount := true, minFractionalDigits := 2 } twoPlaces .textTooLong = "GBMC_ZU_LANG" ∧
+      key { amount := true } integer .textTooLong = "GBOC_ZU_LANG" ∧
+      NumericFormalReadError.textTooLong.errorCode = "zahlZuLang" := by
   native_decide
 
-/- The sign splits the key on the unreadable and fractional-count refusals, so one refusal on one art
-   still has two keys — and the code stays single. -/
+/- On a plain Number the unreadable-text, missing-separator and fractional-count refusals share a key
+   split by fractional shape, and only the fixed shape reads the sign. The integer and variable arms
+   are the K16 scale-0 and scale-2 rows. -/
 example :
-    (numberMessageKey { withCents with positivesOnly := false } .unreadable).bundleKey =
+    key {} integer .malformed = "ZAHL_MIT_UNGUELTIGEN_ZEICHEN_ONK" ∧
+      key {} twoPlaces .malformed = "ZAHL_MIT_UNGUELTIGEN_ZEICHEN_VNK" ∧
+      key { minFractionalDigits := 2 } twoPlaces .decimalSeparatorRequired =
+        "ZAHL_MIT_UNGUELTIGEN_ZEICHEN_FNKPVZ" ∧
+      key { minFractionalDigits := 2 } { twoPlaces with signed := false } .fractionalDigitsOutOfRange =
+        "ZAHL_MIT_UNGUELTIGEN_ZEICHEN_FNKOVZ" ∧
+      key { minFractionalDigits := 1 } twoPlaces .fractionalDigitsOutOfRange =
+        "ZAHL_MIT_UNGUELTIGEN_ZEICHEN_VNK" := by
+  native_decide
+
+/- On a money Number the same three refusals split by sign instead, and the separator refusal joins
+   them on the without-cents family rather than keeping its plain key. -/
+example :
+    key { amount := true, minFractionalDigits := 2 } twoPlaces .fractionalDigitsOutOfRange =
         "GBMC_MIT_UNGUELTIGEN_ZEICHEN_MVZ" ∧
-      (numberMessageKey { withCents with positivesOnly := true } .unreadable).bundleKey =
-        "GBMC_MIT_UNGUELTIGEN_ZEICHEN_OVZ" ∧
-      NumberFormalRefusal.unreadable.errorCode = "zahlHatUngueltigeZeichen" := by
+      key { amount := true, minFractionalDigits := 1 } { scale := 1, signed := false } .malformed =
+        "GBOC_MIT_UNGUELTIGEN_ZEICHEN_OVZ" ∧
+      key { amount := true } integer .decimalSeparatorForbidden = "GBOC_MIT_UNGUELTIGEN_ZEICHEN_MVZ" ∧
+      key {} integer .decimalSeparatorForbidden = "ZAHL_HAT_DEZIMALTRENNER" := by
   native_decide
 
-/- The zero refusal leaves its own family: on both money arts it selects the plain keys, which is the
-   single place the three families are not parallel. -/
+/- The plus refusal selects the plus key only on a signed declaration; an unsigned one reports the
+   sign key under the plus code. -/
 example :
-    (numberMessageKey withCents .zeroNotAllowed).bundleKey = "ZAHL_IST_NULL" ∧
-      (numberMessageKey withoutCents .zeroNotAllowed).bundleKey = "ZAHL_IST_NULL" ∧
-      (numberMessageKey { withCents with positivesOnly := true } .zeroNotAllowed).bundleKey =
-        "ZAHL_IST_NULL_OVZ" := by
+    key {} integer .leadingPlus = "ZAHL_ENTHAELT_PLUS" ∧
+      key {} { integer with signed := false } .leadingPlus = "ZAHL_ENTHAELT_VORZEICHEN" ∧
+      key { amount := true } { integer with signed := false } .leadingPlus = "GBOC_ENTHAELT_VORZEICHEN" ∧
+      NumericFormalReadError.leadingPlus.errorCode = "zahlMitPlus" := by
+  native_decide
+
+/- The integer-digit key carries the integer-only variant on a plain integer, and the zero refusal
+   leaves both money families for the plain zero keys. -/
+example :
+    key {} integer .integerDigitsTooLong = "ZAHL_ZUVIELE_VORKOMMASTELLEN_MVZONK" ∧
+      key {} twoPlaces .integerDigitsTooLong = "ZAHL_ZUVIELE_VORKOMMASTELLEN_MVZ" ∧
+      key { amount := true, minFractionalDigits := 2 } twoPlaces .zeroNotAllowed = "ZAHL_IST_NULL" ∧
+      key { amount := true } { integer with signed := false } .zeroNotAllowed = "ZAHL_IST_NULL_OVZ" := by
   native_decide
 
 /- The universal digit ceiling is art-independent, unlike every other refusal above. -/
 example :
-    [plain, withCents, withoutCents].map (fun d => (numberMessageKey d .tooManyDigits).bundleKey) =
+    [key {} integer .totalDigitsTooLong,
+        key { amount := true, minFractionalDigits := 2 } twoPlaces .totalDigitsTooLong,
+        key { amount := true } integer .totalDigitsTooLong] =
       List.replicate 3 "STELLIGKEIT_ZU_LANG" := by
   native_decide
 

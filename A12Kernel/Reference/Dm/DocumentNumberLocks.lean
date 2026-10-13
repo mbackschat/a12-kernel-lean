@@ -39,7 +39,7 @@ example :
          (parseDocumentJson token).toOption == some (.str expected)) := by native_decide
 
 example :
-    ["01", "1.", "1e", "1e+-3", "+1", "{1:2}", "[1,]", "[1 2]", "1e1001"].all
+    ["01", "1.", "1e", "1e+-3", "+1", "{1:2}", "[1,]", "[1 2]", "1e100001"].all
       (fun text => !(parseDocumentJson text).isOk) := by native_decide
 
 example :
@@ -119,7 +119,7 @@ example : [false, true].all (fun inline =>
 example : [0, 1, -1, 10, 100, -100, 123400].all (fun coefficient =>
     [-1000, -999, -3, 0, 2, 6, 7, 999, 1000].all (fun scale =>
       let value : NumericInputDecimal := { unscaled := coefficient, scale }
-      convertedDecimal? value.wireText == some value)) := by native_decide
+      convertDocumentNumber value.wireText == .decimal value)) := by native_decide
 
 private def representationCoherent (representation : SourceRepresentation)
     (decimal : Bool) : Option Bool := do

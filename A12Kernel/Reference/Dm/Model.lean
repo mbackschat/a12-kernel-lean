@@ -172,9 +172,16 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         stringPatternSource := str? body "pattern"
         stringValueMode := if (bool? body "noValueValidation").getD false then .raw else .evaluated }
   | "NumberType" =>
+      -- A negative fractional member is A12's no-bound sentinel, which takes the pair out of the
+      -- ordering gate (spec/04 digit table) and changes which runtime fractional checks arm; it has
+      -- no account here, so refuse it rather than read it as absent.
+      for key in ["minFractionalDigits", "maxFractionalDigits"] do
+        if let .ok (value : Int) := body.getObjValAs? Int key then
+          if value < 0 then throw s!"NumberType {key} {value}: the no-bound sentinel is not represented"
       let scale := (nat? body "maxFractionalDigits").getD 0
-      -- The amount trait's only formal effect is an integer-digit cap of `15 - scale` behind an
-      -- explicit `maxIntegerDigits`, reported as the same cause (spec §4 digit table, §9 fit order).
+      -- The amount trait caps integer digits at `15 - scale` behind an explicit `maxIntegerDigits`,
+      -- reported as the same cause (spec §4 digit table, §9 fit order), and on stored input turns a
+      -- signed zero into the zero class on an unsigned, zero-forbidding field (peer kf276).
       let traitCap ← match str? body "trait" with
         | none => pure none
         | some "amount" => pure (some (15 - scale))
@@ -186,6 +193,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
           maxIntegerDigits := (nat? body "maxIntegerDigits").orElse fun _ => traitCap
           zeroAllowed := !(bool? body "zeroNotAllowed").getD false
           leadingZerosAllowed := (bool? body "leadingZerosAllowed").getD false
+          amount := traitCap.isSome
           minStoredLength := nat? body "minLength", maxStoredLength := nat? body "maxLength"
           minimum := ← rat? body "minValue", maximum := ← rat? body "maxValue" } }
   | "BooleanType" => pure { base with policy := { kind := .boolean } }

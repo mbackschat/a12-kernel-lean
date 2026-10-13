@@ -1,0 +1,190 @@
+{
+ "header": {
+  "id": "K16N_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   },
+   {
+    "code": "de_DE"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K16N_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/K16",
+     "name": "K16",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/K16/LzS2",
+        "name": "LzS2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "leadingZerosAllowed": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/K16/LzS0",
+        "name": "LzS0",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "leadingZerosAllowed": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/K16/LzMin2",
+        "name": "LzMin2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minFractionalDigits": 2,
+           "leadingZerosAllowed": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/K16/LzPos",
+        "name": "LzPos",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "leadingZerosAllowed": true,
+           "positivesOnly": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/K16/P0",
+        "name": "P0",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/K16/P2",
+        "name": "P2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/K16/Big",
+        "name": "Big",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/K16/M1",
+        "name": "M1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 1,
+           "minFractionalDigits": 1,
+           "trait": "amount"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/K16/M2",
+        "name": "M2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minFractionalDigits": 2,
+           "trait": "amount"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/K16/M3",
+        "name": "M3",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 3,
+           "minFractionalDigits": 3,
+           "trait": "amount"
+          }
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

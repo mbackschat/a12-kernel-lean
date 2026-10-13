@@ -75,6 +75,84 @@ example :
       (parseNumericFormalRead? · |>.isNone) = true := by
   native_decide
 
+private def verbatimFailure (constraints : NumericTargetConstraints) (info : NumField)
+    (text : String) : Option NumericFormalReadError :=
+  match constraints.checkFormalRead info (.text text) with
+  | .error error => some error
+  | .ok _ => none
+
+/- The plus-signed number is refused before it is read, while any other plus-led text is unreadable.
+A minus on a zero is the sign class on an unsigned field, except on a zero-forbidding amount field,
+which reports the zero class; `-5.00` there keeps the sign class (peer kf276; K16 rows `d02`, `d03`). -/
+example :
+    let unsigned : NumField := { scale := 2, signed := false }
+    let money : NumericTargetConstraints := { zeroAllowed := false, amount := true }
+    let noZero : NumericTargetConstraints := { zeroAllowed := false }
+    verbatimFailure {} ordinaryNumber "+007" = some .leadingPlus ∧
+      verbatimFailure {} ordinaryNumber "+00.00" = some .leadingPlus ∧
+      verbatimFailure {} ordinaryNumber "+1,5" = some .malformed ∧
+      verbatimFailure {} ordinaryNumber "+" = some .malformed ∧
+      verbatimFailure {} ordinaryNumber "-00" = some .signedZero ∧
+      verbatimFailure money unsigned "-0.00" = some .zeroNotAllowed ∧
+      verbatimFailure noZero unsigned "-0.00" = some .negativeNotAllowed ∧
+      verbatimFailure money unsigned "-5.00" = some .negativeNotAllowed ∧
+      NumericFormalReadError.leadingPlus.errorCode = "zahlMitPlus" ∧
+      NumericFormalReadError.decimalSeparatorRequired.errorCode = "zahlOhneDezimalTrenner" := by
+  native_decide
+
+private def decimalFailure (constraints : NumericTargetConstraints) (info : NumField)
+    (unscaled : Int) (scale : Int) : Option NumericFormalReadError :=
+  match constraints.checkFormalRead info (.decimal { unscaled, scale }) with
+  | .error error => some error
+  | .ok _ => none
+
+/-- The `FormalNum` capture's `MC`: four constraints that let a single value choose between them. -/
+private def moneyCents : NumericTargetConstraints := {
+  minFractionalDigits := 2, maxIntegerDigits := some 4, zeroAllowed := false, amount := true
+  minStoredLength := some 4, maxStoredLength := some 8, minimum := some 1, maximum := some 5000 }
+
+private def capped : NumericTargetConstraints := { minimum := some 10, maximum := some 20 }
+
+/- The cascade's order decides which of several violated constraints is reported. The fifteen-digit
+ceiling outranks the integer cap, length and maximum the same value also violates; an unsigned
+declaration reports the sign before the bound; the integer cap outranks the maximum; and the
+maximum alone decides once nothing earlier fails. -/
+example :
+    let unsignedInteger : NumField := { scale := 0, signed := false }
+    decimalFailure moneyCents ordinaryNumber 1234567890123456 0 = some .totalDigitsTooLong ∧
+      decimalFailure capped unsignedInteger (-5) 0 = some .negativeNotAllowed ∧
+      decimalFailure capped { unsignedInteger with signed := true } (-5) 0 = some .belowMinimum ∧
+      decimalFailure moneyCents ordinaryNumber 9999900 2 = some .integerDigitsTooLong ∧
+      decimalFailure capped { unsignedInteger with signed := true } 25 0 = some .aboveMaximum ∧
+      decimalFailure moneyCents ordinaryNumber 150000 2 = none := by
+  native_decide
+
+/- A separator is refused outright only when no fractional place is declared; a declared range is a
+range with both ends admitted. Decimal input reaches zero at the declared scale, so a two-place
+zero-forbidding field reports zero, while the same zero kept as text lacks its separator. -/
+example :
+    let integer : NumField := { scale := 0, signed := true }
+    let range : NumericTargetConstraints := { minFractionalDigits := 1 }
+    let threePlaces : NumField := { scale := 3, signed := true }
+    decimalFailure {} integer 15 1 = some .decimalSeparatorForbidden ∧
+      decimalFailure moneyCents ordinaryNumber 51234 4 = some .fractionalDigitsOutOfRange ∧
+      decimalFailure range threePlaces 12345 3 = none ∧
+      decimalFailure range threePlaces 51234 4 = some .fractionalDigitsOutOfRange ∧
+      decimalFailure moneyCents ordinaryNumber 0 0 = some .zeroNotAllowed ∧
+      verbatimFailure moneyCents ordinaryNumber "0" = some .decimalSeparatorRequired := by
+  native_decide
+
+/- Length counts the selected text rather than the digits, so the same magnitude passes the minimum
+once it carries a sign (the `FormalNum` capture's `ZNoZero`). -/
+example :
+    let integer : NumField := { scale := 0, signed := true }
+    let noZero : NumericTargetConstraints :=
+      { zeroAllowed := false, minStoredLength := some 2, maxStoredLength := some 4 }
+    decimalFailure noZero integer 5 0 = some .textTooShort ∧
+      decimalFailure noZero integer (-5) 0 = none ∧
+      decimalFailure noZero integer 123456 0 = some .textTooLong := by
+  native_decide
+
 private def numberField (id : FieldId) : FlatFieldDecl := {
   id
   groupPath := ["Order"]

@@ -1,0 +1,37 @@
+{
+ "model": "K16N_DM.json",
+ "locale": "de_DE",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "d01",
+   "document": "d01.json"
+  },
+  {
+   "name": "d02",
+   "document": "d02.json"
+  },
+  {
+   "name": "d03",
+   "document": "d03.json"
+  },
+  {
+   "name": "d04",
+   "document": "d04.json"
+  },
+  {
+   "name": "d05",
+   "document": "d05.json"
+  },
+  {
+   "name": "d06",
+   "document": "d06.json"
+  },
+  {
+   "name": "d07",
+   "document": "d07.json"
+  }
+ ]
+}

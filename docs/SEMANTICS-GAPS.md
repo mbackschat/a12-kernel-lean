@@ -156,7 +156,7 @@ The former SG1 → SG2 → SG4 construction sequence is represented. [Checked-do
 <a id="gap-sg14"></a>
 - [residual record](gaps/targets-and-derivation.md#gap-sg14)
 
-### SG27 — the Number formal cascade's conversion route and money text
+### SG27 — Number presentation information and the remaining formal key families
 
 <a id="gap-sg27"></a>
 - [residual record](gaps/numeric-and-temporal.md#gap-sg27)

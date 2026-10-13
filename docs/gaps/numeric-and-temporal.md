@@ -7,10 +7,11 @@
 
 - `state`: residual; D01/D06/D12/D18/D20 cover additional depth, diagnostics, ingress, legacy APIs and calibration.
 - `baseline`: [Number semantics](../implementation/numeric.md), [authoring class projection](../implementation/computations.md#cap-rule-condition-class-projection) and [group admission](../IMPLEMENTATION-MAP.md#cap-shared-entity-list-group-admission) own the maintained routes.
-- `evidence-needed`: host wire overflow/serialization, permissive comment syntax, compact scientific String rendering beyond the bounded profile, and numeric document-id conversion. [Wire provenance](../sources/cross-layer-routes.md#src-number-wire-ingestion) and [the inline-route handback](../sources/inbound-handbacks.md#src-inbound-2026-10-09a) distinguish native-number ingestion from probe serialization.
+- `evidence-needed`: permissive comment syntax, compact scientific String rendering beyond the bounded profile, and numeric document-id conversion; quoted conversion and the scale profile are closed at [SG27's baseline](#gap-sg27). [Wire provenance](../sources/cross-layer-routes.md#src-number-wire-ingestion) and [the inline-route handback](../sources/inbound-handbacks.md#src-inbound-2026-10-09a) distinguish native-number ingestion from probe serialization.
 - `evidence-needed`: deeper correlation, additional addressed/group expression placements and target profiles beyond the current Number matrices. The [tolerance capture](../sources/computation-placement-and-constant-probes.md#src-tolerance-family-calibration) owns C18; no ordinary tolerance cell remains queued here.
 - `diagnostics`: low-level `fieldOutsideRowGroup` refusals need route-specific reconciliation against the [scope-binding evidence](../sources/inbound-handbacks.md#inbound-2026-09-25-parallel-index-gates). Do not turn that implementation restriction into a Kernel missing-star class or infer it applies to the maintained reader.
 - `diagnostics`: additional Number alternative co-reporting, starred/name-based guard syntax and operation-kind refusals beyond the existing reader controls. Round/String-literal computation refusal calibration remains bounded by the [operation-typing source](../sources/computation-placement-and-constant-probes.md#src-number-operation-typing).
+- `remaining`: a Number fractional member written `-1`, A12's no-bound sentinel, which the ordering gate admits and whose runtime fractional checks and key shape are read from source only, with no measurement. The [DM reader](../../A12Kernel/Reference/Dm/Model.lean) refuses such a field rather than read it as absent ([checkpoint](../sources/domain-ingestion-probes.md#src-number-ingress-k16)); its runtime account is part of K17's declaration surface.
 - `legacy-api`: a bare-Rat flat condition cannot retain authored literal scale. The [reader preflight](../../A12Kernel/Reference/Dm/LowerValidation.lean) and [scale locks](../../A12Kernel/Reference/Dm/LowerLocks.lean) enforce it before that carrier; this is not an ordinary-reader admission defect.
 - `consumer-gated`: parser nesting ceilings beyond the measured [power/extremum shapes](../sources/computation-placement-and-constant-probes.md#src-power-derived-scale-and-operand-shapes). Further depth is D06, not a missing power mechanism.
 
@@ -68,11 +69,11 @@ The [Number capability owners](../implementation/numeric.md) define current exec
 - `route-state`: discovery-required
 
 <a id="gap-sg27"></a>
-### SG27 — the Number formal cascade's conversion route and money text
+### SG27 — Number presentation information and the remaining formal key families
 
-- `state`: excluded ingress/rendering service; D12.
-- `baseline`: [Stored Number formal read](../implementation/numeric.md#cap-stored-number-formal-read) and [formal cascade](../implementation/numeric.md#cap-number-formal-cascade) own canonical-document behavior, including lexical leading-zero length and computed replacement.
-- `remaining`: raw display-to-internal conversion for leading plus, signed zero, leading zeros and a missing required fractional separator. Runtime validation/compute observations begin after document loading and cannot alone establish this conversion service.
-- `evidence-needed`: one- and three-decimal money message bundle selection; the two-decimal versus other-scale dispatch is source-derived, not a retained text measurement for those scales.
-- `reopen-when`: a named ingress or rendering consumer needs either excluded service. Do not reopen the completed C11 lexical-length matrix.
+- `state`: excluded host profile; D12.
+- `baseline`: [Stored Number formal read](../implementation/numeric.md#cap-stored-number-formal-read), [formal cascade](../implementation/numeric.md#cap-number-formal-cascade) and [message keys](../implementation/numeric.md#cap-runtime-formal-message-keys) own quoted conversion, kept leading-zero text, every cascade arm and the Number key selection, calibrated by the [K16 capture](../sources/domain-ingestion-probes.md#src-number-ingress-k16).
+- `host-boundary`: caller-supplied presentation information — a grouping separator checked and removed before the cascade, a non-dot decimal separator and optional decimal places — and the display-to-internal conversion service. The measured document route supplies no optional decimal places; a grouping-separator route is unmeasured. The reader refuses a decimal scale above 100,000 in magnitude rather than reproducing the host fault.
+- `evidence-needed`: selection rules for the date, string, addressing and boolean key families, and the unsigned variant of any Number key, which the K16 rows, all on signed declarations, did not exercise.
+- `reopen-when`: a named ingress or rendering consumer needs presentation information or another key family. Do not reopen the completed C11 lexical-length matrix.
 - `route-state`: discovery-required

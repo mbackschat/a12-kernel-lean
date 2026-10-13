@@ -1,3 +1,4 @@
+import A12Kernel.Evidence.NumberFormalProjection
 import A12Kernel.Evidence.ObservationBundleTest
 import A12Kernel.Evidence.RuleCheckProjection
 import A12Kernel.Evidence.StringCascadeProjection
@@ -19,5 +20,7 @@ def main : IO Unit := do
     (root / "captures/string-direct-cascade-v1")
   let (ruleCheckCount, ruleCheckSkipped) ← A12Kernel.Evidence.RuleCheckProjection.checkArtifacts root
   IO.println s!"rule-check observations: {ruleCheckCount} rows agree, {A12Kernel.Evidence.RuleCheckProjection.deferred.length} deferred, {ruleCheckSkipped} without a Kernel verdict"
+  let (numberCount, numberCodes) ← A12Kernel.Evidence.NumberFormalProjection.checkArtifacts root
+  IO.println s!"Number formal observations: {numberCount} engine observations agree through the reader on {numberCodes} field codes"
   let total := validationCount + stringCount + cascadeCount
   IO.println s!"kernel evidence: {total}/{total} compact non-public projections agree; 25 public normalized associations are checked by checkReferenceProcess"

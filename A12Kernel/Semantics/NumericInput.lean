@@ -87,8 +87,10 @@ def sourceIdentity : NumericStoredInput → NumericSourceIdentity
 
 end NumericStoredInput
 
-/-- First-failure classes needed to separate Number formal-read behavior. Public messages remain a later boundary. -/
+/-- The Number formal check's classes in the Kernel's check order, one per surfaced code. Message
+text is a later boundary. -/
 inductive NumericFormalReadError where
+  | leadingPlus
   | malformed
   | totalDigitsTooLong
   | signedZero
@@ -104,6 +106,36 @@ inductive NumericFormalReadError where
   | belowMinimum
   | aboveMaximum
   deriving Repr, DecidableEq
+
+/-- The code a validation consumer reads, a function of the failing class alone. -/
+def NumericFormalReadError.errorCode : NumericFormalReadError → String
+  | .leadingPlus => "zahlMitPlus"
+  | .malformed => "zahlHatUngueltigeZeichen"
+  | .totalDigitsTooLong => "stelligkeitZuLang"
+  | .signedZero => "zahlNullEnthaeltVorzeichen"
+  | .negativeNotAllowed => "zahlMitVorzeichen"
+  | .decimalSeparatorForbidden => "zahlHatDezimalTrenner"
+  | .decimalSeparatorRequired => "zahlOhneDezimalTrenner"
+  | .fractionalDigitsOutOfRange => "zahlFalscheAnzahlNachkommastellen"
+  | .integerDigitsTooLong => "zahlZuvieleVorkommastellen"
+  | .zeroNotAllowed => "zahlIstNull"
+  | .leadingZerosNotAllowed => "zahlHatFuehrendeNullen"
+  | .textTooShort => "zahlZuKurz"
+  | .textTooLong => "zahlZuLang"
+  | .belowMinimum => "zahlZuKlein"
+  | .aboveMaximum => "zahlZuGross"
+
+/-- The plus-signed number the Kernel refuses before reading the text at all: a plus, ASCII digits and
+an optional dot with ASCII digits. Any other text led by a plus is unreadable. -/
+def hasLeadingPlusShape (text : String) : Bool :=
+  match text.toList with
+  | '+' :: rest =>
+      let (whole, suffix) := rest.span Char.isDigit
+      !whole.isEmpty && match suffix with
+        | [] => true
+        | '.' :: fraction => !fraction.isEmpty && fraction.all Char.isDigit
+        | _ => false
+  | _ => false
 
 /-- Parsed ASCII dot-decimal text together with lexical facts that exact rational value alone erases. -/
 structure ParsedNumericFormalRead where
@@ -155,7 +187,8 @@ def firstFormalReadError? (constraints : NumericTargetConstraints)
       constraints.zeroAllowed && info.signed then
     some .signedZero
   else if parsed.negative && !info.signed then
-    some .negativeNotAllowed
+    if parsed.value = 0 && !constraints.zeroAllowed && constraints.amount then some .zeroNotAllowed
+    else some .negativeNotAllowed
   else if info.scale = 0 && parsed.hasDecimalSeparator then
     some .decimalSeparatorForbidden
   else if 0 < constraints.minFractionalDigits &&
@@ -189,6 +222,7 @@ def checkFormalRead (constraints : NumericTargetConstraints)
     (info : NumField) (input : NumericStoredInput) :
     Except NumericFormalReadError (String × Rat) :=
   let text := input.formalReadText constraints.minFractionalDigits
+  if hasLeadingPlusShape text then .error .leadingPlus else
   match parseNumericFormalRead? text with
   | none => .error .malformed
   | some parsed =>
