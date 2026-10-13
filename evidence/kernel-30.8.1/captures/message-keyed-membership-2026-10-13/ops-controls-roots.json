@@ -1,0 +1,17 @@
+[
+  {
+    "id": "nw04",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nw04",
+      "--field",
+      "/Kp/Rows/Base",
+      "--condition",
+      "FieldFilled(Base)",
+      "--message",
+      "en_US=plain"
+    ]
+  }
+]

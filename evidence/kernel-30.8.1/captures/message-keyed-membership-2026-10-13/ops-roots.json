@@ -1,0 +1,92 @@
+[
+ {
+  "id": "w00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w00",
+   "--field",
+   "/Kx/In/XV",
+   "--condition",
+   "FieldFilled(XV)",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "w01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w01",
+   "--field",
+   "/Kx/In/XV",
+   "--condition",
+   "FieldFilled(XV)",
+   "--message",
+   "en_US=$#RootGroup$"
+  ]
+ },
+ {
+  "id": "w02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w02",
+   "--field",
+   "/Kx/In/XV",
+   "--condition",
+   "FieldFilled(XV)",
+   "--message",
+   "en_US=$#/Kp$"
+  ]
+ },
+ {
+  "id": "w03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w03",
+   "--field",
+   "/Kx/In/XV",
+   "--condition",
+   "FieldFilled(XV)",
+   "--message",
+   "en_US=$#RuleGroup$"
+  ]
+ },
+ {
+  "id": "w04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w04",
+   "--field",
+   "/Kp/Rows/Base",
+   "--condition",
+   "FieldFilled(Base)",
+   "--message",
+   "en_US=$#/Kx$"
+  ]
+ },
+ {
+  "id": "w05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w05",
+   "--field",
+   "/Kp/Rows/Base",
+   "--condition",
+   "FieldFilled(Base)",
+   "--message",
+   "en_US=$#RootGroup$"
+  ]
+ }
+]

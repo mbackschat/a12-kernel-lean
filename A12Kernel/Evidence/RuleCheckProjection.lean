@@ -77,6 +77,11 @@ def captures : List (String × String × String) := [
   ("captures/message-keyed-membership-2026-10-13/obs-group.json", "captures/message-keyed-membership-2026-10-13/Kq_DM.json", "captures/message-keyed-membership-2026-10-13/ops-group.json"),
   ("captures/message-keyed-membership-2026-10-13/obs-extent.json", "captures/message-keyed-membership-2026-10-13/Kq_DM.json", "captures/message-keyed-membership-2026-10-13/ops-extent.json"),
   ("captures/message-keyed-membership-2026-10-13/obs-order.json", "captures/message-keyed-membership-2026-10-13/Kz_DM.json", "captures/message-keyed-membership-2026-10-13/ops-order.json"),
+  ("captures/message-keyed-membership-2026-10-13/obs-review.json", "captures/message-keyed-membership-2026-10-13/Kv_DM.json", "captures/message-keyed-membership-2026-10-13/ops-review.json"),
+  ("captures/message-keyed-membership-2026-10-13/obs-roots.json", "captures/message-keyed-membership-2026-10-13/Kw_DM.json", "captures/message-keyed-membership-2026-10-13/ops-roots.json"),
+  ("captures/message-keyed-membership-2026-10-13/obs-controls-keyed.json", "captures/message-keyed-membership-2026-10-13/Kq_DM.json", "captures/message-keyed-membership-2026-10-13/ops-controls-keyed.json"),
+  ("captures/message-keyed-membership-2026-10-13/obs-controls-order.json", "captures/message-keyed-membership-2026-10-13/Kz_DM.json", "captures/message-keyed-membership-2026-10-13/ops-controls-order.json"),
+  ("captures/message-keyed-membership-2026-10-13/obs-controls-roots.json", "captures/message-keyed-membership-2026-10-13/Kw_DM.json", "captures/message-keyed-membership-2026-10-13/ops-controls-roots.json"),
   ("captures/message-parameter-iteration-and-encoding-classes/ops-obs.json", "captures/parser-static-legality-sweep/Probe_DM.json", "captures/message-parameter-iteration-and-encoding-classes/ops.json"),
   ("captures/message-parameter-iteration-and-encoding-classes/ops2-obs.json", "captures/parser-static-legality-sweep/Probe_DM.json", "captures/message-parameter-iteration-and-encoding-classes/ops2.json"),
   ("captures/message-parameter-iteration-and-encoding-classes/ops3-obs.json", "captures/parser-static-legality-sweep/Probe_DM.json", "captures/message-parameter-iteration-and-encoding-classes/ops3.json"),
@@ -104,7 +109,10 @@ def deferred : List (String × String) := [
   ("comparison-entry-gates/observations.json#groupregex", "host pattern compiler, SG7"),
   ("comparison-entry-gates/observations2.json#violatedcontrol", "host pattern compiler, SG7"),
   ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7"),
-  ("parser-static-legality-sweep/ops3-obs.json#R32", "parallel token comparison, K20")]
+  ("parser-static-legality-sweep/ops3-obs.json#R32", "parallel token comparison, K20"),
+  ("message-keyed-membership-2026-10-13/obs-review.json#p00", "parallel keyed read, SG29"),
+  ("message-keyed-membership-2026-10-13/obs-review.json#p01", "parallel keyed read, SG29"),
+  ("message-keyed-membership-2026-10-13/obs-review.json#p02", "parallel keyed read, SG29")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

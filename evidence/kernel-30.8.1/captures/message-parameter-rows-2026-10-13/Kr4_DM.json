@@ -1,0 +1,814 @@
+{
+ "header": {
+  "id": "Kr4_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Kr4_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Kp",
+     "name": "Kp",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Kp/Anchor",
+        "name": "Anchor",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Kp/Pick",
+        "name": "Pick",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/Box",
+        "name": "Box",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/Kp/Box/Lines",
+           "name": "Lines",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Kp/Box/Lines/Qty",
+              "name": "Qty",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/NRep",
+        "name": "NRep",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/NRep/Ref",
+           "name": "Ref",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/NRep/NNote",
+           "name": "NNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Ref"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/RRef",
+        "name": "RRef",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/RRef/Ref",
+           "name": "Ref",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/RRef/Val",
+           "name": "Val",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Ref"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/Rows/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/Rows/Base",
+           "name": "Base",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/Rows/Gate",
+           "name": "Gate",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/Rows/Err",
+           "name": "Err",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/Rows/Status",
+           "name": "Status",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Kp/Rows/Sub",
+           "name": "Sub",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Kp/Rows/Sub/SubV",
+              "name": "SubV",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Kp/Rows/Sub/RSub",
+              "name": "RSub",
+              "Rule": {
+               "errorEntityRelPath": "../SubV",
+               "errorCode": "RSub",
+               "errorCondition": "FieldFilled(SubV) And FieldFilled(../Base)",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "sub=[$SubV.value$] outer=[$../Base.value$] own=[$#RuleGroup$] up=[$#/Kp/Rows$]"
+                }
+               ]
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Kp/Rows/RRow",
+           "name": "RRow",
+           "Rule": {
+            "errorEntityRelPath": "../Base",
+            "errorCode": "RRow",
+            "errorCondition": "FieldFilled(Base) And FieldFilled(Status) And FieldNotFilled(Gate)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "b=[$Base.value$] n=[$Base$] st=[$Status.value$] cat=[$Status->Band$] g=[$Gate.value$] i=[$index(Key).value$]"
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "Key"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/ERows",
+        "name": "ERows",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/ERows/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/ERows/X",
+           "name": "X",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Kp/ERows/REnum",
+           "name": "REnum",
+           "Rule": {
+            "errorEntityRelPath": "../Key",
+            "errorCode": "REnum",
+            "errorCondition": "FieldFilled(Key) And FieldNotFilled(X)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "x=[$X.value$] k=[$Key.value$] kc=[$Key->Band$] ik=[$index(Key).value$]"
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "Key"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/GA",
+        "name": "GA",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/GA/Grade",
+           "name": "Grade",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Alpha"
+                 }
+                ]
+               },
+               {
+                "value": "B",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Beta"
+                 }
+                ]
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/GA/GNote",
+           "name": "GNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Kp/GA/RPar",
+           "name": "RPar",
+           "Rule": {
+            "errorEntityRelPath": "../GNote",
+            "errorCode": "RPar",
+            "errorCondition": "FieldFilled(GNote) And FieldFilled(/Kp/GB/GVal2)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "p=[$/Kp/GB/GVal2.value$] own=[$GNote.value$] pn=[$/Kp/GB/GVal2$]"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Kp/GA/RPk",
+           "name": "RPk",
+           "Rule": {
+            "errorEntityRelPath": "../GNote",
+            "errorCode": "RPk",
+            "errorCondition": "FieldFilled(GNote) And FieldFilled(/Kp/GB/GVal2) And GroupFilled(/Kp/Rows For \"k1\")",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "pk=[$/Kp/Rows/Base.value For \"k1\"$] pg=[$#/Kp/Rows For \"k1\"$] p=[$/Kp/GB/GVal2.value$]"
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "Grade"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/GB",
+        "name": "GB",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/GB/Grade",
+           "name": "Grade",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Ace"
+                 }
+                ]
+               },
+               {
+                "value": "B",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Bee"
+                 }
+                ]
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/GB/GVal2",
+           "name": "GVal2",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Grade"
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RKey",
+        "name": "RKey",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RKey",
+         "errorCondition": "FieldFilled(Anchor) And FieldFilled(/Kp/Rows/Base For \"k1\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "kb=[$/Kp/Rows/Base.value For \"k1\"$] kk=[$/Kp/Rows/Key.value For \"k1\"$] kn=[$/Kp/Rows/Base For \"k1\"$] a=[$Anchor.value$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/NRows",
+        "name": "NRows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/NRows/Num",
+           "name": "Num",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/NRows/V",
+           "name": "V",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Num"
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RMiss",
+        "name": "RMiss",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RMiss",
+         "errorCondition": "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k9\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m=[$/Kp/Rows/Base.value For \"k9\"$] mk=[$/Kp/Rows/Key.value For \"k9\"$] mn=[$/Kp/Rows/Base For \"k9\"$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RNum",
+        "name": "RNum",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RNum",
+         "errorCondition": "FieldFilled(Anchor) And FieldFilled(/Kp/NRows/V For \"2\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "nv=[$/Kp/NRows/V.value For \"2\"$] nk=[$/Kp/NRows/Num.value For \"2\"$] ng=[$#/Kp/NRows For \"2\"$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RK2",
+        "name": "RK2",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RK2",
+         "errorCondition": "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k2\") And FieldFilled(/Kp/Rows/Status For \"k2\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "e=[$/Kp/Rows/Base.value For \"k2\"$] sc=[$/Kp/Rows/Status->Band For \"k2\"$] sv=[$/Kp/Rows/Status.value For \"k2\"$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RFk",
+        "name": "RFk",
+        "Rule": {
+         "errorEntityRelPath": "../Pick",
+         "errorCode": "RFk",
+         "errorCondition": "FieldFilled(Pick) And FieldFilled(/Kp/Rows/Base For Pick)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "f=[$/Kp/Rows/Base.value For Pick$] fk=[$/Kp/Rows/Key.value For Pick$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Kp/ARep",
+        "name": "ARep",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Kp/ARep/Ref",
+           "name": "Ref",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Kp/ARep/ANote",
+           "name": "ANote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Ref"
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RS01",
+        "name": "RS01",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RS01",
+         "errorCondition": "FieldFilled(Anchor) And FieldFilled(/Kp/Rows/Base For \"k1\") And NumberOfFilledFields(/Kp/Rows*/Base) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "s=[$/Kp/Rows/Base.value$] n=[$/Kp/Rows/Base$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RMissN",
+        "name": "RMissN",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RMissN",
+         "errorCondition": "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k9\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "mn=[$/Kp/Rows/Base For \"k9\"$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RMissK",
+        "name": "RMissK",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RMissK",
+         "errorCondition": "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k9\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "mk=[$/Kp/Rows/Key.value For \"k9\"$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RNum02",
+        "name": "RNum02",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RNum02",
+         "errorCondition": "FieldFilled(Anchor) And FieldFilled(/Kp/NRows/V For \"02\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "nv=[$/Kp/NRows/V.value For \"02\"$] ng=[$#/Kp/NRows For \"02\"$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RNest",
+        "name": "RNest",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RNest",
+         "errorCondition": "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "n=[$/Kp/Rows/Sub/SubV For \"k1\"$] b=[$/Kp/Rows/Base.value For \"k1\"$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RMissC",
+        "name": "RMissC",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RMissC",
+         "errorCondition": "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Status For \"k9\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "mc=[$/Kp/Rows/Status->Band For \"k9\"$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RS01C",
+        "name": "RS01C",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RS01C",
+         "errorCondition": "FieldFilled(Anchor) And FieldFilled(/Kp/Rows/Status For \"k1\") And NumberOfFilledFields(/Kp/Rows*/Status) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "sc=[$/Kp/Rows/Status->Band$] sv=[$/Kp/Rows/Status.value$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Kp/RStar",
+        "name": "RStar",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RStar",
+         "errorCondition": "FieldFilled(Anchor) And NumberOfFilledFields(/Kp/Rows*/Base) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "t=[$/Kp/Rows/Base$]"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

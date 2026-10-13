@@ -83,10 +83,11 @@ private def selectedReferenceAt (field : FieldId) (query : ReferenceQuery)
     | .nonWildcard level => selection.group.level == level ||
         selection.indexDeclaration.repeatableScope.dropLast.contains level
     | .unselected => false
-    -- A selection replaces the selected level's wildcard; only a star written below it remains.
-    -- Measured: a keyed read beside a starred one admits the unkeyed value suffix
-    -- (docs/sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15, row `s01`).
-    | .unstarred _ => match source with
+    -- A selection replaces the selected level's wildcard; only a star written below it remains, and a
+    -- deeper group inside a selected extent keeps its own (rows `s01`, `v02` in
+    -- docs/sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15).
+    | .unstarred fieldScope => fieldScope.all selection.indexDeclaration.repeatableScope.contains &&
+        match source with
         | .inl _ => true
         | .inr source => match source.target with
             | .group _ => true
@@ -95,7 +96,12 @@ private def selectedReferenceAt (field : FieldId) (query : ReferenceQuery)
   let key := match selection.key with
     | .literal .. => false
     | .field declaration => declaration.id == field && query.atPath declaration.path declaration.repeatableScope
-  target || key
+  -- The selection reads its index column at the selected row (row `k09`).
+  let index := match query.kind with
+    | .unstarred _ => selection.indexDeclaration.id == field &&
+        query.acceptsPath selection.indexDeclaration.path
+    | _ => false
+  target || key || index
 
 private def anyReference (answers : List (Option Bool)) : Option Bool :=
   if answers.contains (some true) then some true

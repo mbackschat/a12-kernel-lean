@@ -61,7 +61,13 @@ private def MessageIndexBinding.suffixDeclaration (binding : MessageIndexBinding
           [fact.locale, fact.stored, fact.display] }
 
 /-- Ancestor index references retain every authored mode. In particular, a plain read cannot hide a
-second starred or keyed read of the same index (ReferencedIdsUtil.createAllIndexFieldEntityIds). -/
+second starred or keyed read of the same index (ReferencedIdsUtil.createAllIndexFieldEntityIds).
+
+The candidates are visited in full-name order, not declaration order (row `o01` in the
+[checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15)).
+`String` order here compares code points where the Kernel's Java strings compare UTF-16 units; the
+two can differ only on a name holding a character beyond the Basic Multilingual Plane, where this
+order is unmeasured. -/
 def messageReferencedIndices (condition : ValidationMessageCondition model) (name : String) :
     Except IndexMessageAuthoringError (List (MessageIndexBinding × ReferencedIndexField)) := do
   let candidates := (messageIndexBindings model name).mergeSort fun left right =>

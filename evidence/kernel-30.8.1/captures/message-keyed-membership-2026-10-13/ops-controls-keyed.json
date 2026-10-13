@@ -1,0 +1,62 @@
+[
+  {
+    "id": "nb01",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nb01",
+      "--field",
+      "/Kp/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k1\")",
+      "--message",
+      "en_US=plain"
+    ]
+  },
+  {
+    "id": "nb02",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nb02",
+      "--field",
+      "/Kp/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k1\")",
+      "--message",
+      "en_US=plain"
+    ]
+  },
+  {
+    "id": "ns10",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "ns10",
+      "--field",
+      "/Kp/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And NumberOfFilledFields(/Kp/Rows*/Base) > 0",
+      "--message",
+      "en_US=plain"
+    ]
+  },
+  {
+    "id": "nk30",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nk30",
+      "--field",
+      "/Kp/Anchor",
+      "--condition",
+      "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For Anchor)",
+      "--message",
+      "en_US=plain"
+    ]
+  }
+]

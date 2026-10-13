@@ -1,0 +1,1 @@
+{"model": "Kr4_DM.json", "locale": "en_US", "observe": ["validateFull"], "rows": [{"name": "render-grid", "document": "doc2.json"}, {"name": "first-row-empty", "document": "doc3.json"}]}

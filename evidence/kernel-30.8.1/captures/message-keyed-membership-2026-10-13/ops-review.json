@@ -1,0 +1,263 @@
+[
+ {
+  "id": "v00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v00",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "v01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v01",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Sub/SubV For \"k1\"$"
+  ]
+ },
+ {
+  "id": "v02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v02",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Sub/SubV.value For \"k1\"$"
+  ]
+ },
+ {
+  "id": "v03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v03",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldFilled(/Kp/Rows/Sub/SubV For \"k1\")",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "o00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "o00",
+   "--field",
+   "/Kp/ARep/ANote",
+   "--condition",
+   "FieldFilled(ANote) And NumberOfFilledFields(/Kp/RRef*/Val) > 0",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "o01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "o01",
+   "--field",
+   "/Kp/ARep/ANote",
+   "--condition",
+   "FieldFilled(ANote) And NumberOfFilledFields(/Kp/RRef*/Val) > 0",
+   "--message",
+   "en_US=$index(Ref).value$"
+  ]
+ },
+ {
+  "id": "i00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "i00",
+   "--field",
+   "/Kp/Rows/Base",
+   "--group",
+   "/Kp",
+   "--condition",
+   "NumberOfFilledFields(/Kp/Rows*/Base) > 0 And NumberOfFilledFields(/Kp/ERows*/X) > 0",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "i01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "i01",
+   "--field",
+   "/Kp/Rows/Base",
+   "--group",
+   "/Kp",
+   "--condition",
+   "NumberOfFilledFields(/Kp/Rows*/Base) > 0 And NumberOfFilledFields(/Kp/ERows*/X) > 0",
+   "--message",
+   "en_US=$index(Key).value$"
+  ]
+ },
+ {
+  "id": "i02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "i02",
+   "--field",
+   "/Kp/Rows/Base",
+   "--group",
+   "/Kp",
+   "--condition",
+   "NumberOfFilledFields(/Kp/Rows*/Base) > 0 And NumberOfFilledFields(/Kp/ERows*/X) > 0",
+   "--message",
+   "en_US=$index(Key)->Band$"
+  ]
+ },
+ {
+  "id": "p00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p00",
+   "--field",
+   "/Kp/GA/GNote",
+   "--condition",
+   "FieldFilled(GNote) And FieldFilled(/Kp/GB/GVal2) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "p01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p01",
+   "--field",
+   "/Kp/GA/GNote",
+   "--condition",
+   "FieldFilled(GNote) And FieldFilled(/Kp/GB/GVal2) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$#/Kp/Rows For \"k1\"$"
+  ]
+ },
+ {
+  "id": "p02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p02",
+   "--field",
+   "/Kp/GA/GNote",
+   "--condition",
+   "FieldFilled(GNote) And FieldFilled(/Kp/GB/GVal2) And GroupFilled(/Kp/Rows For \"k1\")",
+   "--message",
+   "en_US=$/Kp/Rows/Base For \"k1\"$"
+  ]
+ },
+ {
+  "id": "n00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n00",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldFilled(/Kp/NRows/V For \"02\")",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "n01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n01",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldFilled(/Kp/NRows/V For \"02\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"02\"$"
+  ]
+ },
+ {
+  "id": "n02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n02",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And FieldFilled(/Kp/NRows/V For \"02\")",
+   "--message",
+   "en_US=$/Kp/NRows/V For \"2\"$"
+  ]
+ },
+ {
+  "id": "s00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s00",
+   "--field",
+   "/Kp/Anchor",
+   "--condition",
+   "FieldFilled(Anchor) And NumberOfFilledFields(/Kp/Rows*/Base) > 0",
+   "--message",
+   "en_US=plain"
+  ]
+ },
+ {
+  "id": "z00",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z00",
+   "--field",
+   "/Kp/ZRep/ZNote",
+   "--condition",
+   "FieldFilled(ZNote)",
+   "--message",
+   "en_US=plain"
+  ]
+ }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "nz02",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nz02",
+      "--field",
+      "/Kp/ZRep/ZNote",
+      "--condition",
+      "FieldFilled(ZNote)",
+      "--message",
+      "en_US=plain"
+    ]
+  },
+  {
+    "id": "nz03",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--code",
+      "nz03",
+      "--field",
+      "/Kp/NRep/NNote",
+      "--condition",
+      "FieldFilled(NNote) And FieldFilled(/Kp/ZRep/ZNote)",
+      "--message",
+      "en_US=plain"
+    ]
+  }
+]

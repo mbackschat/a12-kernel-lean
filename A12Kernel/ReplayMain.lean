@@ -403,7 +403,7 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
         | .error error => line name "-" "-" "tier2" s!"Document\t{(repr error).pretty 200}"
         | .ok checked =>
             let references := observedRow.map kernelReferences |>.getD []
-            for verdict in replayRules model language world checked kernel references do
+            for verdict in replayRules model language world checked kernel references (some (prepared, locale)) do
               let ruleName := replayName (model.rules.map (·.name)) verdict.rule.group verdict.rule.name
               if clock?.isNone && readsClock language verdict.rule.condition then
                 line name ruleName verdict.rule.errorCode "tier2" "Clock\tthe request pins no clock"

@@ -3,13 +3,14 @@
 <a id="active-unit"></a>
 ## Next action and accepted baseline
 
-- `status`: K01–K14 are accepted; K15–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
-- `next`: Enter K15. K14 closed after two cold reviews of the slice from `ece3dfb6`: every retained row of the declaration-report, R1-supplement, requiredness, over-repetition, filtered-star, parallel-reference and uniqueness-guard captures is locked or replayed, and full population replay is unchanged at 167,593 matches. The condition first-raised class and the field-type combined classes move to K17.
-- `sync`: Twelve locally originated corrections are pending and not handed off in [the open ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue), SPEC-2026-10-13-04 through -11 among them.
+- `status`: K01–K15 are accepted; K16–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
+- `next`: Enter K16. K15 closed after one cold review of the slice `3c8c9ea7..a4f769ba` and its disposition: keyed membership by spelling and value selection, the row each parameter renders (first row for an unbound level), the missing-key fault reported as the Kernel's runtime-failure finding, the computation carrier and the reached index classes are locked or replayed against 113 static requests, 26 computation previews and four runtime document rows, and full population replay has 167,681 matches and no divergence.
+- `sync`: Thirteen locally originated corrections are pending and not handed off in [the open ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue), SPEC-2026-10-13-04 through -12 among them.
 - `cleanup`: The presence-polarity classification is written twice, in `omissionLeafPointers` and `ParallelFieldReference.reads`; R2 found them agreeing. Extract one owner as its own change when either changes.
 - `baseline`: K12 passed integrated build, compact evidence, all 112 new retained comparisons, one triggered HIGH review with its implicit-row key-read finding reproduced and fixed, population replay and final trust/hygiene. All 72,276 admitted comparisons match; the 217 rows lacking matching observations and six whole-row refusals are unchanged. [Selected range composition](implementation/date-range.md#cap-selected-date-range-composition) owns the new capability. The [C12 readback](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) establishes bounded semantic transport, not independent-evaluator qualification.
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `carry-forward`: Keep the two remaining joined-guard kinds in [SG4](gaps/keystone.md#gap-sg4) for required K19 disposition; they are unresolved implementation gaps, not accepted exclusions.
+- `carry-forward`: The parallel rule with a keyed group read in [SG29](gaps/paths-and-groups.md#gap-sg29), which the Kernel admits and renders, is an evaluator omission found in K15. Implement it before K22; K19 may not dispose it as a boundary.
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
 - `sequence`: K21 checks semantic transport, K22 accepts conformance, then U01 implements the Rust interpreter and U02 the SMT consumer. Concrete repository, dependency and public-contract choices retain their existing decision boundaries.
 - `stop`: Stop the conformance phase at K22 and select U01. A genuine blocker keeps its task unchecked. Do not append an automatic conformance-tail programme or require the consumer products before K22.
@@ -144,7 +145,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 ### K15 — message parameter grammar and rendering inputs
 
-- [ ] Close remaining ordinary authoring and structured rendering inputs in [SG25](gaps/strings-and-messages.md#gap-sg25), SG26 and [SG10](gaps/strings-and-messages.md#gap-sg10).
+- [x] Close remaining ordinary authoring and structured rendering inputs in [SG25](gaps/strings-and-messages.md#gap-sg25), SG26 and [SG10](gaps/strings-and-messages.md#gap-sg10).
 - Matrix: parallel positive-presence guard and invalid hash/repetition parameter; repeatable names and deeper RuleGroup/multi-root references; selected/index/category parameters; four outstanding composed-index/type/display/repeatability refusal classes; empty/default/provider output and computation message context.
 - Done: parse success, admission and rendering context remain separate. Compare structured parameters and exact promised diagnostic classes; lexer offsets and all locale wording are not silently claimed. Protected message text is supplied by the host.
 
@@ -213,7 +214,7 @@ The old D identifiers explain the C01–C22 boundary only. They no longer exclud
 | SG5, SG27 | K04, K06, K16 | U01 |
 | SG6, SG21, SG23 | K03, K11–K12, K19 | U01/U02 |
 | SG7, SG8 | K01, K09, K13–K14, K17 | U01 |
-| SG25, SG26, SG10 | K07, K14–K15 | U01 |
+| SG25, SG10 | K07, K14–K15 | U01 |
 | SG11 | K18 | U01/U02 |
 | SG9, SG29, SG19 | K04–K07, K17, K19 | U01 |
 | SG13, SG17, SG20 | K03, K06, K19 | U02 transformation/analysis only |

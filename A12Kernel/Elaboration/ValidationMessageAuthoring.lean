@@ -550,18 +550,20 @@ private def runMessageEvents (model : FlatModel)
   | .nestedKey :: _ => throw (.nestedSemanticIndex parameter)
   | .fault fault :: _ => throw (.parameterSyntax parameter fault)
 
-/-- A resolved member reference's suffix gates. A keyed reference reads its selected row, which writes
-no wildcard, so its value suffix passes the star gate (rows `k06`, `k09`, `a05`). -/
+/-- A resolved member reference's suffix gates. The keyed read a keyed reference requires writes no
+wildcard at its group's level, so the star gate passes a field of that group (rows `k06`, `k09`, `a05`)
+but not one of a deeper group (row `v02`). -/
 private def checkMessageFieldSuffix (condition : ValidationMessageCondition model)
     (parameter : String) (suffix : MessageFieldSuffix)
     (reference : CheckedValidationMessageReference model condition) :
     Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition) :=
   match suffix with
   | .none => pure (.fieldName reference)
-  | .value =>
+  | .value => do
+      let some unstarred := condition.messageUnstarred? reference.declaration.id
+        | throw (.groupReferenceMetadataRequired parameter)
       match valueAccessRefusal .a12 {
-          referencedWithoutStar := reference.key.isSome ||
-            condition.messageUnstarred? reference.declaration.id != some false
+          referencedWithoutStar := unstarred
           fieldIsString := reference.declaration.policy.kind == .string
           noValueValidation := reference.declaration.isRawString } with
       | some diagnostic => throw (.valueAccess parameter diagnostic)

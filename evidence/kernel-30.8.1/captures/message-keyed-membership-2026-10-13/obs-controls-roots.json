@@ -1,0 +1,18 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "76320dd964e84ce6711274fd5f4b37a220b7cf0639697953eef447f176c7bb31",
+  "observations" : [ {
+    "id" : "nw04",
+    "inputHash" : "8cda3b83f8bb45a0fc9fa10c4ba335308f5e80057131d359ac15b3847e8c1dfb",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  } ]
+}

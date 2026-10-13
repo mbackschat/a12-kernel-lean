@@ -40,6 +40,8 @@ structure DmRule where
   errorCode : String
   condition : String
   severity : String
+  /-- The authored message template per locale, in declaration order. -/
+  messages : List (String × String) := []
   deriving Repr, Inhabited
 
 /-- One computation alternative: an optional precondition and the operation. -/
@@ -320,7 +322,9 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         errorEntityRelPath := (str? body "errorEntityRelPath").getD ""
         errorCode := match code with | .text value => value | .unreadable => ""
         condition := (str? body "errorCondition").getD ""
-        severity := (str? body "severity").getD "ERROR" } }
+        severity := (str? body "severity").getD "ERROR"
+        messages := ((body.getObjValAs? (Array Json) "errorMessage").toOption.getD #[]).toList.filterMap
+          fun entry => do pure (← str? entry "locale", ← str? entry "text") } }
   | "Computation" =>
       let roundingMode ← StateT.lift (computationString? body "roundingMode")
       let alternatives ← StateT.lift do
