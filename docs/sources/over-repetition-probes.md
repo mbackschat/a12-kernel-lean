@@ -15,7 +15,7 @@ The structural over-repetition family: which findings an over-capacity row draws
 - `local-readback`: [Reader locks](../../A12Kernel/Reference/Dm/OverRepetitionOccurrenceLocks.lean) replay every row through the DM reader on all three channels; [cases](../../A12Kernel/Conformance/OverRepetitionFindings.lean) add the sibling-coordinate separator, which the replaced prefix-containment account failed with three findings instead of one.
 - `limit`: capacities 2 and 5, scale-0 Numbers and Strings, one nonrepeatable level under a repeatable row, `en_US`. Rendered text is redacted; nested nonrepeatable groups, a nonrepeatable group on a repeatable root, and group-count operands beyond the multiplicity artifact are not varied here.
 - `bytes`: [model](../../evidence/kernel-30.8.1/captures/over-repetition-occurrence-scope-2026-10-13/Occ_DM.json), [operations](../../evidence/kernel-30.8.1/captures/over-repetition-occurrence-scope-2026-10-13/ops.json), [request](../../evidence/kernel-30.8.1/captures/over-repetition-occurrence-scope-2026-10-13/request.json), [artifact](../../evidence/kernel-30.8.1/captures/over-repetition-occurrence-scope-2026-10-13/artifact.json) and [hashes](../../evidence/kernel-30.8.1/captures/over-repetition-occurrence-scope-2026-10-13/MANIFEST.sha256).
-- `sync`: [SPEC-2026-10-13-05](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-13-05).
+- `sync`: [SPEC-2026-10-13-05](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-13-05).
 
 <a id="src-over-limit-finite-prefix-handback"></a>
 #### Finite-prefix structural occurrences remain independent of descendant capacity
