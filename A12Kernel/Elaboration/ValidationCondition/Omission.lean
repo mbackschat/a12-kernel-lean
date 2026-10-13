@@ -37,7 +37,7 @@ private def orderedOmissionCount : OrderedNumericValidationAtom model → Bool
   | .tokenDistinctCount _ | .temporalDistinctCount _ => true
   | _ => false
 
-private def upwardOmissionCount (isCount : Atom → Bool)
+def upwardOmissionCount (isCount : Atom → Bool)
     (comparison : NumericComparisonOf Atom) : Bool :=
   let left := comparison.left.anyAtom isCount
   let right := comparison.right.anyAtom isCount

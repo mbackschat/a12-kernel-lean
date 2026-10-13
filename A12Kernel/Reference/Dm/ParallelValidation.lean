@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Elaboration.PartialParallelFieldRule
 import A12Kernel.Elaboration.CheckedMessageCache
+import A12Kernel.Elaboration.ParallelFieldReference
 
 /-! # DM lowering for checked parallel field-pair validation -/
 
@@ -167,6 +168,18 @@ def runValidationRule (world : World) (document : CheckedDocument model)
         | _, _ => initial
       let rows ← evaluated.mapError (fun error => (repr error).pretty)
       pure (rows.filterMap (·.outcome.message?))
+
+/-- Every message a checked parallel rule fires in full validation, with the projection of its reference
+channels at the row it fired on. Evaluation uses the document's message cache whenever it is derivable, as the
+ordinary projection does; the cache only decides pointers of a duplicate-key side, so rows without one are
+unaffected. A projection failure stays with its message instead of failing the run. -/
+def runParallelRuleReferences (document : CheckedDocument model) (rule : CheckedParallelFieldRule model) :
+    Except String (List (FlatRuleMessage × Except ParallelReferenceError ValidationMessageReferences)) := do
+  let preliminary ← document.applyFullIndexPreliminary |>.mapError (fun error => (repr error).pretty)
+  let cache := preliminary.messageCacheContext.toOption
+  let rows ← rule.evalDocument preliminary cache |>.mapError (fun error => (repr error).pretty)
+  pure (rows.filterMap fun row => row.outcome.message?.map fun message =>
+    (message, rule.condition.messageReferences rule.pair row.row row.outerEnvironment cache message))
 
 /-- Execute a checked parallel rule for one normalized partial call. Duplicate message coordinates share the partial cache producer while value reads retain partial unavailability. -/
 def runPartialParallelRule (document : CheckedDocument model)

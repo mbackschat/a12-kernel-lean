@@ -87,6 +87,21 @@ def ObservedReferences.render (observed : ObservedReferences) : String :=
 private def sortedSet (pointers : List String) : List String :=
   pointers.eraseDups.mergeSort (compare · · != .gt)
 
+private def observedReferences (model : FlatModel) (message : FlatRuleMessage)
+    (references : ValidationMessageReferences) : ObservedReferences :=
+  { message := observe model message
+    referenced := sortedSet (references.referenced.map (renderPointer model))
+    fillToFix := sortedSet (references.fillToFix.map (renderPointer model)) }
+
+/-- Compare the projected channels with the Kernel's as sets, message by message. -/
+private def compareReferences (lean kernel : List ObservedReferences) : RuleStatus :=
+  let normalize (observed : List ObservedReferences) : List String :=
+    (observed.map ObservedReferences.render).mergeSort (fun a b => compare a b != .gt)
+  let kernel := kernel.map fun (observed : ObservedReferences) =>
+    { observed with referenced := sortedSet observed.referenced, fillToFix := sortedSet observed.fillToFix }
+  if normalize lean == normalize kernel then .matched
+  else .divergedReferences (normalize lean) (normalize kernel)
+
 /-- Project every fired message's reference channels at the environment it fired at, with the
 message-cache inputs of full validation for selected operands, and compare them as sets. -/
 def replayReferences (model : FlatModel) (world : World) (document : CheckedDocument model)
@@ -100,18 +115,20 @@ def replayReferences (model : FlatModel) (world : World) (document : CheckedDocu
   | .ok fired =>
       match fired.mapM fun (environment, message) =>
           (rule.condition.core.messageReferences message environment inputs).map
-            fun (references : ValidationMessageReferences) =>
-            ({ message := observe model message
-               referenced := sortedSet (references.referenced.map (renderPointer model))
-               fillToFix := sortedSet (references.fillToFix.map (renderPointer model)) } : ObservedReferences) with
+            (observedReferences model message) with
       | .error error => .refused { construct := "References", detail := (repr error).pretty }
-      | .ok lean =>
-          let normalize (observed : List ObservedReferences) : List String :=
-            (observed.map ObservedReferences.render).mergeSort (fun a b => compare a b != .gt)
-          let kernel := kernel.map fun (observed : ObservedReferences) =>
-            { observed with referenced := sortedSet observed.referenced, fillToFix := sortedSet observed.fillToFix }
-          if normalize lean == normalize kernel then .matched
-          else .divergedReferences (normalize lean) (normalize kernel)
+      | .ok lean => compareReferences lean kernel
+
+/-- The parallel counterpart: each fired row projects its reference channels at its own resolved join
+row, so a duplicate side or an unmatched side is pointed at as the error pointer is. -/
+def replayParallelReferences (model : FlatModel) (document : CheckedDocument model)
+    (rule : CheckedParallelFieldRule model) (kernel : List ObservedReferences) : RuleStatus :=
+  match runParallelRuleReferences document rule with
+  | .error detail => .runFault detail
+  | .ok fired =>
+      match fired.mapM fun (message, references) => references.map (observedReferences model message) with
+      | .error error => .refused { construct := "References", detail := (repr error).pretty }
+      | .ok lean => compareReferences lean kernel
 
 /-- Compare every authored and generated rule of `model` on one checked document against the
 Kernel's messages, attributed by code and error field. -/
@@ -141,7 +158,8 @@ def replayRules (model : DmModel) (language : Language) (world : World)
             let actual := (messages.map (observe model.flat)).mergeSort (compare · · != .gt)
             if actual != expected then { rule, status := .diverged actual expected } else
             let references := match checked' with
-              | .parallel _ => none
+              | .parallel parallel => some (replayParallelReferences model.flat document parallel
+                  (kernelReferences.filter (attributed ·.message)))
               | .ordinary ordinary => some (replayReferences model.flat world document ordinary
                   (kernelReferences.filter (attributed ·.message)))
             { rule, status := .matched, references }

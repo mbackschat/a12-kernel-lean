@@ -240,4 +240,114 @@ example : renderPointer model { field := 2, coordinates := [.unknown] } = "/Form
     renderPointer commonOuterModel { field := 2, coordinates := [.concrete 2, .unknown] } =
       "/Form[2]/L[-5]/N" := by native_decide
 
+-- Message references: the structural inventory of the condition plus, per joined side that
+-- contributes at least one field, that side's index field. Each fired row points a side's fields at
+-- its own matched row, and an unmatched side at the unknown joined level.
+private abbrev FiredReferences :=
+  Option (List (String × (ParallelReferenceError ⊕ (List String × List String))))
+
+private def referencesOf (definition : DmRule) (candidate : FlatModel) (document : Json) :
+    FiredReferences := do
+  let input ← (readDocument (dm candidate) document).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler candidate).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let .parallel rule ← (checkValidationRule (dm candidate) .english definition).toOption | none
+  let fired ← (runParallelRuleReferences checked rule).toOption
+  let sorted := fun (pointers : List MessagePointer) =>
+    (pointers.map (renderPointer candidate)).eraseDups.mergeSort (compare · · != .gt)
+  pure (fired.map fun (message, references) =>
+    ((observe candidate message).pointer,
+      match references with
+      | .ok r => .inr (sorted r.referenced, sorted r.fillToFix)
+      | .error error => .inl error))
+
+private def referencesRun (condition : String) (candidate : FlatModel := model)
+    (left : List (String × String) := [("Zulu", "7"), ("Alpha", "3")])
+    (right : List (String × String) := [("Alpha", "8"), ("Beta", "2")]) :=
+  referencesOf (rule condition) candidate (documentJson left right)
+
+-- A VALUE firing has no fill-to-fix set, and the matched pair is pointed at its own rows. The
+-- unmatched left side of Beta is an OMISSION whose numeric operands are both responsible.
+example : referencesRun "[L/N] < [R/N]" =
+    some [("Form/L[2]/N", .inr (["Form/L[2]/Key", "Form/L[2]/N", "Form/R/Key", "Form/R/N"], [])),
+      ("/Form[1]/L[-5]/N", .inr (
+        ["/Form[1]/L[-5]/Key", "/Form[1]/L[-5]/N", "Form/R[2]/Key", "Form/R[2]/N"],
+        ["/Form[1]/L[-5]/Key", "/Form[1]/L[-5]/N", "Form/R[2]/Key", "Form/R[2]/N"]))] := by native_decide
+
+-- Only the negative presence leaf is omission-responsible, and with it only its own side and
+-- that side's index; the positive right-hand leaf is referenced alone.
+example : referencesRun "FieldNotFilled(L/N) And FieldFilled(R/N)" =
+    some [("/Form[1]/L[-5]/N", .inr (
+      ["/Form[1]/L[-5]/Key", "/Form[1]/L[-5]/N", "Form/R[2]/Key", "Form/R[2]/N"],
+      ["/Form[1]/L[-5]/Key", "/Form[1]/L[-5]/N"]))] := by native_decide
+
+private def sideDocument (left right : List Json) : Json :=
+  .mkObj [("Form", .mkObj [("L", .arr left.toArray), ("R", .arr right.toArray)])]
+
+-- A group operand expands to its whole subtree (here the extra `M`, which no field operand names),
+-- reachable through the negative group predicate on the unmatched side.
+example : referencesOf (rule "GroupNotFilled(L) And FieldFilled(R/N)") atomModel
+    (sideDocument [] [rightRow "Beta" "2" ""]) =
+    some [("/Form[1]/L[-5]/N", .inr (
+      ["/Form[1]/L[-5]/Key", "/Form[1]/L[-5]/M", "/Form[1]/L[-5]/N", "Form/R/Key", "Form/R/N"],
+      ["/Form[1]/L[-5]/Key", "/Form[1]/L[-5]/M", "/Form[1]/L[-5]/N"]))] := by native_decide
+
+example : referencesOf (rule "GroupFilled(L) And GroupFilled(R)") atomModel
+    (.mkObj [("Form", .mkObj [("L", .arr #[leftRow "Alpha" "3" "4"]),
+      ("R", .arr #[rightRow "Alpha" "8" "2024-03-15"])])]) =
+    some [("Form/L/N", .inr (
+      ["Form/L/Key", "Form/L/M", "Form/L/N", "Form/R/D", "Form/R/Key", "Form/R/N"], []))] := by native_decide
+
+-- The root group's presence names no field, so the unreferenced `M` and `D` stay out.
+example : referencesOf (rule "GroupFilled(/Form) And FieldFilled(L/N) And FieldFilled(R/N)") atomModel
+    (.mkObj [("Form", .mkObj [("L", .arr #[leftRow "Alpha" "3" "4"]),
+      ("R", .arr #[rightRow "Alpha" "8" "2024-03-15"])])]) =
+    some [("Form/L/N", .inr (["Form/L/Key", "Form/L/N", "Form/R/Key", "Form/R/N"], []))] := by native_decide
+
+-- Group expansions the retained populations do not settle are refused, each beside an admitted twin
+-- that differs only in the refused feature: a group above the joined groups, and a repeatable
+-- descendant below the joined level.
+private def midModel : FlatModel :=
+  let base := model
+  { base with
+    fields := base.fields.map fun declaration =>
+      { declaration with groupPath := ["Form", "Mid"] ++ declaration.groupPath.drop 1 }
+    repeatableGroups := base.repeatableGroups.map fun group =>
+      { group with path := ["Form", "Mid"] ++ group.path.drop 1 } }
+
+private def midRun (condition : String) : FiredReferences :=
+  referencesOf { rule condition with errorEntityRelPath := "../Mid/L/N" } midModel
+    (.mkObj [("Form", .mkObj [("Mid", groupJson [("Alpha", "3")] [("Alpha", "8")])])])
+
+example : midModel.validate.isOk = true := by native_decide
+
+example : midRun "[Mid/L/N] < [Mid/R/N]" =
+    some [("Form/Mid/L/N", .inr (
+      ["Form/Mid/L/Key", "Form/Mid/L/N", "Form/Mid/R/Key", "Form/Mid/R/N"], []))] := by native_decide
+
+example : midRun "GroupFilled(Mid) And [Mid/L/N] < [Mid/R/N]" = some [("Form/Mid/L/N", .inl (.groupAboveJoin ["Form", "Mid"]))] := by
+  native_decide
+
+private def nestedModel : FlatModel :=
+  let base := model
+  { base with
+    fields := base.fields ++ [
+      { id := 7, name := "Q", groupPath := ["Form", "L", "Sub"], repeatableScope := [10, 11],
+        policy := { kind := .string } }]
+    repeatableGroups := base.repeatableGroups ++ [
+      { level := 11, path := ["Form", "L", "Sub"], repeatability := some 2 }] }
+
+private def nestedRun (condition : String) : FiredReferences :=
+  referencesOf (rule condition) nestedModel
+    (sideDocument [.mkObj [("Key", "Alpha"), ("N", "3"), ("Sub", .arr #[.mkObj [("Q", "x")]])]]
+      [atomRow [("Key", "Alpha"), ("N", "8")]])
+
+example : nestedModel.validate.isOk = true := by native_decide
+
+example : nestedRun "GroupFilled(R) And [L/N] < [R/N]" = some [("Form/L/N", .inr (
+    ["Form/L/Key", "Form/L/N", "Form/R/Key", "Form/R/N"], []))] := by native_decide
+
+example : nestedRun "GroupFilled(L) And [L/N] < [R/N]" = some [("Form/L/N", .inl (.repeatableBelowJoin 7))] := by
+  native_decide
+
 end A12Kernel.Dm.ParallelFieldRuleLocks
