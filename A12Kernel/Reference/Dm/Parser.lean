@@ -15,7 +15,19 @@ of each check is the static-legality work's, not this reader's.
 
 namespace A12Kernel.Dm
 
-private abbrev P := StateT Nat (ReaderT (Array Lexeme) (Except SyntaxError))
+/-- What the parse completed that the Kernel checks as soon as it completes (spec/12 §12.3): a reference
+whose path closed, and the steps of a path still open, each step a segment the parse read up to its `/`. -/
+inductive ParseEvent where
+  | reference (path : Path)
+  | openPath (path : Path)
+  deriving Repr, BEq
+
+/-- The cursor over the lexemes, and beneath the failure the events completed so far, which survive a
+syntax error. -/
+private abbrev P := StateT Nat (ReaderT (Array Lexeme) (ExceptT SyntaxError (StateM (Array ParseEvent))))
+
+private def run (grammar : P α) (lexemes : Array Lexeme) : Except SyntaxError α × Array ParseEvent :=
+  Id.run (((grammar.run' 0).run lexemes).run.run #[])
 
 private def peek : P (Option Token) := do
   return (← read)[← get]?.map (·.token)
@@ -71,9 +83,14 @@ private def segment : P Segment := do
   | some (.name name _) => advance; return { name, star := ← acceptSymbol "*" }
   | _ => failHere .expectedTokenNotFound
 
-private partial def segments : P (List Segment) := do
+/-- The segments after `header`'s prefix, each step read up to its `/` recorded as the open path so far. -/
+private partial def segments (header : Path) : P (List Segment) := do
   let first ← segment
-  if ← acceptSymbol "/" then return first :: (← segments) else return [first]
+  if ← acceptSymbol "/" then
+    let header := { header with segments := header.segments ++ [first] }
+    modifyThe (Array ParseEvent) (·.push (.openPath header))
+    return first :: (← segments header)
+  else return [first]
 
 /-- An up-run: each `..` climbs one level, and a name written directly after the last one is its
 turning-point label rather than a descent, which needs the `/`. -/
@@ -90,13 +107,17 @@ private partial def ups : P (Nat × Option String) := do
   | some (.name label _) => advance; return (1, some label)
   | _ => return (1, none)
 
+/-- A path; once it closes, its steps are no longer open. -/
 private def path : P Path := do
+  let opened := (← getThe (Array ParseEvent)).size
   let correlated ← acceptSymbol "$"
   let absolute ← acceptSymbol "/"
   let (ups, turningPoint) ← if absolute then pure (0, none) else ups
-  let segments ← if ups == 0 then segments
-    else if ← acceptSymbol "/" then segments else pure []
-  return { correlated, absolute, ups, turningPoint, segments }
+  let header : Path := { correlated, absolute, ups, turningPoint, segments := [] }
+  let segments ← if ups == 0 then segments header
+    else if ← acceptSymbol "/" then segments header else pure []
+  modifyThe (Array ParseEvent) (·.shrink opened)
+  return { header with segments }
 
 mutual
 private partial def indexSuffix : P (Option IndexKey) := do
@@ -108,6 +129,7 @@ private partial def indexSuffix : P (Option IndexKey) := do
 
 private partial def reference : P Reference := do
   let target ← path
+  modifyThe (Array ParseEvent) (·.push (.reference target))
   let category ← if ← acceptSymbol "->" then
       match ← peek with
       | some (.name name _) => advance; pure (some name)
@@ -251,14 +273,19 @@ private def preamble : P (List String) := do
     return [name]
   else return []
 
-/-- Read one condition or operation text from its lexemes. -/
-def parseLexemes (lexemes : Array Lexeme) : Except SyntaxError Text :=
+/-- Read one condition or operation text from its lexemes, with the events completed before the text
+ended or failed, in completion order. -/
+def parseLexemesRecording (lexemes : Array Lexeme) : Except SyntaxError Text × Array ParseEvent :=
   let grammar : P Text := do
     let suppressed ← preamble
     let body ← condition true
     if (← peek).isSome then failHere .unexpectedToken
     return { suppressed, body }
-  (grammar.run' 0).run lexemes
+  run grammar lexemes
+
+/-- Read one condition or operation text from its lexemes. -/
+def parseLexemes (lexemes : Array Lexeme) : Except SyntaxError Text :=
+  (parseLexemesRecording lexemes).1
 
 /-- Read one condition or operation text in a model's language. -/
 def parseText (language : Language) (text : String) : Except SyntaxError Text := do
@@ -272,7 +299,7 @@ def parseModelPath (language : Language) (text : String) : Except SyntaxError Pa
     let result ← path
     if (← peek).isSome then failHere .unexpectedToken
     return result
-  (grammar.run' 0).run lexemes
+  (run grammar lexemes).1
 
 mutual
 /-- Whether every parenthesis groups a condition in a condition position (spec §12.3): a whole

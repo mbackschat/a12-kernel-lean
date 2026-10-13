@@ -75,6 +75,7 @@ import A12Kernel.Reference.Dm.HavingGroupAdmissionLocks
 import A12Kernel.Reference.Dm.ReaderLocks
 import A12Kernel.Reference.Dm.ModelSurfaceLocks
 import A12Kernel.Reference.Dm.ModelConsistencyLocks
+import A12Kernel.Reference.Dm.ParseDefectClassLocks
 import A12Kernel.Reference.Dm.SupportedCharactersLocks
 import A12Kernel.Reference.Dm.EnumerationDeclarationNotificationLocks
 import A12Kernel.Reference.Dm.OverRepetitionOccurrenceLocks

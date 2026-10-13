@@ -160,7 +160,7 @@ def isNameChar (c : Char) : Bool :=
   c.isAlphanum || c == '_' || c == ':' || "äöüÄÖÜß".contains c
 
 private def symbols : List String :=
-  ["==", "!=", "<=", ">=", "->", "..", "<", ">", "+", "-", "*", "/", "^", "$", "(", ")", "[", "]",
+  ["==", "!=", "<=", ">=", "->", "..", ".", "<", ">", "+", "-", "*", "/", "^", "$", "(", ")", "[", "]",
    "{", "}", ","]
 
 private partial def skipWhitespace (chars : Array Char) (index : Nat) : Nat :=
