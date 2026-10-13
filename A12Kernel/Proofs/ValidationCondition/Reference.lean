@@ -140,24 +140,27 @@ theorem checkedTokenEntityOperand_star_sourcePointer
         rw [← projected]
         simp
 
-private theorem mapM_concreteFieldPointer_exact (environment : Env) :
-    ∀ (declarations : List FlatFieldDecl) (pointers : List MessagePointer),
-      declarations.mapM (concreteFieldPointer · environment) = .ok pointers →
+private theorem mapM_pointers_exact
+    (project : FlatFieldDecl → Except ReferenceProjectionError MessagePointer) :
+    ∀ (declarations : List FlatFieldDecl),
+      (∀ declaration ∈ declarations, ∀ pointer, project declaration = .ok pointer →
+        pointer.toCellAddr?.isSome = true) →
+      ∀ (pointers : List MessagePointer), declarations.mapM project = .ok pointers →
         ∀ pointer ∈ pointers, pointer.toCellAddr?.isSome = true := by
   intro declarations
   induction declarations with
   | nil =>
-      intro pointers projected
+      intro _ pointers projected
       change Except.ok [] = Except.ok pointers at projected
       cases projected
       simp
   | cons declaration remaining inductionHypothesis =>
-      intro pointers projected
+      intro exact pointers projected
       simp only [List.mapM_cons] at projected
-      cases head : concreteFieldPointer declaration environment with
+      cases head : project declaration with
       | error _ => simp [head, Bind.bind, Except.bind] at projected
       | ok pointer =>
-          cases tail : remaining.mapM (concreteFieldPointer · environment) with
+          cases tail : remaining.mapM project with
           | error _ => simp [head, tail, Bind.bind, Except.bind] at projected
           | ok rest =>
               simp only [head, tail, Bind.bind, Except.bind, pure, Except.pure,
@@ -166,17 +169,28 @@ private theorem mapM_concreteFieldPointer_exact (environment : Env) :
               intro candidate member
               rcases List.mem_cons.mp member with equal | member
               · rw [equal]
-                exact (concreteFieldPointer_exact declaration environment pointer
-                  head).2
-              · exact inductionHypothesis rest tail candidate member
+                exact exact declaration List.mem_cons_self pointer head
+              · exact inductionHypothesis
+                  (fun other inRemaining => exact other (List.mem_cons_of_mem _ inRemaining))
+                  rest tail candidate member
 
-/-- Every pointer a sieved family emits recovers an exact document address. This is the counterpart of [`reopenedFieldPointer_notExact`](A12Kernel.reopenedFieldPointer_notExact): the two membership strategies differ in pointer *shape*, so a consumer reads the shape off the family's strategy rather than inspecting each pointer, and a sieved family can never smuggle in a wildcard. -/
-theorem sievedFieldPointers_exact (model : FlatModel)
+/-- A sieved family emits only exact document addresses wherever the firing environment binds every
+repeatable level of each referenced declaration, the counterpart of
+[`reopenedFieldPointer_notExact`](A12Kernel.reopenedFieldPointer_notExact). Only a subtree field below a
+level the rule does not bind is wildcarded. -/
+theorem sievedFieldPointers_exact_of_bound (model : FlatModel)
     (references : FlatFieldDecl → Bool) (environment : Env)
+    (bound : ∀ declaration ∈ model.fields, references declaration = true →
+      environment.bindsScope declaration = true)
     (pointers : List MessagePointer)
     (projected : sievedFieldPointers model references environment = .ok pointers) :
-    ∀ pointer ∈ pointers, pointer.toCellAddr?.isSome = true :=
-  mapM_concreteFieldPointer_exact environment _ _ projected
+    ∀ pointer ∈ pointers, pointer.toCellAddr?.isSome = true := by
+  refine mapM_pointers_exact (sievedFieldPointer · environment) _ ?_ pointers projected
+  intro declaration member pointer head
+  obtain ⟨declared, referenced⟩ := List.mem_filter.mp member
+  unfold sievedFieldPointer at head
+  rw [if_pos (bound declaration declared referenced)] at head
+  exact (concreteFieldPointer_exact declaration environment pointer head).2
 
 /-- The projection is blind to the connective, which is the precise sense in which it is structural: a reference is authored, not decisive, so an `Or` branch that never decided still contributes. -/
 theorem referencePointers_connective_blind (left right : ValidationCondition model)

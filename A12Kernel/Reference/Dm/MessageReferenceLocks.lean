@@ -147,4 +147,30 @@ example : ((omissionRule? "[P] > 0").bind fun rule =>
     (rule.core.emit (.fired .value)).message?.bind fun message =>
       (rule.condition.core.messageReferences message []).toOption.map (·.fillToFix)) = some [] := by native_decide
 
+private def subtreeModel : FlatModel :=
+  let field (id : Nat) (name : String) (groupPath : GroupPath) (repeatableScope : List Nat) : FlatFieldDecl :=
+    { id, name, groupPath, repeatableScope, policy := { kind := .number { scale := 0, signed := true } } }
+  { fields := [field 1 "Anchor" ["Form"] [],
+      field 2 "N" ["Form", "Other"] [],
+      field 3 "M" ["Form", "Parent", "Children"] [10],
+      field 4 "N" ["Form", "Parent", "Children"] [10],
+      field 5 "K" ["Form", "Parent", "Children", "Parts"] [10, 20]]
+    repeatableGroups := [
+      { level := 10, path := ["Form", "Parent", "Children"], repeatability := some 2 },
+      { level := 20, path := ["Form", "Parent", "Children", "Parts"], repeatability := some 2 }] }
+
+/-- A fixed group count over a group holding repeatable levels the rule does not bind references every
+row of them: the unbound level and each deeper one are wildcarded rather than refused. Kernel oracle:
+the retained group-relevance-union capture's `CountZero` messages. -/
+example : (do
+    let dm : DmModel := { flat := subtreeModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    let rule ← (checkRule dm .english {
+      name := "CountZero", group := ["Form"], errorCode := "CountZero", errorEntityRelPath := "../Anchor",
+      severity := "ERROR", condition := "FieldFilled(Anchor) And NumberOfFilledGroups(Parent, Other) == 0" }).toOption
+    let pointers ← (rule.condition.core.referencePointers []).toOption
+    pure ((pointers.map (renderPointer subtreeModel)).mergeSort (compare · · != .gt))) =
+    some ["/Form[1]/Parent[1]/Children[0]/M", "/Form[1]/Parent[1]/Children[0]/N",
+      "/Form[1]/Parent[1]/Children[0]/Parts[0]/K", "Form/Anchor", "Form/Other/N"] := by
+  native_decide
+
 end A12Kernel.Dm.MessageReferenceLocks

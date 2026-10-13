@@ -162,6 +162,9 @@ prints one tab-separated line per instance:
 
 `request  row  rule  code  tier  construct  detail`
 
+A rule whose messages match also prints a line with the code `references`, comparing those messages'
+`referenced` and `fillToFix` pointer sets.
+
 where `tier` is `match`, `tier1` (Lean fires a different message set), `unattributed` (a computation
 sharing a refused computation's target or reading one, directly or through other computations, whose outcome is
 therefore not attributable to it, agreeing or not), `tier2` (Lean cannot represent the
@@ -215,6 +218,20 @@ private def kernelMessages (row : Json) : Option (Bool × List ObservedMessage) 
            pointer := ← (message.getObjValAs? String "field").toOption
            messageType := ← (message.getObjValAs? String "type").toOption
            severity := (message.getObjValAs? String "severity").toOption.getD "ERROR" })
+
+/-- Each message's reference channels as the first engine reported them. -/
+private def kernelReferences (row : Json) : List ObservedReferences := Id.run do
+  let some engines := (row.getObjValAs? (Array Json) "engines").toOption | return []
+  let some first := engines[0]? | return []
+  let some messages := (first.getObjValAs? (Array Json) "messages").toOption | return []
+  let pointers (message : Json) (key : String) : List String :=
+    ((message.getObjValAs? (Array String) key).toOption.getD #[]).toList
+  messages.toList.filterMap fun message => do
+    pure { message := { code := ← (message.getObjValAs? String "code").toOption
+                        pointer := ← (message.getObjValAs? String "field").toOption
+                        messageType := ← (message.getObjValAs? String "type").toOption
+                        severity := (message.getObjValAs? String "severity").toOption.getD "ERROR" }
+           referenced := pointers message "referenced", fillToFix := pointers message "fillToFix" }
 
 private def kernelComputations (row : Json) : Option (List ComputedOutcome) := do
   let engines ← (row.getObjValAs? (Array Json) "engines").toOption
@@ -383,12 +400,16 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
         match checkDocument prepared locale read.data with
         | .error error => line name "-" "-" "tier2" s!"Document\t{(repr error).pretty 200}"
         | .ok checked =>
-            for verdict in replayRules model language world checked kernel do
+            let references := observedRow.map kernelReferences |>.getD []
+            for verdict in replayRules model language world checked kernel references do
+              let ruleName := replayName (model.rules.map (·.name)) verdict.rule.group verdict.rule.name
               if clock?.isNone && readsClock language verdict.rule.condition then
-                line name (replayName (model.rules.map (·.name)) verdict.rule.group verdict.rule.name) verdict.rule.errorCode "tier2" "Clock\tthe request pins no clock"
+                line name ruleName verdict.rule.errorCode "tier2" "Clock\tthe request pins no clock"
               else
-                line name (replayName (model.rules.map (·.name)) verdict.rule.group verdict.rule.name) verdict.rule.errorCode verdict.status.tier
-                  verdict.status.detail
+                line name ruleName verdict.rule.errorCode verdict.status.tier verdict.status.detail
+                -- The reference channels report under the code `references`, an arm of their own.
+                if let some status := verdict.references then
+                  line name ruleName "references" status.tier status.detail
             if let some computed := observedRow.bind kernelComputations then
               replayComputations (line name) clock?.isSome model language world prepared checked computed
 

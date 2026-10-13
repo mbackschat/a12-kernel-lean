@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.GeneratedComputationRule
+import A12Kernel.Elaboration.ValidationCondition.Omission
 
 /-! # Replaying one retained observation row through Lean
 
@@ -17,24 +18,29 @@ namespace A12Kernel.Dm
 inductive RuleStatus
   | matched
   | diverged (lean kernel : List ObservedMessage)
+  | divergedReferences (lean kernel : List String)
   | refused (refusal : Refusal)
   | runFault (detail : String)
   deriving Repr
 
+/-- A rule's verdict, and separately its fired messages' reference channels, compared only where the
+messages themselves matched: the channels are a separate observation of the same messages. -/
 structure RuleVerdict where
   rule : DmRule
   status : RuleStatus
+  references : Option RuleStatus := none
   deriving Repr
 
 def RuleStatus.tier : RuleStatus → String
   | .matched => "match"
-  | .diverged _ _ => "tier1"
+  | .diverged _ _ | .divergedReferences _ _ => "tier1"
   | .refused _ => "tier2"
   | .runFault _ => "fault"
 
 def RuleStatus.detail : RuleStatus → String
   | .matched => ""
   | .diverged lean kernel => s!"Divergence\tlean={lean} kernel={kernel}"
+  | .divergedReferences lean kernel => s!"References\tlean={lean} kernel={kernel}"
   | .refused refusal => s!"{refusal.construct}\t{oneLine refusal.detail}"
   | .runFault detail => s!"Fault\t{oneLine detail}"
 
@@ -67,10 +73,49 @@ example : errorFieldPath (errorAt ["Form", "Rows"] "../../Total") = "Form/Total"
     errorFieldPath (errorAt ["Form"] "../Rows/X") = "Form/Rows/X" ∧
     unindexedPointer "/Form[1]/Rows[0]/X" = "Form/Rows/X" := by native_decide
 
+/-- One message's reference channels as the probe reports them: its pointer and type, and the
+`referenced` and `fillToFix` pointer sets, each sorted because the Kernel collects them in hash sets. -/
+structure ObservedReferences where
+  message : ObservedMessage
+  referenced : List String
+  fillToFix : List String
+  deriving Repr, BEq, Inhabited
+
+def ObservedReferences.render (observed : ObservedReferences) : String :=
+  s!"{observed.message} referenced={observed.referenced} fillToFix={observed.fillToFix}"
+
+private def sortedSet (pointers : List String) : List String :=
+  pointers.eraseDups.mergeSort (compare · · != .gt)
+
+/-- Project every fired message's reference channels at the environment it fired at, with the
+message-cache inputs of full validation for selected operands, and compare them as sets. -/
+def replayReferences (model : FlatModel) (world : World) (document : CheckedDocument model)
+    (rule : CheckedResolvedValidationRule model) (kernel : List ObservedReferences) : RuleStatus :=
+  let inputs := (document.applyFullIndexPreliminary.toOption.bind fun preliminary =>
+    preliminary.messageReferenceInputs.toOption)
+  match runRuleAt world document rule with
+  | .error detail => .runFault detail
+  | .ok fired =>
+      match fired.mapM fun (environment, message) =>
+          (rule.condition.core.messageReferences message environment inputs).map
+            fun (references : ValidationMessageReferences) =>
+            ({ message := observe model message
+               referenced := sortedSet (references.referenced.map (renderPointer model))
+               fillToFix := sortedSet (references.fillToFix.map (renderPointer model)) } : ObservedReferences) with
+      | .error error => .refused { construct := "References", detail := (repr error).pretty }
+      | .ok lean =>
+          let normalize (observed : List ObservedReferences) : List String :=
+            (observed.map ObservedReferences.render).mergeSort (fun a b => compare a b != .gt)
+          let kernel := kernel.map fun (observed : ObservedReferences) =>
+            { observed with referenced := sortedSet observed.referenced, fillToFix := sortedSet observed.fillToFix }
+          if normalize lean == normalize kernel then .matched
+          else .divergedReferences (normalize lean) (normalize kernel)
+
 /-- Compare every authored and generated rule of `model` on one checked document against the
 Kernel's messages, attributed by code and error field. -/
 def replayRules (model : DmModel) (language : Language) (world : World)
-    (checked : CheckedDocument model.flat) (kernel : List ObservedMessage) : List RuleVerdict :=
+    (checked : CheckedDocument model.flat) (kernel : List ObservedMessage)
+    (kernelReferences : List ObservedReferences := []) : List RuleVerdict :=
   -- Rules read required-empty cells as formally unavailable (spec/03 §B.2), so they run on the
   -- document carrying full validation's generated `.required` findings.
   let validated := checked.fullRequiredEvaluations.map checked.withRequiredFindings
@@ -82,18 +127,21 @@ def replayRules (model : DmModel) (language : Language) (world : World)
     -- A message names its code and error field, so only two rules sharing both cannot be told apart.
     let shared := (rules.filter fun other =>
       other.errorCode == rule.errorCode && errorFieldPath other == errorFieldPath rule).length > 1
-    let status := if shared then .refused { construct := "ErrorCode", detail := s!"{rule.errorCode} is shared" }
-      else match checkValidationRule model language rule world with
-      | .error refusal => .refused refusal
-      | .ok checked' =>
-          match validated with
-          | .error error => .runFault (repr error).pretty
-          | .ok document =>
-          match runValidationRule world document checked' with
-          | .error detail => .runFault detail
-          | .ok messages =>
-              let actual := (messages.map (observe model.flat)).mergeSort (compare · · != .gt)
-              if actual == expected then .matched else .diverged actual expected
-    { rule, status }
+    let checkedRule := if shared then .error { construct := "ErrorCode", detail := s!"{rule.errorCode} is shared" }
+      else checkValidationRule model language rule world
+    match checkedRule, validated with
+    | .error refusal, _ => { rule, status := .refused refusal }
+    | .ok _, .error error => { rule, status := .runFault (repr error).pretty }
+    | .ok checked', .ok document =>
+        match runValidationRule world document checked' with
+        | .error detail => { rule, status := .runFault detail }
+        | .ok messages =>
+            let actual := (messages.map (observe model.flat)).mergeSort (compare · · != .gt)
+            if actual != expected then { rule, status := .diverged actual expected } else
+            let references := match checked' with
+              | .parallel _ => none
+              | .ordinary ordinary => some (replayReferences model.flat world document ordinary
+                  (kernelReferences.filter (attributed ·.message)))
+            { rule, status := .matched, references }
 
 end A12Kernel.Dm

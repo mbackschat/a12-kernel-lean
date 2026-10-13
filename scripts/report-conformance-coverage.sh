@@ -303,14 +303,14 @@ find evidence/kernel-30.8.1/captures -type f \( -name 'req*.json' -o -name 'requ
 replay_requests="$(count "$work/replay-requests")"
 # shellcheck disable=SC2046
 .lake/build/bin/a12-kernel-replay $(cat "$work/replay-requests") > "$work/replay"
-# Columns: request, row, rule or computation, code or `compute`, tier, construct, detail. A line whose
+# Columns: request, row, rule or computation, code, `compute` or a rule's `references`, tier, construct, detail. A line whose
 # third column is `-` speaks for a whole row, not one rule.
 replay_tally() {
   awk -F'\t' -v arm="$1" -v tier="$2" '
-    $3 != "-" && (arm == "compute" ? $4 == "compute" : $4 != "compute") && $5 == tier { n++ }
+    $3 != "-" && (arm == "rule" ? $4 != "compute" && $4 != "references" : $4 == arm) && $5 == tier { n++ }
     END { print n + 0 }' "$work/replay"
 }
-for replay_arm in rule compute; do
+for replay_arm in rule compute references; do
   for replay_tier in match tier1 tier2 unattributed fault; do
     printf -v "replay_${replay_arm}_${replay_tier}" '%s' "$(replay_tally "$replay_arm" "$replay_tier")"
   done
@@ -328,7 +328,7 @@ replay_tier1=$(( replay_rule_tier1 + replay_compute_tier1 ))
 # A cluster counts instances (one rule or computation on one row) and distinct members (one rule or
 # computation of one request), so a heavily replayed request does not dominate the ranking alone.
 awk -F'\t' '$5 == "tier2" {
-    arm = ($3 == "-" ? "row" : ($4 == "compute" ? "computation" : "validation"))
+    arm = ($3 == "-" ? "row" : ($4 == "compute" ? "computation" : ($4 == "references" ? "references" : "validation")))
     key = arm "\t" $6; instances[key]++
     if (!((key, $1, $3) in seen)) { seen[key, $1, $3] = 1; members[key]++ }
   }
@@ -486,7 +486,7 @@ cat <<REPLAY
 
 The [replay executable](../A12Kernel/ReplayMain.lean) reads each of the ${replay_requests} retained \`kernelProbe\` requests with document rows, its DM-JSON model and its documents. It parses every rule condition and computation operation and lowers each onto the checked carriers the theory already has. Each rule and computation is then run and compared with the Kernel's retained artifact.
 
-A rule is compared by the messages it fires: code, pointer and message type. A computation is compared by the Kernel's change projection for its target.
+A rule is compared by the messages it fires: code, pointer and message type. Where those agree, its fired messages' \`referenced\` and \`fillToFix\` pointer sets are compared again as a separate references instance. A computation is compared by the Kernel's change projection for its target.
 
 Each instance, one rule or computation on one document row, lands in one tier:
 
@@ -497,13 +497,13 @@ Each instance, one rule or computation on one document row, lands in one tier:
 - **fault**: Lean admitted the rule or plan but failed running it.
 - **absent**: no comparable Kernel observation: none retained, an unreadable artifact or model file, or engines that disagree. These are counted as rows below.
 
-| | rules | computations |
-|---|---|---|
-| match | ${replay_rule_match} | ${replay_compute_match} |
-| tier 1 | ${replay_rule_tier1} | ${replay_compute_tier1} |
-| tier 2 | ${replay_rule_tier2} | ${replay_compute_tier2} |
-| unattributed | ${replay_rule_unattributed} | ${replay_compute_unattributed} |
-| fault | ${replay_rule_fault} | ${replay_compute_fault} |
+| | rules | computations | rule references |
+|---|---|---|---|
+| match | ${replay_rule_match} | ${replay_compute_match} | ${replay_references_match} |
+| tier 1 | ${replay_rule_tier1} | ${replay_compute_tier1} | ${replay_references_tier1} |
+| tier 2 | ${replay_rule_tier2} | ${replay_compute_tier2} | ${replay_references_tier2} |
+| unattributed | ${replay_rule_unattributed} | ${replay_compute_unattributed} | ${replay_references_unattributed} |
+| fault | ${replay_rule_fault} | ${replay_compute_fault} | ${replay_references_fault} |
 
 Of the ${replay_rows} rows, ${replay_rows_absent} have no matching row in a retained artifact, and ${replay_rows_refused} could not be read or prepared as a whole. Matching instances are calibration over this population only; they make no claim about a model the population does not contain.
 

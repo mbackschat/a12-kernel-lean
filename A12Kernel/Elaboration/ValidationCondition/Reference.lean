@@ -120,15 +120,30 @@ def starFieldPointer (checked : CheckedStarFieldPath model) (environment : Env) 
     Except ReferenceProjectionError MessagePointer :=
   reopenedFieldPointer checked.declaration checked.path.firstStar environment
 
+/-- Whether the firing environment binds every repeatable level of the declaration's own scope. -/
+def Env.bindsScope (environment : Env) (declaration : FlatFieldDecl) : Bool :=
+  declaration.repeatableScope.all fun level => (environment.bindingAt level).toOption.isSome
+
+/-- One sieved reference. A declaration the firing environment binds is its exact instance; a subtree
+field below a repeatable level the rule does not bind keeps the bound prefix and wildcards that level
+and every deeper one, as the retained Kernel messages of a fixed group count over such a subtree report
+it (generated self-validation replay, docs/sources/model-structure-and-declaration-probes.md#src-generated-self-validation-k14). -/
+def sievedFieldPointer (declaration : FlatFieldDecl) (environment : Env) :
+    Except ReferenceProjectionError MessagePointer :=
+  if environment.bindsScope declaration then concreteFieldPointer declaration environment
+  else reopenedFieldPointer declaration
+    (declaration.repeatableScope.takeWhile fun level => (environment.bindingAt level).toOption.isSome).length
+    environment
+
 /-- Membership by *sieving* the model's declarations through a family's own reference predicate, rather than by traversing its operands.
 
     This is sound exactly when the family cannot carry a starred operand and its predicate is exhaustive over the family's constructors with no catch-all: the sieve then inherits precisely that predicate's coverage and can neither miss a reference it reports nor invent one. The same shortcut would be wrong for a starred family, because the predicate reports the starred field while its coordinates are not concrete.
 
-    Every pointer it emits therefore comes from [`concreteFieldPointer`](A12Kernel.concreteFieldPointer) and is an exact instance address; `sievedFieldPointers_exact` proves that. A reference the firing environment does not bind — a subtree field below a repeatable level deeper than the rule's own scope — fails the whole projection at that exact level instead of being dropped or wildcarded. -/
+    Each pointer comes from [`sievedFieldPointer`](A12Kernel.sievedFieldPointer): exact wherever the firing environment binds the declaration, which `sievedFieldPointers_exact_of_bound` proves, and wildcarded below a level it does not bind. -/
 def sievedFieldPointers (model : FlatModel)
     (references : FlatFieldDecl → Bool) (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  (model.fields.filter references).mapM (concreteFieldPointer · environment)
+  (model.fields.filter references).mapM (sievedFieldPointer · environment)
 
 /-- A group operand contributes the fields of its **whole subtree**, recursively and never a pointer to the group. The extent itself is [`FlatModel.groupSubtreeFields`](A12Kernel.FlatModel.groupSubtreeFields), shared with the entity list's group slot so that one site cannot disagree with another about how far a group reaches.
 

@@ -1371,7 +1371,7 @@ run_cmd do
 #print axioms A12Kernel.starFieldPointer_notExact
 #print axioms A12Kernel.starFieldPointer_arity
 #print axioms A12Kernel.checkedTokenEntityOperand_star_sourcePointer
-#print axioms A12Kernel.sievedFieldPointers_exact
+#print axioms A12Kernel.sievedFieldPointers_exact_of_bound
 #print axioms A12Kernel.referencePointers_connective_blind
 #print axioms A12Kernel.FlatPresenceContradictionWitness.neverFires
 #print axioms A12Kernel.numericTolerance_acceptsScales

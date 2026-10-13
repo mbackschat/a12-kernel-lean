@@ -132,17 +132,18 @@ def observe (model : FlatModel) (message : FlatRuleMessage) : ObservedMessage :=
     severity := match message.severity with
       | .error => "ERROR" | .warning => "WARNING" | .info => "INFO" }
 
-/-- Run one checked rule over a checked document on its certified iteration plan. -/
-def runRule (world : World) (checked : CheckedDocument model)
-    (rule : CheckedResolvedValidationRule model) : Except String (List FlatRuleMessage) :=
+/-- Run one checked rule over a checked document on its certified iteration plan, keeping the
+environment each message fired at, which its reference channels are projected from. -/
+def runRuleAt (world : World) (checked : CheckedDocument model)
+    (rule : CheckedResolvedValidationRule model) : Except String (List (Env × FlatRuleMessage)) :=
   match rule.ordinaryIterationPlan with
   | .rows _ =>
       match rule.evalOrdinaryRepeatableFull checked (some world) with
-      | .ok rows => .ok (rows.filterMap (·.2.message?))
+      | .ok rows => .ok (rows.filterMap fun (environment, outcome) => outcome.message?.map (environment, ·))
       | .error error => .error (repr error).pretty
   | .once _ =>
       match rule.evalOrdinaryOnceFull checked (some world) with
-      | .ok (_, outcome) => .ok outcome.message?.toList
+      | .ok (environment, outcome) => .ok (outcome.message?.toList.map (environment, ·))
       | .error error => .error (repr error).pretty
   | .scalar =>
       let context : AddressedValidationEvaluationContext model := {
@@ -160,7 +161,13 @@ def runRule (world : World) (checked : CheckedDocument model)
       | .error error => .error (repr error).pretty
       | .ok hasContent =>
           match rule.evalAddressedFull context hasContent with
-          | .ok outcome => .ok outcome.message?.toList
+          | .ok outcome => .ok (outcome.message?.toList.map ([], ·))
           | .error error => .error (repr error).pretty
+
+
+/-- Run one checked rule over a checked document on its certified iteration plan. -/
+def runRule (world : World) (checked : CheckedDocument model)
+    (rule : CheckedResolvedValidationRule model) : Except String (List FlatRuleMessage) :=
+  (runRuleAt world checked rule).map (·.map (·.2))
 
 end A12Kernel.Dm
