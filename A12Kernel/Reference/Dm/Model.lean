@@ -314,6 +314,11 @@ private structure ReadState where
   filteredFields : Array (GroupPath × String × List RepeatableLevel) := #[]
   /-- Each group's sort nominations as written. -/
   sortNominations : Array (GroupPath × List String) := #[]
+  /-- How many field elements the walk has met, counting a field whose type is refused but not one the
+  variant filter removes: a group has no field in its subtree exactly when this did not move across it. -/
+  fieldsSeen : Nat := 0
+  /-- Each nonrepeatable group the walk left without meeting a field in its subtree. -/
+  emptyNonrepeatableGroups : Array GroupPath := #[]
 
 /-- KF297's optional computation members default only on absence/null; scalar coercion must
 still reach closed-set admission, while containers are reader errors. -/
@@ -437,8 +442,12 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
       if let .ok (sorts : Array Json) := body.getObjValAs? (Array Json) "sortFields" then
         let names ← StateT.lift (sorts.toList.mapM (·.getObjValAs? String "name"))
         modify fun state => { state with sortNominations := state.sortNominations.push (groupPath, names) }
+      let fieldsBefore := (← get).fieldsSeen
       for child in (← body.getObjValAs? (Array Json) "elements") do
         readElement groupPath scope child
+      if repeatability ≤ 1 && (← get).fieldsSeen == fieldsBefore then
+        modify fun state => { state with
+          emptyNonrepeatableGroups := state.emptyNonrepeatableGroups.push groupPath }
   | "Field" =>
       let state ← get
       if !(← StateT.lift (acceptedByVariant state.variant body)) then
@@ -447,6 +456,7 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         | none => modify fun state => { state with
             filteredFields := state.filteredFields.push (path, name, scope) }
         return
+      modify fun state => { state with fieldsSeen := state.fieldsSeen + 1 }
       let body ← match resolveTypeDefinition state.typeDefinitions body with
         | .ok resolved => pure resolved
         | .error reason => do
@@ -595,6 +605,7 @@ private def readModelCore (json : Json)
     fields := state.fields.toList
     repeatableGroups := groups
     nonrepeatableIndexFields
+    emptyNonrepeatableGroups := state.emptyNonrepeatableGroups.toList
     legalCharset
     fieldRefByShortNameAllowed := (bool? config "fieldRefByShortNameAllowed").getD false
     baseYear

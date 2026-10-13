@@ -18,10 +18,10 @@ inductive StarredGroupElabError where
   /-- A group path whose first segment names no declared root; see `FlatModel.declaresRoot`. -/
   | unknownRootGroup (path : GroupPath)
   /-- The named group carries no field anywhere in its subtree. The Kernel admits such a group in a
-  model and then refuses every operand naming it, on a code of its own rather than the unknown-group
-  one. Only a repeatable group reaches this here, which is not an assumption but a consequence:
-  `hasGroupPath_nonrepeatable_contributesField` proves that a present nonrepeatable group carries a
-  field, so the nonrepeatable terminal branch cannot reach this arm. -/
+  model and refuses every operand naming it, on a code of its own rather than the unknown-group one.
+  A repeatable group reaches this arm through the terminal-repeatable branch and a declared
+  nonrepeatable one through `starredGroupMiss`, because
+  `hasGroupPath_nonrepeatable_contributesField` keeps every present nonrepeatable group populated. -/
   | groupHasNoFields (path : GroupPath)
   | path (error : StarPathElabError)
   | incoherentCore
@@ -39,8 +39,7 @@ presence; the other carriers read the root by the same check, an assumption
 [SG9](../../docs/gaps/paths-and-groups.md#gap-sg9) records. -/
 def StarredGroupElabError.emptyGroupDiagnostic? :
     StarredGroupElabError → Option KernelStaticDiagnostic
-  | .groupHasNoFields groupPath =>
-      some (if groupPath.length == 1 then .rootGroupIsEmpty else .groupIsEmpty)
+  | .groupHasNoFields groupPath => some groupPath.emptyGroupDiagnostic
   | .resolve _ | .invalidGroupReference _ | .unknownGroup _ | .unknownRootGroup _ | .path _
   | .incoherentCore => none
 
@@ -62,28 +61,30 @@ def StarredGroupElabError.placeBelowStar (model : FlatModel) (declaringGroup wri
   | .path error => .path (error.placeBelowStar model declaringGroup writtenGroup)
   | error => error
 
-/-- A starred group path naming no declared group answers in the Kernel's segment order: an earlier
-    star landing on a nonrepeatable segment first, then the root or entity miss by its first
-    segment. -/
+/-- A group operand naming no present group answers in the Kernel's segment order: an earlier star
+    landing on a nonrepeatable segment first, then a declared group without a field, then the root or
+    entity miss by its first segment. The empty group is measured on an unstarred operand only; a
+    star written on it keeps the unknown-group answer, which claims nothing about that composition. -/
 def starredGroupMiss (model : FlatModel) (basePath : GroupPath)
     (groups : List SurfaceStarGroupSegment) (groupPath : GroupPath) : StarredGroupElabError :=
   match firstStarOnNamedNonrepeatable? model basePath groups with
   | some path => .path (.wildcardOnNonrepeatable path)
   | none =>
-      if groupPath.head?.any model.declaresRoot then .unknownGroup groupPath
+      if model.declaresEmptyGroup groupPath && !groups.any (·.starred) then .groupHasNoFields groupPath
+      else if groupPath.head?.any model.declaresRoot then .unknownGroup groupPath
       else .unknownRootGroup groupPath
 
 theorem starredGroupMiss_ne_incoherentCore (model : FlatModel) (basePath : GroupPath)
     (groups : List SurfaceStarGroupSegment) (groupPath : GroupPath) :
     starredGroupMiss model basePath groups groupPath ≠ .incoherentCore := by
   unfold starredGroupMiss
-  split <;> (try split) <;> simp
+  split <;> (try split) <;> (try split) <;> simp
 
 theorem starredGroupMiss_ne_path_incoherentCore (model : FlatModel) (basePath : GroupPath)
     (groups : List SurfaceStarGroupSegment) (groupPath : GroupPath) :
     starredGroupMiss model basePath groups groupPath ≠ .path .incoherentCore := by
   unfold starredGroupMiss
-  split <;> (try split) <;> simp_all
+  split <;> (try split) <;> (try split) <;> simp_all
 
 /-- One terminal repeatable group and the shared checked plan that reaches each of its concrete rows exactly once. -/
 structure CheckedStarredGroupSource (model : FlatModel) where

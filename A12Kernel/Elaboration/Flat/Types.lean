@@ -411,6 +411,12 @@ structure FlatModel where
   and only a message's `index(...)` parameter is known to read it
   ([checkpoint](../../../docs/sources/message-and-pointer-probes.md#src-nonrepeatable-index-field-gate)). -/
   nonrepeatableIndexFields : List (GroupPath × FieldId) := []
+  /-- The nonrepeatable groups the model declares whose subtree holds no field. The Kernel admits such a
+  group and refuses every operand naming it, so it is kept apart from the fields and the repeatable
+  declarations that make every other group present: `hasGroupPath` and `groupContributesField`
+  deliberately ignore it, and `declaresEmptyGroup` is its one query
+  ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group)). -/
+  emptyNonrepeatableGroups : List GroupPath := []
   /-- Admitted full-input charset; computed target checks omit this baseline (spec/06 §A.2). -/
   legalCharset : LegalCharset := .defaultBmp
   fieldRefByShortNameAllowed : Bool := false

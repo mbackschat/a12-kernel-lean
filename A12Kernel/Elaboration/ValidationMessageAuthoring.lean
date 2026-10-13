@@ -287,7 +287,10 @@ def resolveMessageGroup {model : FlatModel} (condition : ValidationMessageCondit
       | none => .ok (condition.rowGroup.take 1)
   | .absolute [] => .error (.invalidGroupParameter parameter)
   | .absolute (root :: rest) =>
-      if !model.hasGroupPath [root] then
+      -- A root declaring no field is still a declared root: `$#/Hollow$` on one draws the ordinary
+      -- group class, where an undeclared root draws the root class
+      -- ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group)).
+      if !(model.hasGroupPath [root] || model.declaresEmptyGroup [root]) then
         .error (.unknownRootGroup parameter root)
       else if model.declaresEntityPath (root :: rest) then
         .ok (root :: rest)

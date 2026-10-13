@@ -72,9 +72,8 @@ inductive ValidationMessageTemplateError where
   a gate of its own, ahead of the lookup below it and of availability, and reported apart from both,
   so it fires whatever follows the root.
 
-  A root the model declares but leaves **empty** would be reported by the Kernel on the ordinary group
-  class instead. `FlatModel` cannot express such a group, so no input reaching here separates the two;
-  `FlatModel.hasGroupPath` owns that limit. -/
+  A root the model declares but leaves **empty** is a declared root for this gate, so it reaches the
+  ordinary group class instead (`FlatModel.declaresEmptyGroup`). -/
   | unknownRootGroup (parameter root : String)
   /-- A historic group terminal the Kernel still recognizes and refuses on the modern route. It stays
   distinct from `invalidGroupParameter` because the Kernel's own code is distinct. -/

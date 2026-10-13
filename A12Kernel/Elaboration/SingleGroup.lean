@@ -233,6 +233,11 @@ inductive FixedGroupReferenceError where
   | unknownGroup (path : GroupPath)
   /-- A group path whose first segment names no declared root; see `FlatModel.declaresRoot`. -/
   | unknownRootGroup (path : GroupPath)
+  /-- The named nonrepeatable group is declared and holds no field anywhere in its subtree; see
+  `FlatModel.declaresEmptyGroup`. The Kernel admits it in a model and refuses every operand naming it
+  on a class of its own, measured on the presence predicate and on a field-list quantifier
+  ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group)). -/
+  | groupHasNoFields (path : GroupPath)
   | repeatableGroupRequiresAddress (path : GroupPath)
   /-- A repeatable group, or a group below one, whose read the walk passed and this carrier still
   refuses; the sole group count also raises it for a repeatable group the rule's row bound. The
@@ -251,11 +256,17 @@ inductive FixedGroupReferenceError where
   | fieldNamedAsGroup (path : List String)
   deriving Repr, DecidableEq
 
-/-- The miss for a resolved group path that names no declared group, split by its first segment the
-    way the Kernel splits it. -/
+/-- The class an operand naming a declared group without any field draws: a root has a class of its
+    own. -/
+def GroupPath.emptyGroupDiagnostic (path : GroupPath) : KernelStaticDiagnostic :=
+  if path.length == 1 then .rootGroupIsEmpty else .groupIsEmpty
+
+/-- The miss for a resolved group path that is no present group: a declared group without a field,
+    else the unknown path split by its first segment the way the Kernel splits it. -/
 def FlatModel.unknownGroupError (model : FlatModel) (path : GroupPath) :
     FixedGroupReferenceError :=
-  if path.head?.any model.declaresRoot then .unknownGroup path else .unknownRootGroup path
+  if model.declaresEmptyGroup path then .groupHasNoFields path
+  else if path.head?.any model.declaresRoot then .unknownGroup path else .unknownRootGroup path
 
 /-- The classes a fixed group operand's resolution owns whichever carrier reads it. -/
 def FixedGroupReferenceError.diagnostic? :
@@ -263,6 +274,7 @@ def FixedGroupReferenceError.diagnostic? :
   | .reference (.resolve error) => error.diagnostic?
   | .unknownGroup _ => some .invalidEntity
   | .unknownRootGroup _ => some .invalidRootGroup
+  | .groupHasNoFields path => some path.emptyGroupDiagnostic
   | .repeatableGroupRequiresAddress _ => some .noWildcard
   | .walkedRepeatableGroupUnsupported _ => none
   | .unboundOperandLevel _ unbound => unbound.diagnostic?

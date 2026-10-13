@@ -117,7 +117,7 @@ theorem checkMessageGroup_absolute_admitted
     {access : CheckedValidationMessageGroup model condition}
     (admitted : checkMessageGroup condition parameter (.absolute path) remainder = .ok access) :
     messageGroupAvailable model condition path = true ∧
-      model.hasGroupPath (path.take 1) = true := by
+      (model.hasGroupPath (path.take 1) || model.declaresEmptyGroup (path.take 1)) = true := by
   cases remainder with
   | afterWalk _ => simp [checkMessageGroup] at admitted
   | keyed _ _ _ =>
@@ -128,7 +128,7 @@ theorem checkMessageGroup_absolute_admitted
   | nil => simp [checkMessageGroup, resolveMessageGroup] at admitted
   | cons root rest =>
       unfold checkMessageGroup resolveMessageGroup at admitted
-      by_cases hRoot : model.hasGroupPath [root] = true
+      by_cases hRoot : (model.hasGroupPath [root] || model.declaresEmptyGroup [root]) = true
       · by_cases hDeclared : model.declaresEntityPath (root :: rest) = true
         · simp only [hRoot, hDeclared, Bool.not_true, Bool.false_eq_true, if_false,
             if_true, admitMessageGroup] at admitted
@@ -138,7 +138,8 @@ theorem checkMessageGroup_absolute_admitted
             · simp [hValid, hAvailable] at admitted
           · simp [hValid] at admitted
         · simp [hRoot, hDeclared] at admitted
-      · simp [hRoot] at admitted
+      · simp only [Bool.or_eq_true, not_or] at hRoot
+        simp [hRoot.1, hRoot.2] at admitted
 
 /-- A relative argument is admitted only when its parent walk stays at or below the root group, so a
 climb past the root is never reached through the relative form, whatever path follows it. -/

@@ -111,13 +111,15 @@ example : [false, true].all (fun row =>
     result numberTarget row (some (guard true)) [{ precondition := none, operation := "9" }] [] "RoundUp" == "MVK_SEMANTIC_INDEX_NOT_ALLOWED" &&
     result numberTarget row (some (guard true)) [{ precondition := none, operation := "[Expected] - 1" }] [] "RoundUp" == "MVK_NO_NUMBER_FOR_CALC") = true := by native_decide
 
+private def invalidSuppressedWarning : String := KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
+
 example : [false, true].all (fun row =>
     result numberTarget row none [{ precondition := none, operation := "9" }]
       ["UNKNOWN_WARNING"] "RoundUp" == "MVK_ERROR_WRONG_ROUNDING_MODE" &&
     result numberTarget row none [{ precondition := none, operation := "9" }]
-      ["UNKNOWN_WARNING"] "Exact" == "UNKNOWN_WARNING" &&
+      ["UNKNOWN_WARNING"] "Exact" == invalidSuppressedWarning &&
     result numberTarget row (some (guard false)) [{ precondition := none, operation := "9" }]
-      ["UNKNOWN_WARNING"] "RoundUp" == "UNKNOWN_WARNING") = true := by native_decide
+      ["UNKNOWN_WARNING"] "RoundUp" == invalidSuppressedWarning) = true := by native_decide
 
 example : [false, true].all (fun row =>
     let common := some "FieldFilled(Missing)"
@@ -129,6 +131,6 @@ example : [false, true].all (fun row =>
     result numberTarget row (some "FieldFilled(Error)") [{ precondition := none, operation := "[" }]
       ["UNKNOWN_WARNING"] == SyntaxErrorClass.expectedTokenNotFound.code &&
     result numberTarget row (some "FieldFilled(Error)") [{ precondition := none, operation := "9" }]
-      ["UNKNOWN_WARNING"] == "UNKNOWN_WARNING") = true := by native_decide
+      ["UNKNOWN_WARNING"] == invalidSuppressedWarning) = true := by native_decide
 
 end A12Kernel.Dm.HavingComputationAdmissionLocks

@@ -398,8 +398,8 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       s!"@SuppressWarning({",".intercalate computation.errorCodesToSuppress}) 0"
   let validatedSuppression : Lowering Bool := do
     let suppressed ← suppression
-    if let some other := suppressed.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
-      refuse "SuppressWarning" other
+    if suppressed.any (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
+      refuse "SuppressWarning" KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
     pure (suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES")
   -- Filter preflight starts at the generated preamble (spec/09 §6; spec/12 §4).
   -- The unfiltered route defers preamble failures until guards and operation syntax finish.

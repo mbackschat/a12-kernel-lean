@@ -511,13 +511,19 @@ def FlatModel.groupContributesField (model : FlatModel) (path : GroupPath) : Boo
 
 /-- A group is present in the flattened namespace when it owns or contains a declared field, or has its own repeatable declaration.
 
-An empty **nonrepeatable** group is therefore outside this representation, and that is a limit of `FlatModel` rather than of the Kernel: measured 2026-08-29, the Kernel admits such a group and reports the model valid ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group)). One gate would diverge if that input could be built, since the message group position's root gate reports its undeclared-root class where the Kernel reports the ordinary group class; no `FlatModel` can build it, and giving groups their own declaration list is the change that would lift the limit, which [SG9](../../../docs/SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion) carries.
+An empty **nonrepeatable** group is therefore not present here, by design: the Kernel admits such a group and reports the model valid ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group)), but `hasGroupPath_nonrepeatable_contributesField` proves that a present nonrepeatable group carries a field, and the gates built on that proof must keep holding. The model lists such groups apart, in `emptyNonrepeatableGroups`, and only a gate that classifies a group operand's miss or a message's root consults `declaresEmptyGroup`.
 
 An empty **repeatable** group is a different matter and *is* expressible, because a repeatable declaration names its group directly. Presence is therefore not admission: `groupContributesField` is the gate a group **operand** must pass, and this query is not. -/
 def FlatModel.hasGroupPath (model : FlatModel) (path : GroupPath) : Bool :=
   GroupPath.isValid path &&
     (model.groupContributesField path ||
       model.repeatableGroups.any fun group => group.path == path)
+
+/-- Whether the model declares this nonrepeatable group with no field anywhere in its subtree. Such a
+group is never `hasGroupPath`. The field test is repeated so the query keeps its meaning on a model
+whose list names a group that gained a field. -/
+def FlatModel.declaresEmptyGroup (model : FlatModel) (path : GroupPath) : Bool :=
+  model.emptyNonrepeatableGroups.contains path && !model.groupContributesField path
 
 /-- Whether a name is a declared root group. The Kernel resolves a field or group path segment by
     segment, so a path that misses reports the root-group class exactly when its first segment fails
