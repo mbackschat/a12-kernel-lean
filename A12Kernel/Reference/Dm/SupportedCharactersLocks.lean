@@ -264,6 +264,56 @@ example :
       (fun (text, copy, size) => (ingestion (some text)).map Prod.snd == some (rowResults copy size)) := by
   native_decide
 
+/- The technical cap counts the authored text in UTF-16 units before charset and blank checks, and
+bypasses only the raw switch: each overlength row below would report charset, a blank or a declared
+length under a scalar count, a normalized count or a later guard (pinned `FormalChecker`). -/
+private def letters (count : Nat) : String := String.ofList (List.replicate count 'A')
+
+example :
+    let text := letters 99999
+    (ingestion (some text)).map (fun (cells, results) => (cells.map (·.formalReports), results)) =
+      some ([[], [.declaredConstraint], [], [],
+        [.registeredCustomValidation { projectCode := "testIDNummer" }]],
+        rowResults s!"value {text}" "value 99999") := by
+  native_decide
+
+example :
+    [letters 100000, letters 99998 ++ "😀", letters 100000 ++ "😀",
+     " " ++ letters 99999].all (fun text => baselineFirst text .valueTooLong) := by
+  native_decide
+
+/- A CRLF pair counts twice although the stored text later normalizes it to one unit. Only the four
+checked cells are compared; the raw cell bypasses this guard. -/
+example :
+    (ingestion (some (letters 99998 ++ "\r\n"))).map (fun pair => (pair.1.drop 1, pair.2)) =
+      some (List.replicate 4 { rawPresent := true, parsed := none, findings := [.valueTooLong] },
+        rowResults "cleared" "cleared") := by
+  native_decide
+
+example : baselineFirst (letters 99997 ++ "😀") .unsupportedCharacter := by
+  native_decide
+
+example : FormalCause.valueTooLong.fixedFormalErrorCode? = some "wertZuLang" := by
+  native_decide
+
+/- The reduced computed-target check has no technical cap: an overlength concatenation of two
+admitted values is applied to an unconstrained String target. -/
+example :
+    (do
+      let dm ← (readModel ingestionSource).toOption
+      let prepared ← (prepareFlatStringContext ingestionWorld builtinStringPatternCompiler dm.flat).toOption
+      let raw ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [("Pattern", .str (letters 50000))])])).toOption
+      let checked ← (checkDocument prepared "en_US" raw.data).toOption
+      let concatenation : DmComputation := {
+        group := ["Form"], name := "CTwice", targetRelPath := "../Witness"
+        commonPrecondition := none
+        alternatives := [{ precondition := none, operation := "[Pattern] + [Pattern]" }]
+        errorCodesToSuppress := [] }
+      let results ← (runModelComputations { dm with computations := [concatenation] }
+        .english ingestionWorld prepared checked).toOption
+      pure (results.map (·.outcome))) = some [s!"value {letters 100000}"] := by
+  native_decide
+
 private inductive Domain where
   | rows | mixed
   deriving BEq

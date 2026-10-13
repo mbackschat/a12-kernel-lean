@@ -1,3 +1,5 @@
+import A12Kernel.Semantics.String
+
 /-! # The universal formal pre-check every stored value passes
 
 [`NumberFormalCheck.lean`](NumberFormalCheck.lean) owns the ordered cascade a *Number* declaration applies. That cascade is not the first thing a stored value meets: the Kernel runs a type-independent pre-check first, and only reaches the declaration's own cascade when every step of it passes. A consumer that implements the per-type cascade alone reports the wrong refusal for a value that fails earlier, and reports one at all for a value the pre-check would have waved through unchecked.
@@ -5,7 +7,7 @@
 The pre-check is a first-match-wins sequence like its per-type successors, so the order below is observable and not an implementation detail:
 
 1. **A String declaration that switches value validation off ends the pipeline immediately**, before the length cap and before any conversion. The stored value is passed through as authored. Only a String declaration carries the switch, so this arm is unreachable for every other kind.
-2. **A value longer than the technical cap is refused**, whatever the declaration says. This cap is the Kernel's own and has nothing to do with a declared maximum length: the two produce different codes, and a String field declaring `maxLength` still meets this one first.
+2. **A value longer than the technical cap is refused**, whatever the declaration says. The cap counts the authored text in UTF-16 code units, the host string length, so a supplementary character counts two and a CRLF pair counts two even though normalisation later collapses it. This cap is the Kernel's own and has nothing to do with a declared maximum length: the two produce different codes, and a String field declaring `maxLength` still meets this one first.
 3. **The charset, then a leading blank, then a trailing blank.** Each is its own code and the first to fire wins, so a value that both opens with a blank and carries an illegal character reports the character.
 4. Only then the declaration's own cascade — the Number one, or a String's, or any other kind's.
 
@@ -20,14 +22,18 @@ The value-validation switch is consulted **twice**, once here and once inside th
 
 namespace A12Kernel
 
-/-- The technical ceiling on any stored value's length, independent of every declaration. A declared maximum is a separate constraint checked later and reported under its own code. -/
+/-- The technical ceiling on any stored value's length in UTF-16 code units, independent of every declaration. A declared maximum is a separate constraint checked later and reported under its own code. -/
 def maximumStoredValueLength : Nat := 99999
+
+/-- Whether authored text breaches the technical ceiling. Measured before line-break normalisation, in UTF-16 code units rather than Unicode scalars. -/
+def exceedsTechnicalLength (value : String) : Bool :=
+  utf16CodeUnitLength value > maximumStoredValueLength
 
 /-- A refusal from the type-independent pre-check, before any declaration's own cascade. -/
 inductive UniversalFormalRefusal where
   /-- Longer than the technical ceiling. Distinct from a declared maximum length. -/
   | valueTooLong
-  /-- Carries a grapheme the model's declared character set does not admit. -/
+  /-- Carries a grapheme outside the model's declared character set. -/
   | characterNotInCharset
   /-- Opens with a blank. -/
   | leadingBlank
@@ -87,7 +93,7 @@ def valueFormalCheck {TypeRefusal : Type}
     (value : String) : ValueFormalOutcome TypeRefusal :=
   if environment.skipValueValidation then
     .uncheckedPassthrough value
-  else if value.length > maximumStoredValueLength then
+  else if exceedsTechnicalLength value then
     .refused .valueTooLong
   else if !environment.charsetAdmits value then
     .refused .characterNotInCharset

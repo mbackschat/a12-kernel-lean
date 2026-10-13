@@ -39,6 +39,8 @@ inductive FormalCause where
   | booleanToken             -- stored Boolean token outside exact lowercase `true` / `false`
   | confirmToken             -- stored Confirm token outside exact lowercase `true`
   | declaredConstraint       -- pattern / length / range / scale violation
+  | valueTooLong             -- authored text over the technical UTF-16 ceiling, before the charset;
+                             -- not a declared length constraint, which keeps `declaredConstraint`
   | unsupportedCharacter     -- outside the legal charset (default BMP)
   | leadingOrTrailingSpace
   | required                 -- required-and-empty

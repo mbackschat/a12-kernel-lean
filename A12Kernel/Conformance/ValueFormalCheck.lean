@@ -67,6 +67,16 @@ example :
         .admitted (String.ofList (List.replicate 99999 'x')) := by
   native_decide
 
+/- The ceiling counts UTF-16 code units, as the Kernel's host string length does: one
+   supplementary character fills two, so 99,998 letters and one emoji are over the ceiling while
+   99,997 letters and one emoji are not, although both are under it in Unicode scalars. -/
+example :
+    valueFormalCheck anyCharset numberStage (String.ofList (List.replicate 99998 'x') ++ "😀") =
+        .refused .valueTooLong ∧
+      valueFormalCheck anyCharset numberStage (String.ofList (List.replicate 99997 'x') ++ "😀") =
+        .admitted (String.ofList (List.replicate 99997 'x') ++ "😀") := by
+  native_decide
+
 /- Switching value validation off ends the pipeline before every later step, including the technical
    ceiling — so an over-long value is stored as authored rather than refused. This is the arm a
    consumer loses by keeping only the String cascade's own copy of the switch. -/

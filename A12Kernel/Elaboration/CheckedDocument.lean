@@ -313,6 +313,8 @@ private def checkPlacedCell
       checkAdmittedRawCell input.raw
     else if declaration.stringValueMode == .raw then
       (prepared.checkContext locale raw).read input.address.field
+    else if exceedsTechnicalLength input.stored then
+      { rawPresent := true, parsed := none, findings := [.valueTooLong] }
     else if !model.legalCharset.accepts input.stored then
       { rawPresent := true, parsed := none, findings := [.unsupportedCharacter] }
     else if input.stored.startsWith " " || input.stored.endsWith " " then

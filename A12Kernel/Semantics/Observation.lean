@@ -1,5 +1,6 @@
 import A12Kernel.Cell
 import A12Kernel.Semantics.String
+import A12Kernel.Semantics.ValueFormalCheck
 
 /-! # A12Kernel.Semantics.Observation — formal checking and phase reads
 
@@ -83,6 +84,7 @@ def fixedFormalErrorCode? : FormalCause → Option String
   | .dateRangeTooEarly => some "datumBereichDatumFalsch"
   | .booleanToken => some "feldJaNeinFalsch"
   | .confirmToken => some "feldJaFalsch"
+  | .valueTooLong => some UniversalFormalRefusal.valueTooLong.errorCode
   | _ => none
 
 end FormalCause

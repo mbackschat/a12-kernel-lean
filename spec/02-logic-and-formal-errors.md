@@ -170,7 +170,7 @@ For the all-rows aggregates the malformed cell's authored position does not chan
 
 More than a type-format mismatch. The *same* checked-cell mechanism (same eventual "unknown", same suppression for authored validation rules) receives findings from several stages:
 
-- **a malformed value** — the base case, *plus* two cross-kind baseline checks that run before any type-format check on a stored/input value: the model's [legal charset](06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching), and no leading/trailing blanks;
+- **a malformed value** — the base case, *plus* three cross-kind baseline checks that run, in this order, before any type-format check on a stored/input value: a technical length limit, the model's [legal charset](06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching), and no leading/trailing blanks;
 - **a declared-constraint violation** — range, length, pattern, digit counts, enum domain: a parseable-but-out-of-bounds value is *exactly as invalid* as an unparseable one. A value violating several checks reports the **first** in the engine's fixed precedence;
 - **a registered custom field-validator rejection** — one project-coded formal observation reused by every consumer of that relevant concrete-valued cell ([§7](06-strings-and-enumerations.md#a3-custom-field-type-validation));
 - **the "required" checkbox on an empty field** ([§4](03-empty-and-required.md)) — after its generated mandatory rule has fired and its hit/message has been retained, the empty target is annotated with a validation-scoped required finding; authored validation rules then see unknown, while computation sees plain empty (an important asymmetry, [§11](09-computations.md));
